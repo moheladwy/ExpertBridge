@@ -1,0 +1,63 @@
+services:
+  Redis:
+    container_name: "Redis"
+    image: "docker.io/redis:alpine"
+    volumes:
+    - "expertbridge-redis-data:/data"
+    ports:
+    - target: 6379
+      published: 4001
+    command:
+    - "--save"
+    - "300"
+    - "1"
+    networks: 
+      - expert-bridge-network
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  
+  ExpertBridgeApi:
+    container_name: "ExpertBridgeApi"
+    image: "expertbridge-api:latest"
+    env_file:
+      - ".env.api"
+    networks: 
+      - expert-bridge-network
+    ports:
+    - target: 8080
+      published: 10000
+    depends_on:
+      - SqlServer
+      - Redis
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://ExpertBridgeApi:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  ExpertBridgeClient:
+    container_name: "ExpertBridgeClient"
+    image: "expertbridge-client:latest"
+    env_file:
+      - ".env.client"
+    networks: 
+      - expert-bridge-network
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+    ports:
+    - target: 80
+      published: 10001
+    restart: unless-stopped
+
+volumes:
+  expertbridge-redis-data: {}
+
+networks:
+  expert-bridge-network:
+    driver: bridge
+    name: "expert-bridge-network"

@@ -42,7 +42,7 @@ services:
   
   ExpertBridgeApi:
     container_name: "ExpertBridgeApi"
-    image: "expertbridge-api:dev"
+    image: "expertbridge-api:test"
     build:
       context: .
       dockerfile: "server/ExpertBridge.Api/Dockerfile"
@@ -61,6 +61,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+  ExpertBridgeClient:
+    container_name: "ExpertBridgeClient"
+    image: "expertbridge-client:test"
+    build:
+      context: .
+      dockerfile: "client/Dockerfile"
+    env_file:
+      - ".env.client"
+    networks: 
+      - expert-bridge-network
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+    ports:
+    - target: 80
+      published: 10001
     restart: unless-stopped
 
 volumes:
