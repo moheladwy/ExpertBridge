@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Host", "ExpertBridge.Host\ExpertBridge.Host.csproj", "{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Core", "ExpertBridge.Core\ExpertBridge.Core.csproj", "{FDFF5163-5D27-48F7-ACC8-D566B68AABAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Data", "ExpertBridge.Data\ExpertBridge.Data.csproj", "{56180EC7-50C3-4563-873D-E6B5351FC3F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Infrastructure", "ExpertBridge.Infrastructure\ExpertBridge.Infrastructure.csproj", "{D1D42ACD-16B8-43FA-917C-7E235BB45D1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Api", "ExpertBridge.Api\ExpertBridge.Api.csproj", "{59EAB2C1-1ABE-46F7-A1A7-107BCA3E5F0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{697DB175-35B9-4313-8B5C-CDD6F6747E3A}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDFF5163-5D27-48F7-ACC8-D566B68AABAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDFF5163-5D27-48F7-ACC8-D566B68AABAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDFF5163-5D27-48F7-ACC8-D566B68AABAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDFF5163-5D27-48F7-ACC8-D566B68AABAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56180EC7-50C3-4563-873D-E6B5351FC3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56180EC7-50C3-4563-873D-E6B5351FC3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56180EC7-50C3-4563-873D-E6B5351FC3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56180EC7-50C3-4563-873D-E6B5351FC3F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1D42ACD-16B8-43FA-917C-7E235BB45D1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1D42ACD-16B8-43FA-917C-7E235BB45D1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1D42ACD-16B8-43FA-917C-7E235BB45D1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1D42ACD-16B8-43FA-917C-7E235BB45D1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59EAB2C1-1ABE-46F7-A1A7-107BCA3E5F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59EAB2C1-1ABE-46F7-A1A7-107BCA3E5F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59EAB2C1-1ABE-46F7-A1A7-107BCA3E5F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59EAB2C1-1ABE-46F7-A1A7-107BCA3E5F0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
