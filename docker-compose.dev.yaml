@@ -4,6 +4,11 @@ services:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     env_file:
       - ".env.mssql"
+    environment:
+      ACCEPT_EULA: ${ACCEPT_EULA}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: ${MSSQL_PID}
+      TrustServerCertificate: ${TrustServerCertificate}
     volumes:
     - "expertbridge-sqlserver-data:/var/opt/mssql"
     - "expertbridge-sqlserver-error-logs:/var/opt/mssql/log/errorlog"
@@ -48,6 +53,14 @@ services:
       dockerfile: "server/ExpertBridge.Api/Dockerfile"
     env_file:
       - ".env.api"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: ${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
+      HTTP_PORTS: ${HTTP_PORTS}
+      ConnectionStrings__TodoDb: ${ConnectionStrings__TodoDb}
+      ConnectionStrings__Redis: ${ConnectionStrings__Redis}
     networks: 
       - expert-bridge-network
     ports:
