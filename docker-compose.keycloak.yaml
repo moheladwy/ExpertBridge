@@ -1,0 +1,50 @@
+services:
+    Keycloak:
+        container_name: "Keycloak"
+        image: "quay.io/keycloak/keycloak:latest"
+        command: start
+        volumes:
+            - "keycloak-data:/opt/keycloak/data"
+        ports:
+            - target: 8080
+              published: 8080
+        env_file:
+            - ".env.keycloak"
+        environment:
+            # KC_HOSTNAME: ${KC_HOSTNAME}
+            # KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
+            # KC_HOSTNAME_STRICT_BACKCHANNEL: false
+            # KC_HTTP_ENABLED: true
+            # KC_HOSTNAME_STRICT_HTTPS: false
+            KC_HEALTH_ENABLED: true
+            KC_DB: ${KC_DB}
+            KC_DB_URL_HOST: ${KC_DB_URL_HOST}
+            KC_DB_URL_DATABASE: ${KC_DB_URL_DATABASE}
+            KC_DB_USERNAME: ${POSTGRES_USER}
+            KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+            KC_DB_SCHEMA: ${KC_DB_SCHEMA}
+            KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+            KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+        networks:
+            - keycloak_network
+            - postgres_network
+        healthcheck:
+            test: ["CMD", "nc", "-z", "localhost", "8080"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        restart: unless-stopped
+
+volumes:
+    keycloak-data:
+        name: keycloak-data
+        driver: local
+
+networks:
+    keycloak_network:
+        name: keycloak_network
+        driver: bridge
+    postgres_network:
+        name: postgres_network
+        driver: bridge
+        external: true
