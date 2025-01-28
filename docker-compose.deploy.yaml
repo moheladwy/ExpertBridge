@@ -31,7 +31,7 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: ${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
       HTTP_PORTS: ${HTTP_PORTS}
-      ConnectionStrings__TodoDb: ${ConnectionStrings__TodoDb}
+      ConnectionStrings__ExpertBridgeDb: ${ConnectionStrings__ExpertBridgeDb}
       ConnectionStrings__Redis: ${ConnectionStrings__Redis}
     networks: 
       - expert-bridge-network
@@ -39,7 +39,6 @@ services:
     - target: 8080
       published: 10000
     depends_on:
-      - SqlServer
       - Redis
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://ExpertBridgeApi:8080/health" ]

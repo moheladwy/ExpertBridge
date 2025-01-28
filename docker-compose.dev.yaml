@@ -1,32 +1,30 @@
 services:
-  SqlServer:
-    container_name: "SqlServer"
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
-    env_file:
-      - ".env.mssql"
-    environment:
-      ACCEPT_EULA: ${ACCEPT_EULA}
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
-      MSSQL_PID: ${MSSQL_PID}
-      TrustServerCertificate: ${TrustServerCertificate}
+  Postgresql:
+    image: "postgres:17-alpine"
+    container_name: "Postgresql"
     volumes:
-    - "expertbridge-sqlserver-data:/var/opt/mssql"
-    - "expertbridge-sqlserver-error-logs:/var/opt/mssql/log/errorlog"
-    networks: 
-      - expert-bridge-network
+      - "expertbridge-postgresql-data:/var/lib/postgresql/data"
     ports:
-    - target: 1433
-      published: 4000
+        - target: 5432
+          published: 5432
+    env_file:
+      - ".env.postgres"
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+        - expert-bridge-network
     healthcheck:
-      test: [ "CMD", "sqlcmd", "-U", "sa", "-P", "Password123", "-Q", "SELECT 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+        test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
     restart: unless-stopped
   
   Redis:
     container_name: "Redis"
-    image: "docker.io/redis:alpine"
+    image: "redis:alpine"
     volumes:
     - "expertbridge-redis-data:/data"
     ports:
@@ -59,7 +57,7 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: ${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
       HTTP_PORTS: ${HTTP_PORTS}
-      ConnectionStrings__TodoDb: ${ConnectionStrings__TodoDb}
+      ConnectionStrings__ExpertBridgeDb: ${ConnectionStrings__ExpertBridgeDb}
       ConnectionStrings__Redis: ${ConnectionStrings__Redis}
     networks: 
       - expert-bridge-network
@@ -67,7 +65,7 @@ services:
     - target: 8080
       published: 10000
     depends_on:
-      - SqlServer
+      - Postgresql
       - Redis
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://ExpertBridgeApi:8080/health" ]
@@ -77,11 +75,14 @@ services:
     restart: unless-stopped
 
 volumes:
-  expertbridge-sqlserver-data: {}
-  expertbridge-sqlserver-error-logs: {}
-  expertbridge-redis-data: {}
+  expertbridge-postgresql-data:
+    name: "expertbridge-postgresql-data"
+    driver: local
+  expertbridge-redis-data:
+    name: "expertbridge-redis-data"
+    driver: local
 
 networks:
   expert-bridge-network:
-    driver: bridge
     name: "expert-bridge-network"
+    driver: bridge

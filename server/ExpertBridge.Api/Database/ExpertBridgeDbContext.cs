@@ -1,11 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Data.DatabaseContexts;
+namespace ExpertBridge.Api.Database;
 
-public class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> options) : DbContext(options)
+internal class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> options) : DbContext(options)
 {
     /// <summary>
     ///     The OnModelCreating method that is called when the model is being created.

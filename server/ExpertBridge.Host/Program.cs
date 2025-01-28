@@ -1,17 +1,17 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var mssql = builder
-    .AddSqlServer("SqlServer", port: 4000)
-    .WithImage("mssql/server", "2022-latest")
-    .WithContainerName("expertbridge-sqlserver")
-    .WithDataVolume("expertbridge-sqlserver-data")
-    .WithEnvironment("MSSQL_SA_PASSWORD", "Password123")
-    .WithEnvironment("ACCEPT_EULA", "Y")
-    .WithEnvironment("MSSQL_PID", "Developer")
+var postgres = builder
+    .AddPostgres("Postgresql", port: 4000)
+    .WithImage("postgres", "17-alpine")
+    .WithContainerName("expertbridge-postgresql")
+    .WithEnvironment("POSTGRES_USER", "root")
+    .WithEnvironment("POSTGRES_PASSWORD", "root")
+    .WithDataVolume("expertbridge-postgresql-data")
     .WithLifetime(ContainerLifetime.Persistent)
+    .WithPgWeb()
     .PublishAsConnectionString();
 
-var db = mssql
+var db = postgres
     .AddDatabase("ExpertBridgeDb", "ExpertBridgeDb");
 
 var redis = builder

@@ -1,13 +1,12 @@
 using ExpertBridge.Api;
-using ExpertBridge.Api.DatabaseConfigurations;
+using ExpertBridge.Api.Database;
 using ExpertBridge.Api.Middlewares;
-using ExpertBridge.Data.DatabaseContexts;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddSqlServerDbContext<ExpertBridgeDbContext>(connectionName: "SqlServer");
+builder.AddNpgsqlDbContext<ExpertBridgeDbContext>(connectionName: "Postgres");
 builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.Services.AddHealthChecks();
 builder.Services.AddControllers();

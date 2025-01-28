@@ -1,6 +1,3 @@
 @ExpertBridge.Api_HostAddress = http://localhost:5027
 
-GET {{ExpertBridge.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
 ###
