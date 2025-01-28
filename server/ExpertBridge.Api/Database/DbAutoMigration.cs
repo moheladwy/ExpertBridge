@@ -12,12 +12,12 @@ internal static class DbAutoMigration
     /// </param>
     public static async Task UseAutoMigrationAtStartup(this WebApplication app)
     {
-        using IServiceScope scope = app.Services.CreateScope();
-        IServiceProvider services = scope.ServiceProvider;
-        ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var logger = services.GetRequiredService<ILogger<Program>>();
         try
         {
-            ExpertBridgeDbContext dbContext = services.GetRequiredService<ExpertBridgeDbContext>();
+            var dbContext = services.GetRequiredService<ExpertBridgeDbContext>();
             await dbContext.Database.MigrateAsync();
         }
         catch (Exception e)

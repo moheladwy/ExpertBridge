@@ -4,15 +4,24 @@ var postgres = builder
     .AddPostgres("Postgresql", port: 4000)
     .WithImage("postgres", "17-alpine")
     .WithContainerName("expertbridge-postgresql")
-    .WithEnvironment("POSTGRES_USER", "root")
-    .WithEnvironment("POSTGRES_PASSWORD", "root")
     .WithDataVolume("expertbridge-postgresql-data")
     .WithLifetime(ContainerLifetime.Persistent)
     .WithPgWeb()
     .PublishAsConnectionString();
 
-var db = postgres
+var expertBridgeDb = postgres
     .AddDatabase("ExpertBridgeDb", "ExpertBridgeDb");
+
+var keycloakDb = postgres
+    .AddDatabase("KeycloakDb", "KeycloakDb");
+
+var keycloak = builder.AddKeycloak("Keycloak", port: 4002)
+    .WithContainerName("expertbridge-keycloak")
+    .WithReference(keycloakDb)
+    .WaitFor(keycloakDb)
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithExternalHttpEndpoints();
 
 var redis = builder
     .AddRedis("Redis", port: 4001)
@@ -23,9 +32,11 @@ var redis = builder
     .WithLifetime(ContainerLifetime.Persistent);
 
 builder.AddProject<Projects.ExpertBridge_Api>("ExpertBridgeApi")
-    .WithReference(db)
+    .WithReference(expertBridgeDb)
+    .WithReference(keycloak)
     .WithReference(redis)
-    .WaitFor(db)
+    .WaitFor(expertBridgeDb)
+    .WaitFor(keycloak)
     .WaitFor(redis)
     .WithExternalHttpEndpoints();
 

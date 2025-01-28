@@ -2,6 +2,7 @@ using ExpertBridge.Api;
 using ExpertBridge.Api.Database;
 using ExpertBridge.Api.Middlewares;
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.AddLoggingService();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddKeycloakJwtBearer("Keycloak", "ExpertBridge");
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -26,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health", new HealthCheckOptions

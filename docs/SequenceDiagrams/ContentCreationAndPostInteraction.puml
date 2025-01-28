@@ -1,0 +1,60 @@
+@startuml Content Creation & Post Interaction
+title Content Creation & Post Interaction
+participant "User Client" as UC
+participant "Web API" as API
+participant "Keycloak" as Auth
+participant "DeepSeek API" as AI
+participant "Object Storage" as Storage
+participant "PostgreSQL" as DB
+participant "Redis" as Cache
+
+UC -> API: 1. POST /posts\n(title, content, media[], tags[])
+API -> Auth: 2. Validate JWT token
+Auth --> API: 3. Token valid (userID)
+
+API -> AI: 4. Check content safety\n(content, media)
+alt Content Approved
+    AI --> API: 5. Approval status: CLEAN
+    
+    loop For each media file
+        API -> Storage: 6. Upload media file
+        Storage --> API: 7. Media URL
+    end
+    
+    API -> DB: 8. Verify mandatory category tag
+    DB --> API: 9. Tag validation OK
+    
+    API -> DB: 10. Create post record\n(title, content, media_urls[], tags[])
+    DB --> API: 11. Post ID
+    
+    API -> Cache: 12. Add to recent posts cache
+    Cache --> API: 13. Cache updated
+    
+    API --> UC: 14. Post created (201)\n(postID)
+    
+    UC -> API: 15. GET /posts/{postID}
+    API -> Cache: 16. Check post cache
+    alt Cached
+        Cache --> API: 17. Return cached post
+    else Not cached
+        API -> DB: 18. Fetch post details
+        DB --> API: 19. Post data
+        API -> Cache: 20. Cache post details
+    end
+    API --> UC: 21. Display post with media
+    
+else Content Rejected
+    AI --> API: 5. Approval status: FLAGGED
+    API --> UC: 6. Error: Content violation (403)
+end
+
+note right of API
+**Key Technical Elements**
+- DeepSeek AI content filtering
+- Parallel media uploads handling
+- Mandatory category tag enforcement
+- Cache-aside pattern implementation
+- JWT authentication validation
+- Media storage in Object Storage
+end note
+@enduml

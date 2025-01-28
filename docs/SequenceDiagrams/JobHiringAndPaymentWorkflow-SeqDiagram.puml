@@ -1,0 +1,79 @@
+@startuml Job Hiring & Payment Workflow
+title Job Hiring & Payment Workflow
+participant "User Client" as UC
+participant "Contractor Client" as CC
+participant "Web API" as API
+participant "Keycloak" as Auth
+participant "DeepSeek API" as AI
+participant "Object Storage" as Storage
+participant "PostgreSQL" as DB
+participant "Redis" as Cache
+participant "Payment Gateway" as PG
+
+UC -> Auth: 1. Authenticate (Get JWT)
+Auth --> UC: Return Access Token
+
+UC -> API: 2. POST /jobs (Title, Desc, Media, Price)
+API -> AI: 3. Validate content
+AI --> API: Content OK
+API -> Storage: 4. Upload Media
+Storage --> API: Media URL
+API -> DB: 5. Create Job Record
+DB --> API: Job ID
+API -> Cache: 6. Add to Jobs Cache
+Cache --> API: Acknowledgement
+API --> UC: 7. Job Created (201)
+
+CC -> Auth: 8. Authenticate Contractor
+Auth --> CC: Return Access Token
+
+CC -> API: 9. GET /jobs?category=plumbing
+API -> Cache: 10. Check cached jobs
+Cache --> API: Return cached list
+API --> CC: 11. Display Job List
+
+CC -> API: 12. POST /bids (JobID, Offer)
+API -> DB: 13. Verify Job Status
+DB --> API: Job Open
+API -> DB: 14. Store Bid
+DB --> API: Bid ID
+API -> UC: 15. Notify New Bid (WebSocket)
+UC --> API: 16. ACK Notification
+
+UC -> API: 17. GET /bids/{jobID}
+API -> DB: 18. Retrieve Bids
+DB --> API: Bid List
+API --> UC: 19. Display Bids
+
+UC -> API: 20. PUT /bids/{bidID}/accept
+API -> DB: 21. Lock Job
+DB --> API: Lock Successful
+API -> CC: 22. Notify Bid Accepted
+CC --> API: 23. ACK Notification
+
+API -> PG: 24. Create Payment Intent
+PG --> API: 25. Payment Secret
+API -> DB: 26. Log Transaction
+DB --> API: Transaction ID
+API --> UC: 27. Redirect to Payment Page
+
+UC -> PG: 28. Submit Payment Details
+PG --> UC: 29. 3D Secure Challenge
+UC --> PG: 30. Confirm Payment
+PG -> API: 31. Webhook: Payment Success
+API -> DB: 32. Update Job Status
+DB --> API: Updated Record
+API -> Cache: 33. Invalidate Job Cache
+API -> CC: 34. Notify Payment Complete
+API -> UC: 35. Notify Payment Complete
+
+note over UC,CC
+**Critical Path Details**
+1. Dual authentication flows
+2. AI content filtering + Media handling
+3. Cache-aside pattern for jobs
+4. Payment gateway integration
+5. Real-time notifications
+6. Transaction consistency
+end note
+@enduml

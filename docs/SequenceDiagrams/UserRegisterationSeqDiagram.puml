@@ -1,0 +1,63 @@
+@startuml User Registration & Profile Management
+title User Registration & Profile Management
+participant "User Client" as UC
+participant "Web API" as API
+participant "Keycloak" as Auth
+participant "Object Storage" as Storage
+participant "PostgreSQL" as DB
+participant "Redis" as Cache
+
+UC -> UC: **Choose Registration Method**
+alt OAuth Registration
+    UC -> API: 1. POST /auth/oauth-init (provider=keycloak)
+    API -> Auth: 2. Redirect to OAuth endpoint
+    Auth -> UC: 3. Perform OAuth authentication
+    UC -> Auth: 4. Submit credentials
+    Auth --> API: 5. Return OAuth token
+    API -> DB: 6. Create user record\n(name, email, oauth_id)
+    DB --> API: 7. User created (201)
+else Email Registration
+    UC -> API: 1. POST /auth/register\n(email, password)
+    API -> DB: 2. Check email existence
+    alt Email exists
+        DB --> API: 3. Conflict error
+        API --> UC: 4. 409 Conflict
+    else New email
+        DB --> API: 3. Email available
+        API -> DB: 4. Create user record\n(email, password_hash)
+        DB --> API: 5. User created (201)
+        API -> UC: 6. Send confirmation email
+    end
+end
+
+API -> UC: 7. Registration success
+
+UC -> API: 8. POST /profile\n(name, role)
+API -> DB: 9. Create profile record\n(name, role=user/contractor)
+DB --> API: 10. Profile created
+API -> Cache: 11. Cache profile data
+Cache --> API: 12. Cache updated
+API --> UC: 13. Profile created (201)
+
+UC -> API: 14. PUT /profile\n(skills, location, profile_pic)
+alt Profile Picture Update
+    API -> Storage: 15. Upload profile image
+    Storage --> API: 16. Image URL
+    API -> DB: 17. Update profile\n(skills, location, image_url)
+else Text Only Update
+    API -> DB: 15. Update profile\n(skills, location)
+end
+DB --> API: 18. Profile updated
+API -> Cache: 19. Invalidate profile cache
+Cache --> API: 20. Cache cleared
+API --> UC: 21. Update success (200)
+
+note right of API
+**Key Technical Details**
+- OAuth flow uses JWT tokens
+- Profile data cached in Redis
+- Images stored in Object Storage
+- PostgreSQL for ACID compliance
+- Role validation during profile creation
+end note
+@enduml

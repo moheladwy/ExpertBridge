@@ -1,0 +1,69 @@
+@startuml Community Engagement - Voting & Solution Marking
+title Community Engagement - Voting & Solution Marking
+participant "User Client" as UC
+participant "Web API" as API
+participant "Keycloak" as Auth
+participant "PostgreSQL" as DB
+participant "Redis" as Cache
+participant "Notification Service" as Notify
+
+box "Voting Workflow"
+UC -> API: 1. POST /answers/{id}/vote\n(type=up/down)
+API -> Auth: 2. Validate JWT token
+Auth --> API: 3. Valid (userID)
+API -> DB: 4. Verify answer exists
+DB --> API: 5. Answer details
+API -> DB: 6. Update vote count\n(+1/-1)
+DB --> API: 7. New vote count
+API -> Cache: 8. Update cached answer
+Cache --> API: 9. Cache updated
+API -> DB: 10. Update answerer reputation\n(+5/-2 points)
+DB --> API: 11. New reputation score
+API -> Notify: 12. Notify answerer\n(vote received)
+Notify --> API: 13. Notification queued
+API --> UC: 14. Vote successful (200)\nnew count
+end box
+
+box "Mark Correct Workflow"
+UC -> API: 15. PUT /answers/{id}/correct
+API -> Auth: 16. Validate JWT
+Auth --> API: 17. Valid (original poster ID)
+API -> DB: 18. Verify question ownership
+DB --> API: 19. Ownership confirmed
+API -> DB: 20. Mark answer as correct
+DB --> API: 21. Answer status updated
+API -> Cache: 22. Invalidate question cache
+Cache --> API: 23. Cache cleared
+API -> DB: 24. Add solution badge\n(+15 reputation)
+DB --> API: 25. Badge added
+API -> Notify: 26. Notify answerer\n(solution marked)
+Notify --> API: 27. Notification queued
+API --> UC: 28. Mark successful (200)
+end box
+
+box "Answer Display"
+UC -> API: 29. GET /answers/{id}
+API -> Cache: 30. Check cached answer
+alt Cached
+    Cache --> API: 31. Return cached answer
+else Not Cached
+    API -> DB: 32. Fetch answer details
+    DB --> API: 33. Answer data
+    API -> Cache: 34. Cache answer
+end
+API -> DB: 35. Check badges
+DB --> API: 36. Badge status
+API --> UC: 37. Display answer\nwith badge (if correct)
+end box
+
+note right of API
+**Key Technical Elements**
+- JWT validation for ownership checks
+- Atomic reputation updates
+- Cache invalidation strategy
+- Notification queuing system
+- Badge metadata storage
+- Vote weighting logic (up=+5, down=-2)
+- Solution bonus (+15 reputation)
+end note
+@enduml
