@@ -1,0 +1,62 @@
+@startuml Contractor Workflow: Job Management & Payment
+title Contractor Workflow: Job Management & Payment
+participant "Contractor Client" as CC
+participant "Client" as C
+participant "Web API" as API
+participant "Database" as DB
+participant "Chat Service" as Chat
+participant "Payment Gateway" as PG
+
+CC -> API: 1. PUT /availability (status=true/false)
+API -> DB: 2. Update contractor availability
+DB --> API: 3. Update confirmed
+API --> CC: 4. Availability updated (200)
+
+C -> API: 5. GET /contractors?skills=plumbing
+API -> DB: 6. Query available contractors
+DB --> API: 7. Contractor list
+API --> C: 8. Display contractors
+
+CC -> API: 9. GET /jobs?status=open
+API -> DB: 10. Fetch open jobs
+DB --> API: 11. Job list
+API --> CC: 12. Display jobs
+
+CC -> API: 13. POST /jobs/{id}/accept
+API -> DB: 14. Update job status (Open → InProgress)
+DB --> API: 15. Status updated
+API -> Chat: 16. Create secure chat room
+Chat --> API: 17. Chat ID
+API --> CC: 18. Job accepted (200)\nChat started
+
+loop Negotiation
+    CC -> Chat: 19. Send message (terms)
+    Chat -> C: 20. Deliver message
+    C -> Chat: 21. Respond with offer
+    Chat -> CC: 22. Deliver response
+end
+
+CC -> API: 23. PUT /jobs/{id}/complete
+API -> DB: 24. Verify job completion
+DB --> API: 25. Verification OK
+API -> PG: 26. Initiate payment\n(amount, contractorID)
+PG --> API: 27. Payment processed
+API -> DB: 28. Update job status (InProgress → Completed)
+DB --> API: 29. Status updated
+API -> Chat: 30. Archive chat room
+Chat --> API: 31. Archive confirmed
+API --> CC: 32. Job completed (200)\nPayment receipt
+
+API -> C: 33. Notify job completion
+API -> CC: 34. Notify payment success
+
+note right of API
+**Technical Details**
+- JWT validation for all requests
+- Chat messages encrypted end-to-end
+- Payment Gateway uses tokenization
+- Database transactions for status updates
+- Real-time chat via WebSocket
+- Retry logic for payment failures
+end note
+@enduml

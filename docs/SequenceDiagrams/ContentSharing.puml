@@ -1,0 +1,59 @@
+@startuml Content Sharing with Arabic Content
+title Content Sharing with Arabic Content
+
+actor "User" as MobileUser
+participant "Mobile Client" as Mobile
+participant "Web API" as API
+participant "PostgreSQL DB" as DB
+participant "Object Storage" as Storage
+participant "Social Media" as Social
+participant "Browser" as Browser
+
+MobileUser -> Mobile: Share post
+activate Mobile
+Mobile -> API: POST /posts/123/share
+activate API
+
+API -> DB: Generate public URL\n(Arabic slug support)
+activate DB
+DB --> API: url_key="post-123-مشكلة-سباكة"
+deactivate DB
+
+API -> Storage: Store Arabic content\n(UTF-8 encoding)
+activate Storage
+Storage --> API: Success
+deactivate Storage
+
+API --> Mobile: Shareable URL\n"https://example.com/public/post-123-مشكلة-سباكة"
+deactivate API
+
+Mobile -> Social: Open share dialog\nwith Arabic URL
+activate Social
+Social --> Mobile: Share complete
+deactivate Social
+
+Mobile --> MobileUser: Sharing confirmation
+deactivate Mobile
+
+Browser -> Social: Click shared Arabic URL
+activate Social
+Social --> Browser: Redirect to public link
+deactivate Social
+
+Browser -> API: GET /public/post-123-مشكلة-سباكة
+activate API
+API -> DB: Decode Arabic slug
+activate DB
+DB --> API: Post content (Arabic text)
+deactivate DB
+
+API -> Storage: Retrieve Arabic media
+activate Storage
+Storage --> API: Media files
+deactivate Storage
+
+API --> Browser: RTL HTML page\nwith Arabic content
+deactivate API
+
+Browser --> User: Display post\n(proper Arabic rendering)
+@enduml

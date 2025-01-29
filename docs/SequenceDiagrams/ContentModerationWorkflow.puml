@@ -1,0 +1,59 @@
+@startuml Content Moderation Workflow
+title Content Moderation Workflow
+participant "Admin" as A
+participant "Web API" as API
+participant "DeepSeek API" as AI
+participant "Database" as DB
+participant "Notification Service" as Notify
+
+box "Content Flagging"
+  group User Submits Content
+    participant "User" as U
+    U -> API: 1. POST /posts (content)
+    API -> AI: 2. Check content safety
+    AI --> API: 3. Flag status (CLEAN/FLAGGED)
+    alt Flagged by AI
+      API -> DB: 4. Store as flagged content\n(reason=AI)
+      DB --> API: 5. Confirmation
+    end
+  end
+
+  group User Reports Content
+    participant "Reporter" as R
+    R -> API: 6. POST /reports (contentID, reason)
+    API -> DB: 7. Store as flagged content\n(reason=USER_REPORT)
+    DB --> API: 8. Confirmation
+  end
+end box
+
+box "Moderation Process"
+  A -> API: 9. GET /flagged-content
+  API -> DB: 10. Fetch flagged items
+  DB --> API: 11. Flagged content list
+  API --> A: 12. Display moderation dashboard
+
+  alt Delete Content
+    A -> API: 13. DELETE /posts/{id}
+    API -> DB: 14. Remove content
+    DB --> API: 15. Deletion confirmed
+    API -> Notify: 16. Notify original poster
+    Notify --> U: 17. "Your post was removed"
+  else Ban User
+    A -> API: 18. POST /bans (userID)
+    API -> DB: 19. Update user status (banned=true)
+    DB --> API: 20. Ban confirmed
+    API -> Notify: 21. Notify banned user
+    Notify --> U: 22. "Account suspended"
+  end
+end box
+
+note right of API
+**Key Technical Elements**
+- DeepSeek integration for auto-flagging
+- Dual flagging sources (AI + user reports)
+- Atomic moderation actions
+- Notification system integration
+- Audit trails for moderation decisions
+- Role-based access control (Admin only)
+end note
+@enduml

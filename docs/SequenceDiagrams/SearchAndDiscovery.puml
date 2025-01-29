@@ -1,0 +1,51 @@
+@startuml Search & Discovery Sequence Diagram
+title Search & Discovery Sequence Diagram
+
+actor User
+participant "Web/Mobile Client" as Client
+participant "Web API" as API
+participant "Redis Cache" as Redis
+participant "PostgreSQL DB" as DB
+
+User -> Client: Enters search criteria (tags, location)
+activate Client
+
+Client -> API: POST /search {tags, location}
+activate API
+
+API -> Redis: Check cache for search_key=tags+location
+activate Redis
+
+alt **Cache Hit**
+    Redis --> API: Return cached results
+    API --> Client: Return filtered posts/jobs
+    Client --> User: Display results (from cache)
+else **Cache Miss**
+    Redis --> API: Cache miss
+    deactivate Redis
+    
+    API -> DB: Query posts/jobs\nWHERE tags && location
+    activate DB
+    DB --> API: Return results
+    deactivate DB
+    
+    API -> Redis: Cache results\n(expire=15min)
+    activate Redis
+    Redis --> API: Ack
+    deactivate Redis
+    
+    API --> Client: Return filtered posts/jobs
+    Client --> User: Display results (from DB)
+end
+
+deactivate API
+deactivate Client
+
+note right of Redis
+**Caching Strategy**:
+- Key = tags + location hash
+- TTL = 15 minutes
+- Cache invalidated on new post creation
+end note
+
+@enduml

@@ -1,47 +1,34 @@
 services:
     Keycloak:
         image: "quay.io/keycloak/keycloak:latest"
+        container_name: "keycloak"
         command: start
-        deploy:
-            replicas: 2
-            update_config:
-                parallelism: 1
-                delay: 1s
-            restart_policy:
-                condition: on-failure
-                delay: 5s
-                max_attempts: 3
-                window: 120s
         volumes:
             - "keycloak-data:/opt/keycloak/data"
         ports:
             - target: 8080
               published: 8080
+            - target: 9000
+              published: 9000
         env_file:
             - ".env.keycloak"
         environment:
-            # KC_HOSTNAME: ${KC_HOSTNAME}
-            # KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
-            # KC_HOSTNAME_STRICT_BACKCHANNEL: false
-            # KC_HTTP_ENABLED: true
-            # KC_HOSTNAME_STRICT_HTTPS: false
+            KC_HOSTNAME: ${KC_HOSTNAME}
+            KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
+            KC_HOSTNAME_STRICT_BACKCHANNEL: false
+            KC_HTTP_ENABLED: true
+            KC_HOSTNAME_STRICT_HTTPS: false
             KC_HEALTH_ENABLED: true
             KC_DB: ${KC_DB}
-            KC_DB_URL_HOST: ${KC_DB_URL_HOST}
-            KC_DB_URL_DATABASE: ${KC_DB_URL_DATABASE}
-            KC_DB_USERNAME: ${POSTGRES_USER}
-            KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+            KC_DB_URL: ${KC_DB_URL}
+            KC_DB_USERNAME: ${KC_DB_USERNAME}
+            KC_DB_PASSWORD: ${KC_DB_PASSWORD}
             KC_DB_SCHEMA: ${KC_DB_SCHEMA}
-            KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-            KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+            KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+            KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
         networks:
             - keycloak_network
             - postgres_network
-        healthcheck:
-            test: ["CMD", "nc", "-z", "localhost", "8080"]
-            interval: 10s
-            timeout: 5s
-            retries: 5
         restart: unless-stopped
 
 volumes:

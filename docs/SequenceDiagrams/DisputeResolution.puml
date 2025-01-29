@@ -1,0 +1,87 @@
+@startuml Dispute Resolution Sequence Diagram
+title Dispute Resolution Sequence Diagram
+
+actor "User/Contractor" as User
+participant "Web/Mobile Client" as Client
+participant "Web API" as API
+participant "PostgreSQL DB" as DB
+participant "Admin Dashboard" as Dashboard
+participant "Admin" as Admin
+participant "Object Storage" as Storage
+
+User -> Client: Submits dispute evidence\n(images, chat logs)
+activate Client
+
+Client -> API: POST /disputes {\n  job_id,\n  description,\n  attachments\n}
+activate API
+
+API -> Storage: Upload media files
+activate Storage
+Storage --> API: File URLs
+deactivate Storage
+
+API -> DB: CreateDisputeTicket(\n  job_id,\n  description,\n  file_urls\n)
+activate DB
+DB --> API: Dispute ID
+deactivate DB
+
+API --> Client: 201 Created
+deactivate API
+
+Client --> User: Dispute submitted confirmation
+deactivate Client
+
+API -> Dashboard: NewDisputeNotification(dispute_id)
+activate Dashboard
+
+Admin -> Dashboard: Views dispute list
+activate Admin
+Dashboard -> API: GET /disputes/pending
+activate API
+API -> DB: Query unresolved disputes
+activate DB
+DB --> API: Dispute data
+deactivate DB
+API --> Dashboard: Dispute list
+deactivate API
+Dashboard --> Admin: Display disputes
+
+Admin -> Dashboard: Reviews dispute\n(views evidence)
+Dashboard -> API: GET /disputes/{id}
+activate API
+API -> DB: GetDisputeDetails(id)
+activate DB
+DB --> API: Full dispute record
+deactivate DB
+API --> Dashboard: Dispute details
+deactivate API
+
+Dashboard -> Storage: Fetch media files
+activate Storage
+Storage --> Dashboard: Evidence files
+deactivate Storage
+
+Admin -> Dashboard: Makes decision\n(Approve/Reject)
+Dashboard -> API: PUT /disputes/{id}/resolve {\n  decision,\n  comments\n}
+activate API
+API -> DB: UpdateDisputeStatus(\n  id,\n  decision\n)
+activate DB
+DB --> API: Update confirmation
+deactivate DB
+API --> Dashboard: 200 OK
+deactivate API
+
+Dashboard --> Admin: Resolution confirmed
+deactivate Admin
+
+API -> Client: DisputeResolutionNotification
+activate Client
+Client --> User: Show resolution status
+deactivate Client
+
+API -> "Email Service": SendResolutionEmails(\n  parties\n)
+activate "Email Service"
+"Email Service" --> API: Ack
+deactivate "Email Service"
+
+@enduml

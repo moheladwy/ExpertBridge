@@ -1,0 +1,44 @@
+@startuml Cross-Platform Experience
+title Cross-Platform Experience
+
+actor "Mobile User" as MobileUser
+participant "Mobile Client" as Mobile
+actor "Web User" as WebUser
+participant "Web Client" as Web
+participant "Web API" as API
+participant "PostgreSQL DB" as DB
+
+' Cross-Platform Experience Flow
+MobileUser -> Mobile: Browse feed
+activate Mobile
+Mobile -> API: GET /feed
+activate API
+API -> DB: Query posts\n(include mobile params)
+activate DB
+DB --> API: Post data
+deactivate DB
+API --> Mobile: Standardized JSON response
+deactivate API
+Mobile --> MobileUser: Display unified UI
+deactivate Mobile
+
+WebUser -> Web: Browse feed
+activate Web
+Web -> API: GET /feed
+activate API
+API -> DB: Query posts\n(include web params)
+activate DB
+DB --> API: Same post data
+deactivate DB
+API --> Web: Same standardized JSON
+deactivate API
+Web --> WebUser: Display unified UI
+deactivate Web
+
+note over API #LightBlue
+**Feature Parity Enforcement**:
+1. Single API version for all clients
+2. Response standardization middleware
+3. Platform-specific parameters handled in business logic
+end note
+@enduml
