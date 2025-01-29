@@ -1,0 +1,144 @@
+@startuml Detailed System Architecture Diagram
+!theme aws-orange
+skinparam componentStyle rectangle
+skinparam linetype ortho
+
+!define RECTANGLE class
+
+package "Client Layer" {
+    [Web Application\n(React)] as WebApp
+    [Mobile Application\n(React Native)] as MobileApp
+}
+
+package "API Gateway Layer" {
+    [API Gateway] as APIGateway
+    note right of APIGateway
+        - Rate Limiting
+        - Request Validation
+        - Load Balancing
+    end note
+}
+
+package "Authentication Layer" {
+    [Keycloak] as Keycloak
+    note right of Keycloak
+        - OAuth Provider
+        - User Management
+        - Role-Based Access
+    end note
+}
+
+package "Core API Layer" {
+    [User Service] as UserService
+    note right of UserService
+        - Profile Management
+        - Reputation System
+    end note
+
+    [Content Service] as ContentService
+    note right of ContentService
+        - Posts/Comments
+        - Media Handling
+        - Content Moderation
+    end note
+
+    [Job Service] as JobService
+    note right of JobService
+        - Job Management
+        - Hiring Workflow
+        - Disputes
+    end note
+
+    [Chat Service] as ChatService
+    note right of ChatService
+        - Real-time Communication
+        - Job Negotiations
+    end note
+
+    [Search Service] as SearchService
+    note right of SearchService
+        - Content Discovery
+        - Filtering
+        - Caching
+    end note
+
+    [Payment Service] as PaymentService
+    note right of PaymentService
+        - Transaction Processing
+        - Payment Status
+    end note
+}
+
+package "External Services Layer" {
+    [DeepSeek API] as DeepSeek
+    [Payment Gateway] as PaymentGateway
+}
+
+package "Data Layer" {
+    database "PostgreSQL" as PostgreSQL
+    database "Redis Cache" as Redis
+    database "Object Storage" as ObjectStorage
+}
+
+' Client to Gateway Connections
+WebApp --> APIGateway
+MobileApp --> APIGateway
+
+' Gateway to Auth
+APIGateway --> Keycloak
+
+' Gateway to Services
+APIGateway --> UserService
+APIGateway --> ContentService
+APIGateway --> JobService
+APIGateway --> ChatService
+APIGateway --> SearchService
+APIGateway --> PaymentService
+
+' Service to External Connections
+ContentService --> DeepSeek
+PaymentService --> PaymentGateway
+
+' Service to Data Layer Connections
+UserService --> PostgreSQL
+ContentService --> PostgreSQL
+JobService --> PostgreSQL
+ChatService --> PostgreSQL
+SearchService --> PostgreSQL
+PaymentService --> PostgreSQL
+
+UserService --> Redis
+ContentService --> Redis
+SearchService --> Redis
+
+ContentService --> ObjectStorage
+JobService --> ObjectStorage
+
+' Service Interconnections
+UserService ..> ContentService
+UserService ..> JobService
+ContentService ..> SearchService
+JobService ..> PaymentService
+JobService ..> ChatService
+
+' Styling
+skinparam package {
+    BackgroundColor white
+    BorderColor black
+}
+
+skinparam component {
+    BackgroundColor<<Client>> #e1f5fe
+    BorderColor<<Client>> #01579b
+    BackgroundColor<<Gateway>> #fff3e0
+    BorderColor<<Gateway>> #e65100
+    BackgroundColor<<Auth>> #f3e5f5
+    BorderColor<<Auth>> #4a148c
+    BackgroundColor<<Service>> #e8f5e9
+    BorderColor<<Service>> #1b5e20
+    BackgroundColor<<External>> #fbe9e7
+    BorderColor<<External>> #bf360c
+    BackgroundColor<<Data>> #f3e5f5
+    BorderColor<<Data>> #4a148c
+}
+@enduml
