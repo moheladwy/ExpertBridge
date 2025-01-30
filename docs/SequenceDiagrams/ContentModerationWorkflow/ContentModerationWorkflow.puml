@@ -2,7 +2,7 @@
 title Content Moderation Workflow
 participant "Admin" as A
 participant "Web API" as API
-participant "DeepSeek API" as AI
+participant "AI Model API" as AI
 participant "Database" as DB
 participant "Notification Service" as Notify
 
@@ -49,7 +49,7 @@ end box
 
 note right of API
 **Key Technical Elements**
-- DeepSeek integration for auto-flagging
+- AI Model API integration for auto-flagging
 - Dual flagging sources (AI + user reports)
 - Atomic moderation actions
 - Notification system integration

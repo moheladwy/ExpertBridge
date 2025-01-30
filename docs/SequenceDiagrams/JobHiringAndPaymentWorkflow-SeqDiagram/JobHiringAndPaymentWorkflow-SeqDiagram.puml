@@ -3,8 +3,8 @@ title Job Hiring & Payment Workflow
 participant "User Client" as UC
 participant "Contractor Client" as CC
 participant "Web API" as API
-participant "Keycloak" as Auth
-participant "DeepSeek API" as AI
+participant "Firebase" as Auth
+participant "AI Model API" as AI
 participant "Object Storage" as Storage
 participant "PostgreSQL" as DB
 participant "Redis" as Cache

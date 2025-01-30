@@ -2,7 +2,7 @@
 title Community Engagement - Voting & Solution Marking
 participant "User Client" as UC
 participant "Web API" as API
-participant "Keycloak" as Auth
+participant "Firebase" as Auth
 participant "PostgreSQL" as DB
 participant "Redis" as Cache
 participant "Notification Service" as Notify

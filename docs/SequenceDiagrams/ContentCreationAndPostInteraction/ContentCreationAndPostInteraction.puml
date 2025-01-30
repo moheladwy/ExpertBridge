@@ -2,8 +2,8 @@
 title Content Creation & Post Interaction
 participant "User Client" as UC
 participant "Web API" as API
-participant "Keycloak" as Auth
-participant "DeepSeek API" as AI
+participant "Firebase" as Auth
+participant "AI Model API" as AI
 participant "Object Storage" as Storage
 participant "PostgreSQL" as DB
 participant "Redis" as Cache
@@ -50,7 +50,7 @@ end
 
 note right of API
 **Key Technical Elements**
-- DeepSeek AI content filtering
+- AI Model content filtering
 - Parallel media uploads handling
 - Mandatory category tag enforcement
 - Cache-aside pattern implementation

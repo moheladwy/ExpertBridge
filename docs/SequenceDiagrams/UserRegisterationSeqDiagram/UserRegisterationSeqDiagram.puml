@@ -2,14 +2,14 @@
 title User Registration & Profile Management
 participant "User Client" as UC
 participant "Web API" as API
-participant "Keycloak" as Auth
+participant "Firebase" as Auth
 participant "Object Storage" as Storage
 participant "PostgreSQL" as DB
 participant "Redis" as Cache
 
 UC -> UC: **Choose Registration Method**
 alt OAuth Registration
-    UC -> API: 1. POST /auth/oauth-init (provider=keycloak)
+    UC -> API: 1. POST /auth/oauth-init (provider=Firebase)
     API -> Auth: 2. Redirect to OAuth endpoint
     Auth -> UC: 3. Perform OAuth authentication
     UC -> Auth: 4. Submit credentials
