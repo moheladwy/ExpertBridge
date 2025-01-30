@@ -20,3 +20,4 @@ pnpm-debug.log*
 lerna-debug.log*
 .env.postgres
 .env.keycloak
+FirebaseOAuthCredentialsExpertBridge.json

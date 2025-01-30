@@ -2,23 +2,20 @@ using ExpertBridge.Api;
 using ExpertBridge.Api.Database;
 using ExpertBridge.Api.Middlewares;
 using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddNpgsqlDbContext<ExpertBridgeDbContext>(connectionName: "Postgres");
+builder.AddDatabase();
 builder.AddRedisDistributedCache(connectionName: "Redis");
-builder.Services.AddHealthChecks();
+builder.AddHealthChecks();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.AddLoggingService();
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddKeycloakJwtBearer("Keycloak", "ExpertBridge");
+builder.AddAuthentication();
 builder.Services.AddAuthorization();
+builder.AddFirebaseServices();
 
 var app = builder.Build();
 
@@ -36,9 +33,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
+app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 
 await app.RunAsync();
