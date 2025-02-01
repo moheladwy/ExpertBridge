@@ -1,0 +1,15 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor AI as "AI System"
+
+package "AI Features" {
+    (Filter Content) as Filter
+    (Check Safety) as Safety
+}
+
+AI --> Filter
+AI --> Safety
+@enduml
