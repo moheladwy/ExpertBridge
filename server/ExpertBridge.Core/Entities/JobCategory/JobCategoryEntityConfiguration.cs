@@ -14,6 +14,8 @@ public class JobCategoryEntityConfiguration : IEntityTypeConfiguration<JobCatego
             .IsRequired()
             .HasMaxLength(JobCategoryEntityConstraints.MaxNameLength);
 
+        builder.HasIndex(x => x.Name).IsUnique();
+
         builder.Property(x => x.Description)
             .IsRequired()
             .HasMaxLength(JobCategoryEntityConstraints.MaxDescriptionLength);

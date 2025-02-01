@@ -10,7 +10,7 @@ public class UserEntityValidator : AbstractValidator<User>
             .NotNull().WithMessage("Id is required")
             .NotEmpty().WithMessage("Id is required");
 
-        RuleFor(x => x.Name)
+        RuleFor(x => x.FirstName)
             .NotNull().WithMessage("Name is required")
             .NotEmpty().WithMessage("Name is required")
             .MaximumLength(UserEntityConstraints.MaxNameLength).WithMessage($"Name must be less than {UserEntityConstraints.MaxNameLength} characters");

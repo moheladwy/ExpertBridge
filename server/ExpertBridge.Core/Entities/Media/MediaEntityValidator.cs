@@ -24,5 +24,9 @@ public class MediaEntityValidator : AbstractValidator<Media>
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required");
+
+        RuleFor(x => x.LastModified)
+            .NotEqual(x => x.CreatedAt).WithMessage("LastModified must be different from CreatedAt")
+            .When(x => x.LastModified.HasValue);
     }
 }

@@ -14,6 +14,8 @@ public class SkillEntityConfiguration : IEntityTypeConfiguration<Skill>
             .IsRequired()
             .HasMaxLength(SkillEntityConstraints.MaxNameLength);
 
+        builder.HasIndex(x => x.Name).IsUnique();
+
         builder.Property(x => x.Description)
             .IsRequired()
             .HasMaxLength(SkillEntityConstraints.MaxDescriptionLength);

@@ -1,6 +1,6 @@
-namespace ExpertBridge.Core.Entities.JobReview;
+namespace ExpertBridge.Core.Entities.Job.JobReview;
 
-public class JobReviewEntityConstraints
+public static class JobReviewEntityConstraints
 {
     public const int MaxReviewLength = 5000;
 

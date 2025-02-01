@@ -14,6 +14,8 @@ public class BadgeEntityConfiguration : IEntityTypeConfiguration<Badge>
             .IsRequired()
             .HasMaxLength(BadgeEntityConstraints.MaxNameLength);
 
+        builder.HasIndex(x => x.Name).IsUnique();
+
         builder.Property(x => x.Description)
             .IsRequired()
             .HasMaxLength(BadgeEntityConstraints.MaxDescriptionLength);

@@ -1,3 +1,5 @@
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadge;
+
 namespace ExpertBridge.Core.Entities.Badge;
 
 public class Badge
@@ -5,4 +7,6 @@ public class Badge
     public string Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+
+    public ICollection<ProfileBadge> ProfileBadges { get; set; } = [];
 }

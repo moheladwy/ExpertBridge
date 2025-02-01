@@ -30,11 +30,12 @@ public class ProfileExperienceConfiguration : IEntityTypeConfiguration<ProfileEx
             .IsRequired();
 
         builder.Property(x => x.EndDate)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.HasOne(x => x.Profile)
             .WithMany(x => x.Experiences)
-            .HasForeignKey("ProfileId");
+            .HasForeignKey(x => x.ProfileId)
+            .IsRequired();
 
     }
 }

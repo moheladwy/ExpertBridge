@@ -3,6 +3,7 @@ namespace ExpertBridge.Core.Entities.ProfileExperience;
 public class ProfileExperience
 {
     public string Id { get; set; }
+    public string ProfileId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public string Company { get; set; }
@@ -12,4 +13,5 @@ public class ProfileExperience
 
     // Navigation properties
     public Profile.Profile Profile { get; set; }
+    public ICollection<Media.Media> Medias { get; set; } = [];
 }

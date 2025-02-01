@@ -14,20 +14,27 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired()
             .HasMaxLength(PostEntityConstraints.MaxTitleLength);
 
+        builder.HasIndex(x => x.Title);
+
         builder.Property(x => x.Content)
             .IsRequired()
             .HasMaxLength(PostEntityConstraints.MaxContentLength);
-
-        // TODO: Add AuthorId FK.
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.LastModified)
+            .IsRequired(false)
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.isDeleted)
+            .IsRequired();
+
+        // Configure one-to-many relationship
+        builder.HasOne(p => p.Author)
+            .WithMany(p => p.Posts)
+            .HasForeignKey(p => p.AuthorId)
             .IsRequired();
     }
 }

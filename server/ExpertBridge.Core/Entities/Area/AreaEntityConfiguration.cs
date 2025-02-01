@@ -17,5 +17,10 @@ public class AreaEntityConfiguration : IEntityTypeConfiguration<Area>
         builder.Property(x => x.Region)
             .IsRequired()
             .HasMaxLength(AreaEntityConstraints.MaxRegionLength);
+
+        builder.HasOne(a => a.Profile)
+            .WithMany(p => p.Areas)
+            .HasForeignKey(a => a.ProfileId)
+            .IsRequired();
     }
 }

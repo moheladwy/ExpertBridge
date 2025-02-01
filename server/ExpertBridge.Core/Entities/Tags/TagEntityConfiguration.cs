@@ -1,6 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,6 +13,8 @@ public class TagEntityConfiguration : IEntityTypeConfiguration<Tag>
         builder.Property(x => x.Name)
             .IsRequired()
             .HasMaxLength(TagEntityConstraints.MaxNameLength);
+
+        builder.HasIndex(x => x.Name).IsUnique();
 
         builder.Property(x => x.Description)
             .IsRequired()

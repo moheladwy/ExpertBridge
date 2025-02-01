@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ExpertBridge.Core.Entities.JobReview;
+namespace ExpertBridge.Core.Entities.Job.JobReview;
 
 public class JobReviewEntityConfiguration : IEntityTypeConfiguration<JobReview>
 {
@@ -20,5 +20,15 @@ public class JobReviewEntityConfiguration : IEntityTypeConfiguration<JobReview>
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.LastModified)
+            .IsRequired(false)
+            .ValueGeneratedOnAddOrUpdate();
+
+        // Job relationship (One-to-One)
+        builder.HasOne(jr => jr.Job)
+            .WithOne(j => j.Review)
+            .HasForeignKey<JobReview>(jr => jr.JobId)
+            .IsRequired();
     }
 }

@@ -20,8 +20,37 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired();
 
         builder.Property(x => x.Status)
+            .IsRequired()
+            .HasConversion<string>();
+
+        // JobStatus (One-to-One)
+        builder.HasOne(j => j.Status)
+            .WithMany(s => s.Jobs)
+            .HasForeignKey(j => j.JobStatusId)
             .IsRequired();
 
-        // TODO: Add the rest of the properties
+        // JobReview (One-to-One)
+        builder.HasOne(j => j.Review)
+            .WithOne(r => r.Job)
+            .HasForeignKey<JobReview.JobReview>(jr => jr.JobId)
+            .IsRequired();
+
+        // Author Profile (One-to-Many)
+        builder.HasOne(j => j.Author)
+            .WithMany(p => p.JobsAsAuthor)
+            .HasForeignKey(j => j.AuthorId)
+            .IsRequired();
+
+        // Worker Profile (One-to-Many)
+        builder.HasOne(j => j.Worker)
+            .WithMany(p => p.JobsAsWorker)
+            .HasForeignKey(j => j.WorkerId)
+            .IsRequired();
+
+        // JobPosting relationship (One-to-One)
+        builder.HasOne(j => j.JobPosting)
+            .WithOne(jp => jp.Job)
+            .HasForeignKey<Job>(j => j.JobPostingId)
+            .IsRequired(false);
     }
 }

@@ -7,6 +7,12 @@ public class Post
     public string Content { get; set; }
     public string AuthorId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime LastModified { get; set; }
+    public DateTime? LastModified { get; set; }
     public bool isDeleted { get; set; }
+
+    // Navigation property
+    public Profile.Profile Author { get; set; }
+
+    // Add to navigation properties
+    public ICollection<Media.Media> Medias { get; set; } = [];
 }
