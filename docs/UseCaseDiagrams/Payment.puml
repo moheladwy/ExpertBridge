@@ -1,0 +1,18 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor PaymentGateway as "Payment Gateway"
+actor AuthUser as "Authenticated User"
+actor Contractor as "Contractor"
+
+package "Payment" {
+    (Process Payment) as JobPayment
+}
+
+PaymentGateway --> JobPayment
+AuthUser --> JobPayment
+Contractor --> JobPayment
+
+@enduml
