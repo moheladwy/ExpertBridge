@@ -1,0 +1,27 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor AuthUser as "Authenticated User"
+actor Contractor as "Contractor"
+actor Payment as "Payment Gateway"
+
+
+package "Job Management" {
+    (Post Job) as PostJob
+    (Manage Job Status) as ManageJob
+    (Negotiate Terms) as Negotiate
+    (Process Payment) as JobPayment
+}
+
+Payment --> JobPayment
+
+AuthUser --> PostJob
+AuthUser --> ManageJob
+AuthUser --> Negotiate
+AuthUser --> JobPayment
+
+Contractor --> ManageJob
+Contractor --> Negotiate
+@enduml

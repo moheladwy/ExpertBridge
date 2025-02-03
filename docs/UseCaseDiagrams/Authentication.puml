@@ -1,0 +1,24 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor GuestUser as "Guest User"
+actor AuthUser as "Authenticated User"
+actor Contractor as "Contractor"
+
+package "Authentication" {
+    (Authenticate) as Auth
+    (Register Account) as Register
+    (Manage Profile) as Profile
+}
+
+GuestUser --> Auth
+GuestUser --> Register
+
+AuthUser --> Auth
+AuthUser --> Profile
+
+Contractor --> Auth
+Contractor --> Profile
+@enduml
