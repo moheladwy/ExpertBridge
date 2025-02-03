@@ -1,0 +1,17 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor Admin as "Administrator"
+
+package "Moderation" {
+    (Moderate Content) as ModContent
+    (Handle Disputes) as Disputes
+    (Manage Reports) as Reports
+}
+
+Admin --> ModContent
+Admin --> Disputes
+Admin --> Reports
+@enduml
