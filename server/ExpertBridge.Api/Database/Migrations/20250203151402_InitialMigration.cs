@@ -120,6 +120,28 @@ namespace ExpertBridge.Api.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Media",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    MediaUrl = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    MediaTypeId = table.Column<string>(type: "character varying(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Media", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Media_MediaTypes_MediaTypeId",
+                        column: x => x.MediaTypeId,
+                        principalTable: "MediaTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Profiles",
                 columns: table => new
                 {
@@ -136,6 +158,31 @@ namespace ExpertBridge.Api.Database.Migrations
                         name: "FK_Profiles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChatMedias",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    ChatId = table.Column<string>(type: "character varying(450)", nullable: false),
+                    MediaId = table.Column<string>(type: "character varying(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatMedias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChatMedias_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChatMedias_Media_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Media",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -249,6 +296,31 @@ namespace ExpertBridge.Api.Database.Migrations
                     table.PrimaryKey("PK_ProfileExperiences", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProfileExperiences_Profiles_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "Profiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProfileMedias",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    ProfileId = table.Column<string>(type: "character varying(450)", nullable: false),
+                    MediaId = table.Column<string>(type: "character varying(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProfileMedias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProfileMedias_Media_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProfileMedias_Profiles_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "Profiles",
                         principalColumn: "Id",
@@ -374,6 +446,31 @@ namespace ExpertBridge.Api.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PostMedias",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    PostId = table.Column<string>(type: "character varying(450)", nullable: false),
+                    MediaId = table.Column<string>(type: "character varying(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostMedias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostMedias_Media_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PostMedias_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostTags",
                 columns: table => new
                 {
@@ -425,6 +522,56 @@ namespace ExpertBridge.Api.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProfileExperienceMedias",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    ProfileExperienceId = table.Column<string>(type: "character varying(450)", nullable: false),
+                    MediaId = table.Column<string>(type: "character varying(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProfileExperienceMedias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProfileExperienceMedias_Media_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProfileExperienceMedias_ProfileExperiences_ProfileExperienc~",
+                        column: x => x.ProfileExperienceId,
+                        principalTable: "ProfileExperiences",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobPostingMedias",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    JobPostingId = table.Column<string>(type: "character varying(450)", nullable: false),
+                    MediaId = table.Column<string>(type: "character varying(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobPostingMedias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JobPostingMedias_JobPostings_JobPostingId",
+                        column: x => x.JobPostingId,
+                        principalTable: "JobPostings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobPostingMedias_Media_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Jobs",
                 columns: table => new
                 {
@@ -466,6 +613,31 @@ namespace ExpertBridge.Api.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CommentMedias",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
+                    CommentId = table.Column<string>(type: "character varying(450)", nullable: false),
+                    MediaId = table.Column<string>(type: "character varying(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentMedias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommentMedias_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommentMedias_Media_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Media",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CommentVotes",
                 columns: table => new
                 {
@@ -490,64 +662,6 @@ namespace ExpertBridge.Api.Database.Migrations
                         principalTable: "Profiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Media",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: false),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    MediaUrl = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ProfileId = table.Column<string>(type: "character varying(450)", nullable: true),
-                    PostId = table.Column<string>(type: "character varying(450)", nullable: true),
-                    JobPostingId = table.Column<string>(type: "character varying(450)", nullable: true),
-                    ChatId = table.Column<string>(type: "character varying(450)", nullable: true),
-                    ProfileExperienceId = table.Column<string>(type: "character varying(450)", nullable: true),
-                    CommentId = table.Column<string>(type: "character varying(450)", nullable: true),
-                    MediaTypeId = table.Column<string>(type: "character varying(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Media", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Media_Chats_ChatId",
-                        column: x => x.ChatId,
-                        principalTable: "Chats",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Media_Comments_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Media_JobPostings_JobPostingId",
-                        column: x => x.JobPostingId,
-                        principalTable: "JobPostings",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Media_MediaTypes_MediaTypeId",
-                        column: x => x.MediaTypeId,
-                        principalTable: "MediaTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Media_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Media_ProfileExperiences_ProfileExperienceId",
-                        column: x => x.ProfileExperienceId,
-                        principalTable: "ProfileExperiences",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Media_Profiles_ProfileId",
-                        column: x => x.ProfileId,
-                        principalTable: "Profiles",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -599,9 +713,32 @@ namespace ExpertBridge.Api.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChatMedias_ChatId",
+                table: "ChatMedias",
+                column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChatMedias_MediaId",
+                table: "ChatMedias",
+                column: "MediaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ChatParticipants_ProfileId",
                 table: "ChatParticipants",
                 column: "ProfileId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentMedias_CommentId",
+                table: "CommentMedias",
+                column: "CommentId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentMedias_MediaId",
+                table: "CommentMedias",
+                column: "MediaId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -634,6 +771,17 @@ namespace ExpertBridge.Api.Database.Migrations
                 name: "IX_JobCategories_Name",
                 table: "JobCategories",
                 column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobPostingMedias_JobPostingId",
+                table: "JobPostingMedias",
+                column: "JobPostingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobPostingMedias_MediaId",
+                table: "JobPostingMedias",
+                column: "MediaId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -694,22 +842,6 @@ namespace ExpertBridge.Api.Database.Migrations
                 column: "WorkerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Media_ChatId",
-                table: "Media",
-                column: "ChatId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Media_CommentId",
-                table: "Media",
-                column: "CommentId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Media_JobPostingId",
-                table: "Media",
-                column: "JobPostingId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Media_MediaTypeId",
                 table: "Media",
                 column: "MediaTypeId");
@@ -721,19 +853,15 @@ namespace ExpertBridge.Api.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Media_PostId",
-                table: "Media",
+                name: "IX_PostMedias_MediaId",
+                table: "PostMedias",
+                column: "MediaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostMedias_PostId",
+                table: "PostMedias",
                 column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Media_ProfileExperienceId",
-                table: "Media",
-                column: "ProfileExperienceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Media_ProfileId",
-                table: "Media",
-                column: "ProfileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_AuthorId",
@@ -767,8 +895,30 @@ namespace ExpertBridge.Api.Database.Migrations
                 column: "BadgeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProfileExperienceMedias_MediaId",
+                table: "ProfileExperienceMedias",
+                column: "MediaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProfileExperienceMedias_ProfileExperienceId",
+                table: "ProfileExperienceMedias",
+                column: "ProfileExperienceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProfileExperiences_ProfileId",
                 table: "ProfileExperiences",
+                column: "ProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProfileMedias_MediaId",
+                table: "ProfileMedias",
+                column: "MediaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProfileMedias_ProfileId",
+                table: "ProfileMedias",
                 column: "ProfileId");
 
             migrationBuilder.CreateIndex(
@@ -816,16 +966,25 @@ namespace ExpertBridge.Api.Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ChatMedias");
+
+            migrationBuilder.DropTable(
                 name: "ChatParticipants");
+
+            migrationBuilder.DropTable(
+                name: "CommentMedias");
 
             migrationBuilder.DropTable(
                 name: "CommentVotes");
 
             migrationBuilder.DropTable(
+                name: "JobPostingMedias");
+
+            migrationBuilder.DropTable(
                 name: "JobReviews");
 
             migrationBuilder.DropTable(
-                name: "Media");
+                name: "PostMedias");
 
             migrationBuilder.DropTable(
                 name: "PostTags");
@@ -837,13 +996,16 @@ namespace ExpertBridge.Api.Database.Migrations
                 name: "ProfileBadges");
 
             migrationBuilder.DropTable(
+                name: "ProfileExperienceMedias");
+
+            migrationBuilder.DropTable(
+                name: "ProfileMedias");
+
+            migrationBuilder.DropTable(
                 name: "ProfileSkills");
 
             migrationBuilder.DropTable(
                 name: "ProfileTags");
-
-            migrationBuilder.DropTable(
-                name: "Jobs");
 
             migrationBuilder.DropTable(
                 name: "Chats");
@@ -852,13 +1014,16 @@ namespace ExpertBridge.Api.Database.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "MediaTypes");
+                name: "Jobs");
+
+            migrationBuilder.DropTable(
+                name: "Badges");
 
             migrationBuilder.DropTable(
                 name: "ProfileExperiences");
 
             migrationBuilder.DropTable(
-                name: "Badges");
+                name: "Media");
 
             migrationBuilder.DropTable(
                 name: "Skills");
@@ -867,13 +1032,16 @@ namespace ExpertBridge.Api.Database.Migrations
                 name: "Tags");
 
             migrationBuilder.DropTable(
+                name: "Posts");
+
+            migrationBuilder.DropTable(
                 name: "JobPostings");
 
             migrationBuilder.DropTable(
                 name: "JobStatuses");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "MediaTypes");
 
             migrationBuilder.DropTable(
                 name: "Areas");

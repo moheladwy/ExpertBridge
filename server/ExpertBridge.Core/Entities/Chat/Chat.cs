@@ -1,3 +1,5 @@
+using ExpertBridge.Core.Entities.Media.ChatMedia;
+
 namespace ExpertBridge.Core.Entities.Chat;
 
 public class Chat
@@ -8,5 +10,5 @@ public class Chat
 
     // Navigation properties
     public ICollection<ChatParticipant.ChatParticipant> Participants { get; set; } = [];
-    public ICollection<Media.Media> Medias { get; set; } = [];
+    public ICollection<ChatMedia> Medias { get; set; } = [];
 }

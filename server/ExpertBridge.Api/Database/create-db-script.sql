@@ -65,6 +65,17 @@ CREATE TABLE "Users" (
     CONSTRAINT "PK_Users" PRIMARY KEY ("Id")
 );
 
+CREATE TABLE "Media" (
+    "Id" character varying(450) NOT NULL,
+    "Name" character varying(256) NOT NULL,
+    "MediaUrl" character varying(2048) NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "LastModified" timestamp with time zone,
+    "MediaTypeId" character varying(450) NOT NULL,
+    CONSTRAINT "PK_Media" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_Media_MediaTypes_MediaTypeId" FOREIGN KEY ("MediaTypeId") REFERENCES "MediaTypes" ("Id") ON DELETE CASCADE
+);
+
 CREATE TABLE "Profiles" (
     "Id" character varying(450) NOT NULL,
     "UserId" character varying(450) NOT NULL,
@@ -73,6 +84,15 @@ CREATE TABLE "Profiles" (
     "Rating" integer NOT NULL,
     CONSTRAINT "PK_Profiles" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_Profiles_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE
+);
+
+CREATE TABLE "ChatMedias" (
+    "Id" character varying(450) NOT NULL,
+    "ChatId" character varying(450) NOT NULL,
+    "MediaId" character varying(450) NOT NULL,
+    CONSTRAINT "PK_ChatMedias" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_ChatMedias_Chats_ChatId" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_ChatMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE
 );
 
 CREATE TABLE "Areas" (
@@ -125,6 +145,15 @@ CREATE TABLE "ProfileExperiences" (
     CONSTRAINT "FK_ProfileExperiences_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
+CREATE TABLE "ProfileMedias" (
+    "Id" character varying(450) NOT NULL,
+    "ProfileId" character varying(450) NOT NULL,
+    "MediaId" character varying(450) NOT NULL,
+    CONSTRAINT "PK_ProfileMedias" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_ProfileMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_ProfileMedias_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
+);
+
 CREATE TABLE "ProfileSkills" (
     "ProfileId" character varying(450) NOT NULL,
     "SkillId" character varying(450) NOT NULL,
@@ -170,6 +199,15 @@ CREATE TABLE "Comments" (
     CONSTRAINT "FK_Comments_Profiles_AuthorId" FOREIGN KEY ("AuthorId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
+CREATE TABLE "PostMedias" (
+    "Id" character varying(450) NOT NULL,
+    "PostId" character varying(450) NOT NULL,
+    "MediaId" character varying(450) NOT NULL,
+    CONSTRAINT "PK_PostMedias" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_PostMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_PostMedias_Posts_PostId" FOREIGN KEY ("PostId") REFERENCES "Posts" ("Id") ON DELETE CASCADE
+);
+
 CREATE TABLE "PostTags" (
     "PostId" character varying(450) NOT NULL,
     "TagId" character varying(450) NOT NULL,
@@ -189,6 +227,24 @@ CREATE TABLE "PostVotes" (
     CONSTRAINT "FK_PostVotes_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
+CREATE TABLE "ProfileExperienceMedias" (
+    "Id" character varying(450) NOT NULL,
+    "ProfileExperienceId" character varying(450) NOT NULL,
+    "MediaId" character varying(450) NOT NULL,
+    CONSTRAINT "PK_ProfileExperienceMedias" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_ProfileExperienceMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_ProfileExperienceMedias_ProfileExperiences_ProfileExperienc~" FOREIGN KEY ("ProfileExperienceId") REFERENCES "ProfileExperiences" ("Id") ON DELETE CASCADE
+);
+
+CREATE TABLE "JobPostingMedias" (
+    "Id" character varying(450) NOT NULL,
+    "JobPostingId" character varying(450) NOT NULL,
+    "MediaId" character varying(450) NOT NULL,
+    CONSTRAINT "PK_JobPostingMedias" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_JobPostingMedias_JobPostings_JobPostingId" FOREIGN KEY ("JobPostingId") REFERENCES "JobPostings" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_JobPostingMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE
+);
+
 CREATE TABLE "Jobs" (
     "Id" character varying(450) NOT NULL,
     "ActualCost" double precision NOT NULL,
@@ -205,6 +261,15 @@ CREATE TABLE "Jobs" (
     CONSTRAINT "FK_Jobs_Profiles_WorkerId" FOREIGN KEY ("WorkerId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
+CREATE TABLE "CommentMedias" (
+    "Id" character varying(450) NOT NULL,
+    "CommentId" character varying(450) NOT NULL,
+    "MediaId" character varying(450) NOT NULL,
+    CONSTRAINT "PK_CommentMedias" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_CommentMedias_Comments_CommentId" FOREIGN KEY ("CommentId") REFERENCES "Comments" ("Id") ON DELETE CASCADE,
+    CONSTRAINT "FK_CommentMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE
+);
+
 CREATE TABLE "CommentVotes" (
     "Id" character varying(450) NOT NULL,
     "IsUpvote" boolean NOT NULL,
@@ -214,30 +279,6 @@ CREATE TABLE "CommentVotes" (
     CONSTRAINT "PK_CommentVotes" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_CommentVotes_Comments_CommentId" FOREIGN KEY ("CommentId") REFERENCES "Comments" ("Id") ON DELETE CASCADE,
     CONSTRAINT "FK_CommentVotes_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
-);
-
--- Make a Media table for every media owner (Post, Comment, ProfileExperience, JobPosting, Chat).
-CREATE TABLE "Media" (
-    "Id" character varying(450) NOT NULL,
-    "Name" character varying(256) NOT NULL,
-    "MediaUrl" character varying(2048) NOT NULL,
-    "CreatedAt" timestamp with time zone NOT NULL,
-    "LastModified" timestamp with time zone,
-    "ProfileId" character varying(450),
-    "PostId" character varying(450),
-    "JobPostingId" character varying(450),
-    "ChatId" character varying(450),
-    "ProfileExperienceId" character varying(450),
-    "CommentId" character varying(450),
-    "MediaTypeId" character varying(450) NOT NULL,
-    CONSTRAINT "PK_Media" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_Media_Chats_ChatId" FOREIGN KEY ("ChatId") REFERENCES "Chats" ("Id"),
-    CONSTRAINT "FK_Media_Comments_CommentId" FOREIGN KEY ("CommentId") REFERENCES "Comments" ("Id"),
-    CONSTRAINT "FK_Media_JobPostings_JobPostingId" FOREIGN KEY ("JobPostingId") REFERENCES "JobPostings" ("Id"),
-    CONSTRAINT "FK_Media_MediaTypes_MediaTypeId" FOREIGN KEY ("MediaTypeId") REFERENCES "MediaTypes" ("Id") ON DELETE CASCADE,
-    CONSTRAINT "FK_Media_Posts_PostId" FOREIGN KEY ("PostId") REFERENCES "Posts" ("Id"),
-    CONSTRAINT "FK_Media_ProfileExperiences_ProfileExperienceId" FOREIGN KEY ("ProfileExperienceId") REFERENCES "ProfileExperiences" ("Id"),
-    CONSTRAINT "FK_Media_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id")
 );
 
 CREATE TABLE "JobReviews" (
@@ -260,7 +301,15 @@ CREATE INDEX "IX_Areas_ProfileId" ON "Areas" ("ProfileId");
 
 CREATE UNIQUE INDEX "IX_Badges_Name" ON "Badges" ("Name");
 
+CREATE INDEX "IX_ChatMedias_ChatId" ON "ChatMedias" ("ChatId");
+
+CREATE UNIQUE INDEX "IX_ChatMedias_MediaId" ON "ChatMedias" ("MediaId");
+
 CREATE UNIQUE INDEX "IX_ChatParticipants_ProfileId" ON "ChatParticipants" ("ProfileId");
+
+CREATE UNIQUE INDEX "IX_CommentMedias_CommentId" ON "CommentMedias" ("CommentId");
+
+CREATE UNIQUE INDEX "IX_CommentMedias_MediaId" ON "CommentMedias" ("MediaId");
 
 CREATE INDEX "IX_Comments_AuthorId" ON "Comments" ("AuthorId");
 
@@ -273,6 +322,10 @@ CREATE INDEX "IX_CommentVotes_CommentId" ON "CommentVotes" ("CommentId");
 CREATE UNIQUE INDEX "IX_CommentVotes_ProfileId_CommentId" ON "CommentVotes" ("ProfileId", "CommentId");
 
 CREATE UNIQUE INDEX "IX_JobCategories_Name" ON "JobCategories" ("Name");
+
+CREATE INDEX "IX_JobPostingMedias_JobPostingId" ON "JobPostingMedias" ("JobPostingId");
+
+CREATE UNIQUE INDEX "IX_JobPostingMedias_MediaId" ON "JobPostingMedias" ("MediaId");
 
 CREATE INDEX "IX_JobPostings_AreaId" ON "JobPostings" ("AreaId");
 
@@ -296,21 +349,13 @@ CREATE INDEX "IX_Jobs_JobStatusId" ON "Jobs" ("JobStatusId");
 
 CREATE INDEX "IX_Jobs_WorkerId" ON "Jobs" ("WorkerId");
 
-CREATE INDEX "IX_Media_ChatId" ON "Media" ("ChatId");
-
-CREATE UNIQUE INDEX "IX_Media_CommentId" ON "Media" ("CommentId");
-
-CREATE INDEX "IX_Media_JobPostingId" ON "Media" ("JobPostingId");
-
 CREATE INDEX "IX_Media_MediaTypeId" ON "Media" ("MediaTypeId");
 
 CREATE UNIQUE INDEX "IX_Media_MediaUrl" ON "Media" ("MediaUrl");
 
-CREATE INDEX "IX_Media_PostId" ON "Media" ("PostId");
+CREATE UNIQUE INDEX "IX_PostMedias_MediaId" ON "PostMedias" ("MediaId");
 
-CREATE INDEX "IX_Media_ProfileExperienceId" ON "Media" ("ProfileExperienceId");
-
-CREATE INDEX "IX_Media_ProfileId" ON "Media" ("ProfileId");
+CREATE INDEX "IX_PostMedias_PostId" ON "PostMedias" ("PostId");
 
 CREATE INDEX "IX_Posts_AuthorId" ON "Posts" ("AuthorId");
 
@@ -324,7 +369,15 @@ CREATE UNIQUE INDEX "IX_PostVotes_ProfileId_PostId" ON "PostVotes" ("ProfileId",
 
 CREATE INDEX "IX_ProfileBadges_BadgeId" ON "ProfileBadges" ("BadgeId");
 
+CREATE UNIQUE INDEX "IX_ProfileExperienceMedias_MediaId" ON "ProfileExperienceMedias" ("MediaId");
+
+CREATE INDEX "IX_ProfileExperienceMedias_ProfileExperienceId" ON "ProfileExperienceMedias" ("ProfileExperienceId");
+
 CREATE INDEX "IX_ProfileExperiences_ProfileId" ON "ProfileExperiences" ("ProfileId");
+
+CREATE UNIQUE INDEX "IX_ProfileMedias_MediaId" ON "ProfileMedias" ("MediaId");
+
+CREATE INDEX "IX_ProfileMedias_ProfileId" ON "ProfileMedias" ("ProfileId");
 
 CREATE UNIQUE INDEX "IX_Profiles_UserId" ON "Profiles" ("UserId");
 
@@ -341,7 +394,7 @@ CREATE UNIQUE INDEX "IX_Users_Email" ON "Users" ("Email");
 CREATE UNIQUE INDEX "IX_Users_Username" ON "Users" ("Username");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20250203020550_InitialMigration', '9.0.1');
+VALUES ('20250203151402_InitialMigration', '9.0.1');
 
 COMMIT;
 

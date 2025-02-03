@@ -13,7 +13,13 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadge;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkill;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTag;
 using ExpertBridge.Core.Entities.Media;
+using ExpertBridge.Core.Entities.Media.ChatMedia;
+using ExpertBridge.Core.Entities.Media.CommentMedia;
+using ExpertBridge.Core.Entities.Media.JobPostingMedia;
 using ExpertBridge.Core.Entities.Media.MediaType;
+using ExpertBridge.Core.Entities.Media.PostMedia;
+using ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
+using ExpertBridge.Core.Entities.Media.ProfileMedia;
 using ExpertBridge.Core.Entities.Post;
 using ExpertBridge.Core.Entities.Profile;
 using ExpertBridge.Core.Entities.ProfileExperience;
@@ -52,6 +58,13 @@ internal class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> opt
     DbSet<Chat> Chats { get; set; }
     DbSet<ChatParticipant> ChatParticipants { get; set; }
     DbSet<PostTag> PostTags { get; set; }
+    DbSet<ChatMedia> ChatMedias { get; set; }
+    DbSet<ProfileMedia> ProfileMedias { get; set; }
+    DbSet<ProfileExperienceMedia> ProfileExperienceMedias { get; set; }
+    DbSet<CommentMedia> CommentMedias { get; set; }
+    DbSet<JobPostingMedia> JobPostingMedias { get; set; }
+    DbSet<PostMedia> PostMedias { get; set; }
+
 
     /// <summary>
     ///     The OnModelCreating method that is called when the model is being created.
@@ -79,13 +92,19 @@ internal class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> opt
         modelBuilder.ApplyConfiguration(new JobReviewEntityConfiguration());
         modelBuilder.ApplyConfiguration(new MediaTypeEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobStatusEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new PostMediaEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ChatMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileTagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CommentVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobCategoryEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileBadgeEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileSkillEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ProfileMediaEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentMediaEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new JobPostingMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ChatParticipantEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileExperienceEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ProfileExperienceMediaEntityConfiguration());
     }
 }

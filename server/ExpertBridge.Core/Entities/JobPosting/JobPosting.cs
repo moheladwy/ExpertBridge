@@ -1,3 +1,5 @@
+using ExpertBridge.Core.Entities.Media.JobPostingMedia;
+
 namespace ExpertBridge.Core.Entities.JobPosting;
 
 public class JobPosting
@@ -18,5 +20,5 @@ public class JobPosting
     public Area.Area Area { get; set; }
     public JobCategory.JobCategory Category { get; set; }
     public Job.Job? Job { get; set; }
-    public ICollection<Media.Media> Medias { get; set; } = [];
+    public ICollection<JobPostingMedia> Medias { get; set; } = [];
 }

@@ -1,3 +1,5 @@
+using ExpertBridge.Core.Entities.Media.ChatMedia;
+
 namespace ExpertBridge.Core.Entities.Media;
 
 public class Media
@@ -17,4 +19,6 @@ public class Media
     public PostMedia.PostMedia Post { get; set; }
     public ProfileExperienceMedia.ProfileExperienceMedia ProfileExperience { get; set; }
     public CommentMedia.CommentMedia Comment { get; set; }
+    public JobPostingMedia.JobPostingMedia JobPosting { get; set; }
+    public ChatMedia.ChatMedia Chat { get; set; }
 }
