@@ -8,7 +8,9 @@ public class JobPostingEntityConfiguration : IEntityTypeConfiguration<JobPosting
     public void Configure(EntityTypeBuilder<JobPosting> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Title)
             .IsRequired()

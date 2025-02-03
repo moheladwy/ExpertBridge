@@ -10,7 +10,8 @@ public class JobReviewEntityValidator : AbstractValidator<JobReview>
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
-            .NotEmpty().WithMessage("Id is required");
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Rating)
             .NotNull().WithMessage("Rating is required")
@@ -33,7 +34,7 @@ public class JobReviewEntityValidator : AbstractValidator<JobReview>
             .NotEqual(x => x.CreatedAt)
             .When(x => x.LastModified.HasValue)
             .WithMessage("LastModified must be different from CreatedAt");
-            
+
         RuleFor(x => x.IsDeleted)
             .NotNull().WithMessage("IsDeleted is required");
     }

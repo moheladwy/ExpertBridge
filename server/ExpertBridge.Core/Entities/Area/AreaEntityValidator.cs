@@ -11,12 +11,16 @@ public class AreaEntityValidator : AbstractValidator<Area>
     {
         RuleFor(area => area.Id)
             .NotNull().WithMessage("Id is required")
-            .NotEmpty().WithMessage("Id is required");
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage("Id is too long");
+
+        RuleFor(area => area.ProfileId)
+            .NotNull().WithMessage("ProfileId is required")
+            .NotEmpty().WithMessage("ProfileId is required");
 
         RuleFor(area => area.Governorate)
             .NotNull().WithMessage("Governorate is required")
-            .NotEmpty().WithMessage("Governorate is required")
-            .MaximumLength(AreaEntityConstraints.MaxGovernorateLength);
+            .IsInEnum().WithMessage("Governorate is not valid");
 
         RuleFor(area => area.Region)
             .NotNull().WithMessage("Region is required")

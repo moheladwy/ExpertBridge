@@ -8,11 +8,17 @@ public class AreaEntityConfiguration : IEntityTypeConfiguration<Area>
     public void Configure(EntityTypeBuilder<Area> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Governorate)
             .IsRequired()
-            .HasMaxLength(AreaEntityConstraints.MaxGovernorateLength);
+            .HasMaxLength(AreaEntityConstraints.MaxGovernorateLength)
+            .HasConversion(
+                    v => v.ToString(),
+                    v => Enum.Parse<Governorates>(v)
+                );
 
         builder.Property(x => x.Region)
             .IsRequired()

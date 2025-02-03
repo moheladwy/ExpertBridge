@@ -8,7 +8,9 @@ public class JobReviewEntityConfiguration : IEntityTypeConfiguration<JobReview>
     public void Configure(EntityTypeBuilder<JobReview> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Content)
             .IsRequired()
@@ -25,10 +27,9 @@ public class JobReviewEntityConfiguration : IEntityTypeConfiguration<JobReview>
             .IsRequired(false)
             .ValueGeneratedOnAddOrUpdate();
 
-        // Job relationship (One-to-One)
         builder.HasOne(jr => jr.Job)
             .WithOne(j => j.Review)
-            .HasForeignKey<JobReview>(jr => jr.JobId)
+            .HasForeignKey<JobReview>(j => j.JobId)
             .IsRequired();
     }
 }

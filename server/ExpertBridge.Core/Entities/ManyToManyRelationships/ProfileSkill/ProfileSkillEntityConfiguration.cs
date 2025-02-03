@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkill;
 
-public class ProfileSkillConfiguration : IEntityTypeConfiguration<ProfileSkill>
+public class ProfileSkillEntityConfiguration : IEntityTypeConfiguration<ProfileSkill>
 {
     public void Configure(EntityTypeBuilder<ProfileSkill> builder)
     {

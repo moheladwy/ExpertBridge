@@ -11,10 +11,15 @@ public class MediaTypeEntityConfiguration : IEntityTypeConfiguration<MediaType>
         builder.HasKey(mediaType => mediaType.Id);
 
         builder.Property(mediaType => mediaType.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
             .ValueGeneratedOnAdd();
 
         builder.Property(mediaType => mediaType.Type)
             .IsRequired()
-            .HasConversion<string>();
+            .HasConversion(
+                v => v.ToString(),
+                v => Enum.Parse<MediaTypeEnum>(v)
+            )
+            .HasMaxLength(GlobalEntitiesConstraints.MaxEnumsLength);
     }
 }

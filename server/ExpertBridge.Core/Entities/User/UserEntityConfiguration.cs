@@ -8,7 +8,13 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.FirebaseId)
+            .IsRequired()
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength);
 
         builder.Property(x => x.Email)
             .IsRequired()

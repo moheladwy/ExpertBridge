@@ -8,7 +8,8 @@ public class JobEntityValidator : AbstractValidator<Job>
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
-            .NotEmpty().WithMessage("Id is required");
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.ActualCost)
             .GreaterThanOrEqualTo(JobEntityConstraints.MinActualCost);
@@ -18,7 +19,9 @@ public class JobEntityValidator : AbstractValidator<Job>
 
         RuleFor(x => x.EndedAt)
             .NotEqual(x => x.StartedAt).When(x => x.EndedAt.HasValue)
-            .GreaterThanOrEqualTo(x => x.StartedAt);
+            .GreaterThanOrEqualTo(x => x.StartedAt)
+            .When(x => x.EndedAt.HasValue)
+            .WithMessage("EndedAt must be greater than or equal to StartedAt");
 
         RuleFor(x => x.Status)
             .NotNull().WithMessage("Status is required");

@@ -8,9 +8,8 @@ public class CommentEntityValidation : AbstractValidator<Comment>
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
-            .NotEmpty().WithMessage("Id is required");
-
-        // TODO: Add Validation for AuthorId and ParentId
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Content)
             .NotNull().WithMessage("Content is required")

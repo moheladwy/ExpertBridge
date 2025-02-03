@@ -9,6 +9,10 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
+
         builder.Property(x => x.ActualCost)
             .IsRequired()
             .HasPrecision(18, 2);
@@ -17,22 +21,12 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired();
 
         builder.Property(x => x.EndedAt)
-            .IsRequired();
-
-        builder.Property(x => x.Status)
-            .IsRequired()
-            .HasConversion<string>();
+            .IsRequired(false);
 
         // JobStatus (One-to-One)
         builder.HasOne(j => j.Status)
             .WithMany(s => s.Jobs)
             .HasForeignKey(j => j.JobStatusId)
-            .IsRequired();
-
-        // JobReview (One-to-One)
-        builder.HasOne(j => j.Review)
-            .WithOne(r => r.Job)
-            .HasForeignKey<JobReview.JobReview>(jr => jr.JobId)
             .IsRequired();
 
         // Author Profile (One-to-Many)

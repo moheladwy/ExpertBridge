@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.ProfileExperience;
 
-public class ProfileExperienceConfiguration : IEntityTypeConfiguration<ProfileExperience>
+public class ProfileExperienceEntityConfiguration : IEntityTypeConfiguration<ProfileExperience>
 {
     public void Configure(EntityTypeBuilder<ProfileExperience> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Title)
             .IsRequired()
@@ -30,7 +32,8 @@ public class ProfileExperienceConfiguration : IEntityTypeConfiguration<ProfileEx
             .IsRequired();
 
         builder.Property(x => x.EndDate)
-            .IsRequired(false);
+            .IsRequired(false)
+            .ValueGeneratedOnAdd();
 
         builder.HasOne(x => x.Profile)
             .WithMany(x => x.Experiences)

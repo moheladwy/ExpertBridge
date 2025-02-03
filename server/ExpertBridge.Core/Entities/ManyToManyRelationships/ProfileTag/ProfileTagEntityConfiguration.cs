@@ -14,12 +14,14 @@ public class ProfileTagEntityConfiguration : IEntityTypeConfiguration<ProfileTag
         builder.HasOne(pt => pt.Profile)
             .WithMany(p => p.ProfileTags)
             .HasForeignKey(pt => pt.ProfileId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Configure relationship with Tag
         builder.HasOne(pt => pt.Tag)
             .WithMany(t => t.ProfileTags)
             .HasForeignKey(pt => pt.TagId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -11,7 +11,8 @@ public class ProfileEntityValidator : AbstractValidator<Profile>
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required.")
-            .NotEmpty().WithMessage("Id is required.");
+            .NotEmpty().WithMessage("Id is required.")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters.");
 
         RuleFor(x => x.JobTitle)
             .NotEmpty().WithMessage("Job title is required.")

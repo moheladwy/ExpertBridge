@@ -10,6 +10,7 @@ public class ChatEntityConfiguration : IEntityTypeConfiguration<Chat>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.CreatedAt)

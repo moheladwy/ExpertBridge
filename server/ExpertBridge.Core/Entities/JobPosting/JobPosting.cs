@@ -12,7 +12,6 @@ public class JobPosting
     public string AuthorId { get; set; }
     public string AreaId { get; set; }
     public string CategoryId { get; set; }
-    public string? JobId { get; set; }
 
     // Navigation properties
     public Profile.Profile Author { get; set; }

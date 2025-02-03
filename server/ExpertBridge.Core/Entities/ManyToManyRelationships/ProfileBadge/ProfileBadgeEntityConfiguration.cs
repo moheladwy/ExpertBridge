@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadge;
 
-public class ProfileBadgeConfiguration : IEntityTypeConfiguration<ProfileBadge>
+public class ProfileBadgeEntityConfiguration : IEntityTypeConfiguration<ProfileBadge>
 {
     public void Configure(EntityTypeBuilder<ProfileBadge> builder)
     {

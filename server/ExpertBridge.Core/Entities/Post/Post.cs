@@ -1,3 +1,7 @@
+using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTag;
+using ExpertBridge.Core.Entities.Media.PostMedia;
+using ExpertBridge.Core.Entities.Votes.PostVote;
+
 namespace ExpertBridge.Core.Entities.Post;
 
 public class Post
@@ -14,5 +18,8 @@ public class Post
     public Profile.Profile Author { get; set; }
 
     // Add to navigation properties
-    public ICollection<Media.Media> Medias { get; set; } = [];
+    public ICollection<PostMedia> Medias { get; set; } = [];
+    public ICollection<Comment.Comment> Comments { get; set; } = [];
+    public ICollection<PostVote> Votes { get; set; } = [];
+    public ICollection<PostTag> PostTags { get; set; } = [];
 }
