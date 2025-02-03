@@ -1,13 +1,14 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTag;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTag;
 
 namespace ExpertBridge.Core.Entities.Tags;
 
 public class Tag
 {
-    public string Id { get; set; }
-
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Name { get; set; }
-
     public string Description { get; set; }
+
+    public ICollection<ProfileTag> ProfileTags { get; set; } = [];
+    public ICollection<PostTag> PostTags { get; set; } = [];
 }

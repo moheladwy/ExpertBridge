@@ -8,9 +8,20 @@ public class UserEntityValidator : AbstractValidator<User>
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
-            .NotEmpty().WithMessage("Id is required");
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
-        RuleFor(x => x.Name)
+        RuleFor(x => x.FirebaseId)
+            .NotNull().WithMessage("FirebaseId is required")
+            .NotEmpty().WithMessage("FirebaseId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"FirebaseId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+
+        RuleFor(x => x.FirstName)
+            .NotNull().WithMessage("Name is required")
+            .NotEmpty().WithMessage("Name is required")
+            .MaximumLength(UserEntityConstraints.MaxNameLength).WithMessage($"Name must be less than {UserEntityConstraints.MaxNameLength} characters");
+
+        RuleFor(x => x.LastName)
             .NotNull().WithMessage("Name is required")
             .NotEmpty().WithMessage("Name is required")
             .MaximumLength(UserEntityConstraints.MaxNameLength).WithMessage($"Name must be less than {UserEntityConstraints.MaxNameLength} characters");
@@ -31,5 +42,8 @@ public class UserEntityValidator : AbstractValidator<User>
 
         RuleFor(x => x.isDeleted)
             .NotNull().WithMessage("isDeleted is required");
+
+        RuleFor(x => x.CreatedAt)
+            .NotNull().WithMessage("CreatedAt is required");
     }
 }

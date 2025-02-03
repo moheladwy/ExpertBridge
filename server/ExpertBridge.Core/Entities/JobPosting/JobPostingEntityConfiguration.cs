@@ -8,11 +8,15 @@ public class JobPostingEntityConfiguration : IEntityTypeConfiguration<JobPosting
     public void Configure(EntityTypeBuilder<JobPosting> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(JobPostingEntityConstraints.MaxTitleLength);
+
+        builder.HasIndex(x => x.Title);
 
         builder.Property(x => x.Description)
             .IsRequired()
@@ -22,6 +26,28 @@ public class JobPostingEntityConfiguration : IEntityTypeConfiguration<JobPosting
             .IsRequired()
             .HasPrecision(18, 2);
 
-        // TODO: Add AuthorId, AreaId, CategoryId foreign keys.
+        // Profile relationship (One-to-Many)
+        builder.HasOne(j => j.Author)
+            .WithMany(p => p.JobPostings)
+            .HasForeignKey(j => j.AuthorId)
+            .IsRequired();
+
+        // Area relationship (One-to-Many)
+        builder.HasOne(j => j.Area)
+            .WithMany(a => a.JobPostings)
+            .HasForeignKey(j => j.AreaId)
+            .IsRequired();
+
+        // JobCategory relationship (One-to-Many)
+        builder.HasOne(j => j.Category)
+            .WithMany(c => c.JobPostings)
+            .HasForeignKey(j => j.CategoryId)
+            .IsRequired();
+
+        // Job relationship (One-to-One)
+        builder.HasOne(jp => jp.Job)
+            .WithOne(j => j.JobPosting)
+            .HasForeignKey<Job.Job>(j => j.JobPostingId)
+            .IsRequired(false);
     }
 }

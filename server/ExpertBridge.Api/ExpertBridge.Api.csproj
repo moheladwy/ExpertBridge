@@ -14,6 +14,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
@@ -27,6 +28,12 @@
 
     <ItemGroup>
       <Folder Include="Controllers\" />
+      <Folder Include="Database/Migrations/" />
+      <Folder Include="Database\Migrations\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="../ExpertBridge.Core/ExpertBridge.Core.csproj" />
     </ItemGroup>
 
 </Project>

@@ -11,7 +11,8 @@ public class TagEntityValidator : AbstractValidator<Tag>
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
-            .NotEmpty().WithMessage("Id is required");
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name is required")

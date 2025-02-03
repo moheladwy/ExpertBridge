@@ -11,7 +11,8 @@ public class PostEntityValidator : AbstractValidator<Post>
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
-            .NotEmpty().WithMessage("Id is required");
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Title)
             .NotNull().WithMessage("Title is required")
@@ -23,13 +24,12 @@ public class PostEntityValidator : AbstractValidator<Post>
             .NotEmpty().WithMessage("Content is required")
             .MaximumLength(PostEntityConstraints.MaxContentLength).WithMessage($"Content must be less than {PostEntityConstraints.MaxContentLength} characters");
 
-        // TODO: Add AuthorId validation
-
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required");
 
         RuleFor(x => x.LastModified)
-            .NotEqual(x => x.CreatedAt).WithMessage("LastModified must be different from CreatedAt");
+            .NotEqual(x => x.CreatedAt).WithMessage("LastModified must be different from CreatedAt")
+            .When(x => x.LastModified.HasValue);
 
         RuleFor(x => x.isDeleted)
             .NotNull().WithMessage("isDeleted is required");

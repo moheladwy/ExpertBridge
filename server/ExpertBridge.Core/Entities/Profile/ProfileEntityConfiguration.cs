@@ -8,7 +8,9 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
     public void Configure(EntityTypeBuilder<Profile> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.JobTitle)
             .IsRequired()
@@ -23,10 +25,7 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
 
         builder.HasOne(p => p.User)
             .WithOne(u => u.Profile)
-            .HasForeignKey<User.User>(u => u.Id);
-
-        builder.HasOne(p => p.Area)
-            .WithOne(a => a.Profile)
-            .HasForeignKey<Area.Area>(a => a.Id);
+            .HasForeignKey<Profile>(p => p.UserId)
+            .IsRequired();
     }
 }

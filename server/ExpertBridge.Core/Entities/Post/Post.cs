@@ -1,3 +1,7 @@
+using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTag;
+using ExpertBridge.Core.Entities.Media.PostMedia;
+using ExpertBridge.Core.Entities.Votes.PostVote;
+
 namespace ExpertBridge.Core.Entities.Post;
 
 public class Post
@@ -7,6 +11,15 @@ public class Post
     public string Content { get; set; }
     public string AuthorId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime LastModified { get; set; }
+    public DateTime? LastModified { get; set; }
     public bool isDeleted { get; set; }
+
+    // Navigation property
+    public Profile.Profile Author { get; set; }
+
+    // Add to navigation properties
+    public ICollection<PostMedia> Medias { get; set; } = [];
+    public ICollection<Comment.Comment> Comments { get; set; } = [];
+    public ICollection<PostVote> Votes { get; set; } = [];
+    public ICollection<PostTag> PostTags { get; set; } = [];
 }

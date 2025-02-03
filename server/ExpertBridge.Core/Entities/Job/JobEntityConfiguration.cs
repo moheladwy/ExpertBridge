@@ -9,6 +9,10 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
+
         builder.Property(x => x.ActualCost)
             .IsRequired()
             .HasPrecision(18, 2);
@@ -17,11 +21,30 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired();
 
         builder.Property(x => x.EndedAt)
+            .IsRequired(false);
+
+        // JobStatus (One-to-One)
+        builder.HasOne(j => j.Status)
+            .WithMany(s => s.Jobs)
+            .HasForeignKey(j => j.JobStatusId)
             .IsRequired();
 
-        builder.Property(x => x.Status)
+        // Author Profile (One-to-Many)
+        builder.HasOne(j => j.Author)
+            .WithMany(p => p.JobsAsAuthor)
+            .HasForeignKey(j => j.AuthorId)
             .IsRequired();
 
-        // TODO: Add the rest of the properties
+        // Worker Profile (One-to-Many)
+        builder.HasOne(j => j.Worker)
+            .WithMany(p => p.JobsAsWorker)
+            .HasForeignKey(j => j.WorkerId)
+            .IsRequired();
+
+        // JobPosting relationship (One-to-One)
+        builder.HasOne(j => j.JobPosting)
+            .WithOne(jp => jp.Job)
+            .HasForeignKey<Job>(j => j.JobPostingId)
+            .IsRequired(false);
     }
 }
