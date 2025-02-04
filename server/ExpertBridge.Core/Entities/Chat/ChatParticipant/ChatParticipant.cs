@@ -1,5 +1,3 @@
-using System;
-
 namespace ExpertBridge.Core.Entities.Chat.ChatParticipant;
 
 public class ChatParticipant

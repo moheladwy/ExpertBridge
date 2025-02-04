@@ -7,7 +7,7 @@ public class Media
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Name { get; set; }
     public string MediaUrl { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? LastModified { get; set; }
 
     // Foreign keys

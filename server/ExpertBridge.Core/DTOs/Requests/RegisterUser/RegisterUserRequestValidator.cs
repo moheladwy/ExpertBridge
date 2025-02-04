@@ -38,8 +38,5 @@ public class RegisterUserRequestValidator : AbstractValidator<RegisterUserReques
             .NotEmpty().WithMessage("LastName cannot be empty")
             .MaximumLength(UserEntityConstraints.MaxNameLength)
             .WithMessage($"LastName cannot be longer than {UserEntityConstraints.MaxNameLength} characters");
-
-        RuleFor(x => x.CreatedAt)
-            .NotNull().WithMessage("CreatedAt cannot be null");
     }
 }
