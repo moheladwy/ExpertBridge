@@ -1,0 +1,20 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor Contractor as "Contractor"
+
+package "Contractor Features" {
+    (Set Availability) as SetAvail
+    (Accept Job) as AcceptJob
+    (Chat with Client) as Chat
+    (Negotiate Terms) as Negotiate
+
+}
+
+Contractor --> SetAvail
+Contractor --> AcceptJob
+Contractor --> Chat
+Contractor --> Negotiate
+@enduml
