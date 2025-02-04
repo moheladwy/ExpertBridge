@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FirebaseAdmin" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" />
     </ItemGroup>
 
@@ -17,9 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Interfaces\" />
+      <Folder Include="DTOs\Responses\" />
       <Folder Include="Repositories\" />
-      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

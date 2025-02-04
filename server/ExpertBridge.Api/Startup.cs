@@ -1,4 +1,6 @@
 using ExpertBridge.Api.Database;
+using ExpertBridge.Core.Interfaces;
+using ExpertBridge.Core.Services;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
@@ -61,7 +63,7 @@ internal static class Startup
     /// <param name="builder">builder — The WebApplicationBuilder to add the Firebase authentication services to</param>
     public static void AddAuthentication(this WebApplicationBuilder builder)
     {
-        var projectId = builder.Configuration["Authentication:Firebase:ProjectId"]!;
+        var projectId = builder.Configuration["Firebase:ProjectId"]!;
         var issuer = builder.Configuration["Authentication:Firebase:Issuer"]!;
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -81,6 +83,23 @@ internal static class Startup
             });
         builder.Services.AddAuthorization();
     }
+
+    /// <summary>
+    ///     Adds the HttpClient service for the Firebase service.
+    /// </summary>
+    /// <param name="builder">
+    ///     The WebApplicationBuilder to add the HttpClient service to.
+    /// </param>
+    public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHttpClient<IFirebaseService, FirebaseService>((sp, httpClient) =>
+        {
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            var uri = configuration["Authentication:Firebase:TokenUri"]!;
+            httpClient.BaseAddress = new Uri(uri);
+        });
+    }
+
 
     /// <summary>
     ///     Adds the logging service to the application builder.
