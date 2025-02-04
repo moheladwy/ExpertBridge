@@ -9,12 +9,7 @@
     <ItemGroup>
       <PackageReference Include="FirebaseAdmin" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="FluentValidation">
-        <HintPath>..\..\..\..\.nuget\packages\fluentvalidation\11.11.0\lib\net8.0\FluentValidation.dll</HintPath>
-      </Reference>
+      <PackageReference Include="FluentValidation" />
     </ItemGroup>
 
     <ItemGroup>
