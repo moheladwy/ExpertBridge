@@ -12,9 +12,4 @@
       <PackageReference Include="FluentValidation" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="DTOs\Responses\" />
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
 </Project>

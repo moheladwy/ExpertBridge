@@ -1,4 +1,4 @@
-namespace ExpertBridge.Core.Interfaces;
+namespace ExpertBridge.Core.Interfaces.Services;
 
 public interface IFirebaseService
 {

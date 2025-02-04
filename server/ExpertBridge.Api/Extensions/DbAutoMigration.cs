@@ -1,6 +1,7 @@
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Database;
+namespace ExpertBridge.Api.Extensions;
 
 internal static class DbAutoMigration
 {

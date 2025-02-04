@@ -1,9 +1,7 @@
 using ExpertBridge.Api;
-using ExpertBridge.Api.Database;
+using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middlewares;
-using ExpertBridge.Core;
-using ExpertBridge.Core.Interfaces;
-using ExpertBridge.Core.Services;
+using ExpertBridge.Application;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
@@ -18,6 +16,7 @@ builder.AddLoggingService();
 builder.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.AddFirebaseServices();
+builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.AddHttpClientForFirebaseService();
 
@@ -37,7 +36,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse })
-    .RequireAuthorization();
+app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 
 await app.RunAsync();

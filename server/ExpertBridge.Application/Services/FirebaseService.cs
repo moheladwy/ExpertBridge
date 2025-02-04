@@ -1,9 +1,10 @@
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using ExpertBridge.Core.Interfaces;
+using ExpertBridge.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 
-namespace ExpertBridge.Core.Services;
+namespace ExpertBridge.Application.Services;
 
 public class FirebaseService(HttpClient httpClient) : IFirebaseService
 {
