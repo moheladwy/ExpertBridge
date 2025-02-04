@@ -1,6 +1,7 @@
-using ExpertBridge.Api.Database;
+using ExpertBridge.Application.Services;
 using ExpertBridge.Core.Interfaces;
-using ExpertBridge.Core.Services;
+using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Data.DatabaseContexts;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;

@@ -30,40 +30,40 @@ using ExpertBridge.Core.Entities.Votes.CommentVote;
 using ExpertBridge.Core.Entities.Votes.PostVote;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Database;
+namespace ExpertBridge.Data.DatabaseContexts;
 
-internal class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> options) : DbContext(options)
+public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> options) : DbContext(options)
 {
-    DbSet<User> Users { get; set; }
-    DbSet<Profile> Profiles { get; set; }
-    DbSet<ProfileExperience> ProfileExperiences { get; set; }
-    DbSet<Skill> Skills { get; set; }
-    DbSet<Tag> Tags { get; set; }
-    DbSet<Job> Jobs { get; set; }
-    DbSet<JobReview> JobReviews { get; set; }
-    DbSet<JobStatus> JobStatuses { get; set; }
-    DbSet<Post> Posts { get; set; }
-    DbSet<Comment> Comments { get; set; }
-    DbSet<PostVote> PostVotes { get; set; }
-    DbSet<CommentVote> CommentVotes { get; set; }
-    DbSet<Area> Areas { get; set; }
-    DbSet<Badge> Badges { get; set; }
-    DbSet<JobCategory> JobCategories { get; set; }
-    DbSet<JobPosting> JobPostings { get; set; }
-    DbSet<Media> Media { get; set; }
-    DbSet<MediaType> MediaTypes { get; set; }
-    DbSet<ProfileBadge> ProfileBadges { get; set; }
-    DbSet<ProfileTag> ProfileTags { get; set; }
-    DbSet<ProfileSkill> ProfileSkills { get; set; }
-    DbSet<Chat> Chats { get; set; }
-    DbSet<ChatParticipant> ChatParticipants { get; set; }
-    DbSet<PostTag> PostTags { get; set; }
-    DbSet<ChatMedia> ChatMedias { get; set; }
-    DbSet<ProfileMedia> ProfileMedias { get; set; }
-    DbSet<ProfileExperienceMedia> ProfileExperienceMedias { get; set; }
-    DbSet<CommentMedia> CommentMedias { get; set; }
-    DbSet<JobPostingMedia> JobPostingMedias { get; set; }
-    DbSet<PostMedia> PostMedias { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Profile> Profiles { get; set; }
+    public DbSet<ProfileExperience> ProfileExperiences { get; set; }
+    public DbSet<Skill> Skills { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<Job> Jobs { get; set; }
+    public DbSet<JobReview> JobReviews { get; set; }
+    public DbSet<JobStatus> JobStatuses { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<PostVote> PostVotes { get; set; }
+    public DbSet<CommentVote> CommentVotes { get; set; }
+    public DbSet<Area> Areas { get; set; }
+    public DbSet<Badge> Badges { get; set; }
+    public DbSet<JobCategory> JobCategories { get; set; }
+    public DbSet<JobPosting> JobPostings { get; set; }
+    public DbSet<Media> Media { get; set; }
+    public DbSet<MediaType> MediaTypes { get; set; }
+    public DbSet<ProfileBadge> ProfileBadges { get; set; }
+    public DbSet<ProfileTag> ProfileTags { get; set; }
+    public DbSet<ProfileSkill> ProfileSkills { get; set; }
+    public DbSet<Chat> Chats { get; set; }
+    public DbSet<ChatParticipant> ChatParticipants { get; set; }
+    public DbSet<PostTag> PostTags { get; set; }
+    public DbSet<ChatMedia> ChatMedias { get; set; }
+    public DbSet<ProfileMedia> ProfileMedias { get; set; }
+    public DbSet<ProfileExperienceMedia> ProfileExperienceMedias { get; set; }
+    public DbSet<CommentMedia> CommentMedias { get; set; }
+    public DbSet<JobPostingMedia> JobPostingMedias { get; set; }
+    public DbSet<PostMedia> PostMedias { get; set; }
 
 
     /// <summary>

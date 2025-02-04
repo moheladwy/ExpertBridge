@@ -27,12 +27,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Database/Migrations/" />
-      <Folder Include="Database\Migrations\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="../ExpertBridge.Core/ExpertBridge.Core.csproj" />
+      <ProjectReference Include="..\ExpertBridge.Application\ExpertBridge.Application.csproj" />
+      <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
     </ItemGroup>
 
 </Project>
