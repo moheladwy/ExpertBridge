@@ -1,0 +1,29 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor GuestUser as "Guest User"
+actor AuthUser as "Authenticated User"
+
+package "Content Management" {
+    (Browse Posts) as Browse
+    (Search Content) as Search
+    (Create Post) as Create
+    (Comment on Posts) as Comment
+    (Vote on Content) as Vote
+    (Mark Solution) as MarkSol
+    (Save Posts) as Save
+    (Share Content) as Share
+}
+
+GuestUser --> Browse
+GuestUser --> Search
+
+AuthUser --> Create
+AuthUser --> Comment
+AuthUser --> Vote
+AuthUser --> MarkSol
+AuthUser --> Save
+AuthUser --> Share
+@enduml
