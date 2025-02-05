@@ -1,6 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
 using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Profile;
@@ -13,6 +10,11 @@ public class ProfileEntityValidator : AbstractValidator<Profile>
             .NotNull().WithMessage("Id is required.")
             .NotEmpty().WithMessage("Id is required.")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters.");
+
+        RuleFor(x => x.UserId)
+            .NotNull().WithMessage("User Id is required.")
+            .NotEmpty().WithMessage("User Id is required.")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"User Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters.");
 
         RuleFor(x => x.JobTitle)
             .NotEmpty().WithMessage("Job title is required.")

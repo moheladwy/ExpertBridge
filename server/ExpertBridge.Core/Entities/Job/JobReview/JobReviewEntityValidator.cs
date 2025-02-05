@@ -28,14 +28,35 @@ public class JobReviewEntityValidator : AbstractValidator<JobReview>
             .WithMessage($"Content must be less than {JobReviewEntityConstraints.MaxReviewLength} characters");
 
         RuleFor(x => x.CreatedAt)
-            .NotNull().WithMessage("CreatedAt is required");
+            .NotNull().WithMessage("CreatedAt is required")
+            .LessThanOrEqualTo(DateTime.Now).WithMessage("CreatedAt must be less than or equal to the current date")
+            .When(x => x.CreatedAt != DateTime.MinValue)
+            .LessThan(x => x.LastModified).WithMessage("CreatedAt must be less than LastModified")
+            .When(x => x.LastModified.HasValue);
 
         RuleFor(x => x.LastModified)
-            .NotEqual(x => x.CreatedAt)
+            .LessThanOrEqualTo(DateTime.Now).WithMessage("LastModified must be less than or equal to the current date")
             .When(x => x.LastModified.HasValue)
-            .WithMessage("LastModified must be different from CreatedAt");
+            .GreaterThan(x => x.CreatedAt).WithMessage("LastModified must be greater than or equal to CreatedAt")
+            .When(x => x.CreatedAt != DateTime.MaxValue);
 
         RuleFor(x => x.IsDeleted)
             .NotNull().WithMessage("IsDeleted is required");
+
+        RuleFor(x => x.WorkerId)
+            .NotNull().WithMessage("WorkerId is required")
+            .NotEmpty().WithMessage("WorkerId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"WorkerId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+
+        RuleFor(x => x.CustomerId)
+            .NotNull().WithMessage("CustomerId is required")
+            .NotEmpty().WithMessage("CustomerId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"CustomerId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+
+        RuleFor(x => x.JobId)
+            .NotNull().WithMessage("JobId is required")
+            .NotEmpty().WithMessage("JobId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"JobId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+
     }
 }

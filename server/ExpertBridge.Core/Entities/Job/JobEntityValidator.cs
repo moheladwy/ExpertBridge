@@ -12,34 +12,47 @@ public class JobEntityValidator : AbstractValidator<Job>
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.ActualCost)
-            .GreaterThanOrEqualTo(JobEntityConstraints.MinActualCost);
+            .GreaterThanOrEqualTo(JobEntityConstraints.MinActualCost)
+            .WithMessage($"ActualCost must be greater than or equal to {JobEntityConstraints.MinActualCost}");
 
         RuleFor(x => x.StartedAt)
-            .NotNull().WithMessage("StartedAt is required");
+            .NotNull().WithMessage("StartedAt is required")
+            .LessThanOrEqualTo(DateTime.Now).WithMessage("StartedAt must be less than or equal to current date")
+            .GreaterThanOrEqualTo(DateTime.MinValue)
+            .WithMessage("StartedAt must be greater than or equal to minimum date")
+            .LessThan(x => x.EndedAt).WithMessage("StartedAt must be less than EndedAt")
+            .When(x => x.EndedAt.HasValue);
 
         RuleFor(x => x.EndedAt)
-            .NotEqual(x => x.StartedAt).When(x => x.EndedAt.HasValue)
-            .GreaterThanOrEqualTo(x => x.StartedAt)
+            .LessThanOrEqualTo(DateTime.Now).WithMessage("EndedAt must be less than or equal to current date")
+            .When(x => x.StartedAt != DateTime.MinValue)
+            .GreaterThanOrEqualTo(DateTime.MinValue).WithMessage("EndedAt must be greater than or equal to minimum date")
             .When(x => x.EndedAt.HasValue)
-            .WithMessage("EndedAt must be greater than or equal to StartedAt");
+            .GreaterThan(x => x.StartedAt).WithMessage("EndedAt must be greater than StartedAt")
+            .When(x => x.EndedAt.HasValue);
 
         RuleFor(x => x.Status)
-            .NotNull().WithMessage("Status is required");
+            .NotNull().WithMessage("Status is required")
+            .IsInEnum().WithMessage("Status is not valid");
 
         RuleFor(x => x.JobStatusId)
             .NotNull().WithMessage("JobStatusId is required")
-            .NotEmpty().WithMessage("JobStatusId is required");
+            .NotEmpty().WithMessage("JobStatusId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"JobStatusId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.WorkerId)
             .NotNull().WithMessage("WorkerId is required")
-            .NotEmpty().WithMessage("WorkerId is required");
+            .NotEmpty().WithMessage("WorkerId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"WorkerId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.AuthorId)
             .NotNull().WithMessage("AuthorId is required")
-            .NotEmpty().WithMessage("AuthorId is required");
+            .NotEmpty().WithMessage("AuthorId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"AuthorId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.JobPostingId)
             .NotNull().WithMessage("JobPostingId is required")
-            .NotEmpty().WithMessage("JobPostingId is required");
+            .NotEmpty().WithMessage("JobPostingId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"JobPostingId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
     }
 }
