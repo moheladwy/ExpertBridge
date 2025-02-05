@@ -30,8 +30,7 @@ public class UserService(
             Email = request.Email,
             Username = request.Username,
             FirstName = request.FirstName,
-            LastName = request.LastName,
-            CreatedAt = request.CreatedAt
+            LastName = request.LastName
         };
         await userRepository.AddUser(user);
         return new UserResponse(user);

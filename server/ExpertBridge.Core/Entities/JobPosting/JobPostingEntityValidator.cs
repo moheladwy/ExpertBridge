@@ -11,6 +11,21 @@ public class JobPostingEntityValidator : AbstractValidator<JobPosting>
             .NotEmpty().WithMessage("Id is required")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
+        RuleFor(x => x.AuthorId)
+            .NotNull().WithMessage("AuthorId is required")
+            .NotEmpty().WithMessage("AuthorId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"AuthorId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+
+        RuleFor(x => x.AreaId)
+            .NotNull().WithMessage("AreaId is required")
+            .NotEmpty().WithMessage("AreaId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"AreaId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+
+        RuleFor(x => x.CategoryId)
+            .NotNull().WithMessage("CategoryId is required")
+            .NotEmpty().WithMessage("CategoryId is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"CategoryId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+
         RuleFor(x => x.Title)
             .NotNull().WithMessage("Title is required")
             .NotEmpty().WithMessage("Title is required")

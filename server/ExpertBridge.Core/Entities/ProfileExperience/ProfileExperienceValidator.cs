@@ -13,7 +13,8 @@ public class ProfileExperienceValidator : AbstractValidator<ProfileExperience>
 
         RuleFor(x => x.ProfileId)
             .NotNull().WithMessage("Profile ID is required.")
-            .NotEmpty().WithMessage("Profile ID is required.");
+            .NotEmpty().WithMessage("Profile ID is required.")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Profile ID must not exceed {GlobalEntitiesConstraints.MaxIdLength} characters.");
 
         RuleFor(x => x.Title)
             .NotNull().WithMessage("Title is required.")
@@ -27,7 +28,7 @@ public class ProfileExperienceValidator : AbstractValidator<ProfileExperience>
 
         RuleFor(x => x.StartDate)
             .NotNull().WithMessage("Start date is required.")
-            .NotEmpty().WithMessage("Start date is required.");
+            .LessThanOrEqualTo(DateTime.Now).WithMessage("Start date must be less than or equal to today.");
 
         RuleFor(x => x.EndDate)
             .GreaterThanOrEqualTo(x => x.StartDate).WithMessage("End date must be greater than or equal to start date.")
