@@ -26,6 +26,14 @@ public class JobPostingEntityConfiguration : IEntityTypeConfiguration<JobPosting
             .IsRequired()
             .HasPrecision(18, 2);
 
+        builder.Property(x => x.CreatedAt)
+            .IsRequired()
+            .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.UpdatedAt)
+            .IsRequired(false)
+            .ValueGeneratedOnAddOrUpdate();
+
         // Profile relationship (One-to-Many)
         builder.HasOne(j => j.Author)
             .WithMany(p => p.JobPostings)

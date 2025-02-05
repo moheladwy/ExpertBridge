@@ -4,7 +4,7 @@ public class CommentVote
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public bool IsUpvote { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     // Foreign keys
     public string CommentId { get; set; }
