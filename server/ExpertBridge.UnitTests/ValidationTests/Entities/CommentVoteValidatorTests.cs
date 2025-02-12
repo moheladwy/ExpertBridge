@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Votes.CommentVote;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class CommentVoteValidatorTests
 {
@@ -13,7 +13,7 @@ public class CommentVoteValidatorTests
         CommentId = Guid.NewGuid().ToString(),
         ProfileId = Guid.NewGuid().ToString(),
         IsUpvote = true,
-        CreatedAt = DateTime.Now,
+        CreatedAt = DateTime.Now.AddDays(-1)
     };
 
     [Fact]
@@ -23,7 +23,7 @@ public class CommentVoteValidatorTests
         // Act
         var result = _commentVoteEntityValidator.TestValidate(_validCommentVote);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

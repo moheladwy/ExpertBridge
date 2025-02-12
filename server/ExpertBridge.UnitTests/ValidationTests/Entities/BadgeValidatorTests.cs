@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Badge;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class BadgeValidatorTests
 {
@@ -21,7 +21,7 @@ public class BadgeValidatorTests
         // Act
         var result = _badgeEntityValidator.TestValidate(_validBadge);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

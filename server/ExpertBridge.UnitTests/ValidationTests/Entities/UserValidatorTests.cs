@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.User;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class UserValidatorTests
 {
@@ -27,7 +27,7 @@ public class UserValidatorTests
         // Act
         var result = _validator.TestValidate(_validUser);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

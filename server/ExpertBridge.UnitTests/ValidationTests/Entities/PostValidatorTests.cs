@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Post;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class PostValidatorTests
 {
@@ -13,7 +13,7 @@ public class PostValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         Title = "Post Title",
         Content = "Post Content",
-        CreatedAt = DateTime.Now,
+        CreatedAt = DateTime.Now.AddDays(-1),
         LastModified = DateTime.MaxValue,
         isDeleted = false
     };
@@ -25,7 +25,7 @@ public class PostValidatorTests
         // Act
         var result = _postEntityValidator.TestValidate(_validPost);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

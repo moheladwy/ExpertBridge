@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Job.JobStatus;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class JobStatusValidatorTests
 {
@@ -20,7 +20,7 @@ public class JobStatusValidatorTests
         // Act
         var result = _jobStatusEntityValidator.TestValidate(_validJobStatus);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

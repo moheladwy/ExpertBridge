@@ -1,8 +1,9 @@
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Job;
+using ExpertBridge.Core.Entities.Job.JobStatus;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class JobValidatorTests
 {
@@ -15,8 +16,8 @@ public class JobValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         JobPostingId = Guid.NewGuid().ToString(),
         ActualCost = 100,
-        StartedAt = DateTime.Now,
-        EndedAt = DateTime.Now.AddDays(1)
+        StartedAt = DateTime.Now.AddDays(-2),
+        EndedAt = DateTime.Now.AddMinutes(-10)
     };
 
     [Fact]
@@ -26,7 +27,7 @@ public class JobValidatorTests
         // Act
         var result = _jobEntityValidator.TestValidate(_validJob);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

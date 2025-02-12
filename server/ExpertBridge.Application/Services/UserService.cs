@@ -1,38 +1,47 @@
+using ExpertBridge.Core;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Data.DatabaseContexts;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Application.Services;
 
 public class UserService(
-    IUserRepository userRepository,
+    IEntityRepository<User> userRepository,
     IValidator<RegisterUserRequest> registerUserRequestValidator
     ) : IUserService
 {
     public async Task<UserResponse> GetUserByFirebaseId(string firebaseId)
     {
-        var user = await userRepository.GetUserByFirebaseId(firebaseId);
+        var user = await userRepository.GetFirstAsNoTrackingAsync(user => user.FirebaseId == firebaseId)
+            ?? throw new UserNotFoundException("User not found");
         return new UserResponse(user);
     }
 
-    public async Task<UserResponse> RegisterNewUser(RegisterUserRequest request)
+    public async Task<UserResponse> RegisterNewUser(RegisterUserRequest requestDto)
     {
-        var validationResult = await registerUserRequestValidator.ValidateAsync(request);
+        ArgumentNullException.ThrowIfNull(requestDto, nameof(requestDto));
+        var validationResult = await registerUserRequestValidator.ValidateAsync(requestDto);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
 
         var user = new User
         {
-            FirebaseId = request.FirebaseId,
-            Email = request.Email,
-            Username = request.Username,
-            FirstName = request.FirstName,
-            LastName = request.LastName
+            Id = Guid.NewGuid().ToString(),
+            FirebaseId = requestDto.FirebaseId,
+            Email = requestDto.Email,
+            Username = requestDto.Username,
+            FirstName = requestDto.FirstName,
+            LastName = requestDto.LastName,
+            CreatedAt = DateTime.Now,
+            isBanned = false,
+            isDeleted = false
         };
-        await userRepository.AddUser(user);
+        await userRepository.AddAsync(user);
         return new UserResponse(user);
     }
 }

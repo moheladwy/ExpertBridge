@@ -1,5 +1,7 @@
+using ExpertBridge.Application.CachedRepositories;
 using ExpertBridge.Application.Services;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
+using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
 using ExpertBridge.Data.Repositories;
@@ -21,16 +23,16 @@ public static class Extensions
         services.AddTransient<IFirebaseService, FirebaseService>();
         services.AddScoped<IUserService, UserService>();
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
+        services.AddScoped<ICacheService, RedisService>();
     }
 
-    /// <summary>
-    ///     Adds the repositories to the services collection.
-    /// </summary>
-    /// <param name="services">
-    ///     The service collection to add the repositories to.
-    /// </param>
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<UserRepository>();
+    }
+
+    public static void AddCachedRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IEntityRepository<User>, UserCacheRepository>();
     }
 }

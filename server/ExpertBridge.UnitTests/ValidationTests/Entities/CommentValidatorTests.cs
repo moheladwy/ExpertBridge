@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Comment;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class CommentValidatorTests
 {
@@ -12,8 +12,8 @@ public class CommentValidatorTests
         Id = Guid.NewGuid().ToString(),
         AuthorId = Guid.NewGuid().ToString(),
         Content = "Comment Content",
-        CreatedAt = DateTime.Now,
-        LastModified = DateTime.MaxValue
+        CreatedAt = DateTime.Now.AddDays(-1),
+        LastModified = DateTime.Now.AddMinutes(-4)
     };
 
     [Fact]
@@ -29,8 +29,8 @@ public class CommentValidatorTests
         var resultOfCommentWithParentId = _commentEntityValidator.TestValidate(commentWithParentId);
 
         // Assert
-        resultOfCommentWithoutParentId.ShouldNotHaveValidationErrorFor(x => x.ParentId);
-        resultOfCommentWithParentId.ShouldNotHaveValidationErrorFor(x => x.ParentId);
+        resultOfCommentWithoutParentId.ShouldNotHaveAnyValidationErrors();
+        resultOfCommentWithParentId.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

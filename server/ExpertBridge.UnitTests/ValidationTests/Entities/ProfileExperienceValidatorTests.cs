@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ProfileExperience;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class ProfileExperienceValidatorTests
 {
@@ -12,9 +12,11 @@ public class ProfileExperienceValidatorTests
     {
         Id = Guid.NewGuid().ToString(),
         ProfileId = Guid.NewGuid().ToString(),
+        Description = "Test Description",
         Title = "Software Engineer",
         Company = "Test Company",
-        StartDate = DateTime.Now,
+        Location = "Test Location",
+        StartDate = DateTime.Now.AddYears(-1),
         EndDate = DateTime.Now.AddYears(1)
     };
 
@@ -25,7 +27,7 @@ public class ProfileExperienceValidatorTests
         // Act
         var result = _profileExperienceEntityValidator.TestValidate(_validProfileExperience);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
