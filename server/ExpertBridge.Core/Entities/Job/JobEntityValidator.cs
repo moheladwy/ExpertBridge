@@ -31,10 +31,6 @@ public class JobEntityValidator : AbstractValidator<Job>
             .GreaterThan(x => x.StartedAt).WithMessage("EndedAt must be greater than StartedAt")
             .When(x => x.EndedAt.HasValue);
 
-        RuleFor(x => x.Status)
-            .NotNull().WithMessage("Status is required")
-            .IsInEnum().WithMessage("Status is not valid");
-
         RuleFor(x => x.JobStatusId)
             .NotNull().WithMessage("JobStatusId is required")
             .NotEmpty().WithMessage("JobStatusId is required")

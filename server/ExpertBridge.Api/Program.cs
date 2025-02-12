@@ -8,7 +8,11 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDatabase();
-builder.AddRedisDistributedCache(connectionName: "Redis");
+builder.AddRedisDistributedCache(connectionName: "Redis", configureOptions: options =>
+{
+    options.ConnectRetry = 5;
+    options.IncludeDetailInExceptions = true;
+});
 builder.AddHealthChecks();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
@@ -16,8 +20,9 @@ builder.AddLoggingService();
 builder.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.AddFirebaseServices();
-builder.Services.AddRepositories();
 builder.Services.AddServices();
+builder.Services.AddRepositories();
+builder.Services.AddCachedRepositories();
 builder.AddHttpClientForFirebaseService();
 
 var app = builder.Build();

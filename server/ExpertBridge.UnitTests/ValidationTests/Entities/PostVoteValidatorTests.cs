@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Votes.PostVote;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class PostVoteValidatorTests
 {
@@ -12,7 +12,7 @@ public class PostVoteValidatorTests
         Id = Guid.NewGuid().ToString(),
         ProfileId = Guid.NewGuid().ToString(),
         PostId = Guid.NewGuid().ToString(),
-        CreatedAt = DateTime.Now,
+        CreatedAt = DateTime.Now.AddDays(-1),
         IsUpvote = true
     };
 
@@ -23,7 +23,7 @@ public class PostVoteValidatorTests
         // Act
         var result = _postVoteEntityValidator.TestValidate(_validPostVote);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]

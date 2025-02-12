@@ -2,7 +2,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Job.JobReview;
 using FluentValidation.TestHelper;
 
-namespace ExpertBridge.UnitTests.ValidationTests;
+namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class JobReviewValidatorTests
 {
@@ -15,8 +15,8 @@ public class JobReviewValidatorTests
         JobId = Guid.NewGuid().ToString(),
         Content = "Job Review Content",
         Rating = 5,
-        CreatedAt = DateTime.Now,
-        LastModified = DateTime.MaxValue,
+        CreatedAt = DateTime.Now.AddMinutes(-2),
+        LastModified = DateTime.Now.AddMinutes(-1),
         IsDeleted = false
     };
 
@@ -27,7 +27,7 @@ public class JobReviewValidatorTests
         // Act
         var result = _jobReviewEntityValidator.TestValidate(_validJobReview);
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
