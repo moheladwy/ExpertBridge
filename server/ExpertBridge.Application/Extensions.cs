@@ -20,17 +20,30 @@ public static class Extensions
     /// </param>
     public static void AddServices(this IServiceCollection services)
     {
+        services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
         services.AddTransient<IFirebaseService, FirebaseService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
         services.AddScoped<ICacheService, RedisService>();
+        services.AddScoped<IObjectStorageService, ObjectStorageService>();
     }
 
+    /// <summary>
+    ///     Adds the repositories to the services collection.
+    /// </summary>
+    /// <param name="services">
+    ///     The service collection to add the repositories to.
+    /// </param>
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<UserRepository>();
     }
 
+    /// <summary>
+    ///     Adds the cached repositories to the services collection.
+    /// </summary>
+    /// <param name="services">
+    ///     The service collection to add the cached repositories to.
+    /// </param>
     public static void AddCachedRepositories(this IServiceCollection services)
     {
         services.AddScoped<IEntityRepository<User>, UserCacheRepository>();

@@ -1,0 +1,70 @@
+using Amazon.S3;
+using Amazon.S3.Model;
+using Microsoft.Extensions.Options;
+using ExpertBridge.Core.DTOs.Responses;
+using ExpertBridge.Core.Interfaces.Services;
+
+namespace ExpertBridge.Application.Services;
+
+public class ObjectStorageService(
+    IAmazonS3 s3Client,
+    IOptions<AwsConfigurations> awsConfigurations
+    ) : IObjectStorageService
+{
+    public async Task<GetFileResponse> GetObjectAsync(string key)
+    {
+        var request = new GetObjectRequest
+        {
+            BucketName = awsConfigurations.Value.BucketName,
+            Key = key
+        };
+        var response = await s3Client.GetObjectAsync(request);
+        var fileResponse = new GetFileResponse
+        {
+            ResponseStream = response.ResponseStream,
+            ContentType = response.Headers.ContentType,
+            FileName = response.Key
+        };
+
+        return fileResponse;
+    }
+
+    public Task<string> GetObjectUrlAsync(string key) => Task.FromResult($"{awsConfigurations.Value.BucketUrl}/{key}");
+
+    public async Task<string> GetPresignedUrlAsync(string key)
+    {
+        var request = new GetPreSignedUrlRequest
+        {
+            BucketName = awsConfigurations.Value.BucketName,
+            Key = key,
+            Expires = DateTime.Now.AddMinutes(60)
+        };
+
+        return await s3Client.GetPreSignedURLAsync(request);
+    }
+
+    public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)
+    {
+        request.Key = Guid.NewGuid().ToString();
+        request.BucketName = awsConfigurations.Value.BucketName;
+        var response = await s3Client.PutObjectAsync(request);
+        var fileUrl = $"{awsConfigurations.Value.BucketUrl}/{request.Key}";
+
+        return new UploadFileResponse
+        {
+            StatusCode = (int)response.HttpStatusCode,
+            Message = $"File with name: `{request.Metadata["file-name"]}` uploaded successfully",
+            FileUrl = fileUrl
+        };
+    }
+
+    public async Task DeleteObjectAsync(string key)
+    {
+        var request = new DeleteObjectRequest
+        {
+            BucketName = awsConfigurations.Value.BucketName,
+            Key = key
+        };
+        await s3Client.DeleteObjectAsync(request);
+    }
+}
