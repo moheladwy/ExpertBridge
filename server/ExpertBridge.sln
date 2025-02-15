@@ -1,10 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Host", "ExpertBridge.Host\ExpertBridge.Host.csproj", "{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Api", "ExpertBridge.Api\ExpertBridge.Api.csproj", "{59EAB2C1-1ABE-46F7-A1A7-107BCA3E5F0E}"
-EndProject
+#
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{697DB175-35B9-4313-8B5C-CDD6F6747E3A}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
@@ -17,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\docker-compose.deploy.yaml = ..\docker-compose.deploy.yaml
 		..\nginx.conf = ..\nginx.conf
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Host", "ExpertBridge.Host\ExpertBridge.Host.csproj", "{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Api", "ExpertBridge.Api\ExpertBridge.Api.csproj", "{59EAB2C1-1ABE-46F7-A1A7-107BCA3E5F0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Core", "ExpertBridge.Core\ExpertBridge.Core.csproj", "{9662D4B7-019D-4368-AE9A-E13C6D98740E}"
 EndProject

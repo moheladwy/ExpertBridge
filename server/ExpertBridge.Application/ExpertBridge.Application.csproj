@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AWSSDK.S3" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     </ItemGroup>
 
