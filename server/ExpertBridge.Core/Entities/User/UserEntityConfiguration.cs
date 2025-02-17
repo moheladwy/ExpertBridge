@@ -16,6 +16,8 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength);
 
+        builder.HasIndex(x => x.FirebaseId).IsUnique();
+
         builder.Property(x => x.Email)
             .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxEmailLength);
