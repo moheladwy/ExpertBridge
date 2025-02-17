@@ -16,7 +16,6 @@ public sealed class UserController(IUserService userService) : ControllerBase
     public async Task<UserResponse> GetUserByFirebaseId([FromRoute] string firebaseId)
     {
         ArgumentException.ThrowIfNullOrEmpty(firebaseId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(firebaseId);
         return await userService.GetUserByFirebaseId(firebaseId);
     }
 

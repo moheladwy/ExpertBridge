@@ -23,4 +23,8 @@
       <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

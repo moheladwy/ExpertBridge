@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using ExpertBridge.Core;
 using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Data.DatabaseContexts;
@@ -36,10 +37,8 @@ public class UserRepository(ExpertBridgeDbContext db) : IEntityRepository<User>
     public async Task DeleteAsync(string id)
     {
         var user = await GetByIdAsync(id);
-        if (user is not null)
-        {
-            user.isDeleted = true;
-            await db.SaveChangesAsync();
-        }
+        if (user is null) throw new UserNotFoundException("User not found");
+        user.isDeleted = true;
+        await db.SaveChangesAsync();
     }
 }

@@ -5,54 +5,54 @@
 );
 
 START TRANSACTION;
-CREATE TABLE "Badges" (
+CREATE TABLE IF NOT EXISTS "Badges" (
     "Id" character varying(450) NOT NULL,
     "Name" character varying(256) NOT NULL,
     "Description" character varying(500) NOT NULL,
     CONSTRAINT "PK_Badges" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "Chats" (
+CREATE TABLE IF NOT EXISTS "Chats" (
     "Id" character varying(450) NOT NULL,
     "CreatedAt" timestamp with time zone NOT NULL,
     "EndedAt" timestamp with time zone,
     CONSTRAINT "PK_Chats" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "JobCategories" (
+CREATE TABLE IF NOT EXISTS "JobCategories" (
     "Id" character varying(450) NOT NULL,
     "Name" character varying(256) NOT NULL,
     "Description" character varying(512) NOT NULL,
     CONSTRAINT "PK_JobCategories" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "JobStatuses" (
+CREATE TABLE IF NOT EXISTS "JobStatuses" (
     "Id" character varying(450) NOT NULL,
     "Status" character varying(128) NOT NULL,
     CONSTRAINT "PK_JobStatuses" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "MediaTypes" (
+CREATE TABLE IF NOT EXISTS "MediaTypes" (
     "Id" character varying(450) NOT NULL,
     "Type" character varying(128) NOT NULL,
     CONSTRAINT "PK_MediaTypes" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "Skills" (
+CREATE TABLE IF NOT EXISTS "Skills" (
     "Id" character varying(450) NOT NULL,
     "Name" character varying(256) NOT NULL,
     "Description" character varying(256) NOT NULL,
     CONSTRAINT "PK_Skills" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "Tags" (
+CREATE TABLE IF NOT EXISTS "Tags" (
     "Id" character varying(450) NOT NULL,
     "Name" character varying(256) NOT NULL,
     "Description" character varying(512) NOT NULL,
     CONSTRAINT "PK_Tags" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "Users" (
+CREATE TABLE IF NOT EXISTS "Users" (
     "Id" character varying(450) NOT NULL,
     "FirebaseId" character varying(450) NOT NULL,
     "FirstName" character varying(256) NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE "Users" (
     CONSTRAINT "PK_Users" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "Media" (
+CREATE TABLE IF NOT EXISTS "Media" (
     "Id" character varying(450) NOT NULL,
     "Name" character varying(256) NOT NULL,
     "MediaUrl" character varying(2048) NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE "Media" (
     CONSTRAINT "FK_Media_MediaTypes_MediaTypeId" FOREIGN KEY ("MediaTypeId") REFERENCES "MediaTypes" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "Profiles" (
+CREATE TABLE IF NOT EXISTS "Profiles" (
     "Id" character varying(450) NOT NULL,
     "UserId" character varying(450) NOT NULL,
     "JobTitle" character varying(256) NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE "Profiles" (
     CONSTRAINT "FK_Profiles_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ChatMedias" (
+CREATE TABLE IF NOT EXISTS "ChatMedias" (
     "Id" character varying(450) NOT NULL,
     "ChatId" character varying(450) NOT NULL,
     "MediaId" character varying(450) NOT NULL,
@@ -95,7 +95,7 @@ CREATE TABLE "ChatMedias" (
     CONSTRAINT "FK_ChatMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "Areas" (
+CREATE TABLE IF NOT EXISTS "Areas" (
     "Id" character varying(450) NOT NULL,
     "ProfileId" character varying(450) NOT NULL,
     "Governorate" character varying(256) NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE "Areas" (
     CONSTRAINT "FK_Areas_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ChatParticipants" (
+CREATE TABLE IF NOT EXISTS "ChatParticipants" (
     "ChatId" character varying(450) NOT NULL,
     "ProfileId" character varying(450) NOT NULL,
     CONSTRAINT "PK_ChatParticipants" PRIMARY KEY ("ChatId", "ProfileId"),
@@ -112,7 +112,7 @@ CREATE TABLE "ChatParticipants" (
     CONSTRAINT "FK_ChatParticipants_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "Posts" (
+CREATE TABLE IF NOT EXISTS "Posts" (
     "Id" character varying(450) NOT NULL,
     "Title" character varying(256) NOT NULL,
     "Content" character varying(5000) NOT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE "Posts" (
     CONSTRAINT "FK_Posts_Profiles_AuthorId" FOREIGN KEY ("AuthorId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ProfileBadges" (
+CREATE TABLE IF NOT EXISTS "ProfileBadges" (
     "ProfileId" character varying(450) NOT NULL,
     "BadgeId" character varying(450) NOT NULL,
     CONSTRAINT "PK_ProfileBadges" PRIMARY KEY ("ProfileId", "BadgeId"),
@@ -132,7 +132,7 @@ CREATE TABLE "ProfileBadges" (
     CONSTRAINT "FK_ProfileBadges_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ProfileExperiences" (
+CREATE TABLE IF NOT EXISTS "ProfileExperiences" (
     "Id" character varying(450) NOT NULL,
     "ProfileId" character varying(450) NOT NULL,
     "Title" character varying(256) NOT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE "ProfileExperiences" (
     CONSTRAINT "FK_ProfileExperiences_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ProfileMedias" (
+CREATE TABLE IF NOT EXISTS "ProfileMedias" (
     "Id" character varying(450) NOT NULL,
     "ProfileId" character varying(450) NOT NULL,
     "MediaId" character varying(450) NOT NULL,
@@ -154,7 +154,7 @@ CREATE TABLE "ProfileMedias" (
     CONSTRAINT "FK_ProfileMedias_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ProfileSkills" (
+CREATE TABLE IF NOT EXISTS "ProfileSkills" (
     "ProfileId" character varying(450) NOT NULL,
     "SkillId" character varying(450) NOT NULL,
     CONSTRAINT "PK_ProfileSkills" PRIMARY KEY ("ProfileId", "SkillId"),
@@ -162,7 +162,7 @@ CREATE TABLE "ProfileSkills" (
     CONSTRAINT "FK_ProfileSkills_Skills_SkillId" FOREIGN KEY ("SkillId") REFERENCES "Skills" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ProfileTags" (
+CREATE TABLE IF NOT EXISTS "ProfileTags" (
     "ProfileId" character varying(450) NOT NULL,
     "TagId" character varying(450) NOT NULL,
     CONSTRAINT "PK_ProfileTags" PRIMARY KEY ("ProfileId", "TagId"),
@@ -170,11 +170,13 @@ CREATE TABLE "ProfileTags" (
     CONSTRAINT "FK_ProfileTags_Tags_TagId" FOREIGN KEY ("TagId") REFERENCES "Tags" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "JobPostings" (
+CREATE TABLE IF NOT EXISTS "JobPostings" (
     "Id" character varying(450) NOT NULL,
     "Title" character varying(256) NOT NULL,
     "Description" character varying(5000) NOT NULL,
     "Cost" double precision NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "UpdatedAt" timestamp with time zone,
     "AuthorId" character varying(450) NOT NULL,
     "AreaId" character varying(450) NOT NULL,
     "CategoryId" character varying(450) NOT NULL,
@@ -184,7 +186,7 @@ CREATE TABLE "JobPostings" (
     CONSTRAINT "FK_JobPostings_Profiles_AuthorId" FOREIGN KEY ("AuthorId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "Comments" (
+CREATE TABLE IF NOT EXISTS "Comments" (
     "Id" character varying(450) NOT NULL,
     "AuthorId" character varying(450) NOT NULL,
     "ParentId" character varying(450),
@@ -199,7 +201,7 @@ CREATE TABLE "Comments" (
     CONSTRAINT "FK_Comments_Profiles_AuthorId" FOREIGN KEY ("AuthorId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "PostMedias" (
+CREATE TABLE IF NOT EXISTS "PostMedias" (
     "Id" character varying(450) NOT NULL,
     "PostId" character varying(450) NOT NULL,
     "MediaId" character varying(450) NOT NULL,
@@ -208,7 +210,7 @@ CREATE TABLE "PostMedias" (
     CONSTRAINT "FK_PostMedias_Posts_PostId" FOREIGN KEY ("PostId") REFERENCES "Posts" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "PostTags" (
+CREATE TABLE IF NOT EXISTS "PostTags" (
     "PostId" character varying(450) NOT NULL,
     "TagId" character varying(450) NOT NULL,
     CONSTRAINT "PK_PostTags" PRIMARY KEY ("PostId", "TagId"),
@@ -216,7 +218,7 @@ CREATE TABLE "PostTags" (
     CONSTRAINT "FK_PostTags_Tags_TagId" FOREIGN KEY ("TagId") REFERENCES "Tags" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "PostVotes" (
+CREATE TABLE IF NOT EXISTS "PostVotes" (
     "Id" character varying(450) NOT NULL,
     "IsUpvote" boolean NOT NULL,
     "CreatedAt" timestamp with time zone NOT NULL,
@@ -227,7 +229,7 @@ CREATE TABLE "PostVotes" (
     CONSTRAINT "FK_PostVotes_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "ProfileExperienceMedias" (
+CREATE TABLE IF NOT EXISTS "ProfileExperienceMedias" (
     "Id" character varying(450) NOT NULL,
     "ProfileExperienceId" character varying(450) NOT NULL,
     "MediaId" character varying(450) NOT NULL,
@@ -236,7 +238,7 @@ CREATE TABLE "ProfileExperienceMedias" (
     CONSTRAINT "FK_ProfileExperienceMedias_ProfileExperiences_ProfileExperienc~" FOREIGN KEY ("ProfileExperienceId") REFERENCES "ProfileExperiences" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "JobPostingMedias" (
+CREATE TABLE IF NOT EXISTS "JobPostingMedias" (
     "Id" character varying(450) NOT NULL,
     "JobPostingId" character varying(450) NOT NULL,
     "MediaId" character varying(450) NOT NULL,
@@ -245,7 +247,7 @@ CREATE TABLE "JobPostingMedias" (
     CONSTRAINT "FK_JobPostingMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "Jobs" (
+CREATE TABLE IF NOT EXISTS "Jobs" (
     "Id" character varying(450) NOT NULL,
     "ActualCost" double precision NOT NULL,
     "StartedAt" timestamp with time zone NOT NULL,
@@ -261,7 +263,7 @@ CREATE TABLE "Jobs" (
     CONSTRAINT "FK_Jobs_Profiles_WorkerId" FOREIGN KEY ("WorkerId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "CommentMedias" (
+CREATE TABLE IF NOT EXISTS "CommentMedias" (
     "Id" character varying(450) NOT NULL,
     "CommentId" character varying(450) NOT NULL,
     "MediaId" character varying(450) NOT NULL,
@@ -270,7 +272,7 @@ CREATE TABLE "CommentMedias" (
     CONSTRAINT "FK_CommentMedias_Media_MediaId" FOREIGN KEY ("MediaId") REFERENCES "Media" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "CommentVotes" (
+CREATE TABLE IF NOT EXISTS "CommentVotes" (
     "Id" character varying(450) NOT NULL,
     "IsUpvote" boolean NOT NULL,
     "CreatedAt" timestamp with time zone NOT NULL,
@@ -281,7 +283,7 @@ CREATE TABLE "CommentVotes" (
     CONSTRAINT "FK_CommentVotes_Profiles_ProfileId" FOREIGN KEY ("ProfileId") REFERENCES "Profiles" ("Id") ON DELETE CASCADE
 );
 
-CREATE TABLE "JobReviews" (
+CREATE TABLE IF NOT EXISTS "JobReviews" (
     "Id" character varying(450) NOT NULL,
     "Content" character varying(5000) NOT NULL,
     "Rating" integer NOT NULL,
@@ -391,10 +393,12 @@ CREATE UNIQUE INDEX "IX_Tags_Name" ON "Tags" ("Name");
 
 CREATE UNIQUE INDEX "IX_Users_Email" ON "Users" ("Email");
 
+CREATE UNIQUE INDEX "IX_Users_FirebaseId" ON "Users" ("FirebaseId");
+
 CREATE UNIQUE INDEX "IX_Users_Username" ON "Users" ("Username");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20250203151402_InitialMigration', '9.0.1');
+VALUES ('20250216234149_InitialMigrations', '9.0.1');
 
 COMMIT;
 

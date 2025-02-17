@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ExpertBridge.Api.Database.Migrations
+namespace ExpertBridge.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -383,6 +383,8 @@ namespace ExpertBridge.Api.Database.Migrations
                     Title = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Description = table.Column<string>(type: "character varying(5000)", maxLength: 5000, nullable: false),
                     Cost = table.Column<double>(type: "double precision", precision: 18, scale: 2, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     AuthorId = table.Column<string>(type: "character varying(450)", nullable: false),
                     AreaId = table.Column<string>(type: "character varying(450)", nullable: false),
                     CategoryId = table.Column<string>(type: "character varying(450)", nullable: false)
@@ -953,6 +955,12 @@ namespace ExpertBridge.Api.Database.Migrations
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_FirebaseId",
+                table: "Users",
+                column: "FirebaseId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
