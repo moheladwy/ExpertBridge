@@ -5,11 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExpertBridge.Api.Controllers;
 
+/// <summary>
+///     This controller is used to handle media operations like uploading, downloading, and deleting objects from the s3 bucket.
+/// </summary>
+/// <param name="objectStorageService">
+///     The service that handles the operations on the s3 bucket.
+/// </param>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
 public class MediaController(IObjectStorageService objectStorageService) : ControllerBase
 {
+    /// <summary>
+    ///     This endpoint is used to download an object from the s3 bucket.
+    /// </summary>
+    /// <param name="key">
+    ///     The key of the object to download.
+    /// </param>
+    /// <returns>
+    ///     The object itself as a file.
+    /// </returns>
     [HttpGet("download/{key}")]
     public async Task<IActionResult> DownloadObjectAsync([FromRoute] string key)
     {
@@ -18,6 +33,15 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
         return File(response.ResponseStream, response.ContentType, response.FileName);
     }
 
+    /// <summary>
+    ///     This endpoint is used to get the url of an object in the s3 bucket.
+    /// </summary>
+    /// <param name="key">
+    ///     The key of the object to get the url of.
+    /// </param>
+    /// <returns>
+    ///     The url of the object in the s3 bucket to download it from the client side.
+    /// </returns>
     [HttpGet("url/{key}")]
     public async Task<IActionResult> GetObjectUrlAsync([FromRoute] string key)
     {
@@ -26,6 +50,16 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
         return Ok(url);
     }
 
+    /// <summary>
+    ///     This endpoint is used to get a presigned url of an object in the s3 bucket.
+    /// </summary>
+    /// <param name="key">
+    ///     The key of the object to get the presigned url of.
+    /// </param>
+    /// <returns>
+    ///     The presigned url of the object in the s3 bucket to download it from the client side.
+    ///     It's used for limited access to the object.
+    /// </returns>
     [HttpGet("presigned-url/{key}")]
     public async Task<IActionResult> GetPresignedUrlAsync([FromRoute] string key)
     {
@@ -34,6 +68,15 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
         return Ok(url);
     }
 
+    /// <summary>
+    ///     This endpoint is used to upload an object to the s3 bucket.
+    /// </summary>
+    /// <param name="file">
+    ///     The file to upload to the s3 bucket.
+    /// </param>
+    /// <returns>
+    ///     A message indicating that the file was uploaded successfully.
+    /// </returns>
     [HttpPost("upload")]
     public async Task<IActionResult> UploadObjectAsync(IFormFile file)
     {
@@ -46,6 +89,15 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
         return StatusCode(response.StatusCode, response);
     }
 
+    /// <summary>
+    ///     This endpoint is used to delete an object from the s3 bucket.
+    /// </summary>
+    /// <param name="key">
+    ///     The key of the object to delete.
+    /// </param>
+    /// <returns>
+    ///     A message indicating that the file was deleted successfully.
+    /// </returns>
     [HttpDelete("delete/{key}")]
     public async Task<IActionResult> DeleteObjectAsync([FromRoute] string key)
     {
