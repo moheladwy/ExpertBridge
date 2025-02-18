@@ -8,6 +8,9 @@ export const firebaseApiSlice = createApi({
   keepUnusedDataFor: 5,
 
   endpoints: builder => ({
-
+    login: builder.query({
+      query: () => ({ url: '/login' }),
+      providesTags: ['Login'],
+    }),
   }),
 });
