@@ -37,7 +37,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run ESLint
-        run: npm run lint
+        run: npm run lint -- --quiet
 
       - name: Build application
         run: npm run build
