@@ -5,18 +5,22 @@ import './index.css'
 import App from './App.tsx'
 import NotFoundError from './pages/notFoundPage/NotFoundError.tsx'
 import LandingPage from './pages/landingPage/LandingPage.tsx'
+import { store } from './app/store.ts'
 
+import { Provider } from "react-redux";
 
 const router = createBrowserRouter([
   {path: '/', element: <App/>, children: [
     {index: true, element: <LandingPage/>}
   ]},
 
-  {path: '*', element: <NotFoundError/>}
+  { path: '*', element: <NotFoundError /> }
 ]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-        <RouterProvider router={router}/>
+    <Provider store={store} >
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 )
