@@ -14,13 +14,6 @@ env:
 jobs:
     build-and-push:
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
-        defaults:
-            run:
-                working-directory: ./server
-
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -33,6 +26,7 @@ jobs:
 
             - name: Build the Docker image
               run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE_NAME}}:${{ env.TAG }} .
+              working-directory: ./server
 
             - name: Tag the Docker image
               run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE_NAME}}:${{ env.TAG }} ${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE_NAME}}:latest
