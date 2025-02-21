@@ -27,6 +27,8 @@
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dexie": "^4.0.11",
+    "dexie-react-hooks": "^1.1.7",
     "firebase": "^11.2.0",
     "lucide-react": "^0.469.0",
     "react": "^19.0.0",
