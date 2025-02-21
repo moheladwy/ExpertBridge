@@ -7,7 +7,7 @@ import NotFoundError from './pages/notFoundPage/NotFoundError.tsx'
 import LandingPage from './pages/landingPage/LandingPage.tsx'
 import { store } from './app/store.ts'
 
-import { Provider } from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
 
 const router = createBrowserRouter([
   {path: '/', element: <App/>, children: [
@@ -19,8 +19,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store} >
+    <ReduxProvider store={store} >
       <RouterProvider router={router} />
-    </Provider>
+    </ReduxProvider>
   </StrictMode>,
 )
