@@ -15,8 +15,10 @@ public class UserValidatorTests
         Username = "johndoe",
         FirstName = "John",
         LastName = "Doe",
-        isBanned = false,
-        isDeleted = false,
+        PhoneNumber = "1234567890",
+        IsBanned = false,
+        IsDeleted = false,
+        IsEmailVerified = false,
         CreatedAt = DateTime.Now
     };
 
@@ -177,5 +179,34 @@ public class UserValidatorTests
         resultOfNullFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
         resultOfEmptyFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
         resultOfLongFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
+    }
+
+    [Fact]
+    public void ValidateUser_WhenPhoneNumberIsInvalid_ShouldReturnFalse()
+    {
+        // Arrange
+        var UserWithNullPhoneNumber = _validUser;
+        UserWithNullPhoneNumber.PhoneNumber = null;
+
+        var UserWithEmptyPhoneNumber = _validUser;
+        UserWithEmptyPhoneNumber.PhoneNumber = string.Empty;
+
+        var UserWithInvalidPhoneNumber = _validUser;
+        UserWithInvalidPhoneNumber.PhoneNumber = "invalidphonenumber";
+
+        var UserWithLongPhoneNumber = _validUser;
+        UserWithLongPhoneNumber.PhoneNumber = new string('1', UserEntityConstraints.MaxPhoneNumberLength + 1);
+
+        // Act
+        var resultOfNullPhoneNumber = _validator.TestValidate(UserWithNullPhoneNumber);
+        var resultOfEmptyPhoneNumber = _validator.TestValidate(UserWithEmptyPhoneNumber);
+        var resultOfInvalidPhoneNumber = _validator.TestValidate(UserWithInvalidPhoneNumber);
+        var resultOfLongPhoneNumber = _validator.TestValidate(UserWithLongPhoneNumber);
+
+        // Assert
+        resultOfNullPhoneNumber.ShouldHaveValidationErrorFor(x => x.PhoneNumber);
+        resultOfEmptyPhoneNumber.ShouldHaveValidationErrorFor(x => x.PhoneNumber);
+        resultOfInvalidPhoneNumber.ShouldHaveValidationErrorFor(x => x.PhoneNumber);
+        resultOfLongPhoneNumber.ShouldHaveValidationErrorFor(x => x.PhoneNumber);
     }
 }

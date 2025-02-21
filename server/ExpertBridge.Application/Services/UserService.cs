@@ -38,8 +38,8 @@ public class UserService(
             FirstName = requestDto.FirstName,
             LastName = requestDto.LastName,
             CreatedAt = DateTime.Now,
-            isBanned = false,
-            isDeleted = false
+            IsBanned = false,
+            IsDeleted = false
         };
         await userRepository.AddAsync(user);
         return new UserResponse(user);

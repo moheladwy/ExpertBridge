@@ -1,3 +1,4 @@
+using ExpertBridge.Core.Entities.Media;
 using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Profile;
@@ -26,7 +27,18 @@ public class ProfileEntityValidator : AbstractValidator<Profile>
             .NotEmpty().WithMessage("Bio is required.")
             .MaximumLength(ProfileEntityConstraints.BioMaxLength);
 
+        RuleFor(x => x.ProfilePictureUrl)
+            .NotEmpty().WithMessage("Profile picture URL is required.")
+            .NotEmpty().WithMessage("Profile picture URL is required.")
+            .MaximumLength(MediaEntityConstraints.MaxMediaUrlLength)
+            .WithMessage($"Profile picture URL must be less than {MediaEntityConstraints.MaxMediaUrlLength} characters.");
+
         RuleFor(x => x.Rating)
-            .InclusiveBetween(ProfileEntityConstraints.RatingMinValue, ProfileEntityConstraints.RatingMaxValue);
+            .InclusiveBetween(ProfileEntityConstraints.RatingMinValue, ProfileEntityConstraints.RatingMaxValue)
+            .WithMessage($"Rating must be between {ProfileEntityConstraints.RatingMinValue} and {ProfileEntityConstraints.RatingMaxValue}.");
+
+        RuleFor(x => x.RatingCount)
+            .InclusiveBetween(ProfileEntityConstraints.RatingCountMinValue, ProfileEntityConstraints.RatingCountMaxValue)
+            .WithMessage($"Rating count must be between {ProfileEntityConstraints.RatingCountMinValue} and {ProfileEntityConstraints.RatingCountMaxValue}.");
     }
 }

@@ -1,4 +1,5 @@
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Core.Entities.Profile;
 using FluentValidation.TestHelper;
 
@@ -13,7 +14,9 @@ public class ProfileValidatorTests
         UserId = Guid.NewGuid().ToString(),
         JobTitle = "Software Engineer",
         Bio = "I am a software engineer",
-        Rating = 5
+        ProfilePictureUrl = "https://example.com/profile.jpg",
+        Rating = 5,
+        RatingCount = 10
     };
 
     [Fact]
@@ -139,5 +142,43 @@ public class ProfileValidatorTests
         // Assert
         resultOfNegativeRating.ShouldHaveValidationErrorFor(x => x.Rating);
         resultOfRatingGreaterThanMaxValue.ShouldHaveValidationErrorFor(x => x.Rating);
+    }
+
+    [Fact]
+    public void ValidateProfile_WhenRatingCountIsInvalid_ShouldReturnFalse()
+    {
+        // Arrange
+        var profileWithNegativeRatingCount = _validProfile;
+        profileWithNegativeRatingCount.RatingCount = ProfileEntityConstraints.RatingCountMinValue - 1;
+
+        // Act
+        var resultOfNegativeRatingCount = _profileEntityValidator.TestValidate(profileWithNegativeRatingCount);
+
+        // Assert
+        resultOfNegativeRatingCount.ShouldHaveValidationErrorFor(x => x.RatingCount);
+    }
+
+    [Fact]
+    public void ValidateProfile_WhenProfilePictureUrlIsInvalid_ShouldReturnFalse()
+    {
+        // Arrange
+        var profileWithNullProfilePictureUrl = _validProfile;
+        profileWithNullProfilePictureUrl.ProfilePictureUrl = null;
+
+        var profileWithEmptyProfilePictureUrl = _validProfile;
+        profileWithEmptyProfilePictureUrl.ProfilePictureUrl = string.Empty;
+
+        var profileWithLongProfilePictureUrl = _validProfile;
+        profileWithLongProfilePictureUrl.ProfilePictureUrl = new string('a', MediaEntityConstraints.MaxMediaUrlLength + 1);
+
+        // Act
+        var resultOfNullProfilePictureUrl = _profileEntityValidator.TestValidate(profileWithNullProfilePictureUrl);
+        var resultOfEmptyProfilePictureUrl = _profileEntityValidator.TestValidate(profileWithEmptyProfilePictureUrl);
+        var resultOfLongProfilePictureUrl = _profileEntityValidator.TestValidate(profileWithLongProfilePictureUrl);
+
+        // Assert
+        resultOfNullProfilePictureUrl.ShouldHaveValidationErrorFor(x => x.ProfilePictureUrl);
+        resultOfEmptyProfilePictureUrl.ShouldHaveValidationErrorFor(x => x.ProfilePictureUrl);
+        resultOfLongProfilePictureUrl.ShouldHaveValidationErrorFor(x => x.ProfilePictureUrl);
     }
 }
