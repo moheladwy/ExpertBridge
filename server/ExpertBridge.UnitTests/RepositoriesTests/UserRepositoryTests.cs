@@ -31,8 +31,8 @@ public sealed class UserRepositoryTests
             Username = "user1",
             FirstName = "Test",
             LastName = "User",
-            isBanned = false,
-            isDeleted = false,
+            IsBanned = false,
+            IsDeleted = false,
             CreatedAt = DateTime.Now
         };
         _anotherValidUser = new User
@@ -43,8 +43,8 @@ public sealed class UserRepositoryTests
             Username = "user2",
             FirstName = "Test",
             LastName = "User",
-            isBanned = false,
-            isDeleted = false,
+            IsBanned = false,
+            IsDeleted = false,
             CreatedAt = DateTime.Now
         };
         _connection = new SqliteConnection("Filename=:memory:");
@@ -286,7 +286,7 @@ public sealed class UserRepositoryTests
 
         // Assert: The user should be deleted from the repository.
         var user = await context.Users.FindAsync(_validUser.Id);
-        Assert.True(user?.isDeleted);
+        Assert.True(user?.IsDeleted);
     }
 
     [Fact]

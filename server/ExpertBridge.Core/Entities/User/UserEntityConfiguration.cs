@@ -30,6 +30,10 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(x => x.Username).IsUnique();
 
+        builder.Property(x => x.PhoneNumber)
+            .IsRequired(false)
+            .HasMaxLength(UserEntityConstraints.MaxPhoneNumberLength);
+
         builder.Property(x => x.FirstName)
             .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxNameLength);
@@ -38,10 +42,13 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxNameLength);
 
-        builder.Property(x => x.isBanned)
+        builder.Property(x => x.IsBanned)
             .IsRequired();
 
-        builder.Property(x => x.isDeleted)
+        builder.Property(x => x.IsDeleted)
+            .IsRequired();
+
+        builder.Property(x => x.IsEmailVerified)
             .IsRequired();
 
         builder.Property(x => x.CreatedAt)

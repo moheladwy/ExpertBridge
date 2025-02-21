@@ -37,13 +37,24 @@ public class UserEntityValidator : AbstractValidator<User>
             .NotEmpty().WithMessage("Username is required")
             .MaximumLength(UserEntityConstraints.MaxUsernameLength).WithMessage($"Username must be less than {UserEntityConstraints.MaxUsernameLength} characters");
 
-        RuleFor(x => x.isBanned)
+        RuleFor(x => x.PhoneNumber)
+            .NotNull().WithMessage("PhoneNumber is required")
+            .NotEmpty().WithMessage("PhoneNumber is required")
+            .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength).WithMessage(
+                $"PhoneNumber must be less than {UserEntityConstraints.MaxPhoneNumberLength} characters")
+            .Matches(@"^\+?[0-9]\d{9,17}$").WithMessage("PhoneNumber is not valid");
+
+        RuleFor(x => x.IsBanned)
             .NotNull().WithMessage("isBanned is required");
 
-        RuleFor(x => x.isDeleted)
+        RuleFor(x => x.IsDeleted)
             .NotNull().WithMessage("isDeleted is required");
+
+        RuleFor(x => x.IsEmailVerified)
+            .NotNull().WithMessage("isEmailVerified is required");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required");
     }
+
 }

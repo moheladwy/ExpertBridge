@@ -22,7 +22,7 @@ public class UserResponse
         Username = user.Username;
         FirstName = user.FirstName;
         LastName = user.LastName;
-        IsBanned = user.isBanned;
-        IsDeleted = user.isDeleted;
+        IsBanned = user.IsBanned;
+        IsDeleted = user.IsDeleted;
     }
 }
