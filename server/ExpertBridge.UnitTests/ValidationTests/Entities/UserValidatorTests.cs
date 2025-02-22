@@ -10,7 +10,7 @@ public class UserValidatorTests
     private readonly User _validUser = new()
     {
         Id = Guid.NewGuid().ToString(),
-        FirebaseId = Guid.NewGuid().ToString(),
+        ProviderId = Guid.NewGuid().ToString(),
         Email = "user@example.com",
         Username = "johndoe",
         FirstName = "John",
@@ -163,13 +163,13 @@ public class UserValidatorTests
     {
         // Arrange
         var UserWithNullFirebaseId = _validUser;
-        UserWithNullFirebaseId.FirebaseId = null;
+        UserWithNullFirebaseId.ProviderId = null;
 
         var UserWithEmptyFirebaseId = _validUser;
-        UserWithEmptyFirebaseId.FirebaseId = string.Empty;
+        UserWithEmptyFirebaseId.ProviderId = string.Empty;
 
         var UserWithLongFirebaseId = _validUser;
-        UserWithLongFirebaseId.FirebaseId = new string('a', GlobalEntitiesConstraints.MaxIdLength + 1);
+        UserWithLongFirebaseId.ProviderId = new string('a', GlobalEntitiesConstraints.MaxIdLength + 1);
 
         // Act
         var resultOfNullFirebaseId = _validator.TestValidate(UserWithNullFirebaseId);
@@ -177,9 +177,9 @@ public class UserValidatorTests
         var resultOfLongFirebaseId = _validator.TestValidate(UserWithLongFirebaseId);
 
         // Assert
-        resultOfNullFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
-        resultOfEmptyFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
-        resultOfLongFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
+        resultOfNullFirebaseId.ShouldHaveValidationErrorFor(x => x.ProviderId);
+        resultOfEmptyFirebaseId.ShouldHaveValidationErrorFor(x => x.ProviderId);
+        resultOfLongFirebaseId.ShouldHaveValidationErrorFor(x => x.ProviderId);
     }
 
     [Fact]

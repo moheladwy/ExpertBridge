@@ -12,11 +12,11 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 public sealed class UserController(IUserService userService) : ControllerBase
 {
-    [HttpGet("get/{firebaseId}")]
-    public async Task<UserResponse> GetUserByFirebaseId([FromRoute] string firebaseId)
+    [HttpGet("get/{identityProviderId}")]
+    public async Task<UserResponse> GetUserByIdentityProviderId([FromRoute] string identityProviderId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(firebaseId);
-        return await userService.GetUserByFirebaseId(firebaseId);
+        ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
+        return await userService.GetUserByIdentityProviderId(identityProviderId);
     }
 
     [HttpPost("register")]

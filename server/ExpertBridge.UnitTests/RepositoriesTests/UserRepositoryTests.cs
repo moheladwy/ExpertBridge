@@ -1,4 +1,3 @@
-using ExpertBridge.Application.Repositories;
 using ExpertBridge.Application.Repositories.User;
 using ExpertBridge.Core;
 using ExpertBridge.Core.Entities;
@@ -27,7 +26,7 @@ public sealed class UserRepositoryTests
         _validUser = new User
         {
             Id = Guid.NewGuid().ToString(),
-            FirebaseId = Guid.NewGuid().ToString(),
+            ProviderId = Guid.NewGuid().ToString(),
             Email = "user1@example.com",
             Username = "user1",
             FirstName = "Test",
@@ -39,7 +38,7 @@ public sealed class UserRepositoryTests
         _anotherValidUser = new User
         {
             Id = Guid.NewGuid().ToString(),
-            FirebaseId = Guid.NewGuid().ToString(),
+            ProviderId = Guid.NewGuid().ToString(),
             Email = "user2@example.com",
             Username = "user2",
             FirstName = "Test",
@@ -251,7 +250,7 @@ public sealed class UserRepositoryTests
 
         // Act: Use the repository to update a user.
         _validUser.FirstName = null;
-        _validUser.FirebaseId = new string('a', GlobalEntitiesConstraints.MaxIdLength + 1);
+        _validUser.ProviderId = new string('a', GlobalEntitiesConstraints.MaxIdLength + 1);
 
         // Assert: It throws an exception when trying to update an invalid user.
         await Assert.ThrowsAsync<DbUpdateException>(async () => await _repository.UpdateAsync(_validUser));

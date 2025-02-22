@@ -3,7 +3,7 @@ namespace ExpertBridge.Core.Entities.User;
 public class User
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string FirebaseId { get; set; }
+    public string ProviderId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }

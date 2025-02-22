@@ -15,9 +15,9 @@ public class UserService(
     IValidator<RegisterUserRequest> registerUserRequestValidator
     ) : IUserService
 {
-    public async Task<UserResponse> GetUserByFirebaseId(string firebaseId)
+    public async Task<UserResponse> GetUserByIdentityProviderId(string firebaseId)
     {
-        var user = await userRepository.GetFirstAsNoTrackingAsync(user => user.FirebaseId == firebaseId)
+        var user = await userRepository.GetFirstAsNoTrackingAsync(user => user.ProviderId == firebaseId)
             ?? throw new UserNotFoundException("User not found");
         return new UserResponse(user);
     }
@@ -32,7 +32,7 @@ public class UserService(
         var user = new User
         {
             Id = Guid.NewGuid().ToString(),
-            FirebaseId = requestDto.FirebaseId,
+            ProviderId = requestDto.FirebaseId,
             Email = requestDto.Email,
             Username = requestDto.Username,
             FirstName = requestDto.FirstName,
