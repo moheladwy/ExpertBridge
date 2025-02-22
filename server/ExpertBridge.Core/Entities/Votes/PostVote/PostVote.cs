@@ -4,7 +4,7 @@ public class PostVote
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public bool IsUpvote { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Foreign keys
     public string ProfileId { get; set; }

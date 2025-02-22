@@ -28,7 +28,7 @@ public class PostEntityValidator : AbstractValidator<Post>
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("CreatedAt must be less than or equal to the current date");
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("CreatedAt must be less than or equal to the current date");
 
         RuleFor(x => x.LastModified)
             .NotEqual(x => x.CreatedAt).WithMessage("LastModified must be different from CreatedAt")

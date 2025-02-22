@@ -27,13 +27,13 @@ public class CommentEntityValidator : AbstractValidator<Comment>
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("CreatedAt must be less than or equal to the current date")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("CreatedAt must be less than or equal to the current date")
             .When(x => x.CreatedAt != DateTime.MinValue)
             .LessThan(x => x.LastModified).WithMessage("CreatedAt must be less than LastModified")
             .When(x => x.LastModified.HasValue);
 
         RuleFor(x => x.LastModified)
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("LastModified must be less than or equal to the current date")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("LastModified must be less than or equal to the current date")
             .When(x => x.LastModified.HasValue)
             .GreaterThan(x => x.CreatedAt).WithMessage("LastModified must be greater than or equal to CreatedAt")
             .When(x => x.CreatedAt != DateTime.MaxValue);

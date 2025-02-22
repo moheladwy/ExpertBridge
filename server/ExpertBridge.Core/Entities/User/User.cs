@@ -13,7 +13,7 @@ public class User
     public bool IsDeleted { get; set; }
     public bool IsEmailVerified { get; set; }
     public bool IsOnBoarded { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     public Profile.Profile Profile { get; set; }

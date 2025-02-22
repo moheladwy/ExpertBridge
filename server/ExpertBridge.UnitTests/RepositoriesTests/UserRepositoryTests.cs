@@ -33,7 +33,7 @@ public sealed class UserRepositoryTests
             LastName = "User",
             IsBanned = false,
             IsDeleted = false,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow
         };
         _anotherValidUser = new User
         {
@@ -45,7 +45,7 @@ public sealed class UserRepositoryTests
             LastName = "User",
             IsBanned = false,
             IsDeleted = false,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.UtcNow
         };
         _connection = new SqliteConnection("Filename=:memory:");
         _connection.Open();

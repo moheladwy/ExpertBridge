@@ -20,7 +20,7 @@ public class UserValidatorTests
         IsDeleted = false,
         IsEmailVerified = false,
         IsOnBoarded = false,
-        CreatedAt = DateTime.Now
+        CreatedAt = DateTime.UtcNow
     };
 
     [Fact]

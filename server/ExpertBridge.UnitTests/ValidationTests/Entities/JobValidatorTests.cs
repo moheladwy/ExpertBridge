@@ -16,8 +16,8 @@ public class JobValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         JobPostingId = Guid.NewGuid().ToString(),
         ActualCost = 100,
-        StartedAt = DateTime.Now.AddDays(-2),
-        EndedAt = DateTime.Now.AddMinutes(-10)
+        StartedAt = DateTime.UtcNow.AddDays(-2),
+        EndedAt = DateTime.UtcNow.AddMinutes(-10)
     };
 
     [Fact]
@@ -73,7 +73,7 @@ public class JobValidatorTests
     {
         // Arrange
         var jobWithStartedAtGreaterThanEndedAt = _validJob;
-        jobWithStartedAtGreaterThanEndedAt.StartedAt = DateTime.Now.AddDays(1);
+        jobWithStartedAtGreaterThanEndedAt.StartedAt = DateTime.UtcNow.AddDays(1);
 
         // Act
         var resultOfStartedAtGreaterThanEndedAt = _jobEntityValidator.TestValidate(jobWithStartedAtGreaterThanEndedAt);
@@ -90,7 +90,7 @@ public class JobValidatorTests
         jobWithEndedAtLessThanStartedAt.EndedAt = _validJob.StartedAt.AddDays(-1);
 
         var jobWithEndedAtGreaterThanCurrentDate = _validJob;
-        jobWithEndedAtGreaterThanCurrentDate.EndedAt = DateTime.Now.AddDays(1);
+        jobWithEndedAtGreaterThanCurrentDate.EndedAt = DateTime.UtcNow.AddDays(1);
 
         // Act
         var resultOfEndedAtLessThanStartedAt = _jobEntityValidator.TestValidate(jobWithEndedAtLessThanStartedAt);

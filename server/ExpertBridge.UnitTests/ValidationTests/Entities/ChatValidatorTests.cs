@@ -10,7 +10,7 @@ public class ChatValidatorTests
     private readonly Chat _validChat = new()
     {
         Id = Guid.NewGuid().ToString(),
-        CreatedAt = DateTime.Now.AddDays(-1),
+        CreatedAt = DateTime.UtcNow.AddDays(-1),
         EndedAt = DateTime.MaxValue
     };
 
