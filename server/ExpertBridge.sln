@@ -22,8 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Core", "Expert
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Data", "ExpertBridge.Data\ExpertBridge.Data.csproj", "{6A8F0501-963D-4F4C-8CBF-6747B148874B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Application", "ExpertBridge.Application\ExpertBridge.Application.csproj", "{D956ED11-5D0E-4521-943A-5A79E8175D7F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.UnitTests", "ExpertBridge.UnitTests\ExpertBridge.UnitTests.csproj", "{7BFFDB7C-149B-4B6E-ACFE-E4E822A70AF1}"
 EndProject
 Global
@@ -48,10 +46,6 @@ Global
 		{6A8F0501-963D-4F4C-8CBF-6747B148874B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A8F0501-963D-4F4C-8CBF-6747B148874B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A8F0501-963D-4F4C-8CBF-6747B148874B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D956ED11-5D0E-4521-943A-5A79E8175D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D956ED11-5D0E-4521-943A-5A79E8175D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D956ED11-5D0E-4521-943A-5A79E8175D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D956ED11-5D0E-4521-943A-5A79E8175D7F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7BFFDB7C-149B-4B6E-ACFE-E4E822A70AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7BFFDB7C-149B-4B6E-ACFE-E4E822A70AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BFFDB7C-149B-4B6E-ACFE-E4E822A70AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU

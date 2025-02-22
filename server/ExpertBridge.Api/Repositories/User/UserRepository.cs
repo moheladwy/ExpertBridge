@@ -4,7 +4,7 @@ using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Application.Repositories.User;
+namespace ExpertBridge.Api.Repositories.User;
 
 public class UserRepository(ExpertBridgeDbContext db) : IEntityRepository<Core.Entities.User.User>
 {

@@ -9,9 +9,18 @@ var redis = builder
     .WithLifetime(ContainerLifetime.Persistent)
     .PublishAsConnectionString();
 
+var seq = builder.AddSeq("Seq", port: 4002)
+    .WithContainerName("expertbridge-seq")
+    .WithDataVolume("expertbridge-seq-data")
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithOtlpExporter()
+    .PublishAsConnectionString();
+
 builder.AddProject<Projects.ExpertBridge_Api>("ExpertBridgeApi")
     .WithReference(redis)
+    .WithReference(seq)
     .WaitFor(redis)
+    .WaitFor(seq)
     .WithExternalHttpEndpoints();
 
 builder.Build().Run();

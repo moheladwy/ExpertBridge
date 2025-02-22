@@ -1,9 +1,8 @@
 using System.Text.Json;
-using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace ExpertBridge.Application.Services;
+namespace ExpertBridge.Api.Services;
 
 public class RedisService(IDistributedCache cache) : ICacheService
 {
