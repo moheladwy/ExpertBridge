@@ -1,0 +1,35 @@
+import { auth } from "@/lib/firebase";
+import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
+import { Navigate } from "react-router";
+
+// ✅ Protected Route Component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+
+
+  if (authLoading) return <div>Loading...</div>;
+
+  if (!authUser || authError) {
+    // TODO - Handle the error here.
+    if (authError) {
+      console.error('An error occurred while authenticating the user', authError);
+    }
+
+    console.log('challenging the user');
+    return <Navigate to="/login" replace />;
+  }
+
+  // TODO - useGetUserQuery here to check if the user has finished his onboarding.
+  const isOnboarded = true;
+
+  if (!isOnboarded) {
+    console.log('onboarding...');
+    return (
+      <Navigate to="/onboarding" replace />
+    );
+  }
+
+  return children;
+};
+
+export default ProtectedRoute;
