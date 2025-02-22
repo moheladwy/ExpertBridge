@@ -45,13 +45,16 @@ public class UserEntityValidator : AbstractValidator<User>
             .Matches(@"^\+?[0-9]\d{9,17}$").WithMessage("PhoneNumber is not valid");
 
         RuleFor(x => x.IsBanned)
-            .NotNull().WithMessage("isBanned is required");
+            .NotNull().WithMessage("IsBanned is required");
 
         RuleFor(x => x.IsDeleted)
-            .NotNull().WithMessage("isDeleted is required");
+            .NotNull().WithMessage("IsDeleted is required");
 
         RuleFor(x => x.IsEmailVerified)
-            .NotNull().WithMessage("isEmailVerified is required");
+            .NotNull().WithMessage("IsEmailVerified is required");
+
+        RuleFor(x => x.IsOnBoarded)
+            .NotNull().WithMessage("IsOnBoarded is required");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required");

@@ -12,6 +12,7 @@ public class User
     public bool IsBanned { get; set; }
     public bool IsDeleted { get; set; }
     public bool IsEmailVerified { get; set; }
+    public bool IsOnBoarded { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     // Navigation properties

@@ -19,6 +19,7 @@ public class UserValidatorTests
         IsBanned = false,
         IsDeleted = false,
         IsEmailVerified = false,
+        IsOnBoarded = false,
         CreatedAt = DateTime.Now
     };
 
