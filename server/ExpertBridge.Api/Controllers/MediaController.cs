@@ -1,4 +1,5 @@
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,11 +44,11 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
     ///     The url of the object in the s3 bucket to download it from the client side.
     /// </returns>
     [HttpGet("url/{key}")]
-    public async Task<IActionResult> GetObjectUrlAsync([FromRoute] string key)
+    public async Task<string> GetObjectUrlAsync([FromRoute] string key)
     {
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
         var url = await objectStorageService.GetObjectUrlAsync(key);
-        return Ok(url);
+        return url;
     }
 
     /// <summary>
@@ -61,11 +62,11 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
     ///     It's used for limited access to the object.
     /// </returns>
     [HttpGet("presigned-url/{key}")]
-    public async Task<IActionResult> GetPresignedUrlAsync([FromRoute] string key)
+    public async Task<string> GetPresignedUrlAsync([FromRoute] string key)
     {
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
         var url = await objectStorageService.GetPresignedUrlAsync(key);
-        return Ok(url);
+        return url;
     }
 
     /// <summary>
@@ -78,15 +79,15 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
     ///     A message indicating that the file was uploaded successfully.
     /// </returns>
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadObjectAsync(IFormFile file)
+    public async Task<UploadFileResponse> UploadObjectAsync(IFormFile file)
     {
         ArgumentNullException.ThrowIfNull(file, nameof(file));
-        if (file.Length == 0) return BadRequest("File is empty");
+        if (file.Length == 0) throw new ArgumentException("File is empty", nameof(file));
 
         var s3ObjectRequest = await file.ToPutObjectRequestAsync();
         var response = await objectStorageService.UploadObjectAsync(s3ObjectRequest);
 
-        return StatusCode(response.StatusCode, response);
+        return response;
     }
 
     /// <summary>
