@@ -14,7 +14,9 @@ public partial class Profile
     public string UserId { get; set; }
     public string JobTitle { get; set; }
     public string Bio { get; set; }
+    public string ProfilePictureUrl { get; set; }
     public int Rating { get; set; }
+    public int RatingCount { get; set; }
 }
 
 public partial class Profile

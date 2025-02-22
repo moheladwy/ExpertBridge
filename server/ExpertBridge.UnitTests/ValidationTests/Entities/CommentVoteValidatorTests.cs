@@ -13,7 +13,7 @@ public class CommentVoteValidatorTests
         CommentId = Guid.NewGuid().ToString(),
         ProfileId = Guid.NewGuid().ToString(),
         IsUpvote = true,
-        CreatedAt = DateTime.Now.AddDays(-1)
+        CreatedAt = DateTime.UtcNow.AddDays(-1)
     };
 
     [Fact]
@@ -103,7 +103,7 @@ public class CommentVoteValidatorTests
     {
         // Arrange
         var commentVoteWithFutureCreatedAt = _validCommentVote;
-        commentVoteWithFutureCreatedAt.CreatedAt = DateTime.Now.AddDays(1);
+        commentVoteWithFutureCreatedAt.CreatedAt = DateTime.UtcNow.AddDays(1);
 
         // Act
         var resultOfFutureCreatedAt = _commentVoteEntityValidator.TestValidate(commentVoteWithFutureCreatedAt);

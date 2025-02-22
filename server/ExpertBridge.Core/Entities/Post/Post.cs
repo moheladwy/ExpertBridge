@@ -10,7 +10,7 @@ public class Post
     public string Title { get; set; }
     public string Content { get; set; }
     public string AuthorId { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastModified { get; set; }
     public bool isDeleted { get; set; }
 

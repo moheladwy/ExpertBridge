@@ -13,7 +13,7 @@ public class PostValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         Title = "Post Title",
         Content = "Post Content",
-        CreatedAt = DateTime.Now.AddDays(-1),
+        CreatedAt = DateTime.UtcNow.AddDays(-1),
         LastModified = DateTime.MaxValue,
         isDeleted = false
     };
@@ -119,7 +119,7 @@ public class PostValidatorTests
     {
         // Arrange
         var postWithInvalidCreatedAt = _validPost;
-        postWithInvalidCreatedAt.CreatedAt = DateTime.Now.AddDays(1);
+        postWithInvalidCreatedAt.CreatedAt = DateTime.UtcNow.AddDays(1);
 
         // Act
         var resultOfInvalidCreatedAt = _postEntityValidator.TestValidate(postWithInvalidCreatedAt);

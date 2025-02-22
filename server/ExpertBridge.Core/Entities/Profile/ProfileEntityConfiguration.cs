@@ -1,3 +1,4 @@
+using ExpertBridge.Core.Entities.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,7 +21,14 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .IsRequired()
             .HasMaxLength(ProfileEntityConstraints.BioMaxLength);
 
+        builder.Property(x => x.ProfilePictureUrl)
+            .IsRequired(false)
+            .HasMaxLength(MediaEntityConstraints.MaxMediaUrlLength);
+
         builder.Property(x => x.Rating)
+            .IsRequired();
+
+        builder.Property(x => x.RatingCount)
             .IsRequired();
 
         builder.HasOne(p => p.User)

@@ -17,14 +17,14 @@ public class JobEntityValidator : AbstractValidator<Job>
 
         RuleFor(x => x.StartedAt)
             .NotNull().WithMessage("StartedAt is required")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("StartedAt must be less than or equal to current date")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("StartedAt must be less than or equal to current date")
             .GreaterThanOrEqualTo(DateTime.MinValue)
             .WithMessage("StartedAt must be greater than or equal to minimum date")
             .LessThan(x => x.EndedAt).WithMessage("StartedAt must be less than EndedAt")
             .When(x => x.EndedAt.HasValue);
 
         RuleFor(x => x.EndedAt)
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("EndedAt must be less than or equal to current date")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("EndedAt must be less than or equal to current date")
             .When(x => x.StartedAt != DateTime.MinValue)
             .GreaterThanOrEqualTo(DateTime.MinValue).WithMessage("EndedAt must be greater than or equal to minimum date")
             .When(x => x.EndedAt.HasValue)

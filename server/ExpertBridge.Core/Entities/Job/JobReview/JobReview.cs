@@ -5,7 +5,7 @@ public class JobReview
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Content { get; set; }
     public int Rating { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastModified { get; set; }
     public bool IsDeleted { get; set; }
 

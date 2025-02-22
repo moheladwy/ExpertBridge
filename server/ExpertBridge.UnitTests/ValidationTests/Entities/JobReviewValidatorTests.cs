@@ -15,8 +15,8 @@ public class JobReviewValidatorTests
         JobId = Guid.NewGuid().ToString(),
         Content = "Job Review Content",
         Rating = 5,
-        CreatedAt = DateTime.Now.AddMinutes(-2),
-        LastModified = DateTime.Now.AddMinutes(-1),
+        CreatedAt = DateTime.UtcNow.AddMinutes(-2),
+        LastModified = DateTime.UtcNow.AddMinutes(-1),
         IsDeleted = false
     };
 
@@ -102,11 +102,11 @@ public class JobReviewValidatorTests
     {
         // Arrange
         var jobReviewWithCreatedAtGreaterThanNow = _validJobReview;
-        jobReviewWithCreatedAtGreaterThanNow.CreatedAt = DateTime.Now.AddDays(1);
+        jobReviewWithCreatedAtGreaterThanNow.CreatedAt = DateTime.UtcNow.AddDays(1);
 
         var jobReviewWithCreatedAtGreaterThanLastModified = _validJobReview;
-        jobReviewWithCreatedAtGreaterThanLastModified.CreatedAt = DateTime.Now.AddDays(1);
-        jobReviewWithCreatedAtGreaterThanLastModified.LastModified = DateTime.Now;
+        jobReviewWithCreatedAtGreaterThanLastModified.CreatedAt = DateTime.UtcNow.AddDays(1);
+        jobReviewWithCreatedAtGreaterThanLastModified.LastModified = DateTime.UtcNow;
 
         // Act
         var resultOfCreatedAtGreaterThanNow = _jobReviewEntityValidator.TestValidate(jobReviewWithCreatedAtGreaterThanNow);
@@ -122,7 +122,7 @@ public class JobReviewValidatorTests
     {
         // Arrange
         var jobReviewWithLastModifiedGreaterThanNow = _validJobReview;
-        jobReviewWithLastModifiedGreaterThanNow.LastModified = DateTime.Now.AddDays(1);
+        jobReviewWithLastModifiedGreaterThanNow.LastModified = DateTime.UtcNow.AddDays(1);
 
         var jobReviewWithLastModifiedLessThanCreatedAt = _validJobReview;
         jobReviewWithLastModifiedLessThanCreatedAt.LastModified = _validJobReview.CreatedAt.AddDays(1);

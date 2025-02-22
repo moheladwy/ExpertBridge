@@ -12,8 +12,8 @@ public class CommentValidatorTests
         Id = Guid.NewGuid().ToString(),
         AuthorId = Guid.NewGuid().ToString(),
         Content = "Comment Content",
-        CreatedAt = DateTime.Now.AddDays(-1),
-        LastModified = DateTime.Now.AddMinutes(-4)
+        CreatedAt = DateTime.UtcNow.AddDays(-1),
+        LastModified = DateTime.UtcNow.AddMinutes(-4)
     };
 
     [Fact]
@@ -110,7 +110,7 @@ public class CommentValidatorTests
     {
         // Arrange
         var commentWithCreatedAtGreaterThanNow = _validComment;
-        commentWithCreatedAtGreaterThanNow.CreatedAt = DateTime.Now.AddDays(1);
+        commentWithCreatedAtGreaterThanNow.CreatedAt = DateTime.UtcNow.AddDays(1);
 
         // Act
         var resultOfCreatedAtGreaterThanNow = _commentEntityValidator.TestValidate(commentWithCreatedAtGreaterThanNow);
@@ -124,7 +124,7 @@ public class CommentValidatorTests
     {
         // Arrange
         var commentWithLastModifiedGreaterThanNow = _validComment;
-        commentWithLastModifiedGreaterThanNow.LastModified = DateTime.Now.AddDays(1);
+        commentWithLastModifiedGreaterThanNow.LastModified = DateTime.UtcNow.AddDays(1);
 
         var commentWithLastModifiedLessThanCreatedAt = _validComment;
         commentWithLastModifiedLessThanCreatedAt.LastModified = _validComment.CreatedAt.AddDays(-1);

@@ -10,7 +10,7 @@ public class ProfileExperience
     public string Description { get; set; }
     public string Company { get; set; }
     public string Location { get; set; }
-    public DateTime StartDate { get; set; } = DateTime.Now;
+    public DateTime StartDate { get; set; } = DateTime.UtcNow;
     public DateTime? EndDate { get; set; }
 
     // Navigation properties
