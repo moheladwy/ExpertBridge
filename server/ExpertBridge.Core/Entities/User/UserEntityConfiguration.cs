@@ -12,11 +12,11 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
             .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.FirebaseId)
+        builder.Property(x => x.ProviderId)
             .IsRequired()
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength);
 
-        builder.HasIndex(x => x.FirebaseId).IsUnique();
+        builder.HasIndex(x => x.ProviderId).IsUnique();
 
         builder.Property(x => x.Email)
             .IsRequired()

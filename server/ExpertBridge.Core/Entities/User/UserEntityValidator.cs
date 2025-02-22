@@ -11,7 +11,7 @@ public class UserEntityValidator : AbstractValidator<User>
             .NotEmpty().WithMessage("Id is required")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
-        RuleFor(x => x.FirebaseId)
+        RuleFor(x => x.ProviderId)
             .NotNull().WithMessage("FirebaseId is required")
             .NotEmpty().WithMessage("FirebaseId is required")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"FirebaseId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
