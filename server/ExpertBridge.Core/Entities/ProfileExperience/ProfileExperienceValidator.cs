@@ -28,7 +28,7 @@ public class ProfileExperienceValidator : AbstractValidator<ProfileExperience>
 
         RuleFor(x => x.StartDate)
             .NotNull().WithMessage("Start date is required.")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("Start date must be less than or equal to today.");
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Start date must be less than or equal to today.");
 
         RuleFor(x => x.EndDate)
             .GreaterThanOrEqualTo(x => x.StartDate).WithMessage("End date must be greater than or equal to start date.")

@@ -37,7 +37,7 @@ public class ObjectStorageService(
         {
             BucketName = awsConfigurations.Value.BucketName,
             Key = key,
-            Expires = DateTime.Now.AddMinutes(60)
+            Expires = DateTime.UtcNow.AddMinutes(60)
         };
 
         return await s3Client.GetPreSignedURLAsync(request);

@@ -14,7 +14,7 @@ public class ChatEntityValidator : AbstractValidator<Chat>
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("Chat CreatedAt is required")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("Chat CreatedAt must not be in the future")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Chat CreatedAt must not be in the future")
             .When(x => x.CreatedAt != DateTime.MinValue)
             .LessThan(x => x.EndedAt).WithMessage("Chat CreatedAt must be less than EndedAt")
             .When(x => x.EndedAt.HasValue);

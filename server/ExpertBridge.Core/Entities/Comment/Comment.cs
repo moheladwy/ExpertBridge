@@ -9,7 +9,7 @@ public class Comment
     public string AuthorId { get; set; }
     public string? ParentId { get; set; }
     public string Content { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastModified { get; set; }
     public bool isDeleted { get; set; }
 

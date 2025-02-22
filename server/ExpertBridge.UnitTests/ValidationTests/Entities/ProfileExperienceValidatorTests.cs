@@ -16,8 +16,8 @@ public class ProfileExperienceValidatorTests
         Title = "Software Engineer",
         Company = "Test Company",
         Location = "Test Location",
-        StartDate = DateTime.Now.AddYears(-1),
-        EndDate = DateTime.Now.AddYears(1)
+        StartDate = DateTime.UtcNow.AddYears(-1),
+        EndDate = DateTime.UtcNow.AddYears(1)
     };
 
     [Fact]
@@ -132,7 +132,7 @@ public class ProfileExperienceValidatorTests
     {
         // Arrange
         var profileExperienceWithInvalidStartDate = _validProfileExperience;
-        profileExperienceWithInvalidStartDate.StartDate = DateTime.Now.AddYears(1);
+        profileExperienceWithInvalidStartDate.StartDate = DateTime.UtcNow.AddYears(1);
 
         // Act
         var resultOfInvalidStartDate = _profileExperienceEntityValidator.TestValidate(profileExperienceWithInvalidStartDate);

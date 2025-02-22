@@ -37,7 +37,7 @@ public class UserService(
             Username = requestDto.Username,
             FirstName = requestDto.FirstName,
             LastName = requestDto.LastName,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             IsBanned = false,
             IsDeleted = false
         };
