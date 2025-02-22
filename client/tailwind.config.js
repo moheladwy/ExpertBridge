@@ -12,6 +12,7 @@ export default {
   		colors: {
 			// Our Main Color
 			"main-blue": "#0f172a",
+			"main-purple": "#7E22CE",
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
