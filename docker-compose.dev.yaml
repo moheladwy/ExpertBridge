@@ -1,35 +1,12 @@
 services:
-  Postgresql:
-    image: "postgres:17-alpine"
-    container_name: "Postgresql"
-    volumes:
-      - "expertbridge-postgresql-data:/var/lib/postgresql/data"
-    ports:
-        - target: 5432
-          published: 5432
-    env_file:
-      - ".env.postgres"
-    environment:
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_DB: ${POSTGRES_DB}
-    networks:
-        - expert-bridge-network
-    healthcheck:
-        test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-    restart: unless-stopped
-  
-  Redis:
-    container_name: "Redis"
+  ExpertBridgeRedis:
+    container_name: "ExpertBridgeRedis"
     image: "redis:alpine"
     volumes:
     - "expertbridge-redis-data:/data"
     ports:
     - target: 6379
-      published: 4001
+      published: 6379
     command:
     - "--save"
     - "300"
@@ -45,10 +22,10 @@ services:
   
   ExpertBridgeApi:
     container_name: "ExpertBridgeApi"
-    image: "expertbridge-api:dev"
+    image: "expert-bridge-api:test"
     build:
-      context: .
-      dockerfile: "server/ExpertBridge.Api/Dockerfile"
+      context: "server"
+      dockerfile: "Dockerfile"
     env_file:
       - ".env.api"
     environment:
@@ -57,16 +34,15 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: ${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
       HTTP_PORTS: ${HTTP_PORTS}
-      ConnectionStrings__ExpertBridgeDb: ${ConnectionStrings__ExpertBridgeDb}
-      ConnectionStrings__Redis: ${ConnectionStrings__Redis}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+      ConnectionStrings__Redis: ExpertBridgeRedis:6379
     networks: 
       - expert-bridge-network
     ports:
     - target: 8080
-      published: 10000
+      published: 8080
     depends_on:
-      - Postgresql
-      - Redis
+      - ExpertBridgeRedis
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://ExpertBridgeApi:8080/health" ]
       interval: 10s
@@ -75,9 +51,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  expertbridge-postgresql-data:
-    name: "expertbridge-postgresql-data"
-    driver: local
   expertbridge-redis-data:
     name: "expertbridge-redis-data"
     driver: local

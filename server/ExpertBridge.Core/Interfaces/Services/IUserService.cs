@@ -6,6 +6,6 @@ namespace ExpertBridge.Core.Interfaces.Services;
 
 public interface IUserService
 {
-    Task<UserResponse> GetUserByFirebaseId(string firebaseId);
+    Task<UserResponse> GetUserByIdentityProviderId(string firebaseId);
     Task<UserResponse> RegisterNewUser(RegisterUserRequest requestDto);
 }

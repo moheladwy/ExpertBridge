@@ -11,7 +11,7 @@ public class UserEntityValidator : AbstractValidator<User>
             .NotEmpty().WithMessage("Id is required")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
-        RuleFor(x => x.FirebaseId)
+        RuleFor(x => x.ProviderId)
             .NotNull().WithMessage("FirebaseId is required")
             .NotEmpty().WithMessage("FirebaseId is required")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"FirebaseId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
@@ -37,13 +37,27 @@ public class UserEntityValidator : AbstractValidator<User>
             .NotEmpty().WithMessage("Username is required")
             .MaximumLength(UserEntityConstraints.MaxUsernameLength).WithMessage($"Username must be less than {UserEntityConstraints.MaxUsernameLength} characters");
 
-        RuleFor(x => x.isBanned)
-            .NotNull().WithMessage("isBanned is required");
+        RuleFor(x => x.PhoneNumber)
+            .NotNull().WithMessage("PhoneNumber is required")
+            .NotEmpty().WithMessage("PhoneNumber is required")
+            .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength).WithMessage(
+                $"PhoneNumber must be less than {UserEntityConstraints.MaxPhoneNumberLength} characters")
+            .Matches(@"^\+?[0-9]\d{9,17}$").WithMessage("PhoneNumber is not valid");
 
-        RuleFor(x => x.isDeleted)
-            .NotNull().WithMessage("isDeleted is required");
+        RuleFor(x => x.IsBanned)
+            .NotNull().WithMessage("IsBanned is required");
+
+        RuleFor(x => x.IsDeleted)
+            .NotNull().WithMessage("IsDeleted is required");
+
+        RuleFor(x => x.IsEmailVerified)
+            .NotNull().WithMessage("IsEmailVerified is required");
+
+        RuleFor(x => x.IsOnBoarded)
+            .NotNull().WithMessage("IsOnBoarded is required");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required");
     }
+
 }

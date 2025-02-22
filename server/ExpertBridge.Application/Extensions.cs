@@ -1,10 +1,9 @@
-using ExpertBridge.Application.CachedRepositories;
+using ExpertBridge.Application.Repositories.User;
 using ExpertBridge.Application.Services;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
-using ExpertBridge.Data.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

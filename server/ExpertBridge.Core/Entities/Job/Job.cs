@@ -4,7 +4,7 @@ public class Job
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public double ActualCost { get; set; }
-    public DateTime StartedAt { get; set; } = DateTime.Now;
+    public DateTime StartedAt { get; set; } = DateTime.UtcNow;
     public DateTime? EndedAt { get; set; }
 
     // Foreign keys

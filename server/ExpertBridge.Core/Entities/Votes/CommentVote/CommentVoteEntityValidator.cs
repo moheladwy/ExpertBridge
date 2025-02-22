@@ -13,7 +13,7 @@ public class CommentVoteEntityValidator : AbstractValidator<CommentVote>
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("CreatedAt must be less than or equal to the current date")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("CreatedAt must be less than or equal to the current date")
             .GreaterThanOrEqualTo(DateTime.MinValue).WithMessage("CreatedAt must be greater than or equal to the minimum date");
 
         RuleFor(x => x.IsUpvote)

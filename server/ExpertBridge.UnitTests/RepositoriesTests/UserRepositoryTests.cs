@@ -1,8 +1,8 @@
+using ExpertBridge.Application.Repositories.User;
 using ExpertBridge.Core;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Data.DatabaseContexts;
-using ExpertBridge.Data.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,26 +26,26 @@ public sealed class UserRepositoryTests
         _validUser = new User
         {
             Id = Guid.NewGuid().ToString(),
-            FirebaseId = Guid.NewGuid().ToString(),
+            ProviderId = Guid.NewGuid().ToString(),
             Email = "user1@example.com",
             Username = "user1",
             FirstName = "Test",
             LastName = "User",
-            isBanned = false,
-            isDeleted = false,
-            CreatedAt = DateTime.Now
+            IsBanned = false,
+            IsDeleted = false,
+            CreatedAt = DateTime.UtcNow
         };
         _anotherValidUser = new User
         {
             Id = Guid.NewGuid().ToString(),
-            FirebaseId = Guid.NewGuid().ToString(),
+            ProviderId = Guid.NewGuid().ToString(),
             Email = "user2@example.com",
             Username = "user2",
             FirstName = "Test",
             LastName = "User",
-            isBanned = false,
-            isDeleted = false,
-            CreatedAt = DateTime.Now
+            IsBanned = false,
+            IsDeleted = false,
+            CreatedAt = DateTime.UtcNow
         };
         _connection = new SqliteConnection("Filename=:memory:");
         _connection.Open();
@@ -250,7 +250,7 @@ public sealed class UserRepositoryTests
 
         // Act: Use the repository to update a user.
         _validUser.FirstName = null;
-        _validUser.FirebaseId = new string('a', GlobalEntitiesConstraints.MaxIdLength + 1);
+        _validUser.ProviderId = new string('a', GlobalEntitiesConstraints.MaxIdLength + 1);
 
         // Assert: It throws an exception when trying to update an invalid user.
         await Assert.ThrowsAsync<DbUpdateException>(async () => await _repository.UpdateAsync(_validUser));
@@ -286,7 +286,7 @@ public sealed class UserRepositoryTests
 
         // Assert: The user should be deleted from the repository.
         var user = await context.Users.FindAsync(_validUser.Id);
-        Assert.True(user?.isDeleted);
+        Assert.True(user?.IsDeleted);
     }
 
     [Fact]

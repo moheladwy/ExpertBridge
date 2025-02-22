@@ -17,12 +17,12 @@ public class UserResponse
     {
         ArgumentNullException.ThrowIfNull(user, nameof(user));
         Id = user.Id;
-        FirebaseId = user.FirebaseId;
+        FirebaseId = user.ProviderId;
         Email = user.Email;
         Username = user.Username;
         FirstName = user.FirstName;
         LastName = user.LastName;
-        IsBanned = user.isBanned;
-        IsDeleted = user.isDeleted;
+        IsBanned = user.IsBanned;
+        IsDeleted = user.IsDeleted;
     }
 }

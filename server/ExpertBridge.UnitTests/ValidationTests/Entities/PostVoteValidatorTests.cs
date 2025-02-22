@@ -12,7 +12,7 @@ public class PostVoteValidatorTests
         Id = Guid.NewGuid().ToString(),
         ProfileId = Guid.NewGuid().ToString(),
         PostId = Guid.NewGuid().ToString(),
-        CreatedAt = DateTime.Now.AddDays(-1),
+        CreatedAt = DateTime.UtcNow.AddDays(-1),
         IsUpvote = true
     };
 
@@ -103,7 +103,7 @@ public class PostVoteValidatorTests
     {
         // Arrange
         var postVoteWithNullCreatedAt = _validPostVote;
-        postVoteWithNullCreatedAt.CreatedAt = DateTime.Now.AddDays(1);
+        postVoteWithNullCreatedAt.CreatedAt = DateTime.UtcNow.AddDays(1);
 
         // Act
         var resultOfNullCreatedAt = _postVoteEntityValidator.TestValidate(postVoteWithNullCreatedAt);
