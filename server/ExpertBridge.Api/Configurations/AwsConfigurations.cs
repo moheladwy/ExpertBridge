@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace ExpertBridge.Application;
+namespace ExpertBridge.Api.Configurations;
 
 public class AwsConfigurations
 {

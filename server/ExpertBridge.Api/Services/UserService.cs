@@ -4,11 +4,9 @@ using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
-using ExpertBridge.Data.DatabaseContexts;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Application.Services;
+namespace ExpertBridge.Api.Services;
 
 public class UserService(
     IEntityRepository<User> userRepository,

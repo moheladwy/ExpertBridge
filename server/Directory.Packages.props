@@ -5,8 +5,9 @@
   <ItemGroup>
     <PackageVersion Include="Aspire.Hosting.Keycloak" Version="9.0.0-preview.5.24551.3" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.0.0" />
-    <PackageVersion Include="Aspire.Keycloak.Authentication" Version="9.0.0-preview.5.24551.3" />
+    <PackageVersion Include="Aspire.Hosting.Seq" Version="9.0.0" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
+    <PackageVersion Include="Aspire.Seq" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
     <PackageVersion Include="AWSSDK.S3" Version="3.7.414.4" />
     <PackageVersion Include="FirebaseAdmin" Version="3.1.0" />
@@ -20,6 +21,15 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0"/>
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0"/>
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0"/>
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0"/>
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0"/>
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0"/>
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0"/>
+    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Seq" Version="9.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
   <ItemGroup>

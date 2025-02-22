@@ -3,7 +3,7 @@ using ExpertBridge.Core;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
 
-namespace ExpertBridge.Application.Repositories.User;
+namespace ExpertBridge.Api.Repositories.User;
 
 public sealed class UserCacheRepository(
     UserRepository repository,

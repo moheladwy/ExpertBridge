@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace ExpertBridge.Api.Firebase;
+namespace ExpertBridge.Api.Configurations;
 
 internal class FirebaseCredentials
 {

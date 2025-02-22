@@ -1,10 +1,11 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.Extensions.Options;
+using ExpertBridge.Api.Configurations;
 using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Interfaces.Services;
+using Microsoft.Extensions.Options;
 
-namespace ExpertBridge.Application.Services;
+namespace ExpertBridge.Api.Services;
 
 public class ObjectStorageService(
     IAmazonS3 s3Client,

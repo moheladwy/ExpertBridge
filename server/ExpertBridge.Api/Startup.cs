@@ -1,20 +1,30 @@
 using Amazon.Runtime;
 using Amazon.S3;
-using ExpertBridge.Application;
-using ExpertBridge.Application.Services;
+using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Repositories.User;
+using ExpertBridge.Api.Services;
+using ExpertBridge.Core.DTOs.Requests.RegisterUser;
+using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces;
+using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
 using ExpertBridge.Data.DatabaseContexts;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
+using FluentValidation;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace ExpertBridge.Api;
 
@@ -167,27 +177,106 @@ internal static class Startup
         });
     }
 
-    /// <summary>
-    ///     Adds the logging service to the application builder.
-    /// </summary>
-    /// <param name="builder">
-    ///     The WebApplicationBuilder to add the logging service to.
-    /// </param>
-    public static void AddLoggingService(this WebApplicationBuilder builder)
+    public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
-        builder.Services.AddLogging(loggingBuilder =>
+        builder.ConfigureOpenTelemetry();
+        builder.AddDefaultHealthChecks();
+        builder.Services.AddServiceDiscovery();
+        builder.Services.ConfigureHttpClientDefaults(http =>
         {
-            loggingBuilder.AddConsole()
-                .AddFilter("Microsoft.AspNetCore.Authentication", LogLevel.Debug)
-                .AddFilter("Microsoft.AspNetCore.Authorization", LogLevel.Debug);
+            // Turn on resilience by default
+            http.AddStandardResilienceHandler();
+
+            // Turn on service discovery by default
+            http.AddServiceDiscovery();
         });
-        builder.Services.AddHttpLogging(configureOptions: options =>
+        return builder;
+    }
+
+
+    public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        builder.Logging.AddOpenTelemetry(logging =>
         {
-            options.LoggingFields = HttpLoggingFields.All;
-            options.RequestBodyLogLimit = 4096;
-            options.ResponseBodyLogLimit = 4096;
-            options.RequestHeaders.Add("Authorization");
-            options.ResponseHeaders.Add("Authorization");
+            logging.IncludeFormattedMessage = true;
+            logging.IncludeScopes = true;
         });
+
+        builder.Services.AddOpenTelemetry()
+            .WithMetrics(metrics =>
+            {
+                metrics.AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation();
+            })
+            .WithTracing(tracing =>
+            {
+                tracing.AddSource(builder.Environment.ApplicationName)
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation();
+            });
+
+        builder.AddOpenTelemetryExporters();
+
+        return builder;
+    }
+
+    private static TBuilder AddOpenTelemetryExporters<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+
+        if (useOtlpExporter)
+            builder.Services.AddOpenTelemetry().UseOtlpExporter();
+
+        return builder;
+    }
+
+    public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
+    {
+        builder.Services.AddHealthChecks()
+            // Add a default liveness check to ensure app is responsive
+            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+
+        return builder;
+    }
+
+    /// <summary>
+    ///     Adds the services to the services collection.
+    /// </summary>
+    /// <param name="services">
+    ///     The service collection to add the services to.
+    /// </param>
+    public static void AddServices(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
+        services.AddTransient<IFirebaseService, FirebaseService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICacheService, RedisService>();
+        services.AddScoped<IObjectStorageService, ObjectStorageService>();
+    }
+
+    /// <summary>
+    ///     Adds the repositories to the services collection.
+    /// </summary>
+    /// <param name="services">
+    ///     The service collection to add the repositories to.
+    /// </param>
+    public static void AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<UserRepository>();
+    }
+
+    /// <summary>
+    ///     Adds the cached repositories to the services collection.
+    /// </summary>
+    /// <param name="services">
+    ///     The service collection to add the cached repositories to.
+    /// </param>
+    public static void AddCachedRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IEntityRepository<User>, UserCacheRepository>();
     }
 }

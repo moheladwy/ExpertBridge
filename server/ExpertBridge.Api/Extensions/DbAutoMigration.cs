@@ -1,5 +1,6 @@
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -11,19 +12,18 @@ internal static class DbAutoMigration
     /// <param name="app">
     ///     The WebApplication instance to use for the migration.
     /// </param>
-    public static async Task UseAutoMigrationAtStartup(this WebApplication app)
+    public static async Task ApplyMigrationAtStartup(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILogger<Program>>();
         try
         {
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
             var dbContext = services.GetRequiredService<ExpertBridgeDbContext>();
             await dbContext.Database.MigrateAsync();
         }
         catch (Exception e)
         {
-            logger.LogError(e, e.Message);
+            Log.Error(e, "An error occurred while migrating the database.");
         }
     }
 }
