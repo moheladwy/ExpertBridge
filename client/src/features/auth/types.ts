@@ -1,3 +1,5 @@
+import { User } from "firebase/auth";
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -9,5 +11,10 @@ export interface LoginResponse {
   user: { id: number; name: string };
 }
 
-export interface RegisterRequest { }
-export interface RegisterResponse { }
+export interface RegisterRequest {
+  email: string;
+  password: string;
+}
+export interface RegisterResponse {
+  user: User;
+}

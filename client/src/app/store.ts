@@ -1,18 +1,18 @@
 
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { listenerMiddleware } from './listenerMiddleware';
-import { appApiSlice } from '@/features/api/apiSlice';
+import { emptyApiSlice } from '@/app/apiSlice';
 
 export const store = configureStore({
   reducer: {
-    [appApiSlice.reducerPath]: appApiSlice.reducer,
+    [emptyApiSlice.reducerPath]: emptyApiSlice.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
       // Here goes the listener middleware in the front 
       .prepend(listenerMiddleware.middleware)
       // Here goes the api slice's middleware in the back
-      .concat(appApiSlice.middleware)
+      .concat(emptyApiSlice.middleware)
   ,
 });
 

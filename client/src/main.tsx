@@ -1,26 +1,57 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import './index.css'
-import App from './App.tsx'
 import NotFoundError from './pages/notFoundPage/NotFoundError.tsx'
 import LandingPage from './pages/landingPage/LandingPage.tsx'
 import { store } from './app/store.ts'
 
-import { Provider } from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
+import SignUpPage from './features/auth/SignUpPage.tsx'
+import LoginPage from './features/auth/LoginPage.tsx'
+import App from './App.tsx'
+import PublicRoute from './components/Routes/PublicRoute.tsx'
+import ProtectedRoute from './components/Routes/ProtectedRoute.tsx'
 
 const router = createBrowserRouter([
-  {path: '/', element: <App/>, children: [
-    {index: true, element: <LandingPage/>}
-  ]},
-
-  { path: '*', element: <NotFoundError /> }
+  {
+    path: "/",
+    element: <App />, // Ensures NavBar is always present
+    children: [
+      { index: true, element: <Navigate to="/home" replace /> }, // Redirect '/' to '/home'
+      {
+        path: "login",
+        element: (
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: "signup",
+        element: (
+          <PublicRoute>
+            <SignUpPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: "home",
+        element: (
+          <ProtectedRoute>
+            <LandingPage />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  { path: "*", element: <NotFoundError /> }, // Catch-all 404
 ]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store} >
+    <ReduxProvider store={store} >
       <RouterProvider router={router} />
-    </Provider>
+    </ReduxProvider>
   </StrictMode>,
 )
