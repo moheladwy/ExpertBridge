@@ -51,6 +51,9 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.IsEmailVerified)
             .IsRequired();
 
+        builder.Property(x => x.IsOnBoarded)
+            .IsRequired();
+
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .ValueGeneratedOnAdd();
