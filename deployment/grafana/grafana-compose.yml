@@ -1,0 +1,29 @@
+services:
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+        - GF_SERVER_ROOT_URL=http://my.grafana.server/
+        - GF_PLUGINS_PREINSTALL=grafana-clock-panel
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - prometheus
+      - grafana
+
+networks:
+  grafana:
+    name: grafana
+    driver: bridge
+  prometheus:
+    name: prometheus
+    driver: bridge
+    external: true
+
+volumes:
+  grafana-storage:
+    name: grafana-storage
+    driver: local
