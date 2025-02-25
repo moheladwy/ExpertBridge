@@ -208,7 +208,8 @@ internal static class Startup
             {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
+                    .AddRuntimeInstrumentation()
+                    .AddPrometheusExporter();
             })
             .WithTracing(tracing =>
             {
