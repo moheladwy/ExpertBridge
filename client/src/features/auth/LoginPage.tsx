@@ -54,11 +54,6 @@ const LoginPage: React.FC = () => {
 
   }
 
-
-  if (loading) {
-    return <div>Loading...</div>; 
-  }
-
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
       <div className="p-6 w-1/3 max-xl:w-1/2 max-sm:w-2/3">
@@ -73,8 +68,9 @@ const LoginPage: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
               placeholder="Enter Your Email"
+              disabled={loading}
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-sm max-md:text-xs">{errors.email}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-white">Password</label>
@@ -85,22 +81,23 @@ const LoginPage: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
               placeholder="Enter Password"
+              disabled={loading}
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-sm max-md:text-xs">{errors.password}</p>}
           </div>
           <div className="w-full text-right">
             <a href="" className="text-sm text-orange-400"> Forget Password?</a>
           </div>
           <button
             type="submit"
-            className="w-full bg-main-purple text-white p-4 rounded hover:bg-purple-900"
+            className="w-full bg-main-purple text-white font-bold p-4 rounded hover:bg-purple-900 disabled:bg-purple-500"
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
 
           <button
-            className="w-full bg-white text-black p-2 rounded hover:bg-gray-300"
+            className="w-full bg-white text-black font-bold p-2 rounded hover:bg-gray-300 disabled:bg-gray-400 disabled:text-gray-600"
             disabled={loading}
           >
             <div className="flex justify-center items-center">
