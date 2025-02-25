@@ -1,0 +1,78 @@
+services:
+  ExpertBridgeRedis:
+    container_name: ExpertBridgeRedis
+    image: "redis:alpine"
+    volumes:
+    - "expertbridge-redis-data:/data"
+    command:
+    - "--save"
+    - "300"
+    - "1"
+    networks: 
+      - expert-bridge-network
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  
+  ExpertBridgeApi:
+    image: "only1adwy/expert-bridge-api:latest"
+    container_name: ExpertBridgeApi
+    ports:
+      - target: 8080
+        published: 8080
+    env_file:
+      - ".env"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: ${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      HTTP_PORTS: ${HTTP_PORTS}
+      ConnectionStrings__Redis: ${ConnectionStrings__Redis}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+      ConnectionStrings__Seq: ${ConnectionStrings__Seq}
+    volumes:
+      - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridge/FirebaseOAuthCredentialsExpertBridge.json
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks: 
+      - expert-bridge-network
+      - postgres_network
+    depends_on:
+      - ExpertBridgeRedis
+    restart: unless-stopped
+  
+  Seq:
+    container_name: "seq"
+    image: "docker.io/datalust/seq:2024.3"
+    environment:
+      ACCEPT_EULA: "Y"
+    volumes:
+    - "expertbridge-seq-data:/data"
+    ports:
+    - target: 80
+      published: 4002
+    - target: 5341
+      published: 5341
+    restart: unless-stopped
+
+volumes:
+  expertbridge-redis-data: 
+    name: "expertbridge-redis-data"
+    driver: local
+  expertbridge-seq-data:
+    name: "expertbridge-seq-data"
+    driver: local
+
+networks:
+  expert-bridge-network:
+    driver: bridge
+    name: "expert-bridge-network"
+  postgres_network:
+    driver: bridge
+    name: postgres_network
+    external: true

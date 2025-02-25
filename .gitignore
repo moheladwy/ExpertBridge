@@ -21,3 +21,11 @@ lerna-debug.log*
 .env.postgres
 .env.keycloak
 FirebaseOAuthCredentialsExpertBridge.json
+ExpertBridge.sln.DotSettings.user
+*.env*
+*.env.local
+*.env.development
+*.env.development.local
+*.env.test
+*.env
+.env*
