@@ -44,11 +44,10 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
     ///     The url of the object in the s3 bucket to download it from the client side.
     /// </returns>
     [HttpGet("url/{key}")]
-    public async Task<string> GetObjectUrlAsync([FromRoute] string key)
+    public async Task<GetMediaUrlResponse> GetObjectUrlAsync([FromRoute] string key)
     {
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
-        var url = await objectStorageService.GetObjectUrlAsync(key);
-        return url;
+        return await objectStorageService.GetObjectUrlAsync(key);
     }
 
     /// <summary>
@@ -62,11 +61,10 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
     ///     It's used for limited access to the object.
     /// </returns>
     [HttpGet("presigned-url/{key}")]
-    public async Task<string> GetPresignedUrlAsync([FromRoute] string key)
+    public async Task<GetMediaUrlResponse> GetPresignedUrlAsync([FromRoute] string key)
     {
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
-        var url = await objectStorageService.GetPresignedUrlAsync(key);
-        return url;
+        return await objectStorageService.GetPresignedUrlAsync(key);
     }
 
     /// <summary>
