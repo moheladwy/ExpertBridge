@@ -35,6 +35,25 @@ services:
       ConnectionStrings__Redis: ${ConnectionStrings__Redis}
       ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
       ConnectionStrings__Seq: ${ConnectionStrings__Seq}
+      Firebase__Type: ${Firebase__Type}
+      Firebase__ProjectId: ${Firebase__ProjectId}
+      Firebase__PrivateKeyId: ${Firebase__PrivateKeyId}
+      Firebase__PrivateKey: ${Firebase__PrivateKey}
+      Firebase__ClientEmail: ${Firebase__ClientEmail}
+      Firebase__ClientId: ${Firebase__ClientId}
+      Firebase__AuthUri: ${Firebase__AuthUri}
+      Firebase__TokenUri: ${Firebase__TokenUri}
+      Firebase__auth_provider_x509_cert_url: ${Firebase__auth_provider_x509_cert_url}
+      Firebase__client_x509_cert_url: ${Firebase__client_x509_cert_url}
+      Firebase__UniverseDomain: ${Firebase__UniverseDomain}
+      Authentication__Firebase__Issuer: ${Authentication__Firebase__Issuer}
+      Authentication__Firebase__Audience: ${Authentication__Firebase__Audience}
+      Authentication__Firebase__TokenUri: ${Authentication__Firebase__TokenUri}
+      AwsS3__Region: ${AwsS3__Region}
+      AwsS3__BucketName: ${AwsS3__BucketName}
+      AwsS3__AwsKey: ${AwsS3__AwsKey}
+      AwsS3__AwsSecret: ${AwsS3__AwsSecret}
+      AwsS3__BucketUrl: ${AwsS3__BucketUrl}
     volumes:
       - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridge/FirebaseOAuthCredentialsExpertBridge.json
     labels:
@@ -42,24 +61,27 @@ services:
     networks: 
       - expert-bridge-network
       - postgres_network
+      - prometheus
     depends_on:
       - ExpertBridgeRedis
     restart: unless-stopped
   
   Seq:
-    container_name: "seq"
-    image: "docker.io/datalust/seq:2024.3"
-    environment:
-      ACCEPT_EULA: "Y"
-    volumes:
-    - "expertbridge-seq-data:/data"
-    ports:
-    - target: 80
-      published: 4002
-    - target: 5341
-      published: 5341
-    restart: unless-stopped
-
+      container_name: "seq"
+      image: "docker.io/datalust/seq:2024.3"
+      environment:
+        ACCEPT_EULA: "Y"
+      volumes:
+      - "expertbridge-seq-data:/data"
+      networks:
+          - expert-bridge-network 
+      ports:
+      - target: 80
+        published: 4002
+      - target: 5341
+        published: 5341
+      restart: unless-stopped
+      
 volumes:
   expertbridge-redis-data: 
     name: "expertbridge-redis-data"
@@ -75,4 +97,7 @@ networks:
   postgres_network:
     driver: bridge
     name: postgres_network
+    external: true
+  prometheus:
+    name: prometheus
     external: true
