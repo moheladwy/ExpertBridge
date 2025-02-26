@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using ExpertBridge.Core.DTOs.Requests;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Interfaces.Services;
@@ -23,12 +24,13 @@ public sealed class UserController(IUserService userService) : ControllerBase
     public async Task<UserResponse> RegisterNewUser([FromBody] RegisterUserRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-
-        var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value!;
-        if (email != request.Email)
-            throw new UnauthorizedAccessException("Email does not match the authenticated user.");
-
         return await userService.RegisterNewUser(request);
     }
 
+    [HttpPut("update")]
+    public async Task<UserResponse> UpdateUser([FromBody] UpdateUserRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return await userService.UpdateUserAsync(request);
+    }
 }

@@ -30,9 +30,17 @@ public class ObjectStorageService(
         return fileResponse;
     }
 
-    public Task<string> GetObjectUrlAsync(string key) => Task.FromResult($"{awsConfigurations.Value.BucketUrl}/{key}");
+    public async Task<GetMediaUrlResponse> GetObjectUrlAsync(string key)
+    {
+        return await Task.FromResult(
+            new GetMediaUrlResponse
+                {
+                    Url = $"https://{awsConfigurations.Value.BucketName}.s3.amazonaws.com/{key}"
+                }
+            );
+    }
 
-    public async Task<string> GetPresignedUrlAsync(string key)
+    public async Task<GetMediaUrlResponse> GetPresignedUrlAsync(string key)
     {
         var request = new GetPreSignedUrlRequest
         {
@@ -41,7 +49,7 @@ public class ObjectStorageService(
             Expires = DateTime.UtcNow.AddMinutes(60)
         };
 
-        return await s3Client.GetPreSignedURLAsync(request);
+        return new GetMediaUrlResponse { Url = await s3Client.GetPreSignedURLAsync(request) };
     }
 
     public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)
@@ -49,13 +57,13 @@ public class ObjectStorageService(
         request.Key = Guid.NewGuid().ToString();
         request.BucketName = awsConfigurations.Value.BucketName;
         var response = await s3Client.PutObjectAsync(request);
-        var fileUrl = $"{awsConfigurations.Value.BucketUrl}/{request.Key}";
+        var fileUrl = await GetPresignedUrlAsync(request.Key);
 
         return new UploadFileResponse
         {
             StatusCode = (int)response.HttpStatusCode,
-            Message = $"File with name: `{request.Metadata["file-name"]}` uploaded successfully",
-            FileUrl = fileUrl
+            Message = $"File with name: `{request.Metadata["file-name"]}` uploaded successfully!",
+            FileUrl = fileUrl.Url
         };
     }
 
