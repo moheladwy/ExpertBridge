@@ -11,6 +11,7 @@ namespace ExpertBridge.Api.Services;
 
 public class UserService(
     IEntityRepository<User> userRepository,
+    IProfileService profileService,
     IValidator<RegisterUserRequest> registerUserRequestValidator
     ) : IUserService
 {
@@ -41,11 +42,83 @@ public class UserService(
             IsDeleted = false
         };
         await userRepository.AddAsync(user);
+        await profileService.CreateProfileAsync(user);
         return new UserResponse(user);
     }
 
-    public Task<UserResponse> UpdateUserAsync(UpdateUserRequest request)
+    public async Task<UserResponse> UpdateUserAsync(UpdateUserRequest request)
     {
-        throw new NotImplementedException();
+        var user = await userRepository.GetFirstAsync(u => u.ProviderId == request.ProviderId);
+        if (user is null)
+        {
+            user = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                ProviderId = request.ProviderId,
+                Email = request.Email,
+                Username = request.Username ?? request.Email,
+                FirstName = request.FirstName ?? request.Email,
+                LastName = request.LastName ?? request.Email,
+                PhoneNumber = request.PhoneNumber,
+                CreatedAt = DateTime.UtcNow,
+            };
+            await userRepository.AddAsync(user);
+        }
+        else
+        {
+            user.Email = request.Email;
+            user.Username = request.Username ?? user.Username;
+            user.FirstName = request.FirstName ?? user.FirstName;
+            user.LastName = request.LastName ?? user.LastName;
+            user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
+            await userRepository.UpdateAsync(user);
+        }
+
+        return new UserResponse(user);
+    }
+
+    public async Task DeleteUserAsync(string identityProviderId)
+    {
+        var user = await userRepository.GetFirstAsync(u => u.ProviderId == identityProviderId)
+            ?? throw new UserNotFoundException("User not found");
+        user.IsDeleted = true;
+        await userRepository.UpdateAsync(user);
+    }
+
+    public async Task<bool> IsUserBannedAsync(string identityProviderId)
+    {
+        var user = await userRepository.GetFirstAsNoTrackingAsync(u => u.ProviderId == identityProviderId)
+            ?? throw new UserNotFoundException("User not found");
+        return user.IsBanned;
+    }
+
+    public async Task<bool> IsUserVerifiedAsync(string email)
+    {
+        var user = await userRepository.GetFirstAsNoTrackingAsync(u => u.Email == email)
+            ?? throw new UserNotFoundException("User not found");
+        return user.IsEmailVerified;
+    }
+
+    public async Task<bool> IsUserDeletedAsync(string identityProviderId)
+    {
+        var user = await userRepository.GetFirstAsNoTrackingAsync(u => u.ProviderId == identityProviderId)
+            ?? throw new UserNotFoundException("User not found");
+        return user.IsDeleted;
+    }
+
+    public async Task BanUserAsync(string identityProviderId)
+    {
+        var user = await userRepository.GetFirstAsync(u => u.ProviderId == identityProviderId)
+            ?? throw new UserNotFoundException("User not found");
+        user.IsBanned = true;
+        await userRepository.UpdateAsync(user);
+    }
+
+    public async Task VerifyUserAsync(string email)
+    {
+        var user = await userRepository.GetFirstAsync(u => u.Email == email)
+            ?? throw new UserNotFoundException("User not found");
+        user.IsEmailVerified = true;
+        await userRepository.UpdateAsync(user);
     }
 }

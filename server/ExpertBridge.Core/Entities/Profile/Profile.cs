@@ -11,10 +11,10 @@ namespace ExpertBridge.Core.Entities.Profile;
 public partial class Profile
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string UserId { get; set; }
-    public string JobTitle { get; set; }
-    public string Bio { get; set; }
-    public string ProfilePictureUrl { get; set; }
+    public required string UserId { get; set; }
+    public string? JobTitle { get; set; }
+    public string? Bio { get; set; }
+    public string? ProfilePictureUrl { get; set; }
     public int Rating { get; set; }
     public int RatingCount { get; set; }
 }
