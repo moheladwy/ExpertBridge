@@ -6,7 +6,7 @@ namespace ExpertBridge.Api.Repositories.Profile;
 
 public class ProfileCacheRepository(
     ICacheService cacheService,
-    IEntityRepository<UserProfile> profileRepository
+    ProfileRepository profileRepository
     ) : IEntityRepository<UserProfile>
 {
     public Task<UserProfile?> GetByIdAsync(string id) => throw new NotImplementedException();
