@@ -1,6 +1,6 @@
 using ExpertBridge.Api;
 using ExpertBridge.Api.Extensions;
-using ExpertBridge.Api.Middlewares;
+using ExpertBridge.Api.Middleware;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
@@ -21,7 +21,6 @@ builder.AddFirebaseServices();
 builder.AddS3ObjectService();
 builder.Services.AddServices();
 builder.Services.AddRepositories();
-builder.Services.AddCachedRepositories();
 builder.AddHttpClientForFirebaseService();
 
 var app = builder.Build();

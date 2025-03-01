@@ -1,5 +1,5 @@
-using ExpertBridge.Core.DTOs.Requests;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
+using ExpertBridge.Core.DTOs.Requests.UpdateUserRequest;
 using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;

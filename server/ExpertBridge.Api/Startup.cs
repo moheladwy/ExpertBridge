@@ -193,7 +193,7 @@ internal static class Startup
     }
 
 
-    public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder)
+    private static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
         builder.Logging.AddOpenTelemetry(logging =>
@@ -233,11 +233,11 @@ internal static class Startup
         return builder;
     }
 
-    public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
+    private static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
         builder.Services.AddHealthChecks()
-            // Add a default liveness check to ensure app is responsive
+            // Add a default liveliness check to ensure app is responsive
             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
 
         return builder;
@@ -269,16 +269,6 @@ internal static class Startup
     {
         services.AddScoped<UserRepository>();
         services.AddScoped<ProfileRepository>();
-    }
-
-    /// <summary>
-    ///     Adds the cached repositories to the services collection.
-    /// </summary>
-    /// <param name="services">
-    ///     The service collection to add the cached repositories to.
-    /// </param>
-    public static void AddCachedRepositories(this IServiceCollection services)
-    {
         services.AddScoped<IEntityRepository<User>, UserCacheRepository>();
         services.AddScoped<IEntityRepository<Profile>, ProfileCacheRepository>();
     }

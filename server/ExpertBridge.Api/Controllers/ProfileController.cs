@@ -15,14 +15,14 @@ public class ProfileController(
     [HttpGet("get/{id}")]
     public async Task<ProfileResponse> GetProfile([FromRoute] string id)
     {
-        var profile = await profileService.GetProfileAsync(id);
-        return profile;
+        ArgumentException.ThrowIfNullOrEmpty(id, nameof(id));
+        return await profileService.GetProfileAsync(id);
     }
 
     [HttpGet("get-by-user/{identityProviderId}")]
     public async Task<ProfileResponse> GetProfileByUser([FromRoute] string identityProviderId)
     {
-        var profile = await profileService.GetProfileByUserIdentityProviderIdAsync(identityProviderId);
-        return profile;
+        ArgumentException.ThrowIfNullOrEmpty(identityProviderId, nameof(identityProviderId));
+        return await profileService.GetProfileByUserIdentityProviderIdAsync(identityProviderId);
     }
 }

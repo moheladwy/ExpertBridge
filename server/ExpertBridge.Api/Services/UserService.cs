@@ -1,6 +1,6 @@
 using ExpertBridge.Core;
-using ExpertBridge.Core.DTOs.Requests;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
+using ExpertBridge.Core.DTOs.Requests.UpdateUserRequest;
 using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces.Repositories;
@@ -12,7 +12,8 @@ namespace ExpertBridge.Api.Services;
 public class UserService(
     IEntityRepository<User> userRepository,
     IProfileService profileService,
-    IValidator<RegisterUserRequest> registerUserRequestValidator
+    IValidator<RegisterUserRequest> registerUserRequestValidator,
+    IValidator<UpdateUserRequest> updateUserRequestValidator
     ) : IUserService
 {
     public async Task<UserResponse> GetUserByIdentityProviderId(string identityProviderId)
@@ -24,15 +25,13 @@ public class UserService(
 
     public async Task<UserResponse> RegisterNewUser(RegisterUserRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
         var validationResult = await registerUserRequestValidator.ValidateAsync(request);
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
+        if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
 
         var user = new User
         {
             Id = Guid.NewGuid().ToString(),
-            ProviderId = request.FirebaseId,
+            ProviderId = request.ProviderId,
             Email = request.Email,
             Username = request.Username,
             FirstName = request.FirstName,
@@ -48,31 +47,28 @@ public class UserService(
 
     public async Task<UserResponse> UpdateUserAsync(UpdateUserRequest request)
     {
+        var validationResult = await updateUserRequestValidator.ValidateAsync(request);
+        if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
+
         var user = await userRepository.GetFirstAsync(u => u.ProviderId == request.ProviderId);
         if (user is null)
         {
-            user = new User
+            return await RegisterNewUser(new RegisterUserRequest
             {
-                Id = Guid.NewGuid().ToString(),
                 ProviderId = request.ProviderId,
                 Email = request.Email,
-                Username = request.Username ?? request.Email,
-                FirstName = request.FirstName ?? request.Email,
-                LastName = request.LastName ?? request.Email,
-                PhoneNumber = request.PhoneNumber,
-                CreatedAt = DateTime.UtcNow,
-            };
-            await userRepository.AddAsync(user);
+                Username = request.Username,
+                FirstName = request.FirstName,
+                LastName = request.LastName
+            });
         }
-        else
-        {
-            user.Email = request.Email;
-            user.Username = request.Username ?? user.Username;
-            user.FirstName = request.FirstName ?? user.FirstName;
-            user.LastName = request.LastName ?? user.LastName;
-            user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
-            await userRepository.UpdateAsync(user);
-        }
+        // Update user properties if they are different from the request
+        user.Email = request.Email ==  user.Email ? user.Email : request.Email;
+        user.Username = request.Username == user.Username ? user.Username : request.Username;
+        user.FirstName = request.FirstName == user.FirstName ? user.FirstName : request.FirstName;
+        user.LastName = request.LastName == user.LastName ? user.LastName : request.LastName;
+        user.PhoneNumber = request.PhoneNumber == user.PhoneNumber ? user.PhoneNumber : request.PhoneNumber;
+        await userRepository.UpdateAsync(user);
 
         return new UserResponse(user);
     }
