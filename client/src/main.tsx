@@ -18,21 +18,21 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />, // Ensures NavBar is always present
     children: [
-      { index: true, element: <LandingPage/> }, // Redirect '/' to '/home'http://localhost:5173/
-        {
-          path: "home",
-          element: (
-            <ProtectedRoute>
+      { index: true, element: <LandingPage /> }, // Redirect '/' to '/home'http://localhost:5173/
+      {
+        path: "home",
+        element: (
+          <ProtectedRoute>
           </ProtectedRoute>
-          ),
-        },
+        ),
+      },
     ],
   },
   {
     path: "login",
     element: (
       // <PublicRoute>
-        <LoginPage />
+      <LoginPage />
       // </PublicRoute>
     ),
   },
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
     path: "signup",
     element: (
       // <PublicRoute>
-        <SignUpPage />
+      <SignUpPage />
       // </PublicRoute>
     ),
   },
