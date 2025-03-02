@@ -236,9 +236,11 @@ internal static class Startup
     private static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
+        var connectionString = builder.Configuration.GetConnectionString("Postgresql")!;
         builder.Services.AddHealthChecks()
             // Add a default liveliness check to ensure app is responsive
-            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
+            .AddNpgSql(connectionString: connectionString, tags: ["ready"]);
 
         return builder;
     }
