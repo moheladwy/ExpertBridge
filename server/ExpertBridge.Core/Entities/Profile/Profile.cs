@@ -15,7 +15,7 @@ public partial class Profile
     public string? JobTitle { get; set; }
     public string? Bio { get; set; }
     public string? ProfilePictureUrl { get; set; }
-    public int Rating { get; set; }
+    public double Rating { get; set; }
     public int RatingCount { get; set; }
 }
 

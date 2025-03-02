@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using ExpertBridge.Core;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,8 @@ public class ProfileRepository(
 
     public async Task DeleteAsync(string id)
     {
-        var profile = await db.Profiles.FindAsync(id);
-        if (profile is not null) await userRepository.DeleteAsync(profile.UserId);
+        var profile = await db.Profiles.FindAsync(id) ??
+                      throw new ProfileNotFoundException("Profile not found");
+        await userRepository.DeleteAsync(profile.UserId);
     }
 }
