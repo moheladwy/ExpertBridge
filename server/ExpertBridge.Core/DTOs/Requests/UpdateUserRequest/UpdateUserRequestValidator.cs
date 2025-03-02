@@ -40,8 +40,9 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
             .WithMessage($"Last name must be less than {UserEntityConstraints.MaxNameLength} characters");
 
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("Phone number can not be empty")
-            .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength)
-            .WithMessage($"Phone number must be less than {UserEntityConstraints.MaxPhoneNumberLength} characters");
+            .NotEmpty().WithMessage("PhoneNumber is required")
+            .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength).WithMessage(
+                $"PhoneNumber must be less than {UserEntityConstraints.MaxPhoneNumberLength} characters")
+            .Matches(@"^\+?[0-9]\d{9,20}$").WithMessage("PhoneNumber is not valid");
     }
 }
