@@ -1,6 +1,5 @@
-using System.Security.Claims;
-using ExpertBridge.Core.DTOs.Requests;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
+using ExpertBridge.Core.DTOs.Requests.UpdateUserRequest;
 using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -32,5 +31,50 @@ public sealed class UserController(IUserService userService) : ControllerBase
     {
         ArgumentNullException.ThrowIfNull(request);
         return await userService.UpdateUserAsync(request);
+    }
+
+    [HttpGet("is-deleted/{identityProviderId}")]
+    public async Task<bool> IsUserDeleted([FromRoute] string identityProviderId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
+        return await userService.IsUserDeletedAsync(identityProviderId);
+    }
+
+    [HttpDelete("delete/{identityProviderId}")]
+    public async Task<IActionResult> DeleteUser([FromRoute] string identityProviderId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
+        await userService.DeleteUserAsync(identityProviderId);
+        return Ok("User deleted successfully.");
+    }
+
+    [HttpGet("is-banned/{identityProviderId}")]
+    public async Task<bool> IsUserBanned([FromRoute] string identityProviderId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
+        return await userService.IsUserBannedAsync(identityProviderId);
+    }
+
+    [HttpPut("ban/{identityProviderId}")]
+    public async Task<IActionResult> BanUser([FromRoute] string identityProviderId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
+        await userService.BanUserAsync(identityProviderId);
+        return Ok("User banned successfully.");
+    }
+
+    [HttpGet("is-verified/{email}")]
+    public async Task<bool> IsUserVerified([FromRoute] string email)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(email);
+        return await userService.IsUserVerifiedAsync(email);
+    }
+
+    [HttpPut("verify/{email}")]
+    public async Task<IActionResult> VerifyUser([FromRoute] string email)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(email);
+        await userService.VerifyUserAsync(email);
+        return Ok("User verified successfully.");
     }
 }

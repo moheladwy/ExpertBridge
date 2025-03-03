@@ -83,9 +83,7 @@ public class MediaController(IObjectStorageService objectStorageService) : Contr
         if (file.Length == 0) throw new ArgumentException("File is empty", nameof(file));
 
         var s3ObjectRequest = await file.ToPutObjectRequestAsync();
-        var response = await objectStorageService.UploadObjectAsync(s3ObjectRequest);
-
-        return response;
+        return await objectStorageService.UploadObjectAsync(s3ObjectRequest);
     }
 
     /// <summary>

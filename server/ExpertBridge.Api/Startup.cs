@@ -1,11 +1,12 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Repositories.Profile;
 using ExpertBridge.Api.Repositories.User;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
+using ExpertBridge.Core.Entities.Profile;
 using ExpertBridge.Core.Entities.User;
-using ExpertBridge.Core.Interfaces;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
 using ExpertBridge.Data.DatabaseContexts;
@@ -15,7 +16,6 @@ using FirebaseAdmin.Messaging;
 using FluentValidation;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
@@ -23,7 +23,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace ExpertBridge.Api;
@@ -194,7 +193,7 @@ internal static class Startup
     }
 
 
-    public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder)
+    private static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
         builder.Logging.AddOpenTelemetry(logging =>
@@ -234,12 +233,14 @@ internal static class Startup
         return builder;
     }
 
-    public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
+    private static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
+        var connectionString = builder.Configuration.GetConnectionString("Postgresql")!;
         builder.Services.AddHealthChecks()
-            // Add a default liveness check to ensure app is responsive
-            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+            // Add a default liveliness check to ensure app is responsive
+            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
+            .AddNpgSql(connectionString: connectionString, tags: ["ready"]);
 
         return builder;
     }
@@ -254,9 +255,10 @@ internal static class Startup
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
         services.AddTransient<IFirebaseService, FirebaseService>();
-        services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICacheService, RedisService>();
         services.AddScoped<IObjectStorageService, ObjectStorageService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IProfileService, ProfileService>();
     }
 
     /// <summary>
@@ -268,16 +270,8 @@ internal static class Startup
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<UserRepository>();
-    }
-
-    /// <summary>
-    ///     Adds the cached repositories to the services collection.
-    /// </summary>
-    /// <param name="services">
-    ///     The service collection to add the cached repositories to.
-    /// </param>
-    public static void AddCachedRepositories(this IServiceCollection services)
-    {
+        services.AddScoped<ProfileRepository>();
         services.AddScoped<IEntityRepository<User>, UserCacheRepository>();
+        services.AddScoped<IEntityRepository<Profile>, ProfileCacheRepository>();
     }
 }
