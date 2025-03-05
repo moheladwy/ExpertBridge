@@ -11,8 +11,8 @@ def predict():
     try:
       input_text = str(request.get_json()['text'])
       print(input_text)
-    except:
-      return 'Error: Invalid input'
+    except Exception as e:
+      return str(e)
     return ild.predict(input_text)
     
 if __name__ == '__main__':

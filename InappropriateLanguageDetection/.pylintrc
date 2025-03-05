@@ -18,4 +18,6 @@ max-line-length=240
 [MESSAGES CONTROL]
 # Disable specific warnings if needed
 disable=    
+    W0311,  # bad-indentation
     C0303,  # trailing-whitespace
+    C0304,  # missing-final-newline
