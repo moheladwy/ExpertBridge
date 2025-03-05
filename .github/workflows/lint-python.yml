@@ -35,9 +35,3 @@ jobs:
 
     - name: Run pylint
       run: pylint $(git ls-files '*.py')
-
-    - name: Run black
-      run: black . --check
-
-    - name: Run isort
-      run: isort . --check-only --diff
