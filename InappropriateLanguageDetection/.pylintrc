@@ -21,3 +21,4 @@ disable=
     W0311,  # bad-indentation
     C0303,  # trailing-whitespace
     C0304,  # missing-final-newline
+    W0718,  # Catching too general exception Exception (broad-exception-caught)
