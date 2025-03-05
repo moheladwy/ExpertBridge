@@ -1,0 +1,42 @@
+name: Python Linting
+
+on:
+  push:
+    paths:
+      - 'InappropriateLanguageDetection/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'InappropriateLanguageDetection/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: InappropriateLanguageDetection
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11.x'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pylint black isort
+
+    - name: Run flake8
+      run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+    - name: Run pylint
+      run: pylint $(git ls-files '*.py')
+
+    - name: Run black
+      run: black . --check
+
+    - name: Run isort
+      run: isort . --check-only --diff
