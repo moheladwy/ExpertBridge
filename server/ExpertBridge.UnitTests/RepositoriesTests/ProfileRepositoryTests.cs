@@ -1,5 +1,5 @@
-using ExpertBridge.Api.Repositories.Profile;
-using ExpertBridge.Api.Repositories.User;
+using ExpertBridge.Application.Repositories.Profile;
+using ExpertBridge.Application.Repositories.User;
 using ExpertBridge.Core;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Profile;

@@ -1,5 +1,6 @@
 using Amazon.S3;
 using Amazon.S3.Model;
+using ExpertBridge.Application.Configurations;
 using ExpertBridge.Core.DTOs.Responses;
 using ExpertBridge.Core.Interfaces.Services;
 using Microsoft.Extensions.Options;

@@ -1,4 +1,5 @@
-using System.Text.Json.Serialization;
+using System.Net.Http.Json;
+using ExpertBridge.Application.Configurations;
 using ExpertBridge.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 
@@ -29,33 +30,5 @@ public class FirebaseService(HttpClient httpClient) : IFirebaseService
         var response = await httpClient.PostAsJsonAsync("", request);
         var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();
         return authToken.IdToken;
-    }
-
-    private class AuthToken
-    {
-        [JsonPropertyName("kind")]
-
-        public string Kind { get; set; }
-
-        [JsonPropertyName("localId")]
-        public string LocalId { get; set; }
-
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
-
-        [JsonPropertyName("displayName")]
-        public string DisplayName { get; set; }
-
-        [JsonPropertyName("idToken")]
-        public string IdToken { get; set; }
-
-        [JsonPropertyName("registered")]
-        public bool Registered { get; set; }
-
-        [JsonPropertyName("refreshToken")]
-        public string RefreshToken { get; set; }
-
-        [JsonPropertyName("expiresIn")]
-        public string ExpiresIn { get; set; }
     }
 }

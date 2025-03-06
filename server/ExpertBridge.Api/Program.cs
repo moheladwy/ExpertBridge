@@ -56,4 +56,7 @@ app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.C
 await app.RunAsync();
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public partial class Program { }
+namespace ExpertBridge.Api
+{
+    public partial class Program { }
+}
