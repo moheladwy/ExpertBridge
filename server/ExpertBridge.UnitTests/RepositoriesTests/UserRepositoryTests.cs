@@ -1,4 +1,4 @@
-using ExpertBridge.Api.Repositories.User;
+using ExpertBridge.Application.Repositories.User;
 using ExpertBridge.Core;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.User;
