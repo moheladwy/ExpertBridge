@@ -6,7 +6,6 @@ import { Navigate } from "react-router";
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
 
-
   if (authLoading) return <div>Loading...</div>;
 
   if (!authUser || authError) {
@@ -16,6 +15,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
 
     console.log('challenging the user');
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!authUser.emailVerified) {
+    console.log('challenging the user, email unverified');
     return <Navigate to="/login" replace />;
   }
 
