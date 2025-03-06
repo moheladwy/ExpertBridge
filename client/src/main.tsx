@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import NotFoundError from './pages/notFoundPage/NotFoundError.tsx'
 import LandingPage from './pages/landingPage/LandingPage.tsx'
@@ -31,17 +31,17 @@ const router = createBrowserRouter([
   {
     path: "login",
     element: (
-      // <PublicRoute>
-      <LoginPage />
-      // </PublicRoute>
+      <PublicRoute>
+        <LoginPage />
+      </PublicRoute>
     ),
   },
   {
     path: "signup",
     element: (
-      // <PublicRoute>
-      <SignUpPage />
-      // </PublicRoute>
+      <PublicRoute>
+        <SignUpPage />
+      </PublicRoute>
     ),
   },
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
