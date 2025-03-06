@@ -1,6 +1,7 @@
-using ExpertBridge.Api;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
+using ExpertBridge.Application;
+using ExpertBridge.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
@@ -9,9 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
-builder.AddSeqEndpoint("Seq");
-builder.AddServiceDefaults();
-builder.AddDatabase();
+builder.ConfigureOpenTelemetry();
+builder.AddDefaultHealthChecks();
+builder.Services.AddServiceDiscovery();
+builder.Services.ConfigureHttpClientDefaults(http =>
+{
+    http.AddStandardResilienceHandler();
+    http.AddServiceDiscovery();
+});
+builder.Services.AddDatabase(builder.Configuration);
+builder.AddSeqEndpoint(connectionName: "Seq");
 builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.Services.AddControllers();
 builder.AddAuthentication();
@@ -46,3 +54,6 @@ app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIRespo
 app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
 
 await app.RunAsync();
+
+// ReSharper disable once ClassNeverInstantiated.Global
+public partial class Program { }

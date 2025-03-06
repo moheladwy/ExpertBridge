@@ -16,7 +16,7 @@ public class ExpertBridgeDbContextFactory : IDesignTimeDbContextFactory<ExpertBr
             .AddUserSecrets<ExpertBridgeDbContext>()
             .Build();
 
-        var connectionString = configuration.GetConnectionString("ExpertBridgeDbContext")!;
+        var connectionString = configuration.GetConnectionString("Postgresql")!;
         var optionsBuilder = new DbContextOptionsBuilder<ExpertBridgeDbContext>();
         optionsBuilder.UseNpgsql(connectionString);
         return new ExpertBridgeDbContext(optionsBuilder.Options);
