@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import NotFoundError from './pages/notFoundPage/NotFoundError.tsx'
 import LandingPage from './pages/landingPage/LandingPage.tsx'
@@ -18,30 +18,30 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />, // Ensures NavBar is always present
     children: [
-      { index: true, element: <LandingPage/> }, // Redirect '/' to '/home'http://localhost:5173/
-        {
-          path: "home",
-          element: (
-            <ProtectedRoute>
+      { index: true, element: <LandingPage /> }, // Redirect '/' to '/home'http://localhost:5173/
+      {
+        path: "home",
+        element: (
+          <ProtectedRoute>
           </ProtectedRoute>
-          ),
-        },
+        ),
+      },
     ],
   },
   {
     path: "login",
     element: (
-      // <PublicRoute>
+      <PublicRoute>
         <LoginPage />
-      // </PublicRoute>
+      </PublicRoute>
     ),
   },
   {
     path: "signup",
     element: (
-      // <PublicRoute>
+      <PublicRoute>
         <SignUpPage />
-      // </PublicRoute>
+      </PublicRoute>
     ),
   },
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
