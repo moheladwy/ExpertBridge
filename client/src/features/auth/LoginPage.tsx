@@ -101,12 +101,12 @@ const LoginPage: React.FC = () => {
             disabled={loading}
           >
             <div className="flex justify-center items-center">
-              <img src={GoogleLogo} alt="" className="w-10 h-10 mr-4"/>
+              <img src={GoogleLogo} alt="" className="w-10 h-10 mr-4" />
               <div>Login with Google</div>
             </div>
           </button>
 
-          {error && <p className="text-red-500 text-sm text-center">Invalid email or password. { error.message }</p>}
+          {error && <p className="text-red-500 text-sm text-center">Invalid email or password. {error.message}</p>}
         </form>
 
         <div className="text-white text-sm text-center m-5">Don't have an account? <a href="/signup" className="underline">Register</a></div>
