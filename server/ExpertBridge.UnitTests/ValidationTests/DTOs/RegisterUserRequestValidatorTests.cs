@@ -11,7 +11,7 @@ public class RegisterUserRequestValidatorTests
     private readonly RegisterUserRequest _validRegisterUserRequest = new()
     {
         Email = "test@gmail.com",
-        FirebaseId = Guid.NewGuid().ToString(),
+        ProviderId = Guid.NewGuid().ToString(),
         FirstName = "Test",
         LastName = "Test",
         Username = "test"
@@ -59,13 +59,13 @@ public class RegisterUserRequestValidatorTests
     {
         // Arrange
         var registerUserRequestWithNullFirebaseId = _validRegisterUserRequest;
-        registerUserRequestWithNullFirebaseId.FirebaseId = null;
+        registerUserRequestWithNullFirebaseId.ProviderId = null;
 
         var registerUserRequestWithEmptyFirebaseId = _validRegisterUserRequest;
-        registerUserRequestWithEmptyFirebaseId.FirebaseId = string.Empty;
+        registerUserRequestWithEmptyFirebaseId.ProviderId = string.Empty;
 
         var registerUserRequestWithInvalidFirebaseId = _validRegisterUserRequest;
-        registerUserRequestWithInvalidFirebaseId.FirebaseId = new string('n', GlobalEntitiesConstraints.MaxIdLength + 1);
+        registerUserRequestWithInvalidFirebaseId.ProviderId = new string('n', GlobalEntitiesConstraints.MaxIdLength + 1);
 
         // Act
         var resultOfNullFirebaseId = _registerUserRequestValidator.TestValidate(registerUserRequestWithNullFirebaseId);
@@ -73,9 +73,9 @@ public class RegisterUserRequestValidatorTests
         var resultOfInvalidFirebaseId = _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidFirebaseId);
 
         // Assert
-        resultOfNullFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
-        resultOfEmptyFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
-        resultOfInvalidFirebaseId.ShouldHaveValidationErrorFor(x => x.FirebaseId);
+        resultOfNullFirebaseId.ShouldHaveValidationErrorFor(x => x.ProviderId);
+        resultOfEmptyFirebaseId.ShouldHaveValidationErrorFor(x => x.ProviderId);
+        resultOfInvalidFirebaseId.ShouldHaveValidationErrorFor(x => x.ProviderId);
     }
 
     [Fact]

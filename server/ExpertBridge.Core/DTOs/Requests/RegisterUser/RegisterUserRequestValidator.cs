@@ -8,7 +8,7 @@ public class RegisterUserRequestValidator : AbstractValidator<RegisterUserReques
 {
     public RegisterUserRequestValidator()
     {
-        RuleFor(x => x.FirebaseId)
+        RuleFor(x => x.ProviderId)
             .NotNull().WithMessage("FirebaseId cannot be null")
             .NotEmpty().WithMessage("FirebaseId cannot be empty")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)

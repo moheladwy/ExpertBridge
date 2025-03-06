@@ -1,0 +1,6 @@
+detoxify
+transformers
+pandas
+flask
+flask-cors
+numpy

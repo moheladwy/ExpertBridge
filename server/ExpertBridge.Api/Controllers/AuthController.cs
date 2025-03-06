@@ -12,15 +12,13 @@ public class AuthController(IFirebaseService authService) : ControllerBase
     public async Task<string> Login([FromBody] LoginRequest request)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        var result = await authService.LoginAsync(request.Email, request.Password);
-        return result;
+        return await authService.LoginAsync(request.Email, request.Password);
     }
 
     [HttpPost("register")]
     public async Task<string> Register([FromBody] RegisterRequest request)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        var result = await authService.RegisterAsync(request.Email, request.Password);
-        return result;
+        return await authService.RegisterAsync(request.Email, request.Password);
     }
 }

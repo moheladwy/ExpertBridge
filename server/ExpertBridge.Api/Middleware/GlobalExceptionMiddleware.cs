@@ -2,16 +2,10 @@ using System.Diagnostics;
 using Serilog;
 using Serilog.Context;
 
-namespace ExpertBridge.Api.Middlewares;
+namespace ExpertBridge.Api.Middleware;
 
 internal class GlobalExceptionMiddleware(RequestDelegate next)
 {
-    /// <summary>
-    ///     Invokes the middleware to handle global exceptions in the application.
-    /// </summary>
-    /// <param name="httpContext">
-    ///     The HttpContext instance to use for the request.
-    /// </param>
     public async Task InvokeAsync(HttpContext httpContext)
     {
         try
@@ -20,7 +14,8 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
             {
                 await next(httpContext);
                 Log.Information(
-                    "Request with TraceId: {TraceId} has been processed successfully.",
+                    "Request {Endpoint} with TraceId: {TraceId} has been processed successfully.",
+                    httpContext.GetEndpoint()?.DisplayName,
                     Activity.Current?.Id);
             }
         }
@@ -29,9 +24,11 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
             Log.Error(
                 ex,
                 "Could not process the request with TraceId: {TraceId}\n" +
+                "Endpoint: {Endpoint}\n" +
                 "Exception: {Exception}\n" +
                 "TargetSite: {TargetSite}",
                 Activity.Current?.Id,
+                httpContext.GetEndpoint()?.DisplayName,
                 ex.Message,
                 ex.TargetSite);
 
@@ -41,6 +38,7 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
                     extensions: new Dictionary<string, object?>
                     {
                         {"traceId", Activity.Current?.Id},
+                        {"Endpoint", httpContext.GetEndpoint()?.DisplayName},
                         {"message", ex.Message}
                     }
                 )

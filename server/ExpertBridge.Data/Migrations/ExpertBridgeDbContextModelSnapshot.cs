@@ -17,7 +17,7 @@ namespace ExpertBridge.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -660,12 +660,10 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasMaxLength(5000)
                         .HasColumnType("character varying(5000)");
 
                     b.Property<string>("JobTitle")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -673,8 +671,8 @@ namespace ExpertBridge.Data.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
+                    b.Property<double>("Rating")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("RatingCount")
                         .HasColumnType("integer");

@@ -8,7 +8,7 @@ public class User
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Username { get; set; }
-    public string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
     public bool IsBanned { get; set; }
     public bool IsDeleted { get; set; }
     public bool IsEmailVerified { get; set; }

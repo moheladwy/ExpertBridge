@@ -14,11 +14,11 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.JobTitle)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(ProfileEntityConstraints.JobTitleMaxLength);
 
         builder.Property(x => x.Bio)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(ProfileEntityConstraints.BioMaxLength);
 
         builder.Property(x => x.ProfilePictureUrl)
