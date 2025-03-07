@@ -10,22 +10,22 @@ import { Provider as ReduxProvider } from "react-redux";
 import SignUpPage from './features/auth/SignUpPage.tsx'
 import LoginPage from './features/auth/LoginPage.tsx'
 import App from './App.tsx'
-import PublicRoute from './components/Routes/PublicRoute.tsx'
 import ProtectedRoute from './components/Routes/ProtectedRoute.tsx'
+import PublicRoute from './components/Routes/PublicRoute.tsx'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />, // Ensures NavBar is always present
     children: [
-      { index: true, element: <LandingPage /> }, // Redirect '/' to '/home'http://localhost:5173/
-      {
-        path: "home",
-        element: (
-          <ProtectedRoute>
-          </ProtectedRoute>
-        ),
-      },
+      { index: true, element: <LandingPage/> }, // Redirect '/' to '/home'http://localhost:5173/
+        {
+          path: "home",
+          element: (
+            <ProtectedRoute children={undefined}>
+            </ProtectedRoute>
+          ),
+        },
     ],
   },
   {
