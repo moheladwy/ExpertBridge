@@ -41,12 +41,6 @@ const SignUpPage: React.FC = () => {
   }, [registeredUser, navigate]);
 
   useEffect(() => {
-    if (googleUser) {
-      navigate("/home");
-    }
-  }, [googleUser, navigate]);
-
-  useEffect(() => {
     if (error) {
       console.error("Sign-up error:", error);
       setSignUpError("Sign-up failed. Please try again.");
