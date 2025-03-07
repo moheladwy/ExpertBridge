@@ -11,6 +11,7 @@ import SignUpPage from './features/auth/SignUpPage.tsx'
 import LoginPage from './features/auth/LoginPage.tsx'
 import App from './App.tsx'
 import ProtectedRoute from './components/Routes/ProtectedRoute.tsx'
+import PublicRoute from './components/Routes/PublicRoute.tsx'
 
 const router = createBrowserRouter([
   {
