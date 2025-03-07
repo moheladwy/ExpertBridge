@@ -25,7 +25,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     const listener = onAuthStateChanged(
       auth,
       async (user) => {
-        // TODO - Call RTK here to update the user in through the api.
+        // TODO: Call RTK here to update the user in through the api.
         // Most likely a PUT request to the user endpoint. (Make sure the PUT behaviour is creational)
         if (user) { /* empty */ }
 
