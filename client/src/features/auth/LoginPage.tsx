@@ -18,11 +18,16 @@ const LoginPage: React.FC = () => {
     password: "",
   });
 
+  const [signInError, setSignInError] = useState<string>('');
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    if (loggedInUser) {
+    if (loggedInUser && loggedInUser.user.emailVerified) {
       navigate('/home');
+    }
+    else {
+      setSignInError('Invalid credentials');
     }
   }, [loggedInUser, navigate]);
 
@@ -107,6 +112,7 @@ const LoginPage: React.FC = () => {
           </button>
 
           {error && <p className="text-red-500 text-sm text-center">Invalid email or password. {error.message}</p>}
+          {signInError && <p className="text-red-500 text-sm text-center">Invalid email or password. {signInError}</p>}
         </form>
 
         <div className="text-white text-sm text-center m-5">Don't have an account? <a href="/signup" className="underline">Register</a></div>
