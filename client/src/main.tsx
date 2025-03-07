@@ -30,17 +30,17 @@ const router = createBrowserRouter([
   {
     path: "login",
     element: (
-      // <PublicRoute>
+      <PublicRoute>
         <LoginPage />
-      // </PublicRoute>
+      </PublicRoute>
     ),
   },
   {
     path: "signup",
     element: (
-      // <PublicRoute>
+      <PublicRoute>
         <SignUpPage />
-      // </PublicRoute>
+      </PublicRoute>
     ),
   },
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
