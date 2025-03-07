@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import NotFoundError from './pages/notFoundPage/NotFoundError.tsx'
 import LandingPage from './pages/landingPage/LandingPage.tsx'
@@ -10,7 +10,6 @@ import { Provider as ReduxProvider } from "react-redux";
 import SignUpPage from './features/auth/SignUpPage.tsx'
 import LoginPage from './features/auth/LoginPage.tsx'
 import App from './App.tsx'
-import PublicRoute from './components/Routes/PublicRoute.tsx'
 import ProtectedRoute from './components/Routes/ProtectedRoute.tsx'
 
 const router = createBrowserRouter([
@@ -22,8 +21,8 @@ const router = createBrowserRouter([
         {
           path: "home",
           element: (
-            <ProtectedRoute>
-          </ProtectedRoute>
+            <ProtectedRoute children={undefined}>
+            </ProtectedRoute>
           ),
         },
     ],
