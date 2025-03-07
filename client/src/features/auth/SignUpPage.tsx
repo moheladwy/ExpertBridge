@@ -33,6 +33,13 @@ const SignUpPage: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [signUpError, setSignUpError] = useState<string>("");
 
+  // Redirect users after successful registration
+  useEffect(() => {
+    if (registeredUser) {
+      navigate("/login");
+    }
+  }, [registeredUser, navigate]);
+
   useEffect(() => {
     if (error) {
       console.error("Sign-up error:", error);
