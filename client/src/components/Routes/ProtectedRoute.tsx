@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (authLoading || loading) return <div>Loading...</div>;
 
   if (!authUser || authError) {
-    // TODO - Handle the error here.
+    // TODO: Handle the error here.
     if (authError) {
       console.error('An error occurred while authenticating the user', authError);
     }
@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // TODO - useGetUserQuery here to check if the user has finished his onboarding.
+  // TODO: useGetUserQuery here to check if the user has finished his onboarding.
   const isOnboarded = true;
 
   if (!isOnboarded) {
