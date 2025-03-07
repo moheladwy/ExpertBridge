@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (!authUser.emailVerified) {
     signOut();
     console.log('challenging the user, email unverified');
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
 
   // TODO - useGetUserQuery here to check if the user has finished his onboarding.

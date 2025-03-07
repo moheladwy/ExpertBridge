@@ -22,19 +22,19 @@ const LoginPage: React.FC = () => {
   const [signInError, setSignInError] = useState<string>("");
 
   // Redirect users after successful login
-  useEffect(() => {
-    if (loggedInUser?.user.emailVerified) {
-      navigate("/home");
-    } else if (loggedInUser) {
-      setSignInError("Please verify your email before logging in.");
-    }
-  }, [loggedInUser, navigate]);
+  // useEffect(() => {
+  //   if (loggedInUser?.user.emailVerified) {
+  //     navigate("/home");
+  //   } else if (loggedInUser) {
+  //     setSignInError("Invalid email or password.");
+  //   }
+  // }, [loggedInUser, navigate]);
 
-  useEffect(() => {
-    if (googleUser) {
-      navigate("/home");
-    }
-  }, [googleUser, navigate]);
+  // useEffect(() => {
+  //   if (googleUser) {
+  //     navigate("/home");
+  //   }
+  // }, [googleUser, navigate]);
 
   useEffect(() => {
     if (error) {
@@ -120,7 +120,7 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             className="w-full bg-main-purple text-white font-bold p-4 rounded hover:bg-purple-900 disabled:bg-purple-500"
-            disabled={loading}
+            disabled={loading || googleLoading}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -129,7 +129,7 @@ const LoginPage: React.FC = () => {
           <button
             type="button"
             className="w-full bg-white text-black font-bold p-2 rounded hover:bg-gray-300 disabled:bg-gray-400 disabled:text-gray-600"
-            disabled={googleLoading}
+            disabled={googleLoading || loading}
             onClick={() => signInWithGoogle()}
           >
             <div className="flex justify-center items-center">

@@ -4,7 +4,7 @@ import { Navigate } from "react-router";
 
 // ✅ Public Route: Redirects authenticated users to /home
  const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const [user, loading] = useAuthSubscribtion(auth);
+  const [user, loading, error] = useAuthSubscribtion(auth);
 
   if (loading) return <div>Loading...</div>;
   
