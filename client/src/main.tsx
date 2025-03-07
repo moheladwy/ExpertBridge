@@ -18,14 +18,17 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />, // Ensures NavBar is always present
     children: [
-      { index: true, element: <LandingPage/> }, // Redirect '/' to '/home'http://localhost:5173/
-        {
-          path: "home",
-          element: (
-            <ProtectedRoute children={undefined}>
-            </ProtectedRoute>
-          ),
-        },
+      {
+        index: true,
+        element: <LandingPage />
+      }, 
+      {
+        path: "home",
+        element: (
+          <ProtectedRoute children={undefined}>
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   {
