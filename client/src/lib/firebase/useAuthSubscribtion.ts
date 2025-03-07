@@ -13,9 +13,8 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<User | null, Error>(
     () => auth.currentUser);
 
-  // @ts-expect-error - We don't need the mutation result here
   const [updateUser, result] = useUpdateUserMutation();
-  // @ts-expect-error - We don't need the mutation result here
+  
   const {
       isLoading: updateUserLoading,
       isError: updateUserIsError, 
@@ -30,6 +29,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
         // Most likely a PUT request to the user endpoint. (Make sure the PUT behaviour is creational)
         if (user) { /* empty */ }
 
+        
         if (options?.onUserChanged) {
           // onUserChanged function to process custom claims on any other trigger function
           try {
@@ -39,7 +39,13 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
             setError(e as Error);
           }
         }
-        setValue(user);
+        
+        if (!user?.emailVerified) {
+          setError(new Error('Email Unverified'));
+        }
+        else {
+          setValue(user);
+        }
       },
       setError
     );
