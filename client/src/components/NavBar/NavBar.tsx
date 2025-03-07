@@ -4,7 +4,7 @@ import useSignOut from "@/lib/firebase/useSignOut";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import RegisterBtn from "./RegisterBtn";
 
-function NavBar() {
+const NavBar = () => {
   const navigate = useNavigate();
   const [user] = useAuthSubscribtion(auth);
   const [signOut, loading, error] = useSignOut(auth);
