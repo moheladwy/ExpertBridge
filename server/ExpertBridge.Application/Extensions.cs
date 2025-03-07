@@ -27,12 +27,12 @@ public static class Extensions
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
         services.AddTransient<IFirebaseService, FirebaseService>();
-        services.AddSingleton<ICacheService, CacheService>();
-        services.AddSingleton<IObjectStorageService, ObjectStorageService>();
-        services.AddSingleton<IUserService, UserService>();
-        services.AddSingleton<IProfileService, ProfileService>();
-        services.AddSingleton<IPostService, PostService>();
-        services.AddSingleton<ICommentService, CommentService>();
+        services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<IObjectStorageService, ObjectStorageService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<IPostService, PostService>();
+        services.AddScoped<ICommentService, CommentService>();
     }
 
     /// <summary>
@@ -43,13 +43,13 @@ public static class Extensions
     /// </param>
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddSingleton<UserRepository>();
-        services.AddSingleton<ProfileRepository>();
-        services.AddSingleton<PostRepository>();
-        services.AddSingleton<CommentRepository>();
-        services.AddSingleton<IEntityRepository<User>, UserCacheRepository>();
-        services.AddSingleton<IEntityRepository<Profile>, ProfileCacheRepository>();
-        services.AddSingleton<IEntityRepository<Post>, PostCacheRepository>();
-        services.AddSingleton<IEntityRepository<Comment>, CommentCacheRepository>();
+        services.AddScoped<UserRepository>();
+        services.AddScoped<ProfileRepository>();
+        services.AddScoped<PostRepository>();
+        services.AddScoped<CommentRepository>();
+        services.AddScoped<IEntityRepository<User>, UserCacheRepository>();
+        services.AddScoped<IEntityRepository<Profile>, ProfileCacheRepository>();
+        services.AddScoped<IEntityRepository<Post>, PostCacheRepository>();
+        services.AddScoped<IEntityRepository<Comment>, CommentCacheRepository>();
     }
 }
