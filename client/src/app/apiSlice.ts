@@ -12,7 +12,6 @@ export const emptyApiSlice = createApi({
   ],
   keepUnusedDataFor: 60,
 
-  // @ts-expect-error - We don't need to define endpoints here
   endpoints: builder => ({
 
   }),

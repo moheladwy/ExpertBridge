@@ -33,7 +33,6 @@ export class SyncService {
     }
   }
   
-  // @ts-expect-error because of the unused parameter
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async syncPosts(userId: string) {
     try {

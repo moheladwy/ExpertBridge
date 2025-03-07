@@ -13,9 +13,8 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<User | null, Error>(
     () => auth.currentUser);
 
-  // @ts-expect-error - We don't need the mutation result here
   const [updateUser, result] = useUpdateUserMutation();
-  // @ts-expect-error - We don't need the mutation result here
+  
   const {
       isLoading: updateUserLoading,
       isError: updateUserIsError, 
