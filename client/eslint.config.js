@@ -27,7 +27,7 @@ export default tseslint.config(
       'react-refresh/only-export-components': 'off', // Allow exports anywhere
       '@typescript-eslint/no-explicit-any': 'off', // Allow `any` type
       '@typescript-eslint/explicit-module-boundary-types': 'off', // No need to define return types explicitly
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }], // Ignore unused variables starting with `_`
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
       'no-console': 'off', // Allow console logs
       'no-debugger': 'warn', // Warn instead of error for debugger
       'react-hooks/rules-of-hooks': 'warn', // Allow some flexibility in hooks usage
