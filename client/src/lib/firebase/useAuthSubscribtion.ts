@@ -30,6 +30,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
         // Most likely a PUT request to the user endpoint. (Make sure the PUT behaviour is creational)
         if (user) { /* empty */ }
 
+        
         if (options?.onUserChanged) {
           // onUserChanged function to process custom claims on any other trigger function
           try {
@@ -39,7 +40,13 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
             setError(e as Error);
           }
         }
-        setValue(user);
+        
+        if (!user?.emailVerified) {
+          setError(new Error('Email Unverified'));
+        }
+        else {
+          setValue(user);
+        }
       },
       setError
     );

@@ -24,7 +24,8 @@ export default (auth: Auth): EmailAndPasswordActionHook => {
           password
         );
 
-        if (userCredential.user.emailVerified === false) { 
+        if (!userCredential?.user?.emailVerified) { 
+          console.log('SignInHook: Email Unverified')
           throw new Error('Email is not verified');
         }
 
