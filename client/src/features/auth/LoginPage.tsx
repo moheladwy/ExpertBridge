@@ -21,21 +21,6 @@ const LoginPage: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [signInError, setSignInError] = useState<string>("");
 
-  // Redirect users after successful login
-  // useEffect(() => {
-  //   if (loggedInUser?.user.emailVerified) {
-  //     navigate("/home");
-  //   } else if (loggedInUser) {
-  //     setSignInError("Invalid email or password.");
-  //   }
-  // }, [loggedInUser, navigate]);
-
-  // useEffect(() => {
-  //   if (googleUser) {
-  //     navigate("/home");
-  //   }
-  // }, [googleUser, navigate]);
-
   useEffect(() => {
     if (error) {
       console.error("Login error:", error);
