@@ -23,11 +23,12 @@ const LoginPage: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    if (loggedInUser && loggedInUser.user.emailVerified) {
-      navigate('/home');
-    }
-    else {
-      setSignInError('Invalid credentials');
+    if (loggedInUser) {
+      if (loggedInUser.user.emailVerified) {
+        navigate('/home');
+      } else {
+        setSignInError("Please verify your email before logging in.");
+      }
     }
   }, [loggedInUser, navigate]);
 
@@ -49,6 +50,7 @@ const LoginPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setSignInError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
