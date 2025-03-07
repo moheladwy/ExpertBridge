@@ -1,12 +1,14 @@
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
+import useSignOut from "@/lib/firebase/useSignOut";
 import { Navigate } from "react-router";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+  const [signOut, loading] = useSignOut(auth);
 
-  if (authLoading) return <div>Loading...</div>;
+  if (authLoading || loading) return <div>Loading...</div>;
 
   if (!authUser || authError) {
     // TODO - Handle the error here.
@@ -19,6 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!authUser.emailVerified) {
+    signOut();
     console.log('challenging the user, email unverified');
     return <Navigate to="/login" replace />;
   }
