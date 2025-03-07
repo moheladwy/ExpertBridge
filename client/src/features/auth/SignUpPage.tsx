@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useCreateUserWithEmailAndPassword from "@/lib/firebase/EmailAuth/useCreateUserWithEmailAndPassword";
+import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import { auth } from "@/lib/firebase";
-import GoogleLogo from '../../assets/Login-SignupAssets/Google-Logo.svg'
+import GoogleLogo from "../../assets/Login-SignupAssets/Google-Logo.svg";
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
-  // const [signUp, { isLoading, error }] = useSignUpMutation();
+
+  // Email/Password Sign-Up Hook
   const [
     registerWithEmailAndPassword,
     registeredUser,
@@ -14,60 +16,89 @@ const SignUpPage: React.FC = () => {
     error
   ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
 
+  // Google Sign-Up Hook
+  const [signInWithGoogle, googleUser, googleLoading, googleError] =
+    useSignInWithGoogle(auth);
+
+  // Form State
   const [formData, setFormData] = useState({
-    firstName:"",
-    lastName:"",
-    username:"",
+    firstName: "",
+    lastName: "",
+    username: "",
     email: "",
     password: "",
-    confirmPassword:""
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [signUpError, setSignUpError] = useState<string>("");
 
+  // Redirect users after successful registration
   useEffect(() => {
     if (registeredUser) {
       navigate("/login");
     }
   }, [registeredUser, navigate]);
 
-  // handle errors
+  useEffect(() => {
+    if (googleUser) {
+      navigate("/home");
+    }
+  }, [googleUser, navigate]);
+
   useEffect(() => {
     if (error) {
-      console.error('useEffecting', error);
+      console.error("Sign-up error:", error);
+      setSignUpError("Sign-up failed. Please try again.");
+    } else if (googleError) {
+      console.error("Google sign-up error:", googleError);
+      setSignUpError("Google sign-up failed. Please try again.");
     }
-  }, [error]);
+  }, [error, googleError]);
 
+  // Form Validation
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!formData.email.includes("@")) newErrors.email = "Invalid email";
-    if (formData.password.length < 12) //SHOULD BE EDITED
-      newErrors.password = "Password must be at least 12 characters";
-    if (false) //IF THE USERNAME IS USED BEFORE
-      newErrors.username = "Username should be unique";
-    if(formData.password !== formData.confirmPassword)
-      newErrors.confermPassword = "The Passwords doesn't match"
+
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.username.trim()) newErrors.username = "Username is required";
+    if (!formData.email.includes("@")) newErrors.email = "Invalid email format";
+    if (formData.password.length < 12) newErrors.password = "Password must be at least 12 characters";
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+
+    // Placeholder for backend username check
+    // if (await isUsernameTaken(formData.username)) {
+    //   newErrors.username = "Username is already taken";
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle Input Changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setSignUpError("");
   };
 
+  // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-
     await registerWithEmailAndPassword(formData.email, formData.password);
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
       <div className="p-6 w-1/3 max-xl:w-1/2 max-sm:w-2/3">
-        <h2 className="font-bold mb-4 text-white text-5xl text-left max-xl:text-5xl max-lg:text-4xl max-sm:text-3xl">Create Your Account.</h2>
+        <h2 className="font-bold mb-4 text-white text-5xl text-left max-xl:text-5xl max-lg:text-4xl max-sm:text-3xl">
+          Create Your Account.
+        </h2>
+
+        {/* Sign-Up Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name Fields */}
           <div className="flex w-full gap-x-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-white">First Name</label>
@@ -80,6 +111,7 @@ const SignUpPage: React.FC = () => {
                 placeholder="Enter Your First Name"
                 disabled={loading}
               />
+              {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium text-white">Last Name</label>
@@ -92,8 +124,11 @@ const SignUpPage: React.FC = () => {
                 placeholder="Enter Your Last Name"
                 disabled={loading}
               />
+              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
             </div>
           </div>
+
+          {/* Username Field */}
           <div>
             <label className="block text-sm font-medium text-white">Username</label>
             <input
@@ -105,8 +140,10 @@ const SignUpPage: React.FC = () => {
               placeholder="Enter Your Username"
               disabled={loading}
             />
-            {errors.username && <p className="text-red-500 text-sm max-md:text-xs">{errors.username}</p>}
+            {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
           </div>
+
+          {/* Email Field */}
           <div>
             <label className="block text-sm font-medium text-white">Email Address</label>
             <input
@@ -118,8 +155,10 @@ const SignUpPage: React.FC = () => {
               placeholder="Enter Your Email"
               disabled={loading}
             />
-            {errors.email && <p className="text-red-500 text-sm max-md:text-xs">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
+
+          {/* Password Fields */}
           <div>
             <label className="block text-sm font-medium text-white">Create Password</label>
             <input
@@ -131,7 +170,7 @@ const SignUpPage: React.FC = () => {
               placeholder="Enter Password"
               disabled={loading}
             />
-            {errors.password && <p className="text-red-500 text-sm max-md:text-xs">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-white">Confirm Password</label>
@@ -144,8 +183,10 @@ const SignUpPage: React.FC = () => {
               placeholder="Enter Your Password Again"
               disabled={loading}
             />
-            {errors.confermPassword && <p className="text-red-500 text-sm max-md:text-xs">{errors.confermPassword}</p>}
+            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
           </div>
+
+          {/* Sign-Up Button */}
           <button
             type="submit"
             className="w-full bg-main-purple text-white font-bold p-4 rounded hover:bg-purple-900 disabled:bg-purple-500"
@@ -154,16 +195,21 @@ const SignUpPage: React.FC = () => {
             {loading ? "Signing Up..." : "Sign Up"}
           </button>
 
+          {/* Google Sign-Up Button */}
           <button
+            type="button"
             className="w-full bg-white text-black font-bold p-2 rounded hover:bg-gray-300 disabled:bg-gray-400 disabled:text-gray-600"
-            disabled={loading}
+            disabled={googleLoading}
+            onClick={() => signInWithGoogle()}
           >
             <div className="flex justify-center items-center">
-              <img src={GoogleLogo} alt="" className="w-10 h-10 mr-4"/>
-              <div>Signup with Google</div>
+              <img src={GoogleLogo} alt="Google Logo" className="w-10 h-10 mr-4" />
+              <div>{googleLoading ? "Signing up with Google..." : "Signup with Google"}</div>
             </div>
           </button>
-          {error && <p className="text-red-500 text-sm text-center">Signup failed {error.message}</p>}
+
+          {/* Error Messages */}
+          {signUpError && <p className="text-red-500 text-sm text-center">{signUpError}</p>}
         </form>
       </div>
     </div>
