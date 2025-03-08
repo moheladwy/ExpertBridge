@@ -17,7 +17,8 @@ public class PostController(IPostService service) : ControllerBase
     [HttpGet("get/{postId}")]
     public async Task<PostResponse> Get([FromRoute] string postId)
     {
-        throw new NotImplementedException();
+        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+        return await service.GetByIdAsync(postId);
     }
 
     [HttpGet("get-all/{identityId}")]

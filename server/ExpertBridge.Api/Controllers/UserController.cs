@@ -19,6 +19,13 @@ public sealed class UserController(IUserService userService) : ControllerBase
         return await userService.GetUserByIdentityProviderId(identityProviderId);
     }
 
+    [HttpGet("get-by-email/{email}")]
+    public async Task<UserResponse> GetUserByEmail([FromRoute] string email)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(email);
+        return await userService.GetUserByEmailAsync(email);
+    }
+
     [HttpPost("register")]
     public async Task<UserResponse> RegisterNewUser([FromBody] RegisterUserRequest request)
     {
