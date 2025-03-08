@@ -14,10 +14,8 @@ public class Post
     public DateTime? LastModified { get; set; }
     public bool isDeleted { get; set; }
 
-    // Navigation property
-    public Profile.Profile Author { get; set; }
-
     // Add to navigation properties
+    public Profile.Profile Author { get; set; }
     public ICollection<PostMedia> Medias { get; set; } = [];
     public ICollection<Comment.Comment> Comments { get; set; } = [];
     public ICollection<PostVote> Votes { get; set; } = [];

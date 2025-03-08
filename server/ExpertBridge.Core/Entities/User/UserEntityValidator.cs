@@ -38,7 +38,6 @@ public class UserEntityValidator : AbstractValidator<User>
             .MaximumLength(UserEntityConstraints.MaxUsernameLength).WithMessage($"Username must be less than {UserEntityConstraints.MaxUsernameLength} characters");
 
         RuleFor(x => x.PhoneNumber)
-            .NotNull().WithMessage("PhoneNumber is required")
             .NotEmpty().WithMessage("PhoneNumber is required")
             .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength).WithMessage(
                 $"PhoneNumber must be less than {UserEntityConstraints.MaxPhoneNumberLength} characters")

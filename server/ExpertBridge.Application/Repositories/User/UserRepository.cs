@@ -38,6 +38,6 @@ public class UserRepository(ExpertBridgeDbContext db) : IEntityRepository<Core.E
         var user = await GetByIdAsync(id);
         if (user is null) throw new UserNotFoundException("User not found");
         user.IsDeleted = true;
-        await db.SaveChangesAsync();
+        await UpdateAsync(user);
     }
 }

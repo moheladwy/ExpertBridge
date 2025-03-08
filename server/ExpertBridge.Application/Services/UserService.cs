@@ -23,6 +23,13 @@ public class UserService(
         return new UserResponse(user);
     }
 
+    public async Task<UserResponse> GetUserByEmailAsync(string email)
+    {
+        var user = await userRepository.GetFirstAsNoTrackingAsync(user => user.Email == email)
+            ?? throw new UserNotFoundException("User not found");
+        return new UserResponse(user);
+    }
+
     public async Task<UserResponse> RegisterNewUser(RegisterUserRequest request)
     {
         var validationResult = await registerUserRequestValidator.ValidateAsync(request);

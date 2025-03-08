@@ -9,6 +9,7 @@ namespace ExpertBridge.Core.Interfaces.Services;
 public interface IUserService
 {
     Task<UserResponse> GetUserByIdentityProviderId(string identityProviderId);
+    Task<UserResponse> GetUserByEmailAsync(string email);
     Task<UserResponse> RegisterNewUser(RegisterUserRequest request);
     Task<UserResponse> UpdateUserAsync(UpdateUserRequest request);
     Task DeleteUserAsync(string identityProviderId);

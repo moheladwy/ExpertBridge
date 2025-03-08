@@ -1,12 +1,14 @@
 using ExpertBridge.Application.Repositories.Comment;
 using ExpertBridge.Application.Repositories.Post;
 using ExpertBridge.Application.Repositories.Profile;
+using ExpertBridge.Application.Repositories.Tag;
 using ExpertBridge.Application.Repositories.User;
 using ExpertBridge.Application.Services;
 using ExpertBridge.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Core.Entities.Comment;
 using ExpertBridge.Core.Entities.Post;
 using ExpertBridge.Core.Entities.Profile;
+using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Core.Entities.User;
 using ExpertBridge.Core.Interfaces.Repositories;
 using ExpertBridge.Core.Interfaces.Services;
@@ -47,9 +49,11 @@ public static class Extensions
         services.AddScoped<ProfileRepository>();
         services.AddScoped<PostRepository>();
         services.AddScoped<CommentRepository>();
+        services.AddScoped<TagRepository>();
         services.AddScoped<IEntityRepository<User>, UserCacheRepository>();
         services.AddScoped<IEntityRepository<Profile>, ProfileCacheRepository>();
         services.AddScoped<IEntityRepository<Post>, PostCacheRepository>();
         services.AddScoped<IEntityRepository<Comment>, CommentCacheRepository>();
+        services.AddScoped<IEntityRepository<Tag>, TagCacheRepository>();
     }
 }
