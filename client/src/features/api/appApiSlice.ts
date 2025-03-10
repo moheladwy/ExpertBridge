@@ -1,4 +1,4 @@
-import { emptyApiSlice as api } from "@/app/apiSlice";
+import { emptyApiSlice as api } from "@/features/api/apiSlice";
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
