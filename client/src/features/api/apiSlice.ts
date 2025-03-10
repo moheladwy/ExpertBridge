@@ -5,7 +5,8 @@ import { auth } from '@/lib/firebase';
 export const emptyApiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: config.API_HTTPS_BASE_URL,
+    // baseUrl: config.API_HTTPS_BASE_URL,
+    baseUrl: 'https://api.expertbridge.duckdns.org/api',
 
     prepareHeaders: async (headers, query) => {
       const token = await auth.currentUser?.getIdToken();
