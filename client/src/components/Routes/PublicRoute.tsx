@@ -1,14 +1,20 @@
+import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { Navigate } from "react-router";
 
 // ✅ Public Route: Redirects authenticated users to /home
- const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const [user, loading, error] = useAuthSubscribtion(auth);
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const [authUser, authLodagin, authError] = useAuthSubscribtion(auth);
+  const {
+    data: appUser,
+    isLoading: userLoading,
+    isError: userError,
+  } = useGetCurrentUserQuery(authUser?.email);
 
-  if (loading) return <div>Loading...</div>;
-  
-  if (user) {
+  if (authLodagin || userLoading) return <div>Loading...</div>;
+
+  if (authUser && appUser) {
     console.log("User already logged in, redirecting...");
     return <Navigate to="/home" replace />;
   }

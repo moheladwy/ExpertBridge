@@ -25,6 +25,16 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     const listener = onAuthStateChanged(
       auth,
       async (user) => {
+        // BE AWARE, THE AUTH STATE COULD CHANGE A LOT.
+        // SO WHAT TO DO? 
+        
+        // Solution: setTimeout for something like 5 seconds or more, before checking if (user)
+        // to make sure that the user is still there. 
+        
+        // BE AWARE, THE user IS BASSED TO THIS CALLBACK ALREADY!
+        // WE MIGHT USE auth.currentUser IN THE IF CHECK, THEN USE user IN THE 
+        // CONDITIONAL OPERATION WE ARE WILLING TO DO.
+
         // TODO: Call RTK here to update the user in through the api.
         // Most likely a PUT request to the user endpoint. (Make sure the PUT behaviour is creational)
         if (user) { /* empty */ }
@@ -38,6 +48,10 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
           catch (e) {
             setError(e as Error);
           }
+        }
+
+        if (!user) {
+          setError(new Error('User Signed Out'));
         }
         
         if (!user?.emailVerified) {

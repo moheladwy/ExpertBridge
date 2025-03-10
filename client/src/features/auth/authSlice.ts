@@ -1,4 +1,4 @@
-import { emptyApiSlice } from "../../app/apiSlice";
+import { emptyApiSlice } from "../api/apiSlice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { LoginRequest, LoginResponse, RegisterRequest as SignUpRequest, RegisterResponse as SignUpResponse } from "./types";
 import { createUserWithEmailAndPassword } from "firebase/auth";

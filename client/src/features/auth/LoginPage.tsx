@@ -4,6 +4,7 @@ import useSignInWithEmailAndPassword from "@/lib/firebase/EmailAuth/useSignInWit
 import { auth } from "@/lib/firebase";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import GoogleLogo from "../../assets/Login-SignupAssets/Google-Logo.svg";
+import { useCreateUser } from "./useCreateUser";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -12,9 +13,20 @@ const LoginPage: React.FC = () => {
   const [loginWithEmailAndPassword, loggedInUser, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
-  // Google Login Hook
-  const [signInWithGoogle, googleUser, googleLoading, googleError] =
-    useSignInWithGoogle(auth);
+  // // Google Login Hook
+  // const [signInWithGoogle, googleUser, googleLoading, googleError] =
+  //   useSignInWithGoogle(auth);
+
+  const [
+    signInWithGoogle,
+    _,
+    authUser,
+    createdAppUser,
+    createLoading,
+    authError,
+    createUserErrorMessage,
+    createUserSuccess,
+  ] = useCreateUser(auth);
 
   // Form State
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -25,11 +37,11 @@ const LoginPage: React.FC = () => {
     if (error) {
       console.error("Login error:", error);
       setSignInError("Invalid email or password.");
-    } else if (googleError) {
-      console.error("Google login error:", googleError);
+    } else if (authError || createUserErrorMessage) {
+      console.error("Google login error:", authError || createUserErrorMessage);
       setSignInError("Google login failed. Please try again.");
-    }
-  }, [error, googleError]);
+    } 
+  }, [error, authError, createUserErrorMessage]);
 
   // Form Validation
   const validate = () => {
@@ -105,7 +117,7 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             className="w-full bg-main-purple text-white font-bold p-4 rounded hover:bg-purple-900 disabled:bg-purple-500"
-            disabled={loading || googleLoading}
+            disabled={loading || createLoading}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -114,12 +126,12 @@ const LoginPage: React.FC = () => {
           <button
             type="button"
             className="w-full bg-white text-black font-bold p-2 rounded hover:bg-gray-300 disabled:bg-gray-400 disabled:text-gray-600"
-            disabled={googleLoading || loading}
+            disabled={createLoading || loading}
             onClick={() => signInWithGoogle()}
           >
             <div className="flex justify-center items-center">
               <img src={GoogleLogo} alt="Google Logo" className="w-10 h-10 mr-4" />
-              <div>{googleLoading ? "Signing in with Google..." : "Login with Google"}</div>
+              <div>{createLoading ? "Signing in with Google..." : "Login with Google"}</div>
             </div>
           </button>
 

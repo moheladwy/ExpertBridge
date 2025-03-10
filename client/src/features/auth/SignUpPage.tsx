@@ -4,21 +4,44 @@ import useCreateUserWithEmailAndPassword from "@/lib/firebase/EmailAuth/useCreat
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import { auth } from "@/lib/firebase";
 import GoogleLogo from "../../assets/Login-SignupAssets/Google-Logo.svg";
+import { useUpdateUserMutation } from "../users/usersSlice";
+import { UpdateUserRequest } from "../users/types";
+import { useCreateUser } from "./useCreateUser";
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
 
   // Email/Password Sign-Up Hook
-  const [
-    registerWithEmailAndPassword,
-    registeredUser,
-    loading,
-    error
-  ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
+  // const [
+  //   registerWithEmailAndPassword,
+  //   emailUser,
+  //   authLoading,
+  //   authError
+  // ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
 
   // Google Sign-Up Hook
-  const [signInWithGoogle, googleUser, googleLoading, googleError] =
-    useSignInWithGoogle(auth);
+  // const [signInWithGoogle, googleUser, googleLoading, googleError] =
+  //   useSignInWithGoogle(auth);
+
+  // const [createAppUser, result] = useUpdateUserMutation();
+
+  // const {
+  //   isLoading: createUserLoading,
+  //   isError: createUserError,
+  //   isSuccess: createUserSuccess,
+  //   data: createdUser,
+  // } = result;
+
+  const [
+    signInWithGoogle,
+    signUpWithEmailAndPassword,
+    authUser,
+    createdAppUser,
+    createUserLoading,
+    authError,
+    createUserErrorMessage,
+    createUserSuccess
+  ] = useCreateUser(auth);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -33,25 +56,49 @@ const SignUpPage: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [signUpError, setSignUpError] = useState<string>("");
 
-  // Redirect users after successful registration
   useEffect(() => {
-    if (registeredUser) {
-      navigate("/login");
+    if (createUserSuccess) {
+      navigate('/login');
     }
-  }, [registeredUser, navigate]);
+  })
+
+  // useEffect(() => {
+  //   if (emailUser) {
+  //     const user: UpdateUserRequest = {
+  //       firstName: formData.firstName,
+  //       lastName: formData.lastName,
+  //       email: emailUser.user.email!,
+  //       username: formData.email,
+  //       providerId: emailUser.user.uid,
+  //     }
+
+  //     createAppUser(user);
+  //   }
+  // }, [emailUser, createAppUser]);
+
+
+  // Error handling -----------------------------------------------------
+  // const handleCreateBackendUserError = async () => {
+  //   // Delete the user from firebase if api user creation fails.
+  //   await auth.currentUser?.delete();
+  // }
 
   useEffect(() => {
-    if (error) {
-      console.error("Sign-up error:", error);
-      setSignUpError("Sign-up failed. Please try again.");
-    } else if (googleError) {
-      console.error("Google sign-up error:", googleError);
-      setSignUpError("Google sign-up failed. Please try again.");
+    if (createUserErrorMessage) {
+      setSignUpError('An error occurred while creating your account. Please try again.');
+      console.log(createUserErrorMessage);
     }
-  }, [error, googleError]);
+  }, [createUserErrorMessage]);
+
+  useEffect(() => {
+    if (authError) {
+      console.error("Sign-up error:", authError);
+      setSignUpError("Sign-up failed. Please try again.");
+    }
+  }, [authError]);
 
   // Form Validation
-  const validate = () => {
+  const validate = async () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
@@ -60,6 +107,11 @@ const SignUpPage: React.FC = () => {
     if (!formData.email.includes("@")) newErrors.email = "Invalid email format";
     if (formData.password.length < 12) newErrors.password = "Password must be at least 12 characters";
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+
+    // TODO: Make a request to the api checking if the email is already used. 
+    // That brings a very good question: 
+    // Can the user create an 'email login' with the same Google email used by another
+    // 'Google' login? Because firebase allows that, but should we allow it in the api? 
 
     // Placeholder for backend username check
     // if (await isUsernameTaken(formData.username)) {
@@ -76,12 +128,24 @@ const SignUpPage: React.FC = () => {
     setSignUpError("");
   };
 
-  // Handle Form Submission
+  // Handle Form Submission (Email Sign Up)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
-    await registerWithEmailAndPassword(formData.email, formData.password);
+
+    const isValid = await validate();
+    if (!isValid) return;
+
+    const user = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      username: formData.username,
+    }
+
+    await signUpWithEmailAndPassword(formData.email, formData.password, user);
   };
+
+  const loading = createUserLoading;
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
@@ -193,12 +257,12 @@ const SignUpPage: React.FC = () => {
           <button
             type="button"
             className="w-full bg-white text-black font-bold p-2 rounded hover:bg-gray-300 disabled:bg-gray-400 disabled:text-gray-600"
-            disabled={googleLoading}
+            disabled={createUserLoading}
             onClick={() => signInWithGoogle()}
           >
             <div className="flex justify-center items-center">
               <img src={GoogleLogo} alt="Google Logo" className="w-10 h-10 mr-4" />
-              <div>{googleLoading ? "Signing up with Google..." : "Signup with Google"}</div>
+              <div>{createUserLoading ? "Signing up with Google..." : "Signup with Google"}</div>
             </div>
           </button>
 
