@@ -10,7 +10,7 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
     data: appUser,
     isLoading: userLoading,
     isError: userError,
-  } = useGetCurrentUserQuery(authUser?.email!);
+  } = useGetCurrentUserQuery(authUser?.email);
 
   if (authLodagin || userLoading) return <div>Loading...</div>;
 
