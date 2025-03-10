@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadge;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkill;
 using ExpertBridge.Core.Entities.Chat.ChatParticipant;
@@ -22,6 +23,7 @@ public partial class Profile
 public partial class Profile
 {
     // Navigation properties
+    [JsonIgnore]
     public User.User User { get; set; }
     public ICollection<Area.Area> Areas { get; set; } = [];
     public ICollection<ProfileExperience.ProfileExperience> Experiences { get; set; } = [];
