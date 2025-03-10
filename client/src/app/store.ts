@@ -1,7 +1,7 @@
 
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { listenerMiddleware } from './listenerMiddleware';
-import { emptyApiSlice } from '@/app/apiSlice';
+import { emptyApiSlice } from '@/features/api/apiSlice';
 
 export const store = configureStore({
   reducer: {

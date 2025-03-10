@@ -1,19 +1,26 @@
-import { emptyApiSlice } from "../../app/apiSlice";
+import { emptyApiSlice } from "../api/apiSlice";
 import { AppUser, CreateUserRequest, UpdateUserRequest } from "./types";
 
 export const usersApiSlice = emptyApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+
+    getCurrentUser: builder.query<AppUser, string | undefined>({
+      query: (email) => `/user/get-by-email/${email}`,
+      providesTags: ['CurrentUser'],
+    }),
+
     updateUser: builder.mutation<AppUser, UpdateUserRequest | CreateUserRequest>({
       query: (user) => ({
-        url: '/users',
+        url: '/user/update',
         method: 'PUT',
         body: user,
       }),
-      invalidatesTags: ['User'],
-    })
+      invalidatesTags: ['CurrentUser'],
+    }),
   }),
 });
 
 export const {
+  useGetCurrentUserQuery,
   useUpdateUserMutation,
 } = usersApiSlice;
