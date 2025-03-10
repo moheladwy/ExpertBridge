@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace ExpertBridge.Core.Entities.User;
 
 public class User
@@ -16,5 +18,6 @@ public class User
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
+    [JsonIgnore]
     public Profile.Profile Profile { get; set; }
 }
