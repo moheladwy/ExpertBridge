@@ -30,9 +30,11 @@ builder.AddS3ObjectService();
 builder.Services.AddServices();
 builder.Services.AddRepositories();
 builder.AddHttpClientForFirebaseService();
+builder.AddCors();
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();
 
