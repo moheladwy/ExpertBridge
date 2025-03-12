@@ -3,10 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useCreateUserWithEmailAndPassword from "@/lib/firebase/EmailAuth/useCreateUserWithEmailAndPassword";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import { auth } from "@/lib/firebase";
-import GoogleLogo from "../../assets/Login-SignupAssets/Google-Logo.svg";
-import { useUpdateUserMutation } from "../users/usersSlice";
-import { UpdateUserRequest } from "../users/types";
-import { useCreateUser } from "./useCreateUser";
+import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
+import { useCreateUser } from "@/features/auth/useCreateUser";
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();

@@ -7,11 +7,12 @@ import LandingPage from './pages/landingPage/LandingPage.tsx'
 import { store } from './app/store.ts'
 
 import { Provider as ReduxProvider } from "react-redux";
-import SignUpPage from './features/auth/SignUpPage.tsx'
-import LoginPage from './features/auth/LoginPage.tsx'
+import SignUpPage from './pages/SignUpPage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
 import App from './App.tsx'
 import ProtectedRoute from './components/Routes/ProtectedRoute.tsx'
 import PublicRoute from './components/Routes/PublicRoute.tsx'
+import HomePage from './pages/HomePage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,8 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: (
-          <ProtectedRoute children={undefined}>
+          <ProtectedRoute>
+            <HomePage />
           </ProtectedRoute>
         ),
       },
