@@ -4,10 +4,18 @@ import LoadingSkeleton from "./LoadingSkeleton";
 import { Post } from "./types";
 import PostCard from "./PostCard";
 import PostForm from "./AddPostForm";
+import { useGetCurrentUserQuery } from "../users/usersSlice";
+import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
+import { auth } from "@/lib/firebase";
 
 const Feed = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // This is only temporary
+  const [authUser] = useAuthSubscribtion(auth);
+  
+  const {data: user} = useGetCurrentUserQuery(authUser?.email);
 
   useEffect(() => {
     // Simulating fetch
@@ -15,7 +23,7 @@ const Feed = () => {
       setPosts([
         {
           id: 1,
-          author: "John Doe",
+          author: { email: "John Doe" },
           title: "How to optimize React performance?",
           content: "Some preview of the post content...",
           upvotes: 120,
@@ -24,7 +32,7 @@ const Feed = () => {
         },
         {
           id: 2,
-          author: "Jane Smith",
+          author: { email: "Jane Smith" },
           title: "Best practices for Tailwind CSS",
           content: "Tailwind CSS allows for rapid UI development...",
           upvotes: 95,
@@ -40,7 +48,7 @@ const Feed = () => {
     const postWithMeta: Post = {
       ...newPost,
       id: posts.length + 1,
-      author: "You",
+      author: user!,
       upvotes: 0,
       downvotes: 0,
       tags: [newPost.tag],

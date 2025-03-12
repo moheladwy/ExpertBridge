@@ -9,7 +9,7 @@ const PostCard = ({ post }: PostCardProps) => {
     <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold">{post.title}</h2>
-        <span className="text-sm text-gray-500">{post.author}</span>
+        <span className="text-sm text-gray-500">{post.author.email}</span>
       </div>
       <p className="text-gray-700 mt-2">{post.content}</p>
       <div className="flex justify-between items-center mt-4">

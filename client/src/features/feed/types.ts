@@ -1,8 +1,9 @@
+import { AppUser } from "../users/types";
 
 
 export interface Post {
   id: number
-  author: string;
+  author: AppUser;
   title: string;
   content: string;
   upvotes: number,
