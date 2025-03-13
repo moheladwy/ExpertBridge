@@ -12,7 +12,7 @@
 // }
 
 export interface AppUser {
-  name: string;
+  email: string;
 }
 
 export interface CreateUserRequest {
