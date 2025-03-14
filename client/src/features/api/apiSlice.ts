@@ -6,7 +6,8 @@ export const emptyApiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     // baseUrl: config.API_HTTPS_BASE_URL,
-    baseUrl: 'https://api.expertbridge.duckdns.org/api',
+    // baseUrl: 'https://api.expertbridge.duckdns.org/api',
+    baseUrl: 'http://localhost:3500',
 
     prepareHeaders: async (headers, query) => {
       const token = await auth.currentUser?.getIdToken();
@@ -21,6 +22,7 @@ export const emptyApiSlice = createApi({
 
   tagTypes: [
     'CurrentUser',
+    'Post',
   ],
   keepUnusedDataFor: 60,
 

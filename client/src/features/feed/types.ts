@@ -2,11 +2,14 @@ import { AppUser } from "../users/types";
 
 
 export interface Post {
-  id: number
-  author: AppUser;
+  id: number;
+  userId: number;
   title: string;
-  content: string;
-  upvotes: number,
-  downvotes: number,
-  tags: string[],
+  body: string;
+  upvotes: number;
+  downvotes: number;
+  tags: string[];
+  date: string;
 }
+
+export type AddPostRequest = Pick<Post, 'body' | 'userId' | 'title' | 'tags'>;

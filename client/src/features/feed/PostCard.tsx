@@ -1,17 +1,22 @@
+import { useAppSelector } from "@/app/hooks";
 import { Post } from "./types";
+import { selectPostById } from "./postsSlice";
 
 interface PostCardProps {
-  post: Post;
+  postId: number;
 }
 
-const PostCard = ({ post }: PostCardProps) => {
+const PostCard = ({ postId }: PostCardProps) => {
+
+  const post = useAppSelector(state => selectPostById(state, postId));
+
   return (
     <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold">{post.title}</h2>
-        <span className="text-sm text-gray-500">{post.author.email}</span>
+        <span className="text-sm text-gray-500">{post.userId}</span>
       </div>
-      <p className="text-gray-700 mt-2">{post.content}</p>
+      <p className="text-gray-700 mt-2">{post.body}</p>
       <div className="flex justify-between items-center mt-4">
         <div className="flex space-x-2">
           {post.tags.map((tag, index) => (
