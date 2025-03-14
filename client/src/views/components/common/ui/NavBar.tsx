@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import useSignOut from "@/lib/firebase/useSignOut";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
-import RegisterBtn from "./RegisterBtn";
+import RegisterBtn from "../../custom/RegisterBtn";
 import {
   Avatar
-} from "@/components/ui/avatar"
+} from "@/views/components/custom/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +13,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
+} from "@/views/components/custom/dropdown-menu"
+import { Button } from "@/views/components/custom/button"
 import {
   CommandDialog,
   CommandEmpty,
@@ -24,7 +24,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@/components/ui/command"
+} from "@/views/components/custom/command"
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog"
 import { Search } from 'lucide-react';
 import { useState } from "react";
@@ -52,7 +52,7 @@ const NavBar = () => {
     setOpen((open) => !open)
     console.log(open)
   };
-  
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
     console.log("Search Input:", event.target.value);
@@ -86,8 +86,8 @@ const NavBar = () => {
               {/* Search bar */}
               <Button className="bg-gray-100 text-gray-500 px-9 hover:bg-gray-200 hover:text-main-blue max-md:p-2 
               max-md:bg-main-blue max-md:text-white max-md:hover:bg-main-blue max-md:hover:text-white"
-              onClick={handelSearch}>
-                <Search/> <div className="max-md:hidden">Search in the questions</div>
+                onClick={handelSearch}>
+                <Search /> <div className="max-md:hidden">Search in the questions</div>
               </Button>
 
               {/* Search popup */}
@@ -95,7 +95,7 @@ const NavBar = () => {
                 <DialogTitle className="sr-only">Search</DialogTitle>
                 <DialogDescription className="sr-only">Search about questions</DialogDescription>
 
-                <CommandInput placeholder="Type a question to search..."  onChangeCapture={handleChange}/>
+                <CommandInput placeholder="Type a question to search..." onChangeCapture={handleChange} />
                 <CommandList>
                   <CommandEmpty>No results found.</CommandEmpty>
                   <CommandGroup heading="Suggestions">

@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/app/hooks";
-import { Post } from "./types";
-import { selectPostById } from "./postsSlice";
+import { Post } from "../../../../features/posts/types";
+import { selectPostById } from "../../../../features/posts/postsSlice";
 
 interface PostCardProps {
   postId: number;

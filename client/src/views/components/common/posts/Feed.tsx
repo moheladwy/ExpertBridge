@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
 import Filters from "./Filters";
 import LoadingSkeleton from "./LoadingSkeleton";
-import { AddPostRequest, Post } from "./types";
 import PostCard from "./PostCard";
 import PostForm from "./AddPostForm";
-import { useGetCurrentUserQuery } from "../users/usersSlice";
+import { useGetCurrentUserQuery } from "../../../../features/users/usersSlice";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { auth } from "@/lib/firebase";
 import { randomInt } from "crypto";
-import { selectPostIds, useGetPostsQuery } from "./postsSlice";
+import { selectPostIds, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useAppSelector } from "@/app/hooks";
 
 const Feed = () => {
@@ -16,9 +14,9 @@ const Feed = () => {
 
   // This is only temporary
   const [authUser] = useAuthSubscribtion(auth);
-  
+
   const { data: user } = useGetCurrentUserQuery(authUser?.email);
-  
+
   const {
     data: posts,
     isLoading: postsLoading,

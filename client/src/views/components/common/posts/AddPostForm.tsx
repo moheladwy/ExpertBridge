@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { AddPostRequest } from "./types";
-import { useAddNewPostMutation } from "./postsSlice";
+import { AddPostRequest } from "../../../../features/posts/types";
+import { useAddNewPostMutation } from "../../../../features/posts/postsSlice";
 
 interface PostFormProps {
   onPostSubmit?: (post: AddPostRequest) => void;
