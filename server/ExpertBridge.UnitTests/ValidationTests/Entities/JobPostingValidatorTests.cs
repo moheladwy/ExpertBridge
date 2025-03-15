@@ -1,5 +1,5 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.JobPosting;
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.JobPosting;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;

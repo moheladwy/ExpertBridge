@@ -1,4 +1,4 @@
-using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

@@ -28,18 +28,14 @@
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Sinks.Seq" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
+        <PackageReference Include="AWSSDK.S3" />
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="../ExpertBridge.Core/ExpertBridge.Core.csproj" />
-      <ProjectReference Include="..\ExpertBridge.Application\ExpertBridge.Application.csproj" />
-      <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
     </ItemGroup>
 
 </Project>
