@@ -1,6 +1,7 @@
+using ExpertBridge.Api.Application;
+using ExpertBridge.Api.Data;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
-using ExpertBridge.Application;
 using ExpertBridge.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

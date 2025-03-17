@@ -1,6 +1,6 @@
 using Amazon.Runtime;
 using Amazon.S3;
-using ExpertBridge.Application.Configurations;
+using ExpertBridge.Api.Configurations;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;
