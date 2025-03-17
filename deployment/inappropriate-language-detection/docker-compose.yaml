@@ -1,0 +1,20 @@
+services:
+    inappropiate-language-detection:
+        image: "only1adwy/inappropriate-language-detection:latest"
+        container_name: inappropriate-language-detection
+        ports:
+            - target: 5000
+              published: 5000
+        labels:
+            - "com.centurylinklabs.watchtower.enable=true"
+        networks:
+            - inappropriate-language-detection
+            - shared
+
+networks:
+    inappropriate-language-detection:
+        name: inappropriate-language-detection
+        driver: bridge
+    shared:
+        name: shared
+        external: true
