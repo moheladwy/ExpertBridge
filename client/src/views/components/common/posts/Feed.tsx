@@ -2,7 +2,7 @@ import Filters from "./Filters";
 import LoadingSkeleton from "./LoadingSkeleton";
 import PostCard from "./PostCard";
 import PostForm from "./AddPostForm";
-import { useGetCurrentUserQuery } from "../../../../features/users/usersSlice";
+import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { auth } from "@/lib/firebase";
 import { randomInt } from "crypto";
