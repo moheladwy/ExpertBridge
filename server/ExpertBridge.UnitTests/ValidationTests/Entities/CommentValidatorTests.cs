@@ -1,5 +1,5 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Comment;
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.Comment;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;

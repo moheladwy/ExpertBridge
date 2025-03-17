@@ -1,9 +1,9 @@
-using ExpertBridge.Core.DTOs.Requests.CreatePost;
-using ExpertBridge.Core.DTOs.Requests.DeleteFileFromPost;
-using ExpertBridge.Core.DTOs.Requests.EditPost;
-using ExpertBridge.Core.DTOs.Requests.ReportPost;
-using ExpertBridge.Core.DTOs.Responses;
-using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Api.Core.DTOs.Requests.CreatePost;
+using ExpertBridge.Api.Core.DTOs.Requests.DeleteFileFromPost;
+using ExpertBridge.Api.Core.DTOs.Requests.EditPost;
+using ExpertBridge.Api.Core.DTOs.Requests.ReportPost;
+using ExpertBridge.Api.Core.DTOs.Responses;
+using ExpertBridge.Api.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

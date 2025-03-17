@@ -1,6 +1,6 @@
-using ExpertBridge.Core.DTOs.Requests.UpdateUserRequest;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.User;
+using ExpertBridge.Api.Core.DTOs.Requests.UpdateUserRequest;
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.User;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.DTOs;

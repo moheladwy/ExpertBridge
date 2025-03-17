@@ -1,6 +1,6 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Media;
-using ExpertBridge.Core.Entities.Profile;
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.Media;
+using ExpertBridge.Api.Core.Entities.Profile;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;

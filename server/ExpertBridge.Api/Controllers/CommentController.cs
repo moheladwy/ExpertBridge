@@ -1,9 +1,9 @@
-using ExpertBridge.Core.DTOs.Requests.CreateComment;
-using ExpertBridge.Core.DTOs.Requests.DeleteFileFromComment;
-using ExpertBridge.Core.DTOs.Requests.EditComment;
-using ExpertBridge.Core.DTOs.Requests.ReportComment;
-using ExpertBridge.Core.DTOs.Responses;
-using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Api.Core.DTOs.Requests.CreateComment;
+using ExpertBridge.Api.Core.DTOs.Requests.DeleteFileFromComment;
+using ExpertBridge.Api.Core.DTOs.Requests.EditComment;
+using ExpertBridge.Api.Core.DTOs.Requests.ReportComment;
+using ExpertBridge.Api.Core.DTOs.Responses;
+using ExpertBridge.Api.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

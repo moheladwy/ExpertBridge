@@ -1,8 +1,8 @@
-using ExpertBridge.Application.Repositories.User;
-using ExpertBridge.Core;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.User;
-using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.Application.Repositories.User;
+using ExpertBridge.Api.Core;
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.User;
+using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

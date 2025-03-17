@@ -1,5 +1,5 @@
-using ExpertBridge.Core.DTOs.Responses;
-using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Api.Core.DTOs.Responses;
+using ExpertBridge.Api.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
