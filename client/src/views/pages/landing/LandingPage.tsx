@@ -1,8 +1,8 @@
-import mobile from '../../assets/LandingPageAssets/Mobile.svg'
-import icon from '../../assets/LandingPageAssets/Icons/PlaceHolderIcon.svg'
-import Feature from './Feature'
-import RegisterBtn from '@/components/NavBar/RegisterBtn'
-import Footer from '@/components/Footer/Footer'
+import mobile from '@/assets/LandingPageAssets/Mobile.svg'
+import icon from '@/assets/LandingPageAssets/Icons/PlaceHolderIcon.svg'
+import Feature from '@/views/components/custom/Feature'
+import RegisterBtn from '@/views/components/custom/RegisterBtn'
+import Footer from '@/views/components/common/ui/Footer'
 import useAuthSubscribtion from '@/lib/firebase/useAuthSubscribtion'
 import { auth } from '@/lib/firebase'
 import { useNavigate } from 'react-router'
@@ -17,7 +17,7 @@ function LandingPage() {
       navigate("/home", { replace: true });
     }
   }, [user, loading, navigate]);
-  
+
   return (
     <>
       {/* First Section */}

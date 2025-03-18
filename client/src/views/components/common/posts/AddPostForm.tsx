@@ -1,25 +1,35 @@
 import { useState } from "react";
+import { AddPostRequest } from "../../../../features/posts/types";
+import { useAddNewPostMutation } from "../../../../features/posts/postsSlice";
 
 interface PostFormProps {
-  onPostSubmit: (post: { title: string; content: string; tag: string }) => void;
+  onPostSubmit?: (post: AddPostRequest) => void;
+  userId: number;
 }
 
-const PostForm: React.FC<PostFormProps> = ({ onPostSubmit }) => {
+const PostForm: React.FC<PostFormProps> = ({ userId }) => {
+
+  const [addNewPost, { isLoading }] = useAddNewPostMutation();
+
+
   const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [body, setBody] = useState<string>("");
   const [tag, setTag] = useState<string>("General");
   const [error, setError] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) {
+    if (!title.trim() || !body.trim()) {
       setError("Title and content are required.");
       return;
     }
 
-    onPostSubmit({ title, content, tag });
+    await addNewPost({ title, body, userId, tags: [tag] })
+
     setTitle("");
-    setContent("");
+    setBody("");
     setTag("General");
     setError("");
   };
@@ -41,8 +51,8 @@ const PostForm: React.FC<PostFormProps> = ({ onPostSubmit }) => {
 
         <textarea
           placeholder="Write your post..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
           className="w-full border px-3 py-2 rounded-md"
           rows={4}
         ></textarea>
@@ -61,6 +71,7 @@ const PostForm: React.FC<PostFormProps> = ({ onPostSubmit }) => {
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded-md w-full"
+          disabled={isLoading}
         >
           Post
         </button>

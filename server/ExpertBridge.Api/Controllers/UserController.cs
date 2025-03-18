@@ -1,16 +1,22 @@
+using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Api.Core.DTOs.Requests.UpdateUserRequest;
 using ExpertBridge.Api.Core.DTOs.Responses;
 using ExpertBridge.Api.Core.Interfaces.Services;
+using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public sealed class UserController(IUserService userService) : ControllerBase
+public sealed class UserController(
+    IUserService userService,
+    ExpertBridgeDbContext _dbContext
+    ) : ControllerBase
 {
     [HttpGet("get/{identityProviderId}")]
     public async Task<UserResponse> GetUserByIdentityProviderId([FromRoute] string identityProviderId)
@@ -23,7 +29,13 @@ public sealed class UserController(IUserService userService) : ControllerBase
     public async Task<UserResponse> GetUserByEmail([FromRoute] string email)
     {
         ArgumentException.ThrowIfNullOrEmpty(email);
-        return await userService.GetUserByEmailAsync(email);
+
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Email == email)
+            ?? throw new UserNotFoundException("User not found");
+
+        return new UserResponse(user);
+        //return await userService.GetUserByEmailAsync(email);
     }
 
     [HttpPost("register")]

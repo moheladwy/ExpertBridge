@@ -12,12 +12,12 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
     isError: userError,
   } = useGetCurrentUserQuery(authUser?.email);
 
-  if (authLodagin || userLoading) return <div>Loading...</div>;
+  // if (authLodagin || userLoading) return <div>Loading...</div>;
 
-  if (authUser && appUser) {
-    console.log("User already logged in, redirecting...");
-    return <Navigate to="/home" replace />;
-  }
+  // if (authUser && appUser) {
+  //   console.log("User already logged in, redirecting...");
+  //   return <Navigate to="/home" replace />;
+  // }
   return children;
 };
 

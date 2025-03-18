@@ -1,5 +1,5 @@
 
-import Feed from '@/features/feed/Feed';
+import Feed from '@/views/components/common/posts/Feed';
 
 const HomePage = () => {
   return <Feed />
