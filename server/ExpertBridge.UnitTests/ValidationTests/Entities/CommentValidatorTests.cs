@@ -22,7 +22,7 @@ public class CommentValidatorTests
         // Arrange
         var commentWithoutParentId = _validComment;
         var commentWithParentId = _validComment;
-        commentWithParentId.ParentId = Guid.NewGuid().ToString();
+        commentWithParentId.ParentCommentId = Guid.NewGuid().ToString();
 
         // Act
         var resultOfCommentWithoutParentId = _commentEntityValidator.TestValidate(commentWithoutParentId);

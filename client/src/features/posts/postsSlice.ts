@@ -16,7 +16,7 @@ export const postsApiSlice = emptyApiSlice.injectEndpoints({
       query: () => '/posts',
       transformResponse: (response) => {
         console.log(response);
-        let min = 1;
+        const min = 1;
         const loadedPosts = response.map(post => {
           // if (!post.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
           // if (!post.upvotes) post.upvotes = 0;
