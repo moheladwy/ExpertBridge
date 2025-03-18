@@ -34,9 +34,9 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired();
 
         // Configure one-to-many relationship
-        builder.HasOne(p => p.Author)
-            .WithMany(p => p.Posts)
-            .HasForeignKey(p => p.AuthorId)
-            .IsRequired();
+        //builder.HasOne(p => p.Author)
+        //    .WithMany(p => p.Posts)
+        //    .HasForeignKey(p => p.AuthorId)
+        //    .IsRequired();
     }
 }

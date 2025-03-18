@@ -1,3 +1,4 @@
+using ExpertBridge.Api.Core.Entities.User;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;

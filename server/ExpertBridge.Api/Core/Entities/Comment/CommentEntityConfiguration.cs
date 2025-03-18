@@ -33,22 +33,28 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
             .HasForeignKey(c => c.AuthorId)
             .IsRequired();
 
+        // Configure one-to-many relationship with Post
+        builder.HasOne(c => c.Post)
+            .WithMany(p => p.Comments)
+            .HasForeignKey(c => c.PostId)
+            .IsRequired();
+
         // Configure one-to-many relationship with Comment (Parent comment)
-        builder.HasOne(c => c.Parent)
+        builder.HasOne(c => c.ParentComment)
             .WithMany(c => c.Replies)
-            .HasForeignKey(c => c.ParentId)
+            .HasForeignKey(c => c.ParentCommentId)
             .IsRequired(false);
 
         // Configure self-referencing relationship with cascade delete for replies
-        builder.HasOne(c => c.Parent)
+        builder.HasOne(c => c.ParentComment)
             .WithMany(c => c.Replies)
-            .HasForeignKey(c => c.ParentId)
+            .HasForeignKey(c => c.ParentCommentId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);  // Parent won't be deleted
 
         // Configure cascade delete for replies when parent is deleted
         builder.HasMany(c => c.Replies)
-            .WithOne(c => c.Parent)
+            .WithOne(c => c.ParentComment)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

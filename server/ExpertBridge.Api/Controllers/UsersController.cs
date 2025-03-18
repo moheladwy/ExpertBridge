@@ -2,18 +2,20 @@ using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Api.Core.DTOs.Requests.UpdateUserRequest;
 using ExpertBridge.Api.Core.DTOs.Responses;
+using ExpertBridge.Api.Core.Entities.User;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public sealed class UserController(
+public sealed class UsersController(
     IUserService userService,
     ExpertBridgeDbContext _dbContext
     ) : ControllerBase
@@ -30,8 +32,24 @@ public sealed class UserController(
     {
         ArgumentException.ThrowIfNullOrEmpty(email);
 
+        //_dbContext.Users.Add(new User
+        //{
+        //    ProviderId = "asdf",
+        //    FirstName = "Hello",
+        //    LastName = "Delme",
+        //    Email = "y.m.elkilany@gmail.com",
+        //    Username = "y.m.elkilany@gmail.com",
+        //    PhoneNumber = "01013647953",
+        //    IsBanned = false,
+        //    IsDeleted = false,
+        //    IsEmailVerified = true,
+        //    IsOnBoarded = false,
+        //});
+
+        //_dbContext.SaveChanges();
+
         var user = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Email == email)
+            .FirstAsync()
             ?? throw new UserNotFoundException("User not found");
 
         return new UserResponse(user);

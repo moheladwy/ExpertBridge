@@ -35,5 +35,10 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .WithOne(u => u.Profile)
             .HasForeignKey<Profile>(p => p.UserId)
             .IsRequired();
+
+        builder.HasMany(p => p.Posts)
+            .WithOne(p => p.Author)
+            .HasForeignKey(p => p.AuthorId)
+            .IsRequired();
     }
 }

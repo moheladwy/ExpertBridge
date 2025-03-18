@@ -57,7 +57,7 @@ public class UserService(
         var validationResult = await updateUserRequestValidator.ValidateAsync(request);
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
 
-        var user = await userRepository.GetFirstAsync(u => u.ProviderId == request.ProviderId);
+        var user = await userRepository.GetFirstAsync(u => u.Email == request.Email);
         if (user is null)
         {
             return await RegisterNewUser(new RegisterUserRequest

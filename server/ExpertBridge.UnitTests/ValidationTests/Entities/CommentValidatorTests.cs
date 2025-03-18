@@ -13,7 +13,8 @@ public class CommentValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         Content = "Comment Content",
         CreatedAt = DateTime.UtcNow.AddDays(-1),
-        LastModified = DateTime.UtcNow.AddMinutes(-4)
+        LastModified = DateTime.UtcNow.AddMinutes(-4),
+        PostId = Guid.NewGuid().ToString(),
     };
 
     [Fact]
@@ -22,7 +23,7 @@ public class CommentValidatorTests
         // Arrange
         var commentWithoutParentId = _validComment;
         var commentWithParentId = _validComment;
-        commentWithParentId.ParentId = Guid.NewGuid().ToString();
+        commentWithParentId.ParentCommentId = Guid.NewGuid().ToString();
 
         // Act
         var resultOfCommentWithoutParentId = _commentEntityValidator.TestValidate(commentWithoutParentId);
