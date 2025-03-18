@@ -17,9 +17,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (authLoading || loading || appUserLoading) return <div>Loading...</div>;
 
-  if (!authUser || authError) {
+  if (!authUser || !appUser || authError || appUserIsError) {
     // TODO: Handle the error here.
-    if (authError || appUserIsError) {
+    if (authError || appUserError) {
       console.error('An error occurred while authenticating the user', authError || appUserError);
     }
 
