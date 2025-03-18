@@ -13,6 +13,7 @@ import App from './App.tsx'
 import ProtectedRoute from './components/Routes/ProtectedRoute.tsx'
 import PublicRoute from './components/Routes/PublicRoute.tsx'
 import HomePage from './pages/HomePage.tsx'
+import Interests from './pages/Interests.tsx'
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,14 @@ const router = createBrowserRouter([
       <PublicRoute>
         <SignUpPage />
       </PublicRoute>
+    ),
+  },
+  {
+    path: "interests",
+    element: (
+      <ProtectedRoute>
+        <Interests/>
+      </ProtectedRoute>
     ),
   },
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
