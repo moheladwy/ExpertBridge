@@ -16,7 +16,8 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
                 Log.Information(
                     "Request {Endpoint} with TraceId: {TraceId} has been processed successfully.",
                     httpContext.GetEndpoint()?.DisplayName,
-                    Activity.Current?.Id);
+                    Activity.Current?.Id
+                );
             }
         }
         catch (Exception ex)

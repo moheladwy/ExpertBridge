@@ -8,7 +8,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class ProfileController(
+public class ProfilesController(
     IProfileService profileService
     ) : ControllerBase
 {
