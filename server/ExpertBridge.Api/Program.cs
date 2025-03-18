@@ -24,8 +24,6 @@ builder.Services.AddDatabase(builder.Configuration);
 builder.AddSeqEndpoint(connectionName: "Seq");
 builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.Services.AddControllers();
-builder.AddAuthentication();
-builder.Services.AddAuthorization();
 builder.AddSwaggerGen();
 builder.AddFirebaseServices();
 builder.AddS3ObjectService();
