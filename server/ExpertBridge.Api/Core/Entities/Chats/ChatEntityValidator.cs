@@ -1,0 +1,28 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using FluentValidation;
+
+namespace ExpertBridge.Api.Core.Entities.Chats;
+
+public class ChatEntityValidator : AbstractValidator<Chat>
+{
+    public ChatEntityValidator()
+    {
+        RuleFor(x => x.Id)
+            .NotNull().WithMessage("Chat Id is required")
+            .NotEmpty().WithMessage("Chat Id is required")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Chat Id must not exceed {GlobalEntitiesConstraints.MaxIdLength} characters");
+
+        RuleFor(x => x.CreatedAt)
+            .NotNull().WithMessage("Chat CreatedAt is required")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Chat CreatedAt must not be in the future")
+            .When(x => x.CreatedAt != DateTime.MinValue)
+            .LessThan(x => x.EndedAt).WithMessage("Chat CreatedAt must be less than EndedAt")
+            .When(x => x.EndedAt.HasValue);
+
+        RuleFor(x => x.EndedAt)
+            .GreaterThan(x => x.CreatedAt).WithMessage("Chat EndedAt must be greater than CreatedAt")
+            .When(x => x.EndedAt.HasValue);
+    }
+}

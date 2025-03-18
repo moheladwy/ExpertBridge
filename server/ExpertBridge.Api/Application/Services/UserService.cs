@@ -1,8 +1,11 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Api.Core.DTOs.Requests.UpdateUserRequest;
 using ExpertBridge.Api.Core.DTOs.Responses;
-using ExpertBridge.Api.Core.Entities.User;
+using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FluentValidation;
@@ -70,7 +73,7 @@ public class UserService(
             });
         }
         // Update user properties if they are different from the request
-        user.Email = request.Email ==  user.Email ? user.Email : request.Email;
+        user.Email = request.Email == user.Email ? user.Email : request.Email;
         user.Username = request.Username == user.Username ? user.Username : request.Username;
         user.FirstName = request.FirstName == user.FirstName ? user.FirstName : request.FirstName;
         user.LastName = request.LastName == user.LastName ? user.LastName : request.LastName;

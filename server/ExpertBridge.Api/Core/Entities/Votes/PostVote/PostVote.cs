@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.Api.Core.Entities.Votes.PostVote;
 
 public class PostVote
@@ -11,6 +14,6 @@ public class PostVote
     public string PostId { get; set; }
 
     // Navigation properties
-    public Profile.Profile Profile { get; set; }
-    public Post.Post Post { get; set; }
+    public Profiles.Profile Profile { get; set; }
+    public Posts.Post Post { get; set; }
 }

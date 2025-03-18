@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using Amazon.S3;
 using Amazon.S3.Model;
 using ExpertBridge.Api.Configurations;
@@ -34,9 +37,9 @@ public class ObjectStorageService(
     {
         return await Task.FromResult(
             new GetMediaUrlResponse
-                {
-                    Url = $"https://{awsConfigurations.Value.BucketName}.s3.amazonaws.com/{key}"
-                }
+            {
+                Url = $"https://{awsConfigurations.Value.BucketName}.s3.amazonaws.com/{key}"
+            }
             );
     }
 

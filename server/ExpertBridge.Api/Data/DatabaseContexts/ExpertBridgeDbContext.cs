@@ -1,17 +1,20 @@
-using ExpertBridge.Api.Core.Entities.Area;
-using ExpertBridge.Api.Core.Entities.Badge;
-using ExpertBridge.Api.Core.Entities.Chat;
-using ExpertBridge.Api.Core.Entities.Chat.ChatParticipant;
-using ExpertBridge.Api.Core.Entities.Comment;
-using ExpertBridge.Api.Core.Entities.Job;
-using ExpertBridge.Api.Core.Entities.Job.JobReview;
-using ExpertBridge.Api.Core.Entities.Job.JobStatus;
-using ExpertBridge.Api.Core.Entities.JobCategory;
-using ExpertBridge.Api.Core.Entities.JobPosting;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.PostTag;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileBadge;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileSkill;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTag;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.Core.Entities.Areas;
+using ExpertBridge.Api.Core.Entities.Badges;
+using ExpertBridge.Api.Core.Entities.Chats;
+using ExpertBridge.Api.Core.Entities.Comments;
+using ExpertBridge.Api.Core.Entities.JobCategories;
+using ExpertBridge.Api.Core.Entities.JobPostings;
+using ExpertBridge.Api.Core.Entities.Jobs;
+using ExpertBridge.Api.Core.Entities.Jobs.JobReviews;
+using ExpertBridge.Api.Core.Entities.JobStatuses;
+using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ChatParticipants;
+using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.PostTags;
+using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileBadges;
+using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileSkills;
+using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags;
 using ExpertBridge.Api.Core.Entities.Media;
 using ExpertBridge.Api.Core.Entities.Media.ChatMedia;
 using ExpertBridge.Api.Core.Entities.Media.CommentMedia;
@@ -20,12 +23,12 @@ using ExpertBridge.Api.Core.Entities.Media.MediaType;
 using ExpertBridge.Api.Core.Entities.Media.PostMedia;
 using ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia;
 using ExpertBridge.Api.Core.Entities.Media.ProfileMedia;
-using ExpertBridge.Api.Core.Entities.Post;
-using ExpertBridge.Api.Core.Entities.Profile;
-using ExpertBridge.Api.Core.Entities.ProfileExperience;
-using ExpertBridge.Api.Core.Entities.Skill;
+using ExpertBridge.Api.Core.Entities.Posts;
+using ExpertBridge.Api.Core.Entities.ProfileExperiences;
+using ExpertBridge.Api.Core.Entities.Profiles;
+using ExpertBridge.Api.Core.Entities.Skills;
 using ExpertBridge.Api.Core.Entities.Tags;
-using ExpertBridge.Api.Core.Entities.User;
+using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Entities.Votes.CommentVote;
 using ExpertBridge.Api.Core.Entities.Votes.PostVote;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +53,7 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
     public DbSet<Badge> Badges { get; set; }
     public DbSet<JobCategory> JobCategories { get; set; }
     public DbSet<JobPosting> JobPostings { get; set; }
-    public DbSet<Media> Media { get; set; }
+    public DbSet<MediaObject> Media { get; set; }
     public DbSet<MediaType> MediaTypes { get; set; }
     public DbSet<ProfileBadge> ProfileBadges { get; set; }
     public DbSet<ProfileTag> ProfileTags { get; set; }

@@ -1,8 +1,9 @@
-using ExpertBridge.Api.Application;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using ExpertBridge.Api.Data;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
-using ExpertBridge.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;

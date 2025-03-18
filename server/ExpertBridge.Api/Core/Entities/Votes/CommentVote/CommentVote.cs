@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.Api.Core.Entities.Votes.CommentVote;
 
 public class CommentVote
@@ -11,6 +14,6 @@ public class CommentVote
     public string ProfileId { get; set; }
 
     // Navigation properties
-    public Profile.Profile Profile { get; set; }
-    public Comment.Comment Comment { get; set; }
+    public Profiles.Profile Profile { get; set; }
+    public Comments.Comment Comment { get; set; }
 }
