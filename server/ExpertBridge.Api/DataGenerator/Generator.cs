@@ -1,14 +1,14 @@
-﻿using Bogus;
-using ExpertBridge.Api.Core.Entities.Comment;
-using ExpertBridge.Api.Core.Entities.Job;
-using ExpertBridge.Api.Core.Entities.Job.JobStatus;
-using ExpertBridge.Api.Core.Entities.Post;
-using ExpertBridge.Api.Core.Entities.Profile;
-using ExpertBridge.Api.Core.Entities.User;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using Bogus;
+using ExpertBridge.Api.Core.Entities.Comments;
+using ExpertBridge.Api.Core.Entities.Jobs;
+using ExpertBridge.Api.Core.Entities.JobStatuses;
+using ExpertBridge.Api.Core.Entities.Posts;
+using ExpertBridge.Api.Core.Entities.Profiles;
+using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Data.DatabaseContexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 public static class Generator
 {
