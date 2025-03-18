@@ -14,7 +14,7 @@ export const postsApiSlice = emptyApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<PostsState, void>({
       query: () => '/posts',
-      transformResponse: (response) => {
+      transformResponse: (response: any[]) => {
         console.log(response);
         const min = 1;
         const loadedPosts = response.map(post => {

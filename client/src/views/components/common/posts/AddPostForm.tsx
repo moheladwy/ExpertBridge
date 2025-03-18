@@ -26,7 +26,7 @@ const PostForm: React.FC<PostFormProps> = ({ userId }) => {
       return;
     }
 
-    await addNewPost({ title, body, userId, tags: [tag] })
+    await addNewPost({ title, content: body, userId, tags: [tag] })
 
     setTitle("");
     setBody("");
