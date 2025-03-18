@@ -17,8 +17,8 @@ public class CommentEntityValidator : AbstractValidator<Comment>
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"AuthorId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.PostId)
-            .NotEmpty().WithMessage("ParentId cannot be empty")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"ParentId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .NotEmpty().WithMessage("PostId cannot be empty")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"PostId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Content)
             .NotNull().WithMessage("Content is required")

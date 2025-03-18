@@ -13,7 +13,8 @@ public class CommentValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         Content = "Comment Content",
         CreatedAt = DateTime.UtcNow.AddDays(-1),
-        LastModified = DateTime.UtcNow.AddMinutes(-4)
+        LastModified = DateTime.UtcNow.AddMinutes(-4),
+        PostId = Guid.NewGuid().ToString(),
     };
 
     [Fact]
