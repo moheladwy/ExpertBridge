@@ -6,7 +6,7 @@ import { sub } from 'date-fns';
 
 type PostsState = EntityState<Post, number>;
 const postsAdapter = createEntityAdapter<Post>({
-  sortComparer: (a, b) => b.date.localeCompare(a.date),
+  sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 const initialState: PostsState = postsAdapter.getInitialState();
 
@@ -14,14 +14,14 @@ export const postsApiSlice = emptyApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<PostsState, void>({
       query: () => '/posts',
-      transformResponse: (response: Post[]) => {
+      transformResponse: (response) => {
+        console.log(response);
         let min = 1;
         const loadedPosts = response.map(post => {
-          if (!post.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
-          if (!post.upvotes) post.upvotes = 0;
-          if (!post.downvotes) post.downvotes = 0;
-          if (!post.tags) post.tags = [];
-
+          // if (!post.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
+          // if (!post.upvotes) post.upvotes = 0;
+          // if (!post.downvotes) post.downvotes = 0;
+          // if (!post.tags) post.tags = [];
           return post;
         })
 

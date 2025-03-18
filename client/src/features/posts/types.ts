@@ -5,11 +5,11 @@ export interface Post {
   id: number;
   userId: number;
   title: string;
-  body: string;
+  content: string;
   upvotes: number;
   downvotes: number;
   tags: string[];
-  date: string;
+  createdAt: string;
 }
 
-export type AddPostRequest = Pick<Post, 'body' | 'userId' | 'title' | 'tags'>;
+export type AddPostRequest = Pick<Post, 'content' | 'userId' | 'title' | 'tags'>;
