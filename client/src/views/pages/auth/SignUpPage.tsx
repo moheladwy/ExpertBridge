@@ -1,34 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useCreateUserWithEmailAndPassword from "@/lib/firebase/EmailAuth/useCreateUserWithEmailAndPassword";
-import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import { auth } from "@/lib/firebase";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
 import { useCreateUser } from "@/features/auth/useCreateUser";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 const SignUpPage: React.FC = () => {
+  const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
-  // Email/Password Sign-Up Hook
-  // const [
-  //   registerWithEmailAndPassword,
-  //   emailUser,
-  //   authLoading,
-  //   authError
-  // ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
-
-  // Google Sign-Up Hook
-  // const [signInWithGoogle, googleUser, googleLoading, googleError] =
-  //   useSignInWithGoogle(auth);
-
-  // const [createAppUser, result] = useUpdateUserMutation();
-
-  // const {
-  //   isLoading: createUserLoading,
-  //   isError: createUserError,
-  //   isSuccess: createUserSuccess,
-  //   data: createdUser,
-  // } = result;
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/home');
+    }
+  }, [isLoggedIn, navigate]);
 
   const [
     signInWithGoogle,
@@ -59,27 +44,6 @@ const SignUpPage: React.FC = () => {
       navigate('/login');
     }
   })
-
-  // useEffect(() => {
-  //   if (emailUser) {
-  //     const user: UpdateUserRequest = {
-  //       firstName: formData.firstName,
-  //       lastName: formData.lastName,
-  //       email: emailUser.user.email!,
-  //       username: formData.email,
-  //       providerId: emailUser.user.uid,
-  //     }
-
-  //     createAppUser(user);
-  //   }
-  // }, [emailUser, createAppUser]);
-
-
-  // Error handling -----------------------------------------------------
-  // const handleCreateBackendUserError = async () => {
-  //   // Delete the user from firebase if api user creation fails.
-  //   await auth.currentUser?.delete();
-  // }
 
   useEffect(() => {
     if (createUserErrorMessage) {
@@ -143,7 +107,12 @@ const SignUpPage: React.FC = () => {
     await signUpWithEmailAndPassword(formData.email, formData.password, user);
   };
 
-  const loading = createUserLoading;
+  const handleGoogleSignIn = async () => {
+    await signInWithGoogle();
+    // navigate('/home');
+  }
+
+  const loading = createUserLoading || isLoggedInLoading;
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
@@ -248,19 +217,19 @@ const SignUpPage: React.FC = () => {
             className="w-full bg-main-purple text-white font-bold p-4 rounded hover:bg-purple-900 disabled:bg-purple-500"
             disabled={loading}
           >
-            {loading ? "Signing Up..." : "Sign Up"}
+            {createUserLoading ? "Signing Up..." : "Sign Up"}
           </button>
 
           {/* Google Sign-Up Button */}
           <button
             type="button"
             className="w-full bg-white text-black font-bold p-2 rounded hover:bg-gray-300 disabled:bg-gray-400 disabled:text-gray-600"
-            disabled={createUserLoading}
-            onClick={() => signInWithGoogle()}
+            disabled={loading}
+            onClick={handleGoogleSignIn}
           >
             <div className="flex justify-center items-center">
               <img src={GoogleLogo} alt="Google Logo" className="w-10 h-10 mr-4" />
-              <div>{createUserLoading ? "Signing up with Google..." : "Signup with Google"}</div>
+              <div>{loading ? "Signing up with Google..." : "Signup with Google"}</div>
             </div>
           </button>
 

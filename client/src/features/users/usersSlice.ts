@@ -20,6 +20,9 @@ export const usersApiSlice = emptyApiSlice.injectEndpoints({
         body: user,
       }),
       invalidatesTags: ['CurrentUser'],
+      onQueryStarted: () => {
+        console.log('mutation ongoing');
+      }
     }),
   }),
 });

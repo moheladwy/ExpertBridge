@@ -1,5 +1,5 @@
 import { Auth, AuthError, CustomParameters, UserCredential } from "firebase/auth";
-import { AppUser, CreateUserError, UpdateUserRequest, UserFormData } from "../users/types";
+import { AppUser, CreateUserError, CreateUserRequest, UpdateUserRequest, UserFormData } from "../users/types";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import { useUpdateUserMutation } from "../users/usersSlice";
 import { useCallback, useEffect, useState } from "react";
@@ -30,8 +30,12 @@ export type CreateUserWithGoogleHook = [
 export type AuthType = 'email' | 'google';
 
 export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
-  const [signInWithGoogle, googleUser, googleLoading, googleError] =
-    useSignInWithGoogle(auth);
+  const [
+    signInWithGoogle,
+    googleUser,
+    googleLoading,
+    googleError
+  ] = useSignInWithGoogle(auth);
 
   // Email/Password Sign-Up Hook
   const [
@@ -58,7 +62,12 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
     return await registerWithEmailAndPassword(email, passowrd);
   }, [registerWithEmailAndPassword]);
 
+  const create = useCallback(async (user: CreateUserRequest | UpdateUserRequest) => {
+    await createAppUser(user);
+  }, [createAppUser]);
+
   useEffect(() => {
+    console.log('useCreateUser Hook');
     if (emailUser && userInfo) {
       const user: UpdateUserRequest = {
         firstName: userInfo.firstName,
@@ -68,7 +77,7 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
         providerId: emailUser.user.uid,
       }
 
-      createAppUser(user);
+      create(user);
     }
     else if (googleUser) {
       const name = googleUser.user.displayName!.split(' ');
@@ -84,9 +93,11 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
         providerId: googleUser.user.uid,
       }
 
-      createAppUser(user);
+      console.log('updating user');
+
+      create(user);
     }
-  }, [googleUser, createAppUser, emailUser, userInfo]);
+  }, [googleUser, emailUser, userInfo, create]);
 
   const handleCreateBackendUserError = useCallback(async () => {
     // Delete the user from firebase if api user creation fails.

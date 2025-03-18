@@ -4,14 +4,15 @@ import { LoadingHook, useLoadingValue } from '@/lib/util';
 import { useUpdateUserMutation } from '@/features/users/usersSlice';
 
 export type AuthStateHook = LoadingHook<User | null, Error>;
-
+  
 type AuthStateOptions = {
   onUserChanged?: (user: User | null) => Promise<void>;
 };
 
 export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<User | null, Error>(
-    () => auth.currentUser);
+    () => auth.currentUser
+  );
 
   const [updateUser, result] = useUpdateUserMutation();
   

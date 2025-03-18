@@ -5,17 +5,23 @@ import { auth } from "@/lib/firebase";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
 import { useCreateUser } from "@/features/auth/useCreateUser";
+import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 const LoginPage: React.FC = () => {
+  const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
-  // Email/Password Login Hook
-  const [loginWithEmailAndPassword, loggedInUser, loading, error] =
-    useSignInWithEmailAndPassword(auth);
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/home');
+    }
+  }, [isLoggedIn, navigate]);
 
-  // // Google Login Hook
-  // const [signInWithGoogle, googleUser, googleLoading, googleError] =
-  //   useSignInWithGoogle(auth);
+
+  // Email/Password Login Hook
+  const [loginWithEmailAndPassword, loggedInUser, loginLoading, error] =
+    useSignInWithEmailAndPassword(auth);
 
   const [
     signInWithGoogle,
@@ -23,8 +29,8 @@ const LoginPage: React.FC = () => {
     authUser,
     createdAppUser,
     createLoading,
-    authError,
-    createUserErrorMessage,
+    createError,
+    createErrorMessage,
     createUserSuccess,
   ] = useCreateUser(auth);
 
@@ -37,11 +43,11 @@ const LoginPage: React.FC = () => {
     if (error) {
       console.error("Login error:", error);
       setSignInError("Invalid email or password.");
-    } else if (authError || createUserErrorMessage) {
-      console.error("Google login error:", authError || createUserErrorMessage);
+    } else if (createError || createErrorMessage) {
+      console.error("Google login error:", createError || createErrorMessage);
       setSignInError("Google login failed. Please try again.");
     } 
-  }, [error, authError, createUserErrorMessage]);
+  }, [error, createError, createErrorMessage]);
 
   // Form Validation
   const validate = () => {
@@ -66,6 +72,13 @@ const LoginPage: React.FC = () => {
     if (!validate()) return;
     await loginWithEmailAndPassword(formData.email, formData.password);
   };
+
+  const handleGoogleSignIn = async () => {
+    await signInWithGoogle();
+    // navigate('/home');
+  }
+
+  const loading = isLoggedInLoading || createLoading || loginLoading;
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
@@ -117,9 +130,9 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             className="w-full bg-main-purple text-white font-bold p-4 rounded hover:bg-purple-900 disabled:bg-purple-500"
-            disabled={loading || createLoading}
+            disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loginLoading ? "Logging in..." : "Login"}
           </button>
 
           {/* Google Login Button */}
@@ -127,7 +140,7 @@ const LoginPage: React.FC = () => {
             type="button"
             className="w-full bg-white text-black font-bold p-2 rounded hover:bg-gray-300 disabled:bg-gray-400 disabled:text-gray-600"
             disabled={createLoading || loading}
-            onClick={() => signInWithGoogle()}
+            onClick={handleGoogleSignIn}
           >
             <div className="flex justify-center items-center">
               <img src={GoogleLogo} alt="Google Logo" className="w-10 h-10 mr-4" />
