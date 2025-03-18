@@ -3,13 +3,14 @@ import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { AuthError } from "firebase/auth";
+import { AuthError, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 
 export type IsUserLoggedInHook = [
   boolean, // isLoggedIn
   boolean, // loading,
-  AuthError | FetchBaseQueryError | SerializedError | undefined
+  AuthError | FetchBaseQueryError | SerializedError | undefined,
+  User | null | undefined,
 ];
 
 export default (): IsUserLoggedInHook => {
@@ -35,6 +36,7 @@ export default (): IsUserLoggedInHook => {
   return [
     isLoggedIn,
     userLoading || authLoading,
-    authError || userErrorMessage
+    authError || userErrorMessage,
+    authUser
   ];
 }

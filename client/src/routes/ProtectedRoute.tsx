@@ -1,3 +1,4 @@
+import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useSignOut from "@/lib/firebase/useSignOut";
@@ -6,14 +7,20 @@ import { Navigate } from "react-router";
 // ✅ Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+  const {
+    data: appUser,
+    isLoading: appUserLoading,
+    error: appUserError,
+    isError: appUserIsError
+  } = useGetCurrentUserQuery(authUser?.email);
   const [signOut, loading] = useSignOut(auth);
 
-  if (authLoading || loading) return <div>Loading...</div>;
+  if (authLoading || loading || appUserLoading) return <div>Loading...</div>;
 
   if (!authUser || authError) {
     // TODO: Handle the error here.
-    if (authError) {
-      console.error('An error occurred while authenticating the user', authError);
+    if (authError || appUserIsError) {
+      console.error('An error occurred while authenticating the user', authError || appUserError);
     }
 
     console.log('challenging the user');
