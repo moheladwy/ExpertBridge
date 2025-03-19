@@ -24,8 +24,9 @@ function Interests(){
             What topics you have experience in?
           </h1>
           <CommandSeparator />
-          <CommandInput placeholder="Type a command or search..." />
+          <CommandInput placeholder="Search about key word..." />
           <CommandList className="flex-grow">
+            {/* the results of the search should put in here */}
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup heading="Suggestions">
               <CommandItem>
@@ -36,8 +37,10 @@ function Interests(){
               </CommandItem>
             </CommandGroup>
             <CommandSeparator />
-            <CommandGroup heading="Choosen Key Words">
 
+            {/* choosen key words */}
+            <CommandGroup heading="Choosen Key Words">
+            
             </CommandGroup>
           </CommandList>
           <Button className="mt-auto mx-3 mb-3 bg-main-blue hover:bg-blue-950" >
