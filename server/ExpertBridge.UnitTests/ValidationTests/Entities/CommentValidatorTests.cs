@@ -1,5 +1,8 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Comment;
+using ExpertBridge.Api.Core.Entities.Comments;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -13,7 +16,8 @@ public class CommentValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         Content = "Comment Content",
         CreatedAt = DateTime.UtcNow.AddDays(-1),
-        LastModified = DateTime.UtcNow.AddMinutes(-4)
+        LastModified = DateTime.UtcNow.AddMinutes(-4),
+        PostId = Guid.NewGuid().ToString(),
     };
 
     [Fact]
@@ -22,7 +26,7 @@ public class CommentValidatorTests
         // Arrange
         var commentWithoutParentId = _validComment;
         var commentWithParentId = _validComment;
-        commentWithParentId.ParentId = Guid.NewGuid().ToString();
+        commentWithParentId.ParentCommentId = Guid.NewGuid().ToString();
 
         // Act
         var resultOfCommentWithoutParentId = _commentEntityValidator.TestValidate(commentWithoutParentId);
