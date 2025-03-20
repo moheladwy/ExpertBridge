@@ -55,7 +55,6 @@ const NavBar = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
-    console.log("Search Input:", event.target.value);
   };
 
 
