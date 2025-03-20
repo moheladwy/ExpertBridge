@@ -30,13 +30,13 @@ public static class Services
     public static void AddServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
-        services.AddTransient<IFirebaseService, FirebaseService>();
+        services.AddTransient<IFirebaseAuthService, FirebaseAuthService>();
         services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<IObjectStorageService, ObjectStorageService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IProfileService, ProfileService>();
-        services.AddScoped<IPostService, PostService>();
-        services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<IUsersService, UsersService>();
+        services.AddScoped<IProfilesService, ProfilesService>();
+        services.AddScoped<IPostsService, PostsService>();
+        services.AddScoped<ICommentsService, CommentsService>();
     }
 
     /// <summary>

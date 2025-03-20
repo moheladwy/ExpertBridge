@@ -12,7 +12,7 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public class ProfilesController(
-    IProfileService profileService
+    IProfilesService profileService
     ) : ControllerBase
 {
     [HttpGet("get/{id}")]

@@ -15,7 +15,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class CommentsController(ICommentService service) : ControllerBase
+public class CommentsController(ICommentsService service) : ControllerBase
 {
     [HttpGet("get/{commentId}")]
     public async Task<CommentResponse> Get([FromRoute] string commentId)

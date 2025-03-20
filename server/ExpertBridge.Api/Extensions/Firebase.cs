@@ -45,7 +45,7 @@ internal static class Firebase
     /// </param>
     public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder)
     {
-        builder.Services.AddHttpClient<IFirebaseService, FirebaseService>((sp, httpClient) =>
+        builder.Services.AddHttpClient<IFirebaseAuthService, FirebaseAuthService>((sp, httpClient) =>
         {
             var configuration = sp.GetRequiredService<IConfiguration>();
             var uri = configuration["Authentication:Firebase:TokenUri"]!;
@@ -76,7 +76,8 @@ internal static class Firebase
                     ValidateLifetime = true
                 };
                 options.RequireHttpsMetadata = false;
-            });
+            })
+            ;
         builder.Services.AddAuthorization();
     }
 }

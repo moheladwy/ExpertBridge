@@ -14,6 +14,7 @@ import ProtectedRoute from './routes/ProtectedRoute.tsx'
 import PublicRoute from './routes/PublicRoute.tsx'
 import HomePage from './views/pages/feed/HomePage.tsx'
 import Interests from './views/pages/auth/Interests.tsx'
+import SinglePostPage from './views/pages/feed/SinglePostPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "posts/:postId",
+        element: (
+          <ProtectedRoute>
+            <SinglePostPage />
           </ProtectedRoute>
         ),
       },

@@ -17,7 +17,7 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public sealed class UsersController(
-    IUserService userService,
+    IUsersService userService,
     ExpertBridgeDbContext _dbContext
     ) : ControllerBase
 {

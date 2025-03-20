@@ -31,7 +31,10 @@ public partial class Profile
     public ICollection<Areas.Area> Areas { get; set; } = [];
     public ICollection<ProfileExperiences.ProfileExperience> Experiences { get; set; } = [];
     public ICollection<ProfileMedia> Medias { get; set; } = [];
+
+    [JsonIgnore]
     public ICollection<Posts.Post> Posts { get; set; } = [];
+    [JsonIgnore]
     public ICollection<Comments.Comment> Comments { get; set; } = [];
     public ICollection<JobPostings.JobPosting> JobPostings { get; set; } = [];
     public ICollection<Jobs.Job> JobsAsAuthor { get; set; } = [];

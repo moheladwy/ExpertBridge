@@ -4,7 +4,7 @@ import { AddPostRequest, Post } from "./types";
 import { sub } from 'date-fns';
 
 
-type PostsState = EntityState<Post, number>;
+type PostsState = EntityState<Post, string>;
 const postsAdapter = createEntityAdapter<Post>({
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
@@ -28,18 +28,21 @@ export const postsApiSlice = emptyApiSlice.injectEndpoints({
         return postsAdapter.setAll(initialState, loadedPosts);
       },
       providesTags: (result = initialState, error, arg) => [
-        'Post', { type: 'Post', id: 'LIST' },
+        'Post',
+        { type: 'Post', id: 'LIST' },
         ...result.ids.map(id => ({ type: 'Post', id: id.toString() }) as const),
       ],
 
     }),
 
     getPost: builder.query<Post, string>({
-      query: () => '',
-      providesTags: [],
+      query: (postId) => `/posts/${postId}`,
+      providesTags: (result, error, arg) => [
+        { type: 'Post', id: arg },
+      ],
     }),
 
-    addNewPost: builder.mutation<Post, AddPostRequest>({
+    createPost: builder.mutation<Post, AddPostRequest>({
       query: initialPost => ({
         url: '/posts',
         method: 'POST',
@@ -56,14 +59,14 @@ export const postsApiSlice = emptyApiSlice.injectEndpoints({
 
     }),
 
-    
+
   }),
 });
 
 export const {
   useGetPostQuery,
   useGetPostsQuery,
-  useAddNewPostMutation,
+  useCreatePostMutation,
 } = postsApiSlice;
 
 

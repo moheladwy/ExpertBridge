@@ -1,6 +1,10 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Security.Claims;
+using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.DTOs.Requests.CreatePost;
 using ExpertBridge.Api.Core.DTOs.Requests.DeleteFileFromPost;
 using ExpertBridge.Api.Core.DTOs.Requests.EditPost;
@@ -12,6 +16,7 @@ using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -19,34 +24,64 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public class PostsController(
-    IPostService service,
+    IPostsService service,
     ExpertBridgeDbContext _dbContext
     ) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("{postId}")]
-    public async Task<PostResponse> GetById([FromRoute] string postId)
+    public async Task<Post?> GetById([FromRoute] string postId)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+        
 
         return await _dbContext.Posts
+            .Include(p => p.Author)
+            .Include(p => p.Comments)
             .Where(post => post.Id == postId)
-            .Select(post => new PostResponse(post))
-            .FirstAsync();
+            .FirstOrDefaultAsync();
     }
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<IEnumerable<Post>> GetAll()
     {
+        Log.Information($"User from HTTP Context: {HttpContext.User.FindFirstValue(ClaimTypes.Email)}");
+
         return await _dbContext.Posts
+            .Include(p => p.Author)
             .ToListAsync();
     }
 
     [HttpPost]
-    public async Task<PostResponse> Create([FromBody] CreatePostRequest createPostRequest)
+    public async Task<Post> Create([FromBody] CreatePostRequest request)
     {
-        throw new NotImplementedException();
+        var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+        var user = await _dbContext.Users
+            .Include(u => u.Profile)
+            .FirstOrDefaultAsync(u => u.Email == userEmail);
+
+        if (string.IsNullOrEmpty(user?.Profile?.Id))
+        {
+            throw new UnauthorizedException();
+        }
+
+        if (string.IsNullOrEmpty(request?.Title) || string.IsNullOrEmpty(request?.Content))
+        {
+            throw new BadHttpRequestException("Title and Content are required");
+        }
+
+        var post = new Post
+        {
+            Title = request.Title,
+            Content = request.Content,
+            AuthorId = user.Profile.Id
+        };
+
+        await _dbContext.Posts.AddAsync(post);
+        await _dbContext.SaveChangesAsync();
+
+        return post;
     }
 
     [HttpPatch("{postId}/up-vote")]

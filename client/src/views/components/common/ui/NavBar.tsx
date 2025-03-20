@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import useSignOut from "@/lib/firebase/useSignOut";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
@@ -66,8 +66,8 @@ const NavBar = () => {
         </h1>
         {user ? (
           <>
-            <a href="/home" className="text-white font-light mx-5 max-sm:hidden">Home</a>
-            <a href="/home" className="text-white font-light mx-5 max-sm:hidden">Jobs</a>
+            <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Home</Link>
+            <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Jobs</Link>
           </>
         ) : (
           <>

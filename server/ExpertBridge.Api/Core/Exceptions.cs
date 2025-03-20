@@ -12,3 +12,12 @@ public class PostNotFoundException(string message) : Exception(message);
 public class MediaNotFoundException(string message) : Exception(message);
 
 public class CommentNotFoundException(string message) : Exception(message);
+
+public class UnauthorizedException : Exception
+{
+    public UnauthorizedException() { }
+    public UnauthorizedException(string message) : base(message) { }
+    public UnauthorizedException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
