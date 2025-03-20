@@ -21,6 +21,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
+import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+
 
 const router = createBrowserRouter([
   {
@@ -72,10 +74,34 @@ const router = createBrowserRouter([
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
 ]);
 
-createRoot(document.getElementById('root')!).render(
+
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement!);
+
+const theme = createTheme({
+  cssVariables: true,
+  components: {
+    MuiPopover: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+    MuiPopper: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+  },
+});
+
+root.render(
   <StrictMode>
-    <ReduxProvider store={store} >
-      <RouterProvider router={router} />
-    </ReduxProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <ReduxProvider store={store} >
+          <RouterProvider router={router} />
+        </ReduxProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   </StrictMode>,
-)
+);
