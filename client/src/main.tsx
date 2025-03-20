@@ -49,9 +49,9 @@ const router = createBrowserRouter([
   {
     path: "interests",
     element: (
-      // <ProtectedRoute>
+      <ProtectedRoute>
         <Interests/>
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
