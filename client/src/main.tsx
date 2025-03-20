@@ -16,6 +16,12 @@ import HomePage from './views/pages/feed/HomePage.tsx'
 import Interests from './views/pages/auth/Interests.tsx'
 import SinglePostPage from './views/pages/feed/SinglePostPage.tsx'
 
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -59,7 +65,7 @@ const router = createBrowserRouter([
     path: "interests",
     element: (
       <ProtectedRoute>
-        <Interests/>
+        <Interests />
       </ProtectedRoute>
     ),
   },
