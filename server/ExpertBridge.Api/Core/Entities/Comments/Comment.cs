@@ -1,8 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.Core.Entities.CommentVotes;
 using ExpertBridge.Api.Core.Entities.Media.CommentMedia;
-using ExpertBridge.Api.Core.Entities.Votes.CommentVote;
 
 namespace ExpertBridge.Api.Core.Entities.Comments;
 
@@ -15,7 +15,7 @@ public class Comment
     public string Content { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastModified { get; set; }
-    public bool isDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     // Navigation property
     public Profiles.Profile Author { get; set; }

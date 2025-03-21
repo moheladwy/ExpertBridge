@@ -4,11 +4,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ExpertBridge.Api.Core.Entities.Votes.CommentVote;
+namespace ExpertBridge.Api.Core.Entities.PostVotes;
 
-public class CommentVoteEntityConfiguration : IEntityTypeConfiguration<CommentVote>
+public class PostVoteEntityConfiguration : IEntityTypeConfiguration<PostVote>
 {
-    public void Configure(EntityTypeBuilder<CommentVote> builder)
+    public void Configure(EntityTypeBuilder<PostVote> builder)
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id)
@@ -24,20 +24,20 @@ public class CommentVoteEntityConfiguration : IEntityTypeConfiguration<CommentVo
 
         // Configure relationship with Profile
         builder.HasOne(v => v.Profile)
-            .WithMany(p => p.CommentVotes)
+            .WithMany(p => p.PostVotes)
             .HasForeignKey(v => v.ProfileId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure relationship with Comment
-        builder.HasOne(v => v.Comment)
-            .WithMany(c => c.Votes)
-            .HasForeignKey(v => v.CommentId)
+        // Configure relationship with Post
+        builder.HasOne(v => v.Post)
+            .WithMany(p => p.Votes)
+            .HasForeignKey(v => v.PostId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
         // Configure the unique constraint
-        builder.HasIndex(x => new { x.ProfileId, x.CommentId })
+        builder.HasIndex(x => new { x.ProfileId, x.PostId })
             .IsUnique();
     }
 }
