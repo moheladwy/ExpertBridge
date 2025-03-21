@@ -15,7 +15,10 @@ namespace ExpertBridge.Api.Queries
                 Id = profile.Id,
                 UserId = profile.UserId,
                 JobTitle = profile.JobTitle,
-                ProfilePictureUrl = profile.ProfilePictureUrl
+                ProfilePictureUrl = profile.ProfilePictureUrl,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                Username = profile.Username
             };
         }
     }

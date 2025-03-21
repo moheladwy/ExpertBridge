@@ -24,13 +24,13 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
           className="rounded-full"
         />
         <div>
-          <h3 className="text-md font-semibold">{post.author.jobTitle}</h3>
+          <h3 className="text-md font-semibold">{post.author.firstName + ' ' + post.author.lastName}</h3>
           <p className="text-sm text-gray-500">{post.author.jobTitle || "No job title"}</p>
         </div>
       </div>
 
       {/* Post Title */}
-      <Link to={`/posts/${post.id}`}>
+      <Link to={`/feed/${post.id}`}>
         <h2 className="text-lg font-semibold mt-3">{post.title}</h2>
       </Link>
 
@@ -43,7 +43,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
       </div>
 
       {/* Tags */}
-      {post.postTags.length > 0 && (
+      {post.postTags?.length > 0 && (
         <div className="flex space-x-2 mt-3">
           {post.postTags.map((tag: any, index: number) => (
             <span key={index} className="text-xs bg-gray-200 px-2 py-1 rounded-full">
