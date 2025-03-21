@@ -16,14 +16,8 @@ namespace ExpertBridge.Api.Queries
                 UserId = profile.UserId,
                 JobTitle = profile.JobTitle,
                 ProfilePictureUrl = profile.ProfilePictureUrl,
-                CreatedAt = profile.CreatedAt,
-                Email = profile.Email,
                 FirstName = profile.FirstName,
                 LastName = profile.LastName,
-                IsBanned = profile.IsBanned,
-                PhoneNumber = profile.PhoneNumber,
-                Rating = profile.Rating,
-                RatingCount = profile.RatingCount,
                 Username = profile.Username
             };
         }
