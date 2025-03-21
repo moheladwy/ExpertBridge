@@ -1,15 +1,16 @@
 import { useAppSelector } from "@/app/hooks";
 import { selectPostById, useGetPostQuery } from "@/features/posts/postsSlice";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 
-const SinglePostPage: React.FC = () => {
+const PostFromFeedPage: React.FC = () => {
   const { postId } = useParams();
 
-  // const post = useAppSelector((state) => selectPostById(state, postId!));
-  const { data: post } = useGetPostQuery(postId!);
+  const post = useAppSelector((state) => selectPostById(state, postId!));
+  // const { data: post } = useGetPostQuery(postId!);
 
-  if (!post) return null;
+  if (!post) return <Navigate to={`/posts/${postId}`} />;
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
@@ -53,4 +54,4 @@ const SinglePostPage: React.FC = () => {
   );
 };
 
-export default SinglePostPage;
+export default PostFromFeedPage;
