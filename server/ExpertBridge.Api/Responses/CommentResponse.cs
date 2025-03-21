@@ -9,7 +9,7 @@ public record CommentResponse
     public AuthorResponse? Author { get; set; }
     public required string Content { get; set; }
     public DateTime CreatedAt { get; set; }
-    public List<CommentResponse>? Replies { get; set; }
+    public List<CommentResponse> Replies { get; set; } = [];
     public int Upvotes { get; set; }
     public int Downvotes { get; set; }
     public bool IsUpvoted { get; set; }

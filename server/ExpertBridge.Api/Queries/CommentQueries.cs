@@ -27,7 +27,7 @@ namespace ExpertBridge.Api.Queries
                     CreatedAt = c.CreatedAt,
                     Replies = hasReplies
                         ? c.Replies.SelectCommentResponseFromFullComment(userProfileId).ToList()
-                        : null
+                        : []
                 });
         }
     }
