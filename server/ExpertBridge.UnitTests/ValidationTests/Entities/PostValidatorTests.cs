@@ -18,7 +18,7 @@ public class PostValidatorTests
         Content = "Post Content",
         CreatedAt = DateTime.UtcNow.AddDays(-1),
         LastModified = DateTime.MaxValue,
-        isDeleted = false
+        IsDeleted = false
     };
 
     [Fact]

@@ -14,6 +14,15 @@ import ProtectedRoute from './routes/ProtectedRoute.tsx'
 import PublicRoute from './routes/PublicRoute.tsx'
 import HomePage from './views/pages/feed/HomePage.tsx'
 import Interests from './views/pages/auth/Interests.tsx'
+import SinglePostPage from './views/pages/feed/SinglePostPage.tsx'
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+
 
 const router = createBrowserRouter([
   {
@@ -29,6 +38,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "posts/:postId",
+        element: (
+          <ProtectedRoute>
+            <SinglePostPage />
           </ProtectedRoute>
         ),
       },
@@ -50,17 +67,41 @@ const router = createBrowserRouter([
     path: "interests",
     element: (
       <ProtectedRoute>
-        <Interests/>
+        <Interests />
       </ProtectedRoute>
     ),
   },
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
 ]);
 
-createRoot(document.getElementById('root')!).render(
+
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement!);
+
+const theme = createTheme({
+  cssVariables: true,
+  components: {
+    MuiPopover: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+    MuiPopper: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+  },
+});
+
+root.render(
   <StrictMode>
-    <ReduxProvider store={store} >
-      <RouterProvider router={router} />
-    </ReduxProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <ReduxProvider store={store} >
+          <RouterProvider router={router} />
+        </ReduxProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   </StrictMode>,
-)
+);

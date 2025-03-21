@@ -38,7 +38,7 @@ public class PostEntityValidator : AbstractValidator<Post>
             .GreaterThan(x => x.CreatedAt).WithMessage("LastModified must be greater than or equal to CreatedAt")
             .When(x => x.LastModified.HasValue);
 
-        RuleFor(x => x.isDeleted)
+        RuleFor(x => x.IsDeleted)
             .NotNull().WithMessage("isDeleted is required");
     }
 }

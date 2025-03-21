@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Api.Core;
-using ExpertBridge.Api.Core.DTOs.Requests.RegisterUser;
-using ExpertBridge.Api.Core.DTOs.Requests.UpdateUserRequest;
-using ExpertBridge.Api.Core.DTOs.Responses;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Requests.RegisterUser;
+using ExpertBridge.Api.Requests.UpdateUserRequest;
+using ExpertBridge.Api.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +17,16 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public sealed class UsersController(
-    IUserService userService,
+    //IUsersService userService,
     ExpertBridgeDbContext _dbContext
     ) : ControllerBase
 {
     [HttpGet("get/{identityProviderId}")]
     public async Task<UserResponse> GetUserByIdentityProviderId([FromRoute] string identityProviderId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
-        return await userService.GetUserByIdentityProviderId(identityProviderId);
+        //ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
+        //return await userService.GetUserByIdentityProviderId(identityProviderId);
+        throw new NotImplementedException();
     }
 
     [HttpGet("get-by-email/{email}")]
@@ -61,28 +62,31 @@ public sealed class UsersController(
     public async Task<UserResponse> RegisterNewUser([FromBody] RegisterUserRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        return await userService.RegisterNewUser(request);
+        //return await userService.RegisterNewUser(request);
+        throw new NotImplementedException();
     }
 
     [HttpPut("update")]
     public async Task<UserResponse> UpdateUser([FromBody] UpdateUserRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        return await userService.UpdateUserAsync(request);
+        //return await userService.UpdateUserAsync(request);
+        throw new NotImplementedException();
     }
 
     [HttpGet("is-deleted/{identityProviderId}")]
     public async Task<bool> IsUserDeleted([FromRoute] string identityProviderId)
     {
         ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
-        return await userService.IsUserDeletedAsync(identityProviderId);
+        //return await userService.IsUserDeletedAsync(identityProviderId);
+        throw new NotImplementedException();
     }
 
     [HttpDelete("delete/{identityProviderId}")]
     public async Task<IActionResult> DeleteUser([FromRoute] string identityProviderId)
     {
         ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
-        await userService.DeleteUserAsync(identityProviderId);
+        //await userService.DeleteUserAsync(identityProviderId);
         return Ok("User deleted successfully.");
     }
 
@@ -90,14 +94,17 @@ public sealed class UsersController(
     public async Task<bool> IsUserBanned([FromRoute] string identityProviderId)
     {
         ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
-        return await userService.IsUserBannedAsync(identityProviderId);
+        //return await userService.IsUserBannedAsync(identityProviderId);
+        throw new NotImplementedException();
     }
 
     [HttpPut("ban/{identityProviderId}")]
     public async Task<IActionResult> BanUser([FromRoute] string identityProviderId)
     {
         ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
-        await userService.BanUserAsync(identityProviderId);
+        //await userService.BanUserAsync(identityProviderId);
+
+        throw new NotImplementedException();
         return Ok("User banned successfully.");
     }
 
@@ -105,14 +112,16 @@ public sealed class UsersController(
     public async Task<bool> IsUserVerified([FromRoute] string email)
     {
         ArgumentException.ThrowIfNullOrEmpty(email);
-        return await userService.IsUserVerifiedAsync(email);
+
+        throw new NotImplementedException();
+        //return await userService.IsUserVerifiedAsync(email);
     }
 
     [HttpPut("verify/{email}")]
     public async Task<IActionResult> VerifyUser([FromRoute] string email)
     {
         ArgumentException.ThrowIfNullOrEmpty(email);
-        await userService.VerifyUserAsync(email);
+        //await userService.VerifyUserAsync(email);
         return Ok("User verified successfully.");
     }
 }

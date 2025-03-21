@@ -2,13 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json.Serialization;
+using ExpertBridge.Api.Core.Entities.CommentVotes;
 using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ChatParticipants;
 using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileBadges;
 using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileSkills;
 using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags;
 using ExpertBridge.Api.Core.Entities.Media.ProfileMedia;
-using ExpertBridge.Api.Core.Entities.Votes.CommentVote;
-using ExpertBridge.Api.Core.Entities.Votes.PostVote;
+using ExpertBridge.Api.Core.Entities.PostVotes;
 
 namespace ExpertBridge.Api.Core.Entities.Profiles;
 
@@ -31,7 +31,10 @@ public partial class Profile
     public ICollection<Areas.Area> Areas { get; set; } = [];
     public ICollection<ProfileExperiences.ProfileExperience> Experiences { get; set; } = [];
     public ICollection<ProfileMedia> Medias { get; set; } = [];
+
+    [JsonIgnore]
     public ICollection<Posts.Post> Posts { get; set; } = [];
+    [JsonIgnore]
     public ICollection<Comments.Comment> Comments { get; set; } = [];
     public ICollection<JobPostings.JobPosting> JobPostings { get; set; } = [];
     public ICollection<Jobs.Job> JobsAsAuthor { get; set; } = [];

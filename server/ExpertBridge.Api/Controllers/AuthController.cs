@@ -9,7 +9,7 @@ namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IFirebaseService authService) : ControllerBase
+public class AuthController(IFirebaseAuthService authService) : ControllerBase
 {
     [HttpPost("login")]
     public async Task<string> Login([FromBody] LoginRequest request)

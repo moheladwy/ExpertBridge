@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddPostRequest } from "../../../../features/posts/types";
-import { useAddNewPostMutation } from "../../../../features/posts/postsSlice";
+import { useCreatePostMutation } from "../../../../features/posts/postsSlice";
+import toast from 'react-hot-toast';
 
 interface PostFormProps {
   onPostSubmit?: (post: AddPostRequest) => void;
@@ -9,7 +10,7 @@ interface PostFormProps {
 
 const PostForm: React.FC<PostFormProps> = ({ userId }) => {
 
-  const [addNewPost, { isLoading }] = useAddNewPostMutation();
+  const [createPost, { isLoading, isSuccess, isError }] = useCreatePostMutation();
 
 
   const [title, setTitle] = useState<string>("");
@@ -17,7 +18,14 @@ const PostForm: React.FC<PostFormProps> = ({ userId }) => {
   const [tag, setTag] = useState<string>("General");
   const [error, setError] = useState<string>("");
 
-
+  useEffect(() => {
+    if (isError) {
+      toast.error('An error occurred while creating you post');
+    }
+    if (isSuccess) {
+      toast.success('Post created successfully');
+    }
+  }, [isSuccess, isError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +34,8 @@ const PostForm: React.FC<PostFormProps> = ({ userId }) => {
       return;
     }
 
-    await addNewPost({ title, content: body, userId, tags: [tag] })
+    await createPost({ title, content: body });
+
 
     setTitle("");
     setBody("");

@@ -7,7 +7,6 @@ using ExpertBridge.Api.Application.Repositories.Profiles;
 using ExpertBridge.Api.Application.Repositories.Tags;
 using ExpertBridge.Api.Application.Repositories.Users;
 using ExpertBridge.Api.Application.Services;
-using ExpertBridge.Api.Core.DTOs.Requests.RegisterUser;
 using ExpertBridge.Api.Core.Entities.Comments;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.Profiles;
@@ -15,6 +14,7 @@ using ExpertBridge.Api.Core.Entities.Tags;
 using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Core.Interfaces.Services;
+using ExpertBridge.Api.Requests.RegisterUser;
 using FluentValidation;
 
 namespace ExpertBridge.Api.Extensions;
@@ -30,13 +30,13 @@ public static class Services
     public static void AddServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
-        services.AddTransient<IFirebaseService, FirebaseService>();
+        services.AddTransient<IFirebaseAuthService, FirebaseAuthService>();
         services.AddScoped<ICacheService, CacheService>();
-        services.AddScoped<IObjectStorageService, ObjectStorageService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IProfileService, ProfileService>();
-        services.AddScoped<IPostService, PostService>();
-        services.AddScoped<ICommentService, CommentService>();
+        //services.AddScoped<IObjectStorageService, ObjectStorageService>();
+        //services.AddScoped<IUsersService, UsersService>();
+        //services.AddScoped<IProfilesService, ProfilesService>();
+        //services.AddScoped<IPostsService, PostsService>();
+        services.AddScoped<ICommentsService, CommentsService>();
     }
 
     /// <summary>

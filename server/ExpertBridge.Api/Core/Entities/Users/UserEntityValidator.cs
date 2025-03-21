@@ -55,7 +55,7 @@ public class UserEntityValidator : AbstractValidator<User>
         RuleFor(x => x.IsEmailVerified)
             .NotNull().WithMessage("IsEmailVerified is required");
 
-        RuleFor(x => x.IsOnBoarded)
+        RuleFor(x => x.IsOnboarded)
             .NotNull().WithMessage("IsOnBoarded is required");
 
         RuleFor(x => x.CreatedAt)

@@ -33,7 +33,7 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired(false)
             .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.isDeleted)
+        builder.Property(x => x.IsDeleted)
             .IsRequired();
 
         // Configure one-to-many relationship
