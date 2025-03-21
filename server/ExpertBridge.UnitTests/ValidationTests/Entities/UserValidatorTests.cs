@@ -22,7 +22,7 @@ public class UserValidatorTests
         IsBanned = false,
         IsDeleted = false,
         IsEmailVerified = false,
-        IsOnBoarded = false,
+        IsOnboarded = false,
         CreatedAt = DateTime.UtcNow
     };
 

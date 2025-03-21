@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Votes.CommentVote;
+using ExpertBridge.Api.Core.Entities.CommentVotes;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;

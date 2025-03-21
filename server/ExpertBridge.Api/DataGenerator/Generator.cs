@@ -25,7 +25,7 @@ public static class Generator
             .RuleFor(u => u.IsBanned, f => f.Random.Bool(0.05f))
             .RuleFor(u => u.IsDeleted, f => f.Random.Bool(0.02f))
             .RuleFor(u => u.IsEmailVerified, f => f.Random.Bool())
-            .RuleFor(u => u.IsOnBoarded, f => f.Random.Bool())
+            .RuleFor(u => u.IsOnboarded, f => f.Random.Bool())
             .RuleFor(u => u.CreatedAt, f => f.Date.Past(2).ToUniversalTime());
 
         return userFaker.Generate(count);
@@ -55,7 +55,7 @@ public static class Generator
             .RuleFor(p => p.Content, f => f.Lorem.Paragraph())
             .RuleFor(p => p.CreatedAt, f => f.Date.Past(1).ToUniversalTime())
             .RuleFor(p => p.LastModified, f => f.Date.Recent(10).ToUniversalTime().OrNull(f, 0.3f))
-            .RuleFor(p => p.isDeleted, f => f.Random.Bool(0.1f));
+            .RuleFor(p => p.IsDeleted, f => f.Random.Bool(0.1f));
 
         return postFaker.Generate(count);
     }
@@ -69,7 +69,7 @@ public static class Generator
             .RuleFor(c => c.Content, f => f.Lorem.Sentence())
             .RuleFor(c => c.CreatedAt, f => f.Date.Past(1).ToUniversalTime())
             .RuleFor(c => c.LastModified, f => f.Date.Recent(10).ToUniversalTime().OrNull(f, 0.3f))
-            .RuleFor(c => c.isDeleted, f => f.Random.Bool(0.05f));
+            .RuleFor(c => c.IsDeleted, f => f.Random.Bool(0.05f));
 
         return commentFaker.Generate(count);
     }

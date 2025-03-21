@@ -5,14 +5,16 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Security.Claims;
 using ExpertBridge.Api.Core;
-using ExpertBridge.Api.Core.DTOs.Requests.CreatePost;
-using ExpertBridge.Api.Core.DTOs.Requests.DeleteFileFromPost;
-using ExpertBridge.Api.Core.DTOs.Requests.EditPost;
-using ExpertBridge.Api.Core.DTOs.Requests.ReportPost;
-using ExpertBridge.Api.Core.DTOs.Responses;
 using ExpertBridge.Api.Core.Entities.Posts;
+using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Queries;
+using ExpertBridge.Api.Requests.CreatePost;
+using ExpertBridge.Api.Requests.DeleteFileFromPost;
+using ExpertBridge.Api.Requests.EditPost;
+using ExpertBridge.Api.Requests.ReportPost;
+using ExpertBridge.Api.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,44 +26,51 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public class PostsController(
-    IPostsService service,
     ExpertBridgeDbContext _dbContext
     ) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("{postId}")]
-    public async Task<Post?> GetById([FromRoute] string postId)
+    public async Task<PostResponse> GetById([FromRoute] string postId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        
+        //ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+        var user = await GetCurrentUserAsync();
+        var userProfileId = user?.Profile?.Id;
 
-        return await _dbContext.Posts
-            .Include(p => p.Author)
-            .Include(p => p.Comments)
-            .Where(post => post.Id == postId)
+        var post = await _dbContext.Posts
+            .FullyPopulatedPostQuery()
+            .Where(p => p.Id == postId)
+            .SelectPostResponseFromFullPost(userProfileId)
             .FirstOrDefaultAsync();
+
+        return
+            post
+            ??
+            throw new PostNotFoundException($"Post with id={postId} was not found");
     }
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IEnumerable<Post>> GetAll()
+    public async Task<List<PostResponse>> GetAll()
     {
         Log.Information($"User from HTTP Context: {HttpContext.User.FindFirstValue(ClaimTypes.Email)}");
 
+        var user = await GetCurrentUserAsync();
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
+
         return await _dbContext.Posts
-            .Include(p => p.Author)
+            .FullyPopulatedPostQuery()
+            .SelectPostResponseFromFullPost(userProfileId)
             .ToListAsync();
     }
 
     [HttpPost]
-    public async Task<Post> Create([FromBody] CreatePostRequest request)
+    public async Task<PostResponse> Create([FromBody] CreatePostRequest request)
     {
-        var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
-        var user = await _dbContext.Users
-            .Include(u => u.Profile)
-            .FirstOrDefaultAsync(u => u.Email == userEmail);
+        var user = await GetCurrentUserAsync();
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
 
-        if (string.IsNullOrEmpty(user?.Profile?.Id))
+        if (string.IsNullOrEmpty(userProfileId))
         {
             throw new UnauthorizedException();
         }
@@ -75,14 +84,30 @@ public class PostsController(
         {
             Title = request.Title,
             Content = request.Content,
-            AuthorId = user.Profile.Id
+            AuthorId = userProfileId
         };
 
         await _dbContext.Posts.AddAsync(post);
         await _dbContext.SaveChangesAsync();
 
-        return post;
+        return await _dbContext.Posts
+            .FullyPopulatedPostQuery()
+            .Where(p => p.Id == post.Id)
+            .SelectPostResponseFromFullPost(userProfileId)
+            .FirstAsync();
     }
+
+    private async Task<User?> GetCurrentUserAsync()
+    {
+        var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+        var user = await _dbContext.Users
+            .Include(u => u.Profile)
+            .FirstOrDefaultAsync(u => u.Email == userEmail);
+
+        return user;
+    }
+
+
 
     [HttpPatch("{postId}/up-vote")]
     public async Task<IActionResult> UpVote([FromRoute] string postId)
@@ -128,21 +153,21 @@ public class PostsController(
 
 
 
-    [HttpPost("attach/{postId}")]
-    public async Task<AttachFileToPostResponse> AttachFile(IFormFile file, [FromRoute] string postId)
-    {
-        throw new NotImplementedException();
-    }
+    //    [HttpPost("attach/{postId}")]
+    //    public async Task<AttachFileToPostResponse> AttachFile(IFormFile file, [FromRoute] string postId)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-    [HttpDelete("delete-file")]
-    public async Task<IActionResult> DeleteFile([FromBody] DeleteFileFromPostRequest deleteFileFromPostRequest)
-    {
-        throw new NotImplementedException();
-    }
+    //    [HttpDelete("delete-file")]
+    //    public async Task<IActionResult> DeleteFile([FromBody] DeleteFileFromPostRequest deleteFileFromPostRequest)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-    [HttpPost("report")]
-    public async Task<ReportResponse> Report([FromBody] ReportPostRequest reportPostRequest)
-    {
-        throw new NotImplementedException();
-    }
+    //    [HttpPost("report")]
+    //    public async Task<ReportResponse> Report([FromBody] ReportPostRequest reportPostRequest)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 }
