@@ -1,5 +1,8 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Area;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.Areas;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -78,7 +81,7 @@ public class AreaValidatorTests
     {
         // Arrange
         var areaWithInvalidGovernorate = _validArea;
-        areaWithInvalidGovernorate.Governorate = (Governorates) 100;
+        areaWithInvalidGovernorate.Governorate = (Governorates)100;
 
         // Act
         var resultOfInvalidGovernorate = _areaEntityValidator.TestValidate(areaWithInvalidGovernorate);

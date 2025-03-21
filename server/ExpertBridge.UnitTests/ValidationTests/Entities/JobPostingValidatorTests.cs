@@ -1,5 +1,8 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.JobPosting;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.JobPostings;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;

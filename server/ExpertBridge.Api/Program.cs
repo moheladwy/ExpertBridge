@@ -1,7 +1,9 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.Data;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
-using ExpertBridge.Application;
-using ExpertBridge.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
@@ -10,7 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
+
 builder.ConfigureOpenTelemetry();
+
 builder.AddDefaultHealthChecks();
 builder.Services.AddServiceDiscovery();
 builder.Services.ConfigureHttpClientDefaults(http =>
@@ -18,19 +22,23 @@ builder.Services.ConfigureHttpClientDefaults(http =>
     http.AddStandardResilienceHandler();
     http.AddServiceDiscovery();
 });
+
 builder.Services.AddDatabase(builder.Configuration);
+
 builder.AddSeqEndpoint(connectionName: "Seq");
 builder.AddRedisDistributedCache(connectionName: "Redis");
-builder.Services.AddControllers();
-builder.AddAuthentication();
-builder.Services.AddAuthorization();
-builder.AddSwaggerGen();
-builder.AddFirebaseServices();
 builder.AddS3ObjectService();
+
+builder.AddFirebaseApp();
+builder.AddFirebaseAuthentication();
+builder.AddHttpClientForFirebaseService();
+
+builder.AddSwaggerGen();
+builder.AddCors();
+
+builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.AddRepositories();
-builder.AddHttpClientForFirebaseService();
-builder.AddCors();
 
 var app = builder.Build();
 
@@ -45,7 +53,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

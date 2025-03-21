@@ -1,8 +1,11 @@
-using ExpertBridge.Application.Repositories.User;
-using ExpertBridge.Core;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.User;
-using ExpertBridge.Data.DatabaseContexts;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.Application.Repositories.Users;
+using ExpertBridge.Api.Core;
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.Users;
+using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +21,7 @@ public sealed class UserRepositoryTests
             .Options;
     }
     private readonly SqliteConnection _connection;
-    private UserRepository _repository;
+    private UsersRepository _repository;
     private readonly User _validUser, _anotherValidUser;
 
     public UserRepositoryTests()
@@ -58,7 +61,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
         context.Users.Add(_validUser);
         context.Users.Add(_anotherValidUser);
         await context.SaveChangesAsync();
@@ -78,7 +81,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to get all users.
         var users = await _repository.GetAllAsync();
@@ -97,7 +100,7 @@ public sealed class UserRepositoryTests
         await context.Database.EnsureCreatedAsync();
         context.Users.Add(_validUser);
         await context.SaveChangesAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to get the user by id.
         var userByIdAsNoTracking = await _repository.GetByIdAsNoTrackingAsync(_validUser.Id);
@@ -115,7 +118,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
         var invalidUserId = Guid.NewGuid().ToString();
 
         // Act: Use the repository to get the user by id.
@@ -134,7 +137,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
         context.Users.Add(_validUser);
         await context.SaveChangesAsync();
 
@@ -154,7 +157,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to get the user by username.
         var userByUsernameAsNoTracking = await _repository.GetFirstAsNoTrackingAsync(x => x.Username == _validUser.Username);
@@ -172,7 +175,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to add a user.
         await _repository.AddAsync(_validUser);
@@ -192,7 +195,7 @@ public sealed class UserRepositoryTests
         await context.Database.EnsureCreatedAsync();
         context.Users.Add(_validUser);
         await context.SaveChangesAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to add a user.
         // Assert: It throws an exception when trying to add an existing user.
@@ -206,7 +209,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
         var invalidUser = new User();
 
         // Act: Use the repository to add a user.
@@ -223,7 +226,7 @@ public sealed class UserRepositoryTests
         await context.Database.EnsureCreatedAsync();
         context.Users.Add(_validUser);
         await context.SaveChangesAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to update a user.
         _validUser.FirstName = "Updated";
@@ -246,7 +249,7 @@ public sealed class UserRepositoryTests
         await context.Database.EnsureCreatedAsync();
         context.Users.Add(_validUser);
         await context.SaveChangesAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to update a user.
         _validUser.FirstName = null;
@@ -263,7 +266,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to update a user.
         // Assert: It throws an exception when trying to update a non-existing user.
@@ -279,7 +282,7 @@ public sealed class UserRepositoryTests
         await context.Database.EnsureCreatedAsync();
         context.Users.Add(_validUser);
         await context.SaveChangesAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to delete a user.
         await _repository.DeleteAsync(_validUser.Id);
@@ -296,7 +299,7 @@ public sealed class UserRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _repository = new UserRepository(context);
+        _repository = new UsersRepository(context);
 
         // Act: Use the repository to delete a user.
         // Assert: It throws an exception when trying to delete a non-existing user.

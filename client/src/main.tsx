@@ -2,17 +2,27 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
-import NotFoundError from './pages/notFoundPage/NotFoundError.tsx'
-import LandingPage from './pages/landingPage/LandingPage.tsx'
+import NotFoundError from './views/components/common/ui/NotFoundError.tsx'
+import LandingPage from './views/pages/landing/LandingPage.tsx'
 import { store } from './app/store.ts'
 
 import { Provider as ReduxProvider } from "react-redux";
-import SignUpPage from './pages/SignUpPage.tsx'
-import LoginPage from './pages/LoginPage.tsx'
+import SignUpPage from './views/pages/auth/SignUpPage.tsx'
+import LoginPage from './views/pages/auth/LoginPage.tsx'
 import App from './App.tsx'
-import ProtectedRoute from './components/Routes/ProtectedRoute.tsx'
-import PublicRoute from './components/Routes/PublicRoute.tsx'
-import HomePage from './pages/HomePage.tsx'
+import ProtectedRoute from './routes/ProtectedRoute.tsx'
+import PublicRoute from './routes/PublicRoute.tsx'
+import HomePage from './views/pages/feed/HomePage.tsx'
+import Interests from './views/pages/auth/Interests.tsx'
+import SinglePostPage from './views/pages/feed/SinglePostPage.tsx'
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+
 
 const router = createBrowserRouter([
   {
@@ -22,7 +32,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <LandingPage />
-      }, 
+      },
       {
         path: "home",
         element: (
@@ -31,31 +41,67 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "posts/:postId",
+        element: (
+          <ProtectedRoute>
+            <SinglePostPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   {
     path: "login",
     element: (
-      <PublicRoute>
-        <LoginPage />
-      </PublicRoute>
+      <LoginPage />
     ),
   },
   {
     path: "signup",
     element: (
-      <PublicRoute>
-        <SignUpPage />
-      </PublicRoute>
+      <SignUpPage />
+    ),
+  },
+  {
+    path: "interests",
+    element: (
+      <ProtectedRoute>
+        <Interests />
+      </ProtectedRoute>
     ),
   },
   { path: "*", element: <NotFoundError /> }, // Catch-all 404
 ]);
 
-createRoot(document.getElementById('root')!).render(
+
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement!);
+
+const theme = createTheme({
+  cssVariables: true,
+  components: {
+    MuiPopover: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+    MuiPopper: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+  },
+});
+
+root.render(
   <StrictMode>
-    <ReduxProvider store={store} >
-      <RouterProvider router={router} />
-    </ReduxProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <ReduxProvider store={store} >
+          <RouterProvider router={router} />
+        </ReduxProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   </StrictMode>,
-)
+);

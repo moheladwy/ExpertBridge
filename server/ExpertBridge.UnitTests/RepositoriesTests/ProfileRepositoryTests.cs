@@ -1,10 +1,13 @@
-using ExpertBridge.Application.Repositories.Profile;
-using ExpertBridge.Application.Repositories.User;
-using ExpertBridge.Core;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Profile;
-using ExpertBridge.Core.Entities.User;
-using ExpertBridge.Data.DatabaseContexts;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.Application.Repositories.Profiles;
+using ExpertBridge.Api.Application.Repositories.Users;
+using ExpertBridge.Api.Core;
+using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Api.Core.Entities.Profiles;
+using ExpertBridge.Api.Core.Entities.Users;
+using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,8 +23,8 @@ public class ProfileRepositoryTests
             .Options;
     }
     private readonly SqliteConnection _connection;
-    private ProfileRepository _profileRepository;
-    private UserRepository _userRepository;
+    private ProfilesRepository _profileRepository;
+    private UsersRepository _userRepository;
     private readonly User _validUser;
     private readonly Profile _validProfile;
 
@@ -63,8 +66,8 @@ public class ProfileRepositoryTests
         await context.Users.AddAsync(_validUser);
         await context.Profiles.AddAsync(_validProfile);
         await context.SaveChangesAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         var resultWithTracking = await _profileRepository.GetByIdAsync(_validProfile.Id);
@@ -84,8 +87,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         var resultWithTracking = await _profileRepository.GetByIdAsync(_validProfile.Id);
@@ -106,8 +109,8 @@ public class ProfileRepositoryTests
         await context.Users.AddAsync(_validUser);
         await context.Profiles.AddAsync(_validProfile);
         await context.SaveChangesAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         var result = await _profileRepository.GetAllAsync();
@@ -124,8 +127,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         var result = await _profileRepository.GetAllAsync();
@@ -145,8 +148,8 @@ public class ProfileRepositoryTests
         await context.Users.AddAsync(_validUser);
         await context.Profiles.AddAsync(_validProfile);
         await context.SaveChangesAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         var resultWithTracking = await _profileRepository.GetFirstAsync(p => p.Id == _validProfile.Id);
@@ -167,8 +170,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         var resultWithTracking = await _profileRepository.GetFirstAsync(p => p.Id == _validProfile.Id);
@@ -186,8 +189,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         await _userRepository.AddAsync(_validUser);
@@ -209,8 +212,8 @@ public class ProfileRepositoryTests
         await context.Users.AddAsync(_validUser);
         await context.Profiles.AddAsync(_validProfile);
         await context.SaveChangesAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act and Assert
         await Assert.ThrowsAsync<DbUpdateException>(() => _profileRepository.AddAsync(_validProfile));
@@ -223,8 +226,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act and Assert
         await Assert.ThrowsAsync<DbUpdateException>(() => _profileRepository.AddAsync(_validProfile));
@@ -240,8 +243,8 @@ public class ProfileRepositoryTests
         await context.Users.AddAsync(_validUser);
         await context.Profiles.AddAsync(_validProfile);
         await context.SaveChangesAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
         _validProfile.JobTitle = "Senior Software Engineer";
         _validProfile.Bio = "I am a senior software engineer";
 
@@ -262,8 +265,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act and Assert
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(() => _profileRepository.UpdateAsync(_validProfile));
@@ -276,8 +279,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
         var invalidProfile = new Profile
         {
             Id = new string('n', GlobalEntitiesConstraints.MaxIdLength + 1),
@@ -298,8 +301,8 @@ public class ProfileRepositoryTests
         await context.Users.AddAsync(_validUser);
         await context.Profiles.AddAsync(_validProfile);
         await context.SaveChangesAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act
         await _profileRepository.DeleteAsync(_validProfile.Id);
@@ -317,8 +320,8 @@ public class ProfileRepositoryTests
         var options = CreateNewContextOptions(_connection);
         await using var context = new ExpertBridgeDbContext(options);
         await context.Database.EnsureCreatedAsync();
-        _userRepository = new UserRepository(context);
-        _profileRepository = new ProfileRepository(context, _userRepository);
+        _userRepository = new UsersRepository(context);
+        _profileRepository = new ProfilesRepository(context, _userRepository);
 
         // Act and Assert
         await Assert.ThrowsAsync<ProfileNotFoundException>(() => _profileRepository.DeleteAsync(_validProfile.Id));

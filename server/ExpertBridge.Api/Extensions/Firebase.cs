@@ -1,5 +1,8 @@
-using ExpertBridge.Application.Services;
-using ExpertBridge.Core.Interfaces.Services;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.Application.Services;
+using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
@@ -20,7 +23,7 @@ internal static class Firebase
     /// <param name="builder">
     ///     The WebApplicationBuilder to add the Firebase services to.
     /// </param>
-    public static void AddFirebaseServices(this WebApplicationBuilder builder)
+    public static void AddFirebaseApp(this WebApplicationBuilder builder)
     {
         var firebaseApp = FirebaseApp.Create(new AppOptions
         {
@@ -42,7 +45,7 @@ internal static class Firebase
     /// </param>
     public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder)
     {
-        builder.Services.AddHttpClient<IFirebaseService, FirebaseService>((sp, httpClient) =>
+        builder.Services.AddHttpClient<IFirebaseAuthService, FirebaseAuthService>((sp, httpClient) =>
         {
             var configuration = sp.GetRequiredService<IConfiguration>();
             var uri = configuration["Authentication:Firebase:TokenUri"]!;
@@ -54,7 +57,7 @@ internal static class Firebase
     ///     Adds the Firebase authentication service to the application builder.
     /// </summary>
     /// <param name="builder">builder — The WebApplicationBuilder to add the Firebase authentication services to</param>
-    public static void AddAuthentication(this WebApplicationBuilder builder)
+    public static void AddFirebaseAuthentication(this WebApplicationBuilder builder)
     {
         var projectId = builder.Configuration["Firebase:ProjectId"]!;
         var issuer = builder.Configuration["Authentication:Firebase:Issuer"]!;
@@ -73,7 +76,8 @@ internal static class Firebase
                     ValidateLifetime = true
                 };
                 options.RequireHttpsMetadata = false;
-            });
+            })
+            ;
         builder.Services.AddAuthorization();
     }
 }
