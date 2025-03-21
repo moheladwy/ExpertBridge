@@ -29,6 +29,7 @@ public sealed class UsersController(
         throw new NotImplementedException();
     }
 
+
     [HttpGet("get-by-email/{email}")]
     public async Task<UserResponse> GetUserByEmail([FromRoute] string email)
     {
@@ -51,7 +52,7 @@ public sealed class UsersController(
         //_dbContext.SaveChanges();
 
         var user = await _dbContext.Users
-            .FirstAsync()
+            .FirstOrDefaultAsync(u => u.Email == email)
             ?? throw new UserNotFoundException("User not found");
 
         return new UserResponse(user);
