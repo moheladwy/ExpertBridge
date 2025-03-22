@@ -24,11 +24,11 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
             .WithMessage($"Email must be less than {UserEntityConstraints.MaxEmailLength} characters")
             .EmailAddress().WithMessage("Email must be a valid email address");
 
-        RuleFor(x => x.Username)
-            .NotNull().WithMessage("Username is required")
-            .NotEmpty().WithMessage("Username can not be empty")
-            .MaximumLength(UserEntityConstraints.MaxUsernameLength)
-            .WithMessage($"Username must be less than {UserEntityConstraints.MaxUsernameLength} characters");
+        //RuleFor(x => x.Username)
+        //    .NotNull().WithMessage("Username is required")
+        //    .NotEmpty().WithMessage("Username can not be empty")
+        //    .MaximumLength(UserEntityConstraints.MaxUsernameLength)
+        //    .WithMessage($"Username must be less than {UserEntityConstraints.MaxUsernameLength} characters");
 
         RuleFor(x => x.FirstName)
             .NotNull().WithMessage("First name is required")

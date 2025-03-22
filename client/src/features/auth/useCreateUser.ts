@@ -88,8 +88,7 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
         lastName: name[1],
         email: googleUser.user.email!,
         username: googleUser.user.email!,
-        // TODO: Remove dummy data
-        phoneNumber: '+201013647953',
+        phoneNumber: googleUser.user.phoneNumber,
         providerId: googleUser.user.uid,
       }
 

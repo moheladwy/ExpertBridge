@@ -17,7 +17,7 @@ public class UpdateUserRequestValidatorTests
         FirstName = "John",
         LastName = "Doe",
         Email = "john.doe@example.com",
-        Username = "johndoe",
+        //Username = "johndoe",
         PhoneNumber = "+1234567890"
     };
 
@@ -154,27 +154,27 @@ public class UpdateUserRequestValidatorTests
         resultOfInvalidLastName.ShouldHaveValidationErrorFor(x => x.LastName);
     }
 
-    [Fact]
-    public void Validate_WhenUsernameIsInvalid_ShouldReturnErrors()
-    {
-        // Arrange
-        var updateUserRequestWithNullUsername = _validUpdateUserRequest;
-        updateUserRequestWithNullUsername.Username = null;
+    //[Fact]
+    //public void Validate_WhenUsernameIsInvalid_ShouldReturnErrors()
+    //{
+    //    // Arrange
+    //    var updateUserRequestWithNullUsername = _validUpdateUserRequest;
+    //    updateUserRequestWithNullUsername.Username = null;
 
-        var updateUserRequestWithEmptyUsername = _validUpdateUserRequest;
-        updateUserRequestWithEmptyUsername.Username = string.Empty;
+    //    var updateUserRequestWithEmptyUsername = _validUpdateUserRequest;
+    //    updateUserRequestWithEmptyUsername.Username = string.Empty;
 
-        var updateUserRequestWithInvalidUsername = _validUpdateUserRequest;
-        updateUserRequestWithInvalidUsername.Username = new string('n', UserEntityConstraints.MaxUsernameLength + 1);
+    //    var updateUserRequestWithInvalidUsername = _validUpdateUserRequest;
+    //    updateUserRequestWithInvalidUsername.Username = new string('n', UserEntityConstraints.MaxUsernameLength + 1);
 
-        // Act
-        var resultOfNullUsername = _updateUserRequestValidator.TestValidate(updateUserRequestWithNullUsername);
-        var resultOfEmptyUsername = _updateUserRequestValidator.TestValidate(updateUserRequestWithEmptyUsername);
-        var resultOfInvalidUsername = _updateUserRequestValidator.TestValidate(updateUserRequestWithInvalidUsername);
+    //    // Act
+    //    var resultOfNullUsername = _updateUserRequestValidator.TestValidate(updateUserRequestWithNullUsername);
+    //    var resultOfEmptyUsername = _updateUserRequestValidator.TestValidate(updateUserRequestWithEmptyUsername);
+    //    var resultOfInvalidUsername = _updateUserRequestValidator.TestValidate(updateUserRequestWithInvalidUsername);
 
-        // Assert
-        resultOfNullUsername.ShouldHaveValidationErrorFor(x => x.Username);
-        resultOfEmptyUsername.ShouldHaveValidationErrorFor(x => x.Username);
-        resultOfInvalidUsername.ShouldHaveValidationErrorFor(x => x.Username);
-    }
+    //    // Assert
+    //    resultOfNullUsername.ShouldHaveValidationErrorFor(x => x.Username);
+    //    resultOfEmptyUsername.ShouldHaveValidationErrorFor(x => x.Username);
+    //    resultOfInvalidUsername.ShouldHaveValidationErrorFor(x => x.Username);
+    //}
 }

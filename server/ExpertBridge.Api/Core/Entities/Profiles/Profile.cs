@@ -20,13 +20,12 @@ public partial class Profile : BaseModel
     public string? ProfilePictureUrl { get; set; }
     public double Rating { get; set; }
     public int RatingCount { get; set; }
-    public string FirstName { get; set; }
+    public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string Email { get; set; }
     public string? Username { get; set; }
     public string? PhoneNumber { get; set; }
     public bool IsBanned { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
 public partial class Profile

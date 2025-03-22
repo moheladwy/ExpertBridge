@@ -21,10 +21,10 @@ export interface CreateUserRequest {
 
 export interface UpdateUserRequest {
   providerId: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
-  username: string;
+  username?: string;
   phoneNumber?: string | null;
 }
 
