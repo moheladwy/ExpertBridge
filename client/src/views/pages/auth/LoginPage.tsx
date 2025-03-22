@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useSignInWithEmailAndPassword from "@/lib/firebase/EmailAuth/useSignInWithEmailAndPassword";
 import { auth } from "@/lib/firebase";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
@@ -155,9 +155,9 @@ const LoginPage: React.FC = () => {
         {/* Sign Up Redirect */}
         <div className="text-white text-sm text-center m-5">
           Don't have an account?{" "}
-          <a href="/signup" className="underline">
+          <Link to="/signup" className="underline">
             Register
-          </a>
+          </Link>
         </div>
       </div>
     </div>

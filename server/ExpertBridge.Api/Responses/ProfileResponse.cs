@@ -19,5 +19,6 @@ namespace ExpertBridge.Api.Responses
         public DateTime CreatedAt { get; set; }
         public string? JobTitle { get; set; }
         public string? ProfilePictureUrl { get; set; }
+        public bool IsOnboarded { get; set; }
     }
 }

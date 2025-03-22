@@ -39,6 +39,7 @@ public class ProfilesController : ControllerBase
 
         var profile = await _dbContext.Profiles
             .Where(p => p.UserId == user.Id)
+            .Include(p => p.User)
             .SelectProfileResponseFromProfile()
             .FirstOrDefaultAsync();
 

@@ -29,6 +29,7 @@ export type ProfileResponse = {
   createdAt: string; // Date is usually serialized as a string in JSON responses
   jobTitle?: string;
   profilePictureUrl?: string;
+  isOnboarded: boolean;
 };
 
 export interface CreateUserRequest {
@@ -51,6 +52,6 @@ export interface UserFormData {
   firstName: string;
   lastName: string;
   email: string;
-  username: string;
+  username?: string;
   phoneNumber?: string | null;
 }

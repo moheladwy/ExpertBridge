@@ -26,6 +26,7 @@ namespace ExpertBridge.Api.Queries
                     Rating = p.Rating,
                     RatingCount = p.RatingCount,
                     Username = p.Username,
+                    IsOnboarded = p.User.IsOnboarded
                 });                
         }
 
