@@ -11,4 +11,5 @@ public class UpdateUserRequest
     public required string Email { get; set; }
     public string? PhoneNumber { get; set; }
     public bool IsEmailVerified { get; set; }
+    public string? ProfilePictureUrl { get; set; }
 }

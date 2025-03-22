@@ -26,6 +26,7 @@ export interface UpdateUserRequest {
   email: string;
   username?: string;
   phoneNumber?: string | null;
+  profilePictureUrl?: string | null;
 }
 
 export type CreateUserError = string | undefined;

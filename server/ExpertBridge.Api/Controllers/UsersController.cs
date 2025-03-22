@@ -107,7 +107,8 @@ public sealed class UsersController(
                 IsBanned = user.IsBanned,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                ProfilePictureUrl = request.ProfilePictureUrl
             });
         }
         else

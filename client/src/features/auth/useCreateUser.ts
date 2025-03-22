@@ -90,6 +90,7 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
         username: googleUser.user.email!,
         phoneNumber: googleUser.user.phoneNumber,
         providerId: googleUser.user.uid,
+        profilePictureUrl: googleUser.user.photoURL,
       }
 
       console.log('updating user');

@@ -48,6 +48,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
                 email: user.email!,
                 phoneNumber: user.phoneNumber,
                 providerId: user.uid,
+                profilePictureUrl: user.photoURL,
               };
 
               await updateUser(request);
