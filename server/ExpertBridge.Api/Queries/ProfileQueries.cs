@@ -8,6 +8,27 @@ namespace ExpertBridge.Api.Queries
 {
     public static class ProfileQueries
     {
+        public static IQueryable<ProfileResponse> SelectProfileResponseFromProfile(this IQueryable<Profile> query)
+        {
+            return query
+                .Select(p => new ProfileResponse
+                {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    CreatedAt = p.CreatedAt,
+                    Email = p.Email,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    IsBanned = p.IsBanned,
+                    JobTitle = p.JobTitle,
+                    PhoneNumber = p.PhoneNumber,
+                    ProfilePictureUrl = p.ProfilePictureUrl,
+                    Rating = p.Rating,
+                    RatingCount = p.RatingCount,
+                    Username = p.Username,
+                });                
+        }
+
         public static AuthorResponse? SelectAuthorResponseFromProfile(this Profile? profile)
         {
             return profile == null ? null : new AuthorResponse

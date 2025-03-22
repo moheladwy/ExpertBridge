@@ -1,12 +1,13 @@
 import { emptyApiSlice } from "../api/apiSlice";
-import { AppUser, CreateUserRequest, UpdateUserRequest } from "./types";
+import { AppUser, CreateUserRequest, ProfileResponse, UpdateUserRequest } from "./types";
 
 export const usersApiSlice = emptyApiSlice.injectEndpoints({
   endpoints: (builder) => ({
 
-    getCurrentUser: builder.query<AppUser, string | null | undefined>({
-      query: (email) => `/users/get-by-email/${email}`,
-      transformResponse: (response: AppUser) => {
+    // TODO: Consider getting this to it's own slice (profilesSlice) maybe???
+    getCurrentUserProfile: builder.query<ProfileResponse, void>({
+      query: () => `/profile`,
+      transformResponse: (response: ProfileResponse) => {
         console.log(response);
         return response;
       },
@@ -28,6 +29,6 @@ export const usersApiSlice = emptyApiSlice.injectEndpoints({
 });
 
 export const {
-  useGetCurrentUserQuery,
+  useGetCurrentUserProfileQuery,
   useUpdateUserMutation,
 } = usersApiSlice;

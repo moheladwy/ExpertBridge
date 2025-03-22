@@ -2,7 +2,7 @@ import Filters from "./Filters";
 import LoadingSkeleton from "./LoadingSkeleton";
 import PostCard from "./PostCard";
 import PostForm from "./AddPostForm";
-import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
+import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { auth } from "@/lib/firebase";
 import { randomInt } from "crypto";
@@ -15,7 +15,7 @@ const Feed = () => {
   // This is only temporary
   const [authUser] = useAuthSubscribtion(auth);
 
-  const { data: user } = useGetCurrentUserQuery(authUser?.email);
+  const { data: user } = useGetCurrentUserProfileQuery();
 
   const {
     data: posts,

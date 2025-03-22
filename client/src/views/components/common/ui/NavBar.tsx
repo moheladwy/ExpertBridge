@@ -29,12 +29,14 @@ import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog"
 import { Search } from 'lucide-react';
 import { useState } from "react";
 import { SvgIcon } from "@mui/material";
+import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 
 
 const NavBar = () => {
   const navigate = useNavigate();
   const [user] = useAuthSubscribtion(auth);
   const [signOut, loading, error] = useSignOut(auth);
+  const { data: appUser, isLoading: userLoading } = useGetCurrentUserProfileQuery();
 
   const handleSignOut = async () => {
     try {
@@ -115,7 +117,16 @@ const NavBar = () => {
                   {/* Profile Pic */}
                   <Avatar className="bg-white flex justify-center items-center">
                     {/* using the name's first letter as a profile */}
-                    <h1 className="text-main-blue font-bold text-lg ">{user.displayName?.charAt(0).toUpperCase()}</h1>
+                    {
+                      appUser?.profilePictureUrl
+                        ? <img
+                          src={appUser.profilePictureUrl}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                        : <h1 className="text-main-blue font-bold text-lg ">{user.displayName?.charAt(0).toUpperCase()}</h1>
+                    }
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

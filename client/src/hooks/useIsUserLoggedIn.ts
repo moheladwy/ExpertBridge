@@ -1,4 +1,4 @@
-import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
+import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -20,7 +20,7 @@ export default (): IsUserLoggedInHook => {
     data: appUser,
     isLoading: userLoading,
     error: userErrorMessage
-  } = useGetCurrentUserQuery(authUser?.email);
+  } = useGetCurrentUserProfileQuery();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 

@@ -1,4 +1,4 @@
-import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
+import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useSignOut from "@/lib/firebase/useSignOut";
@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     isLoading: appUserLoading,
     error: appUserError,
     isError: appUserIsError
-  } = useGetCurrentUserQuery(authUser?.email);
+  } = useGetCurrentUserProfileQuery();
   const [signOut, loading] = useSignOut(auth);
 
   if (authLoading || loading || appUserLoading) return <div>Loading...</div>;
