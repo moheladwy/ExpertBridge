@@ -6,16 +6,12 @@ using ExpertBridge.Api.Core.Entities.Media.CommentMedia;
 
 namespace ExpertBridge.Api.Core.Entities.Comments;
 
-public class Comment
+public class Comment : BaseModel
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string AuthorId { get; set; }
     public string PostId { get; set; }
     public string ParentCommentId { get; set; }
     public string Content { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? LastModified { get; set; }
-    public bool IsDeleted { get; set; }
 
     // Navigation property
     public Profiles.Profile Author { get; set; }

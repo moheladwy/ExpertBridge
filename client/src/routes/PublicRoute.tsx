@@ -1,4 +1,4 @@
-import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
+import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { Navigate } from "react-router";
@@ -10,7 +10,7 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
     data: appUser,
     isLoading: userLoading,
     isError: userError,
-  } = useGetCurrentUserQuery(authUser?.email);
+  } = useGetCurrentUserProfileQuery();
 
   // if (authLodagin || userLoading) return <div>Loading...</div>;
 

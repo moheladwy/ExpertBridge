@@ -2,6 +2,7 @@ import { Auth, onAuthStateChanged, User } from 'firebase/auth';
 import { useEffect } from 'react';
 import { LoadingHook, useLoadingValue } from '@/lib/util';
 import { useUpdateUserMutation } from '@/features/users/usersSlice';
+import { UpdateUserRequest } from '@/features/users/types';
 
 export type AuthStateHook = LoadingHook<User | null, Error>;
 
@@ -20,6 +21,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     isLoading: updateUserLoading,
     isError: updateUserIsError,
     error: updateUserError,
+    isSuccess: updateUserSuccess,
   } = result;
 
   useEffect(() => {
@@ -32,13 +34,27 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
         // Solution: setTimeout for something like 5 seconds or more, before checking if (user)
         // to make sure that the user is still there. 
 
-        // BE AWARE, THE user IS BASSED TO THIS CALLBACK ALREADY!
+        // BE AWARE, THE user IS PASSED TO THIS CALLBACK ALREADY!
         // WE MIGHT USE auth.currentUser IN THE IF CHECK, THEN USE user IN THE 
         // CONDITIONAL OPERATION WE ARE WILLING TO DO.
 
-        // TODO: Call RTK here to update the user in through the api.
-        // Most likely a PUT request to the user endpoint. (Make sure the PUT behaviour is creational)
-        if (user) { /* empty */ }
+        if (user) {
+          setTimeout(async () => {
+            if (user && !updateUserLoading && !updateUserSuccess) {
+              const name = user.displayName?.split(' ') || [];
+              const request: UpdateUserRequest = {
+                firstName: name[0],
+                lastName: name[1],
+                email: user.email!,
+                phoneNumber: user.phoneNumber,
+                providerId: user.uid,
+                profilePictureUrl: user.photoURL,
+              };
+
+              await updateUser(request);
+            }
+          }, 500);
+        }
 
 
         if (options?.onUserChanged) {
