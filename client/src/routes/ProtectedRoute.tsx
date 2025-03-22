@@ -1,4 +1,5 @@
 import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useSignOut from "@/lib/firebase/useSignOut";
@@ -6,25 +7,33 @@ import { Navigate } from "react-router";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
-  const {
-    data: appUser,
-    isLoading: appUserLoading,
-    error: appUserError,
-    isError: appUserIsError
-  } = useGetCurrentUserProfileQuery();
+  // const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+  // const {
+  //   data: appUser,
+  //   isLoading: appUserLoading,
+  //   error: appUserError,
+  //   isError: appUserIsError
+  // } = useGetCurrentUserProfileQuery();
   const [signOut, loading] = useSignOut(auth);
 
-  if (authLoading || loading || appUserLoading) return <div>Loading...</div>;
+  const [
+    isLoggedIn,
+    loginLoading,
+    loginError,
+    authUser,
+    appUser
+  ] = useIsUserLoggedIn();
 
-  if (!authUser || !appUser || authError || appUserIsError) {
+  if (loginLoading || loading) return <div>Loading...</div>;
+
+  if (!authUser || !appUser || loginError) {
     // TODO: Handle the error here.
-    if (authError || appUserError) {
-      console.error('An error occurred while authenticating the user', authError || appUserError);
+    if (loginError) {
+      console.error('An error occurred while authenticating the user', loginError);
     }
 
     console.log('challenging the user');
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login"/>;
   }
 
   if (!authUser.emailVerified) {
@@ -33,13 +42,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" />;
   }
 
-  // TODO: useGetUserQuery here to check if the user has finished his onboarding.
+  //appUser.isOnboarded
   const isOnboarded = true;
 
   if (!isOnboarded) {
     console.log('onboarding...');
     return (
-      <Navigate to="/onboarding" replace />
+      <Navigate to="/onboarding" />
     );
   }
 

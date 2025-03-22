@@ -28,7 +28,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(x => x.Email).IsUnique();
 
         builder.Property(x => x.Username)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(UserEntityConstraints.MaxUsernameLength);
 
         builder.HasIndex(x => x.Username).IsUnique();

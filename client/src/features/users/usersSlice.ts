@@ -6,7 +6,7 @@ export const usersApiSlice = emptyApiSlice.injectEndpoints({
 
     // TODO: Consider getting this to it's own slice (profilesSlice) maybe???
     getCurrentUserProfile: builder.query<ProfileResponse, void>({
-      query: () => `/profile`,
+      query: () => `/profiles`,
       transformResponse: (response: ProfileResponse) => {
         console.log(response);
         return response;
@@ -23,7 +23,7 @@ export const usersApiSlice = emptyApiSlice.injectEndpoints({
       invalidatesTags: ['CurrentUser'],
       onQueryStarted: () => {
         console.log('mutation ongoing');
-      }
+      },
     }),
   }),
 });

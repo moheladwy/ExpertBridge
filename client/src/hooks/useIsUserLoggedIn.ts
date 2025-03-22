@@ -1,3 +1,4 @@
+import { AppUser, ProfileResponse } from "@/features/users/types";
 import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
@@ -11,6 +12,7 @@ export type IsUserLoggedInHook = [
   boolean, // loading,
   AuthError | FetchBaseQueryError | SerializedError | undefined,
   User | null | undefined,
+  ProfileResponse | null | undefined
 ];
 
 export default (): IsUserLoggedInHook => {
@@ -37,6 +39,7 @@ export default (): IsUserLoggedInHook => {
     isLoggedIn,
     userLoading || authLoading,
     authError || userErrorMessage,
-    authUser
+    authUser,
+    appUser,
   ];
 }
