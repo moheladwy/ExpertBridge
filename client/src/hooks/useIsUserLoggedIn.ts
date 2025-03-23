@@ -41,7 +41,7 @@ export default (): IsUserLoggedInHook => {
     else {
       setIsLoggedIn(false);
     }
-  }, [authUser, appUser]);
+  }, [authUser, appUser, auth]);
 
   useEffect(() => {
     setLoading(userLoading || authLoading);
