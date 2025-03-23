@@ -2,20 +2,15 @@ import Filters from "./Filters";
 import LoadingSkeleton from "./LoadingSkeleton";
 import PostCard from "./PostCard";
 import PostForm from "./AddPostForm";
-import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { auth } from "@/lib/firebase";
 import { randomInt } from "crypto";
 import { selectPostIds, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useAppSelector } from "@/app/hooks";
+import CreatePostModal from "./CreatePostModal";
 
 const Feed = () => {
   // const [posts, setPosts] = useState<Post[]>([]);
-
-  // This is only temporary
-  const [authUser] = useAuthSubscribtion(auth);
-
-  const { data: user } = useGetCurrentUserProfileQuery();
 
   const {
     data: posts,
@@ -58,7 +53,8 @@ const Feed = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <PostForm userId={1} />
+      {/* <PostForm userId={1} /> */}
+      <CreatePostModal />
       <Filters />
       {loading ? (
         <LoadingSkeleton count={3} />

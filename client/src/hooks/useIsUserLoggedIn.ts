@@ -23,7 +23,9 @@ export default (): IsUserLoggedInHook => {
   const {
     data: appUser,
     isLoading: userLoading,
-    error: userErrorMessage
+    error: userErrorMessage,
+    isError: userError,
+    refetch: retryQuery
   } = useGetCurrentUserProfileQuery();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,17 +33,27 @@ export default (): IsUserLoggedInHook => {
   const [error, setError] = useState<IsLoggedInError>(undefined);
 
   useEffect(() => {
-    setError(authError || userErrorMessage);
-  }, [authError, userErrorMessage]);
+    retryQuery();
+  }, [authUser, retryQuery]);
+
+  useEffect(() => {
+    if (authError || userError) {
+      console.error(authError || userErrorMessage);
+      setError(authError || userErrorMessage);
+      setLoading(false);
+    }
+  }, [authError, userErrorMessage, userError]);
 
   useEffect(() => {
     if (authUser && appUser) {
       setIsLoggedIn(true);
+      setLoading(false);
     }
     else {
       setIsLoggedIn(false);
+      setLoading(false);
     }
-  }, [authUser, appUser, auth]);
+  }, [authUser, appUser]);
 
   useEffect(() => {
     setLoading(userLoading || authLoading);

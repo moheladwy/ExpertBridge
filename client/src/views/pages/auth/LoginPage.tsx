@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
     }
   }, [success, navigate]);
 
-
+  
   // Email/Password Login Hook
   const [loginWithEmailAndPassword, loggedInUser, loginLoading, error] =
     useSignInWithEmailAndPassword(auth);
@@ -51,11 +51,11 @@ const LoginPage: React.FC = () => {
       setSignInError("Google login failed. Please try again.");
     }
   }, [error, createError, createErrorMessage]);
-
+  
   useEffect(() => {
     setSuccess(isLoggedIn || loggedInUser != null || createUserSuccess);
   }, [isLoggedIn, loggedInUser, createUserSuccess]);
-
+  
   // Form Validation
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
@@ -66,7 +66,12 @@ const LoginPage: React.FC = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  
+  if (isLoggedInLoading) {
+    const _ = isLoggedInLoading
+      ? console.log('LoginPage: loading...')
+      : console.log('LoginPage: not loading');
+  }
   // Handle Input Changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

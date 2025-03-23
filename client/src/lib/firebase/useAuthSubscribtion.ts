@@ -15,6 +15,8 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     () => auth.currentUser
   );
 
+  const [globalLoading, setGlobalLoading] = useState(false);
+
   // const [updateUser, result] = useUpdateUserMutation();
 
   // const [updatePending, setUpdatePending] = useState(false);
@@ -31,7 +33,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
 
   //   if (auth.currentUser) {
   //     setUpdatePending(true);
-      
+
   //     const name = auth.currentUser.displayName?.split(' ') || [];
   //     const request: UpdateUserRequest = {
   //       firstName: name[0],
@@ -51,21 +53,6 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     const listener = onAuthStateChanged(
       auth,
       async (user) => {
-        // BE AWARE, THE AUTH STATE COULD CHANGE A LOT.
-        // SO WHAT TO DO? 
-
-        // Solution: setTimeout for something like 5 seconds or more, before checking if (user)
-        // to make sure that the user is still there. 
-
-        // BE AWARE, THE user IS PASSED TO THIS CALLBACK ALREADY!
-        // WE MIGHT USE auth.currentUser IN THE IF CHECK, THEN USE user IN THE 
-        // CONDITIONAL OPERATION WE ARE WILLING TO DO.
-
-        if (user) {
-          // await updateUserCallback();
-        }
-
-
         if (options?.onUserChanged) {
           // onUserChanged function to process custom claims on any other trigger function
           try {
@@ -76,12 +63,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
           }
         }
 
-        if (!user) {
-          setError(new Error('User Signed Out'));
-        }
-        else {
-          setValue(user);
-        }
+        setValue(user);
       },
       setError
     );
@@ -91,5 +73,15 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     };
   }, [auth]);
 
-  return [value, loading, error];
+  useEffect(() => {
+    setGlobalLoading(loading);
+  }, [loading]);
+
+  useEffect(() => {
+    if (value || error) {
+      setGlobalLoading(false);
+    }
+  }, [value, error]);
+
+  return [value, globalLoading, error];
 };
