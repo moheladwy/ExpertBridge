@@ -3,7 +3,8 @@ import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useSignOut from "@/lib/firebase/useSignOut";
-import { Navigate } from "react-router";
+import { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -15,6 +16,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   //   isError: appUserIsError
   // } = useGetCurrentUserProfileQuery();
   const [signOut, loading] = useSignOut(auth);
+  const navigate = useNavigate();
 
   const [
     isLoggedIn,
@@ -24,33 +26,33 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     appUser
   ] = useIsUserLoggedIn();
 
-  if (loginLoading || loading) return <div>Loading...</div>;
-
-  if (!authUser || !appUser || loginError) {
+  useEffect(() => {
     // TODO: Handle the error here.
     if (loginError) {
-      console.error('An error occurred while authenticating the user', loginError);
+      console.log('An error occurred while authenticating the user', loginError);
+      console.log('challenging the user');
+      signOut();
     }
+  }, [loginError, signOut]);
 
-    console.log('challenging the user');
-    return <Navigate to="/login"/>;
-  }
+  useEffect(() => {
+    if (authUser && appUser) {
+      if (!authUser.emailVerified) {
+        signOut();
+        console.log('challenging the user, email unverified');
+      }
 
-  if (!authUser.emailVerified) {
-    signOut();
-    console.log('challenging the user, email unverified');
-    return <Navigate to="/login" />;
-  }
+      //appUser.isOnboarded
+      const isOnboarded = true;
 
-  //appUser.isOnboarded
-  const isOnboarded = true;
+      if (!isOnboarded) {
+        console.log('onboarding...');
+        navigate('/onboarding');
+      }
+    }
+  }, [authUser, appUser, signOut, navigate]);
 
-  if (!isOnboarded) {
-    console.log('onboarding...');
-    return (
-      <Navigate to="/onboarding" />
-    );
-  }
+  if (loginLoading || loading) return <div>Loading...</div>;
 
   return children;
 };
