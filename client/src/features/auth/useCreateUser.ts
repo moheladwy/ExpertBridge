@@ -33,7 +33,6 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<AuthError | undefined>(undefined);
   const [userCred, setUserCred] = useState<UserCredential | undefined>(undefined);
-  const [user, setUser] = useState<AppUser | undefined>(undefined);
 
   const [
     signInWithGoogle,

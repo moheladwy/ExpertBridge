@@ -103,7 +103,7 @@ const LoginPage: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
               placeholder="Enter Your Email"
-              disabled={loginLoading}
+              disabled={loading}
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
@@ -118,7 +118,7 @@ const LoginPage: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
               placeholder="Enter Password"
-              disabled={loginLoading}
+              disabled={loading}
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
