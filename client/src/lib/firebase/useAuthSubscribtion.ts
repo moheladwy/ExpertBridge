@@ -15,57 +15,44 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     () => auth.currentUser
   );
 
-  const [updateUser, result] = useUpdateUserMutation();
+  const [globalLoading, setGlobalLoading] = useState(false);
 
-  const [updatePending, setUpdatePending] = useState(false);
+  // const [updateUser, result] = useUpdateUserMutation();
 
-  const {
-    isLoading: updateUserLoading,
-    isError: updateUserIsError,
-    error: updateUserError,
-    isSuccess: updateUserSuccess,
-  } = result;
+  // const [updatePending, setUpdatePending] = useState(false);
 
-  const updateUserCallback = useCallback(async () => {
-    if (updatePending) return;
+  // const {
+  //   isLoading: updateUserLoading,
+  //   isError: updateUserIsError,
+  //   error: updateUserError,
+  //   isSuccess: updateUserSuccess,
+  // } = result;
 
-    if (auth.currentUser) {
-      setUpdatePending(true);
-      
-      const name = auth.currentUser.displayName?.split(' ') || [];
-      const request: UpdateUserRequest = {
-        firstName: name[0],
-        lastName: name[1],
-        email: auth.currentUser.email!,
-        phoneNumber: auth.currentUser.phoneNumber,
-        providerId: auth.currentUser.uid,
-        profilePictureUrl: auth.currentUser.photoURL,
-      };
+  // const updateUserCallback = useCallback(async () => {
+  //   if (updatePending) return;
 
-      await updateUser(request);
-      setUpdatePending(false);
-    }
-  }, [auth, updatePending, updateUser]);
+  //   if (auth.currentUser) {
+  //     setUpdatePending(true);
+
+  //     const name = auth.currentUser.displayName?.split(' ') || [];
+  //     const request: UpdateUserRequest = {
+  //       firstName: name[0],
+  //       lastName: name[1],
+  //       email: auth.currentUser.email!,
+  //       phoneNumber: auth.currentUser.phoneNumber,
+  //       providerId: auth.currentUser.uid,
+  //       profilePictureUrl: auth.currentUser.photoURL,
+  //     };
+
+  //     await updateUser(request);
+  //     setUpdatePending(false);
+  //   }
+  // }, [auth, updatePending, updateUser]);
 
   useEffect(() => {
     const listener = onAuthStateChanged(
       auth,
       async (user) => {
-        // BE AWARE, THE AUTH STATE COULD CHANGE A LOT.
-        // SO WHAT TO DO? 
-
-        // Solution: setTimeout for something like 5 seconds or more, before checking if (user)
-        // to make sure that the user is still there. 
-
-        // BE AWARE, THE user IS PASSED TO THIS CALLBACK ALREADY!
-        // WE MIGHT USE auth.currentUser IN THE IF CHECK, THEN USE user IN THE 
-        // CONDITIONAL OPERATION WE ARE WILLING TO DO.
-
-        if (user) {
-          await updateUserCallback();
-        }
-
-
         if (options?.onUserChanged) {
           // onUserChanged function to process custom claims on any other trigger function
           try {
@@ -76,12 +63,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
           }
         }
 
-        if (!user) {
-          setError(new Error('User Signed Out'));
-        }
-        else {
-          setValue(user);
-        }
+        setValue(user);
       },
       setError
     );
@@ -91,5 +73,15 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     };
   }, [auth]);
 
-  return [value, loading, error];
+  useEffect(() => {
+    setGlobalLoading(loading);
+  }, [loading]);
+
+  useEffect(() => {
+    if (value || error) {
+      setGlobalLoading(false);
+    }
+  }, [value, error]);
+
+  return [value, globalLoading, error];
 };

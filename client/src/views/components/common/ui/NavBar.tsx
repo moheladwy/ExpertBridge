@@ -29,7 +29,6 @@ import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog"
 import { Search } from 'lucide-react';
 import { useState } from "react";
 import { SvgIcon } from "@mui/material";
-import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 

@@ -10,12 +10,13 @@ const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (success) {
       navigate('/home');
     }
-  }, [isLoggedIn, navigate]);
+  }, [success, navigate]);
 
   const [
     signInWithGoogle,
@@ -27,6 +28,10 @@ const SignUpPage: React.FC = () => {
     createUserErrorMessage,
     createUserSuccess
   ] = useCreateUser(auth);
+
+  useEffect(() => {
+    setSuccess(createUserSuccess || isLoggedIn);
+  }, [createUserSuccess, isLoggedIn]);
 
   // Form State
   const [formData, setFormData] = useState({

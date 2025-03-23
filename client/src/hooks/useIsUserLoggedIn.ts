@@ -23,23 +23,40 @@ export default (): IsUserLoggedInHook => {
   const {
     data: appUser,
     isLoading: userLoading,
-    error: userErrorMessage
+    error: userErrorMessage,
+    isError: userError,
+    refetch: retryQuery
   } = useGetCurrentUserProfileQuery();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<IsLoggedInError>(undefined);
 
+
+  // If a query like this is used (fired) multiple times
+  // and it's result is checked always. Always remember to 
+  // retry so that the error state changes after the next try.
+  // This was one of the most interesting bugs I had to debug. 
   useEffect(() => {
-    setError(authError || userErrorMessage);
-  }, [authError, userErrorMessage]);
+    retryQuery();
+  }, [authUser, retryQuery]);
+
+  useEffect(() => {
+    if (authError || userError) {
+      console.error(authError || userErrorMessage);
+      setError(authError || userErrorMessage);
+      setLoading(false);
+    }
+  }, [authError, userErrorMessage, userError]);
 
   useEffect(() => {
     if (authUser && appUser) {
       setIsLoggedIn(true);
+      setLoading(false);
     }
     else {
       setIsLoggedIn(false);
+      setLoading(false);
     }
   }, [authUser, appUser]);
 
