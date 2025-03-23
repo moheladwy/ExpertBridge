@@ -15,37 +15,37 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     () => auth.currentUser
   );
 
-  const [updateUser, result] = useUpdateUserMutation();
+  // const [updateUser, result] = useUpdateUserMutation();
 
-  const [updatePending, setUpdatePending] = useState(false);
+  // const [updatePending, setUpdatePending] = useState(false);
 
-  const {
-    isLoading: updateUserLoading,
-    isError: updateUserIsError,
-    error: updateUserError,
-    isSuccess: updateUserSuccess,
-  } = result;
+  // const {
+  //   isLoading: updateUserLoading,
+  //   isError: updateUserIsError,
+  //   error: updateUserError,
+  //   isSuccess: updateUserSuccess,
+  // } = result;
 
-  const updateUserCallback = useCallback(async () => {
-    if (updatePending) return;
+  // const updateUserCallback = useCallback(async () => {
+  //   if (updatePending) return;
 
-    if (auth.currentUser) {
-      setUpdatePending(true);
+  //   if (auth.currentUser) {
+  //     setUpdatePending(true);
       
-      const name = auth.currentUser.displayName?.split(' ') || [];
-      const request: UpdateUserRequest = {
-        firstName: name[0],
-        lastName: name[1],
-        email: auth.currentUser.email!,
-        phoneNumber: auth.currentUser.phoneNumber,
-        providerId: auth.currentUser.uid,
-        profilePictureUrl: auth.currentUser.photoURL,
-      };
+  //     const name = auth.currentUser.displayName?.split(' ') || [];
+  //     const request: UpdateUserRequest = {
+  //       firstName: name[0],
+  //       lastName: name[1],
+  //       email: auth.currentUser.email!,
+  //       phoneNumber: auth.currentUser.phoneNumber,
+  //       providerId: auth.currentUser.uid,
+  //       profilePictureUrl: auth.currentUser.photoURL,
+  //     };
 
-      await updateUser(request);
-      setUpdatePending(false);
-    }
-  }, [auth, updatePending, updateUser]);
+  //     await updateUser(request);
+  //     setUpdatePending(false);
+  //   }
+  // }, [auth, updatePending, updateUser]);
 
   useEffect(() => {
     const listener = onAuthStateChanged(
@@ -62,7 +62,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
         // CONDITIONAL OPERATION WE ARE WILLING TO DO.
 
         if (user) {
-          await updateUserCallback();
+          // await updateUserCallback();
         }
 
 

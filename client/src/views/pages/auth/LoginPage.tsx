@@ -13,12 +13,13 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (success) {
       navigate('/home');
     }
-  }, [isLoggedIn, navigate]);
+  }, [success, navigate]);
 
 
   // Email/Password Login Hook
@@ -50,6 +51,10 @@ const LoginPage: React.FC = () => {
       setSignInError("Google login failed. Please try again.");
     }
   }, [error, createError, createErrorMessage]);
+
+  useEffect(() => {
+    setSuccess(isLoggedIn || loggedInUser != null || createUserSuccess);
+  }, [isLoggedIn, loggedInUser, createUserSuccess]);
 
   // Form Validation
   const validate = () => {
