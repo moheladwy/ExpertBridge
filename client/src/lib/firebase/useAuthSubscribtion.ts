@@ -79,10 +79,6 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
         if (!user) {
           setError(new Error('User Signed Out'));
         }
-
-        if (!user?.emailVerified) {
-          setError(new Error('Email Unverified'));
-        }
         else {
           setValue(user);
         }
