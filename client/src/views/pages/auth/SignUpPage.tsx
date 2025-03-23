@@ -9,6 +9,8 @@ const SignUpPage: React.FC = () => {
   const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (isLoggedIn) {
       navigate('/home');
@@ -112,7 +114,9 @@ const SignUpPage: React.FC = () => {
     // navigate('/home');
   }
 
-  const loading = createUserLoading || isLoggedInLoading;
+  useEffect(() => {
+    setLoading(createUserLoading || isLoggedInLoading);
+  }, [createUserLoading, isLoggedInLoading]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">

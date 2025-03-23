@@ -93,7 +93,7 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     return () => {
       listener();
     };
-  }, [auth, updateUserLoading, updateUserSuccess, updatePending]);
+  }, [auth]);
 
   return [value, loading, error];
 };

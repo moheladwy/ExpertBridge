@@ -7,10 +7,12 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { AuthError, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 
+export type IsLoggedInError = AuthError | FetchBaseQueryError | SerializedError | undefined;
+
 export type IsUserLoggedInHook = [
   boolean, // isLoggedIn
   boolean, // loading,
-  AuthError | FetchBaseQueryError | SerializedError | undefined,
+  IsLoggedInError,
   User | null | undefined,
   ProfileResponse | null | undefined
 ];
@@ -25,6 +27,12 @@ export default (): IsUserLoggedInHook => {
   } = useGetCurrentUserProfileQuery();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<IsLoggedInError>(undefined);
+
+  useEffect(() => {
+    setError(authError || userErrorMessage);
+  }, [authError, userErrorMessage]);
 
   useEffect(() => {
     if (authUser && appUser) {
@@ -35,10 +43,14 @@ export default (): IsUserLoggedInHook => {
     }
   }, [authUser, appUser]);
 
+  useEffect(() => {
+    setLoading(userLoading || authLoading);
+  }, [userLoading, authLoading]);
+
   return [
     isLoggedIn,
-    userLoading || authLoading,
-    authError || userErrorMessage,
+    loading,
+    error,
     authUser,
     appUser,
   ];

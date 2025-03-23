@@ -12,6 +12,8 @@ const LoginPage: React.FC = () => {
   const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (isLoggedIn) {
       navigate('/home');
@@ -46,7 +48,7 @@ const LoginPage: React.FC = () => {
     } else if (createError || createErrorMessage) {
       console.error("Google login error:", createError || createErrorMessage);
       setSignInError("Google login failed. Please try again.");
-    } 
+    }
   }, [error, createError, createErrorMessage]);
 
   // Form Validation
@@ -78,7 +80,9 @@ const LoginPage: React.FC = () => {
     // navigate('/home');
   }
 
-  const loading = isLoggedInLoading || createLoading || loginLoading;
+  useEffect(() => {
+    setLoading(isLoggedInLoading || createLoading || loginLoading);
+  }, [isLoggedInLoading, createLoading, loginLoading]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
@@ -99,7 +103,7 @@ const LoginPage: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
               placeholder="Enter Your Email"
-              disabled={loading}
+              disabled={loginLoading}
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
@@ -114,7 +118,7 @@ const LoginPage: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
               placeholder="Enter Password"
-              disabled={loading}
+              disabled={loginLoading}
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
