@@ -11,9 +11,9 @@ type AuthStateOptions = {
 };
 
 export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
-  const { error, loading, setError, setValue, value } = useLoadingValue<User | null, Error>(
-    () => auth.currentUser
-  );
+  const { error, loading, setError, setValue, value } = useLoadingValue<
+    User | null, Error
+  >(() => auth.currentUser);
 
   const [globalLoading, setGlobalLoading] = useState(false);
 

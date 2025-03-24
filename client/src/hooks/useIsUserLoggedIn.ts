@@ -25,7 +25,7 @@ export default (): IsUserLoggedInHook => {
     isLoading: userLoading,
     error: userErrorMessage,
     isError: userError,
-    refetch: retryQuery
+    refetch: retryQuery,
   } = useGetCurrentUserProfileQuery();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
