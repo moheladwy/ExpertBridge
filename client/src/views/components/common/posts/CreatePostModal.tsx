@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AddPostRequest } from "../../../../features/posts/types";
 import { useCreatePostMutation } from "../../../../features/posts/postsSlice";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import toast from "react-hot-toast";
 import {
   Button,
@@ -14,6 +15,9 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  Avatar
+} from "@/views/components/custom/avatar"
 
 const steps = ["Enter Title", "Write Content", "Add Media"];
 
@@ -27,6 +31,7 @@ const CreatePostModal: React.FC = () => {
   const [body, setBody] = useState("");
   const [media, setMedia] = useState<File[]>([]);
   const [error, setError] = useState("");
+  const [,,,authUser,userProfile] = useIsUserLoggedIn();
 
   useEffect(() => {
     if (isError) toast.error("An error occurred while creating your post");
@@ -69,12 +74,32 @@ const CreatePostModal: React.FC = () => {
     await createPost({ title, content: body });
   };
 
+  console.log("this is somthing "+ authUser);
   return (
     <>
       {/* Button to Open Modal */}
-      <Button variant="contained" onClick={handleOpen}>
+      {/* <Button variant="contained" onClick={handleOpen}>
         Create New Post
-      </Button>
+      </Button> */}
+
+      <div className="flex justify-center items-center gap-2 bg-white shadow-md rounded-lg p-4 border border-gray-200 mb-7" onClick={handleOpen}>
+        <Avatar className="bg-white flex justify-center items-center">
+          {/* using the name's first letter as a profile */}
+          {
+            userProfile?.profilePictureUrl
+              ? <img
+                src={userProfile.profilePictureUrl}
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              : <h1 className="text-main-blue font-bold text-lg ">{authUser?.displayName?.charAt(0).toUpperCase()}</h1>
+          }
+        </Avatar>
+        <Button className=" bg-gray-100 text-gray-500 px-5 hover:bg-gray-200 hover:text-main-blue w-full rounded-full">
+          <div className="w-full text-left">What do you want to ask?</div>
+        </Button>
+      </div>
 
       {/* Modal */}
       <Modal open={open} onClose={handleClose} aria-labelledby="create-post-modal">
