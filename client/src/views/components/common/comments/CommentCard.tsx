@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Comment } from "@/features/posts/types";
 import { Button, TextField, IconButton } from "@mui/material";
 import { ThumbUp, ThumbDown } from "@mui/icons-material";
+import { Comment } from "@/features/comments/types";
 
 interface CommentItemProps {
   comment: Comment;
@@ -40,7 +40,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
       {/* Comment Author */}
       <div className="flex items-center space-x-3">
         <img
-          src={comment.author.profilePictureUrl || "/default-avatar.png"}
+          src={comment.author.profilePictureUrl || "./src/assets/default-avatar.png"}
           alt="Comment Author"
           width={30}
           height={30}

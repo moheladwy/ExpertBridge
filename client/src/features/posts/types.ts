@@ -1,14 +1,5 @@
-import { AppUser } from "../users/types";
-
-export interface Author {
-  id: string;
-  userId: string;
-  jobTitle?: string | null;
-  profilePictureUrl?: string;
-  username?: string;
-  firstName: string;
-  lastName?: string;
-}
+import { Comment } from "../comments/types";
+import { AppUser, Author } from "../users/types";
 
 export interface PostTag {
   id: string;
@@ -31,18 +22,6 @@ export interface PostTag {
 //   isUpvoted: boolean;
 //   isDownvoted: boolean;
 // }
-
-export interface Comment {
-  id: string;
-  author: Author;
-  content: string;
-  createdAt: string;
-  upvotes: number;
-  downvotes: number;
-  isUpvoted: boolean;
-  isDownvoted: boolean;
-  replies?: Comment[] | null; // Only one level of replies
-}
 
 export interface Post {
   id: string;

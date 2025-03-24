@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/app/hooks";
 import { selectPostById, useGetPostQuery } from "@/features/posts/postsSlice";
-import { Comment } from "@/features/posts/types";
+import { Comment } from "@/features/comments/types";
 import { useParams } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import FullPostWithComments from "../../components/common/posts/FullPostWithComments";

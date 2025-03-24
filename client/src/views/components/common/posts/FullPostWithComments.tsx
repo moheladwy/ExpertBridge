@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Post } from "@/features/posts/types";
 import { Button, IconButton, TextField } from "@mui/material";
 import { ThumbUp, ThumbDown, AttachFile } from "@mui/icons-material";
 import CommentCard from "../comments/CommentCard";
+import { useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
 
 interface FullPostWithCommentsProps {
   post: Post;
 }
 
 const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post }) => {
+  const {
+    data: comments,
+    isLoading: commentsLoading,
+    isError: isCommentsError,
+    error: commentsError,
+    isSuccess: commentsSuccess,
+  } = useGetCommentsByPostIdQuery(post.id);
+
+  useEffect(() => {
+    if (commentsSuccess) {
+      post.comments = Object.values(comments.entities);
+    }
+  }, [commentsSuccess, comments, post])
+
   const [commentText, setCommentText] = useState("");
   const [postVotes, setPostVotes] = useState({
     upvotes: post.upvotes,
@@ -19,6 +34,10 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post }) => 
   const [media, setMedia] = useState<File[]>([]);
 
   if (!post) return <p>Post not found.</p>;
+
+  if (commentsLoading) {
+    return <p>Loading...</p>;
+  }
 
   const handlePostVote = (type: "upvote" | "downvote") => {
     setPostVotes((prev) => {
@@ -109,7 +128,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post }) => 
           <CommentCard
             key={comment.id}
             comment={comment}
-            // onReplySubmit={(replyText) => console.log("New reply:", replyText)}
+          // onReplySubmit={(replyText) => console.log("New reply:", replyText)}
           />
         ))}
       </div>

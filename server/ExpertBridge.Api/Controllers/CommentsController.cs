@@ -6,6 +6,7 @@ using ExpertBridge.Api.Core.Entities.Comments;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreateComment;
 using ExpertBridge.Api.Requests.DeleteFileFromComment;
 using ExpertBridge.Api.Requests.EditComment;
@@ -13,6 +14,7 @@ using ExpertBridge.Api.Requests.ReportComment;
 using ExpertBridge.Api.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -54,14 +56,33 @@ public class CommentsController(
         return comment;
     }
 
-    [HttpGet]
-    public async Task<CommentResponse> Get([FromRoute] string commentId)
+    [AllowAnonymous]
+    [Route("api/posts/{postId}/comments")]
+    [HttpGet] // api/posts/postid/comments
+    public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {
-        throw new NotImplementedException();
+        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+
+        var postExists = _dbContext.Posts.Any(p => p.Id == postId);
+
+        if (!postExists)
+        {
+            throw new PostNotFoundException($"Post with id={postId} was not found");
+        }
+
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
+
+        var comments = await _dbContext.Comments
+            .FullyPopulatedCommentQuery()
+            .SelectCommentResponseFromFullComment(userProfileId)
+            .ToListAsync();
+
+        return comments;
     }
 
-    [HttpGet("get-all/{postId}")]
-    public async Task<IEnumerable<CommentResponse>> GetAllByPostId([FromRoute] string postId)
+    [HttpGet("{commentId}")]
+    public async Task<CommentResponse> Get([FromRoute] string commentId)
     {
         throw new NotImplementedException();
     }
