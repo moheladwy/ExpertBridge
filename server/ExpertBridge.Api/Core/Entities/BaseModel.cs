@@ -9,6 +9,7 @@ namespace ExpertBridge.Api.Core.Entities
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastModified { get; set; }
     }

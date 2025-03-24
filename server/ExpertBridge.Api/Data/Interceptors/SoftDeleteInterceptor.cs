@@ -22,6 +22,7 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
 
             entry.State = EntityState.Modified;
             entity.IsDeleted = true;
+            entity.DeletedAt = DateTime.UtcNow;
         }
 
         return result;
