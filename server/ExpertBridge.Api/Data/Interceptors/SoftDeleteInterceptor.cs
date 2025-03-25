@@ -13,7 +13,7 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
         DbContextEventData eventData,
         InterceptionResult<int> result)
     {
-        if (eventData.Context is null) return result;
+        if (eventData?.Context is null) return result;
 
         foreach (var entry in eventData.Context.ChangeTracker.Entries())
         {
@@ -28,12 +28,27 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
         return result;
     }
 
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        SavingChanges(eventData, result);
-        return new ValueTask<InterceptionResult<int>>(result);
+        if (eventData?.Context is null)
+        {
+            return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
+
+        foreach (var entry in eventData.Context.ChangeTracker.Entries())
+        {
+            if (entry is not { State: EntityState.Deleted, Entity: ISoftDeletable deleteCandidate })
+            {
+                continue;
+            }
+
+            entry.State = EntityState.Modified;
+            deleteCandidate.IsDeleted = true;
+        }
+
+        return result;
     }
 }
