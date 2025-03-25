@@ -5,6 +5,7 @@ using System.Security.Claims;
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -19,18 +20,18 @@ namespace ExpertBridge.Api.Controllers;
 public class ProfilesController : ControllerBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
+    private readonly AuthorizationHelper _authHelper;
 
-    public ProfilesController(ExpertBridgeDbContext dbContext)
+    public ProfilesController(ExpertBridgeDbContext dbContext, AuthorizationHelper authHelper)
     {
         _dbContext = dbContext;
+        _authHelper = authHelper;
     }
 
     [HttpGet]
     public async Task<ProfileResponse> GetProfile()
     {
-        var email = User.FindFirstValue(ClaimTypes.Email);
-        var user = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _authHelper.GetCurrentUserAsync(User);
 
         if (user == null)
         {

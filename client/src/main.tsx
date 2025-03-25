@@ -13,8 +13,8 @@ import App from './App.tsx'
 import ProtectedRoute from './routes/ProtectedRoute.tsx'
 import PublicRoute from './routes/PublicRoute.tsx'
 import HomePage from './views/pages/feed/HomePage.tsx'
-import Interests from './views/pages/auth/Interests.tsx'
-import PostFromFeedPage from './views/pages/feed/PostFromFeedPage.tsx'
+import Interests from './views/pages/onboarding/Interests.tsx'
+import PostFromFeedPage from './views/pages/posts/PostFromFeedPage.tsx'
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

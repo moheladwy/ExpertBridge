@@ -18,10 +18,11 @@ namespace ExpertBridge.Api.Queries
                 .Include(p => p.Votes)
                 .Include(p => p.Medias)
                 .Include(p => p.Comments)
-                .ThenInclude(c => c.Author)
-                .Include(p => p.Comments)
-                .ThenInclude(c => c.Replies)
-                .ThenInclude(c => c.Author);
+                //.ThenInclude(c => c.Author)
+                //.Include(p => p.Comments)
+                //.ThenInclude(c => c.Replies)
+                //.ThenInclude(c => c.Author)
+                ;
         }
 
         public static IQueryable<PostResponse> SelectPostResponseFromFullPost(
@@ -41,7 +42,7 @@ namespace ExpertBridge.Api.Queries
                     Id = p.Id,
                     Upvotes = p.Votes.Count(v => v.IsUpvote),
                     Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                    Comments = p.Comments.SelectCommentResponseFromFullComment(userProfileId).ToList()
+                    Comments = p.Comments.Count
                     //Comments = p.Comments.SelectSelect(c => new CommentResponse
                     //{
                     //    Id = c.Id,
