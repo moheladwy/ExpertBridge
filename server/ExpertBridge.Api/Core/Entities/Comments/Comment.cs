@@ -8,10 +8,10 @@ namespace ExpertBridge.Api.Core.Entities.Comments;
 
 public class Comment : BaseModel
 {
-    public string AuthorId { get; set; }
-    public string PostId { get; set; }
-    public string ParentCommentId { get; set; }
-    public string Content { get; set; }
+    public required string AuthorId { get; set; }
+    public required string PostId { get; set; }
+    public required string Content { get; set; }
+    public string? ParentCommentId { get; set; }
 
     // Navigation property
     public Profiles.Profile Author { get; set; }

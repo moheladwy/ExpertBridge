@@ -20,7 +20,7 @@ public record PostResponse
     public DateTime CreatedAt { get; set; }
     public int Upvotes { get; set; }
     public int Downvotes { get; set; }
+    public int Comments { get; set; }
     public bool IsUpvoted { get; set; }
     public bool IsDownvoted {  get; set; }
-    public List<CommentResponse> Comments { get; set; } = [];
 }
