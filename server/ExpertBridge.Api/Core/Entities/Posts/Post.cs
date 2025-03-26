@@ -11,11 +11,9 @@ namespace ExpertBridge.Api.Core.Entities.Posts;
 
 public class Post : BaseModel
 {
-    public string Title { get; set; }
-    public string Content { get; set; }
-    public string AuthorId { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? LastModified { get; set; }
+    public required string Title { get; set; }
+    public required string Content { get; set; }
+    public required string AuthorId { get; set; }
     public bool IsTagged { get; set; }
     public bool IsProcessed { get; set; }
 

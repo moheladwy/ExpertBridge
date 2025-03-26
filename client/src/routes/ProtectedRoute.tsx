@@ -1,47 +1,50 @@
-import { useGetCurrentUserQuery } from "@/features/users/usersSlice";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useSignOut from "@/lib/firebase/useSignOut";
-import { Navigate } from "react-router";
+import { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
-  const {
-    data: appUser,
-    isLoading: appUserLoading,
-    error: appUserError,
-    isError: appUserIsError
-  } = useGetCurrentUserQuery(authUser?.email);
   const [signOut, loading] = useSignOut(auth);
+  const navigate = useNavigate();
 
-  if (authLoading || loading || appUserLoading) return <div>Loading...</div>;
+  const [
+    isLoggedIn,
+    loginLoading,
+    loginError,
+    authUser,
+    appUser
+  ] = useIsUserLoggedIn();
 
-  if (!authUser || !appUser || authError || appUserIsError) {
+  useEffect(() => {
     // TODO: Handle the error here.
-    if (authError || appUserError) {
-      console.error('An error occurred while authenticating the user', authError || appUserError);
+    if (loginError && !loginLoading) {
+      console.log('ProtectedRoute: An error occurred while authenticating the user', loginError);
+      console.log('challenging the user');
+      // signOut();
     }
+  }, [loginError, loginLoading, signOut]);
 
-    console.log('challenging the user');
-    return <Navigate to="/login" replace />;
-  }
+  useEffect(() => {
+    if (authUser && appUser) {
+      if (!authUser.emailVerified) {
+        signOut();
+        console.log('challenging the user, email unverified');
+      }
 
-  if (!authUser.emailVerified) {
-    signOut();
-    console.log('challenging the user, email unverified');
-    return <Navigate to="/login" />;
-  }
+      //appUser.isOnboarded
+      const isOnboarded = true;
 
-  // TODO: useGetUserQuery here to check if the user has finished his onboarding.
-  const isOnboarded = true;
+      if (!isOnboarded) {
+        console.log('onboarding...');
+        navigate('/onboarding');
+      }
+    }
+  }, [authUser, appUser, signOut, navigate]);
 
-  if (!isOnboarded) {
-    console.log('onboarding...');
-    return (
-      <Navigate to="/onboarding" replace />
-    );
-  }
+  if (loginLoading) return <div>Loading...</div>;
 
   return children;
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
 import { useCreateUser } from "@/features/auth/useCreateUser";
@@ -9,11 +9,14 @@ const SignUpPage: React.FC = () => {
   const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   useEffect(() => {
-    if (isLoggedIn) {
+    if (success) {
       navigate('/home');
     }
-  }, [isLoggedIn, navigate]);
+  }, [success, navigate]);
 
   const [
     signInWithGoogle,
@@ -26,11 +29,15 @@ const SignUpPage: React.FC = () => {
     createUserSuccess
   ] = useCreateUser(auth);
 
+  useEffect(() => {
+    setSuccess(createUserSuccess || isLoggedIn);
+  }, [createUserSuccess, isLoggedIn]);
+
   // Form State
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    username: "",
+    // username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -65,7 +72,7 @@ const SignUpPage: React.FC = () => {
 
     if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!formData.username.trim()) newErrors.username = "Username is required";
+    // if (!formData.username.trim()) newErrors.username = "Username is required";
     if (!formData.email.includes("@")) newErrors.email = "Invalid email format";
     if (formData.password.length < 12) newErrors.password = "Password must be at least 12 characters";
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
@@ -101,7 +108,7 @@ const SignUpPage: React.FC = () => {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
-      username: formData.username,
+      // username: formData.username,
     }
 
     await signUpWithEmailAndPassword(formData.email, formData.password, user);
@@ -112,7 +119,9 @@ const SignUpPage: React.FC = () => {
     // navigate('/home');
   }
 
-  const loading = createUserLoading || isLoggedInLoading;
+  useEffect(() => {
+    setLoading(createUserLoading || isLoggedInLoading);
+  }, [createUserLoading, isLoggedInLoading]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
@@ -154,7 +163,7 @@ const SignUpPage: React.FC = () => {
           </div>
 
           {/* Username Field */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-white">Username</label>
             <input
               type="text"
@@ -166,7 +175,7 @@ const SignUpPage: React.FC = () => {
               disabled={loading}
             />
             {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
-          </div>
+          </div> */}
 
           {/* Email Field */}
           <div>
@@ -229,9 +238,16 @@ const SignUpPage: React.FC = () => {
           >
             <div className="flex justify-center items-center">
               <img src={GoogleLogo} alt="Google Logo" className="w-10 h-10 mr-4" />
-              <div>{loading ? "Signing up with Google..." : "Signup with Google"}</div>
+              <div>{createUserLoading ? "Signing up with Google..." : "Signup with Google"}</div>
             </div>
           </button>
+
+          <div className="text-white text-sm text-center m-5">
+            Already have an account?{" "}
+            <Link to="/login" className="underline">
+              Login
+            </Link>
+          </div>
 
           {/* Error Messages */}
           {signUpError && <p className="text-red-500 text-sm text-center">{signUpError}</p>}

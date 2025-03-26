@@ -13,8 +13,8 @@ import App from './App.tsx'
 import ProtectedRoute from './routes/ProtectedRoute.tsx'
 import PublicRoute from './routes/PublicRoute.tsx'
 import HomePage from './views/pages/feed/HomePage.tsx'
-import Interests from './views/pages/auth/Interests.tsx'
-import SinglePostPage from './views/pages/feed/SinglePostPage.tsx'
+import Interests from './views/pages/onboarding/Interests.tsx'
+import PostFromFeedPage from './views/pages/posts/PostFromFeedPage.tsx'
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -22,6 +22,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import PostFromUrlPage from './views/pages/posts/PostFromUrlPage.tsx'
 
 
 const router = createBrowserRouter([
@@ -45,7 +46,15 @@ const router = createBrowserRouter([
         path: "posts/:postId",
         element: (
           <ProtectedRoute>
-            <SinglePostPage />
+            <PostFromUrlPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "feed/:postId",
+        element: (
+          <ProtectedRoute>
+            <PostFromFeedPage />
           </ProtectedRoute>
         ),
       },

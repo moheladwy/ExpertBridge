@@ -9,6 +9,7 @@ using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreatePost;
 using ExpertBridge.Api.Requests.DeleteFileFromPost;
@@ -26,7 +27,8 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public class PostsController(
-    ExpertBridgeDbContext _dbContext
+    ExpertBridgeDbContext _dbContext,
+    AuthorizationHelper _authHelper
     ) : ControllerBase
 {
     [AllowAnonymous]
@@ -34,7 +36,7 @@ public class PostsController(
     public async Task<PostResponse> GetById([FromRoute] string postId)
     {
         //ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        var user = await GetCurrentUserAsync();
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id;
 
         var post = await _dbContext.Posts
@@ -55,7 +57,7 @@ public class PostsController(
     {
         Log.Information($"User from HTTP Context: {HttpContext.User.FindFirstValue(ClaimTypes.Email)}");
 
-        var user = await GetCurrentUserAsync();
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         return await _dbContext.Posts
@@ -67,7 +69,7 @@ public class PostsController(
     [HttpPost]
     public async Task<PostResponse> Create([FromBody] CreatePostRequest request)
     {
-        var user = await GetCurrentUserAsync();
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         if (string.IsNullOrEmpty(userProfileId))
@@ -96,18 +98,6 @@ public class PostsController(
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstAsync();
     }
-
-    private async Task<User?> GetCurrentUserAsync()
-    {
-        var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
-        var user = await _dbContext.Users
-            .Include(u => u.Profile)
-            .FirstOrDefaultAsync(u => u.Email == userEmail);
-
-        return user;
-    }
-
-
 
     [HttpPatch("{postId}/up-vote")]
     public async Task<IActionResult> UpVote([FromRoute] string postId)

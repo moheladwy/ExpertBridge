@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Data;
@@ -23,6 +24,7 @@ public static class Extensions
         services.AddDbContext<ExpertBridgeDbContext>(options =>
         {
             options.UseNpgsql(connectionString);
+            options.AddInterceptors(new SoftDeleteInterceptor());
         });
         return services;
     }

@@ -29,11 +29,12 @@ import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog"
 import { Search } from 'lucide-react';
 import { useState } from "react";
 import { SvgIcon } from "@mui/material";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 
 const NavBar = () => {
   const navigate = useNavigate();
-  const [user] = useAuthSubscribtion(auth);
+  const [isLoggedIn, loginLoading, loginError, authUser, userProfile] = useIsUserLoggedIn();
   const [signOut, loading, error] = useSignOut(auth);
 
   const handleSignOut = async () => {
@@ -68,7 +69,7 @@ const NavBar = () => {
         <h1 className="text-white text-3xl max-sm:text-lg">
           <b>Expert</b>Bridge
         </h1>
-        {user ? (
+        {isLoggedIn ? (
           <>
             <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Home</Link>
             <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Jobs</Link>
@@ -83,7 +84,7 @@ const NavBar = () => {
       </div>
 
       <div className="flex ml-auto mr-9">
-        {user ? (
+        {isLoggedIn ? (
           <>
             <div className="flex justify-center items-center gap-5">
               {/* Search bar */}
@@ -115,7 +116,16 @@ const NavBar = () => {
                   {/* Profile Pic */}
                   <Avatar className="bg-white flex justify-center items-center">
                     {/* using the name's first letter as a profile */}
-                    <h1 className="text-main-blue font-bold text-lg ">{user.displayName?.charAt(0).toUpperCase()}</h1>
+                    {
+                      userProfile?.profilePictureUrl
+                        ? <img
+                          src={userProfile.profilePictureUrl}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                        : <h1 className="text-main-blue font-bold text-lg ">{authUser?.displayName?.charAt(0).toUpperCase()}</h1>
+                    }
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

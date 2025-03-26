@@ -12,15 +12,20 @@ using ExpertBridge.Api.Core.Entities.PostVotes;
 
 namespace ExpertBridge.Api.Core.Entities.Profiles;
 
-public partial class Profile
+public partial class Profile : BaseModel
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
     public required string UserId { get; set; }
     public string? JobTitle { get; set; }
     public string? Bio { get; set; }
     public string? ProfilePictureUrl { get; set; }
     public double Rating { get; set; }
     public int RatingCount { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string Email { get; set; }
+    public string? Username { get; set; }
+    public string? PhoneNumber { get; set; }
+    public bool IsBanned { get; set; }
 }
 
 public partial class Profile

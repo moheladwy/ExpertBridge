@@ -779,9 +779,34 @@ namespace ExpertBridge.Data.Migrations
                         .HasMaxLength(5000)
                         .HasColumnType("character varying(5000)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("JobTitle")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasMaxLength(2048)
@@ -796,6 +821,9 @@ namespace ExpertBridge.Data.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("character varying(450)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -888,6 +916,9 @@ namespace ExpertBridge.Data.Migrations
                     b.Property<bool>("IsOnboarded")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -903,7 +934,6 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 

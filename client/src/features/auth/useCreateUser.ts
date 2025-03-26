@@ -30,6 +30,10 @@ export type CreateUserWithGoogleHook = [
 export type AuthType = 'email' | 'google';
 
 export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState<AuthError | undefined>(undefined);
+  const [userCred, setUserCred] = useState<UserCredential | undefined>(undefined);
+
   const [
     signInWithGoogle,
     googleUser,
@@ -88,9 +92,9 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
         lastName: name[1],
         email: googleUser.user.email!,
         username: googleUser.user.email!,
-        // TODO: Remove dummy data
-        phoneNumber: '+201013647953',
+        phoneNumber: googleUser.user.phoneNumber,
         providerId: googleUser.user.uid,
+        profilePictureUrl: googleUser.user.photoURL,
       }
 
       console.log('updating user');
@@ -117,13 +121,25 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
     }
   }, [createUserError, handleCreateBackendUserError]);
 
+  useEffect(() => {
+    setAuthError(googleError || emailError);
+  }, [googleError, emailError]);
+
+  useEffect(() => {
+    setUserCred(googleUser || emailUser);
+  }, [googleUser, emailUser]);
+
+  useEffect(() => {
+    setLoading(emailLoading || googleLoading || createUserLoading);
+  }, [emailLoading, googleLoading, createUserLoading]);
+
   return [
     signInWithGoogle,
     createWithEmail,
-    googleUser || emailUser,
+    userCred,
     createdUser,
-    googleLoading || createUserLoading || emailLoading,
-    googleError || emailError,
+    loading,
+    authError,
     createUserErrorMessage,
     createUserSuccess
   ];

@@ -46,12 +46,7 @@ export const postsApiSlice = emptyApiSlice.injectEndpoints({
       query: initialPost => ({
         url: '/posts',
         method: 'POST',
-        body: {
-          ...initialPost,
-          upvotes: 0,
-          downvotes: 0,
-          date: new Date().toISOString(),
-        }
+        body: initialPost,
       }),
       invalidatesTags: [
         { type: 'Post', id: 'LIST' },

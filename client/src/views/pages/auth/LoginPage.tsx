@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useSignInWithEmailAndPassword from "@/lib/firebase/EmailAuth/useSignInWithEmailAndPassword";
 import { auth } from "@/lib/firebase";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
@@ -12,11 +12,14 @@ const LoginPage: React.FC = () => {
   const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   useEffect(() => {
-    if (isLoggedIn) {
+    if (success) {
       navigate('/home');
     }
-  }, [isLoggedIn, navigate]);
+  }, [success, navigate]);
 
 
   // Email/Password Login Hook
@@ -46,8 +49,12 @@ const LoginPage: React.FC = () => {
     } else if (createError || createErrorMessage) {
       console.error("Google login error:", createError || createErrorMessage);
       setSignInError("Google login failed. Please try again.");
-    } 
+    }
   }, [error, createError, createErrorMessage]);
+
+  useEffect(() => {
+    setSuccess(isLoggedIn || loggedInUser != null || createUserSuccess);
+  }, [isLoggedIn, loggedInUser, createUserSuccess]);
 
   // Form Validation
   const validate = () => {
@@ -60,6 +67,10 @@ const LoginPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const __ = loading
+    ? console.log('LoginPage: loading...')
+    : console.log('LoginPage: not loading');
+  
   // Handle Input Changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -78,7 +89,9 @@ const LoginPage: React.FC = () => {
     // navigate('/home');
   }
 
-  const loading = isLoggedInLoading || createLoading || loginLoading;
+  useEffect(() => {
+    setLoading(isLoggedInLoading || createLoading || loginLoading);
+  }, [isLoggedInLoading, createLoading, loginLoading]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-main-blue">
@@ -155,9 +168,9 @@ const LoginPage: React.FC = () => {
         {/* Sign Up Redirect */}
         <div className="text-white text-sm text-center m-5">
           Don't have an account?{" "}
-          <a href="/signup" className="underline">
+          <Link to="/signup" className="underline">
             Register
-          </a>
+          </Link>
         </div>
       </div>
     </div>

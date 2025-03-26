@@ -1,7 +1,10 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Security.Claims;
 using ExpertBridge.Api.Core;
+using ExpertBridge.Api.Core.Entities.Profiles;
+using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Requests.RegisterUser;
@@ -29,6 +32,7 @@ public sealed class UsersController(
         throw new NotImplementedException();
     }
 
+
     [HttpGet("get-by-email/{email}")]
     public async Task<UserResponse> GetUserByEmail([FromRoute] string email)
     {
@@ -51,7 +55,7 @@ public sealed class UsersController(
         //_dbContext.SaveChanges();
 
         var user = await _dbContext.Users
-            .FirstAsync()
+            .FirstOrDefaultAsync(u => u.Email == email)
             ?? throw new UserNotFoundException("User not found");
 
         return new UserResponse(user);
@@ -66,12 +70,59 @@ public sealed class UsersController(
         throw new NotImplementedException();
     }
 
-    [HttpPut("update")]
-    public async Task<UserResponse> UpdateUser([FromBody] UpdateUserRequest request)
+    [HttpPut]
+    public async Task<User> Update([FromBody] UpdateUserRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        //return await userService.UpdateUserAsync(request);
-        throw new NotImplementedException();
+
+        var email = User.FindFirstValue(ClaimTypes.Email);
+
+        if (email != request.Email)
+        {
+            throw new UnauthorizedException();
+        }
+
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Email == email);
+
+        if (user == null)
+        {
+            user = new User
+            {
+                ProviderId = request.ProviderId,
+                IsEmailVerified = request.IsEmailVerified,
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                PhoneNumber = request.PhoneNumber
+            };
+
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+
+            await _dbContext.Profiles.AddAsync(new Profile
+            {
+                UserId = user.Id,
+                Email = user.Email,
+                IsBanned = user.IsBanned,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                ProfilePictureUrl = request.ProfilePictureUrl
+            });
+        }
+        else
+        {
+            user.ProviderId = request.ProviderId;
+            user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
+            user.FirstName = request.FirstName ?? user.FirstName;
+            user.LastName = request.LastName ?? user.LastName;
+            user.IsEmailVerified = request.IsEmailVerified;
+        }
+
+        await _dbContext.SaveChangesAsync();
+
+        return user;
     }
 
     [HttpGet("is-deleted/{identityProviderId}")]
