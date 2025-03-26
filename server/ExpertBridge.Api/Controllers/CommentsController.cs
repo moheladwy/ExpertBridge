@@ -57,7 +57,7 @@ public class CommentsController(
     }
 
     [AllowAnonymous]
-    [Route("api/posts/{postId}/comments")]
+    [Route("api/posts/{postId}/[controller]")]
     [HttpGet] // api/posts/postid/comments
     public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {
@@ -87,23 +87,41 @@ public class CommentsController(
         throw new NotImplementedException();
     }
 
-    [HttpGet("get-all-by-user-id/{userId}")]
+    [Route("api/users/{userId}/[controller]")]
+    [HttpGet]
     public async Task<IEnumerable<CommentResponse>> GetAllByUserId([FromRoute] string userId)
     {
         throw new NotImplementedException();
     }
 
-    [HttpPost("up-vote/{commnetId}")]
-    public async Task<IActionResult> UpVote()
+    [HttpPatch("{commentId")]
+    public async Task<IActionResult> Patch([FromBody] PatchCommentRequest request)
     {
         throw new NotImplementedException();
+
+        var upvote = request.Upvote.GetValueOrDefault();
+        var downvote = request.Downvote.GetValueOrDefault();
+        if (upvote || downvote)
+        {
+            // go to a voting service that takes care of this
+        }
+
+        // comment.Content = request.Content ?? comment.Content
+
+        // return content
     }
 
-    [HttpPost("down-vote/{commnetId}")]
-    public async Task<IActionResult> DownVote()
-    {
-        throw new NotImplementedException();
-    }
+    //[HttpPost("{commnetId}/upvote")]
+    //public async Task<IActionResult> UpVote()
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    //[HttpPost("down-vote/{commnetId}")]
+    //public async Task<IActionResult> DownVote()
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     //[HttpPost("attach/{commentId}")]
     //public async Task<AttachFileToCommentResponse> AttachFile(IFormFile file, [FromRoute] string commentId)

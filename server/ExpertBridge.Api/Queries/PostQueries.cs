@@ -43,34 +43,27 @@ namespace ExpertBridge.Api.Queries
                     Upvotes = p.Votes.Count(v => v.IsUpvote),
                     Downvotes = p.Votes.Count(v => !v.IsUpvote),
                     Comments = p.Comments.Count
-                    //Comments = p.Comments.SelectSelect(c => new CommentResponse
-                    //{
-                    //    Id = c.Id,
-                    //    Content = c.Content,
-                    //    Author = new AuthorResponse
-                    //    {
-                    //        Id = c.AuthorId,
-                    //        JobTitle = c.Author.JobTitle,
-                    //        ProfilePictureUrl = c.Author.ProfilePictureUrl,
-                    //        UserId = c.Author.UserId
-                    //    },
-                    //    CreatedAt = c.CreatedAt,
-                    //    Replies = c.Replies.Select(cc => new CommentResponse
-                    //    {
-                    //        Id = cc.Id,
-                    //        Content = cc.Content,
-                    //        Author = new AuthorResponse
-                    //        {
-                    //            Id = cc.AuthorId,
-                    //            JobTitle = cc.Author.JobTitle,
-                    //            ProfilePictureUrl = cc.Author.ProfilePictureUrl,
-                    //            UserId = cc.Author.UserId
-                    //        },
-                    //        CreatedAt = c.CreatedAt,
-                    //        Replies = null
-                    //    }).ToList()
-                    //}).ToList()
                 });
+        }
+
+        public static PostResponse SelectPostResponseFromFullPost(
+            this Post p,
+            string? userProfileId)
+        {
+            return new PostResponse
+            {
+                IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
+                IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
+
+                Title = p.Title,
+                Content = p.Content,
+                Author = p.Author.SelectAuthorResponseFromProfile(),
+                CreatedAt = p.CreatedAt,
+                Id = p.Id,
+                Upvotes = p.Votes.Count(v => v.IsUpvote),
+                Downvotes = p.Votes.Count(v => !v.IsUpvote),
+                Comments = p.Comments.Count
+            };
         }
     }
 }
