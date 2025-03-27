@@ -26,6 +26,7 @@ export const emptyApiSlice = createApi({
   tagTypes: [
     'CurrentUser',
     'Post',
+    'Comment',
   ],
   keepUnusedDataFor: 60,
 

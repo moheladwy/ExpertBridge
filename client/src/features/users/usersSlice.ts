@@ -1,5 +1,9 @@
+import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { emptyApiSlice } from "../api/apiSlice";
 import { AppUser, CreateUserRequest, ProfileResponse, UpdateUserRequest } from "./types";
+import { auth } from "@/lib/firebase";
+import config from "@/lib/util/config";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 export const usersApiSlice = emptyApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,12 +18,13 @@ export const usersApiSlice = emptyApiSlice.injectEndpoints({
       providesTags: ['CurrentUser'],
     }),
 
-    updateUser: builder.mutation<AppUser, UpdateUserRequest | CreateUserRequest>({
+    updateUser: builder.mutation<AppUser | undefined, UpdateUserRequest | CreateUserRequest>({
       query: (user) => ({
         url: '/users',
         method: 'PUT',
         body: user,
       }),
+      
       invalidatesTags: ['CurrentUser'],
       onQueryStarted: () => {
         console.log('mutation ongoing');

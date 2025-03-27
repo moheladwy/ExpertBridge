@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Linq.Expressions;
+using ExpertBridge.Api.Core.Entities;
 using ExpertBridge.Api.Core.Entities.Areas;
 using ExpertBridge.Api.Core.Entities.Badges;
 using ExpertBridge.Api.Core.Entities.Chats;
@@ -31,6 +33,7 @@ using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Entities.Skills;
 using ExpertBridge.Api.Core.Entities.Tags;
 using ExpertBridge.Api.Core.Entities.Users;
+using ExpertBridge.Api.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Data.DatabaseContexts;
@@ -78,6 +81,20 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
+            {
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(ISoftDeletable.IsDeleted));
+                var condition = Expression.Equal(property, Expression.Constant(false));
+                var lambda = Expression.Lambda(condition, parameter);
+                entityType.SetQueryFilter(lambda);
+            }
+        }
+
+
 
         modelBuilder.ApplyConfiguration(new TagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobEntityConfiguration());

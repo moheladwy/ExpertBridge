@@ -14,6 +14,7 @@ using ExpertBridge.Api.Core.Entities.Tags;
 using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Core.Interfaces.Services;
+using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Requests.RegisterUser;
 using FluentValidation;
 
@@ -29,14 +30,18 @@ public static class Services
     /// </param>
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
-        services.AddTransient<IFirebaseAuthService, FirebaseAuthService>();
-        services.AddScoped<ICacheService, CacheService>();
+        services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>()
+            .AddTransient<IFirebaseAuthService, FirebaseAuthService>()
+            .AddScoped<ICacheService, CacheService>()
         //services.AddScoped<IObjectStorageService, ObjectStorageService>();
         //services.AddScoped<IUsersService, UsersService>();
         //services.AddScoped<IProfilesService, ProfilesService>();
         //services.AddScoped<IPostsService, PostsService>();
-        services.AddScoped<ICommentsService, CommentsService>();
+            .AddScoped<ICommentsService, CommentsService>()
+            .AddScoped<AuthorizationHelper>()
+                
+            ;
+ 
     }
 
     /// <summary>

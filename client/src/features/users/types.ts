@@ -55,3 +55,15 @@ export interface UserFormData {
   username?: string;
   phoneNumber?: string | null;
 }
+
+
+export interface Author {
+  id: string;
+  userId: string;
+  jobTitle?: string | null;
+  profilePictureUrl?: string;
+  username?: string;
+  firstName: string;
+  lastName?: string;
+}
+

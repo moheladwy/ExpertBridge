@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (loginError && !loginLoading) {
       console.log('ProtectedRoute: An error occurred while authenticating the user', loginError);
       console.log('challenging the user');
-      signOut();
+      // signOut();
     }
   }, [loginError, loginLoading, signOut]);
 
