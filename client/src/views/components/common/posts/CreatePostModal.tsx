@@ -79,7 +79,7 @@ const CreatePostModal: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center gap-2 bg-white shadow-md rounded-lg p-4 border border-gray-200 mb-7" onClick={handleOpen}>
+      <div className="flex justify-center items-center gap-2 bg-white shadow-md rounded-lg p-4 border border-gray-200" onClick={handleOpen}>
         <Avatar className="bg-white flex justify-center items-center">
           {/* using the name's first letter as a profile */}
           {
