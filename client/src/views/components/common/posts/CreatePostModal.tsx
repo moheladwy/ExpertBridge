@@ -19,7 +19,9 @@ import {
   Avatar
 } from "@/views/components/custom/avatar"
 
-const steps = ["Enter Title", "Write Content", "Add Media"];
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+const steps = ["Ask Question", "Describe Your Problem", "Add Media"];
 
 const CreatePostModal: React.FC = () => {
   const [createPost, { isLoading, isSuccess, isError }] =
@@ -57,7 +59,7 @@ const CreatePostModal: React.FC = () => {
 
   const handleNext = () => {
     if (activeStep === 0 && !title.trim()) {
-      setError("Title is required.");
+      setError("This Field is required.");
       return;
     }
     if (activeStep === 1 && !body.trim()) {
@@ -74,14 +76,9 @@ const CreatePostModal: React.FC = () => {
     await createPost({ title, content: body });
   };
 
-  console.log("this is somthing "+ authUser);
+
   return (
     <>
-      {/* Button to Open Modal */}
-      {/* <Button variant="contained" onClick={handleOpen}>
-        Create New Post
-      </Button> */}
-
       <div className="flex justify-center items-center gap-2 bg-white shadow-md rounded-lg p-4 border border-gray-200 mb-7" onClick={handleOpen}>
         <Avatar className="bg-white flex justify-center items-center">
           {/* using the name's first letter as a profile */}
@@ -125,35 +122,37 @@ const CreatePostModal: React.FC = () => {
           </IconButton>
 
           <Typography variant="h6" gutterBottom id="create-post-modal">
-            Create a Post
+            Ask a question...
           </Typography>
 
           {/* Stepper */}
           <Stepper activeStep={activeStep} alternativeLabel>
             {steps.map((label) => (
-              <Step key={label}>
+              <Step key={label} >
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
           </Stepper>
 
-          <Box sx={{ my: 3 }}>
+          <Box className="flex justify-center items-center" sx={{ my: 3 }}>
             {error && <Typography color="error">{error}</Typography>}
 
+            {/* Title */}
             {activeStep === 0 && (
               <TextField
                 fullWidth
-                label="Post Title"
+                label="Start Asking Your Question"
                 variant="outlined"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
             )}
 
+            {/* Descrebtion */}
             {activeStep === 1 && (
               <TextField
                 fullWidth
-                label="Post Content"
+                label="Describe Your Problem"
                 variant="outlined"
                 multiline
                 rows={4}
@@ -162,8 +161,15 @@ const CreatePostModal: React.FC = () => {
               />
             )}
 
+            {/* media */}
             {activeStep === 2 && (
-              <Button variant="contained" component="label">
+              <Button 
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
                 Upload Media
                 <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
               </Button>
@@ -172,15 +178,15 @@ const CreatePostModal: React.FC = () => {
 
           {/* Navigation Buttons */}
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Button disabled={activeStep === 0} onClick={handleBack}>
+            <Button disabled={activeStep === 0} onClick={handleBack} className="text-red-600">
               Back
             </Button>
             {activeStep === steps.length - 1 ? (
-              <Button variant="contained" onClick={handleSubmit} disabled={isLoading}>
+              <Button variant="contained" onClick={handleSubmit} disabled={isLoading} className="bg-main-blue hover:bg-blue-950">
                 Submit
               </Button>
             ) : (
-              <Button variant="contained" onClick={handleNext}>
+              <Button variant="contained" onClick={handleNext} className="bg-main-blue hover:bg-blue-950">
                 Next
               </Button>
             )}

@@ -55,7 +55,9 @@ const Feed = () => {
     <div className="w-2/5 mx-auto p-4">
       {/* <PostForm userId={1} /> */}
       <CreatePostModal />
-      <Filters />
+      <div className="flex justify-center">
+        <Filters />
+      </div>
       {loading ? (
         <LoadingSkeleton count={3} />
       ) : (

@@ -1,11 +1,30 @@
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { useState } from 'react';
+
 
 const Filters = () => {
+
+  const [filter, setFilter] = useState ("Recent");
+
+  const handleChange = (event: React.MouseEvent<HTMLElement>, newFilter: string) => {
+    setFilter(newFilter);
+  };
+
   return (
-    <div className="mb-4 flex space-x-4">
-      <button className="bg-blue-500 text-white px-4 py-2 rounded">Recent</button>
-      <button className="bg-gray-200 px-4 py-2 rounded">Most Upvoted</button>
-      <button className="bg-gray-200 px-4 py-2 rounded">Trending</button>
-    </div>
+    <>
+      <ToggleButtonGroup
+        color="primary"
+        value={filter}
+        exclusive
+        onChange={handleChange}
+        aria-label="Platform"
+      >
+        <ToggleButton value="Recent">Recent</ToggleButton>
+        <ToggleButton value="Most Upvoted">Most Upvoted</ToggleButton>
+        <ToggleButton value="Trending">Trending</ToggleButton>
+      </ToggleButtonGroup>
+    </>
   );
 };
 
