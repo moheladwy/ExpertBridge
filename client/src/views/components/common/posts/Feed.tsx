@@ -45,8 +45,8 @@ const Feed = () => {
         profilePictureUrl: "https://example.com/avatar2.jpg"
       },
       createdAt: "2023-05-16T14:45:00Z",
-      upvotes: 18,
-      downvotes: 1,
+      upvotes: 1,
+      downvotes: 18,
       isUpvoted: true,
       isDownvoted: false,
       medias: [],
