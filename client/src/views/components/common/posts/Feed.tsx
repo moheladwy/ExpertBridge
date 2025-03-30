@@ -49,7 +49,7 @@ const Feed = () => {
       downvotes: 18,
       isUpvoted: true,
       isDownvoted: false,
-      medias: [],
+      medias: [{url: "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg", type: "Picture"}],
       comments: [],
       postTags: [
         { id: "2", name: "TypeScript" }
@@ -73,7 +73,7 @@ const Feed = () => {
       downvotes: 3,
       isUpvoted: false,
       isDownvoted: false,
-      medias: [],
+      medias: [{url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", type: "Video"}],
       comments: [],
       postTags: [
         { id: "1", name: "JavaScript" },
