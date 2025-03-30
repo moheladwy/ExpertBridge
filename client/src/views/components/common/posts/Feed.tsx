@@ -83,7 +83,7 @@ const Feed = () => {
   ];
 
   return (
-    <div className="flex flex-col w-2/5 mx-auto p-4 gap-5">
+    <div className="flex flex-col w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
       <CreatePostModal />
       <div className="flex justify-center">
         <Filters />
@@ -188,7 +188,7 @@ export default Feed;
 //   const loading = postsLoading;
 
 //   return (
-//     <div className="flex flex-col w-2/5 mx-auto p-4 gap-5">
+//     <div className="flex flex-col w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
 //       {/* <PostForm userId={1} /> */}
 //       <CreatePostModal />
 //       <div className="flex justify-center">

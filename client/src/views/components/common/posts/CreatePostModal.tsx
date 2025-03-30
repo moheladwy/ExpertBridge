@@ -112,6 +112,8 @@ const CreatePostModal: React.FC = () => {
             borderRadius: 2,
             p: 4,
           }}
+
+          className="max-sm: w-auto"
         >
           {/* Close Button */}
           <IconButton
@@ -121,15 +123,15 @@ const CreatePostModal: React.FC = () => {
             <CloseIcon />
           </IconButton>
 
-          <Typography variant="h6" gutterBottom id="create-post-modal">
+          <Typography variant="h6" gutterBottom id="create-post-modal" className="max-sm:text-md">
             Ask a question...
           </Typography>
 
           {/* Stepper */}
           <Stepper activeStep={activeStep} alternativeLabel>
             {steps.map((label) => (
-              <Step key={label} >
-                <StepLabel>{label}</StepLabel>
+              <Step key={label}  >
+                <StepLabel className="text-">{label}</StepLabel>
               </Step>
             ))}
           </Stepper>
