@@ -22,6 +22,9 @@ const Feed = () => {
 
   const orderedPostIds = useAppSelector(selectPostIds);
 
+
+
+
   // useEffect(() => {
   //   // Simulating fetch
   //   setTimeout(() => {
@@ -49,13 +52,16 @@ const Feed = () => {
   //   }, 2000);
   // }, []);
 
+
   const loading = postsLoading;
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="flex flex-col w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
       {/* <PostForm userId={1} /> */}
       <CreatePostModal />
-      <Filters />
+      <div className="flex justify-center">
+        <Filters />
+      </div>
       {loading ? (
         <LoadingSkeleton count={3} />
       ) : (
