@@ -2,8 +2,8 @@ import { useAppSelector } from "@/app/hooks";
 import { selectPostById } from "@/features/posts/postsSlice";
 import { Link } from "react-router-dom";
 import { Post } from "@/features/posts/types";
-
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { ArrowBigUp } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 interface PostCardProps {
   post: Post;
@@ -23,6 +23,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   };
 
   const voteDifference = post.upvotes - post.downvotes;
+  const totalCommentsNumber = post.comments.length;
 
   return (
     <div className="flex flex-col gap-3 bg-white shadow-md rounded-lg p-4 border border-gray-200">
@@ -68,19 +69,30 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
       {/* Interactions */}
       {/* Votes */}
-      <div className="flex gap-2 items-stretch  bg-gray-200 rounded-full w-fit">
-        <div className="rounded-l-full p-1 hover:bg-green-100  hover:cursor-pointer" onClick={handleUpVote}>
-          <ArrowUpwardIcon className="text-gray-500 hover:text-green-400"/>
-        </div>
-        
-        <div className={`flex justify-center items-center text-sm font-bold ${voteDifference >= 0 ? "text-green-600" : "text-red-600"}`}>
-          {voteDifference}
+      <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-stretch  bg-gray-200 rounded-full w-fit">
+          <div className="rounded-l-full p-1 hover:bg-green-100  hover:cursor-pointer" onClick={handleUpVote}>
+            <ArrowBigUp className="text-gray-500 hover:text-green-400"/>
+          </div>
+          
+          <div className={`flex justify-center items-center text-sm font-bold ${voteDifference >= 0 ? "text-green-600" : "text-red-600"}`}>
+            {voteDifference}
+          </div>
+
+          <div className="rounded-l-full p-1 rotate-180 hover:bg-red-100  hover:cursor-pointer" onClick={handleDownVote}>
+            <ArrowBigUp className="text-gray-500 hover:text-red-400"/>
+          </div>
         </div>
 
-        <div className="rounded-l-full p-1 rotate-180 hover:bg-red-100  hover:cursor-pointer" onClick={handleDownVote}>
-
-          <ArrowUpwardIcon className="text-gray-500 hover:text-red-400"/>
-        </div>
+        {/* Comments */}
+        <Link to={`/feed/${post.id}`}>
+          <div className="flex items-center gap-2 rounded-full p-1 hover:bg-gray-200  hover:cursor-pointer">
+            <MessageCircle className="text-gray-500"/>
+            <div className="text-gray-500 text-md font-bold ">
+              {totalCommentsNumber}
+            </div>
+          </div>
+        </Link>
       </div>
     </div>
   );
