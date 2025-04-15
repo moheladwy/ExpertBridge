@@ -1,0 +1,24 @@
+services:
+    post-categorization:
+        image: "only1adwy/post-categorization:latest"
+        container_name: post-categorization
+        ports:
+            - target: 5000
+              published: 5001
+        labels:
+            - "com.centurylinklabs.watchtower.enable=true"
+        networks:
+            - post-categorization
+            - shared
+        env_file:
+            - .env
+        environment:
+            - GROQ_API_KEY=${GROQ_API_KEY}
+
+networks:
+    post-categorization:
+        name: post-categorization
+        driver: bridge
+    shared:
+        name: shared
+        external: true

@@ -32,9 +32,14 @@ function App() {
 
   return (
     <>
-      <NavBar />
-      <Toaster />
-      <Outlet /> {/* Renders the current route's element */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <NavBar/>
+      </div>
+
+      <div className="pt-16">
+        <Toaster />
+        <Outlet /> {/* Renders the current route's element */}
+      </div>
     </>
   );
 }
