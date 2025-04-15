@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 def test_categorize_api():
     """Test the categorize API with an Arabic car problem post"""
     # API endpoint (using localhost)
@@ -42,7 +43,8 @@ def test_categorize_api():
             print(f"Number of tags: {len(result.get('tags', []))}")
             print("Tags:")
             for tag in result.get('tags', []):
-                print(f"- English: {tag.get('EnglishName')} | Arabic: {tag.get('ArabicName')}")
+                print(
+                    f"- English: {tag.get('EnglishName')} | Arabic: {tag.get('ArabicName')}")
                 print(f"  Description: {tag.get('Description')}")
 
         else:
@@ -52,5 +54,48 @@ def test_categorize_api():
     except Exception as e:
         print(f"An error occurred: {str(e)}")
 
+
+def test_translate_tags_api():
+    """Test the translate-tags API with a mix of English and Arabic tags"""
+    # API endpoint (using localhost)
+    url = 'http://127.0.0.1:5000/translate-tags'
+
+    # Test tags in different languages
+    tags = ["car maintenance", "محرك", "transmission", "صيانة", "engine noise"]
+
+    # Prepare the request payload
+    payload = {
+        "tags": tags
+    }
+
+    # Send POST request to the API
+    try:
+        response = requests.post(url, json=payload)
+
+        # Check if request was successful
+        if response.status_code == 200:
+            # Parse the JSON response
+            result = response.json()
+            print("Request successful!")
+            print("\nTranslate Tags API Response:")
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+
+            # Print tags with translations and descriptions
+            print("\nTranslated Tags:")
+            for tag in result.get('tags', []):
+                print(
+                    f"- English: {tag.get('EnglishName')} | Arabic: {tag.get('ArabicName')}")
+                print(f"  Description: {tag.get('Description')}")
+
+        else:
+            print(f"Request failed with status code: {response.status_code}")
+            print(f"Response content: {response.text}")
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+
 if __name__ == "__main__":
-    test_categorize_api()
+    # test_categorize_api()
+    # print("\n" + "="*50 + "\n")
+    test_translate_tags_api()

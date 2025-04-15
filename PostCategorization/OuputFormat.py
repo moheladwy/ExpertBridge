@@ -32,3 +32,9 @@ class CategorizationResponse(BaseModel):
                              min_length=3,
                              max_length=6,
                              description="The list of tags for the post with their descriptions")
+
+
+class TranslateTagsResponse(BaseModel):
+    tags: List[Tags] = Field(...,
+                             min_length=1,
+                             description="The list of translated tags with their descriptions")

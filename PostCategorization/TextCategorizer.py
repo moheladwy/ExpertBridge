@@ -1,7 +1,7 @@
 import json
 from groq import Groq
 from pydantic import ValidationError
-from OuputFormat import CategorizationResponse
+from OuputFormat import CategorizationResponse, TranslateTagsResponse
 
 
 class TextCategorizer:
@@ -10,8 +10,18 @@ class TextCategorizer:
         self.client = Groq(api_key=api_key)
         self.model = model
 
+    def categorize(self, post: str) -> str:
+        """
+        Categorize the given post and return the API response.
+
+        Args:
+            post (str): The text content to be categorized
+
+        Returns:
+            str: The categorization response from the API
+        """
         # Define constant prompts and rules
-        self.SYSTEM_CONTENT: list[str] = [
+        SYSTEM_CONTENT: list[str] = [
             "You are an advanced text categorization AI specializing in both English and Arabic posts.",
             "Your task is to analyze a given post, detect its language (Arabic, English, Mixed, or Other), and categorize it with relevant tags.",
             "For each tag, you must provide both English and Arabic names, along with a description.",
@@ -27,18 +37,7 @@ class TextCategorizer:
             "Tags should not contain numbers, or special characters.",
             "Tags should not contain the language name.",
         ]
-
-    def categorize(self, post: str) -> str:
-        """
-        Categorize the given post and return the API response.
-
-        Args:
-            post (str): The text content to be categorized
-
-        Returns:
-            str: The categorization response from the API
-        """
-        user_content: list[str] = [
+        USER_CONTENT: list[str] = [
             "Categorize the following post based on its content and language.",
             "1. First, detect whether the post is in English, Arabic, Mixed, or Other.",
             "2. If the post has existing tags, translate them and generate additional unique tags.",
@@ -62,13 +61,13 @@ class TextCategorizer:
 
         MAX_TOKENS = int(self.model["MTK"])
 
-        if len(user_content) > MAX_TOKENS:
+        if len(USER_CONTENT) > MAX_TOKENS:
             raise ValueError("Post content is too long.")
 
         response = self.client.chat.completions.create(
             messages=[
-                {"role": "system", "content": "\n".join(self.SYSTEM_CONTENT)},
-                {"role": "user", "content": "\n".join(user_content)}
+                {"role": "system", "content": "\n".join(SYSTEM_CONTENT)},
+                {"role": "user", "content": "\n".join(USER_CONTENT)}
             ],
             model=self.model["name"],
         )
@@ -79,3 +78,60 @@ class TextCategorizer:
             return json.loads(result)
         except ValidationError:
             raise ValueError("Invalid response format from the API.")
+
+    def translate_tags(self, tags: list[str]) -> dict:
+        """
+        Translate the given tags and return their English and Arabic names with descriptions.
+
+        Args:
+            tags (list[str]): List of tags to translate
+
+        Returns:
+            dict: Dictionary containing translated tags with descriptions
+        """
+        system_content: list[str] = [
+            "You are a tag translation specialist. Translate tags between English and Arabic and provide detailed descriptions in English only.",
+            "Your task is to translate the given tags and provide their descriptions.",
+            "1. Provide both English and Arabic translations for each tag.",
+            "2. Provide a concise description in English.",
+            "3. All names should be lowercase and separated by spaces.",
+            "4. If a tag is already in English, provide its Arabic translation and vice versa.",
+            "5. If the language is unclear, try to determine the most likely translation."
+            "6. Tags should be unique and not repetitive.",
+            "7. Tags should not contain numbers, or special characters.",
+            "8. Tags should not contain the language name.",
+            "9. Do not generate any introductory or concluding text.",
+        ]
+        user_content: list[str] = [
+            "Translate and provide descriptions for the following tags:",
+            "```",
+            ", ".join(tags),
+            "```",
+            "For each tag:",
+            "1. Provide both English and Arabic translations",
+            "2. Provide a concise description in English",
+            "3. All names should be lowercase and separated by spaces",
+            "4. If a tag is already in English, provide its Arabic translation and vice versa",
+            "5. If the language is unclear, try to determine the most likely translation",
+            "Return only the raw JSON in the format described below without any markdown code block formatting.",
+            "```",
+            json.dumps(
+                TranslateTagsResponse.model_json_schema(), ensure_ascii=False, indent=2
+            ),
+            "```"
+        ]
+
+        response = self.client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "\n".join(system_content)},
+                {"role": "user", "content": "\n".join(user_content)}
+            ],
+            model=self.model["name"],
+        )
+
+        try:
+            result = response.choices[0].message.content.strip()
+            parsed_result = json.loads(result)
+            return parsed_result
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON response from the API.")

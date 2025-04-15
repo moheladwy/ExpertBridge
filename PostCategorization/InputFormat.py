@@ -18,3 +18,9 @@ class PostInput(BaseModel):
 
 class CategorizeRequest(BaseModel):
     post: PostInput
+
+
+class TranslateTagsRequest(BaseModel):
+    tags: List[str] = Field(...,
+                            min_length=1,
+                            description="List of tags to translate")
