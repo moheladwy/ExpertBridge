@@ -37,7 +37,7 @@ builder.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.AddRepositories();
-builder.Services.AddBackgroundServices();
+builder.Services.AddBackgroundServices(builder.Configuration);
 
 var app = builder.Build();
 
