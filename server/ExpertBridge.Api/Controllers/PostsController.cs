@@ -92,11 +92,12 @@ public class PostsController(
         await _dbContext.Posts.AddAsync(post);
         await _dbContext.SaveChangesAsync();
 
-        return await _dbContext.Posts
-            .FullyPopulatedPostQuery()
-            .Where(p => p.Id == post.Id)
-            .SelectPostResponseFromFullPost(userProfileId)
-            .FirstAsync();
+        return post.SelectPostResponseFromFullPost(userProfileId);
+        //return await _dbContext.Posts
+        //    .FullyPopulatedPostQuery()
+        //    .Where(p => p.Id == post.Id)
+        //    .SelectPostResponseFromFullPost(userProfileId)
+        //    .FirstAsync();
     }
 
     [HttpPatch("{postId}/up-vote")]
