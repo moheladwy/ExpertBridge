@@ -94,7 +94,7 @@ public class CommentsController(
         throw new NotImplementedException();
     }
 
-    [HttpPatch("{commentId")]
+    [HttpPatch("{commentId}")]
     public async Task<IActionResult> Patch([FromBody] PatchCommentRequest request)
     {
         throw new NotImplementedException();
