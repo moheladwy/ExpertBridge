@@ -98,11 +98,11 @@ public sealed class UsersController(
             };
 
             await _dbContext.Users.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
+            //await _dbContext.SaveChangesAsync();
 
             await _dbContext.Profiles.AddAsync(new Profile
             {
-                UserId = user.Id,
+                User = user,
                 Email = user.Email,
                 IsBanned = user.IsBanned,
                 FirstName = user.FirstName,
@@ -120,6 +120,7 @@ public sealed class UsersController(
             user.IsEmailVerified = request.IsEmailVerified;
         }
 
+        // UNIT OF WORK, only one save after the unit is complete.
         await _dbContext.SaveChangesAsync();
 
         return user;
