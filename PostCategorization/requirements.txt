@@ -4,3 +4,4 @@ flask-cors~=5.0.1
 python-dotenv
 pydantic~=2.10.6
 pylint
+requests

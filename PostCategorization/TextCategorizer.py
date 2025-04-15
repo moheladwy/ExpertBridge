@@ -12,14 +12,18 @@ class TextCategorizer:
         # Define constant prompts and rules
         self.SYSTEM_CONTENT: list[str] = [
             "You are an advanced text categorization AI specializing in both English and Arabic posts.",
-            "Your task is to analyze a given post associated with a Pydantic scheme, detect its language, and categorize it with relevant tags.",
-            "Provide a structured output with at least three and at most five tags, each accompanied by a brief description.",
+            "Your task is to analyze a given post, detect its language (Arabic, English, Mixed, or Other), and categorize it with relevant tags.",
+            "For each tag, you must provide both English and Arabic names, along with a description.",
+            "If the post already has tags, you must translate them and generate additional unique tags.",
+            "If the post has no tags, generate new tags from scratch.",
+            "Provide a structured output with at least three and at most six tags.",
             "You have to extract JSON details from text according to the Pydantic scheme.",
             "Do not generate any introductory or concluding text.",
-            "Tags and descriptions should be in English regardless of the post's language.",
+            "Tags Names should be in English and Arabic regardless of the post's language.",
+            "Tags should be in lowercase, and separated by space ' '.",
             "Tags should be relevant to the post problem only.",
             "Tags should be unique and not repetitive.",
-            "Tags should not contain numbers, spaces, or special characters except '-'.",
+            "Tags should not contain numbers, or special characters.",
             "Tags should not contain the language name.",
         ]
 
@@ -35,7 +39,13 @@ class TextCategorizer:
         """
         user_content: list[str] = [
             "Categorize the following post based on its content and language.",
-            "Detect whether the post is in English or Arabic, then generate a structured response for the post.",
+            "1. First, detect whether the post is in English, Arabic, Mixed, or Other.",
+            "2. If the post has existing tags, translate them and generate additional unique tags.",
+            "3. If the post has no tags, generate new tags from scratch.",
+            "4. For each tag, provide both English and Arabic names, along with a description.",
+            "5. Tags should be in lowercase, and separated by space ' '.",
+            "6. Tags should not contain numbers, or special characters.",
+            "7. Tags should be unique and not repetitive.",
             "### Post Title and Content:",
             "```",
             post.strip(),
@@ -50,7 +60,7 @@ class TextCategorizer:
         ]
 
         MAX_TOKENS = int(self.model["MTK"])
-        
+
         if len(user_content) > MAX_TOKENS:
             raise ValueError("Post content is too long.")
 

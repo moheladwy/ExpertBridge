@@ -3,27 +3,32 @@ from typing import List, Literal
 
 
 class Tags(BaseModel):
-    tag: str = Field(...,
-                     min_length=3,
-                     max_length=256,
-                     description="The tag name, separated by a dash '-' and must be lowercase.")
-
-    description: str = Field(...,
+    EnglishName: str = Field(...,
                              min_length=3,
-                             max_length=512,
-                             description="The description of the tag, should be concise and informative.")
+                             max_length=256,
+                             description="The English tag name, must be separated by space ' ' and must be lowercase.")
+
+    ArabicName: str = Field(...,
+                            min_length=3,
+                            max_length=256,
+                            description="The Arabic tag name, must be separated by space ' ' and must be lowercase.")
+
+    Description: str = Field(...,
+                             min_length=3,
+                             max_length=1024,
+                             description="The description of the tag, should be concise and informative, and it must be in English and lowercase.")
 
 
-LANGUAGES = Literal["English", "Arabic"]
+LANGUAGES = Literal["English", "Arabic", "Mixed", "Other"]
 
 
 class CategorizationResponse(BaseModel):
     language: LANGUAGES = Field(...,
                                 min_length=3,
-                                max_digits=50,
+                                max_length=10,
                                 description="The detected language of the post")
 
     tags: List[Tags] = Field(...,
-                             min_items=3,
-                             max_items=5,
+                             min_length=3,
+                             max_length=6,
                              description="The list of tags for the post with their descriptions")

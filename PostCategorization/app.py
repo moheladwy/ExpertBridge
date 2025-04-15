@@ -5,6 +5,7 @@ import os
 from flask import request, jsonify
 from Models import Models
 from TextCategorizer import TextCategorizer
+from InputFormat import CategorizeRequest
 
 app = Flask(__name__)
 CORS(app)
@@ -28,13 +29,20 @@ text_categorizer = TextCategorizer(
 @app.route("/categorize", methods=["POST"])
 def categorize():
     try:
-        post = str(request.get_json()["post"])
-        response = text_categorizer.categorize(post.strip())
+        # Validate and parse the request body
+        request_data = CategorizeRequest.model_validate(request.get_json())
+
+        # Combine title and content for categorization
+        post_text = f"Title: {request_data.post.title}\n\nContent:\n{request_data.post.content}\n\nTags:\n{request_data.post.tags}"
+        response = text_categorizer.categorize(post_text.strip())
+
         print("=======================================")
         print("Response:")
         print(response)
         print("=======================================")
         return jsonify({"error": "No response"} if not response else json.loads(response))
+    except ValueError as ve:
+        return jsonify({"error": "Value error: " + str(ve)})
     except Exception as e:
         return jsonify({"error": str(e)})
 
