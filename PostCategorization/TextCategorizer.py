@@ -1,5 +1,6 @@
 import json
 from groq import Groq
+from pydantic import ValidationError
 from OuputFormat import CategorizationResponse
 
 
@@ -27,7 +28,7 @@ class TextCategorizer:
             "Tags should not contain the language name.",
         ]
 
-    def categorize(self, post: str):
+    def categorize(self, post: str) -> str:
         """
         Categorize the given post and return the API response.
 
@@ -72,4 +73,9 @@ class TextCategorizer:
             model=self.model["name"],
         )
 
-        return response.choices[0].message.content.strip()
+        try:
+            result = response.choices[0].message.content.strip()
+            CategorizationResponse.model_validate_json(result, strict=True)
+            return json.loads(result)
+        except ValidationError:
+            raise ValueError("Invalid response format from the API.")

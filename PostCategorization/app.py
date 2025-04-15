@@ -3,6 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 import os
 from flask import request, jsonify
+from pydantic import ValidationError
 from Models import Models
 from TextCategorizer import TextCategorizer
 from InputFormat import CategorizeRequest
@@ -30,17 +31,15 @@ text_categorizer = TextCategorizer(
 def categorize():
     try:
         # Validate and parse the request body
-        request_data = CategorizeRequest.model_validate(request.get_json())
+        request_data = CategorizeRequest.model_validate(request.get_json(), strict=True)
 
         # Combine title and content for categorization
         post_text = f"Title: {request_data.post.title}\n\nContent:\n{request_data.post.content}\n\nTags:\n{request_data.post.tags}"
-        response = text_categorizer.categorize(post_text.strip())
-
-        print("=======================================")
-        print("Response:")
-        print(response)
-        print("=======================================")
-        return jsonify({"error": "No response"} if not response else json.loads(response))
+        
+        # Call the categorize method and return the response
+        return text_categorizer.categorize(post_text.strip())
+    except ValidationError as ve:
+        return jsonify({"error": "Validation error: " + str(ve)})
     except ValueError as ve:
         return jsonify({"error": "Value error: " + str(ve)})
     except Exception as e:
