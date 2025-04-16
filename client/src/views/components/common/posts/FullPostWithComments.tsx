@@ -124,7 +124,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post }) => 
         </div>
 
         {/* Comment List */}
-        {post.comments.map((comment) => (
+        {
+          post.comments && 
+          post.comments?.map((comment) => (
           <CommentCard
             key={comment.id}
             comment={comment}

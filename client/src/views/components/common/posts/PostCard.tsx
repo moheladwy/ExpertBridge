@@ -32,7 +32,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 
   const [open, setOpen] = useState(false);
   const voteDifference = post.upvotes - post.downvotes;
-  const totalCommentsNumber = post.comments.length;
+  const totalCommentsNumber = post.comments?.length;
   let media;
 
   const handleUpVote = () => {
@@ -125,7 +125,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
         <p className="text-gray-600">{post.content}</p>
 
         {/* Media */}
-        <div className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias.length > 0 ? "block" : "hidden"}`}>
+        <div className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}>
           {media}
         </div>
 
