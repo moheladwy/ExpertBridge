@@ -28,7 +28,7 @@ public class CommentsController(
 {
     // TODO: Create a comment response with CommentQueries
     [HttpPost]
-    public async Task<Comment> Create([FromBody] CreateCommentRequest request)
+    public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
     {
         // TODO: Validate all requests that they contain the required fields.
         // Else, return BadRequest
@@ -42,19 +42,40 @@ public class CommentsController(
             throw new UnauthorizedException();
         }
 
+        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == request.PostId);
+        var profile = await _dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == user.Profile.Id);
+
+        // That should be a bad request response.
+        if (post == null || profile == null)
+        {
+            throw new PostNotFoundException($"Post with id={request.PostId} was not found");
+        }
+
         var comment = new Comment
         {
             AuthorId = user.Profile.Id,
+            Author = profile,
             Content = request.Content,
             ParentCommentId = request.ParentCommentId,
-            PostId = request.PostId,
+            Post = post,
+            PostId = post.Id
         };
 
         await _dbContext.Comments.AddAsync(comment);
         await _dbContext.SaveChangesAsync();
 
-        return comment;
+        var response = await _dbContext.Comments
+            .FullyPopulatedCommentQuery()
+            .SelectCommentResponseFromFullComment(profile.Id)
+            .FirstAsync();
+
+        return response;
     }
+
+    // CONSIDER!
+    // Why not use query params instead of this confusing routing
+    // currently used?
+    // Something like: /api/comments?postId=aabb33cc
 
     [AllowAnonymous]
     [Route("api/posts/{postId}/[controller]")]
@@ -98,6 +119,13 @@ public class CommentsController(
     public async Task<IActionResult> Patch([FromBody] PatchCommentRequest request)
     {
         throw new NotImplementedException();
+
+
+        // CONSIDER!
+        // This approach will make the patch action(endpoint) responsible for
+        // too many things that are kind of unrelated to each other.
+        // This will make it harder on the RTK side to know what to do
+        // before each patch request (due to optimistic UI updates).
 
         var upvote = request.Upvote.GetValueOrDefault();
         var downvote = request.Downvote.GetValueOrDefault();
