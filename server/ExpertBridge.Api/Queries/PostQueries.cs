@@ -30,20 +30,7 @@ namespace ExpertBridge.Api.Queries
             string? userProfileId)
         {
             return query
-                .Select(p => new PostResponse
-                {
-                    IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
-                    IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
-
-                    Title = p.Title,
-                    Content = p.Content,
-                    Author = p.Author.SelectAuthorResponseFromProfile(),
-                    CreatedAt = p.CreatedAt,
-                    Id = p.Id,
-                    Upvotes = p.Votes.Count(v => v.IsUpvote),
-                    Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                    Comments = p.Comments.Count
-                });
+                .Select(p => SelectPostResponseFromFullPost(p, userProfileId));
         }
 
         public static PostResponse SelectPostResponseFromFullPost(

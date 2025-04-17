@@ -63,12 +63,7 @@ public class CommentsController(
         await _dbContext.Comments.AddAsync(comment);
         await _dbContext.SaveChangesAsync();
 
-        var response = await _dbContext.Comments
-            .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(profile.Id)
-            .FirstAsync();
-
-        return response;
+        return comment.SelectCommentResponseFromFullComment(profile.Id);
     }
 
     // CONSIDER!

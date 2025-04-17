@@ -17,6 +17,14 @@ namespace ExpertBridge.Api.Helpers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Gets the currently signed in user with Profile nav prop populated.
+        /// </summary>
+        /// <param name="claims">The User prop from the controller.</param>
+        /// <returns>
+        /// 1. The user model from the database populated with Profile nav prop. <br/>
+        /// 2. null if no authentication took place.
+        /// </returns>
         public async Task<User?> GetCurrentUserAsync(ClaimsPrincipal? claims)
         {
             string? email = claims?.FindFirstValue(ClaimTypes.Email);
