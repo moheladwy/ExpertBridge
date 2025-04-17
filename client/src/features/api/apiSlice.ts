@@ -3,7 +3,7 @@ import config from '@/lib/util/config';
 import { auth } from '@/lib/firebase';
 
 
-export const emptyApiSlice = createApi({
+export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: config.VITE_SERVER_URL,

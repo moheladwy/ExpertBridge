@@ -1,36 +1,29 @@
 import { createEntityAdapter, createSelector, EntityState } from "@reduxjs/toolkit";
-import { emptyApiSlice } from "../api/apiSlice";
+import { apiSlice } from "../api/apiSlice";
 import { sub } from 'date-fns';
-import { AddCommentRequest, Comment } from "./types";
+import { AddCommentRequest, AddReplyRequest, Comment } from "./types";
+import { request } from "http";
 
 
-type CommentsState = EntityState<Comment, string>;
-const commentsAdapter = createEntityAdapter<Comment>({
-  sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
-});
-const initialState: CommentsState = commentsAdapter.getInitialState();
+// type CommentsState = EntityState<Comment, string>;
+// const commentsAdapter = createEntityAdapter<Comment>({
+//   sortComparer: (a, b) => a.createdAt.localeCompare(b.createdAt),
+// });
+// const initialState: CommentsState = commentsAdapter.getInitialState();
 
-export const commentsApiSlice = emptyApiSlice.injectEndpoints({
+export const commentsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getCommentsByPostId: builder.query<CommentsState, string>({
-      query: (postId) => '',
-      transformResponse: (response: any[]) => {
-        console.log(response);
-        const min = 1;
-        const loadedComments = response.map(comment => {
-          // if (!comment.date) comment.date = sub(new Date(), { minutes: min++ }).toISOString();
-          // if (!comment.upvotes) comment.upvotes = 0;
-          // if (!comment.downvotes) comment.downvotes = 0;
-          // if (!comment.tags) comment.tags = [];
-          return comment;
-        })
+    getCommentsByPostId: builder.query<Comment[], string>({
+      query: (postId) => `/posts/${postId}/comments`,
+      // transformResponse: (response: Comment[]) => {
+      //   console.log(response);
 
-        return commentsAdapter.setAll(initialState, loadedComments);
-      },
-      providesTags: (result = initialState, error, arg) => [
+      //   return commentsAdapter.setAll(initialState, response);
+      // },
+      providesTags: (result = [], error, arg) => [
         'Comment',
-        { type: 'Comment', id: `LIST/${arg}` },
-        ...result.ids.map(id => ({ type: 'Comment', id: id.toString() }) as const),
+        { type: 'Comment', id: `LIST/${arg}` } as const,
+        ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
       ],
 
     }),
@@ -48,9 +41,64 @@ export const commentsApiSlice = emptyApiSlice.injectEndpoints({
         method: 'POST',
         body: initialComment,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Comment', id: `LIST/${arg.postId}` },
-      ],
+      // invalidatesTags: (result, error, arg) => [
+      //   { type: 'Comment', id: `LIST/${arg.postId}` },
+      //   { type: 'Comment', id: arg.parentCommentId || '' } as const,
+      // ],
+      onQueryStarted: async (request, lifecycleApi) => {
+        try {
+          const { data: createdComment } = await lifecycleApi.queryFulfilled;
+          const getCommentsByPostPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData('getCommentsByPostId', `${request.postId}`, (draft) => {
+              Object.assign(draft, draft.concat(createdComment));
+              console.log(draft);
+            }),
+          );
+          const getCommentPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.upsertQueryData('getComment', createdComment.id, createdComment),
+          );
+        }
+        catch {
+          console.error('Comment creation failed');
+        }
+      }
+    }),
+
+    createReply: builder.mutation<Comment, AddReplyRequest>({
+      query: initialComment => ({
+        url: '/comments',
+        method: 'POST',
+        body: initialComment,
+      }),
+      onQueryStarted: async (request, lifecycleApi) => {
+        try {
+          const { data: createdReply } = await lifecycleApi.queryFulfilled;
+          const getCommentsByPostPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId, (draft) => {
+              const parent = draft.find(c => c.id == request.parentCommentId);
+              if (parent) {
+                parent.replies = parent.replies || [];
+                parent.replies.push(createdReply);
+                console.log(parent);
+              }
+            }),
+          );
+
+          const getCommentPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData('getComment', request.parentCommentId, (draft) => {
+              const parent = draft;
+              if (parent) {
+                parent.replies = parent.replies || [];
+                parent.replies.push(createdReply);
+                console.log(parent);
+              }
+            }),
+          );
+        }
+        catch {
+          console.error('Reply creation failed');
+        }
+      }
     }),
 
 
@@ -61,6 +109,7 @@ export const {
   useGetCommentQuery,
   useGetCommentsByPostIdQuery,
   useCreateCommentMutation,
+  useCreateReplyMutation,
 } = commentsApiSlice;
 
 

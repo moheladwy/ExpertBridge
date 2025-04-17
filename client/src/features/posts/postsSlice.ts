@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSelector, EntityState } from "@reduxjs/toolkit";
-import { emptyApiSlice } from "../api/apiSlice";
+import { apiSlice } from "../api/apiSlice";
 import { AddPostRequest, Post } from "./types";
 import { sub } from 'date-fns';
 
@@ -10,22 +10,14 @@ const postsAdapter = createEntityAdapter<Post>({
 });
 const initialState: PostsState = postsAdapter.getInitialState();
 
-export const postsApiSlice = emptyApiSlice.injectEndpoints({
+export const postsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<PostsState, void>({
       query: () => '/posts',
-      transformResponse: (response: any[]) => {
+      transformResponse: (response: Post[]) => {
         console.log(response);
-        const min = 1;
-        const loadedPosts = response.map(post => {
-          // if (!post.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
-          // if (!post.upvotes) post.upvotes = 0;
-          // if (!post.downvotes) post.downvotes = 0;
-          // if (!post.tags) post.tags = [];
-          return post;
-        })
 
-        return postsAdapter.setAll(initialState, loadedPosts);
+        return postsAdapter.setAll(initialState, response);
       },
       providesTags: (result = initialState, error, arg) => [
         'Post',

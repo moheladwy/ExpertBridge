@@ -4,40 +4,20 @@ import { Button, IconButton, TextField } from "@mui/material";
 import { ThumbUp, ThumbDown, AttachFile } from "@mui/icons-material";
 import CommentCard from "../comments/CommentCard";
 import { useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
+import CommentsSection from "../comments/CommentsSection";
 
 interface FullPostWithCommentsProps {
   post: Post;
 }
 
 const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post }) => {
-  const {
-    data: comments,
-    isLoading: commentsLoading,
-    isError: isCommentsError,
-    error: commentsError,
-    isSuccess: commentsSuccess,
-  } = useGetCommentsByPostIdQuery(post.id);
-
-  useEffect(() => {
-    if (commentsSuccess) {
-      post.comments = Object.values(comments.entities);
-    }
-  }, [commentsSuccess, comments, post])
-
-  const [commentText, setCommentText] = useState("");
   const [postVotes, setPostVotes] = useState({
     upvotes: post.upvotes,
     downvotes: post.downvotes,
     userVote: null as "upvote" | "downvote" | null,
   });
 
-  const [media, setMedia] = useState<File[]>([]);
-
   if (!post) return <p>Post not found.</p>;
-
-  if (commentsLoading) {
-    return <p>Loading...</p>;
-  }
 
   const handlePostVote = (type: "upvote" | "downvote") => {
     setPostVotes((prev) => {
@@ -58,13 +38,6 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post }) => 
         userVote: type,
       };
     });
-  };
-
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("New comment:", commentText, media);
-    setCommentText("");
-    setMedia([]);
   };
 
   return (
@@ -94,46 +67,8 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post }) => 
         </div>
       </div>
 
-      {/* Comments */}
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-3">Comments</h3>
+      <CommentsSection postId={post.id} />
 
-        {/* Add Comment Form */}
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-3">Leave a Comment</h3>
-          <form onSubmit={handleCommentSubmit} className="space-y-3">
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              variant="outlined"
-              label="Write a comment..."
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-            />
-            <div className="flex justify-between items-center">
-              <Button variant="contained" color="primary" type="submit">
-                Post Comment
-              </Button>
-              <IconButton component="label">
-                <AttachFile />
-                <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
-              </IconButton>
-            </div>
-          </form>
-        </div>
-
-        {/* Comment List */}
-        {
-          post.comments && 
-          post.comments?.map((comment) => (
-          <CommentCard
-            key={comment.id}
-            comment={comment}
-          // onReplySubmit={(replyText) => console.log("New reply:", replyText)}
-          />
-        ))}
-      </div>
     </div>
   );
 };
