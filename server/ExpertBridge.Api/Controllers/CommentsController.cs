@@ -19,16 +19,15 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 [Authorize]
 public class CommentsController(
     ExpertBridgeDbContext _dbContext,
     AuthorizationHelper _authHelper
     ) : ControllerBase
 {
-    // TODO: Create a comment response with CommentQueries
+    [Route("/api/[controller]")]
     [HttpPost]
-    public async Task<Comment> Create([FromBody] CreateCommentRequest request)
+    public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
     {
         // TODO: Validate all requests that they contain the required fields.
         // Else, return BadRequest
@@ -42,22 +41,56 @@ public class CommentsController(
             throw new UnauthorizedException();
         }
 
+        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == request.PostId);
+        var profile = await _dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == user.Profile.Id);
+
+        // That should be a bad request response.
+        if (post == null || profile == null)
+        {
+            throw new PostNotFoundException($"Post with id={request.PostId} was not found");
+        }
+
+        Comment? parentComment = null;
+        if (!string.IsNullOrEmpty(request.ParentCommentId))
+        {
+            parentComment = await _dbContext.Comments
+                .FirstOrDefaultAsync(c => c.Id == request.ParentCommentId);
+            if (parentComment == null)
+            {
+                throw new CommentNotFoundException($"Parent comment with id={request.ParentCommentId} was not found");
+            }
+        }
+
         var comment = new Comment
         {
             AuthorId = user.Profile.Id,
+            Author = profile,
             Content = request.Content,
             ParentCommentId = request.ParentCommentId,
-            PostId = request.PostId,
+            ParentComment = parentComment,
+            Post = post,
+            PostId = post.Id
         };
 
         await _dbContext.Comments.AddAsync(comment);
         await _dbContext.SaveChangesAsync();
 
-        return comment;
+        return comment.SelectCommentResponseFromFullComment(profile.Id);
     }
 
+    // CONSIDER!
+    // Why not use query params instead of this confusing routing
+    // currently used?
+    // Something like: /api/comments?postId=aabb33cc
+
+    // THINK!
+    // Will migrating to query params make it that more than
+    // one endpoint match a certain request? Hmmmm...
+    // Ex. /api/comments?postId=aabb33cc /api/comments?userId=bbffcc11
+
+
+    [Route("/api/posts/{postId}/comments")]
     [AllowAnonymous]
-    [Route("api/posts/{postId}/[controller]")]
     [HttpGet] // api/posts/postid/comments
     public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {
@@ -98,6 +131,13 @@ public class CommentsController(
     public async Task<IActionResult> Patch([FromBody] PatchCommentRequest request)
     {
         throw new NotImplementedException();
+
+
+        // CONSIDER!
+        // This approach will make the patch action(endpoint) responsible for
+        // too many things that are kind of unrelated to each other.
+        // This will make it harder on the RTK side to know what to do
+        // before each patch request (due to optimistic UI updates).
 
         var upvote = request.Upvote.GetValueOrDefault();
         var downvote = request.Downvote.GetValueOrDefault();

@@ -6,7 +6,7 @@ using ExpertBridge.Api.Core.Entities.Profiles;
 
 namespace ExpertBridge.Api.Core.Entities.Users;
 
-public class User : BaseModel
+public class User : BaseModel, ISoftDeletable
 {
     public required string ProviderId { get; set; }
     public string? FirstName { get; set; }
@@ -17,6 +17,8 @@ public class User : BaseModel
     public bool IsBanned { get; set; }
     public bool IsEmailVerified { get; set; }
     public bool IsOnboarded { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     // Navigation properties
     [JsonIgnore]

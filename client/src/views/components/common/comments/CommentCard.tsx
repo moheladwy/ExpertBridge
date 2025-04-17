@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextField, IconButton } from "@mui/material";
 import { ThumbUp, ThumbDown } from "@mui/icons-material";
 import { Comment } from "@/features/comments/types";
+import { useCreateReplyMutation } from "@/features/comments/commentsSlice";
+import toast from "react-hot-toast";
 
 interface CommentItemProps {
   comment: Comment;
@@ -10,28 +12,44 @@ interface CommentItemProps {
 const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replyText, setReplyText] = useState("");
-  const [replies, setReplies] = useState<any[]>(comment.replies || []);
+  const [replies, setReplies] = useState<Comment[]>(comment.replies || []);
 
-  const handleReplySubmit = () => {
+  const [createComment, { isLoading, isSuccess, isError }] = useCreateReplyMutation();
+
+  useEffect(() => {
+    if (isError) toast.error("An error occurred while creating your reply");
+    if (isSuccess) {
+      toast.success("reply created successfully");
+      setReplies(comment.replies || []);
+    }
+  }, [isSuccess, isError]);
+
+  const handleReplySubmit = async () => {
     if (!replyText.trim()) return;
 
-    const newReply: any = {
-      id: String(Date.now()), // Temporary unique ID
-      content: replyText,
-      upvotes: 0,
-      downvotes: 0,
-      author: {
-        id: 'curr',
-        userId: "current-user", // Assume the user is logged in
-        firstName: "Current",
-        lastName: "User",
-        profilePictureUrl: "/default-avatar.png",
-        jobTitle: "User Role",
-      },
-      replies: [],
-    };
+    // const newReply: any = {
+    //   id: String(Date.now()), // Temporary unique ID
+    //   content: replyText,
+    //   upvotes: 0,
+    //   downvotes: 0,
+    //   author: {
+    //     id: 'curr',
+    //     userId: "current-user", // Assume the user is logged in
+    //     firstName: "Current",
+    //     lastName: "User",
+    //     profilePictureUrl: "/default-avatar.png",
+    //     jobTitle: "User Role",
+    //   },
+    //   replies: [],
+    // };
 
-    setReplies((prev) => [...prev, newReply]);
+    await createComment({
+      postId: comment.postId,
+      content: replyText,
+      parentCommentId: comment.id,
+    });
+
+    // setReplies((prev) => [...prev, newReply]);
     setReplyText("");
   };
 
@@ -82,8 +100,11 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
           placeholder="Write a reply..."
           value={replyText}
           onChange={(e) => setReplyText(e.target.value)}
+          disabled={isLoading}
         />
-        <Button onClick={handleReplySubmit} variant="contained" size="small" className="mt-2">
+        <Button onClick={handleReplySubmit} variant="contained" size="small" className="mt-2"
+          disabled={isLoading}
+        >
           Reply
         </Button>
       </div>

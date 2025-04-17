@@ -18,4 +18,11 @@ export interface Comment {
 export interface AddCommentRequest {
   content: string;
   postId: string;
+  parentCommentId?: string | null;
+  mediaUrls?: string[] | null;
+}
+export interface AddReplyRequest {
+  content: string;
+  postId: string;
+  parentCommentId: string;
 }

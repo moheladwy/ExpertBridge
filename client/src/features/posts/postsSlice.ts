@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSelector, EntityState } from "@reduxjs/toolkit";
-import { emptyApiSlice } from "../api/apiSlice";
+import { apiSlice } from "../api/apiSlice";
 import { AddPostRequest, Post } from "./types";
 import { sub } from 'date-fns';
 
@@ -10,22 +10,14 @@ const postsAdapter = createEntityAdapter<Post>({
 });
 const initialState: PostsState = postsAdapter.getInitialState();
 
-export const postsApiSlice = emptyApiSlice.injectEndpoints({
+export const postsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<PostsState, void>({
       query: () => '/posts',
-      transformResponse: (response: any[]) => {
+      transformResponse: (response: Post[]) => {
         console.log(response);
-        const min = 1;
-        const loadedPosts = response.map(post => {
-          // if (!post.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
-          // if (!post.upvotes) post.upvotes = 0;
-          // if (!post.downvotes) post.downvotes = 0;
-          // if (!post.tags) post.tags = [];
-          return post;
-        })
 
-        return postsAdapter.setAll(initialState, loadedPosts);
+        return postsAdapter.setAll(initialState, response);
       },
       providesTags: (result = initialState, error, arg) => [
         'Post',
@@ -54,6 +46,129 @@ export const postsApiSlice = emptyApiSlice.injectEndpoints({
 
     }),
 
+    upvotePost: builder.mutation<Post, Post>({
+      query: post => ({
+        url: `/posts/${post.id}/upvote`,
+        method: 'PATCH',
+      }),
+      onQueryStarted: async (post, lifecycleApi) => {
+        let upvotes = post.upvotes;
+        let downvotes = post.downvotes;
+        let isUpvoted = post.isUpvoted;
+        let isDownvoted = post.isDownvoted;
+
+        // toggle
+        if (post.isUpvoted) {
+          upvotes -= 1;
+          isUpvoted = false;
+        } // change opposites
+        else if (post.isDownvoted) {
+          downvotes -= 1;
+          upvotes += 1;
+          isDownvoted = false;
+          isUpvoted = true;
+        } // new vote
+        else {
+          upvotes += 1;
+          isUpvoted = true;
+        }
+
+        const getPostsPatchResult = lifecycleApi.dispatch(
+          postsApiSlice.util.updateQueryData('getPosts', undefined, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.entities[post.id];
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        const getPostPatchResult = lifecycleApi.dispatch(
+          postsApiSlice.util.updateQueryData('getPost', post.id, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            if (draft) {
+              draft.upvotes = upvotes;
+              draft.downvotes = downvotes;
+              draft.isUpvoted = isUpvoted;
+              draft.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        try {
+          await lifecycleApi.queryFulfilled;
+        }
+        catch {
+          getPostsPatchResult.undo();
+          getPostPatchResult.undo();
+        }
+      }
+    }),
+
+    downvotePost: builder.mutation<Post, Post>({
+      query: post => ({
+        url: `/posts/${post.id}/downvote`,
+        method: 'PATCH',
+      }),
+      onQueryStarted: async (post, lifecycleApi) => {
+        let upvotes = post.upvotes;
+        let downvotes = post.downvotes;
+        let isUpvoted = post.isUpvoted;
+        let isDownvoted = post.isDownvoted;
+
+        // toggle
+        if (post.isDownvoted) {
+          downvotes -= 1;
+          isDownvoted = false;
+        } // change opposites
+        else if (post.isUpvoted) {
+          downvotes += 1;
+          upvotes -= 1;
+          isDownvoted = true;
+          isUpvoted = false;
+        } // new vote
+        else {
+          downvotes += 1;
+          isDownvoted = true;
+        }
+
+        const getPostsPatchResult = lifecycleApi.dispatch(
+          postsApiSlice.util.updateQueryData('getPosts', undefined, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.entities[post.id];
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        const getPostPatchResult = lifecycleApi.dispatch(
+          postsApiSlice.util.updateQueryData('getPost', post.id, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            if (draft) {
+              draft.upvotes = upvotes;
+              draft.downvotes = downvotes;
+              draft.isUpvoted = isUpvoted;
+              draft.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        try {
+          await lifecycleApi.queryFulfilled;
+        }
+        catch {
+          getPostsPatchResult.undo();
+          getPostPatchResult.undo();
+        }
+      }
+    }),
 
   }),
 });
@@ -62,6 +177,8 @@ export const {
   useGetPostQuery,
   useGetPostsQuery,
   useCreatePostMutation,
+  useUpvotePostMutation,
+  useDownvotePostMutation,
 } = postsApiSlice;
 
 

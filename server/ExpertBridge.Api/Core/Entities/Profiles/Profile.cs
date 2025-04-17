@@ -12,7 +12,7 @@ using ExpertBridge.Api.Core.Entities.PostVotes;
 
 namespace ExpertBridge.Api.Core.Entities.Profiles;
 
-public partial class Profile : BaseModel
+public partial class Profile : BaseModel, ISoftDeletable
 {
     public string UserId { get; set; }
     public string? JobTitle { get; set; }
@@ -26,6 +26,8 @@ public partial class Profile : BaseModel
     public string? Username { get; set; }
     public string? PhoneNumber { get; set; }
     public bool IsBanned { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }
 
 public partial class Profile

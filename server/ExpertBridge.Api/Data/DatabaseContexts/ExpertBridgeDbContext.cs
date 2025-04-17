@@ -33,7 +33,6 @@ using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Entities.Skills;
 using ExpertBridge.Api.Core.Entities.Tags;
 using ExpertBridge.Api.Core.Entities.Users;
-using ExpertBridge.Api.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Data.DatabaseContexts;

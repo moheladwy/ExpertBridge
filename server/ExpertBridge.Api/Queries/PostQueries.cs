@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Linq;
+using System.Linq.Expressions;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -25,25 +26,20 @@ namespace ExpertBridge.Api.Queries
                 ;
         }
 
+        public static IQueryable<Post> FullyPopulatedPostQuery(this IQueryable<Post> query,
+            Expression<Func<Post, bool>> predicate)
+        {
+            return query
+                .FullyPopulatedPostQuery()
+                .Where(predicate);
+        }
+
         public static IQueryable<PostResponse> SelectPostResponseFromFullPost(
             this IQueryable<Post> query,
             string? userProfileId)
         {
             return query
-                .Select(p => new PostResponse
-                {
-                    IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
-                    IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
-
-                    Title = p.Title,
-                    Content = p.Content,
-                    Author = p.Author.SelectAuthorResponseFromProfile(),
-                    CreatedAt = p.CreatedAt,
-                    Id = p.Id,
-                    Upvotes = p.Votes.Count(v => v.IsUpvote),
-                    Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                    Comments = p.Comments.Count
-                });
+                .Select(p => SelectPostResponseFromFullPost(p, userProfileId));
         }
 
         public static PostResponse SelectPostResponseFromFullPost(

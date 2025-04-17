@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Security.Claims;
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Posts;
+using ExpertBridge.Api.Core.Entities.PostVotes;
 using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
@@ -40,8 +41,7 @@ public class PostsController(
         var userProfileId = user?.Profile?.Id;
 
         var post = await _dbContext.Posts
-            .FullyPopulatedPostQuery()
-            .Where(p => p.Id == postId)
+            .FullyPopulatedPostQuery(p => p.Id == postId)
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstOrDefaultAsync();
 
@@ -93,23 +93,140 @@ public class PostsController(
         await _dbContext.SaveChangesAsync();
 
         return post.SelectPostResponseFromFullPost(userProfileId);
-        //return await _dbContext.Posts
-        //    .FullyPopulatedPostQuery()
-        //    .Where(p => p.Id == post.Id)
-        //    .SelectPostResponseFromFullPost(userProfileId)
-        //    .FirstAsync();
     }
 
-    [HttpPatch("{postId}/up-vote")]
-    public async Task<IActionResult> UpVote([FromRoute] string postId)
+    /// <summary>
+    ///     UpVote a post. If the user has already upvoted the post, it will remove the vote.
+    ///     If the user has downvoted the post, it will remove the downvote and add an upvote.
+    ///     If the user has not voted on the post, it will add an upvote.
+    /// </summary>
+    /// <param name="postId">
+    ///     The ID of the post to upvote.
+    /// </param>
+    /// <exception cref="UnauthorizedException">
+    ///     Thrown when the user is not authenticated.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///     Thrown when the postId is null or empty.
+    /// </exception>
+    /// <exception cref="PostNotFoundException">
+    ///    Thrown when the post with the given ID does not exist.
+    /// </exception>
+    /// <returns>
+    ///     The number of upvotes for the post after the operation.
+    /// </returns>
+    [HttpPatch("{postId}/upvote")]
+    public async Task<PostResponse> Upvote([FromRoute] string postId)
     {
-        throw new NotImplementedException();
+        // Get the current user from the HTTP context
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
+
+        // if the user is not authenticated, throw an exception
+        if (string.IsNullOrEmpty(userProfileId))
+            throw new UnauthorizedException($"Unauthorized Access from User {User}");
+
+        // Check if the postId is valid
+        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+
+        // Check if the post exists in the database
+        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
+
+        var vote = await _dbContext.PostVotes
+                .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
+
+        if (vote is null)
+        {
+            // If the vote does not exist, create a new one
+            var newVote = new PostVote
+            {
+                Post = post,
+                Profile = user.Profile,
+                IsUpvote = true,
+            };
+            await _dbContext.PostVotes.AddAsync(newVote);
+        }
+        else if (!vote.IsUpvote)
+        {
+            // If the vote exists but is a downvote, update it to an upvote
+            vote.IsUpvote = true;
+            vote.LastModified = DateTime.UtcNow;
+        }
+        else
+        {
+            // If the vote exists and is an upvote, remove it (toggle behavior)
+            _dbContext.PostVotes.Remove(vote);
+        }
+
+        // Save changes to the database
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+
+        return await _dbContext.Posts
+            .FullyPopulatedPostQuery(p => p.Id == postId)
+            .SelectPostResponseFromFullPost(userProfileId)
+            .FirstAsync();
     }
 
-    [HttpPatch("{postId}/down-vote")]
-    public async Task<IActionResult> DownVote([FromRoute] string postId)
+
+    [HttpPatch("{postId}/downvote")]
+    public async Task<PostResponse> Downvote([FromRoute] string postId)
     {
-        throw new NotImplementedException();
+        // Get the current user from the HTTP context
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
+
+        // if the user is not authenticated, throw an exception
+        if (string.IsNullOrEmpty(userProfileId))
+            throw new UnauthorizedException($"Unauthorized Access from User {User}");
+
+        // Check if the postId is valid
+        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+
+        // Check if the post exists in the database
+        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
+
+        var vote = await _dbContext.PostVotes
+                .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
+
+        if (vote is null)
+        {
+            // If the vote does not exist, create a new one
+            var newVote = new PostVote
+            {
+                PostId = postId,
+                ProfileId = userProfileId,
+                IsUpvote = false,
+            };
+            await _dbContext.PostVotes.AddAsync(newVote);
+        }
+        else if (vote.IsUpvote)
+        {
+            // If the vote exists but is a upvote, update it to an downvote
+            vote.IsUpvote = false;
+            vote.LastModified = DateTime.UtcNow;
+        }
+        else
+        {
+            // If the vote exists and is an downvote, remove it (toggle behavior)
+            _dbContext.PostVotes.Remove(vote);
+        }
+
+        // Save changes to the database
+        await _dbContext.SaveChangesAsync();
+
+        return await _dbContext.Posts
+            .FullyPopulatedPostQuery(p => p.Id == postId)
+            .SelectPostResponseFromFullPost(userProfileId)
+            .FirstAsync();
     }
 
     [HttpPut]
