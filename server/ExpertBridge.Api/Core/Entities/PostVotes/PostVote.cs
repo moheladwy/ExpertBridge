@@ -3,11 +3,9 @@
 
 namespace ExpertBridge.Api.Core.Entities.PostVotes;
 
-public class PostVote
+public class PostVote : BaseModel
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
     public bool IsUpvote { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Foreign keys
     public string ProfileId { get; set; }
