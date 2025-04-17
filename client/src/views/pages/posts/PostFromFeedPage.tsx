@@ -4,6 +4,8 @@ import { Comment } from "@/features/comments/types";
 import { useParams } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import FullPostWithComments from "../../components/common/posts/FullPostWithComments";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import { useEffect } from "react";
 
 
 const PostFromFeedPage: React.FC = () => {

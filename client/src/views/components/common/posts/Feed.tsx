@@ -8,9 +8,11 @@ import { randomInt } from "crypto";
 import { selectPostIds, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useAppSelector } from "@/app/hooks";
 import CreatePostModal from "./CreatePostModal";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import { useEffect } from "react";
+import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 
 const Feed = () => {
-  // const [posts, setPosts] = useState<Post[]>([]);
 
   const {
     data: posts,
@@ -18,12 +20,12 @@ const Feed = () => {
     isSuccess: postsSuccess,
     isError: postsError,
     error: postsErrorMessage,
+    refetch
   } = useGetPostsQuery();
 
   const orderedPostIds = useAppSelector(selectPostIds);
 
-
-
+  useRefetchOnLogin(refetch);
 
   // useEffect(() => {
   //   // Simulating fetch

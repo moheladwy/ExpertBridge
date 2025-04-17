@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import PostVoteButtons from "./PostVoteButtons";
 
 interface PostCardProps {
   postId: string;
@@ -31,17 +32,8 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
   if (!post) return null;
 
   const [open, setOpen] = useState(false);
-  const voteDifference = post.upvotes - post.downvotes;
   const totalCommentsNumber = post.comments?.length;
   let media;
-
-  const handleUpVote = () => {
-    console.log("Up")
-  };
-
-  const handleDownVote = () => {
-    console.log("Down")
-  };
 
   const handleCopyLink = () => {
     const postUrl = `${window.location.origin}/feed/${post.id}`;
@@ -145,19 +137,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
             {/* Votes */}
-            <div className="flex gap-2 items-stretch  bg-gray-200 rounded-full w-fit">
-              <div className="rounded-l-full p-1 hover:bg-green-100  hover:cursor-pointer" onClick={handleUpVote}>
-                <ArrowBigUp className="text-gray-500 hover:text-green-400"/>
-              </div>
-              
-              <div className={`flex justify-center items-center text-sm font-bold ${voteDifference >= 0 ? "text-green-600" : "text-red-600"}`}>
-                {voteDifference}
-              </div>
-
-              <div className="rounded-l-full p-1 rotate-180 hover:bg-red-100  hover:cursor-pointer" onClick={handleDownVote}>
-                <ArrowBigUp className="text-gray-500 hover:text-red-400"/>
-              </div>
-            </div>
+            <PostVoteButtons post={post} />
 
             {/* Comments */}
             <Link to={`/feed/${post.id}`}>
