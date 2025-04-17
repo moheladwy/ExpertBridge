@@ -26,7 +26,6 @@ public class CommentsController(
     AuthorizationHelper _authHelper
     ) : ControllerBase
 {
-    // TODO: Create a comment response with CommentQueries
     [HttpPost]
     public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
     {
