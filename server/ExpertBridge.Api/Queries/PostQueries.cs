@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Linq;
+using System.Linq.Expressions;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,14 @@ namespace ExpertBridge.Api.Queries
                 //.ThenInclude(c => c.Replies)
                 //.ThenInclude(c => c.Author)
                 ;
+        }
+
+        public static IQueryable<Post> FullyPopulatedPostQuery(this IQueryable<Post> query,
+            Expression<Func<Post, bool>> predicate)
+        {
+            return query
+                .FullyPopulatedPostQuery()
+                .Where(predicate);
         }
 
         public static IQueryable<PostResponse> SelectPostResponseFromFullPost(

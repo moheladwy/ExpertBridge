@@ -41,8 +41,7 @@ public class PostsController(
         var userProfileId = user?.Profile?.Id;
 
         var post = await _dbContext.Posts
-            .FullyPopulatedPostQuery()
-            .Where(p => p.Id == postId)
+            .FullyPopulatedPostQuery(p => p.Id == postId)
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstOrDefaultAsync();
 
@@ -94,11 +93,6 @@ public class PostsController(
         await _dbContext.SaveChangesAsync();
 
         return post.SelectPostResponseFromFullPost(userProfileId);
-        //return await _dbContext.Posts
-        //    .FullyPopulatedPostQuery()
-        //    .Where(p => p.Id == post.Id)
-        //    .SelectPostResponseFromFullPost(userProfileId)
-        //    .FirstAsync();
     }
 
     /// <summary>
@@ -121,8 +115,8 @@ public class PostsController(
     /// <returns>
     ///     The number of upvotes for the post after the operation.
     /// </returns>
-    [HttpPatch("{postId}/up-vote")]
-    public async Task<int> UpVote([FromRoute] string postId)
+    [HttpPatch("{postId}/upvote")]
+    public async Task<PostResponse> Upvote([FromRoute] string postId)
     {
         // Get the current user from the HTTP context
         var user = await _authHelper.GetCurrentUserAsync(User);
@@ -147,8 +141,8 @@ public class PostsController(
             // If the vote does not exist, create a new one
             var newVote = new PostVote
             {
-                PostId = postId,
-                ProfileId = userProfileId,
+                Post = post,
+                Profile = user.Profile,
                 IsUpvote = true,
             };
             await _dbContext.PostVotes.AddAsync(newVote);
@@ -158,14 +152,6 @@ public class PostsController(
             // If the vote exists but is a downvote, update it to an upvote
             vote.IsUpvote = true;
             vote.LastModified = DateTime.UtcNow;
-            _dbContext.PostVotes.Update(vote);
-        }
-        else if (vote.IsUpvote && vote.IsDeleted)
-        {
-            vote.IsDeleted = false;
-            vote.DeletedAt = null;
-            vote.LastModified = DateTime.UtcNow;
-            _dbContext.PostVotes.Update(vote);
         }
         else
         {
@@ -174,20 +160,24 @@ public class PostsController(
         }
 
         // Save changes to the database
-        await _dbContext.SaveChangesAsync();
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
 
-        // Return the number of upvotes for the post after the operation
-        return await _dbContext.PostVotes
-            .Where(v => v.PostId == postId &&
-                    v.ProfileId == userProfileId &&
-                    v.IsUpvote &&
-                    !v.IsDeleted)
-            .CountAsync();
+        return await _dbContext.Posts
+            .FullyPopulatedPostQuery(p => p.Id == postId)
+            .SelectPostResponseFromFullPost(userProfileId)
+            .FirstAsync();
     }
 
 
-    [HttpPatch("{postId}/down-vote")]
-    public async Task<int> DownVote([FromRoute] string postId)
+    [HttpPatch("{postId}/downvote")]
+    public async Task<PostResponse> Downvote([FromRoute] string postId)
     {
         // Get the current user from the HTTP context
         var user = await _authHelper.GetCurrentUserAsync(User);
@@ -222,22 +212,7 @@ public class PostsController(
         {
             // If the vote exists but is a upvote, update it to an downvote
             vote.IsUpvote = false;
-            vote.IsDeleted = false;
-            vote.DeletedAt = null;
             vote.LastModified = DateTime.UtcNow;
-
-            // NO NEED, because the tracking takes care of this.
-            _dbContext.PostVotes.Update(vote);
-        }
-        else if (!vote.IsUpvote && vote.IsDeleted)
-        {
-            // If the vote exists but is deleted, unmark it as deleted.
-            vote.IsDeleted = false;
-            vote.DeletedAt = null;
-            vote.LastModified = DateTime.UtcNow;
-
-            // NO NEED, because the tracking takes care of this.
-            _dbContext.PostVotes.Update(vote);
         }
         else
         {
@@ -248,13 +223,10 @@ public class PostsController(
         // Save changes to the database
         await _dbContext.SaveChangesAsync();
 
-        // Return the number of downvotes for the post after the operation
-        return await _dbContext.PostVotes
-            .Where(v => v.PostId == postId &&
-                    v.ProfileId == userProfileId &&
-                    !v.IsUpvote &&
-                    !v.IsDeleted)
-            .CountAsync();
+        return await _dbContext.Posts
+            .FullyPopulatedPostQuery(p => p.Id == postId)
+            .SelectPostResponseFromFullPost(userProfileId)
+            .FirstAsync();
     }
 
     [HttpPut]
