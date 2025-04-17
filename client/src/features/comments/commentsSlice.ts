@@ -49,7 +49,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         try {
           const { data: createdComment } = await lifecycleApi.queryFulfilled;
           const getCommentsByPostPatchResult = lifecycleApi.dispatch(
-            commentsApiSlice.util.updateQueryData('getCommentsByPostId', `${request.postId}`, (draft) => {
+            commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId, (draft) => {
               Object.assign(draft, draft.concat(createdComment));
               console.log(draft);
             }),
@@ -77,21 +77,14 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
             commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId, (draft) => {
               const parent = draft.find(c => c.id == request.parentCommentId);
               if (parent) {
-                parent.replies = parent.replies || [];
-                parent.replies.push(createdReply);
-                console.log(parent);
+                parent.replies = (parent.replies || []).concat(createdReply);
               }
             }),
           );
 
           const getCommentPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.updateQueryData('getComment', request.parentCommentId, (draft) => {
-              const parent = draft;
-              if (parent) {
-                parent.replies = parent.replies || [];
-                parent.replies.push(createdReply);
-                console.log(parent);
-              }
+              draft.replies = (draft.replies || []).concat(createdReply);
             }),
           );
         }
