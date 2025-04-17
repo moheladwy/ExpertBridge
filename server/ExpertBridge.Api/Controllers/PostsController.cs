@@ -147,14 +147,9 @@ public class PostsController(
             // If the vote does not exist, create a new one
             var newVote = new PostVote
             {
-                Id = Guid.NewGuid().ToString(),
                 PostId = postId,
                 ProfileId = userProfileId,
                 IsUpvote = true,
-                CreatedAt = DateTime.UtcNow,
-                LastModified = null,
-                IsDeleted = false,
-                DeletedAt = null
             };
             await _dbContext.PostVotes.AddAsync(newVote);
         }
@@ -217,14 +212,9 @@ public class PostsController(
             // If the vote does not exist, create a new one
             var newVote = new PostVote
             {
-                Id = Guid.NewGuid().ToString(),
                 PostId = postId,
                 ProfileId = userProfileId,
                 IsUpvote = false,
-                CreatedAt = DateTime.UtcNow,
-                LastModified = null,
-                IsDeleted = false,
-                DeletedAt = null
             };
             await _dbContext.PostVotes.AddAsync(newVote);
         }
@@ -235,6 +225,8 @@ public class PostsController(
             vote.IsDeleted = false;
             vote.DeletedAt = null;
             vote.LastModified = DateTime.UtcNow;
+
+            // NO NEED, because the tracking takes care of this.
             _dbContext.PostVotes.Update(vote);
         }
         else if (!vote.IsUpvote && vote.IsDeleted)
@@ -243,6 +235,8 @@ public class PostsController(
             vote.IsDeleted = false;
             vote.DeletedAt = null;
             vote.LastModified = DateTime.UtcNow;
+
+            // NO NEED, because the tracking takes care of this.
             _dbContext.PostVotes.Update(vote);
         }
         else

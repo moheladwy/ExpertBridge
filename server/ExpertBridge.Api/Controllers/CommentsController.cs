@@ -19,13 +19,13 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 [Authorize]
 public class CommentsController(
     ExpertBridgeDbContext _dbContext,
     AuthorizationHelper _authHelper
     ) : ControllerBase
 {
+    [Route("/api/[controller]")]
     [HttpPost]
     public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
     {
@@ -50,12 +50,24 @@ public class CommentsController(
             throw new PostNotFoundException($"Post with id={request.PostId} was not found");
         }
 
+        Comment? parentComment = null;
+        if (!string.IsNullOrEmpty(request.ParentCommentId))
+        {
+            parentComment = await _dbContext.Comments
+                .FirstOrDefaultAsync(c => c.Id == request.ParentCommentId);
+            if (parentComment == null)
+            {
+                throw new CommentNotFoundException($"Parent comment with id={request.ParentCommentId} was not found");
+            }
+        }
+
         var comment = new Comment
         {
             AuthorId = user.Profile.Id,
             Author = profile,
             Content = request.Content,
             ParentCommentId = request.ParentCommentId,
+            ParentComment = parentComment,
             Post = post,
             PostId = post.Id
         };
@@ -71,8 +83,14 @@ public class CommentsController(
     // currently used?
     // Something like: /api/comments?postId=aabb33cc
 
+    // THINK!
+    // Will migrating to query params make it that more than
+    // one endpoint match a certain request? Hmmmm...
+    // Ex. /api/comments?postId=aabb33cc /api/comments?userId=bbffcc11
+
+
+    [Route("/api/posts/{postId}/comments")]
     [AllowAnonymous]
-    [Route("api/posts/{postId}/[controller]")]
     [HttpGet] // api/posts/postid/comments
     public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {

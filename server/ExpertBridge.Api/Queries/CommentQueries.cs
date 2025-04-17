@@ -14,6 +14,7 @@ namespace ExpertBridge.Api.Queries
         public static IQueryable<Comment> FullyPopulatedCommentQuery(this IQueryable<Comment> query)
         {
             return query
+                .Where(c => c.ParentCommentId == null)
                 .Include(c => c.Author)
                 .Include(c => c.Replies)
                 .ThenInclude(r => r.Author)
@@ -49,6 +50,7 @@ namespace ExpertBridge.Api.Queries
                 CreatedAt = c.CreatedAt,
                 Replies = c.Replies
                             .AsQueryable()
+                            .OrderBy(c => c.CreatedAt)
                             .SelectCommentResponseFromFullComment(userProfileId)
                             .ToList()
             };
