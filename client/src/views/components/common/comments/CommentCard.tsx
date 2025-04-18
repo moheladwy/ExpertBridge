@@ -4,6 +4,7 @@ import { ThumbUp, ThumbDown } from "@mui/icons-material";
 import { Comment } from "@/features/comments/types";
 import { useCreateReplyMutation } from "@/features/comments/commentsSlice";
 import toast from "react-hot-toast";
+import CommentVoteButtons from "./CommentVoteButtons";
 
 interface CommentItemProps {
   comment: Comment;
@@ -75,14 +76,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
 
       {/* Comment Actions */}
       <div className="flex items-center mt-2 space-x-3">
-        <IconButton color="primary">
-          <ThumbUp fontSize="small" />
-        </IconButton>
-        <span>{comment.upvotes}</span>
-        <IconButton color="secondary">
-          <ThumbDown fontSize="small" />
-        </IconButton>
-        <span>{comment.downvotes}</span>
+        <CommentVoteButtons comment={comment} />
 
         {comment.replies && comment.replies.length > 0 && (
           <Button size="small" onClick={() => setShowReplies((prev) => !prev)} className="text-blue-500">

@@ -32,18 +32,18 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
   if (!post) return null;
 
   const [open, setOpen] = useState(false);
-  const totalCommentsNumber = post.comments?.length;
+  const totalCommentsNumber = post.comments;
   let media;
 
   const handleCopyLink = () => {
     const postUrl = `${window.location.origin}/feed/${post.id}`;
     navigator.clipboard.writeText(postUrl)
-    .then(() => {
-      toast.success("Link copied successfully");
-    })
-    .catch((err) => {
-      toast.error("Failed to copy link");
-    });
+      .then(() => {
+        toast.success("Link copied successfully");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy link");
+      });
   }
 
   const handleOpen = () => setOpen(true);
@@ -52,34 +52,34 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
   };
 
   //Manage diffrent media typs
-  if (post.medias?.length > 0) {  
+  if (post.medias?.length > 0) {
     if (post.medias[0].type === "Picture") {
       media = (
-        <img 
-          src={post.medias[0].url} 
-          alt="Post content" 
+        <img
+          src={post.medias[0].url}
+          alt="Post content"
           onClick={handleOpen}
         />
       );
     } else {
       media = (
-        <video 
-          src={post.medias[0].url} 
-          controls 
+        <video
+          src={post.medias[0].url}
+          controls
         />
       );
     }
   }
 
-  
+
 
   return (
     <>
       <Modal open={open} onClose={handleClose} aria-labelledby="create-post-modal" className="flex justify-center items-center">
         {post.medias?.[0]?.url ? (
-          <img 
-            src={post.medias[0].url} 
-            alt="Post content" 
+          <img
+            src={post.medias[0].url}
+            alt="Post content"
             className="max-w-full max-h-[90vh] object-contain"
           />
         ) : (
@@ -89,24 +89,24 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
         )}
       </Modal>
       <div className="flex flex-col gap-3 bg-white shadow-md rounded-lg p-4 border border-gray-200">
-          {/* Author Info */}
-          <div className="flex items-center space-x-3">
-            <img
-              src={post.author.profilePictureUrl}
-              // alt={`${post.author.id} Profile`}
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <div>
-              {/* Name */}
-              <h3 className="text-md font-semibold">{post.author.firstName + ' ' + post.author.lastName}</h3>
-              {/* Publish Date */}
-              <div className="flex justify-between items-center text-sm text-gray-500">
-                <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-              </div>
+        {/* Author Info */}
+        <div className="flex items-center space-x-3">
+          <img
+            src={post.author.profilePictureUrl}
+            // alt={`${post.author.id} Profile`}
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <div>
+            {/* Name */}
+            <h3 className="text-md font-semibold">{post.author.firstName + ' ' + post.author.lastName}</h3>
+            {/* Publish Date */}
+            <div className="flex justify-between items-center text-sm text-gray-500">
+              <span>{new Date(post.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
+        </div>
 
         {/* Post Title */}
         <Link to={`/feed/${post.id}`}>
@@ -142,7 +142,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
             {/* Comments */}
             <Link to={`/feed/${post.id}`}>
               <div className="flex items-center gap-2 rounded-full p-1 px-2 hover:bg-gray-200  hover:cursor-pointer">
-                <MessageCircle className="text-gray-500"/>
+                <MessageCircle className="text-gray-500" />
                 <div className="text-gray-500 text-md font-bold ">
                   {totalCommentsNumber}
                 </div>
@@ -153,12 +153,12 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
           {/* More */}
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Ellipsis className=" text-gray-500 hover:text-gray-700 hover:cursor-pointer"/>
+              <Ellipsis className=" text-gray-500 hover:text-gray-700 hover:cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>
                 <div className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer" onClick={handleCopyLink}>
-                  <Link2 className="w-5"/>
+                  <Link2 className="w-5" />
                   <h6>Copy link</h6>
                 </div>
               </DropdownMenuItem>
