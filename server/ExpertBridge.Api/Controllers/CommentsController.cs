@@ -3,6 +3,7 @@
 
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Comments;
+using ExpertBridge.Api.Core.Entities.CommentVotes;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
@@ -20,6 +21,7 @@ namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
 [Authorize]
+[Route("api/[controller]")]
 public class CommentsController(
     ExpertBridgeDbContext _dbContext,
     AuthorizationHelper _authHelper
@@ -33,6 +35,7 @@ public class CommentsController(
         // Else, return BadRequest
 
         ArgumentNullException.ThrowIfNull(request);
+        ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
 
         var user = await _authHelper.GetCurrentUserAsync(User);
 
@@ -120,7 +123,7 @@ public class CommentsController(
         throw new NotImplementedException();
     }
 
-    [Route("api/users/{userId}/[controller]")]
+    [Route("/api/users/{userId}/[controller]")]
     [HttpGet]
     public async Task<IEnumerable<CommentResponse>> GetAllByUserId([FromRoute] string userId)
     {
@@ -128,7 +131,7 @@ public class CommentsController(
     }
 
     [HttpPatch("{commentId}")]
-    public async Task<IActionResult> Patch([FromBody] PatchCommentRequest request)
+    public async Task<IActionResult> Patch([FromRoute] string commentId, [FromBody] PatchCommentRequest request)
     {
         throw new NotImplementedException();
 
@@ -151,17 +154,109 @@ public class CommentsController(
         // return content
     }
 
-    //[HttpPost("{commnetId}/upvote")]
-    //public async Task<IActionResult> UpVote()
-    //{
-    //    throw new NotImplementedException();
-    //}
+    [HttpPatch("{commentId}/upvote")]
+    public async Task<CommentResponse> Upvote([FromRoute] string commentId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(commentId);
 
-    //[HttpPost("down-vote/{commnetId}")]
-    //public async Task<IActionResult> DownVote()
-    //{
-    //    throw new NotImplementedException();
-    //}
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+
+        if (user == null)
+        {
+            throw new UnauthorizedException();
+        }
+        if (comment == null)
+        {
+            throw new CommentNotFoundException($"Comment with id={commentId} was not found");
+        }
+
+        var vote = await _dbContext.CommentVotes
+            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == user.Profile.Id);
+
+        if (vote == null)
+        {
+            vote = new CommentVote
+            {
+                ProfileId = user.Profile.Id,
+                CommentId = comment.Id,
+                IsUpvote = true
+            };
+
+            await _dbContext.AddAsync(vote);
+        }
+        else
+        {
+            if (vote.IsUpvote)
+            {
+                _dbContext.CommentVotes.Remove(vote); 
+            }
+            else
+            {
+                vote.IsUpvote = true;
+                vote.LastModified = DateTime.UtcNow;
+            }
+        }
+
+        await _dbContext.SaveChangesAsync();
+
+        return await _dbContext.Comments
+            .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
+            .SelectCommentResponseFromFullComment(user.Profile.Id)
+            .FirstAsync();
+    }
+
+    [HttpPatch("{commentId}/downvote")]
+    public async Task<CommentResponse> Downvote([FromRoute] string commentId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(commentId);
+
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+
+        if (user == null)
+        {
+            throw new UnauthorizedException();
+        }
+        if (comment == null)
+        {
+            throw new CommentNotFoundException($"Comment with id={commentId} was not found");
+        }
+
+        var vote = await _dbContext.CommentVotes
+            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == user.Profile.Id);
+
+        if (vote == null)
+        {
+            vote = new CommentVote
+            {
+                ProfileId = user.Profile.Id,
+                CommentId = comment.Id,
+                IsUpvote = false,
+            };
+
+            await _dbContext.AddAsync(vote);
+        }
+        else
+        {
+            if (vote.IsUpvote)
+            {
+                vote.IsUpvote = false;
+                vote.LastModified = DateTime.UtcNow;
+            }
+            else
+            {
+                _dbContext.CommentVotes.Remove(vote);
+            }
+        }
+
+        await _dbContext.SaveChangesAsync();
+
+        return await _dbContext.Comments
+            .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
+            .SelectCommentResponseFromFullComment(user.Profile.Id)
+            .FirstAsync();
+    }
 
     //[HttpPost("attach/{commentId}")]
     //public async Task<AttachFileToCommentResponse> AttachFile(IFormFile file, [FromRoute] string commentId)

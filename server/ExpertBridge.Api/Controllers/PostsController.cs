@@ -1,21 +1,15 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Security.Claims;
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.PostVotes;
-using ExpertBridge.Api.Core.Entities.Users;
-using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreatePost;
-using ExpertBridge.Api.Requests.DeleteFileFromPost;
 using ExpertBridge.Api.Requests.EditPost;
-using ExpertBridge.Api.Requests.ReportPost;
 using ExpertBridge.Api.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

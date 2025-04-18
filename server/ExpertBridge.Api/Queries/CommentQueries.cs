@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Linq.Expressions;
 using ExpertBridge.Api.Core.Entities.Comments;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Responses;
@@ -18,6 +19,16 @@ namespace ExpertBridge.Api.Queries
                 .Include(c => c.Author)
                 .Include(c => c.Replies)
                 .ThenInclude(r => r.Author)
+                ;
+        }
+
+        public static IQueryable<Comment> FullyPopulatedCommentQuery(
+            this IQueryable<Comment> query,
+            Expression<Func<Comment, bool>> predicate)
+        {
+            return query
+                .Where(predicate)
+                .FullyPopulatedCommentQuery()
                 ;
         }
 

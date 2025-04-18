@@ -3,15 +3,13 @@
 
 namespace ExpertBridge.Api.Core.Entities.CommentVotes;
 
-public class CommentVote
+public class CommentVote : BaseModel
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
     public bool IsUpvote { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Foreign keys
-    public string CommentId { get; set; }
-    public string ProfileId { get; set; }
+    public required string CommentId { get; set; }
+    public required string ProfileId { get; set; }
 
     // Navigation properties
     public Profiles.Profile Profile { get; set; }
