@@ -15,7 +15,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   const [replyText, setReplyText] = useState("");
   const [replies, setReplies] = useState<Comment[]>(comment.replies || []);
 
-  const [createComment, { isLoading, isSuccess, isError }] = useCreateReplyMutation();
+  const [createReply, { isLoading, isSuccess, isError }] = useCreateReplyMutation();
 
   useEffect(() => {
     if (isError) toast.error("An error occurred while creating your reply");
@@ -28,29 +28,12 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   const handleReplySubmit = async () => {
     if (!replyText.trim()) return;
 
-    // const newReply: any = {
-    //   id: String(Date.now()), // Temporary unique ID
-    //   content: replyText,
-    //   upvotes: 0,
-    //   downvotes: 0,
-    //   author: {
-    //     id: 'curr',
-    //     userId: "current-user", // Assume the user is logged in
-    //     firstName: "Current",
-    //     lastName: "User",
-    //     profilePictureUrl: "/default-avatar.png",
-    //     jobTitle: "User Role",
-    //   },
-    //   replies: [],
-    // };
-
-    await createComment({
+    await createReply({
       postId: comment.postId,
       content: replyText,
       parentCommentId: comment.id,
     });
 
-    // setReplies((prev) => [...prev, newReply]);
     setReplyText("");
   };
 

@@ -4,7 +4,7 @@ import { Button, IconButton, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import CommentCard from "./CommentCard";
 import toast from "react-hot-toast";
-
+import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 
 interface CommentsSectionProps {
   postId: string;
@@ -17,7 +17,10 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     isError: isCommentsError,
     error: commentsError,
     isSuccess: commentsSuccess,
+    refetch,
   } = useGetCommentsByPostIdQuery(postId);
+
+  useRefetchOnLogin(refetch);
 
   const [createComment, { isLoading, isSuccess, isError }] = useCreateCommentMutation();
 
@@ -94,12 +97,12 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
         [...comments]
           .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
           .map((comment) => (
-          <CommentCard
-            key={comment.id}
-            comment={comment}
-          // onReplySubmit={(replyText) => console.log("New reply:", replyText)}
-          />
-        ))
+            <CommentCard
+              key={comment.id}
+              comment={comment}
+            // onReplySubmit={(replyText) => console.log("New reply:", replyText)}
+            />
+          ))
       }
     </div >
   );
