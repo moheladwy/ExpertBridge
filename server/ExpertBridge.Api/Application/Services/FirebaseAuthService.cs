@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 using Microsoft.Extensions.Options;
@@ -36,8 +36,13 @@ public class FirebaseAuthService : IFirebaseAuthService
     public async Task<string> LoginAsync(string email, string password)
     {
         var request = new { email, password, returnSecureToken = true };
+<<<<<<< Updated upstream
         var response = await httpClient.PostAsJsonAsync("",request);
         var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();
+=======
+        var response = await httpClient.PostAsJsonAsync("", request);
+        var authToken = await response.Content.ReadFromJsonAsync<AuthTokenSettings>();
+>>>>>>> Stashed changes
         return authToken.IdToken;
     }
 

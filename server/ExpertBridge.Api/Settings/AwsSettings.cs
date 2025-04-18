@@ -3,9 +3,9 @@
 
 using System.Text.Json.Serialization;
 
-namespace ExpertBridge.Api.Configurations;
+namespace ExpertBridge.Api.Settings;
 
-public class AwsConfigurations
+public class AwsSettings
 {
     [JsonPropertyName("AwsKey")]
     public string Awskey { get; set; }
