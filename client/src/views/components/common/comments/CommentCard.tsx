@@ -4,6 +4,7 @@ import { ThumbUp, ThumbDown } from "@mui/icons-material";
 import { Comment } from "@/features/comments/types";
 import { useCreateReplyMutation } from "@/features/comments/commentsSlice";
 import toast from "react-hot-toast";
+import CommentVoteButtons from "./CommentVoteButtons";
 
 interface CommentItemProps {
   comment: Comment;
@@ -14,7 +15,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   const [replyText, setReplyText] = useState("");
   const [replies, setReplies] = useState<Comment[]>(comment.replies || []);
 
-  const [createComment, { isLoading, isSuccess, isError }] = useCreateReplyMutation();
+  const [createReply, { isLoading, isSuccess, isError }] = useCreateReplyMutation();
 
   useEffect(() => {
     if (isError) toast.error("An error occurred while creating your reply");
@@ -27,29 +28,12 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   const handleReplySubmit = async () => {
     if (!replyText.trim()) return;
 
-    // const newReply: any = {
-    //   id: String(Date.now()), // Temporary unique ID
-    //   content: replyText,
-    //   upvotes: 0,
-    //   downvotes: 0,
-    //   author: {
-    //     id: 'curr',
-    //     userId: "current-user", // Assume the user is logged in
-    //     firstName: "Current",
-    //     lastName: "User",
-    //     profilePictureUrl: "/default-avatar.png",
-    //     jobTitle: "User Role",
-    //   },
-    //   replies: [],
-    // };
-
-    await createComment({
+    await createReply({
       postId: comment.postId,
       content: replyText,
       parentCommentId: comment.id,
     });
 
-    // setReplies((prev) => [...prev, newReply]);
     setReplyText("");
   };
 
@@ -75,14 +59,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
 
       {/* Comment Actions */}
       <div className="flex items-center mt-2 space-x-3">
-        <IconButton color="primary">
-          <ThumbUp fontSize="small" />
-        </IconButton>
-        <span>{comment.upvotes}</span>
-        <IconButton color="secondary">
-          <ThumbDown fontSize="small" />
-        </IconButton>
-        <span>{comment.downvotes}</span>
+        <CommentVoteButtons comment={comment} />
 
         {comment.replies && comment.replies.length > 0 && (
           <Button size="small" onClick={() => setShowReplies((prev) => !prev)} className="text-blue-500">

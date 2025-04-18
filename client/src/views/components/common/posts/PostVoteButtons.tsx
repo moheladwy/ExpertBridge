@@ -20,14 +20,21 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
     if (upvoteResult.isError || downvoteResult.isError) {
       toast.error('An error occurred.');
     }
-  }, [upvoteResult, downvoteResult]);
+
+    setPostVotes(prev => ({
+      ...prev,
+      userVote: post.isUpvoted ? "upvote" : post.isDownvoted ? "downvote" : null,
+    }));
+
+  }, [upvoteResult, downvoteResult, post]);
 
   const [postVotes, setPostVotes] = useState({
     upvotes: post.upvotes,
     downvotes: post.downvotes,
-    userVote: null as "upvote" | "downvote" | null,
+    userVote: post.isUpvoted ? "upvote" : post.isDownvoted ? "downvote" : null,
   });
-  
+
+
   const voteDifference = post.upvotes - post.downvotes;
 
   const handleUpvote = async () => {
@@ -74,17 +81,34 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
     //   </IconButton>
     //   <span className="text-red-600">{postVotes.downvotes}</span>
     // </div>
-    <div className="flex gap-2 items-stretch  bg-gray-200 rounded-full w-fit">
-      <div className="rounded-l-full p-1 hover:bg-green-100  hover:cursor-pointer" onClick={handleUpvote}>
-        <ArrowBigUp className="text-gray-500 hover:text-green-400" />
+    <div className="flex gap-2 items-stretch bg-gray-200 rounded-full w-fit">
+      <div
+        className={`rounded-l-full p-1 hover:bg-green-100 hover:cursor-pointer ${postVotes.userVote === "upvote" ? "bg-green-200" : ""
+          }`}
+        onClick={handleUpvote}
+      >
+        <ArrowBigUp
+          className={`${postVotes.userVote === "upvote" ? "text-green-600" : "text-gray-500 hover:text-green-400"
+            }`}
+        />
       </div>
 
-      <div className={`flex justify-center items-center text-sm font-bold ${voteDifference >= 0 ? "text-green-600" : "text-red-600"}`}>
+      <div
+        className={`flex justify-center items-center text-sm font-bold ${voteDifference >= 0 ? "text-green-600" : "text-red-600"
+          }`}
+      >
         {voteDifference}
       </div>
 
-      <div className="rounded-l-full p-1 rotate-180 hover:bg-red-100  hover:cursor-pointer" onClick={handleDownvote}>
-        <ArrowBigUp className="text-gray-500 hover:text-red-400" />
+      <div
+        className={`rounded-r-full p-1 rotate-180 hover:bg-red-100 hover:cursor-pointer ${postVotes.userVote === "downvote" ? "bg-red-200" : ""
+          }`}
+        onClick={handleDownvote}
+      >
+        <ArrowBigUp
+          className={`${postVotes.userVote === "downvote" ? "text-red-600" : "text-gray-500 hover:text-red-400"
+            }`}
+        />
       </div>
     </div>
   );

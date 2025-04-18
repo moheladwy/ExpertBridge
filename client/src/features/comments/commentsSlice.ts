@@ -94,6 +94,129 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
       }
     }),
 
+    upvoteComment: builder.mutation<Comment, Comment>({
+      query: comment => ({
+        url: `comments/${comment.id}/upvote`,
+        method: 'PATCH'
+      }),
+      onQueryStarted: async (comment, lifecycleApi) => {
+        let upvotes = comment.upvotes;
+        let downvotes = comment.downvotes;
+        let isUpvoted = comment.isUpvoted;
+        let isDownvoted = comment.isDownvoted;
+
+        // toggle
+        if (comment.isUpvoted) {
+          upvotes -= 1;
+          isUpvoted = false;
+        } // change opposites
+        else if (comment.isDownvoted) {
+          downvotes -= 1;
+          upvotes += 1;
+          isDownvoted = false;
+          isUpvoted = true;
+        } // new vote
+        else {
+          upvotes += 1;
+          isUpvoted = true;
+        }
+
+        const getCommentsByPostPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.find(c => c.id == comment.id);
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        const getCommentPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getComment', comment.id, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            if (draft) {
+              draft.upvotes = upvotes;
+              draft.downvotes = downvotes;
+              draft.isUpvoted = isUpvoted;
+              draft.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        try {
+          await lifecycleApi.queryFulfilled;
+        }
+        catch {
+          getCommentsByPostPatchResult.undo();
+          getCommentPatchResult.undo();
+        }
+      },
+    }),
+
+    downvoteComment: builder.mutation<Comment, Comment>({
+      query: comment => ({
+        url: `comments/${comment.id}/downvote`,
+        method: 'PATCH'
+      }),
+      onQueryStarted: async (comment, lifecycleApi) => {
+        let upvotes = comment.upvotes;
+        let downvotes = comment.downvotes;
+        let isUpvoted = comment.isUpvoted;
+        let isDownvoted = comment.isDownvoted;
+
+        // toggle
+        if (comment.isDownvoted) {
+          downvotes -= 1;
+          isDownvoted = false;
+        } // change opposites
+        else if (comment.isUpvoted) {
+          downvotes += 1;
+          upvotes -= 1;
+          isDownvoted = true;
+          isUpvoted = false;
+        } // new vote
+        else {
+          downvotes += 1;
+          isDownvoted = true;
+        }
+
+        const getCommentsByPostPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.find(c => c.id == comment.id);
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        const getCommentPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getComment', comment.id, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            if (draft) {
+              draft.upvotes = upvotes;
+              draft.downvotes = downvotes;
+              draft.isUpvoted = isUpvoted;
+              draft.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        try {
+          await lifecycleApi.queryFulfilled;
+        }
+        catch {
+          getCommentsByPostPatchResult.undo();
+          getCommentPatchResult.undo();
+        }
+      },
+    }),
 
   }),
 });
@@ -103,6 +226,8 @@ export const {
   useGetCommentsByPostIdQuery,
   useCreateCommentMutation,
   useCreateReplyMutation,
+  useUpvoteCommentMutation,
+  useDownvoteCommentMutation,
 } = commentsApiSlice;
 
 
