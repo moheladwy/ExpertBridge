@@ -5,6 +5,7 @@ using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 using Microsoft.Extensions.Options;
+using ExpertBridge.Api.Configurations;
 
 namespace ExpertBridge.Api.Application.Services;
 
@@ -36,13 +37,8 @@ public class FirebaseAuthService : IFirebaseAuthService
     public async Task<string> LoginAsync(string email, string password)
     {
         var request = new { email, password, returnSecureToken = true };
-<<<<<<< Updated upstream
         var response = await httpClient.PostAsJsonAsync("",request);
-        var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();
-=======
-        var response = await httpClient.PostAsJsonAsync("", request);
         var authToken = await response.Content.ReadFromJsonAsync<AuthTokenSettings>();
->>>>>>> Stashed changes
         return authToken.IdToken;
     }
 
