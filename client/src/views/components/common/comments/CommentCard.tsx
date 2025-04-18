@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, TextField, IconButton } from "@mui/material";
 import { ThumbUp, ThumbDown } from "@mui/icons-material";
 import { Comment } from "@/features/comments/types";
-import { useCreateReplyMutation } from "@/features/comments/commentsSlice";
+import { commentsApiSlice, useCreateReplyMutation } from "@/features/comments/commentsSlice";
 import toast from "react-hot-toast";
 import CommentVoteButtons from "./CommentVoteButtons";
 
@@ -13,7 +13,7 @@ interface CommentItemProps {
 const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replyText, setReplyText] = useState("");
-  const [replies, setReplies] = useState<Comment[]>(comment.replies || []);
+  // const [replies, setReplies] = useState<Comment[]>(comment.replies || []);
 
   const [createReply, { isLoading, isSuccess, isError }] = useCreateReplyMutation();
 
@@ -21,9 +21,9 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
     if (isError) toast.error("An error occurred while creating your reply");
     if (isSuccess) {
       toast.success("reply created successfully");
-      setReplies(comment.replies || []);
+      // setReplies(comment.replies || []);
     }
-  }, [isSuccess, isError]);
+  }, [isSuccess, isError, isLoading]);
 
   const handleReplySubmit = async () => {
     if (!replyText.trim()) return;
@@ -87,9 +87,9 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
       </div>
 
       {/* Replies Section */}
-      {showReplies && replies.length > 0 && (
+      {showReplies && comment.replies.length > 0 && (
         <div className="ml-6 mt-3 border-l-2 border-gray-300 pl-3">
-          {replies.map((reply) => (
+          {comment.replies.map((reply) => (
             <div key={reply.id} className="mt-2">
               <div className="flex items-center space-x-3">
                 <img

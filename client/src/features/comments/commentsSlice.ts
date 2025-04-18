@@ -21,7 +21,6 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
       //   return commentsAdapter.setAll(initialState, response);
       // },
       providesTags: (result = [], error, arg) => [
-        'Comment',
         { type: 'Comment', id: `LIST/${arg}` } as const,
         ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
       ],
@@ -70,21 +69,29 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: initialComment,
       }),
+      // invalidatesTags: (result, error, arg) => [
+      //   { type: 'Comment', id: `LIST/${arg.postId}` },
+      //   { type: 'Comment', id: arg.parentCommentId },
+      // ],
       onQueryStarted: async (request, lifecycleApi) => {
         try {
+          console.log(`Req: ${request}`, request.postId);
           const { data: createdReply } = await lifecycleApi.queryFulfilled;
           const getCommentsByPostPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId, (draft) => {
               const parent = draft.find(c => c.id == request.parentCommentId);
+              console.log(parent?.postId);
+              console.log(draft);
+              console.log(`Parent: ${parent}`);
               if (parent) {
-                parent.replies = (parent.replies || []).concat(createdReply);
+                Object.assign(parent, { ...parent, replies: (parent.replies || []).concat(createdReply) });
               }
             }),
           );
 
           const getCommentPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.updateQueryData('getComment', request.parentCommentId, (draft) => {
-              draft.replies = (draft.replies || []).concat(createdReply);
+              Object.assign(draft, { ...draft, replies: (draft.replies || []).concat(createdReply) });
             }),
           );
         }
