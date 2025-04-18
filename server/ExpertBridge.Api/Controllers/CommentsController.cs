@@ -110,7 +110,7 @@ public class CommentsController(
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         var comments = await _dbContext.Comments
-            .FullyPopulatedCommentQuery()
+            .FullyPopulatedCommentQuery(c => c.PostId == postId)
             .SelectCommentResponseFromFullComment(userProfileId)
             .ToListAsync();
 
