@@ -4,12 +4,19 @@
 using ExpertBridge.Api.Configurations;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
+using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Application.Services;
 
-public class FirebaseAuthService(HttpClient httpClient) : IFirebaseAuthService
+public class FirebaseAuthService : IFirebaseAuthService
 {
     private readonly FirebaseAuth _auth = FirebaseAuth.DefaultInstance;
+    private readonly HttpClient httpClient;
+
+    public FirebaseAuthService(IOptions<FirebaseCredentials> credentials)
+    {
+        httpClient = new HttpClient { BaseAddress = new Uri(credentials.Value.AuthenticationTokenUri) };
+    }
 
     public async Task<string> RegisterAsync(string email, string password)
     {
@@ -29,7 +36,7 @@ public class FirebaseAuthService(HttpClient httpClient) : IFirebaseAuthService
     public async Task<string> LoginAsync(string email, string password)
     {
         var request = new { email, password, returnSecureToken = true };
-        var response = await httpClient.PostAsJsonAsync("", request);
+        var response = await httpClient.PostAsJsonAsync("",request);
         var authToken = await response.Content.ReadFromJsonAsync<AuthToken>();
         return authToken.IdToken;
     }

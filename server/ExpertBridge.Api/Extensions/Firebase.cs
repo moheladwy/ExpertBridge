@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Api.Application.Services;
+using ExpertBridge.Api.Configurations;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
@@ -25,6 +26,7 @@ internal static class Firebase
     /// </param>
     public static void AddFirebaseApp(this WebApplicationBuilder builder)
     {
+        builder.Services.Configure<FirebaseCredentials>(builder.Configuration.GetSection("Firebase"));
         var firebaseApp = FirebaseApp.Create(new AppOptions
         {
             Credential = GoogleCredential.FromFile("FirebaseOAuthCredentialsExpertBridge.json")
@@ -45,10 +47,10 @@ internal static class Firebase
     /// </param>
     public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder)
     {
-        builder.Services.AddHttpClient<IFirebaseAuthService, FirebaseAuthService>((sp, httpClient) =>
+        var uri = builder.Configuration["Authentication:Firebase:TokenUri"]!;
+        builder.Services.AddHttpClient<HttpClient>((sp, httpClient) =>
         {
             var configuration = sp.GetRequiredService<IConfiguration>();
-            var uri = configuration["Authentication:Firebase:TokenUri"]!;
             httpClient.BaseAddress = new Uri(uri);
         });
     }
