@@ -51,7 +51,7 @@ public class TestConfigController : ControllerBase
             }
         };
 
-        return Ok(configTest); // hopefully true :)))))
+        return Ok(configTest); // hopefully true :))))))
     }
 
     [HttpPost("firebase")]
