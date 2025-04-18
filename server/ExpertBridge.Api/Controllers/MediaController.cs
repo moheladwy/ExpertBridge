@@ -1,6 +1,7 @@
 //// Licensed to the .NET Foundation under one or more agreements.
 //// The .NET Foundation licenses this file to you under the MIT license.
 
+//using ExpertBridge.Api.Application.Services;
 //using ExpertBridge.Api.Core.Interfaces.Services;
 //using ExpertBridge.Api.Helpers;
 //using ExpertBridge.Api.Responses;
@@ -18,7 +19,7 @@
 //[ApiController]
 //[Route("api/[controller]")]
 //[Authorize]
-//public class MediaController(IObjectStorageService objectStorageService) : ControllerBase
+//public class MediaController(ObjectStorageService objectStorageService) : ControllerBase
 //{
 //    /// <summary>
 //    ///     This endpoint is used to download an object from the s3 bucket.
