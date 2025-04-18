@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.Configurations;
 using ExpertBridge.Api.Data;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
@@ -39,6 +40,21 @@ builder.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.AddRepositories();
+
+builder.Services.Configure<ConnectionStrings>(
+    builder.Configuration.GetSection("ConnectionStrings"));
+
+builder.Services.Configure<FirebaseCredentials>(
+    builder.Configuration.GetSection("Firebase"));
+
+builder.Services.Configure<FirebaseAuthSettings>(
+    builder.Configuration.GetSection("Authentication:Firebase"));
+
+builder.Services.Configure<AwsConfigurations>(
+    builder.Configuration.GetSection("AwsS3"));
+
+builder.Services.Configure<AiSettings>(
+    builder.Configuration.GetSection("AI"));
 
 var app = builder.Build();
 
