@@ -22,7 +22,7 @@ internal static class ObjectStorage
         builder.Services.AddSingleton<IAmazonS3>(sp =>
         {
             var awsConfig = sp.GetRequiredService<IOptions<AwsConfigurations>>().Value;
-            var credentials = new BasicAWSCredentials(awsConfig.Awskey, awsConfig.AwsSecret);
+            var credentials = new BasicAWSCredentials(awsConfig.AwsKey, awsConfig.AwsSecret);
             var configurations = new AmazonS3Config
             {
                 RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(awsConfig.Region)
