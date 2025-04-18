@@ -61,25 +61,32 @@ internal static class Firebase
     /// <param name="builder">builder — The WebApplicationBuilder to add the Firebase authentication services to</param>
     public static void AddFirebaseAuthentication(this WebApplicationBuilder builder)
     {
-        var projectId = builder.Configuration["Firebase:ProjectId"]!;
-        var issuer = builder.Configuration["Authentication:Firebase:Issuer"]!;
+        builder.Services.Configure<FirebaseCredentials>(
+            builder.Configuration.GetSection("Firebase"));
+        builder.Services.Configure<FirebaseAuthSettings>(
+            builder.Configuration.GetSection("Authentication:Firebase"));
+
+        var config = builder.Configuration.GetSection("Firebase").Get<FirebaseCredentials>();
+        var authSettings = builder.Configuration.GetSection("Authentication:Firebase")
+            .Get<FirebaseAuthSettings>();
+
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.IncludeErrorDetails = true;
-                options.Authority = issuer;
+                options.Authority = authSettings.Issuer;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = issuer,
+                    ValidIssuer = authSettings.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = projectId,
+                    ValidAudience = config.ProjectId,
                     ValidateLifetime = true
                 };
                 options.RequireHttpsMetadata = false;
-            })
-            ;
+            });
+
         builder.Services.AddAuthorization();
     }
 }
