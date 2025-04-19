@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Configurations.Serilog;
 using ExpertBridge.Api.Data;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
@@ -55,6 +56,9 @@ builder.Services.Configure<AwsConfigurations>(
 
 builder.Services.Configure<AiSettings>(
     builder.Configuration.GetSection("AI"));
+
+builder.Services.Configure<SerilogSettings>(
+    builder.Configuration.GetSection("Serilog"));
 
 var app = builder.Build();
 

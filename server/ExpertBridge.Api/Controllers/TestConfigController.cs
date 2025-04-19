@@ -1,4 +1,5 @@
 ﻿using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Configurations.Serilog;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,9 @@ namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+
+// test config using GET /api/TestConfig
+// test firebase using POST api/TestConfig/firebase?Content-Type=application/json (username, password in body)
 public class TestConfigController : ControllerBase
 {
     private readonly ConnectionStrings _connectionStrings;
@@ -14,19 +18,22 @@ public class TestConfigController : ControllerBase
     private readonly AiSettings _aiSettings;
     private readonly FirebaseCredentials _firebaseConfig;
     private readonly FirebaseAuthSettings _firebaseAuthSettings;
+    private readonly SerilogSettings _serilogSettings;
 
     public TestConfigController(
         IOptions<ConnectionStrings> connectionStrings,
         IOptions<AwsConfigurations> awsConfig,
         IOptions<AiSettings> aiSettings,
         IOptions<FirebaseCredentials> firebaseConfig,
-        IOptions<FirebaseAuthSettings> firebaseAuthSettings)
+        IOptions<FirebaseAuthSettings> firebaseAuthSettings,
+        IOptions<SerilogSettings> serilogSettings)
     {
         _connectionStrings = connectionStrings.Value;
         _awsConfig = awsConfig.Value;
         _aiSettings = aiSettings.Value;
         _firebaseConfig = firebaseConfig.Value;
         _firebaseAuthSettings = firebaseAuthSettings.Value;
+        _serilogSettings = serilogSettings.Value;
     }
 
     [HttpGet]
@@ -48,10 +55,20 @@ public class TestConfigController : ControllerBase
                 Issuer = !string.IsNullOrEmpty(_firebaseAuthSettings.Issuer),
                 Audience = !string.IsNullOrEmpty(_firebaseAuthSettings.Audience),
                 TokenUri = !string.IsNullOrEmpty(_firebaseAuthSettings.TokenUri)
+            },
+            SerilogConfigExists = new
+            {
+                UsingExists = _serilogSettings.Using.Length > 0,
+                MinimumLevelExists = !string.IsNullOrEmpty(_serilogSettings.MinimumLevel.Default),
+                WriteToExists = _serilogSettings.WriteTo.Length > 0,
+                EnrichExists = _serilogSettings.Enrich.Length > 0,
+                SeqUrlExists = _serilogSettings.WriteTo.Any(w =>
+                    w.Name == "Seq" &&
+                    !string.IsNullOrEmpty(w.Args.ServerUrl))
             }
         };
 
-        return Ok(configTest); // hopefully true :))))))
+        return Ok(configTest);
     }
 
     [HttpPost("firebase")]
