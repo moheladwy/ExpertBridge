@@ -35,7 +35,7 @@ export interface Post {
   downvotes: number;
   isUpvoted: boolean;
   isDownvoted: boolean;
-  medias: string[]; // Adjust later if media structure is known
+  medias: MediaObject[]; // Adjust later if media structure is known
   comments: number;
   postTags: PostTag[];
 }
