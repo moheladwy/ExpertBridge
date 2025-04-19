@@ -16,6 +16,7 @@ namespace ExpertBridge.Api.Queries
         {
             return query
                 .Where(c => c.ParentCommentId == null)
+                .Include(c => c.Votes)
                 .Include(c => c.Author)
                 .Include(c => c.Replies)
                 .ThenInclude(r => r.Author)
