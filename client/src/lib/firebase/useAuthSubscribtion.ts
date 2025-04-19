@@ -53,6 +53,14 @@ export default (auth: Auth, options?: AuthStateOptions): AuthStateHook => {
     const listener = onAuthStateChanged(
       auth,
       async (user) => {
+        console.log('onAuth called');
+        if (user?.uid === value?.uid) {
+          console.log('skipping...');
+          return;
+        }
+
+        console.log('continuing...');
+
         if (options?.onUserChanged) {
           // onUserChanged function to process custom claims on any other trigger function
           try {

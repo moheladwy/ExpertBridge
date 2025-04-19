@@ -5,7 +5,7 @@ import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { AuthError, User } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type IsLoggedInError = AuthError | FetchBaseQueryError | SerializedError | undefined;
 
@@ -31,7 +31,6 @@ export default (): IsUserLoggedInHook => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<IsLoggedInError>(undefined);
-
 
   // If a query like this is used (fired) multiple times
   // and it's result is checked always. Always remember to 
