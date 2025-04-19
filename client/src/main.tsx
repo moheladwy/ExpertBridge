@@ -112,5 +112,5 @@ root.render(
         </ReduxProvider>
       </ThemeProvider>
     </StyledEngineProvider>
-  </StrictMode>,
+  </StrictMode>
 );
