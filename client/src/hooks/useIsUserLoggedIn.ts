@@ -1,11 +1,13 @@
-import { AppUser, ProfileResponse } from "@/features/users/types";
-import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
+import { useAppSelector } from "@/app/hooks";
+import { selectAuthUser } from "@/features/auth/authSlice";
+import { AppUser, ProfileResponse, UpdateUserRequest } from "@/features/users/types";
+import { useGetCurrentUserProfileQuery, useUpdateUserMutation } from "@/features/users/usersSlice";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { AuthError, User } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export type IsLoggedInError = AuthError | FetchBaseQueryError | SerializedError | undefined;
 
@@ -19,6 +21,7 @@ export type IsUserLoggedInHook = [
 
 export default (): IsUserLoggedInHook => {
   const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+  const uid = useMemo(() => authUser?.uid, [authUser?.uid]);
 
   const {
     data: appUser,
@@ -32,14 +35,19 @@ export default (): IsUserLoggedInHook => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<IsLoggedInError>(undefined);
 
-
   // If a query like this is used (fired) multiple times
   // and it's result is checked always. Always remember to 
   // retry so that the error state changes after the next try.
   // This was one of the most interesting bugs I had to debug. 
   useEffect(() => {
+    if (uid === authUser?.uid) return;
     retryQuery();
-  }, [authUser, retryQuery]);
+  }, [uid, retryQuery, authUser]);
+
+  // We are checking against the uid becuase firebase sdk
+  // returns a new reference each time we ask it for the currentUser.
+  // And react hooks check agains reference equality, not deep equality.
+  // Thus, we check if the user has changed by checking agains the uid instead.
 
   useEffect(() => {
     if (authError || userError) {

@@ -25,6 +25,7 @@ export const apiSlice = createApi({
 
   tagTypes: [
     'CurrentUser',
+    'AuthUser',
     'Post',
     'Comment',
   ],
