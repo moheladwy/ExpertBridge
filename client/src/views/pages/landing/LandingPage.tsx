@@ -3,20 +3,20 @@ import icon from '@/assets/LandingPageAssets/Icons/PlaceHolderIcon.svg'
 import Feature from '@/views/components/custom/Feature'
 import RegisterBtn from '@/views/components/custom/RegisterBtn'
 import Footer from '@/views/components/common/ui/Footer'
-import useAuthSubscribtion from '@/lib/firebase/useAuthSubscribtion'
 import { auth } from '@/lib/firebase'
 import { useNavigate } from 'react-router'
 import { useEffect } from 'react'
+import useIsUserLoggedIn from '@/hooks/useIsUserLoggedIn'
 
 function LandingPage() {
-  const [user, loading] = useAuthSubscribtion(auth);
+  const [isLoggedIn, loading, error, authUser, appUser] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && authUser) {
       navigate("/home", { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [authUser, loading, navigate]);
 
   return (
     <>

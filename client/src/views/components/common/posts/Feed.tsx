@@ -23,7 +23,7 @@ const Feed = () => {
     refetch
   } = useGetPostsQuery();
 
-  const orderedPostIds = useAppSelector(selectPostIds);
+  const orderedPostIds: string[] = useAppSelector(selectPostIds);
 
   useRefetchOnLogin(refetch);
 
