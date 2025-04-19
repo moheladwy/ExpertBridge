@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import useIsUserLoggedIn from "./useIsUserLoggedIn";
+import { getLastUserId, setLastUserId } from "@/features/users/globalUserCache";
 
 export default (refetch: any) => {
-
   // Here we are checking against the appUser because it gets changed
   // every time the auth user changes.
   // (a real change to auth user, not just a reference change with the same user still logged in)
@@ -10,9 +10,13 @@ export default (refetch: any) => {
   const [_, __, ___, ____, appUser] = useIsUserLoggedIn();
 
   useEffect(() => {
-    if (appUser) {
-      refetch();
-      console.log('refetching...');
-    }
-  }, [appUser, refetch]);
+    const currentId = appUser?.id;
+    const lastId = getLastUserId();
+    setLastUserId(currentId);
+
+    if (lastId === currentId) return;
+
+    refetch();
+    console.log("refetching...");
+  }, [appUser?.id, refetch]);
 };

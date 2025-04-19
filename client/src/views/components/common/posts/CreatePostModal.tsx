@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AddPostRequest } from "../../../../features/posts/types";
 import { useCreatePostMutation } from "../../../../features/posts/postsSlice";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
@@ -20,20 +20,33 @@ import {
 } from "@/views/components/custom/avatar"
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
 
 const steps = ["Ask Question", "Describe Your Problem", "Add Media"];
 
 const CreatePostModal: React.FC = () => {
-  const [createPost, { isLoading, isSuccess, isError }] =
-    useCreatePostMutation();
-
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [media, setMedia] = useState<File[]>([]);
   const [error, setError] = useState("");
-  const [,,,authUser,userProfile] = useIsUserLoggedIn();
+  const [, , , authUser, userProfile] = useIsUserLoggedIn();
+
+  const [createPost, createPostResult] =
+    useCreatePostMutation();
+
+  const {
+    uploadResult,
+    uploadMedia,
+  } = useCallbackOnMediaUploadSuccess(createPost, { title, content: body });
+
+  const {
+    isSuccess,
+    isError,
+    isLoading,
+  } = createPostResult;
+
 
   useEffect(() => {
     if (isError) toast.error("An error occurred while creating your post");
@@ -73,7 +86,8 @@ const CreatePostModal: React.FC = () => {
   const handleBack = () => setActiveStep((prev) => prev - 1);
 
   const handleSubmit = async () => {
-    await createPost({ title, content: body });
+    // await createPost({ title, content: body });
+    await uploadMedia({ mediaList: [] });
   };
 
 
@@ -165,7 +179,7 @@ const CreatePostModal: React.FC = () => {
 
             {/* media */}
             {activeStep === 2 && (
-              <Button 
+              <Button
                 component="label"
                 role={undefined}
                 variant="contained"

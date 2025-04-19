@@ -18,35 +18,45 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     appUser
   ] = useIsUserLoggedIn();
 
+  // Handle login errors (e.g., token expired)
   useEffect(() => {
-    // TODO: Handle the error here.
     if (loginError && !loginLoading) {
-      console.log('ProtectedRoute: An error occurred while authenticating the user', loginError);
-      console.log('challenging the user');
-      // signOut();
+      console.log('ProtectedRoute: Error during auth', loginError);
+      signOut();
+      navigate('/login');
     }
-  }, [loginError, loginLoading, signOut]);
+  }, [loginError, loginLoading, signOut, navigate]);
 
+  // Handle valid auth but unverified email or missing onboarding
   useEffect(() => {
     if (authUser && appUser) {
       if (!authUser.emailVerified) {
         signOut();
-        console.log('challenging the user, email unverified');
+        console.log('ProtectedRoute: email not verified');
+        navigate('/login');
       }
 
-      //appUser.isOnboarded
-      const isOnboarded = true;
+      const isOnboarded = true; // <- change if needed
 
       if (!isOnboarded) {
-        console.log('onboarding...');
+        console.log('ProtectedRoute: user needs onboarding');
         navigate('/onboarding');
       }
     }
   }, [authUser, appUser, signOut, navigate]);
 
-  if (loginLoading) return <div>Loading...</div>;
+  // ⛔️ Not logged in, redirect to login
+  if (!loginLoading && !isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
 
-  return children;
+  // ⏳ Still verifying auth state
+  if (loginLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // ✅ All good, show protected children
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
