@@ -53,10 +53,10 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 
   //Manage diffrent media typs
   if (post.medias?.length > 0) {
-    if (post.medias[0].type === "Picture") {
+    if (post.medias[0].type === "image") {
       media = (
         <img
-          src={post.medias[0].url}
+          src={post.medias[0].url!}
           alt="Post content"
           onClick={handleOpen}
         />
@@ -64,7 +64,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
     } else {
       media = (
         <video
-          src={post.medias[0].url}
+          src={post.medias[0].url!}
           controls
         />
       );
