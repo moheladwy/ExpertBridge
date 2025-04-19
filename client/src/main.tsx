@@ -37,25 +37,25 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <HomePage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
         path: "posts/:postId",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <PostFromUrlPage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {
         path: "feed/:postId",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <PostFromFeedPage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
     ],
