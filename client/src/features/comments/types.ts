@@ -21,6 +21,7 @@ export interface AddCommentRequest {
   parentCommentId?: string | null;
   mediaUrls?: string[] | null;
 }
+
 export interface AddReplyRequest {
   content: string;
   postId: string;
