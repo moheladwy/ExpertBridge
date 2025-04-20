@@ -28,10 +28,10 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ postId }) => {
   const post = useAppSelector((state) => selectPostById(state, postId));
+  const [open, setOpen] = useState(false);
 
   if (!post) return null;
 
-  const [open, setOpen] = useState(false);
   const totalCommentsNumber = post.comments;
   let media;
 
@@ -61,7 +61,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
           onClick={handleOpen}
         />
       );
-    } else {
+    } else if (post.medias[0].type === 'video') {
       media = (
         <video
           src={post.medias[0].url!}

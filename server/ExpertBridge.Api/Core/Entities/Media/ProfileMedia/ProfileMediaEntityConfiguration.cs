@@ -10,17 +10,17 @@ public class ProfileMediaEntityConfiguration : IEntityTypeConfiguration<ProfileM
 {
     public void Configure(EntityTypeBuilder<ProfileMedia> builder)
     {
-        builder.HasKey(x => x.Id);
+        //builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id)
-            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
-            .ValueGeneratedOnAdd();
+        //builder.Property(x => x.Id)
+        //    .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+        //    .ValueGeneratedOnAdd();
 
         // Media relationship (One-to-one)
-        builder.HasOne(x => x.Media)
-            .WithOne(m => m.Profile)
-            .HasForeignKey<ProfileMedia>(x => x.MediaId)
-            .IsRequired();
+        //builder.HasOne(x => x.Media)
+        //    .WithOne(m => m.Profile)
+        //    .HasForeignKey<ProfileMedia>(x => x.MediaId)
+        //    .IsRequired();
 
         // Profile relationship (One-to-Many)
         builder.HasOne(m => m.Profile)
@@ -33,7 +33,7 @@ public class ProfileMediaEntityConfiguration : IEntityTypeConfiguration<ProfileM
         // But one profile can have many media (One-to-Many).
         // So, that's why we need to make MediaId unique.
         // But ProfileId can be the same for many ProfileMedia.
-        builder.HasIndex(x => x.MediaId).IsUnique();
+        //builder.HasIndex(x => x.MediaId).IsUnique();
 
     }
 }

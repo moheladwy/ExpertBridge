@@ -55,7 +55,7 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
     public DbSet<Badge> Badges { get; set; }
     public DbSet<JobCategory> JobCategories { get; set; }
     public DbSet<JobPosting> JobPostings { get; set; }
-    public DbSet<MediaObject> Media { get; set; }
+    //public DbSet<MediaObject> Media { get; set; }
     public DbSet<MediaType> MediaTypes { get; set; }
     public DbSet<ProfileBadge> ProfileBadges { get; set; }
     public DbSet<ProfileTag> ProfileTags { get; set; }

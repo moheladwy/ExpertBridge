@@ -58,7 +58,8 @@ namespace ExpertBridge.Api.Queries
                 Id = p.Id,
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                Comments = p.Comments.Count
+                Comments = p.Comments.Count,
+                Medias = p.Medias.AsQueryable().SelectMediaObjectResponse().ToList(),
             };
         }
     }

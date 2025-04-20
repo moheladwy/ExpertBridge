@@ -10,11 +10,11 @@ public class PostMediaEntityConfiguration : IEntityTypeConfiguration<PostMedia>
 {
     public void Configure(EntityTypeBuilder<PostMedia> builder)
     {
-        builder.HasKey(pm => pm.Id);
+        //builder.HasKey(pm => pm.Id);
 
-        builder.Property(pm => pm.Id)
-            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
-            .ValueGeneratedOnAdd();
+        //builder.Property(pm => pm.Id)
+        //    .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+        //    .ValueGeneratedOnAdd();
 
         // Post relationship (One-to-Many)
         builder.HasOne(pm => pm.Post)
@@ -23,16 +23,16 @@ public class PostMediaEntityConfiguration : IEntityTypeConfiguration<PostMedia>
             .IsRequired();
 
         // Media relationship (One-to-one)
-        builder.HasOne(pm => pm.Media)
-            .WithOne(media => media.Post)
-            .HasForeignKey<PostMedia>(pm => pm.MediaId)
-            .IsRequired();
+        //builder.HasOne(pm => pm.Media)
+        //    .WithOne(media => media.Post)
+        //    .HasForeignKey<PostMedia>(pm => pm.MediaId)
+        //    .IsRequired();
 
         // MediaId index (Unique),
         // because one media can only belong to one post.
         // But one post can have many media (One-to-Many).
         // So, that's why we need to make MediaId unique.
         // But PostId can be the same for many PostMedia.
-        builder.HasIndex(pm => pm.MediaId).IsUnique();
+        //builder.HasIndex(pm => pm.MediaId).IsUnique();
     }
 }

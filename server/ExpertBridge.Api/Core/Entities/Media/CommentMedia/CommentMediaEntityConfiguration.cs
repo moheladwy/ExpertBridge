@@ -10,11 +10,11 @@ public class CommentMediaEntityConfiguration : IEntityTypeConfiguration<CommentM
 {
     public void Configure(EntityTypeBuilder<CommentMedia> builder)
     {
-        builder.HasKey(x => x.Id);
+        //builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id)
-            .IsRequired()
-            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength);
+        //builder.Property(x => x.Id)
+        //    .IsRequired()
+        //    .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength);
 
         // Comment relationship (One-to-One)
         builder.HasOne(x => x.Comment)
@@ -23,16 +23,16 @@ public class CommentMediaEntityConfiguration : IEntityTypeConfiguration<CommentM
             .OnDelete(DeleteBehavior.Cascade);
 
         // Media relationship (One-to-One)
-        builder.HasOne(x => x.Media)
-            .WithOne(x => x.Comment)
-            .HasForeignKey<CommentMedia>(x => x.MediaId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasOne(x => x.Media)
+        //    .WithOne(x => x.Comment)
+        //    .HasForeignKey<CommentMedia>(x => x.MediaId)
+        //    .OnDelete(DeleteBehavior.Cascade);
 
         // CommentId and MediaId must be unique.
         // This is a one-to-one relationship.
         // A comment can have only one media.
         // A media can belong to only one comment.
-        builder.HasIndex(x => x.CommentId).IsUnique();
-        builder.HasIndex(x => x.MediaId).IsUnique();
+        //builder.HasIndex(x => x.CommentId).IsUnique();
+        //builder.HasIndex(x => x.MediaId).IsUnique();
     }
 }

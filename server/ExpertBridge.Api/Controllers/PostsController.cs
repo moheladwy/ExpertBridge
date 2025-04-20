@@ -3,6 +3,7 @@
 
 using System.Security.Claims;
 using ExpertBridge.Api.Core;
+using ExpertBridge.Api.Core.Entities.Media.PostMedia;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.PostVotes;
 using ExpertBridge.Api.Data.DatabaseContexts;
@@ -11,6 +12,7 @@ using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreatePost;
 using ExpertBridge.Api.Requests.EditPost;
 using ExpertBridge.Api.Responses;
+using ExpertBridge.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,8 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 public class PostsController(
     ExpertBridgeDbContext _dbContext,
-    AuthorizationHelper _authHelper
+    AuthorizationHelper _authHelper,
+    S3Service _s3Service
     ) : ControllerBase
 {
     [AllowAnonymous]
@@ -84,7 +87,37 @@ public class PostsController(
         };
 
         await _dbContext.Posts.AddAsync(post);
-        await _dbContext.SaveChangesAsync();
+
+        if (request.Media?.Count > 0)
+        {
+            var postMedia = new List<PostMedia>();
+            foreach (var media in request.Media)
+            {
+                //var res = await _s3Service.GetPresignedGetUrlAsync(media.Key);
+                postMedia.Add(new PostMedia
+                {
+                    Post = post,
+                    Name = post.Title,
+                    Type = media.Type,
+                    Key = media.Key,
+                    Url = media.Url,
+                });
+
+            }
+
+            await _dbContext.PostMedias.AddRangeAsync(postMedia);
+            post.Medias = postMedia;
+        }
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            var x = 1;
+            throw;
+        }
 
         return post.SelectPostResponseFromFullPost(userProfileId);
     }

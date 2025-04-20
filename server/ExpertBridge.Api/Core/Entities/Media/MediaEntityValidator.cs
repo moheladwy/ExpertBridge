@@ -19,13 +19,13 @@ public class MediaEntityValidator : AbstractValidator<MediaObject>
             .NotEmpty().WithMessage("Name is required")
             .MaximumLength(MediaEntityConstraints.MaxNameLength).WithMessage($"Name must be less than {MediaEntityConstraints.MaxNameLength} characters");
 
-        RuleFor(x => x.MediaUrl)
+        RuleFor(x => x.Url)
             .NotNull().WithMessage("MediaUrl is required")
             .NotEmpty().WithMessage("MediaUrl is required")
             .MaximumLength(MediaEntityConstraints.MaxMediaUrlLength).WithMessage($"MediaUrl must be less than {MediaEntityConstraints.MaxMediaUrlLength} characters");
 
-        RuleFor(x => x.MediaType)
-            .NotNull().WithMessage("MediaType is required");
+        RuleFor(x => x.Type)
+            .NotNull().WithMessage("Media Type is required");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required");

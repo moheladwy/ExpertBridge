@@ -19,11 +19,11 @@ public class MediaEntityConfiguration : IEntityTypeConfiguration<MediaObject>
             .IsRequired()
             .HasMaxLength(MediaEntityConstraints.MaxNameLength);
 
-        builder.Property(x => x.MediaUrl)
+        builder.Property(x => x.Url)
             .IsRequired()
             .HasMaxLength(MediaEntityConstraints.MaxMediaUrlLength);
 
-        builder.HasIndex(x => x.MediaUrl).IsUnique();
+        builder.HasIndex(x => x.Url).IsUnique();
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()
@@ -34,9 +34,9 @@ public class MediaEntityConfiguration : IEntityTypeConfiguration<MediaObject>
             .ValueGeneratedOnAddOrUpdate();
 
         // MediaType relationship (One-to-Many)
-        builder.HasOne(m => m.MediaType)
-            .WithMany(mt => mt.Medias)
-            .HasForeignKey(m => m.MediaTypeId)
-            .IsRequired();
+        //builder.HasOne(m => m.MediaType)
+        //    .WithMany(mt => mt.Medias)
+        //    .HasForeignKey(m => m.MediaTypeId)
+        //    .IsRequired();
     }
 }
