@@ -28,7 +28,7 @@ public class S3Service
             BucketName = _awsSettings.BucketName,
             Key = Guid.NewGuid().ToString(),
             Expires = DateTime.UtcNow.AddMinutes(60),
-            Verb = HttpVerb.PUT | HttpVerb.GET
+            Verb = HttpVerb.PUT,
         };
 
         var response = new PresignedUrlResponse
