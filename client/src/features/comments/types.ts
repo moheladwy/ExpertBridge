@@ -1,3 +1,4 @@
+import { PresignedUrl } from "../media/types";
 import { Author } from "../users/types";
 
 export interface Comment {
@@ -19,7 +20,7 @@ export interface AddCommentRequest {
   content: string;
   postId: string;
   parentCommentId?: string | null;
-  mediaUrls?: string[] | null;
+  media?: PresignedUrl[];
 }
 
 export interface AddReplyRequest {

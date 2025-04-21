@@ -16,6 +16,7 @@ using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Requests.RegisterUser;
+using ExpertBridge.Api.Services;
 using FluentValidation;
 
 namespace ExpertBridge.Api.Extensions;
@@ -30,18 +31,17 @@ public static class Services
     /// </param>
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>()
-            .AddTransient<IFirebaseAuthService, FirebaseAuthService>()
-            .AddScoped<ICacheService, CacheService>()
         //services.AddScoped<IObjectStorageService, ObjectStorageService>();
         //services.AddScoped<IUsersService, UsersService>();
         //services.AddScoped<IProfilesService, ProfilesService>();
         //services.AddScoped<IPostsService, PostsService>();
+        services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>()
+            .AddTransient<IFirebaseAuthService, FirebaseAuthService>()
+            .AddScoped<ICacheService, CacheService>()
             .AddScoped<ICommentsService, CommentsService>()
             .AddScoped<AuthorizationHelper>()
-                
+            .AddScoped<S3Service>()
             ;
- 
     }
 
     /// <summary>

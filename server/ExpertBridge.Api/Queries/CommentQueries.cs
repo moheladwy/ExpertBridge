@@ -15,6 +15,7 @@ namespace ExpertBridge.Api.Queries
         public static IQueryable<Comment> FullyPopulatedCommentQuery(this IQueryable<Comment> query)
         {
             return query
+                .AsNoTracking()
                 .Where(c => c.ParentCommentId == null)
                 .Include(c => c.Votes)
                 .Include(c => c.Author)
@@ -28,8 +29,8 @@ namespace ExpertBridge.Api.Queries
             Expression<Func<Comment, bool>> predicate)
         {
             return query
-                .Where(predicate)
                 .FullyPopulatedCommentQuery()
+                .Where(predicate)
                 ;
         }
 

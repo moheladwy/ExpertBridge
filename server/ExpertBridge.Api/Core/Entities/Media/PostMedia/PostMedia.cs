@@ -1,17 +1,15 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.Core.Entities.Posts;
+
 namespace ExpertBridge.Api.Core.Entities.Media.PostMedia;
 
-public class PostMedia
+public class PostMedia : MediaObject
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-
     // Foreign keys
     public string PostId { get; set; }
-    public string MediaId { get; set; }
 
     // Navigation properties
-    public Posts.Post Post { get; set; }
-    public MediaObject Media { get; set; }
+    public Post Post { get; set; }
 }
