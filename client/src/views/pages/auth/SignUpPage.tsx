@@ -117,7 +117,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
    * Redirects to home page when sign up is successful
    */
   useEffect(() => {
-    if (success) {
+    if (authUser) {
       if (authUser && authUser.user.emailVerified) {
         navigate('/home');
       } else {

@@ -17,16 +17,16 @@ const EmailVerificationPage = () => {
   
   useEffect(() => {
     console.log("Auth User from the EmailVerificationPage: ", authUser);
-    // If not logged in, redirect to login
-    if (!loading && !isLoggedIn) {
-      navigate("/login");
-      return;
-    }
-    
     // If email is verified in both places, redirect to feed
     if (!loading && authUser?.emailVerified) {
-      navigate("/feed");
+      navigate("/home");
     }
+    
+    // // If not logged in, redirect to login
+    // if (!loading && !isLoggedIn) {
+    //   navigate("/login");
+    //   return;
+    // }
   }, [isLoggedIn, loading, authUser, appUser, navigate]);
 
   const handleSendVerificationEmail = async () => {
