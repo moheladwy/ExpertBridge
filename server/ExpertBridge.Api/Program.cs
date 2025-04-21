@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.Settings;
+using ExpertBridge.Api.Settings.Serilog;
 using ExpertBridge.Api.Data;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
@@ -23,6 +25,24 @@ builder.Services.ConfigureHttpClientDefaults(http =>
     http.AddServiceDiscovery();
 });
 
+builder.Services.Configure<ConnectionStrings>(
+    builder.Configuration.GetSection("ConnectionStrings"));
+
+builder.Services.Configure<FirebaseSettings>(
+    builder.Configuration.GetSection("Firebase"));
+
+builder.Services.Configure<FirebaseAuthSettings>(
+    builder.Configuration.GetSection("Authentication:Firebase"));
+
+builder.Services.Configure<AwsSettings>(
+    builder.Configuration.GetSection("AwsS3"));
+
+builder.Services.Configure<AiSettings>(
+    builder.Configuration.GetSection("AI"));
+
+builder.Services.Configure<SerilogSettings>(
+    builder.Configuration.GetSection("Serilog"));
+
 builder.Services.AddDatabase(builder.Configuration);
 
 builder.AddSeqEndpoint(connectionName: "Seq");
@@ -43,7 +63,7 @@ builder.Services.AddRepositories();
 var app = builder.Build();
 
 app.UseCors("AllowAll");
-app.UseMiddleware<GlobalExceptionMiddleware>();
+//app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())

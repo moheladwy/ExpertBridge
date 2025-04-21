@@ -16,7 +16,7 @@ public class S3Service
     private readonly IAmazonS3 _s3Client;
     private readonly AwsSettings _awsSettings;
 
-    public S3Service(IAmazonS3 s3Client, IOptions<AwsSettings> awsSettings)
+    public S3Service(IAmazonS3 s3Client, IOptionsSnapshot<AwsSettings> awsSettings)
     {
         _s3Client = s3Client;
         _awsSettings = awsSettings.Value;
