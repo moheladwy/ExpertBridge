@@ -24,12 +24,23 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
           for (let i = 0; i < request.mediaList.length; ++i) {
             presignedUrls[i].type = request.mediaList[i].type;
 
+            const file = request.mediaList[i].file;
+            const fileName = file.name;
+            const fileSize = file.size.toString();
+            const fileType = file.type;
+            const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+
             const res = await fetch(presignedUrls[i].url, {
               method: 'PUT',
               headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': fileType,
+                'x-amz-meta-file-name': fileName,
+                'x-amz-meta-file-size': fileSize,
+                'x-amz-meta-file-type': fileType,
+                'x-amz-meta-file-extension': fileExtension,
+                'x-amz-meta-file-key': presignedUrls[i].key,
               },
-              body: request.mediaList[i].file
+              body: file,
             });
 
             console.log(res);

@@ -2,13 +2,13 @@
 export interface PresignedUrl {
   url: string;
   key: string;
-  type: 'video' | 'image' | 'pdf';
+  type: string;
 }
 
 export interface MediaObject {
   file: File;
   url?: string | null;
-  type: 'video' | 'image' | 'pdf';
+  type: string;
 };
 
 export interface MediaObjectResponse {

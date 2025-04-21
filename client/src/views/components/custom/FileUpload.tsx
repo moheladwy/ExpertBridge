@@ -93,7 +93,8 @@ const FileUpload: React.FC<FileUploadProps> = ({ limit, multiple, name, setParen
     const mediaList: MediaObject[] = (multiple ? fileList : singleFile).map(file => ({
       url: URL.createObjectURL(file),
       file: file,
-      type: getType(file),
+      // type: getType(file),
+      type: file.type,
     }));
 
     setParentMediaList(mediaList);

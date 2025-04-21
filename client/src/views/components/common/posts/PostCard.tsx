@@ -21,6 +21,7 @@ import {
 import toast from "react-hot-toast";
 import { useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
+import ReactPlayer from "react-player";
 
 interface PostCardProps {
   postId: string;
@@ -53,7 +54,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 
   //Manage diffrent media typs
   if (post.medias?.length > 0) {
-    if (post.medias[0].type === "image") {
+    if (post.medias[0].type.startsWith("image")) {
       media = (
         <img
           src={post.medias[0].url!}
@@ -61,10 +62,10 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
           onClick={handleOpen}
         />
       );
-    } else if (post.medias[0].type === 'video') {
+    } else if (post.medias[0].type.startsWith('video')) {
       media = (
-        <video
-          src={post.medias[0].url!}
+        <ReactPlayer
+          url={post.medias[0].url!}
           controls
         />
       );
@@ -118,7 +119,15 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 
         {/* Media */}
         <div className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}>
-          {media}
+          {
+            post.medias.length > 0 ?
+              (
+                post.medias[0].type.startsWith('video')
+                  ? <ReactPlayer url={post.medias[0].url} controls />
+                  : <img src={post.medias[0].url} onClick={handleOpen} alt="oh shit it did not load..." />
+              )
+              : null
+          }
         </div>
 
         {/* Post Metadata */}
