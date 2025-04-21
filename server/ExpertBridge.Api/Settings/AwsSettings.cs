@@ -3,9 +3,9 @@
 
 using System.Text.Json.Serialization;
 
-namespace ExpertBridge.Api.Configurations;
+namespace ExpertBridge.Api.Settings;
 
-public class AwsConfigurations
+public class AwsSettings
 {
     public string Region { get; set; } = string.Empty;
     public string BucketName { get; set; } = string.Empty;

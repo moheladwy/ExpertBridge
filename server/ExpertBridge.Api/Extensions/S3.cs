@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;
 
-internal static class ObjectStorage
+internal static class S3
 {
     /// <summary>
     ///     Adds the S3 object service to the application builder.

@@ -4,6 +4,7 @@ import { AppUser, CreateUserRequest, ProfileResponse, UpdateUserRequest } from "
 import { auth } from "@/lib/firebase";
 import config from "@/lib/util/config";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { User } from "firebase/auth";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -30,6 +31,19 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         console.log('mutation ongoing');
       },
     }),
+
+    // getAuthUser: builder.query<User | undefined | null, void>({
+    //   queryFn: () => ({ data: authUserCache }),
+    //   providesTags: ['AuthUser'],
+    // }),
+
+    // saveAuthUser: builder.mutation<User | null | undefined, User | null | undefined>({
+    //   queryFn: (user) => {
+    //     authUserCache = user;
+    //     return { data: user };
+    //   },
+    //   invalidatesTags: ['AuthUser'],
+    // }),
   }),
 });
 

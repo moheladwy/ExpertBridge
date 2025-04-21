@@ -18,11 +18,9 @@ using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileBadges;
 using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileSkills;
 using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags;
-using ExpertBridge.Api.Core.Entities.Media;
 using ExpertBridge.Api.Core.Entities.Media.ChatMedia;
 using ExpertBridge.Api.Core.Entities.Media.CommentMedia;
 using ExpertBridge.Api.Core.Entities.Media.JobPostingMedia;
-using ExpertBridge.Api.Core.Entities.Media.MediaType;
 using ExpertBridge.Api.Core.Entities.Media.PostMedia;
 using ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia;
 using ExpertBridge.Api.Core.Entities.Media.ProfileMedia;
@@ -55,8 +53,6 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
     public DbSet<Badge> Badges { get; set; }
     public DbSet<JobCategory> JobCategories { get; set; }
     public DbSet<JobPosting> JobPostings { get; set; }
-    public DbSet<MediaObject> Media { get; set; }
-    public DbSet<MediaType> MediaTypes { get; set; }
     public DbSet<ProfileBadge> ProfileBadges { get; set; }
     public DbSet<ProfileTag> ProfileTags { get; set; }
     public DbSet<ProfileSkill> ProfileSkills { get; set; }
@@ -103,13 +99,11 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
         modelBuilder.ApplyConfiguration(new ChatEntityConfiguration());
         modelBuilder.ApplyConfiguration(new SkillEntityConfiguration());
         modelBuilder.ApplyConfiguration(new BadgeEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new MediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostTagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobReviewEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new MediaTypeEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobStatusEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ChatMediaEntityConfiguration());

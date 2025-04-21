@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { AddPostRequest } from "../../../../features/posts/types";
+import { useCallback, useEffect, useState } from "react";
 import { useCreatePostMutation } from "../../../../features/posts/postsSlice";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import toast from "react-hot-toast";
@@ -19,21 +18,36 @@ import {
   Avatar
 } from "@/views/components/custom/avatar"
 
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
+import FileUploadForm from "../../custom/FileUploadForm";
+import { MediaObject } from "@/features/media/types";
 
 const steps = ["Ask Question", "Describe Your Problem", "Add Media"];
 
 const CreatePostModal: React.FC = () => {
-  const [createPost, { isLoading, isSuccess, isError }] =
-    useCreatePostMutation();
-
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [media, setMedia] = useState<File[]>([]);
   const [error, setError] = useState("");
-  const [,,,authUser,userProfile] = useIsUserLoggedIn();
+  const [mediaList, setMediaList] = useState<MediaObject[]>([]);
+  const [, , , authUser, userProfile] = useIsUserLoggedIn();
+
+  const [createPost, createPostResult] =
+    useCreatePostMutation();
+
+  const {
+    uploadResult,
+    uploadMedia,
+  } = useCallbackOnMediaUploadSuccess(createPost, { title, content: body });
+
+  const {
+    isSuccess,
+    isError,
+    isLoading,
+  } = createPostResult;
+
 
   useEffect(() => {
     if (isError) toast.error("An error occurred while creating your post");
@@ -44,18 +58,19 @@ const CreatePostModal: React.FC = () => {
   }, [isSuccess, isError]);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    resetForm();
-  };
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setTitle("");
     setBody("");
     setMedia([]);
     setActiveStep(0);
     setError("");
-  };
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    resetForm();
+  }, [setOpen, resetForm]);
 
   const handleNext = () => {
     if (activeStep === 0 && !title.trim()) {
@@ -73,9 +88,10 @@ const CreatePostModal: React.FC = () => {
   const handleBack = () => setActiveStep((prev) => prev - 1);
 
   const handleSubmit = async () => {
-    await createPost({ title, content: body });
+    // await createPost({ title, content: body });
+    console.log('submitting...', mediaList);
+    await uploadMedia({ mediaList });
   };
-
 
   return (
     <>
@@ -99,7 +115,12 @@ const CreatePostModal: React.FC = () => {
       </div>
 
       {/* Modal */}
-      <Modal open={open} onClose={handleClose} aria-labelledby="create-post-modal">
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="create-post-modal"
+        aria-disabled={isLoading || uploadResult.isLoading}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -164,18 +185,27 @@ const CreatePostModal: React.FC = () => {
             )}
 
             {/* media */}
-            {activeStep === 2 && (
-              <Button 
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload Media
-                <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
-              </Button>
-            )}
+            {
+              // activeStep === 2 && (
+              // <Button
+              //   component="label"
+              //   role={undefined}
+              //   variant="contained"
+              //   tabIndex={-1}
+              //   startIcon={<CloudUploadIcon />}
+              // >
+              //   Upload Media
+              //   <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
+              // </Button>
+              // )
+            }
+            {
+              activeStep === 2 &&
+              (
+                <FileUploadForm onSubmit={handleSubmit} setParentMediaList={setMediaList} />
+              )
+            }
+
           </Box>
 
           {/* Navigation Buttons */}
@@ -184,7 +214,7 @@ const CreatePostModal: React.FC = () => {
               Back
             </Button>
             {activeStep === steps.length - 1 ? (
-              <Button variant="contained" onClick={handleSubmit} disabled={isLoading} className="bg-main-blue hover:bg-blue-950">
+              <Button variant="contained" onClick={handleSubmit} disabled={isLoading || uploadResult.isLoading} className="bg-main-blue hover:bg-blue-950">
                 Submit
               </Button>
             ) : (

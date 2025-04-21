@@ -1,15 +1,9 @@
 import Filters from "./Filters";
 import LoadingSkeleton from "./LoadingSkeleton";
 import PostCard from "./PostCard";
-import PostForm from "./AddPostForm";
-import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
-import { auth } from "@/lib/firebase";
-import { randomInt } from "crypto";
 import { selectPostIds, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useAppSelector } from "@/app/hooks";
 import CreatePostModal from "./CreatePostModal";
-import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
-import { useEffect } from "react";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 
 const Feed = () => {
@@ -23,7 +17,7 @@ const Feed = () => {
     refetch
   } = useGetPostsQuery();
 
-  const orderedPostIds = useAppSelector(selectPostIds);
+  const orderedPostIds: string[] = useAppSelector(selectPostIds);
 
   useRefetchOnLogin(refetch);
 

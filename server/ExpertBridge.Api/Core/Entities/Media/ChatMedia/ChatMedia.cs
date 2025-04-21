@@ -3,15 +3,10 @@
 
 namespace ExpertBridge.Api.Core.Entities.Media.ChatMedia;
 
-public class ChatMedia
+public class ChatMedia : MediaObject
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-
     // Foreign keys
     public string ChatId { get; set; }
-    public string MediaId { get; set; }
-
     // Navigation properties
     public Chats.Chat Chat { get; set; }
-    public MediaObject Media { get; set; }
 }

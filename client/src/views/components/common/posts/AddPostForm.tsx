@@ -36,7 +36,6 @@ const PostForm: React.FC<PostFormProps> = ({ userId }) => {
 
     await createPost({ title, content: body });
 
-
     setTitle("");
     setBody("");
     setTag("General");
