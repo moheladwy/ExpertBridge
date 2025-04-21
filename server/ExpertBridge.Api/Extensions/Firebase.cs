@@ -2,13 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Api.Application.Services;
-using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ExpertBridge.Api.Extensions;
@@ -26,7 +27,6 @@ internal static class Firebase
     /// </param>
     public static void AddFirebaseApp(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<FirebaseCredentials>(builder.Configuration.GetSection("Firebase"));
         var firebaseApp = FirebaseApp.Create(new AppOptions
         {
             Credential = GoogleCredential.FromFile("FirebaseOAuthCredentialsExpertBridge.json")
@@ -47,11 +47,10 @@ internal static class Firebase
     /// </param>
     public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder)
     {
-        var uri = builder.Configuration["Authentication:Firebase:TokenUri"]!;
         builder.Services.AddHttpClient<HttpClient>((sp, httpClient) =>
         {
-            var configuration = sp.GetRequiredService<IConfiguration>();
-            httpClient.BaseAddress = new Uri(uri);
+            var settings = sp.GetRequiredService<IOptions<FirebaseSettings>>().Value;
+            httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
         });
     }
 
@@ -61,25 +60,26 @@ internal static class Firebase
     /// <param name="builder">builder — The WebApplicationBuilder to add the Firebase authentication services to</param>
     public static void AddFirebaseAuthentication(this WebApplicationBuilder builder)
     {
-        var projectId = builder.Configuration["Firebase:ProjectId"]!;
-        var issuer = builder.Configuration["Authentication:Firebase:Issuer"]!;
+        var config = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>();
+        var authSettings = builder.Configuration.GetSection("Authentication:Firebase").Get<FirebaseAuthSettings>();
+
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.IncludeErrorDetails = true;
-                options.Authority = issuer;
+                options.Authority = authSettings.Issuer;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = issuer,
+                    ValidIssuer = authSettings.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = projectId,
+                    ValidAudience = config.ProjectId,
                     ValidateLifetime = true
                 };
                 options.RequireHttpsMetadata = false;
-            })
-            ;
+            });
+
         builder.Services.AddAuthorization();
     }
 }

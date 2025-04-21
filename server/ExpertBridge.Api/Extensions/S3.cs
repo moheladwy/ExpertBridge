@@ -18,11 +18,10 @@ internal static class S3
     /// </param>
     public static void AddS3ObjectService(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<AwsSettings>(builder.Configuration.GetSection("AwsS3"));
         builder.Services.AddSingleton<IAmazonS3>(sp =>
         {
             var awsConfig = sp.GetRequiredService<IOptions<AwsSettings>>().Value;
-            var credentials = new BasicAWSCredentials(awsConfig.Awskey, awsConfig.AwsSecret);
+            var credentials = new BasicAWSCredentials(awsConfig.AwsKey, awsConfig.AwsSecret);
             var configurations = new AmazonS3Config
             {
                 RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(awsConfig.Region)

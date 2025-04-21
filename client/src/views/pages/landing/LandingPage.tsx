@@ -14,7 +14,7 @@ function LandingPage() {
 
   useEffect(() => {
     if (!loading && authUser) {
-      navigate("/home", { replace: true });
+      // navigate("/home", { replace: true });
     }
   }, [authUser, loading, navigate]);
 
