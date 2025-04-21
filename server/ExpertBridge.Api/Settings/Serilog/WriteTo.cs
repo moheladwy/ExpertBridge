@@ -1,4 +1,4 @@
-﻿namespace ExpertBridge.Api.Configurations.Serilog;
+﻿namespace ExpertBridge.Api.Settings.Serilog;
 
 public class WriteTo
 {

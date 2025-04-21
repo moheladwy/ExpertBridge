@@ -1,4 +1,4 @@
-﻿namespace ExpertBridge.Api.Configurations;
+﻿namespace ExpertBridge.Api.Settings;
 
 public class FirebaseAuthSettings
 {

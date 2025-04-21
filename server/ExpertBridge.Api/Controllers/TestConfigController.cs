@@ -1,5 +1,5 @@
-﻿using ExpertBridge.Api.Configurations;
-using ExpertBridge.Api.Configurations.Serilog;
+﻿using ExpertBridge.Api.Settings;
+using ExpertBridge.Api.Settings.Serilog;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,17 +14,17 @@ namespace ExpertBridge.Api.Controllers;
 public class TestConfigController : ControllerBase
 {
     private readonly ConnectionStrings _connectionStrings;
-    private readonly AwsConfigurations _awsConfig;
+    private readonly AwsSettings _awsConfig;
     private readonly AiSettings _aiSettings;
-    private readonly FirebaseCredentials _firebaseConfig;
+    private readonly FirebaseSettings _firebaseConfig;
     private readonly FirebaseAuthSettings _firebaseAuthSettings;
     private readonly SerilogSettings _serilogSettings;
 
     public TestConfigController(
         IOptions<ConnectionStrings> connectionStrings,
-        IOptions<AwsConfigurations> awsConfig,
+        IOptions<AwsSettings> awsConfig,
         IOptions<AiSettings> aiSettings,
-        IOptions<FirebaseCredentials> firebaseConfig,
+        IOptions<FirebaseSettings> firebaseConfig,
         IOptions<FirebaseAuthSettings> firebaseAuthSettings,
         IOptions<SerilogSettings> serilogSettings)
     {

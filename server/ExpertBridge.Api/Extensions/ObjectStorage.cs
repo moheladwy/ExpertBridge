@@ -3,7 +3,7 @@
 
 using Amazon.Runtime;
 using Amazon.S3;
-using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Settings;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;
@@ -18,10 +18,9 @@ internal static class ObjectStorage
     /// </param>
     public static void AddS3ObjectService(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<AwsConfigurations>(builder.Configuration.GetSection("AwsS3"));
         builder.Services.AddSingleton<IAmazonS3>(sp =>
         {
-            var awsConfig = sp.GetRequiredService<IOptions<AwsConfigurations>>().Value;
+            var awsConfig = sp.GetRequiredService<IOptionsSnapshot<AwsSettings>>().Value;
             var credentials = new BasicAWSCredentials(awsConfig.AwsKey, awsConfig.AwsSecret);
             var configurations = new AmazonS3Config
             {

@@ -1,6 +1,6 @@
-namespace ExpertBridge.Api.Configurations;
+namespace ExpertBridge.Api.Settings;
 
-public class FirebaseCredentials
+public class FirebaseSettings
 {
     public string Type { get; set; }
     public string ProjectId { get; set; }

@@ -1,4 +1,4 @@
-using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 using Microsoft.Extensions.Options;
@@ -9,11 +9,11 @@ public class FirebaseAuthService : IFirebaseAuthService
 {
     private readonly FirebaseAuth _auth = FirebaseAuth.DefaultInstance;
     private readonly HttpClient _httpClient;
-    private readonly FirebaseCredentials _firebaseConfig;
+    private readonly FirebaseSettings _firebaseConfig;
     private readonly FirebaseAuthSettings _authSettings;
 
     public FirebaseAuthService(
-        IOptions<FirebaseCredentials> firebaseConfig,
+        IOptions<FirebaseSettings> firebaseConfig,
         IOptions<FirebaseAuthSettings> authSettings)
     {
         _firebaseConfig = firebaseConfig.Value;

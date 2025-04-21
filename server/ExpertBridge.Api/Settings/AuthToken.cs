@@ -3,7 +3,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace ExpertBridge.Api.Configurations;
+namespace ExpertBridge.Api.Settings;
 
 internal class AuthToken
 {
