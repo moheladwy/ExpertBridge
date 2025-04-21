@@ -9,8 +9,22 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
           return { data: [] };
         }
 
+        const metadata = request.mediaList.map((file, i) => {
+          const name = file.file.name;
+          const size = file.file.size.toString();
+          const type = file.file.type;
+          const extension = name.substring(name.lastIndexOf('.'));
+
+          return { name, size, type, extension, contentType: type };
+        })
+
         // Get the presigned urls using the baseQuery (maybe use Promise.all())
-        const response = await baseQuery(`/media/generate-urls?count=${request.mediaList.length}`);
+        const response = await baseQuery({
+          url: '/media/generate-urls',
+          method: 'POST',
+          body: { files: metadata },
+        });
+
         if (response.error) {
           return { error: response.error };
         }
@@ -23,22 +37,16 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
         try {
           for (let i = 0; i < request.mediaList.length; ++i) {
             presignedUrls[i].type = request.mediaList[i].type;
-
             const file = request.mediaList[i].file;
-            const fileName = file.name;
-            const fileSize = file.size.toString();
-            const fileType = file.type;
-            const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
 
             const res = await fetch(presignedUrls[i].url, {
               method: 'PUT',
               headers: {
-                // 'Content-Type': fileType,
-                // 'x-amz-meta-file-name': fileName,
-                // 'x-amz-meta-file-size': fileSize,
-                // 'x-amz-meta-file-type': fileType,
-                // 'x-amz-meta-file-extension': fileExtension,
-                // 'x-amz-meta-file-key': presignedUrls[i].key,
+                'x-amz-meta-file-name': metadata[i].name,
+                'x-amz-meta-file-size': metadata[i].size,
+                'x-amz-meta-file-type': metadata[i].type,
+                'x-amz-meta-file-extension': metadata[i].extension,
+                'x-amz-meta-file-key': presignedUrls[i].key,
               },
               body: file,
             });
@@ -61,12 +69,7 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
         }
 
         // Return the media objects/urls, or an error if any
-        return {
-          data: presignedUrls.map(pu => ({
-            ...pu,
-            url: pu.url//.split('?')[0]
-          })),
-        };
+        return { data: presignedUrls };
       }
     }),
   }),

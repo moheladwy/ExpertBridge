@@ -4,6 +4,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using ExpertBridge.Api.Core.Interfaces.Services;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Api.Settings;
 using Microsoft.Extensions.Options;
@@ -21,8 +22,10 @@ public class S3Service
         _awsSettings = awsSettings.Value;
     }
 
-    public async Task<PresignedUrlResponse> GetPresignedPutUrlAsync()
+    public async Task<PresignedUrlResponse> GetPresignedPutUrlAsync(FileMetadata file)
     {
+        ArgumentNullException.ThrowIfNull(file, nameof(file));
+
         var request = new GetPreSignedUrlRequest
         {
             BucketName = _awsSettings.BucketName,
@@ -30,6 +33,12 @@ public class S3Service
             Expires = DateTime.UtcNow.AddMinutes(60),
             Verb = HttpVerb.PUT,
         };
+
+        request.Metadata.Add("file-name", file.Name);
+        request.Metadata.Add("file-size", file.Size.ToString());
+        request.Metadata.Add("file-type", file.Type);
+        request.Metadata.Add("file-extension", file.Extension);
+        request.Metadata.Add("file-key", request.Key);
 
         var response = new PresignedUrlResponse
         {
