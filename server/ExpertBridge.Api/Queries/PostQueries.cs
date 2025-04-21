@@ -14,6 +14,7 @@ namespace ExpertBridge.Api.Queries
         public static IQueryable<Post> FullyPopulatedPostQuery(this IQueryable<Post> query)
         {
             return query
+                .AsNoTracking()
                 .Where(p => !p.IsDeleted)
                 .Include(p => p.Author)
                 .Include(p => p.Votes)

@@ -93,14 +93,12 @@ public class PostsController(
             var postMedia = new List<PostMedia>();
             foreach (var media in request.Media)
             {
-                //var res = await _s3Service.GetPresignedGetUrlAsync(media.Key);
                 postMedia.Add(new PostMedia
                 {
                     Post = post,
                     Name = post.Title,
                     Type = media.Type,
                     Key = media.Key,
-                    Url = media.Url,
                 });
 
             }

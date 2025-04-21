@@ -28,6 +28,7 @@ public class S3Service
             BucketName = _awsSettings.BucketName,
             Key = Guid.NewGuid().ToString(),
             Expires = DateTime.UtcNow.AddMinutes(60),
+            Verb = HttpVerb.PUT | HttpVerb.GET
         };
 
         var response = new PresignedUrlResponse
@@ -75,9 +76,9 @@ public class S3Service
     //    return fileResponse;
     //}
 
-    public async Task<string> GetObjectUrlAsync(string key)
+    public string GetObjectUrl(string key)
     {
-        return await Task.FromResult($"https://{_awsSettings.BucketName}.s3.amazonaws.com/{key}");
+        return $"https://{_awsSettings.BucketName}.s3.amazonaws.com/{key}";
     }
 
     //public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)

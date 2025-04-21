@@ -7,8 +7,7 @@ namespace ExpertBridge.Api.Responses
     {
         public string Id { get; set; }
         public required string Name { get; set; }
-        public required string Url { get; set; }
         public required string Type { get; set; }
-        public string Key { get; set; }
+        public required string Url { get; set; }
     }
 }

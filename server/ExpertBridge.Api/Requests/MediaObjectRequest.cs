@@ -5,7 +5,6 @@ namespace ExpertBridge.Api.Requests
 {
     public class MediaObjectRequest
     {
-        public required string Url { get; set; }
         public required string Key { get; set; }
         public required string Type { get; set; }
     }
