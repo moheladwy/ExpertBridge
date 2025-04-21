@@ -1,5 +1,5 @@
 import { Comment } from "../comments/types";
-import { MediaObject } from "../media/types";
+import { MediaObject, MediaObjectResponse, PresignedUrl } from "../media/types";
 import { AppUser, Author } from "../users/types";
 
 export interface PostTag {
@@ -35,11 +35,11 @@ export interface Post {
   downvotes: number;
   isUpvoted: boolean;
   isDownvoted: boolean;
-  medias: MediaObject[]; // Adjust later if media structure is known
+  medias: MediaObjectResponse[]; // Adjust later if media structure is known
   comments: number;
   postTags: PostTag[];
 }
 
 export interface AddPostRequest extends Pick<Post, 'content' | 'title'> {
-  mediaUrls?: string[];
+  media?: PresignedUrl[];
 };

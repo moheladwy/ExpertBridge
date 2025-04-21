@@ -3,17 +3,20 @@ using System;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ExpertBridge.Data.Migrations
+namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    partial class ExpertBridgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250420151749_RefineAndSimplifyMediaModel")]
+    partial class RefineAndSimplifyMediaModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -444,20 +447,21 @@ namespace ExpertBridge.Data.Migrations
                     b.ToTable("ProfileTags");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ChatMedia.ChatMedia", b =>
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.MediaObject", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
-                    b.Property<string>("ChatId")
-                        .IsRequired()
-                        .HasColumnType("character varying(450)");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(34)
+                        .HasColumnType("character varying(34)");
 
                     b.Property<string>("Key")
                         .IsRequired()
@@ -466,6 +470,9 @@ namespace ExpertBridge.Data.Migrations
                     b.Property<DateTime?>("LastModified")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MediaTypeId")
+                        .HasColumnType("character varying(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -476,225 +483,40 @@ namespace ExpertBridge.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ChatId");
+                    b.HasIndex("MediaTypeId");
 
-                    b.HasIndex("Key")
+                    b.HasIndex("Url")
                         .IsUnique();
 
-                    b.ToTable("ChatMedias");
+                    b.ToTable("MediaObject");
+
+                    b.HasDiscriminator().HasValue("MediaObject");
+
+                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.CommentMedia.CommentMedia", b =>
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.MediaType.MediaType", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
-                    b.Property<string>("CommentId")
-                        .IsRequired()
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId")
-                        .IsUnique();
-
-                    b.HasIndex("Key")
-                        .IsUnique();
-
-                    b.ToTable("CommentMedias");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.JobPostingMedia.JobPostingMedia", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("JobPostingId")
-                        .IsRequired()
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobPostingId");
-
-                    b.HasIndex("Key")
-                        .IsUnique();
-
-                    b.ToTable("JobPostingMedias");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.PostMedia.PostMedia", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("PostId")
-                        .IsRequired()
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Key")
-                        .IsUnique();
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("PostMedias");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia.ProfileExperienceMedia", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("ProfileExperienceId")
-                        .IsRequired()
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Key")
-                        .IsUnique();
-
-                    b.HasIndex("ProfileExperienceId");
-
-                    b.ToTable("ProfileExperienceMedias");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileMedia.ProfileMedia", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("ProfileId")
-                        .IsRequired()
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Key")
-                        .IsUnique();
-
-                    b.HasIndex("ProfileId");
-
-                    b.ToTable("ProfileMedias");
+                    b.ToTable("MediaTypes");
                 });
 
             modelBuilder.Entity("ExpertBridge.Api.Core.Entities.PostVotes.PostVote", b =>
@@ -1016,6 +838,85 @@ namespace ExpertBridge.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ChatMedia.ChatMedia", b =>
+                {
+                    b.HasBaseType("ExpertBridge.Api.Core.Entities.Media.MediaObject");
+
+                    b.Property<string>("ChatId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasDiscriminator().HasValue("ChatMedia");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.CommentMedia.CommentMedia", b =>
+                {
+                    b.HasBaseType("ExpertBridge.Api.Core.Entities.Media.MediaObject");
+
+                    b.Property<string>("CommentId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.HasIndex("CommentId")
+                        .IsUnique();
+
+                    b.HasDiscriminator().HasValue("CommentMedia");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.JobPostingMedia.JobPostingMedia", b =>
+                {
+                    b.HasBaseType("ExpertBridge.Api.Core.Entities.Media.MediaObject");
+
+                    b.Property<string>("JobPostingId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.HasIndex("JobPostingId");
+
+                    b.HasDiscriminator().HasValue("JobPostingMedia");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.PostMedia.PostMedia", b =>
+                {
+                    b.HasBaseType("ExpertBridge.Api.Core.Entities.Media.MediaObject");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.HasIndex("PostId");
+
+                    b.HasDiscriminator().HasValue("PostMedia");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia.ProfileExperienceMedia", b =>
+                {
+                    b.HasBaseType("ExpertBridge.Api.Core.Entities.Media.MediaObject");
+
+                    b.Property<string>("ProfileExperienceId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.HasIndex("ProfileExperienceId");
+
+                    b.HasDiscriminator().HasValue("ProfileExperienceMedia");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileMedia.ProfileMedia", b =>
+                {
+                    b.HasBaseType("ExpertBridge.Api.Core.Entities.Media.MediaObject");
+
+                    b.Property<string>("ProfileId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.HasIndex("ProfileId");
+
+                    b.HasDiscriminator().HasValue("ProfileMedia");
+                });
+
             modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Areas.Area", b =>
                 {
                     b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
@@ -1254,6 +1155,65 @@ namespace ExpertBridge.Data.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.MediaObject", b =>
+                {
+                    b.HasOne("ExpertBridge.Api.Core.Entities.Media.MediaType.MediaType", null)
+                        .WithMany("Medias")
+                        .HasForeignKey("MediaTypeId");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.PostVotes.PostVote", b =>
+                {
+                    b.HasOne("ExpertBridge.Api.Core.Entities.Posts.Post", "Post")
+                        .WithMany("Votes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                        .WithMany("PostVotes")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Posts.Post", b =>
+                {
+                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Author")
+                        .WithMany("Posts")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
+                {
+                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                        .WithMany("Experiences")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Profiles.Profile", b =>
+                {
+                    b.HasOne("ExpertBridge.Api.Core.Entities.Users.User", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("ExpertBridge.Api.Core.Entities.Profiles.Profile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ChatMedia.ChatMedia", b =>
                 {
                     b.HasOne("ExpertBridge.Api.Core.Entities.Chats.Chat", "Chat")
@@ -1320,58 +1280,6 @@ namespace ExpertBridge.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.PostVotes.PostVote", b =>
-                {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Posts.Post", "Post")
-                        .WithMany("Votes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
-                        .WithMany("PostVotes")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("Profile");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Posts.Post", b =>
-                {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Author")
-                        .WithMany("Posts")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
-                {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
-                        .WithMany("Experiences")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Profile");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Profiles.Profile", b =>
-                {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Users.User", "User")
-                        .WithOne("Profile")
-                        .HasForeignKey("ExpertBridge.Api.Core.Entities.Profiles.Profile", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Areas.Area", b =>
                 {
                     b.Navigation("JobPostings");
@@ -1420,6 +1328,11 @@ namespace ExpertBridge.Data.Migrations
                 {
                     b.Navigation("Review")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.MediaType.MediaType", b =>
+                {
+                    b.Navigation("Medias");
                 });
 
             modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Posts.Post", b =>

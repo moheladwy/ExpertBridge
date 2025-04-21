@@ -11,7 +11,7 @@ export default (callback: (...args: any) => any, request: AddPostRequest | AddCo
 
   useEffect(() => {
     if (uploadResult.isSuccess) {
-      memo.mediaUrls = uploadResult.data;
+      memo.media = uploadResult.data;
       callback(request);
     }
   }, [uploadResult.isSuccess]);
