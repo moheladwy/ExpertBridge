@@ -33,12 +33,12 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
             const res = await fetch(presignedUrls[i].url, {
               method: 'PUT',
               headers: {
-                'Content-Type': fileType,
-                'x-amz-meta-file-name': fileName,
-                'x-amz-meta-file-size': fileSize,
-                'x-amz-meta-file-type': fileType,
-                'x-amz-meta-file-extension': fileExtension,
-                'x-amz-meta-file-key': presignedUrls[i].key,
+                // 'Content-Type': fileType,
+                // 'x-amz-meta-file-name': fileName,
+                // 'x-amz-meta-file-size': fileSize,
+                // 'x-amz-meta-file-type': fileType,
+                // 'x-amz-meta-file-extension': fileExtension,
+                // 'x-amz-meta-file-key': presignedUrls[i].key,
               },
               body: file,
             });
