@@ -15,6 +15,7 @@ import PublicRoute from './routes/PublicRoute.tsx'
 import HomePage from './views/pages/feed/HomePage.tsx'
 import Interests from './views/pages/onboarding/Interests.tsx'
 import PostFromFeedPage from './views/pages/posts/PostFromFeedPage.tsx'
+import EmailVerificationPage from './views/pages/auth/EmailVerificationPage.tsx'
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -70,6 +71,12 @@ const router = createBrowserRouter([
     path: "signup",
     element: (
       <SignUpPage />
+    ),
+  },
+  {
+    path: "verify-email",
+    element: (
+      <EmailVerificationPage />
     ),
   },
   {
