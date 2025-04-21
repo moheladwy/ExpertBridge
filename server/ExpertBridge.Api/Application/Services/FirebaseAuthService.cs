@@ -5,7 +5,7 @@ using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 using Microsoft.Extensions.Options;
-using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Settings;
 
 namespace ExpertBridge.Api.Application.Services;
 
@@ -49,7 +49,7 @@ public class FirebaseAuthService : IFirebaseAuthService
         var response = await _httpClient.PostAsJsonAsync("", request);
         response.EnsureSuccessStatusCode();
 
-        var authToken = await response.Content.ReadFromJsonAsync<AuthToken>()
+        var authToken = await response.Content.ReadFromJsonAsync<AuthTokenSettings>()
             ?? throw new InvalidOperationException("Failed to parse authentication token");
 
         return authToken.IdToken;
