@@ -83,6 +83,10 @@ const SignUpPage: React.FC = (): JSX.Element => {
   // Component state
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  // Add these state variables for password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
 
   /**
    * Hook for user creation and authentication
@@ -145,6 +149,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
     if (createUserErrorMessage) {
       const errorMessage = 'An error occurred while creating your account. Please try again.';
       setSignUpError(errorMessage);
+      setShowErrorMessage(true); // Show the error box
       console.log(createUserErrorMessage);
       
       // Map Firebase error messages to user-friendly messages
@@ -159,6 +164,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
         userFriendlyMessage = "Network error. Please check your internet connection and try again.";
       }
       
+      setSignUpError(userFriendlyMessage);
       toast.error(userFriendlyMessage);
     }
   }, [createUserErrorMessage]);
@@ -167,39 +173,41 @@ const SignUpPage: React.FC = (): JSX.Element => {
    * Handles Firebase authentication errors
    * Provides specific error messages based on error codes
    */
-  useEffect(() => {
-    if (authError) {
-      console.error("Sign-up error:", authError);
-      const errorMessage = "Sign-up failed. Please try again.";
-      setSignUpError(errorMessage);
-      
-      // Extract error code and provide user-friendly message
-      let userFriendlyMessage = errorMessage;
-      if (authError.code) {
-        switch (authError.code) {
-          case 'auth/email-already-in-use':
-            userFriendlyMessage = "This email is already registered. Please use a different email or try logging in.";
-            break;
-          case 'auth/invalid-email':
-            userFriendlyMessage = "Please provide a valid email address.";
-            break;
-          case 'auth/operation-not-allowed':
-            userFriendlyMessage = "Account creation is currently disabled. Please try again later.";
-            break;
-          case 'auth/weak-password':
-            userFriendlyMessage = "Your password is too weak. Please choose a stronger password.";
-            break;
-          case 'auth/network-request-failed':
-            userFriendlyMessage = "Network error. Please check your internet connection and try again.";
-            break;
-          default:
-            userFriendlyMessage = "An error occurred during sign-up. Please try again.";
-        }
-      }
-      
-      toast.error(userFriendlyMessage);
-    }
-  }, [authError]);
+   useEffect(() => {
+     if (authError) {
+       console.error("Sign-up error:", authError);
+       const errorMessage = "Sign-up failed. Please try again.";
+       setSignUpError(errorMessage);
+       setShowErrorMessage(true); // Show the error box
+       
+       // Extract error code and provide user-friendly message
+       let userFriendlyMessage = errorMessage;
+       if (authError.code) {
+         switch (authError.code) {
+           case 'auth/email-already-in-use':
+             userFriendlyMessage = "This email is already registered. Please use a different email or try logging in.";
+             break;
+           case 'auth/invalid-email':
+             userFriendlyMessage = "Please provide a valid email address.";
+             break;
+           case 'auth/operation-not-allowed':
+             userFriendlyMessage = "Account creation is currently disabled. Please try again later.";
+             break;
+           case 'auth/weak-password':
+             userFriendlyMessage = "Your password is too weak. Please choose a stronger password.";
+             break;
+           case 'auth/network-request-failed':
+             userFriendlyMessage = "Network error. Please check your internet connection and try again.";
+             break;
+           default:
+             userFriendlyMessage = "An error occurred during sign-up. Please try again.";
+         }
+       }
+       
+       setSignUpError(userFriendlyMessage);
+       toast.error(userFriendlyMessage);
+     }
+   }, [authError]);
   
   /**
    * Handles errors related to checking the login status
@@ -247,10 +255,12 @@ const SignUpPage: React.FC = (): JSX.Element => {
    * 
    * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event
    */
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setSignUpError("");
-  };
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     setFormData({ ...formData, [e.target.name]: e.target.value });
+     setSignUpError("");
+     setShowErrorMessage(false);
+   };
+
 
   /**
    * Handles form submission for email/password registration
@@ -290,6 +300,14 @@ const SignUpPage: React.FC = (): JSX.Element => {
       toast.error("Failed to sign in with Google. Please try again.");
     }
   }
+  
+  /**
+   * Handles closing the error message box
+   * Sets the showErrorMessage state to false to hide the error message
+   */
+  const handleCloseErrorMessage = () => {
+    setShowErrorMessage(false);
+  };
 
   /**
    * Updates loading state based on authentication processes
@@ -307,6 +325,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
             <div className="flex flex-col gap-6">
               {/* Header with Logo and Title */}
               <div className="flex flex-col items-center gap-3">
+                {/* Logo and title content remains the same */}
                 <div className="flex h-14 w-14 items-center justify-center rounded-md bg-indigo-600">
                   <img src={LogoIcon} alt="Logo" className="h-10 w-10" />
                 </div>
@@ -318,6 +337,23 @@ const SignUpPage: React.FC = (): JSX.Element => {
                   </Link>
                 </div>
               </div>
+              
+              {/* Error Message Box */}
+              {showErrorMessage && signUpError && (
+                <div className="bg-red-600 text-white p-4 rounded-md flex justify-between items-center">
+                  <span>{signUpError}</span>
+                  <button 
+                    type="button" 
+                    onClick={handleCloseErrorMessage}
+                    className="ml-2 text-white hover:text-gray-200 focus:outline-none"
+                    aria-label="Close error message"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              )}
 
               {/* Form Fields */}
               <div className="flex flex-col gap-4">
@@ -378,34 +414,78 @@ const SignUpPage: React.FC = (): JSX.Element => {
                 {/* Password Field */}
                 <div className="grid gap-2">
                   <Label htmlFor="password" className="text-gray-300">Create Password</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Enter password"
-                    disabled={loading}
-                    className="border-gray-700 bg-gray-700 text-white"
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Enter password"
+                      disabled={loading}
+                      className="border-gray-700 bg-gray-700 text-white pr-10"
+                      required
+                    />
+                    <button 
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                          <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                          <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                          <line x1="2" x2="22" y1="2" y2="22"></line>
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                   {errors.password && <p className="text-red-400 text-sm">{errors.password}</p>}
                 </div>
-
+              
                 {/* Confirm Password Field */}
                 <div className="grid gap-2">
                   <Label htmlFor="confirmPassword" className="text-gray-300">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Confirm your password"
-                    disabled={loading}
-                    className="border-gray-700 bg-gray-700 text-white"
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Confirm your password"
+                      disabled={loading}
+                      className="border-gray-700 bg-gray-700 text-white pr-10"
+                      required
+                    />
+                    <button 
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    >
+                      {showConfirmPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                          <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                          <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                          <line x1="2" x2="22" y1="2" y2="22"></line>
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                   {errors.confirmPassword && <p className="text-red-400 text-sm">{errors.confirmPassword}</p>}
                 </div>
 
