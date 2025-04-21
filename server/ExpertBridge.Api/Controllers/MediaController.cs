@@ -4,6 +4,7 @@
 using Amazon.S3.Model;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
@@ -32,17 +33,17 @@ public class MediaController : ControllerBase
 
     // TODO: Remove AllowAnonymous
     [AllowAnonymous]
-    [HttpGet("generate-urls")] // generate-url?count=3
-    public async Task<List<PresignedUrlResponse>> GenerateUrls([FromQuery] int? count)
+    [HttpPost("generate-urls")] // generate-url?count=3
+    public async Task<List<PresignedUrlResponse>> GenerateUrls([FromBody] GeneratePresignedUrlsRequest request)
     {
-        if (count is null or <= 0) count = 1;
+        if (request == null || request.Files == null || request.Files.Count == 0)
+            throw new ArgumentException("Files cannot be null or empty", nameof(request));
 
         var urls = new List<PresignedUrlResponse>();
 
-        for (var i = 0; i < count; i++)
+        foreach (var file in request.Files)
         {
-            var url = await _s3Service.GetPresignedPutUrlAsync();
-            urls.Add(url);
+            urls.Add(await _s3Service.GetPresignedPutUrlAsync(file));
         }
 
         return urls;
