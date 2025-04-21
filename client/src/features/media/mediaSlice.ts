@@ -35,29 +35,26 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
 
         // Upload media to the s3 bucket
         try {
-          for (let i = 0; i < request.mediaList.length; ++i) {
-            presignedUrls[i].type = request.mediaList[i].type;
-            const file = request.mediaList[i].file;
+          const results = await Promise.all(
+            request.mediaList.map((file, i) =>
+              fetch(presignedUrls[i].url, {
+                method: 'PUT',
+                headers: {
+                  'x-amz-meta-file-name': metadata[i].name,
+                  'x-amz-meta-file-size': metadata[i].size,
+                  'x-amz-meta-file-type': metadata[i].type,
+                  'x-amz-meta-file-extension': metadata[i].extension,
+                  'x-amz-meta-file-key': presignedUrls[i].key,
+                },
+                body: file.file,
+              })
+            )
+          );
 
-            const res = await fetch(presignedUrls[i].url, {
-              method: 'PUT',
-              headers: {
-                'x-amz-meta-file-name': metadata[i].name,
-                'x-amz-meta-file-size': metadata[i].size,
-                'x-amz-meta-file-type': metadata[i].type,
-                'x-amz-meta-file-extension': metadata[i].extension,
-                'x-amz-meta-file-key': presignedUrls[i].key,
-              },
-              body: file,
-            });
-
-            console.log(res);
-
-            if (!res.ok) {
-              const js = await res.json();
-              throw new Error(`Media upload failed. ${js}`);
-            }
-          }
+          results.forEach(res => {
+            if (!res.ok)
+              throw new Error('Media upload failed');
+          });
         } catch (error) {
           console.error('WTF IS HAPPENING HERE?');
           return {
