@@ -5,18 +5,27 @@ using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 using Microsoft.Extensions.Options;
-using ExpertBridge.Api.Configurations;
+using ExpertBridge.Api.Settings;
 
 namespace ExpertBridge.Api.Application.Services;
 
 public class FirebaseAuthService : IFirebaseAuthService
 {
     private readonly FirebaseAuth _auth = FirebaseAuth.DefaultInstance;
-    private readonly HttpClient httpClient;
+    private readonly HttpClient _httpClient;
+    private readonly FirebaseSettings _firebaseConfig;
+    private readonly FirebaseAuthSettings _authSettings;
 
-    public FirebaseAuthService(IOptions<FirebaseCredentials> credentials)
+    public FirebaseAuthService(
+        IOptions<FirebaseSettings> firebaseConfig,
+        IOptions<FirebaseAuthSettings> authSettings)
     {
-        httpClient = new HttpClient { BaseAddress = new Uri(credentials.Value.AuthenticationTokenUri) };
+        _firebaseConfig = firebaseConfig.Value;
+        _authSettings = authSettings.Value;
+        _httpClient = new HttpClient
+        {
+            BaseAddress = new Uri(_authSettings.TokenUri)
+        };
     }
 
     public async Task<string> RegisterAsync(string email, string password)
@@ -37,8 +46,12 @@ public class FirebaseAuthService : IFirebaseAuthService
     public async Task<string> LoginAsync(string email, string password)
     {
         var request = new { email, password, returnSecureToken = true };
-        var response = await httpClient.PostAsJsonAsync("",request);
-        var authToken = await response.Content.ReadFromJsonAsync<AuthTokenSettings>();
+        var response = await _httpClient.PostAsJsonAsync("", request);
+        response.EnsureSuccessStatusCode();
+
+        var authToken = await response.Content.ReadFromJsonAsync<AuthTokenSettings>()
+            ?? throw new InvalidOperationException("Failed to parse authentication token");
+
         return authToken.IdToken;
     }
 
