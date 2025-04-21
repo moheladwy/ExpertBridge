@@ -49,7 +49,7 @@ internal static class Firebase
     {
         builder.Services.AddHttpClient<HttpClient>((sp, httpClient) =>
         {
-            var settings = sp.GetRequiredService<IOptionsSnapshot<FirebaseSettings>>().Value;
+            var settings = sp.GetRequiredService<IOptions<FirebaseSettings>>().Value;
             httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
         });
     }

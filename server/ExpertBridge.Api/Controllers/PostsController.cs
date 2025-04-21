@@ -25,8 +25,7 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 public class PostsController(
     ExpertBridgeDbContext _dbContext,
-    AuthorizationHelper _authHelper,
-    S3Service _s3Service
+    AuthorizationHelper _authHelper
     ) : ControllerBase
 {
     [AllowAnonymous]
