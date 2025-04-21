@@ -66,7 +66,12 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
         }
 
         // Return the media objects/urls, or an error if any
-        return { data: presignedUrls };
+        return {
+          data: presignedUrls.map((url, i) => ({
+            ...url,
+            type: metadata[i].type,
+          }) as PresignedUrl),
+        };
       }
     }),
   }),
