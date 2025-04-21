@@ -66,6 +66,8 @@ const NavBar = () => {
       navigate('/')
   }
 
+  console.log(userProfile);
+
 
   return (
     <div className="flex items-center w-full bg-main-blue h-16 drop-shadow-md">
