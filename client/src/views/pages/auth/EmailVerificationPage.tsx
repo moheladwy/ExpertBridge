@@ -4,7 +4,7 @@ import { sendEmailVerification } from "firebase/auth";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { auth } from "@/lib/firebase";
 
-const UnverifiedEmailPage = () => {
+const EmailVerificationPage = () => {
   const [
     isLoggedIn, 
     loading, 
@@ -16,6 +16,7 @@ const UnverifiedEmailPage = () => {
   const [emailSent, setEmailSent] = useState(false);
   
   useEffect(() => {
+    console.log("Auth User from the EmailVerificationPage: ", authUser);
     // If not logged in, redirect to login
     if (!loading && !isLoggedIn) {
       navigate("/login");
@@ -87,4 +88,4 @@ const UnverifiedEmailPage = () => {
   );
 };
 
-export default UnverifiedEmailPage;
+export default EmailVerificationPage;

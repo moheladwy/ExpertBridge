@@ -10,7 +10,6 @@ import useSignInWithEmailAndPassword from "@/lib/firebase/EmailAuth/useSignInWit
 import { auth } from "@/lib/firebase";
 import { useCreateUser } from "@/features/auth/useCreateUser";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
-import useLoginRedirect from "@/hooks/useLoginRedirect";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -18,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import LogoIcon from "@/assets/Logo-Icon/Logo-Icon.svg";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
 import { z } from "zod";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 /**
  * Zod schema for login form validation
@@ -43,14 +43,13 @@ type LoginFormData = z.infer<typeof loginSchema>;
  * Includes form validation, loading states, and error handling.
  */
 const LoginPage: React.FC = () => {
-  // useLoginRedirect();
-
-  const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
+  const [isLoggedIn] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
   // Main component state
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
   /**
    * Email/Password Login Hook
@@ -97,7 +96,7 @@ const LoginPage: React.FC = () => {
     if (success) {
       navigate("/home");
     }
-  }, [success, navigate]);
+  }, [success, navigate, authUser]);
 
   /**
    * Handle authentication errors and display appropriate messages
@@ -188,8 +187,15 @@ const LoginPage: React.FC = () => {
    * Update overall loading state based on individual loading states
    */
   useEffect(() => {
-    setLoading(isLoggedInLoading || createLoading || loginLoading);
-  }, [isLoggedInLoading, createLoading, loginLoading]);
+    setLoading(createLoading || loginLoading);
+  }, [createLoading, loginLoading]);
+  
+  /**
+   * Toggle password visibility
+   */
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div
@@ -218,6 +224,13 @@ const LoginPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Error Message Box */}
+              {signInError && (
+                <div className="bg-red-900/50 border border-red-500 text-red-100 px-4 py-3 rounded-md mb-2">
+                  <p className="text-sm">{signInError}</p>
+                </div>
+              )}
+
               {/* Form Fields */}
               <div className="flex flex-col gap-4">
                 {/* Email Field */}
@@ -233,7 +246,9 @@ const LoginPage: React.FC = () => {
                     onChange={handleChange}
                     placeholder="Enter your email"
                     disabled={loading}
-                    className="border-gray-700 bg-gray-700 text-white"
+                    className={`border-gray-700 bg-gray-700 text-white ${
+                      errors.email ? "border-red-500 focus:border-red-500" : ""
+                    }`}
                     required
                   />
                   {errors.email && (
@@ -254,17 +269,32 @@ const LoginPage: React.FC = () => {
                       Forget Password?
                     </Link>
                   </div>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Enter password"
-                    disabled={loading}
-                    className="border-gray-700 bg-gray-700 text-white"
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Enter password"
+                      disabled={loading}
+                      className={`border-gray-700 bg-gray-700 text-white pr-10 ${
+                        errors.password ? "border-red-500 focus:border-red-500" : ""
+                      }`}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                      onClick={togglePasswordVisibility}
+                    >
+                      {showPassword ? (
+                        <EyeOffIcon className="h-5 w-5" />
+                      ) : (
+                        <EyeIcon className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                   {errors.password && (
                     <p className="text-red-400 text-sm">{errors.password}</p>
                   )}
@@ -291,19 +321,21 @@ const LoginPage: React.FC = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full border-gray-700 text-white hover:bg-gray-700"
-                disabled={createLoading || loading}
+                className="w-full border-gray-700 text-black hover:text-white hover:bg-gray-700"
+                disabled={loading}
                 onClick={handleGoogleSignIn}
               >
-                <div className="flex items-center text-black">
+                <div className="flex items-center">
                   <img
                     src={GoogleLogo}
                     alt="Google Logo"
                     className="h-5 w-5 mr-2"
                   />
-                  {createLoading
-                    ? "Signing in with Google..."
-                    : "Continue with Google"}
+                  <span className="">
+                    {loading
+                      ? "Signing in with Google..."
+                      : "Continue with Google"}
+                  </span>
                 </div>
               </Button>
             </div>

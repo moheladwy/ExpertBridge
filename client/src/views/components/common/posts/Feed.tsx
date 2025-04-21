@@ -5,10 +5,8 @@ import { selectPostIds, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useAppSelector } from "@/app/hooks";
 import CreatePostModal from "./CreatePostModal";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
-import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 const Feed = () => {
-  useAuthRedirect(true);
   
   const {
     data: posts,

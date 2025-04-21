@@ -28,14 +28,24 @@ import { Input } from "@/components/ui/input";
  * - Password confirmation must match the password
  */
 const signupSchema = z.object({
-  firstName: z.string()
+  firstName: z
+    .string()
+    .trim()
     .min(3, "First name must be at least 3 characters")
     .max(256, "First name must be at most 256 characters")
-    .regex(/^[a-zA-Z]+$/, "First name must contain only letters"),
-  lastName: z.string()
+    .regex(
+      /^[\p{Script=Latin}\p{Script=Arabic}]+$/u,
+      "First name must contain only English or Arabic letters"
+    ),
+  lastName: z
+    .string()
+    .trim()
     .min(3, "Last name must be at least 3 characters")
     .max(256, "Last name must be at most 256 characters")
-    .regex(/^[a-zA-Z]+$/, "Last name must contain only letters"),
+    .regex(
+      /^[\p{Script=Latin}\p{Script=Arabic}]+$/u,
+      "Last name must contain only English or Arabic letters"
+    ),
   email: z.string().email("Please enter a valid email address"),
   password: z.string()
     .min(12, "Password must be at least 12 characters")
@@ -75,15 +85,6 @@ const SignUpPage: React.FC = (): JSX.Element => {
   const [success, setSuccess] = useState(false);
 
   /**
-   * Redirects to home page when sign up is successful
-   */
-  useEffect(() => {
-    if (success) {
-      navigate('/home');
-    }
-  }, [success, navigate]);
-
-  /**
    * Hook for user creation and authentication
    * Provides methods for email/password and Google authentication
    */
@@ -97,18 +98,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
     createUserErrorMessage,
     createUserSuccess
   ] = useCreateUser(auth);
-
-  /**
-   * Updates success state based on authentication status
-   * Shows success toast when account is created
-   */
-  useEffect(() => {
-    setSuccess(createUserSuccess || isLoggedIn);
-    if (createUserSuccess) {
-      toast.success("Account created successfully! Redirecting to login...");
-    }
-  }, [createUserSuccess, isLoggedIn]);
-
+  
   /**
    * Form state management
    * Tracks form field values, validation errors, and submission errors
@@ -122,15 +112,30 @@ const SignUpPage: React.FC = (): JSX.Element => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [signUpError, setSignUpError] = useState<string>("");
-
+  
   /**
-   * Redirects to login page after successful account creation
+   * Redirects to home page when sign up is successful
    */
   useEffect(() => {
-    if (createUserSuccess) {
-      navigate('/login');
+    if (success) {
+      if (authUser && authUser.user.emailVerified) {
+        navigate('/home');
+      } else {
+        navigate('/verify-email');
+      }
     }
-  })
+  }, [success, navigate, authUser]);
+
+  /**
+   * Updates success state based on authentication status
+   * Shows success toast when account is created
+   */
+  useEffect(() => {
+    setSuccess(createUserSuccess || isLoggedIn);
+    if (createUserSuccess) {
+      toast.success("Account created successfully! Redirecting to login...");
+    }
+  }, [createUserSuccess, isLoggedIn]);
 
   /**
    * Handles user creation errors from the API
@@ -290,8 +295,8 @@ const SignUpPage: React.FC = (): JSX.Element => {
    * Updates loading state based on authentication processes
    */
   useEffect(() => {
-    setLoading(createUserLoading || isLoggedInLoading);
-  }, [createUserLoading, isLoggedInLoading]);
+    setLoading(createUserLoading);
+  }, [createUserLoading]);
 
   return (
     <div className="flex justify-center items-center min-h-screen" style={{ backgroundColor: "rgb(15 23 42 / 1)" }}>
