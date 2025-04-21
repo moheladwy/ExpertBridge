@@ -20,7 +20,7 @@ internal static class S3
     {
         builder.Services.AddSingleton<IAmazonS3>(sp =>
         {
-            var awsConfig = sp.GetRequiredService<IOptionsSnapshot<AwsSettings>>().Value;
+            var awsConfig = sp.GetRequiredService<IOptions<AwsSettings>>().Value;
             var credentials = new BasicAWSCredentials(awsConfig.AwsKey, awsConfig.AwsSecret);
             var configurations = new AmazonS3Config
             {
