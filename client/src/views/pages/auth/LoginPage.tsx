@@ -7,8 +7,11 @@ import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
 import { useCreateUser } from "@/features/auth/useCreateUser";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import useLoginRedirect from "@/hooks/useLoginRedirect";
 
 const LoginPage: React.FC = () => {
+  // useLoginRedirect();
+  
   const [isLoggedIn, isLoggedInLoading, isLoggedInError] = useIsUserLoggedIn();
   const navigate = useNavigate();
 
