@@ -341,7 +341,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
               {/* Error Message Box */}
               {showErrorMessage && signUpError && (
                 <div className="bg-red-600 text-white p-4 rounded-md flex justify-between items-center">
-                  <span>{signUpError}</span>
+                  <span className="text-sm">{signUpError}</span>
                   <button 
                     type="button" 
                     onClick={handleCloseErrorMessage}
@@ -523,7 +523,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
           </form>
 
           {/* Error Messages */}
-          {signUpError && <p className="text-red-400 text-center mt-4">{signUpError}</p>}
+          {/* {signUpError && <p className="text-red-400 text-center mt-4">{signUpError}</p>} */}
 
           {/* Terms of Service and Privacy Policy Footer */}
           <div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">
