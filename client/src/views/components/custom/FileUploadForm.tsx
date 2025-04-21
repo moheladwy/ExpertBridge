@@ -71,10 +71,10 @@ const FileUploadForm: React.FC<FileUploadFormProps> = ({ onSubmit, setParentMedi
           sx={{
             justifyContent: 'center',
             alignItems: 'center',
-            height: '50vh',
+            height: '30vh',
           }}
         >
-          <Box display='flex' flexDirection='column' sx={{ width: '30%' }}>
+          <Box display='flex' flexDirection='column' sx={{ width: '100%' }}>
             {/* Single Image Upload */}
             <FormProvider {...methods}>
               <Box
@@ -82,23 +82,18 @@ const FileUploadForm: React.FC<FileUploadFormProps> = ({ onSubmit, setParentMedi
                 noValidate
                 autoComplete='off'
                 onSubmit={methods.handleSubmit(onSubmitHandler)}
-                style={{ width: '250px' }}
+                // style={{ width: '300px' }}
+                className='w-full'
               >
                 {/* Multiple Image Upload */}
-                <Typography
-                  textAlign='center'
-                  variant='h4'
-                  component='h1'
-                  gutterBottom
-                >
-                  Multiple Image Upload
-                </Typography>
-                <FileUpload
-                  limit={3}
-                  multiple
-                  name='images'
-                  setParentMediaList={setParentMediaList}
-                />
+                <div className='flex justify-center items-center'>
+                  <FileUpload
+                    limit={3}
+                    multiple
+                    name='images'
+                    setParentMediaList={setParentMediaList}
+                  />
+                </div>
                 {/* <Button
                   variant='contained'
                   type='submit'
