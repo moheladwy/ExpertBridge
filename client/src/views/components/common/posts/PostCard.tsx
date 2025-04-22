@@ -120,11 +120,15 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 
         {/* Post Title */}
         <Link to={`/feed/${post.id}`}>
-          <h2 className="text-lg font-bold text-gray-700">{post.title}</h2>
+        <div className="break-words">
+          <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">{post.title}</h2>
+        </div>
         </Link>
 
         {/* Post Content */}
-        <p className="text-gray-600">{post.content}</p>
+        <div className="break-words">
+          <p className="text-gray-600 whitespace-pre-wrap">{post.content}</p>
+        </div>
 
         {/* Media */}
         <div className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}>
