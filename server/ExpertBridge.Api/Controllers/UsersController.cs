@@ -7,6 +7,7 @@ using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Requests.RegisterUser;
 using ExpertBridge.Api.Requests.UpdateUserRequest;
 using ExpertBridge.Api.Responses;

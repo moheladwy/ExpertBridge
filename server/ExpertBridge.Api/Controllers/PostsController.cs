@@ -1,10 +1,10 @@
 using System.Security.Claims;
-using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Media.PostMedia;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.PostVotes;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreatePost;
 using ExpertBridge.Api.Requests.EditPost;
@@ -20,20 +20,26 @@ namespace ExpertBridge.Api.Controllers;
 /// <summary>
 ///     Controller for posts management.
 /// </summary>
-/// <param name="dbContext">
+/// <param name="_dbContext">
 ///     The database context.
 /// </param>
-/// <param name="authHelper">
+/// <param name="_authHelper">
 ///     The authorization helper.
 /// </param>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class PostsController(
-    ExpertBridgeDbContext dbContext,
-    AuthorizationHelper authHelper
-    ) : ControllerBase
+public class PostsController : ControllerBase
 {
+    private readonly AuthorizationHelper _authHelper;
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    public PostsController(AuthorizationHelper authHelper, ExpertBridgeDbContext dbContext)
+    {
+        _authHelper = authHelper;
+        _dbContext = dbContext;
+    }
+
     /// <summary>
     ///     Get post by id.
     /// </summary>
@@ -54,10 +60,10 @@ public class PostsController(
     public async Task<PostResponse> GetById([FromRoute] string postId)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        var user = await authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id;
 
-        var post = await dbContext.Posts
+        var post = await _dbContext.Posts
             .FullyPopulatedPostQuery(p => p.Id == postId)
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstOrDefaultAsync();
@@ -77,10 +83,10 @@ public class PostsController(
     {
         Log.Information($"User from HTTP Context: {HttpContext.User.FindFirstValue(ClaimTypes.Email)}");
 
-        var user = await authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
-        return await dbContext.Posts
+        return await _dbContext.Posts
             .FullyPopulatedPostQuery()
             .SelectPostResponseFromFullPost(userProfileId)
             .ToListAsync();
@@ -108,7 +114,7 @@ public class PostsController(
     public async Task<PostResponse> Create([FromBody] CreatePostRequest request)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        var user = await authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         if (string.IsNullOrEmpty(userProfileId))
@@ -128,7 +134,7 @@ public class PostsController(
             AuthorId = userProfileId
         };
 
-        await dbContext.Posts.AddAsync(post);
+        await _dbContext.Posts.AddAsync(post);
 
         if (request.Media?.Count > 0)
         {
@@ -145,16 +151,18 @@ public class PostsController(
 
             }
 
-            await dbContext.PostMedias.AddRangeAsync(postMedia);
+            await _dbContext.PostMedias.AddRangeAsync(postMedia);
             post.Medias = postMedia;
         }
 
         try
         {
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
+            // TODO: Remove.
+            // For debugging purposes.
             var x = 1;
             throw;
         }
@@ -186,7 +194,7 @@ public class PostsController(
     public async Task<PostResponse> Upvote([FromRoute] string postId)
     {
         // Get the current user from the HTTP context
-        var user = await authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         // if the user is not authenticated, throw an exception
@@ -197,10 +205,10 @@ public class PostsController(
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
 
         // Check if the post exists in the database
-        var post = await dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
         if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
 
-        var vote = await dbContext.PostVotes
+        var vote = await _dbContext.PostVotes
                 .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
 
         if (vote is null)
@@ -212,7 +220,7 @@ public class PostsController(
                 Profile = user.Profile,
                 IsUpvote = true,
             };
-            await dbContext.PostVotes.AddAsync(newVote);
+            await _dbContext.PostVotes.AddAsync(newVote);
         }
         else if (!vote.IsUpvote)
         {
@@ -223,13 +231,13 @@ public class PostsController(
         else
         {
             // If the vote exists and is an upvote, remove it (toggle behavior)
-            dbContext.PostVotes.Remove(vote);
+            _dbContext.PostVotes.Remove(vote);
         }
 
         // Save changes to the database
         try
         {
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -237,7 +245,7 @@ public class PostsController(
             throw;
         }
 
-        return await dbContext.Posts
+        return await _dbContext.Posts
             .FullyPopulatedPostQuery(p => p.Id == postId)
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstAsync();
@@ -268,7 +276,7 @@ public class PostsController(
     public async Task<PostResponse> Downvote([FromRoute] string postId)
     {
         // Get the current user from the HTTP context
-        var user = await authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync(User);
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         // if the user is not authenticated, throw an exception
@@ -279,10 +287,10 @@ public class PostsController(
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
 
         // Check if the post exists in the database
-        var post = await dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
         if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
 
-        var vote = await dbContext.PostVotes
+        var vote = await _dbContext.PostVotes
                 .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
 
         if (vote is null)
@@ -294,7 +302,7 @@ public class PostsController(
                 ProfileId = userProfileId,
                 IsUpvote = false,
             };
-            await dbContext.PostVotes.AddAsync(newVote);
+            await _dbContext.PostVotes.AddAsync(newVote);
         }
         else if (vote.IsUpvote)
         {
@@ -305,13 +313,13 @@ public class PostsController(
         else
         {
             // If the vote exists and is a downvote, remove it (toggle behavior)
-            dbContext.PostVotes.Remove(vote);
+            _dbContext.PostVotes.Remove(vote);
         }
 
         // Save changes to the database
-        await dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
-        return await dbContext.Posts
+        return await _dbContext.Posts
             .FullyPopulatedPostQuery(p => p.Id == postId)
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstAsync();
@@ -320,7 +328,7 @@ public class PostsController(
     /// <summary>
     ///     Edit a post. Only the fields that are provided in the request will be updated.
     /// </summary>
-    /// <param name="editPostRequest">
+    /// <param name="request">
     ///     The request containing the fields to update.
     /// </param>
     /// <exception cref="UnauthorizedException">
@@ -335,34 +343,50 @@ public class PostsController(
     /// <returns>
     ///     The updated post.
     /// </returns>
-    [HttpPatch("")]
-    public async Task<PostResponse> Edit([FromBody] EditPostRequest editPostRequest)
+    [HttpPatch("{postId}")]
+    public async Task<PostResponse> Edit([FromRoute] string postId, [FromBody] EditPostRequest request)
     {
-        // Get the current user from the HTTP context
-        var user = await authHelper.GetCurrentUserAsync(User);
-        if (user is null) throw new UnauthorizedException($"Unauthorized Access from User {User}");
-        var userProfileId = user.Profile.Id;
-        if (string.IsNullOrEmpty(userProfileId))
-            throw new UnauthorizedException($"Unauthorized Access from User {User}");
-
         // Check if the postId is valid
-        ArgumentNullException.ThrowIfNull(editPostRequest, nameof(editPostRequest));
-        ArgumentException.ThrowIfNullOrEmpty(editPostRequest.Id, nameof(editPostRequest.Id));
-        var post = await dbContext.Posts.FirstOrDefaultAsync(p => p.Id == editPostRequest.Id && p.AuthorId == userProfileId);
+        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+        // Get the current user from the HTTP context
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        if (user is null)
+        {
+            throw new UnauthorizedException($"Unauthorized Access from User {User}");
+        }
+
+        // BEWARE!
+        // YOU DO NOT WANT THE USER PROFILE ID TO BE A NULLABLE STRING!.
+        var userProfileId = user.Profile.Id ?? string.Empty;
+
+        var post = await _dbContext.Posts
+            .FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
+
         if (post is null)
-            throw new PostNotFoundException($"Post with id={editPostRequest.Id} does not exist for user with id{user.Id}!");
+        {
+            throw new PostNotFoundException(
+                $"Post with id={postId} does not exist for user with id{user.Id}!");
+        }
 
         // Update the post with the new values and save changes to the database.
-        if (!string.IsNullOrEmpty(editPostRequest.Title))
-            post.Title = editPostRequest.Title;
-        if (!string.IsNullOrEmpty(editPostRequest.Content))
-            post.Content = editPostRequest.Content;
+        if (!string.IsNullOrEmpty(request.Title))
+        {
+            post.Title = request.Title;
+        }
+
+        if (!string.IsNullOrEmpty(request.Content))
+        {
+            post.Content = request.Content;
+        }
+
         post.LastModified = DateTime.UtcNow;
-        await dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         // Return the updated post
-        return await dbContext.Posts
-            .FullyPopulatedPostQuery(p => p.Id == editPostRequest.Id)
+        return await _dbContext.Posts
+            .FullyPopulatedPostQuery(p => p.Id == post.Id)
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstAsync();
     }
@@ -386,20 +410,27 @@ public class PostsController(
     public async Task<IActionResult> Delete([FromRoute] string postId)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        // Check if the user exists in the database
-        var user = await authHelper.GetCurrentUserAsync(User);
-        if (user is null) throw new UnauthorizedException($"Unauthorized Access from User {User}");
-        var userProfileId = user.Profile.Id;
-        if (string.IsNullOrEmpty(userProfileId))
-            throw new UnauthorizedException($"Unauthorized Access from User {User}");
+
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile.Id ?? string.Empty;
 
         // Check if the post exists in the database
-        var post = await dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
-        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
+        var post = await _dbContext.Posts
+            .FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
 
         // Remove the post from the database
-        dbContext.Posts.Remove(post);
-        await dbContext.SaveChangesAsync();
+        if (post != null)
+        {
+            _dbContext.Posts.Remove(post);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // BEWARE!
+        // In an HTTP DELETE, you always want to return 204 no content.
+        // No matter what happens. The only exception is if the auth middleware
+        // refused the request from the beginning, else you do not return anything
+        // other than no content.
+        // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
         return NoContent();
     }
 }

@@ -6,6 +6,7 @@ using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Responses;
 using Microsoft.AspNetCore.Authorization;

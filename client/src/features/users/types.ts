@@ -44,6 +44,7 @@ export interface UpdateUserRequest {
   username?: string;
   phoneNumber?: string | null;
   profilePictureUrl?: string | null;
+  isEmailVerified: boolean;
 }
 
 export type CreateUserError = string | undefined;
