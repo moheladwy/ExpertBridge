@@ -53,11 +53,21 @@ public class ProfilesController : ControllerBase
         return profile;
     }
 
-    [HttpGet("get-by-user/{identityProviderId}")]
-    public async Task<ProfileResponse> GetProfileByUser([FromRoute] string identityProviderId)
+    [HttpGet("{id}")]
+    public async Task<ProfileResponse> GetProfile(string id)
     {
-        //ArgumentException.ThrowIfNullOrEmpty(identityProviderId, nameof(identityProviderId));
-        //return await profileService.GetProfileByUserIdentityProviderIdAsync(identityProviderId);
-        throw new NotImplementedException();
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        if (user == null) throw new UnauthorizedException();
+
+        var profile = await _dbContext.Profiles
+            .Where(p => p.Id == id)
+            .Include(p => p.User)
+            .SelectProfileResponseFromProfile()
+            .FirstOrDefaultAsync();
+
+        if (profile == null)
+            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+
+        return profile;
     }
 }
