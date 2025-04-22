@@ -189,7 +189,7 @@ public class CommentsController(
         {
             if (vote.IsUpvote)
             {
-                _dbContext.CommentVotes.Remove(vote); 
+                _dbContext.CommentVotes.Remove(vote);
             }
             else
             {
@@ -258,33 +258,60 @@ public class CommentsController(
             .FirstAsync();
     }
 
-    //[HttpPost("attach/{commentId}")]
-    //public async Task<AttachFileToCommentResponse> AttachFile(IFormFile file, [FromRoute] string commentId)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //[HttpDelete("delete-file")]
-    //public async Task<IActionResult> DeleteFile([FromBody] DeleteFileFromCommentRequest deleteFileFromCommentRequest)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    [HttpPut("edit")]
+    [HttpPatch]
     public async Task<CommentResponse> Edit([FromBody] EditCommentRequest editCommentRequest)
     {
-        throw new NotImplementedException();
+        // Check if the request is not null
+        ArgumentNullException.ThrowIfNull(editCommentRequest, nameof(editCommentRequest));
+        ArgumentException.ThrowIfNullOrEmpty(editCommentRequest.Id, nameof(editCommentRequest));
+
+        // Check if the user is authorized to edit the comment
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        if (user is null) throw new UnauthorizedException();
+
+        // Check if the comment exists and belongs to the user
+        var comment = await _dbContext.Comments
+            .FirstOrDefaultAsync(c => c.Id == editCommentRequest.Id && c.AuthorId == user.Profile.Id);
+        if (comment is null) throw new CommentNotFoundException($"Comment with id={editCommentRequest.Id} was not found");
+
+        // Update the comment content if provided
+        if (!string.IsNullOrEmpty(editCommentRequest.Content))
+        {
+            comment.Content = editCommentRequest.Content;
+            comment.LastModified = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // Return the updated comment
+        return await _dbContext.Comments
+            .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
+            .SelectCommentResponseFromFullComment(user.Profile.Id)
+            .FirstAsync();
     }
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {
-        throw new NotImplementedException();
-    }
+        // Check if the id is not null or empty
+        ArgumentException.ThrowIfNullOrEmpty(id, nameof(id));
 
-    //[HttpPost("report")]
-    //public async Task<ReportResponse> Report([FromBody] ReportCommentRequest reportCommentRequest)
-    //{
-    //    throw new NotImplementedException();
-    //}
+        // Check if the user is authorized to delete the comment
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        if (user is null) throw new UnauthorizedException();
+
+        // Check if the comment exists and belongs to the user
+        var comment = await _dbContext.Comments
+            .Include(c => c.Replies)
+            .FirstOrDefaultAsync(c => c.Id == id && c.AuthorId == user.Profile.Id);
+        if (comment is null) throw new CommentNotFoundException($"Comment with id={id} was not found");
+
+        // Delete the comment and its replies
+        if (comment.Replies.Count > 0)
+            _dbContext.Comments.RemoveRange(comment.Replies);
+        _dbContext.Comments.Remove(comment);
+        await _dbContext.SaveChangesAsync();
+
+        // Return a NoContent result
+        return NoContent();
+    }
 }
