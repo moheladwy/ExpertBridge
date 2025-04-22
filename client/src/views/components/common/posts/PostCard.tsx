@@ -1,6 +1,9 @@
 import { useAppSelector } from "@/app/hooks";
-import { selectPostById } from "@/features/posts/postsSlice";
-import { Link } from "react-router-dom";
+import {
+	selectPostById,
+	useDeletePostMutation,
+} from "@/features/posts/postsSlice";
+import { Link, useNavigate } from "react-router-dom";
 import { Post } from "@/features/posts/types";
 import { ArrowBigUp } from "lucide-react";
 import { MessageCircle } from "lucide-react";
@@ -16,7 +19,7 @@ import {
 } from "@/views/components/custom/dropdown-menu";
 import { Box, Modal } from "@mui/material";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
 import ReactPlayer from "react-player";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -53,7 +56,9 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 		setOpen(false);
 	};
 
-	const handleDeletePost = () => {};
+	const handleDeletePost = async () => {
+		await deletePost(post.id);
+	};
 
 	//Manage diffrent media typs
 	if (post.medias?.length > 0) {
@@ -69,8 +74,6 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 			media = <ReactPlayer url={post.medias[0].url!} controls />;
 		}
 	}
-
-	console.log(post);
 
 	return (
 		<>
@@ -225,3 +228,6 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 };
 
 export default PostCard;
+function deletePost(id: string) {
+	throw new Error("Function not implemented.");
+}
