@@ -31,8 +31,6 @@ public class MediaController : ControllerBase
         _s3Service = s3Service;
     }
 
-    // TODO: Remove AllowAnonymous
-    [AllowAnonymous]
     [HttpPost("generate-urls")] // generate-url?count=3
     public async Task<List<PresignedUrlResponse>> GenerateUrls([FromBody] GeneratePresignedUrlsRequest request)
     {

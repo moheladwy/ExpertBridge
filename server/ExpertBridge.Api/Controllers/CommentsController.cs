@@ -4,9 +4,11 @@
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Comments;
 using ExpertBridge.Api.Core.Entities.CommentVotes;
+using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreateComment;
 using ExpertBridge.Api.Requests.DeleteFileFromComment;
@@ -31,9 +33,6 @@ public class CommentsController(
     [HttpPost]
     public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
     {
-        // TODO: Validate all requests that they contain the required fields.
-        // Else, return BadRequest
-
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
 
@@ -94,7 +93,7 @@ public class CommentsController(
 
     [Route("/api/posts/{postId}/comments")]
     [AllowAnonymous]
-    [HttpGet] // api/posts/postid/comments
+    [HttpGet] // api/posts/<postId>/comments
     public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
@@ -120,7 +119,22 @@ public class CommentsController(
     [HttpGet("{commentId}")]
     public async Task<CommentResponse> Get([FromRoute] string commentId)
     {
-        throw new NotImplementedException();
+        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
+
+        var comment = await _dbContext.Comments
+            .FullyPopulatedCommentQuery(c => c.Id == commentId)
+            .SelectCommentResponseFromFullComment(userProfileId)
+            .FirstOrDefaultAsync();
+
+        if (comment == null)
+        {
+            throw new CommentNotFoundException($"No comment was found with id={commentId}.");
+        }
+
+        return comment;
     }
 
     [Route("/api/users/{userId}/[controller]")]
@@ -160,9 +174,10 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
         var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
-        if (user == null)
+        if (user == null || string.IsNullOrEmpty(userProfileId))
         {
             throw new UnauthorizedException();
         }
@@ -172,13 +187,13 @@ public class CommentsController(
         }
 
         var vote = await _dbContext.CommentVotes
-            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == user.Profile.Id);
+            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
 
         if (vote == null)
         {
             vote = new CommentVote
             {
-                ProfileId = user.Profile.Id,
+                ProfileId = userProfileId,
                 CommentId = comment.Id,
                 IsUpvote = true
             };
@@ -189,7 +204,7 @@ public class CommentsController(
         {
             if (vote.IsUpvote)
             {
-                _dbContext.CommentVotes.Remove(vote); 
+                _dbContext.CommentVotes.Remove(vote);
             }
             else
             {
@@ -212,9 +227,10 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
         var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
-        if (user == null)
+        if (user == null || string.IsNullOrEmpty(userProfileId))
         {
             throw new UnauthorizedException();
         }
@@ -224,13 +240,13 @@ public class CommentsController(
         }
 
         var vote = await _dbContext.CommentVotes
-            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == user.Profile.Id);
+            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
 
         if (vote == null)
         {
             vote = new CommentVote
             {
-                ProfileId = user.Profile.Id,
+                ProfileId = userProfileId,
                 CommentId = comment.Id,
                 IsUpvote = false,
             };
@@ -258,33 +274,74 @@ public class CommentsController(
             .FirstAsync();
     }
 
-    //[HttpPost("attach/{commentId}")]
-    //public async Task<AttachFileToCommentResponse> AttachFile(IFormFile file, [FromRoute] string commentId)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //[HttpDelete("delete-file")]
-    //public async Task<IActionResult> DeleteFile([FromBody] DeleteFileFromCommentRequest deleteFileFromCommentRequest)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    [HttpPut("edit")]
-    public async Task<CommentResponse> Edit([FromBody] EditCommentRequest editCommentRequest)
+    [HttpPatch("{commentId}")]
+    public async Task<CommentResponse> Edit([FromRoute] string commentId, [FromBody] EditCommentRequest request)
     {
-        throw new NotImplementedException();
+        // Check if the request is not null
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+
+        // Check if the user is authorized to edit the comment
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        if (user is null)
+        {
+            throw new UnauthorizedException();
+        }
+
+        var userProfileId = user.Profile?.Id ?? string.Empty;
+
+        // Check if the comment exists and belongs to the user
+        var comment = await _dbContext.Comments
+            .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userProfileId);
+
+        if (comment == null)
+        {
+            throw new CommentNotFoundException(
+                $"Comment with id={commentId} was not found");
+        }
+
+        // Update the comment content if provided
+        if (!string.IsNullOrEmpty(request.Content))
+        {
+            comment.Content = request.Content;
+            comment.LastModified = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // Return the updated comment
+        return comment.SelectCommentResponseFromFullComment(userProfileId);
     }
 
-    [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> Delete([FromRoute] string id)
+    [HttpDelete("{commentId}")]
+    public async Task<IActionResult> Delete([FromRoute] string commentId)
     {
-        throw new NotImplementedException();
-    }
+        // Check if the id is not null or empty
+        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
-    //[HttpPost("report")]
-    //public async Task<ReportResponse> Report([FromBody] ReportCommentRequest reportCommentRequest)
-    //{
-    //    throw new NotImplementedException();
-    //}
+        // Check if the user is authorized to delete the comment
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile.Id ?? string.Empty;
+
+        // Check if the comment exists and belongs to the user
+        var comment = await _dbContext.Comments
+            .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userProfileId);
+
+        if (comment != null)
+        {
+            //builder.HasMany(c => c.Replies)
+            //    .WithOne(c => c.ParentComment)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            _dbContext.Comments.Remove(comment);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // BEWARE!
+        // In an HTTP DELETE, you always want to return 204 no content.
+        // No matter what happens. The only exception is if the auth middleware
+        // refused the request from the beginning, else you do not return anything
+        // other than no content.
+        // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
+        return NoContent();
+    }
 }

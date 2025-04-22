@@ -7,7 +7,7 @@ import CreatePostModal from "./CreatePostModal";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 
 const Feed = () => {
-
+  
   const {
     data: posts,
     isLoading: postsLoading,

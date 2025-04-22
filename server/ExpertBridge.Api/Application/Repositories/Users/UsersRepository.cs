@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Application.Repositories.Users;

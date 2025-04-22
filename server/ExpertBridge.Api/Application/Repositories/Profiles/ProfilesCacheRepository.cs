@@ -6,6 +6,7 @@ using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Core.Interfaces.Services;
+using ExpertBridge.Api.Models;
 namespace ExpertBridge.Api.Application.Repositories.Profiles;
 
 public class ProfilesCacheRepository(
