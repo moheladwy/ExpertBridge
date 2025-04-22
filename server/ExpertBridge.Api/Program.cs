@@ -63,7 +63,7 @@ builder.Services.AddRepositories();
 var app = builder.Build();
 
 app.UseCors("AllowAll");
-//app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
