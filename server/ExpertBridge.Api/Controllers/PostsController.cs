@@ -61,7 +61,7 @@ public class PostsController : ControllerBase
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
         var user = await _authHelper.GetCurrentUserAsync(User);
-        var userProfileId = user?.Profile?.Id;
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         var post = await _dbContext.Posts
             .FullyPopulatedPostQuery(p => p.Id == postId)

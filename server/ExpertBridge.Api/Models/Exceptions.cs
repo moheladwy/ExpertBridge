@@ -3,7 +3,7 @@
 
 namespace ExpertBridge.Api.Models;
 
-public class HttpNotFoundException : Exception
+public abstract class HttpNotFoundException : Exception
 {
     public HttpNotFoundException() { }
     public HttpNotFoundException(string message) : base(message) { }
