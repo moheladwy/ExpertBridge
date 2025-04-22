@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Post } from "@/features/posts/types";
-import { Button, IconButton, Modal, TextField } from "@mui/material";
-import { ThumbUp, ThumbDown, AttachFile } from "@mui/icons-material";
-import CommentCard from "../comments/CommentCard";
-import { useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
 import CommentsSection from "../comments/CommentsSection";
-import { useAppSelector } from "@/app/hooks";
-import { selectPostById, useDownvotePostMutation, useUpvotePostMutation } from "@/features/posts/postsSlice";
-import toast from "react-hot-toast";
 import PostVoteButtons from "./PostVoteButtons";
 import ReactPlayer from "react-player";
+import { Modal } from "@mui/material";
 
 interface FullPostWithCommentsProps {
   post: Post;
