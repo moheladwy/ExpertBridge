@@ -412,7 +412,7 @@ public class PostsController : ControllerBase
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
 
         var user = await _authHelper.GetCurrentUserAsync(User);
-        var userProfileId = user.Profile.Id ?? string.Empty;
+        var userProfileId = user?.Profile.Id ?? string.Empty;
 
         // Check if the post exists in the database
         var post = await _dbContext.Posts

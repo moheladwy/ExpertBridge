@@ -7,6 +7,7 @@ using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Entities.Users;
 using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Data.DatabaseContexts;
+using ExpertBridge.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Application.Repositories.Profiles;

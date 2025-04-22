@@ -8,6 +8,7 @@ using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreateComment;
 using ExpertBridge.Api.Requests.DeleteFileFromComment;
@@ -173,9 +174,10 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
         var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
-        if (user == null)
+        if (user == null || string.IsNullOrEmpty(userProfileId))
         {
             throw new UnauthorizedException();
         }
@@ -185,13 +187,13 @@ public class CommentsController(
         }
 
         var vote = await _dbContext.CommentVotes
-            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == user.Profile.Id);
+            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
 
         if (vote == null)
         {
             vote = new CommentVote
             {
-                ProfileId = user.Profile.Id,
+                ProfileId = userProfileId,
                 CommentId = comment.Id,
                 IsUpvote = true
             };
@@ -225,9 +227,10 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
         var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
-        if (user == null)
+        if (user == null || string.IsNullOrEmpty(userProfileId))
         {
             throw new UnauthorizedException();
         }
@@ -237,13 +240,13 @@ public class CommentsController(
         }
 
         var vote = await _dbContext.CommentVotes
-            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == user.Profile.Id);
+            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
 
         if (vote == null)
         {
             vote = new CommentVote
             {
-                ProfileId = user.Profile.Id,
+                ProfileId = userProfileId,
                 CommentId = comment.Id,
                 IsUpvote = false,
             };
@@ -271,60 +274,74 @@ public class CommentsController(
             .FirstAsync();
     }
 
-    [HttpPatch]
-    public async Task<CommentResponse> Edit([FromBody] EditCommentRequest editCommentRequest)
+    [HttpPatch("{commentId}")]
+    public async Task<CommentResponse> Edit([FromRoute] string commentId, [FromBody] EditCommentRequest request)
     {
         // Check if the request is not null
-        ArgumentNullException.ThrowIfNull(editCommentRequest, nameof(editCommentRequest));
-        ArgumentException.ThrowIfNullOrEmpty(editCommentRequest.Id, nameof(editCommentRequest));
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
         // Check if the user is authorized to edit the comment
         var user = await _authHelper.GetCurrentUserAsync(User);
-        if (user is null) throw new UnauthorizedException();
+        if (user is null)
+        {
+            throw new UnauthorizedException();
+        }
+
+        var userProfileId = user.Profile?.Id ?? string.Empty;
 
         // Check if the comment exists and belongs to the user
         var comment = await _dbContext.Comments
-            .FirstOrDefaultAsync(c => c.Id == editCommentRequest.Id && c.AuthorId == user.Profile.Id);
-        if (comment is null) throw new CommentNotFoundException($"Comment with id={editCommentRequest.Id} was not found");
+            .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userProfileId);
+
+        if (comment == null)
+        {
+            throw new CommentNotFoundException(
+                $"Comment with id={commentId} was not found");
+        }
 
         // Update the comment content if provided
-        if (!string.IsNullOrEmpty(editCommentRequest.Content))
+        if (!string.IsNullOrEmpty(request.Content))
         {
-            comment.Content = editCommentRequest.Content;
+            comment.Content = request.Content;
             comment.LastModified = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
         }
 
         // Return the updated comment
-        return await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
-            .SelectCommentResponseFromFullComment(user.Profile.Id)
-            .FirstAsync();
+        return comment.SelectCommentResponseFromFullComment(userProfileId);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] string id)
+    [HttpDelete("{commentId}")]
+    public async Task<IActionResult> Delete([FromRoute] string commentId)
     {
         // Check if the id is not null or empty
-        ArgumentException.ThrowIfNullOrEmpty(id, nameof(id));
+        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
         // Check if the user is authorized to delete the comment
         var user = await _authHelper.GetCurrentUserAsync(User);
-        if (user is null) throw new UnauthorizedException();
+        var userProfileId = user?.Profile.Id ?? string.Empty;
 
         // Check if the comment exists and belongs to the user
         var comment = await _dbContext.Comments
-            .Include(c => c.Replies)
-            .FirstOrDefaultAsync(c => c.Id == id && c.AuthorId == user.Profile.Id);
-        if (comment is null) throw new CommentNotFoundException($"Comment with id={id} was not found");
+            .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userProfileId);
 
-        // Delete the comment and its replies
-        if (comment.Replies.Count > 0)
-            _dbContext.Comments.RemoveRange(comment.Replies);
-        _dbContext.Comments.Remove(comment);
-        await _dbContext.SaveChangesAsync();
+        if (comment != null)
+        {
+            //builder.HasMany(c => c.Replies)
+            //    .WithOne(c => c.ParentComment)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-        // Return a NoContent result
+            _dbContext.Comments.Remove(comment);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // BEWARE!
+        // In an HTTP DELETE, you always want to return 204 no content.
+        // No matter what happens. The only exception is if the auth middleware
+        // refused the request from the beginning, else you do not return anything
+        // other than no content.
+        // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
         return NoContent();
     }
 }
