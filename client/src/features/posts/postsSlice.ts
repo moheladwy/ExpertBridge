@@ -24,7 +24,6 @@ export const postsApiSlice = apiSlice.injectEndpoints({
         { type: 'Post', id: 'LIST' },
         ...result.ids.map(id => ({ type: 'Post', id: id.toString() }) as const),
       ],
-
     }),
 
     getPost: builder.query<Post, string>({
@@ -43,7 +42,6 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: [
         { type: 'Post', id: 'LIST' },
       ],
-
     }),
 
     upvotePost: builder.mutation<Post, Post>({
@@ -170,6 +168,17 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       }
     }),
 
+    deletePost: builder.mutation<void, string>({
+      query: (postId) => ({
+        url: `/posts/${postId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, extra, arg) => [
+        { type: 'Post', id: 'LIST' },
+        { type: 'Post', id: arg },
+      ]
+    }),
+
   }),
 });
 
@@ -179,6 +188,7 @@ export const {
   useCreatePostMutation,
   useUpvotePostMutation,
   useDownvotePostMutation,
+  useDeletePostMutation,
 } = postsApiSlice;
 
 
