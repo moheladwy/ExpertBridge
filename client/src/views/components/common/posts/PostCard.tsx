@@ -22,6 +22,8 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
 import ReactPlayer from "react-player";
+import DeleteIcon from '@mui/icons-material/Delete';
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 interface PostCardProps {
   postId: string;
@@ -30,6 +32,7 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ postId }) => {
   const post = useAppSelector((state) => selectPostById(state, postId));
   const [open, setOpen] = useState(false);
+  const [,,,, userProfile] = useIsUserLoggedIn();
 
   if (!post) return null;
 
@@ -52,6 +55,10 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
     setOpen(false);
   };
 
+  const handleDeletePost = () => {
+
+  }
+
   //Manage diffrent media typs
   if (post.medias?.length > 0) {
     if (post.medias[0].type.startsWith("image")) {
@@ -71,6 +78,8 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
       );
     }
   }
+
+  console.log(post);
 
 
 
@@ -111,11 +120,15 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 
         {/* Post Title */}
         <Link to={`/feed/${post.id}`}>
-          <h2 className="text-lg font-bold text-gray-700">{post.title}</h2>
+        <div className="break-words">
+          <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">{post.title}</h2>
+        </div>
         </Link>
 
         {/* Post Content */}
-        <p className="text-gray-600">{post.content}</p>
+        <div className="break-words">
+          <p className="text-gray-600 whitespace-pre-wrap">{post.content}</p>
+        </div>
 
         {/* Media */}
         <div className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}>
@@ -171,6 +184,17 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
                   <h6>Copy link</h6>
                 </div>
               </DropdownMenuItem>
+              {post.author.id === userProfile?.id && (
+                <DropdownMenuItem>
+                  <div
+                    className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+                    onClick={handleDeletePost}
+                  >
+                    <DeleteIcon className="w-5 text-red-700" />
+                    <h6 className="text-red-700">Delete post</h6>
+                  </div>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

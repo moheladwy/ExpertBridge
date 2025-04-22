@@ -59,16 +59,25 @@ const NavBar = () => {
     setSearchInput(event.target.value);
   };
 
+  const handleLogoClick = () => {
+    if(isLoggedIn)
+      navigate('/home');
+    else
+      navigate('/')
+  }
+
+  console.log(userProfile);
+
 
   return (
     <div className="flex items-center w-full bg-main-blue h-16 drop-shadow-md">
       <div className="flex items-center mx-9">
-        <h1 className="text-white text-3xl max-sm:text-lg">
+        <h1 className="text-white text-3xl cursor-pointer max-sm:text-lg" onClick={handleLogoClick}>
           <b>Expert</b>Bridge
         </h1>
         {isLoggedIn ? (
           <>
-            <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Home</Link>
+            {/* <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Home</Link> */}
             <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Jobs</Link>
           </>
         ) : (

@@ -135,148 +135,156 @@ const FileUpload: React.FC<FileUploadProps> = ({ limit, multiple, name, setParen
   // ? Actual JSX
   return (
     <>
-      <CustomBox>
-        <Box
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
-          sx={{
-            position: 'relative',
-            width: '100%',
-            height: '13rem',
-            border: '2px dashed #4267b2',
-            borderRadius: '20px',
-          }}
-          ref={wrapperRef}
-          onDragEnter={onDragEnter}
-          onDragLeave={onDragLeave}
-          onDrop={onDragLeave}
+      <div className='flex'>
+        <CustomBox>
+          <Box
+            display='flex'
+            justifyContent='center'
+            alignItems='center'
+            sx={{
+              position: 'relative',
+              width: '100%',
+              height: '25vh',
+              border: '2px dashed #4267b2',
+              borderRadius: '20px',
+            }}
+            ref={wrapperRef}
+            onDragEnter={onDragEnter}
+            onDragLeave={onDragLeave}
+            onDrop={onDragLeave}
+            className= 'p-5'
+          >
+            <Stack justifyContent='center' sx={{ p: 1, textAlign: 'center' }}>
+              <Typography className='font-bold max-md:text-sm max-md:w-full'>
+                {limit > 1 ? 'Browse to upload files' : 'Browse to upload file'}
+              </Typography>
+              <div>
+                {/* <img
+                  src={uploadImg}
+                  alt='file upload'
+                  style={{ width: '5rem' }}
+                /> */}
+              </div>
+
+              <div className='max-md:hidden'>
+                <Typography className='text-slate-600 max-md:text-sm' variant='body1' component='span'>
+                  Supported Files
+                </Typography>
+                <Typography className='text-slate-600 max-md:text-sm' variant='body2' component='span'>
+                  JPG, JPEG, PNG
+                </Typography>
+              </div>
+            </Stack>
+            <Controller
+              name={name}
+              defaultValue=''
+              control={control}
+              render={({ field: { name, onBlur, ref } }) => (
+                <input
+                  type="file"
+                  name={name}
+                  onBlur={onBlur}
+                  ref={ref}
+                  onChange={onFileDrop}
+                  multiple={multiple}
+                  accept="image/jpg, image/jpeg, image/png, video/mp4, video/webm, video/ogg"
+                  style={{
+                    opacity: 0,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    cursor: "pointer",
+                  }}
+                />
+
+              )}
+            />
+          </Box>
+        </CustomBox>
+
+        <FormHelperText
+          sx={{ textAlign: 'center', my: 1 }}
+          error={!!errors[name]}
         >
-          <Stack justifyContent='center' sx={{ p: 1, textAlign: 'center' }}>
-            <Typography sx={{ color: '#ccc' }}>
-              {limit > 1 ? 'Browse files to upload' : 'Browse file to upload'}
-            </Typography>
-            <div>
-              <img
-                src={uploadImg}
-                alt='file upload'
-                style={{ width: '5rem' }}
-              />
-            </div>
-            <Typography variant='body1' component='span'>
-              <strong>Supported Files</strong>
-            </Typography>
-            <Typography variant='body2' component='span'>
-              JPG, JPEG, PNG
-            </Typography>
-          </Stack>
-          <Controller
-            name={name}
-            defaultValue=''
-            control={control}
-            render={({ field: { name, onBlur, ref } }) => (
-              <input
-                type="file"
-                name={name}
-                onBlur={onBlur}
-                ref={ref}
-                onChange={onFileDrop}
-                multiple={multiple}
-                accept="image/jpg, image/jpeg, image/png, video/mp4, video/webm, video/ogg"
-                style={{
-                  opacity: 0,
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  cursor: "pointer",
-                }}
-              />
+          {
+            (errors[name] ? errors[name].message : '')?.toString()
+          }
+        </FormHelperText>
 
-            )}
-          />
-        </Box>
-      </CustomBox>
+        
 
-      <FormHelperText
-        sx={{ textAlign: 'center', my: 1 }}
-        error={!!errors[name]}
-      >
-        {
-          (errors[name] ? errors[name].message : '')?.toString()
-        }
-      </FormHelperText>
+        {(fileList.length > 0 || singleFile.length > 0) && (
+          <div className='ml-3'>
+            <Stack spacing={2} sx={{ my: 2 }}>
+              {(multiple ? fileList : singleFile).map((item, index) => {
+                const fileType = item.type.split('/')[0]; // 'image' or 'video'
+                const isImage = fileType === 'image';
+                const isVideo = fileType === 'video';
 
-      import ReactPlayer from 'react-player';
+                return (
+                  <Box
+                    key={index}
+                    sx={{
+                      position: 'relative',
+                      backgroundColor: '#f5f8ff',
+                      borderRadius: 1.5,
+                      p: 0.5,
+                    }}
+                  >
+                    <div className='flex items-center justify-between w-full'>
+                      <Box display='flex'>
+                        {isImage ? (
+                          <img
+                            src={fileUrls[index]}
+                            alt='upload'
+                            style={{
+                              height: '3.5rem',
+                              objectFit: 'contain',
+                            }}
+                          
+                          />
+                        ) : isVideo ? (
+                          <ReactPlayer
+                            url={fileUrls[index]}
+                            width='100px'
+                            height='56px'
+                            controls
+                          />
+                        ) : null}
 
-      {(fileList.length > 0 || singleFile.length > 0) && (
-        <Stack spacing={2} sx={{ my: 2 }}>
-          {(multiple ? fileList : singleFile).map((item, index) => {
-            const fileType = item.type.split('/')[0]; // 'image' or 'video'
-            const isImage = fileType === 'image';
-            const isVideo = fileType === 'video';
+                        <div className='mx-4 w-2/4'>
+                          <div className='text-sm max-xl:hidden'>{item.name}</div>
+                          <div className='text-sm max-xl:hidden'>
+                            {calcSize(item.size)}
+                          </div>
+                        </div>
+                      </Box>
 
-            return (
-              <Box
-                key={index}
-                sx={{
-                  position: 'relative',
-                  backgroundColor: '#f5f8ff',
-                  borderRadius: 1.5,
-                  p: 0.5,
-                }}
-              >
-                <Box display='flex'>
-                  {isImage ? (
-                    <img
-                      src={fileUrls[index]}
-                      alt='upload'
-                      style={{
-                        height: '3.5rem',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  ) : isVideo ? (
-                    <ReactPlayer
-                      url={fileUrls[index]}
-                      width='100px'
-                      height='56px'
-                      controls
-                    />
-                  ) : null}
-
-                  <Box sx={{ ml: 1 }}>
-                    <Typography>{item.name}</Typography>
-                    <Typography variant='body2'>
-                      {calcSize(item.size)}
-                    </Typography>
+                      <IconButton
+                        onClick={() => {
+                          if (multiple) {
+                            fileRemove(item);
+                          } else {
+                            fileSingleRemove();
+                          }
+                        }}
+                        sx={{
+                          color: '#df2c0e',
+                        }}
+                        className='max-lg:w-7 max-md:w-4'
+                      >
+                        <DeleteIcon className='max-lg:w-5'/>
+                      </IconButton>
+                    </div>
                   </Box>
-                </Box>
-
-                <IconButton
-                  onClick={() => {
-                    if (multiple) {
-                      fileRemove(item);
-                    } else {
-                      fileSingleRemove();
-                    }
-                  }}
-                  sx={{
-                    color: '#df2c0e',
-                    position: 'absolute',
-                    right: '1rem',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            );
-          })}
-        </Stack>
-      )}
+                );
+              })}
+            </Stack>
+          </div>
+        )}
+      </div>
 
     </>
   );

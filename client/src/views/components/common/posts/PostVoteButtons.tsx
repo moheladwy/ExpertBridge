@@ -101,7 +101,7 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
       </div>
 
       <div
-        className={`rounded-r-full p-1 rotate-180 hover:bg-red-100 hover:cursor-pointer ${postVotes.userVote === "downvote" ? "bg-red-200" : ""
+        className={`rounded-l-full p-1 rotate-180 hover:bg-red-100 hover:cursor-pointer ${postVotes.userVote === "downvote" ? "bg-red-200" : ""
           }`}
         onClick={handleDownvote}
       >

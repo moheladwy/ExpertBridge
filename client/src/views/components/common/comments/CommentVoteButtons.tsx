@@ -64,7 +64,7 @@ const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
       </div>
 
       <div
-        className={`rounded-r-full p-1 rotate-180 hover:bg-red-100 hover:cursor-pointer ${commentVotes.userVote === "downvote" ? "bg-red-200" : ""
+        className={`rounded-l-full p-1 rotate-180 hover:bg-red-100 hover:cursor-pointer ${commentVotes.userVote === "downvote" ? "bg-red-200" : ""
           }`}
         onClick={handleDownvote}
       >

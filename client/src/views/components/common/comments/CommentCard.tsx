@@ -38,7 +38,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   };
 
   return (
-    <div className="p-3 border-t border-gray-300">
+    <div className="flex flex-col gap-3 p-3 border-t border-gray-300">
       {/* Comment Author */}
       <div className="flex items-center space-x-3">
         <img
@@ -49,16 +49,20 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
           className="rounded-full"
         />
         <div>
+          {/* Name */}
           <h4 className="text-sm font-semibold">{comment.author.firstName + ' ' + comment.author.lastName}</h4>
-          <p className="text-xs text-gray-500">{comment.author.jobTitle || "No job title"}</p>
+          {/* Date of creation of the comment */}
+          <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleDateString()}</p>
         </div>
       </div>
 
       {/* Comment Content */}
-      <p className="text-gray-700 mt-2">{comment.content}</p>
+      <div className="w-full break-words">
+        <p className="text-gray-700 whitespace-pre-wrap">{comment.content}</p>
+      </div>
 
       {/* Comment Actions */}
-      <div className="flex items-center mt-2 space-x-3">
+      <div className="flex items-center space-x-3">
         <CommentVoteButtons comment={comment} />
 
         {comment.replies && comment.replies.length > 0 && (
@@ -69,9 +73,10 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
       </div>
 
       {/* Reply Form */}
-      <div className="mt-3">
+      <div>
         <TextField
           fullWidth
+          multiline
           size="small"
           variant="outlined"
           placeholder="Write a reply..."
@@ -79,32 +84,40 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
           onChange={(e) => setReplyText(e.target.value)}
           disabled={isLoading}
         />
-        <Button onClick={handleReplySubmit} variant="contained" size="small" className="mt-2"
-          disabled={isLoading}
-        >
-          Reply
-        </Button>
+        <div className="w-full flex mt-2 justify-end">
+          <Button onClick={handleReplySubmit} variant="contained" size="small" className="bg-main-blue hover:bg-blue-950"
+            disabled={isLoading}
+          >
+            Reply
+          </Button>
+        </div>
       </div>
 
       {/* Replies Section */}
       {showReplies &&
         (
-          <div className="ml-6 mt-3 border-l-2 border-gray-300 pl-3">
+          <div className=" flex flex-col gap-4 ml-4 border-l-2 border-gray-300 pl-3">
             {comment.replies?.map((reply) => (
-              <div key={reply.id} className="mt-2">
+              <div key={reply.id} className="">
+                {/* Comment Author */}
                 <div className="flex items-center space-x-3">
                   <img
                     src={reply.author.profilePictureUrl || "/default-avatar.png"}
                     alt="Reply Author"
-                    width={25}
-                    height={25}
+                    width={30}
+                    height={30}
                     className="rounded-full"
                   />
                   <div>
-                    <h5 className="text-xs font-semibold">{reply.author.firstName + ' ' + reply.author.lastName}</h5>
+                    {/* Name */}
+                    <h4 className="text-sm font-semibold">{reply.author.firstName + ' ' + reply.author.lastName}</h4>
+                    {/* Date of creation of the comment */}
+                    <p className="text-xs text-gray-500">{new Date(reply.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
-                <p className="text-gray-700 mt-1">{reply.content}</p>
+                <div className="w-full break-words">
+                  <p className="text-gray-700 whitespace-pre-wrap">{reply.content}</p>
+                </div>
               </div>
             ))}
           </div>
