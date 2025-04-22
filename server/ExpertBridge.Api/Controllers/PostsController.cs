@@ -1,10 +1,10 @@
 using System.Security.Claims;
-using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Media.PostMedia;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.PostVotes;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Requests.CreatePost;
 using ExpertBridge.Api.Requests.EditPost;
@@ -39,6 +39,7 @@ public class PostsController : ControllerBase
         _authHelper = authHelper;
         _dbContext = dbContext;
     }
+
     /// <summary>
     ///     Get post by id.
     /// </summary>
@@ -160,6 +161,8 @@ public class PostsController : ControllerBase
         }
         catch (Exception ex)
         {
+            // TODO: Remove.
+            // For debugging purposes.
             var x = 1;
             throw;
         }
@@ -325,7 +328,7 @@ public class PostsController : ControllerBase
     /// <summary>
     ///     Edit a post. Only the fields that are provided in the request will be updated.
     /// </summary>
-    /// <param name="editPostRequest">
+    /// <param name="request">
     ///     The request containing the fields to update.
     /// </param>
     /// <exception cref="UnauthorizedException">
@@ -340,34 +343,50 @@ public class PostsController : ControllerBase
     /// <returns>
     ///     The updated post.
     /// </returns>
-    [HttpPatch("")]
-    public async Task<PostResponse> Edit([FromBody] EditPostRequest editPostRequest)
+    [HttpPatch("{postId}")]
+    public async Task<PostResponse> Edit([FromRoute] string postId, [FromBody] EditPostRequest request)
     {
+        // Check if the postId is valid
+        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         // Get the current user from the HTTP context
         var user = await _authHelper.GetCurrentUserAsync(User);
-        if (user is null) throw new UnauthorizedException($"Unauthorized Access from User {User}");
-        var userProfileId = user.Profile.Id;
-        if (string.IsNullOrEmpty(userProfileId))
+        if (user is null)
+        {
             throw new UnauthorizedException($"Unauthorized Access from User {User}");
+        }
 
-        // Check if the postId is valid
-        ArgumentNullException.ThrowIfNull(editPostRequest, nameof(editPostRequest));
-        ArgumentException.ThrowIfNullOrEmpty(editPostRequest.Id, nameof(editPostRequest.Id));
-        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == editPostRequest.Id && p.AuthorId == userProfileId);
+        // BEWARE!
+        // YOU DO NOT WANT THE USER PROFILE ID TO BE A NULLABLE STRING!.
+        var userProfileId = user.Profile.Id ?? string.Empty;
+
+        var post = await _dbContext.Posts
+            .FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
+
         if (post is null)
-            throw new PostNotFoundException($"Post with id={editPostRequest.Id} does not exist for user with id{user.Id}!");
+        {
+            throw new PostNotFoundException(
+                $"Post with id={postId} does not exist for user with id{user.Id}!");
+        }
 
         // Update the post with the new values and save changes to the database.
-        if (!string.IsNullOrEmpty(editPostRequest.Title))
-            post.Title = editPostRequest.Title;
-        if (!string.IsNullOrEmpty(editPostRequest.Content))
-            post.Content = editPostRequest.Content;
+        if (!string.IsNullOrEmpty(request.Title))
+        {
+            post.Title = request.Title;
+        }
+
+        if (!string.IsNullOrEmpty(request.Content))
+        {
+            post.Content = request.Content;
+        }
+
         post.LastModified = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync();
 
         // Return the updated post
         return await _dbContext.Posts
-            .FullyPopulatedPostQuery(p => p.Id == editPostRequest.Id)
+            .FullyPopulatedPostQuery(p => p.Id == post.Id)
             .SelectPostResponseFromFullPost(userProfileId)
             .FirstAsync();
     }
@@ -391,20 +410,27 @@ public class PostsController : ControllerBase
     public async Task<IActionResult> Delete([FromRoute] string postId)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        // Check if the user exists in the database
+
         var user = await _authHelper.GetCurrentUserAsync(User);
-        if (user is null) throw new UnauthorizedException($"Unauthorized Access from User {User}");
-        var userProfileId = user.Profile.Id;
-        if (string.IsNullOrEmpty(userProfileId))
-            throw new UnauthorizedException($"Unauthorized Access from User {User}");
+        var userProfileId = user.Profile.Id ?? string.Empty;
 
         // Check if the post exists in the database
-        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
-        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
+        var post = await _dbContext.Posts
+            .FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
 
         // Remove the post from the database
-        _dbContext.Posts.Remove(post);
-        await _dbContext.SaveChangesAsync();
+        if (post != null)
+        {
+            _dbContext.Posts.Remove(post);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // BEWARE!
+        // In an HTTP DELETE, you always want to return 204 no content.
+        // No matter what happens. The only exception is if the auth middleware
+        // refused the request from the beginning, else you do not return anything
+        // other than no content.
+        // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
         return NoContent();
     }
 }

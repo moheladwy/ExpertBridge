@@ -4,6 +4,7 @@
 using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Comments;
 using ExpertBridge.Api.Core.Entities.CommentVotes;
+using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
@@ -31,9 +32,6 @@ public class CommentsController(
     [HttpPost]
     public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
     {
-        // TODO: Validate all requests that they contain the required fields.
-        // Else, return BadRequest
-
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
 
@@ -94,7 +92,7 @@ public class CommentsController(
 
     [Route("/api/posts/{postId}/comments")]
     [AllowAnonymous]
-    [HttpGet] // api/posts/postid/comments
+    [HttpGet] // api/posts/<postId>/comments
     public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
@@ -120,7 +118,22 @@ public class CommentsController(
     [HttpGet("{commentId}")]
     public async Task<CommentResponse> Get([FromRoute] string commentId)
     {
-        throw new NotImplementedException();
+        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+
+        var user = await _authHelper.GetCurrentUserAsync(User);
+        var userProfileId = user?.Profile?.Id ?? string.Empty;
+
+        var comment = await _dbContext.Comments
+            .FullyPopulatedCommentQuery(c => c.Id == commentId)
+            .SelectCommentResponseFromFullComment(userProfileId)
+            .FirstOrDefaultAsync();
+
+        if (comment == null)
+        {
+            throw new CommentNotFoundException($"No comment was found with id={commentId}.");
+        }
+
+        return comment;
     }
 
     [Route("/api/users/{userId}/[controller]")]

@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using ExpertBridge.Api.Core;
+using ExpertBridge.Api.Models;
 using Serilog;
 using Serilog.Context;
 
@@ -23,6 +23,11 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
                     Activity.Current?.Id
                 );
             }
+        }
+        catch (HttpNotFoundException ex)
+        {
+            await Results.NotFound(ex.Message)
+                .ExecuteAsync(httpContext);
         }
         catch (UnauthorizedException ex)
         {
