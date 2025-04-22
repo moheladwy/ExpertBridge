@@ -1,4 +1,4 @@
-import { useGetCurrentUserProfileQuery } from "@/features/users/usersSlice";
+import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pencil } from "lucide-react";

@@ -34,6 +34,18 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 	const [open, setOpen] = useState(false);
 	const [, , , , userProfile] = useIsUserLoggedIn();
 
+	const [deletePost, deleteResult] = useDeletePostMutation();
+
+	useEffect(() => {
+		if (deleteResult.isSuccess) {
+			toast.success("Your post was deleted successfully.");
+		}
+		if (deleteResult.isError) {
+			toast.error("An error occurred while deleting you post.");
+			console.log(deleteResult.error);
+		}
+	}, [deleteResult.isSuccess, deleteResult.isError, deleteResult.error]);
+
 	if (!post) return null;
 
 	const totalCommentsNumber = post.comments;
@@ -74,6 +86,8 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 			media = <ReactPlayer url={post.medias[0].url!} controls />;
 		}
 	}
+
+	// console.log(post);
 
 	return (
 		<>
@@ -228,6 +242,3 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 };
 
 export default PostCard;
-function deletePost(id: string) {
-	throw new Error("Function not implemented.");
-}

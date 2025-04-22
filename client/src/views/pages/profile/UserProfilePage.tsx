@@ -5,36 +5,20 @@ import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { apiSlice } from "@/features/api/apiSlice";
-import { ProfileResponse } from "@/features/users/types";
+import { useGetProfileByIdQuery } from "@/features/profiles/profilesSlice";
 import { UserPlusIcon } from "lucide-react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
-// Create a new API endpoint for fetching user profiles by ID
-const extendedApiSlice = apiSlice.injectEndpoints({
-	endpoints: (builder) => ({
-		getUserProfileById: builder.query<ProfileResponse, string>({
-			query: (userId) => `/Profiles/${userId}`,
-			transformResponse: (response: ProfileResponse) => {
-				return response;
-			},
-		}),
-	}),
-});
-
-export const { useGetUserProfileByIdQuery } = extendedApiSlice;
-
 const UserProfilePage = () => {
 	const { userId } = useParams<{ userId: string }>();
+	const navigate = useNavigate();
 	const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
 	const {
 		data: profile,
 		isLoading,
 		error,
-	} = useGetUserProfileByIdQuery(userId || "");
+	} = useGetProfileByIdQuery(userId || "");
 	const [activeTab, setActiveTab] = useState("latest");
-
-	const navigate = useNavigate();
 
 	// Check if the requested profile is the current user's profile
 	useEffect(() => {

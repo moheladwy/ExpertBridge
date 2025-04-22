@@ -28,6 +28,7 @@ export const apiSlice = createApi({
     'AuthUser',
     'Post',
     'Comment',
+    'Profile',
   ],
   keepUnusedDataFor: 600,
 
