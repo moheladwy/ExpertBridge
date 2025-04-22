@@ -9,7 +9,7 @@ import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 const PostFromUrlPage: React.FC = () => {
 
   const { postId } = useParams();
-  const { data: post, isLoading, error, refetch } = useGetPostQuery(postId!);
+  const { data: post, isLoading, error, refetch } = useGetPostQuery(postId ?? '');
 
   useRefetchOnLogin(refetch);
 
@@ -17,7 +17,9 @@ const PostFromUrlPage: React.FC = () => {
   if (error || !post) return <p>Post not found.</p>;
 
   return (
-    <FullPostWithComments post={post} />
+    <div>
+      <FullPostWithComments post={post}/>
+    </div>
   );
 };
 

@@ -9,7 +9,7 @@ import React, { JSX, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
-import { useCreateUser } from "@/features/auth/useCreateUser";
+import { useCreateUser } from "@/hooks/useCreateUser";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import LogoIcon from "@/assets/Logo-Icon/Logo-Icon.svg";
 import { z } from "zod";
@@ -102,7 +102,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
     createUserErrorMessage,
     createUserSuccess
   ] = useCreateUser(auth);
-  
+
   /**
    * Form state management
    * Tracks form field values, validation errors, and submission errors
@@ -116,7 +116,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [signUpError, setSignUpError] = useState<string>("");
-  
+
   /**
    * Redirects to home page when sign up is successful
    */
@@ -151,7 +151,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
       setSignUpError(errorMessage);
       setShowErrorMessage(true); // Show the error box
       console.log(createUserErrorMessage);
-      
+
       // Map Firebase error messages to user-friendly messages
       let userFriendlyMessage = errorMessage;
       if (createUserErrorMessage.includes("email-already-in-use")) {
@@ -163,7 +163,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
       } else if (createUserErrorMessage.includes("network-request-failed")) {
         userFriendlyMessage = "Network error. Please check your internet connection and try again.";
       }
-      
+
       setSignUpError(userFriendlyMessage);
       toast.error(userFriendlyMessage);
     }
@@ -173,42 +173,42 @@ const SignUpPage: React.FC = (): JSX.Element => {
    * Handles Firebase authentication errors
    * Provides specific error messages based on error codes
    */
-   useEffect(() => {
-     if (authError) {
-       console.error("Sign-up error:", authError);
-       const errorMessage = "Sign-up failed. Please try again.";
-       setSignUpError(errorMessage);
-       setShowErrorMessage(true); // Show the error box
-       
-       // Extract error code and provide user-friendly message
-       let userFriendlyMessage = errorMessage;
-       if (authError.code) {
-         switch (authError.code) {
-           case 'auth/email-already-in-use':
-             userFriendlyMessage = "This email is already registered. Please use a different email or try logging in.";
-             break;
-           case 'auth/invalid-email':
-             userFriendlyMessage = "Please provide a valid email address.";
-             break;
-           case 'auth/operation-not-allowed':
-             userFriendlyMessage = "Account creation is currently disabled. Please try again later.";
-             break;
-           case 'auth/weak-password':
-             userFriendlyMessage = "Your password is too weak. Please choose a stronger password.";
-             break;
-           case 'auth/network-request-failed':
-             userFriendlyMessage = "Network error. Please check your internet connection and try again.";
-             break;
-           default:
-             userFriendlyMessage = "An error occurred during sign-up. Please try again.";
-         }
-       }
-       
-       setSignUpError(userFriendlyMessage);
-       toast.error(userFriendlyMessage);
-     }
-   }, [authError]);
-  
+  useEffect(() => {
+    if (authError) {
+      console.error("Sign-up error:", authError);
+      const errorMessage = "Sign-up failed. Please try again.";
+      setSignUpError(errorMessage);
+      setShowErrorMessage(true); // Show the error box
+
+      // Extract error code and provide user-friendly message
+      let userFriendlyMessage = errorMessage;
+      if (authError.code) {
+        switch (authError.code) {
+          case 'auth/email-already-in-use':
+            userFriendlyMessage = "This email is already registered. Please use a different email or try logging in.";
+            break;
+          case 'auth/invalid-email':
+            userFriendlyMessage = "Please provide a valid email address.";
+            break;
+          case 'auth/operation-not-allowed':
+            userFriendlyMessage = "Account creation is currently disabled. Please try again later.";
+            break;
+          case 'auth/weak-password':
+            userFriendlyMessage = "Your password is too weak. Please choose a stronger password.";
+            break;
+          case 'auth/network-request-failed':
+            userFriendlyMessage = "Network error. Please check your internet connection and try again.";
+            break;
+          default:
+            userFriendlyMessage = "An error occurred during sign-up. Please try again.";
+        }
+      }
+
+      setSignUpError(userFriendlyMessage);
+      toast.error(userFriendlyMessage);
+    }
+  }, [authError]);
+
   /**
    * Handles errors related to checking the login status
    */
@@ -255,11 +255,11 @@ const SignUpPage: React.FC = (): JSX.Element => {
    * 
    * @param {React.ChangeEvent<HTMLInputElement>} e - Input change event
    */
-   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-     setFormData({ ...formData, [e.target.name]: e.target.value });
-     setSignUpError("");
-     setShowErrorMessage(false);
-   };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setSignUpError("");
+    setShowErrorMessage(false);
+  };
 
 
   /**
@@ -300,7 +300,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
       toast.error("Failed to sign in with Google. Please try again.");
     }
   }
-  
+
   /**
    * Handles closing the error message box
    * Sets the showErrorMessage state to false to hide the error message
@@ -337,13 +337,13 @@ const SignUpPage: React.FC = (): JSX.Element => {
                   </Link>
                 </div>
               </div>
-              
+
               {/* Error Message Box */}
               {showErrorMessage && signUpError && (
                 <div className="bg-red-600 text-white p-4 rounded-md flex justify-between items-center">
                   <span className="text-sm">{signUpError}</span>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={handleCloseErrorMessage}
                     className="ml-2 text-white hover:text-gray-200 focus:outline-none"
                     aria-label="Close error message"
@@ -426,7 +426,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
                       className="border-gray-700 bg-gray-700 text-white pr-10"
                       required
                     />
-                    <button 
+                    <button
                       type="button"
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                       onClick={() => setShowPassword(!showPassword)}
@@ -449,7 +449,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
                   </div>
                   {errors.password && <p className="text-red-400 text-sm">{errors.password}</p>}
                 </div>
-              
+
                 {/* Confirm Password Field */}
                 <div className="grid gap-2">
                   <Label htmlFor="confirmPassword" className="text-gray-300">Confirm Password</Label>
@@ -465,7 +465,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
                       className="border-gray-700 bg-gray-700 text-white pr-10"
                       required
                     />
-                    <button 
+                    <button
                       type="button"
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}

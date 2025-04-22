@@ -32,6 +32,7 @@ function App() {
         phoneNumber: user.phoneNumber,
         providerId: user.uid,
         profilePictureUrl: user.photoURL,
+        isEmailVerified: user.emailVerified,
       };
 
       await updateUser(request);

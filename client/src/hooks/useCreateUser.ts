@@ -1,7 +1,7 @@
 import { Auth, AuthError, CustomParameters, UserCredential } from "firebase/auth";
-import { AppUser, CreateUserError, CreateUserRequest, UpdateUserRequest, UserFormData } from "../users/types";
+import { AppUser, CreateUserError, CreateUserRequest, UpdateUserRequest, UserFormData } from "../features/users/types";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
-import { useUpdateUserMutation } from "../users/usersSlice";
+import { useUpdateUserMutation } from "../features/users/usersSlice";
 import { useCallback, useEffect, useState } from "react";
 import useCreateUserWithEmailAndPassword from "@/lib/firebase/EmailAuth/useCreateUserWithEmailAndPassword";
 
@@ -79,6 +79,7 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
         email: emailUser.user.email!,
         username: userInfo.email,
         providerId: emailUser.user.uid,
+        isEmailVerified: emailUser.user.emailVerified,
       }
 
       create(user);
@@ -95,6 +96,7 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
         phoneNumber: googleUser.user.phoneNumber,
         providerId: googleUser.user.uid,
         profilePictureUrl: googleUser.user.photoURL,
+        isEmailVerified: googleUser.user.emailVerified,
       }
 
       console.log('updating user');

@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useSignInWithEmailAndPassword from "@/lib/firebase/EmailAuth/useSignInWithEmailAndPassword";
 import { auth } from "@/lib/firebase";
-import { useCreateUser } from "@/features/auth/useCreateUser";
+import { useCreateUser } from "@/hooks/useCreateUser";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -189,7 +189,7 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     setLoading(createLoading || loginLoading);
   }, [createLoading, loginLoading]);
-  
+
   /**
    * Toggle password visibility
    */
@@ -246,9 +246,8 @@ const LoginPage: React.FC = () => {
                     onChange={handleChange}
                     placeholder="Enter your email"
                     disabled={loading}
-                    className={`border-gray-700 bg-gray-700 text-white ${
-                      errors.email ? "border-red-500 focus:border-red-500" : ""
-                    }`}
+                    className={`border-gray-700 bg-gray-700 text-white ${errors.email ? "border-red-500 focus:border-red-500" : ""
+                      }`}
                     required
                   />
                   {errors.email && (
@@ -278,9 +277,8 @@ const LoginPage: React.FC = () => {
                       onChange={handleChange}
                       placeholder="Enter password"
                       disabled={loading}
-                      className={`border-gray-700 bg-gray-700 text-white pr-10 ${
-                        errors.password ? "border-red-500 focus:border-red-500" : ""
-                      }`}
+                      className={`border-gray-700 bg-gray-700 text-white pr-10 ${errors.password ? "border-red-500 focus:border-red-500" : ""
+                        }`}
                       required
                     />
                     <button
