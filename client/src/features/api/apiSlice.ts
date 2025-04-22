@@ -29,7 +29,7 @@ export const apiSlice = createApi({
     'Post',
     'Comment',
   ],
-  keepUnusedDataFor: 60,
+  keepUnusedDataFor: 600,
 
   endpoints: builder => ({
 

@@ -23,7 +23,7 @@ function App() {
       if (!user) return;
 
       console.log('invalidating profile cache!.........................................');
-
+ 
       const name = user.displayName?.split(' ') || [];
       const request: UpdateUserRequest = {
         firstName: name[0],

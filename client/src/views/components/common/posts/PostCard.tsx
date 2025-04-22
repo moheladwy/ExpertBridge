@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/app/hooks";
-import { selectPostById } from "@/features/posts/postsSlice";
-import { Link } from "react-router-dom";
+import { selectPostById, useDeletePostMutation } from "@/features/posts/postsSlice";
+import { Link, useNavigate } from "react-router-dom";
 import { Post } from "@/features/posts/types";
 import { ArrowBigUp } from 'lucide-react';
 import { MessageCircle } from 'lucide-react';
@@ -19,7 +19,7 @@ import {
   Modal,
 } from "@mui/material";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
 import ReactPlayer from "react-player";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -32,7 +32,19 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ postId }) => {
   const post = useAppSelector((state) => selectPostById(state, postId));
   const [open, setOpen] = useState(false);
-  const [,,,, userProfile] = useIsUserLoggedIn();
+  const [, , , , userProfile] = useIsUserLoggedIn();
+
+  const [deletePost, deleteResult] = useDeletePostMutation();
+
+  useEffect(() => {
+    if (deleteResult.isSuccess) {
+      toast.success("Your post was deleted successfully.");
+    }
+    if (deleteResult.isError) {
+      toast.error("An error occurred while deleting you post.");
+      console.log(deleteResult.error);
+    }
+  }, [deleteResult.isSuccess, deleteResult.isError, deleteResult.error]);
 
   if (!post) return null;
 
@@ -55,8 +67,8 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
     setOpen(false);
   };
 
-  const handleDeletePost = () => {
-
+  const handleDeletePost = async () => {
+    await deletePost(post.id);
   }
 
   //Manage diffrent media typs
@@ -79,7 +91,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
     }
   }
 
-  console.log(post);
+  // console.log(post);
 
 
 
@@ -120,9 +132,9 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 
         {/* Post Title */}
         <Link to={`/feed/${post.id}`}>
-        <div className="break-words">
-          <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">{post.title}</h2>
-        </div>
+          <div className="break-words">
+            <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">{post.title}</h2>
+          </div>
         </Link>
 
         {/* Post Content */}
