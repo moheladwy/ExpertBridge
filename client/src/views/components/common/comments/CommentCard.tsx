@@ -6,6 +6,7 @@ import { commentsApiSlice, useCreateReplyMutation } from "@/features/comments/co
 import toast from "react-hot-toast";
 import CommentVoteButtons from "./CommentVoteButtons";
 import TimeAgo from "../../custom/TimeAgo";
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 
 interface CommentItemProps {
   comment: Comment;
@@ -42,13 +43,23 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
     <div className="flex flex-col gap-3 p-3 border-t border-gray-300">
       {/* Comment Author */}
       <div className="flex items-center space-x-3">
-        <img
-          src={comment.author.profilePictureUrl || "./src/assets/default-avatar.png"}
-          alt="Comment Author"
-          width={30}
-          height={30}
-          className="rounded-full"
-        />
+        { comment.author?.profilePictureUrl ? 
+            <img
+            src={comment.author.profilePictureUrl || "./src/assets/default-avatar.png"}
+            alt="Comment Author"
+            width={30}
+            height={30}
+            className="rounded-full"
+            />
+          :
+            <img 
+              src={defaultProfile}
+              alt="Comment Author"
+              width={30}
+              height={30}
+              className="rounded-full"
+            />
+        }
         <div>
           {/* Name */}
           <h4 className="text-sm font-semibold">{comment.author.firstName + ' ' + comment.author.lastName}</h4>
@@ -104,13 +115,24 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
               <div key={reply.id} className="">
                 {/* Comment Author */}
                 <div className="flex items-center space-x-3">
-                  <img
-                    src={reply.author.profilePictureUrl || "/default-avatar.png"}
-                    alt="Reply Author"
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                  />
+                  {
+                    reply.author?.profilePictureUrl ?
+                      <img
+                      src={reply.author.profilePictureUrl || "/default-avatar.png"}
+                      alt="Reply Author"
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                      />
+                    :
+                      <img
+                        src={defaultProfile}
+                        alt="Reply Author"
+                        width={30}
+                        height={30}
+                        className="rounded-full"
+                      />
+                  }
                   <div>
                     {/* Name */}
                     <h4 className="text-sm font-semibold">{reply.author.firstName + ' ' + reply.author.lastName}</h4>

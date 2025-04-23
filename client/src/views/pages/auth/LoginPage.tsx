@@ -173,6 +173,7 @@ const LoginPage: React.FC = () => {
       });
       return;
     }
+
     await loginWithEmailAndPassword(formData.email, formData.password);
   };
 

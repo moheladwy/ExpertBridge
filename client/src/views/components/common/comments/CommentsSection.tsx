@@ -6,6 +6,8 @@ import CommentCard from "./CommentCard";
 import toast from "react-hot-toast";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+
 
 interface CommentsSectionProps {
   postId: string;
@@ -74,16 +76,20 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
           <div className="flex justify-center gap-3">
             {/* Profile Pic */}
             <div>
-              {/* using the name's first letter as a profile */}
               {
                 userProfile?.profilePictureUrl
                   ? <img
-                    src={userProfile.profilePictureUrl}
-                    width={45}
-                    height={45}
-                    className="rounded-full"
-                  />
-                  : <h1 className="text-main-blue font-bold text-lg ">{authUser?.displayName?.charAt(0).toUpperCase()}</h1>
+                      src={userProfile.profilePictureUrl}
+                      width={45}
+                      height={45}
+                      className="rounded-full"
+                    />
+                  : <img 
+                      src={defaultProfile}
+                      width={45}
+                      height={45}
+                      className="rounded-full"
+                    />
               }
             </div>
 

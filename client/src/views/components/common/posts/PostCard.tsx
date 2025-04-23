@@ -25,6 +25,7 @@ import ReactPlayer from "react-player";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import TimeAgo from "../../custom/TimeAgo";
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 
 interface PostCardProps {
 	postId: string;
@@ -114,13 +115,21 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 				{/* Author Info */}
 				<div className="flex items-center space-x-3">
 					<Link to={`/profile/${post.author.id}`}>
-						<img
-							src={post.author.profilePictureUrl}
-							// alt={`${post.author.id} Profile`}
-							width={40}
-							height={40}
-							className="rounded-full"
-						/>
+						{
+							post.author.profilePictureUrl ? 
+								<img
+									src={post.author.profilePictureUrl}
+									width={40}
+									height={40}
+									className="rounded-full"
+								/>
+							: <img 
+								  src={defaultProfile}
+                  width={40}
+									height={40}
+									className="rounded-full"
+								/>
+						}
 					</Link>
 					<div className="flex w-full justify-between">
 						<div>

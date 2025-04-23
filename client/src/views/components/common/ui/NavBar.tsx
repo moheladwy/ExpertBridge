@@ -24,6 +24,7 @@ import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { Search } from "lucide-react";
 import { useCallback, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 
 const NavBar = () => {
 	const navigate = useNavigate();
@@ -149,25 +150,26 @@ const NavBar = () => {
 							<DropdownMenu>
 								<DropdownMenuTrigger>
 									{/* Profile Pic */}
-									<Avatar className="bg-white flex justify-center items-center">
-										{/* using the name's first letter as a profile */}
-										{userProfile?.profilePictureUrl ? (
+									<div className="flex justify-center items-center">
+										{userProfile?.profilePictureUrl ? 
 											<img
 												src={
 													userProfile.profilePictureUrl
 												}
-												width={40}
-												height={40}
+												width={45}
+												height={45}
 												className="rounded-full"
 											/>
-										) : (
-											<h1 className="text-main-blue font-bold text-lg ">
-												{authUser?.displayName
-													?.charAt(0)
-													.toUpperCase()}
-											</h1>
-										)}
-									</Avatar>
+										:
+											<img 
+												src={defaultProfile}
+												alt="Profile Picture"
+												width={45}
+												height={45}
+												className="rounded-full"
+											/>
+										}
+									</div>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
 									<DropdownMenuLabel>
