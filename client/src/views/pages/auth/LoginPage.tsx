@@ -339,6 +339,10 @@ const LoginPage: React.FC = () => {
             </div>
           </form>
 
+          <div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">
+            <Link to="/home"> Continue as a guest </Link>
+          </div>
+
           {/* Terms of Service and Privacy Policy Footer */}
           <div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">
             By clicking continue, you agree to our{" "}
