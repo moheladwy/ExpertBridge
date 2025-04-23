@@ -112,32 +112,64 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 			<div className="flex flex-col gap-3 bg-white shadow-md rounded-lg p-4 border border-gray-200">
 				{/* Author Info */}
 				<div className="flex items-center space-x-3">
-					<img
-						src={post.author.profilePictureUrl}
-						// alt={`${post.author.id} Profile`}
-						width={40}
-						height={40}
-						className="rounded-full"
-					/>
-					<div>
-						{/* Name */}
-						<Link
-							to={`/profile/${post.author.id}`}
-							className="text-blue-500 hover:underline"
-						>
-							<h3 className="text-md font-semibold">
-								{post.author.firstName +
-									" " +
-									post.author.lastName}
-							</h3>
-						</Link>
-						{/* Publish Date */}
-						<div className="flex justify-between items-center text-sm text-gray-500">
-							<span>
-								{new Date(post.createdAt).toLocaleDateString()}
-							</span>
-						</div>
-					</div>
+          <Link to={`/profile/${post.author.id}`}>
+            <img
+              src={post.author.profilePictureUrl}
+              // alt={`${post.author.id} Profile`}
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+          </Link>
+          <div className="flex w-full justify-between">
+            <div>
+              <Link to={`/profile/${post.author.id}`}>
+              {/* Name */}
+                <h3 className="text-md font-semibold">
+                  {post.author.firstName +
+                    " " +
+                    post.author.lastName}
+                </h3>
+              </Link>
+              {/* Publish Date */}
+              <div className="flex justify-between items-center text-sm text-gray-500">
+                <span>
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+
+            {/* More */}
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Ellipsis className=" text-gray-500 hover:text-gray-700 hover:cursor-pointer" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>
+                  <div
+                    className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+                    onClick={handleCopyLink}
+                  >
+                    <Link2 className="w-5" />
+                    <h6>Copy link</h6>
+                  </div>
+                </DropdownMenuItem>
+                {post.author.id === userProfile?.id && (
+                  <DropdownMenuItem>
+                    <div
+                      className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+                      onClick={handleDeletePost}
+                    >
+                      <DeleteIcon className="w-5 text-red-700" />
+                      <h6 className="text-red-700">
+                        Delete post
+                      </h6>
+                    </div>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 				</div>
 
 				{/* Post Title */}
@@ -204,37 +236,6 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 							</div>
 						</Link>
 					</div>
-
-					{/* More */}
-					<DropdownMenu>
-						<DropdownMenuTrigger>
-							<Ellipsis className=" text-gray-500 hover:text-gray-700 hover:cursor-pointer" />
-						</DropdownMenuTrigger>
-						<DropdownMenuContent>
-							<DropdownMenuItem>
-								<div
-									className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
-									onClick={handleCopyLink}
-								>
-									<Link2 className="w-5" />
-									<h6>Copy link</h6>
-								</div>
-							</DropdownMenuItem>
-							{post.author.id === userProfile?.id && (
-								<DropdownMenuItem>
-									<div
-										className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
-										onClick={handleDeletePost}
-									>
-										<DeleteIcon className="w-5 text-red-700" />
-										<h6 className="text-red-700">
-											Delete post
-										</h6>
-									</div>
-								</DropdownMenuItem>
-							)}
-						</DropdownMenuContent>
-					</DropdownMenu>
 				</div>
 			</div>
 		</>
