@@ -1,9 +1,3 @@
-//// Licensed to the .NET Foundation under one or more agreements.
-//// The .NET Foundation licenses this file to you under the MIT license.
-
-using System.Security.Claims;
-using ExpertBridge.Api.Core;
-using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Models;
@@ -33,40 +27,34 @@ public class ProfilesController : ControllerBase
     public async Task<ProfileResponse> GetProfile()
     {
         var user = await _authHelper.GetCurrentUserAsync(User);
-
-        if (user == null)
-        {
-            throw new UnauthorizedException();
-        }
+        if (user == null) throw new UnauthorizedException();
 
         var profile = await _dbContext.Profiles
+            .AsNoTracking()
             .Where(p => p.UserId == user.Id)
             .Include(p => p.User)
             .SelectProfileResponseFromProfile()
             .FirstOrDefaultAsync();
 
         if (profile == null)
-        {
             throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
-        }
 
         return profile;
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ProfileResponse> GetProfile(string id)
     {
-        var user = await _authHelper.GetCurrentUserAsync(User);
-        if (user == null) throw new UnauthorizedException();
-
         var profile = await _dbContext.Profiles
+            .AsNoTracking()
             .Where(p => p.Id == id)
             .Include(p => p.User)
             .SelectProfileResponseFromProfile()
             .FirstOrDefaultAsync();
 
         if (profile == null)
-            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+            throw new ProfileNotFoundException($"Profile with id={id} was not found");
 
         return profile;
     }
