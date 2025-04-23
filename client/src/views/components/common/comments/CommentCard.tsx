@@ -54,7 +54,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
           <h4 className="text-sm font-semibold">{comment.author.firstName + ' ' + comment.author.lastName}</h4>
           {/* Date of creation of the comment */}
           <p className="text-xs text-gray-500">
-            <TimeAgo timestamp={comment.createdAt} /> 
+            <TimeAgo timestamp={comment.createdAt} />
           </p>
         </div>
       </div>
