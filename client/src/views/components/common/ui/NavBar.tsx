@@ -75,7 +75,7 @@ const NavBar = () => {
 				</h1>
 
 				<Link to="/home" 
-					className={`flex justify-center items-center ml-5 py-5 px-3 hover:bg-blue-950 
+					className={`flex justify-center items-center ml-5 py-5 px-3 max-sm:hidden hover:bg-blue-950 
 						${location.pathname === '/home'? 'bg-blue-950' : ''
 					}`}
 				>
@@ -87,7 +87,7 @@ const NavBar = () => {
 				{isLoggedIn ? (
 					<>
 						{/* TO ADD THE REAL LINK LATER */}
-						<Link to="/jobs" className="flex justify-center items-center py-5 px-3 hover:bg-blue-950">
+						<Link to="/jobs" className="flex justify-center items-center py-5 px-3 max-sm:hidden hover:bg-blue-950">
 							<div className="text-white font-light max-sm:hidden">
 								Jobs
 							</div>
@@ -96,7 +96,7 @@ const NavBar = () => {
 				) : (
 					<>
 						{/* TO ADD THE REAL LINK LATER */}
-						<Link to="/AboutUs" className="flex justify-center items-center py-5 px-3 hover:bg-blue-950">
+						<Link to="/AboutUs" className="flex justify-center items-center py-5 px-3 max-sm:hidden hover:bg-blue-950">
 							<div className="text-white font-light max-sm:hidden">
 								About Us
 							</div>
