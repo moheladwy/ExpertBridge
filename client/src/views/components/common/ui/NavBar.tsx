@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import useSignOut from "@/lib/firebase/useSignOut";
 import RegisterBtn from "../../custom/RegisterBtn";
@@ -44,6 +44,9 @@ const NavBar = () => {
 	const [open, setOpen] = useState(false);
 	const [searchInput, setSearchInput] = useState("");
 
+	//to get the active location
+	const location = useLocation();
+
 	const handelSearch = () => {
 		setOpen((open) => !open);
 		// console.log(open);
@@ -69,24 +72,34 @@ const NavBar = () => {
 				>
 					<b>Expert</b>Bridge
 				</h1>
+
+				<Link to="/home" 
+					className={`flex justify-center items-center ml-5 py-5 px-3 hover:bg-blue-950 
+						${location.pathname === '/home'? 'bg-blue-950' : ''
+					}`}
+				>
+					<div className="text-white font-light max-sm:hidden">
+						Home
+					</div>
+				</Link>
+
 				{isLoggedIn ? (
 					<>
-						{/* <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Home</Link> */}
-						<Link
-							to="/home"
-							className="text-white font-light mx-5 max-sm:hidden"
-						>
-							Jobs
+						{/* TO ADD THE REAL LINK LATER */}
+						<Link to="/jobs" className="flex justify-center items-center py-5 px-3 hover:bg-blue-950">
+							<div className="text-white font-light max-sm:hidden">
+								Jobs
+							</div>
 						</Link>
 					</>
 				) : (
 					<>
-						<a
-							href="#"
-							className="text-white font-light mx-5 max-sm:hidden"
-						>
-							About Us
-						</a>
+						{/* TO ADD THE REAL LINK LATER */}
+						<Link to="/AboutUs" className="flex justify-center items-center py-5 px-3 hover:bg-blue-950">
+							<div className="text-white font-light max-sm:hidden">
+								About Us
+							</div>
+						</Link>
 					</>
 				)}
 			</div>
