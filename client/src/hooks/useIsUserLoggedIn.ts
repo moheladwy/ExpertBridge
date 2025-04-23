@@ -10,6 +10,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { AuthError, User } from "firebase/auth";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCurrentAuthUser } from "./useCurrentAuthUser";
 
 export type IsLoggedInError =
 	| AuthError
@@ -26,7 +27,8 @@ export type IsUserLoggedInHook = [
 ];
 
 export default (): IsUserLoggedInHook => {
-	const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+	// const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+	const authUser = useCurrentAuthUser();
 	const uid = useMemo(() => authUser?.uid, [authUser?.uid]);
 
 	const {
@@ -55,13 +57,22 @@ export default (): IsUserLoggedInHook => {
 	// And react hooks check agains reference equality, not deep equality.
 	// Thus, we check if the user has changed by checking agains the uid instead.
 
-	useEffect(() => {
-		if (authError || userError) {
-			console.error(authError || userErrorMessage);
-			setError(authError || userErrorMessage);
-			setLoading(false);
-		}
-	}, [authError, userErrorMessage, userError]);
+	// useEffect(() => {
+	// 	if (authError) {
+	// 		console.error(authError);
+	// 		setError(authError);
+	// 		setLoading(false);
+	// 	}
+	// }, [authError]);
+
+	// useEffect(() => {
+	// 	if (authLoading || userLoading) return;
+	// 	if (userError) {
+	// 		console.error(userErrorMessage);
+	// 		setError(userErrorMessage);
+	// 		setLoading(false);
+	// 	}
+	// }, [userError, authLoading, userLoading]);
 
 	useEffect(() => {
 		if (authUser && appUser) {
@@ -73,9 +84,12 @@ export default (): IsUserLoggedInHook => {
 		}
 	}, [authUser, appUser]);
 
+	// useEffect(() => {
+	// 	setLoading(userLoading || authLoading);
+	// }, [userLoading, authLoading]);
 	useEffect(() => {
-		setLoading(userLoading || authLoading);
-	}, [userLoading, authLoading]);
+		setLoading(userLoading);
+	}, [userLoading]);
 
 	return [isLoggedIn, loading, error, authUser, appUser];
 };
