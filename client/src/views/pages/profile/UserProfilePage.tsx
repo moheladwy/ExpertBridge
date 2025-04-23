@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/views/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/views/components/ui/tabs";
+import { Badge } from "@/views/components/ui/badge";
 import { useEffect, useState } from "react";
-import { Avatar } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
+import { Avatar } from "@/views/components/ui/avatar";
+import { Separator } from "@/views/components/ui/separator";
 import { useGetProfileByIdQuery } from "@/features/profiles/profilesSlice";
 import { UserPlusIcon } from "lucide-react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";

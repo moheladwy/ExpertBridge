@@ -1,11 +1,11 @@
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/views/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/views/components/ui/tabs";
 import { Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/views/components/ui/badge";
 import { useState } from "react";
-import { Avatar } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
+import { Avatar } from "@/views/components/ui/avatar";
+import { Separator } from "@/views/components/ui/separator";
 
 const MyProfilePage = () => {
 	const { data: profile, isLoading, error } = useGetCurrentUserProfileQuery();
