@@ -32,7 +32,7 @@ const CreatePostModal: React.FC = () => {
   const [media, setMedia] = useState<File[]>([]);
   const [error, setError] = useState("");
   const [mediaList, setMediaList] = useState<MediaObject[]>([]);
-  const [, , , authUser, userProfile] = useIsUserLoggedIn();
+  const [isLoggedIn, , , authUser, userProfile] = useIsUserLoggedIn();
 
   const [createPost, createPostResult] =
     useCreatePostMutation();
@@ -96,7 +96,7 @@ const CreatePostModal: React.FC = () => {
   return (
     <>
       <div className="flex justify-center items-center gap-2 bg-white shadow-md rounded-lg p-4 border border-gray-200" onClick={handleOpen}>
-        <Avatar className="bg-white flex justify-center items-center">
+        {isLoggedIn && <Avatar className="bg-white flex justify-center items-center">
           {/* using the name's first letter as a profile */}
           {
             userProfile?.profilePictureUrl
@@ -108,7 +108,7 @@ const CreatePostModal: React.FC = () => {
               />
               : <h1 className="text-main-blue font-bold text-lg ">{authUser?.displayName?.charAt(0).toUpperCase()}</h1>
           }
-        </Avatar>
+        </Avatar>}
         <Button className=" bg-gray-100 text-gray-500 px-5 hover:bg-gray-200 hover:text-main-blue w-full rounded-full">
           <div className="w-full text-left">What do you want to ask?</div>
         </Button>
