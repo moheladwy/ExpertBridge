@@ -203,7 +203,7 @@ const LoginPage: React.FC = () => {
       className="flex justify-center items-center min-h-screen"
       style={{ backgroundColor: "rgb(15 23 42 / 1)" }}
     >
-      <div className="p-8 w-full max-w-md bg-gray-800 rounded-lg shadow-lg text-white">
+      <div className="p-8 w-full h-screen sm:h-auto sm:max-w-md bg-gray-800 sm:rounded-lg sm:shadow-lg text-white">
         <div className="flex flex-col gap-6">
           {/* Login Form */}
           <form onSubmit={handleSubmit}>
