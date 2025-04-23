@@ -1,6 +1,6 @@
 import { useCreateCommentMutation, useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
 import { AttachFile } from "@mui/icons-material";
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button, IconButton, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import CommentCard from "./CommentCard";
 import toast from "react-hot-toast";
@@ -12,6 +12,8 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 interface CommentsSectionProps {
   postId: string;
 }
+
+const MAX_COMMENT_LENGTH = 5000;
 
 const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 
@@ -40,7 +42,8 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
   // form data
   const [commentText, setCommentText] = useState("");
   const [media, setMedia] = useState<File[]>([]);
-
+  const [commentError, setCommentError] = useState(""); // New state for error tracking
+  
   useEffect(() => {
     if (commentsSuccess) {
       // post.comments = Object.values(comments.entities);
@@ -51,27 +54,42 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
   if (commentsLoading) {
     return <p>Loading...</p>;
   }
+  
+  // Calculate characters left
+  const charsLeft = MAX_COMMENT_LENGTH - commentText.length;
+  
+  const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (newValue.length <= MAX_COMMENT_LENGTH) {
+      setCommentText(newValue);
+      if (newValue.trim()) {
+        setCommentError(""); // Clear error when user types valid content
+      }
+    }
+  };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate comment text
+    if (!commentText.trim()) {
+      setCommentError("Comment cannot be empty");
+      return;
+    }
     console.log("New comment:", commentText, media);
-
     await createComment({
       postId,
       content: commentText
     });
-
     setCommentText("");
     setMedia([]);
+    setCommentError(""); // Clear error on successful submission
   };
 
   return (
     <div>
-      {/* <h3 className="text-lg font-semibold mb-3">Comments</h3> */}
-
       {/* Add Comment Form */}
       <div className="mt-6">
-        {/* <h3 className="text-lg font-semibold mb-3">Leave a Comment</h3> */}
         <form onSubmit={handleCommentSubmit} className="space-y-3">
           <div className="flex justify-center gap-3">
             {/* Profile Pic */}
@@ -102,16 +120,37 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
                 variant="outlined"
                 placeholder="Add a comment..."
                 value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
+                inputProps={{
+                  maxLength: MAX_COMMENT_LENGTH,
+                }}
+                onChange={handleCommentChange}
                 disabled={isLoading}
+                error={!!commentError}
+                helperText={commentError}
               />
+              
+              {/* Character counter */}
+              {!commentError && (
+                <div className="flex justify-end">
+                  <Typography 
+                    variant="caption" 
+                    color={charsLeft === 0 ? "error" : "text.secondary"}
+                  >
+                    {charsLeft} characters left
+                  </Typography>
+                </div>
+              )}
+              
               <div className="flex justify-end gap-2 items-center">
                 <IconButton component="label">
                   <AttachFile />
                   <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
                 </IconButton>
 
-                <Button variant="contained" color="primary" type="submit"
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  type="submit"
                   disabled={isLoading}
                   className="bg-main-blue hover:bg-blue-950"
                 >
@@ -120,7 +159,6 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
               </div>
             </div>
           </div>
-
         </form>
       </div>
 
@@ -137,11 +175,10 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
             <CommentCard
               key={comment.id}
               comment={comment}
-            // onReplySubmit={(replyText) => console.log("New reply:", replyText)}
             />
           ))
       }
-    </div >
+    </div>
   );
 }
 
