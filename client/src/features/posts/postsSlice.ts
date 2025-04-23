@@ -4,12 +4,13 @@ import {
 	EntityState,
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
-import { AddPostRequest, Post } from "./types";
+import { AddPostRequest, Post, PostResponse } from "./types";
 import { sub } from "date-fns";
 
 type PostsState = EntityState<Post, string>;
 const postsAdapter = createEntityAdapter<Post>({
-	sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
+	sortComparer: (a, b) =>
+		b.createdAt.localeCompare(a.createdAt),
 });
 const initialState: PostsState = postsAdapter.getInitialState();
 
@@ -17,10 +18,14 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		getPosts: builder.query<PostsState, void>({
 			query: () => "/posts",
-			transformResponse: (response: Post[]) => {
+			transformResponse: (response: PostResponse[]) => {
 				console.log(response);
+				const posts: Post[] = response.map(p => ({
+					...p,
+					createdAt: new Date(p.createdAt).toISOString(),
+				}));
 
-				return postsAdapter.setAll(initialState, response);
+				return postsAdapter.setAll(initialState, posts);
 			},
 			providesTags: (result = initialState, error, arg) => [
 				"Post",
