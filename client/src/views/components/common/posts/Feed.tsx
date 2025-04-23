@@ -59,7 +59,7 @@ const Feed = () => {
         <Filters />
       </div>
       {loading ? (
-        <LoadingSkeleton count={3} />
+        <LoadingSkeleton count={7} />
       ) : (
         <div className="space-y-4">
           {orderedPostIds.map(postId => (
