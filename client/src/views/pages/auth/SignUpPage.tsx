@@ -14,9 +14,9 @@ import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import LogoIcon from "@/assets/Logo-Icon/Logo-Icon.svg";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/views/components/ui/button";
+import { Label } from "@/views/components/ui/label";
+import { Input } from "@/views/components/ui/input";
 
 /**
  * Zod schema for signup form validation
