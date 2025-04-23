@@ -16,6 +16,21 @@ export interface Comment {
   replies?: Comment[] | null; // Only one level of replies
 }
 
+export interface CommentResponse {
+  id: string;
+  author: Author;
+  authorId: string;
+  postId: string;
+  parentCommentId?: string | null;
+  content: string;
+  createdAt: Date;
+  upvotes: number;
+  downvotes: number;
+  isUpvoted: boolean;
+  isDownvoted: boolean;
+  replies?: CommentResponse[] | null; // Only one level of replies
+}
+
 export interface AddCommentRequest {
   content: string;
   postId: string;

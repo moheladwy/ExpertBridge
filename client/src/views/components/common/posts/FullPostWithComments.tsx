@@ -20,6 +20,7 @@ import {
 import toast from "react-hot-toast";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { useDeletePostMutation } from "@/features/posts/postsSlice";
+import TimeAgo from "../../custom/TimeAgo";
 
 interface FullPostWithCommentsProps {
   post: Post;
@@ -121,7 +122,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                       <h3 className="text-md font-semibold">{post.author.firstName + ' ' + post.author.lastName}</h3>
                       {/* Publish Date */}
                       <div className="flex justify-between items-center text-sm text-gray-500">
-                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span>
+                          <TimeAgo timestamp={post.createdAt} />
+                        </span>
                       </div>
                     </div>
                   </div>
