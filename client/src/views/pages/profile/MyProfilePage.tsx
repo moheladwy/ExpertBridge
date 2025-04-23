@@ -71,7 +71,7 @@ const MyProfilePage = () => {
 	return (
 		<>
 			<div className="w-full flex justify-center">
-				<div className="mt-5 w-3/5 bg-white rounded-lg shadow-md border p-3">
+				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white rounded-lg shadow-md border p-3">
 					{/* Profile Header */}
 					<div className="border-gray-200">
 						{/* Cover Photo */}
