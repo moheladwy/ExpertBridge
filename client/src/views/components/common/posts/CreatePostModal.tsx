@@ -15,14 +15,11 @@ import {
   FormHelperText,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  Avatar
-} from "@/views/components/custom/avatar"
-
 import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
 import FileUploadForm from "../../custom/FileUploadForm";
 import { MediaObject } from "@/features/media/types";
 import { z } from "zod";
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 
 // Character limits
 const TITLE_MAX_LENGTH = 256;
@@ -50,7 +47,7 @@ const CreatePostModal: React.FC = () => {
   const [titleError, setTitleError] = useState("");
   const [bodyError, setBodyError] = useState("");
   const [mediaList, setMediaList] = useState<MediaObject[]>([]);
-  const [, , , authUser, userProfile] = useIsUserLoggedIn();
+  const [isLoggedIn, , , authUser, userProfile] = useIsUserLoggedIn();
 
   const [createPost, createPostResult] =
     useCreatePostMutation();
@@ -179,23 +176,28 @@ const CreatePostModal: React.FC = () => {
   return (
     <>
       <div className="flex justify-center items-center gap-2 bg-white shadow-md rounded-lg p-4 border border-gray-200" onClick={handleOpen}>
-         <Avatar className="bg-white flex justify-center items-center">
-           {/* using the name's first letter as a profile */}
-           {
-             userProfile?.profilePictureUrl
-               ? <img
-                 src={userProfile.profilePictureUrl}
-                 width={40}
-                 height={40}
-                 className="rounded-full"
-               />
-               : <h1 className="text-main-blue font-bold text-lg ">{authUser?.displayName?.charAt(0).toUpperCase()}</h1>
-           }
-         </Avatar>
-         <Button className=" bg-gray-100 text-gray-500 px-5 hover:bg-gray-200 hover:text-main-blue w-full rounded-full">
-           <div className="w-full text-left">What do you want to ask?</div>
-         </Button>
-       </div>
+        {isLoggedIn && <div className="bg-white flex justify-center items-center">
+          {
+            userProfile?.profilePictureUrl
+              ? <img
+                src={userProfile.profilePictureUrl}
+                width={45}
+                height={45}
+                className="rounded-full"
+              />
+              : <img 
+                src={defaultProfile}
+                alt="Profile Picture"
+                width={45}
+                height={45}
+                className="rounded-full"
+              />
+          }
+        </div>}
+        <Button className=" bg-gray-100 text-gray-500 px-5 hover:bg-gray-200 hover:text-main-blue w-full rounded-full">
+          <div className="w-full text-left">What do you want to ask?</div>
+        </Button>
+      </div>
 
       {/* Modal */}
       <Modal

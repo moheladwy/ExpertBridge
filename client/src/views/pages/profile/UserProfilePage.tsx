@@ -3,11 +3,11 @@ import { Button } from "@/views/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/views/components/ui/tabs";
 import { Badge } from "@/views/components/ui/badge";
 import { useEffect, useState } from "react";
-import { Avatar } from "@/views/components/ui/avatar";
 import { Separator } from "@/views/components/ui/separator";
 import { useGetProfileByIdQuery } from "@/features/profiles/profilesSlice";
 import { UserPlusIcon } from "lucide-react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import defaultProfile from "../../../assets/Profile-pic/ProfilePic.svg"
 
 const UserProfilePage = () => {
 	const { userId } = useParams<{ userId: string }>();
@@ -90,16 +90,24 @@ const UserProfilePage = () => {
 						<div className="relative px-8 pb-6">
 							{/* Avatar */}
 							<div className="absolute -top-16 left-8">
-								<Avatar className="h-32 w-32 ring-4 ring-white bg-green-700 text-white text-4xl font-bold">
+								<div className="flex justify-center items-center rounded-full border-white	border-4 text-white text-4xl font-bold">
 									{profile?.profilePictureUrl ? (
-										<img
-											src={profile.profilePictureUrl}
-											alt={fullName}
-										/>
-									) : (
-										<span>{fullName.charAt(0).toUpperCase()}</span>
-									)}
-								</Avatar>
+											<img
+												src={profile.profilePictureUrl}
+												alt={fullName}
+												className="rounded-full"
+												width={110}
+												height={110}
+											/>
+										) : (
+											<img 
+												src={defaultProfile}
+												className="rounded-full"
+												width={110}
+												height={110}
+											/>
+										)}
+								</div>
 							</div>
 
 							{/* Connect/Hire Button */}

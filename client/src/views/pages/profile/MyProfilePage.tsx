@@ -4,8 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/views/components/ui/
 import { Pencil } from "lucide-react";
 import { Badge } from "@/views/components/ui/badge";
 import { useState } from "react";
-import { Avatar } from "@/views/components/ui/avatar";
 import { Separator } from "@/views/components/ui/separator";
+import defaultProfile from "../../../assets/Profile-pic/ProfilePic.svg"
 
 const MyProfilePage = () => {
 	const { data: profile, isLoading, error } = useGetCurrentUserProfileQuery();
@@ -81,16 +81,24 @@ const MyProfilePage = () => {
 						<div className="relative px-8 pb-6">
 							{/* Avatar */}
 							<div className="absolute -top-16 left-8">
-								<Avatar className="h-32 w-32 ring-4 ring-white bg-amber-500 text-white text-4xl font-bold">
+								<div className="flex justify-center items-center rounded-full border-white	border-4 text-white text-4xl font-bold">
 									{profile?.profilePictureUrl ? (
 										<img
 											src={profile.profilePictureUrl}
 											alt={fullName}
+											className="rounded-full"
+											width={110}
+											height={110}
 										/>
 									) : (
-										<span>{fullName.charAt(0).toUpperCase()}</span>
+										<img 
+											src={defaultProfile}
+											className="rounded-full"
+											width={110}
+											height={110}
+										/>
 									)}
-								</Avatar>
+								</div>
 							</div>
 
 							{/* Edit Button */}

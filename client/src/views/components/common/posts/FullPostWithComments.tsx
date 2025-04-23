@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { useDeletePostMutation } from "@/features/posts/postsSlice";
 import TimeAgo from "../../custom/TimeAgo";
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 
 interface FullPostWithCommentsProps {
   post: Post;
@@ -110,13 +111,21 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                 <div className="flex flex-col justify-center gap-3">
                   {/* Author Info */}
                   <div className="flex items-center space-x-3">
-                    <img
-                      src={post.author.profilePictureUrl}
-                      // alt={`${post.author.id} Profile`}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
+                    {
+                      post.author.profilePictureUrl ? 
+                        <img
+                          src={post.author.profilePictureUrl}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                      : <img 
+                          src={defaultProfile}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                    }
                     <div>
                       {/* Name */}
                       <h3 className="text-md font-semibold">{post.author.firstName + ' ' + post.author.lastName}</h3>

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import useSignOut from "@/lib/firebase/useSignOut";
 import RegisterBtn from "../../custom/RegisterBtn";
@@ -24,6 +24,7 @@ import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { Search } from "lucide-react";
 import { useCallback, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 
 const NavBar = () => {
 	const navigate = useNavigate();
@@ -43,6 +44,9 @@ const NavBar = () => {
 
 	const [open, setOpen] = useState(false);
 	const [searchInput, setSearchInput] = useState("");
+
+	//to get the active location
+	const location = useLocation();
 
 	const handelSearch = () => {
 		setOpen((open) => !open);
@@ -69,24 +73,34 @@ const NavBar = () => {
 				>
 					<b>Expert</b>Bridge
 				</h1>
+
+				<Link to="/home" 
+					className={`flex justify-center items-center ml-5 py-5 px-3 hover:bg-blue-950 
+						${location.pathname === '/home'? 'bg-blue-950' : ''
+					}`}
+				>
+					<div className="text-white font-light max-sm:hidden">
+						Home
+					</div>
+				</Link>
+
 				{isLoggedIn ? (
 					<>
-						{/* <Link to="/home" className="text-white font-light mx-5 max-sm:hidden">Home</Link> */}
-						<Link
-							to="/home"
-							className="text-white font-light mx-5 max-sm:hidden"
-						>
-							Jobs
+						{/* TO ADD THE REAL LINK LATER */}
+						<Link to="/jobs" className="flex justify-center items-center py-5 px-3 hover:bg-blue-950">
+							<div className="text-white font-light max-sm:hidden">
+								Jobs
+							</div>
 						</Link>
 					</>
 				) : (
 					<>
-						<a
-							href="#"
-							className="text-white font-light mx-5 max-sm:hidden"
-						>
-							About Us
-						</a>
+						{/* TO ADD THE REAL LINK LATER */}
+						<Link to="/AboutUs" className="flex justify-center items-center py-5 px-3 hover:bg-blue-950">
+							<div className="text-white font-light max-sm:hidden">
+								About Us
+							</div>
+						</Link>
 					</>
 				)}
 			</div>
@@ -136,25 +150,26 @@ const NavBar = () => {
 							<DropdownMenu>
 								<DropdownMenuTrigger>
 									{/* Profile Pic */}
-									<Avatar className="bg-white flex justify-center items-center">
-										{/* using the name's first letter as a profile */}
-										{userProfile?.profilePictureUrl ? (
+									<div className="flex justify-center items-center">
+										{userProfile?.profilePictureUrl ? 
 											<img
 												src={
 													userProfile.profilePictureUrl
 												}
-												width={40}
-												height={40}
+												width={45}
+												height={45}
 												className="rounded-full"
 											/>
-										) : (
-											<h1 className="text-main-blue font-bold text-lg ">
-												{authUser?.displayName
-													?.charAt(0)
-													.toUpperCase()}
-											</h1>
-										)}
-									</Avatar>
+										:
+											<img 
+												src={defaultProfile}
+												alt="Profile Picture"
+												width={45}
+												height={45}
+												className="rounded-full"
+											/>
+										}
+									</div>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
 									<DropdownMenuLabel>
