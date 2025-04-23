@@ -22,7 +22,7 @@ import {
 } from "@/views/components/custom/command";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 const NavBar = () => {
@@ -31,7 +31,7 @@ const NavBar = () => {
 		useIsUserLoggedIn();
 	const [signOut, loading, error] = useSignOut(auth);
 
-	const handleSignOut = async () => {
+	const handleSignOut = useCallback(async () => {
 		try {
 			await signOut();
 			console.log("Signed Out");
@@ -39,26 +39,26 @@ const NavBar = () => {
 		} catch (error) {
 			console.error("Error signing out:", error);
 		}
-	};
+	}, [signOut]);
 
 	const [open, setOpen] = useState(false);
 	const [searchInput, setSearchInput] = useState("");
 
 	const handelSearch = () => {
 		setOpen((open) => !open);
-		console.log(open);
+		// console.log(open);
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchInput(event.target.value);
 	};
 
-	const handleLogoClick = () => {
+	const handleLogoClick = useCallback(() => {
 		if (isLoggedIn) navigate("/home");
 		else navigate("/");
-	};
+	}, [isLoggedIn, navigate]);
 
-	console.log(userProfile);
+	// console.log(userProfile);
 
 	return (
 		<div className="flex items-center w-full bg-main-blue h-16 drop-shadow-md">

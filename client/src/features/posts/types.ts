@@ -40,6 +40,23 @@ export interface Post {
   postTags: PostTag[];
 }
 
+
+export interface PostResponse {
+  id: string;
+  title: string;
+  content: string;
+  author: Author;
+  createdAt: Date;
+  lastModified?: string | null;
+  upvotes: number;
+  downvotes: number;
+  isUpvoted: boolean;
+  isDownvoted: boolean;
+  medias: MediaObjectResponse[]; // Adjust later if media structure is known
+  comments: number;
+  postTags: PostTag[];
+}
+
 export interface AddPostRequest extends Pick<Post, 'content' | 'title'> {
   media?: PresignedUrl[];
 };

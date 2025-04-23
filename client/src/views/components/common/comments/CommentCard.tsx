@@ -5,6 +5,7 @@ import { Comment } from "@/features/comments/types";
 import { commentsApiSlice, useCreateReplyMutation } from "@/features/comments/commentsSlice";
 import toast from "react-hot-toast";
 import CommentVoteButtons from "./CommentVoteButtons";
+import TimeAgo from "../../custom/TimeAgo";
 
 interface CommentItemProps {
   comment: Comment;
@@ -52,7 +53,9 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
           {/* Name */}
           <h4 className="text-sm font-semibold">{comment.author.firstName + ' ' + comment.author.lastName}</h4>
           {/* Date of creation of the comment */}
-          <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleDateString()}</p>
+          <p className="text-xs text-gray-500">
+            <TimeAgo timestamp={comment.createdAt} />
+          </p>
         </div>
       </div>
 
@@ -112,7 +115,9 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
                     {/* Name */}
                     <h4 className="text-sm font-semibold">{reply.author.firstName + ' ' + reply.author.lastName}</h4>
                     {/* Date of creation of the comment */}
-                    <p className="text-xs text-gray-500">{new Date(reply.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-500">
+                      <TimeAgo timestamp={reply.createdAt} />
+                    </p>
                   </div>
                 </div>
                 <div className="w-full break-words">

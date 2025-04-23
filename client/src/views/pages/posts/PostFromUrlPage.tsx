@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 const PostFromUrlPage: React.FC = () => {
 
   const { postId } = useParams();
-  const { data: post, isLoading, error, refetch } = useGetPostQuery(postId ?? '');
+  const { data: post, isFetching, error, refetch } = useGetPostQuery(postId ?? '');
 
   useRefetchOnLogin(refetch);
 
@@ -31,7 +31,7 @@ const PostFromUrlPage: React.FC = () => {
     }
   }, [deleteResult.isSuccess, deleteResult.isError, deleteResult.error, navigate]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isFetching) return <p>Loading...</p>;
   if (error || !post) return <p>Post not found.</p>;
 
   return (

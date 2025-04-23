@@ -10,7 +10,7 @@ const Feed = () => {
   
   const {
     data: posts,
-    isLoading: postsLoading,
+    isFetching: postsLoading,
     isSuccess: postsSuccess,
     isError: postsError,
     error: postsErrorMessage,

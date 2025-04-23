@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSelector, EntityState } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 import { sub } from 'date-fns';
-import { AddCommentRequest, AddReplyRequest, Comment } from "./types";
+import { AddCommentRequest, AddReplyRequest, Comment, CommentResponse } from "./types";
 import { request } from "http";
 
 
@@ -15,11 +15,16 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCommentsByPostId: builder.query<Comment[], string>({
       query: (postId) => `/posts/${postId}/comments`,
-      // transformResponse: (response: Comment[]) => {
-      //   console.log(response);
-
-      //   return commentsAdapter.setAll(initialState, response);
-      // },
+      transformResponse: (response: CommentResponse[]) => {
+        return response.map(c => ({
+          ...c,
+          createdAt: new Date(c.createdAt).toISOString(),
+          replies: c.replies?.map(r => ({
+            ...r,
+            createdAt: new Date(r.createdAt).toISOString(),
+          })),
+        })) as Comment[];
+      },
       providesTags: (result = [], error, arg) => [
         { type: 'Comment', id: `LIST/${arg}` } as const,
         ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
