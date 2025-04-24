@@ -9,21 +9,24 @@ import { useCallback, useEffect } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { saveAuthUser, selectAuthUser } from "./features/auth/authSlice";
+import { useCurrentAuthUser } from "./hooks/useCurrentAuthUser";
 
 function App() {
   const [updateUser] = useUpdateUserMutation();
-  const [authUser, loading, error] = useAuthSubscribtion(auth);
+  const authUser = useCurrentAuthUser();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
 
-      if (user?.uid === authUser?.uid)
-        return;
-
       if (!user) return;
 
+      if (!user.emailVerified) {
+        await auth.signOut();
+        return;
+      }
+
       console.log('invalidating profile cache!.........................................');
- 
+
       const name = user.displayName?.split(' ') || [];
       const request: UpdateUserRequest = {
         firstName: name[0],
