@@ -141,9 +141,20 @@ public class CommentsController(
 
     [Route("/api/users/{userId}/[controller]")]
     [HttpGet]
-    public async Task<IEnumerable<CommentResponse>> GetAllByUserId([FromRoute] string userId)
+    [AllowAnonymous]
+    public async Task<List<CommentResponse>> GetAllByUserId([FromRoute] string userId)
     {
-        throw new NotImplementedException();
+        ArgumentException.ThrowIfNullOrEmpty(userId, nameof(userId));
+        var user = await _dbContext.Users
+            .AsNoTracking()
+            .Include(u => u.Profile)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user is null) throw new UserNotFoundException($"User with id={userId} was not found");
+
+        return await _dbContext.Comments
+            .FullyPopulatedCommentQuery(c => c.AuthorId == user.Profile.Id)
+            .SelectCommentResponseFromFullComment(user.Profile.Id)
+            .ToListAsync();
     }
 
     [HttpPatch("{commentId}")]
