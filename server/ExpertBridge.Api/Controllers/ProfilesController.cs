@@ -3,6 +3,7 @@ using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Responses;
+using ExpertBridge.Api.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ public class ProfilesController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id}")]
+    [ResponseCache(CacheProfileName = CacheProfiles.Default)]
     public async Task<ProfileResponse> GetProfile(string id)
     {
         var profile = await _dbContext.Profiles
