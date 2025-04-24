@@ -8,9 +8,7 @@ const useRefetchOnLogin = (refetch: (...args: any) => any) => {
   // that's when the appUser will change, so we listen on that change in appUser. 
   const [isLoggedIn, __, ___, authUser, appUser] = useIsUserLoggedIn();
 
-  const [lastId, setLastId] = useState<string | undefined | null>();
-
-  const memo = useMemo(() => refetch, [refetch]);
+  const [lastId, setLastId] = useState<string | undefined | null>(appUser?.id);
 
   useEffect(() => {
     console.log('refetch on login being used...');
@@ -22,10 +20,10 @@ const useRefetchOnLogin = (refetch: (...args: any) => any) => {
 
     setLastId(currentId);
 
-    memo();
+    refetch();
 
     console.log("refetching...");
-  }, [appUser, memo, isLoggedIn, authUser, lastId]);
+  }, [appUser, isLoggedIn, authUser, lastId, refetch]);
 };
 
 export default useRefetchOnLogin;

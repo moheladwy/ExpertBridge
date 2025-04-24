@@ -72,9 +72,10 @@ const NavBar = () => {
 				</h1>
 
 				<Link to="/home"
-					className={`flex justify-center items-center ml-5 py-5 px-3 max-sm:hidden hover:bg-blue-950 
-						${location.pathname === '/home' ? 'bg-blue-950' : ''
-						}`}
+					className={
+						`flex justify-center items-center ml-5 py-5 px-3 max-sm:hidden hover:bg-blue-950
+							${location.pathname === '/home' ? 'bg-blue-950' : ''}`
+					}
 				>
 					<div className="text-white font-light max-sm:hidden">
 						Home

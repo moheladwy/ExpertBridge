@@ -10,6 +10,7 @@ using ExpertBridge.Api.Requests.CreatePost;
 using ExpertBridge.Api.Requests.EditPost;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Api.Services;
+using ExpertBridge.Api.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+
+[ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent)]
 public class PostsController : ControllerBase
 {
     private readonly AuthorizationHelper _authHelper;
