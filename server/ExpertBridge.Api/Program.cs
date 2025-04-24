@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using System.Security.Claims;
 using ExpertBridge.Api.Models;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,9 @@ builder.Services.Configure<AiSettings>(
 builder.Services.Configure<SerilogSettings>(
     builder.Configuration.GetSection("Serilog"));
 
+builder.Services.Configure<ExpertBridgeRateLimitSettings>(
+    builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
+
 builder.Services.AddDatabase(builder.Configuration);
 
 builder.AddSeqEndpoint(connectionName: "Seq");
@@ -61,6 +65,12 @@ builder.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.AddRepositories();
+
+var rateLimitOptions = new ExpertBridgeRateLimitSettings();
+builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName)
+    .Bind(rateLimitOptions);
+
+builder.Services.AddRateLimiting(rateLimitOptions);
 
 var app = builder.Build();
 
@@ -79,14 +89,19 @@ if (app.Environment.IsProduction())
     app.UseHttpsRedirection();
 }
 
-app.UseRouting();
 
+app.UseRouting();
+app.UseRateLimiter();
+// app.UseRequestLocalization();
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<EmailVerifiedMiddleware>();
+
+// app.UseResponseCompression();
+// app.UseResponseCaching();
 
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
