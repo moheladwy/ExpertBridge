@@ -84,26 +84,6 @@ const MyProfilePage = () => {
 						<div className="relative px-8 pb-6">
 							{/* Avatar */}
 							<div className="absolute -top-16 left-8">
-<<<<<<< HEAD
-								<div className="flex justify-center items-center rounded-full border-white	border-4 text-white text-4xl font-bold">
-									{profile?.profilePictureUrl ? (
-										<img
-											src={profile.profilePictureUrl}
-											alt={fullName}
-											className="rounded-full"
-											width={110}
-											height={110}
-										/>
-									) : (
-										<img
-											src={defaultProfile}
-											className="rounded-full"
-											width={110}
-											height={110}
-										/>
-									)}
-								</div>
-=======
 								{isLoading ? (
 									<Skeleton className="rounded-full w-[110px] h-[110px] border-white border-4" />
 								) : (
@@ -126,7 +106,6 @@ const MyProfilePage = () => {
 										)}
 									</div>
 								)}
->>>>>>> main
 							</div>
 
 							{/* Edit Button */}
