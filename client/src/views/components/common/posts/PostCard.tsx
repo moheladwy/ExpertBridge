@@ -27,6 +27,9 @@ import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import TimeAgo from "../../custom/TimeAgo";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 import { ProfileResponse } from "@/features/profiles/types";
+import { Edit as EditIcon } from "lucide-react";
+import EditPostModal from "./EditPostModal";
+
 
 interface PostCardProps {
 	postId: string;
@@ -37,8 +40,8 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	const post = useAppSelector((state) => selectPostById(state, postId));
 	const [open, setOpen] = useState(false);
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
-	// const [, , , , userProfile] = useIsUserLoggedIn();
 
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [deletePost, deleteResult] = useDeletePostMutation();
 
 	useEffect(() => {
@@ -168,17 +171,28 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 									</div>
 								</DropdownMenuItem>
 								{post.author.id === currentUserId && (
-									<DropdownMenuItem>
-										<div
-											className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
-											onClick={handleDeletePost}
-										>
-											<DeleteIcon className="w-5 text-red-700" />
-											<h6 className="text-red-700">
-												Delete post
-											</h6>
-										</div>
-									</DropdownMenuItem>
+								  <>
+										<DropdownMenuItem>
+                      <div
+                        className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+                        onClick={() => setIsEditModalOpen(true)}
+                      >
+                        <EditIcon className="w-5" />
+                        <h6>Edit post</h6>
+                      </div>
+                    </DropdownMenuItem>
+         						<DropdownMenuItem>
+  										<div
+  											className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+  											onClick={handleDeletePost}
+  										>
+  											<DeleteIcon className="w-5 text-red-700" />
+  											<h6 className="text-red-700">
+  												Delete post
+  											</h6>
+  										</div>
+  									</DropdownMenuItem>
+								  </> 
 								)}
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -251,6 +265,11 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 					</div>
 				</div>
 			</div>
+      <EditPostModal
+        post={post}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+      />
 		</>
 	);
 };
