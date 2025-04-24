@@ -5,14 +5,59 @@ import useAuthSubscribtion from "./lib/firebase/useAuthSubscribtion";
 import { auth } from "./lib/firebase";
 import { UpdateUserRequest } from "./features/users/types";
 import { useUpdateUserMutation } from "./features/users/usersSlice";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { saveAuthUser, selectAuthUser } from "./features/auth/authSlice";
+import { useLocation } from "react-router-dom";
+import AuthPromptModal from "./views/components/common/ui/AuthPromptModal";
 
 function App() {
+
   const [updateUser] = useUpdateUserMutation();
   const [authUser, loading, error] = useAuthSubscribtion(auth);
+
+  const [showInitialAuthPrompt, setShowInitialAuthPrompt] = useState(false);
+  const location = useLocation();
+  const isLandingPage = location.pathname === "/";
+
+
+  // POTENTIAL LEAK DUE TO TIMER. (NEEDS TO BE FIXED)
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    // console.log({
+    //   authUser,
+    //   loading,
+    //   isLandingPage,
+    //   showInitialAuthPrompt,
+    //   pathname: location.pathname
+    // });
+
+  
+    if (!authUser && !loading && !isLandingPage) {
+      console.log("setting timeout for auth prompt");
+      const timer = setTimeout(() => {
+        console.log("timeout finished setting showInitialAuthPrompt true");
+        setShowInitialAuthPrompt(true);
+      }, 10000);
+      
+    } else {
+      setShowInitialAuthPrompt(false);
+    }
+
+  
+    // for some reason the functionalilty breaks when trying to clear the timer if this is uncommented.
+    // return () => {
+    //   if (timer) {
+    //     clearTimeout(timer);
+    //   }
+    // };
+
+  }, [authUser, loading, isLandingPage]);
+
+
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -70,6 +115,21 @@ function App() {
         <Toaster />
         <Outlet /> {/* Renders the current route's element */}
       </div>
+
+      <AuthPromptModal
+        open={showInitialAuthPrompt}
+        onOpenChange={setShowInitialAuthPrompt}
+        title="Tailor Your Experience"
+        description="Create an account to unlock all features and get a personalized experience on ExpertBridge."
+      />
+
+      {/* <AuthPromptModal
+        open={true}
+        onOpenChange={() => {true}}
+        title="Tailor Your Experience"
+        description="Create an account to unlock all features and get a personalized experience on ExpertBridge."
+      /> */}
+
     </>
   );
 }
