@@ -68,15 +68,15 @@ const router = createBrowserRouter([
 				path: "profile",
 				element: (
 					<ProtectedRoute>
-					  <MyProfilePage />
+						<MyProfilePage />
 					</ProtectedRoute>
 				),
 			},
 			{
 				path: "profile/:userId",
 				element: (
-          <UserProfilePage />
-        ),
+					<UserProfilePage />
+				),
 			},
 		],
 	},
