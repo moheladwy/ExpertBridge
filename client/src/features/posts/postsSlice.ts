@@ -14,19 +14,23 @@ const postsAdapter = createEntityAdapter<Post>({
 });
 const initialState: PostsState = postsAdapter.getInitialState();
 
+const postResponseTransformer = (p: PostResponse): Post => ({
+	...p,
+	createdAt: new Date(p.createdAt).toISOString(),
+});
+
+const postsResponseTransformer = (response: PostResponse[]) => {
+	console.log(response);
+	const posts: Post[] = response.map(postResponseTransformer);
+
+	return postsAdapter.setAll(initialState, posts);
+};
+
 export const postsApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		getPosts: builder.query<PostsState, void>({
 			query: () => "/posts",
-			transformResponse: (response: PostResponse[]) => {
-				console.log(response);
-				const posts: Post[] = response.map(p => ({
-					...p,
-					createdAt: new Date(p.createdAt).toISOString(),
-				}));
-
-				return postsAdapter.setAll(initialState, posts);
-			},
+			transformResponse: postsResponseTransformer,
 			providesTags: (result = initialState, error, arg) => [
 				"Post",
 				{ type: "Post", id: "LIST" },
@@ -39,6 +43,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 		getPost: builder.query<Post, string>({
 			query: (postId) => `/posts/${postId}`,
 			providesTags: (result, error, arg) => [{ type: "Post", id: arg }],
+			transformResponse: postResponseTransformer,
 		}),
 
 		createPost: builder.mutation<Post, AddPostRequest>({
@@ -48,6 +53,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 				body: initialPost,
 			}),
 			invalidatesTags: [{ type: "Post", id: "LIST" }],
+			transformResponse: postResponseTransformer,
 		}),
 
 		upvotePost: builder.mutation<Post, Post>({
@@ -55,6 +61,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 				url: `/posts/${post.id}/upvote`,
 				method: "PATCH",
 			}),
+			transformResponse: postResponseTransformer,
 			onQueryStarted: async (post, lifecycleApi) => {
 				let upvotes = post.upvotes;
 				let downvotes = post.downvotes;
@@ -124,6 +131,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 				url: `/posts/${post.id}/downvote`,
 				method: "PATCH",
 			}),
+			transformResponse: postResponseTransformer,
 			onQueryStarted: async (post, lifecycleApi) => {
 				let upvotes = post.upvotes;
 				let downvotes = post.downvotes;
@@ -189,17 +197,18 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 		}),
 
 		updatePost: builder.mutation<Post, { postId: string; title?: string; content?: string }>({
-      query: ({ postId, ...updateData }) => ({
-        url: `/posts/${postId}`,
-        method: "PATCH",
-        body: updateData,
-      }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Post", id: "LIST" },
-        { type: "Post", id: arg.postId },
-      ],
-    }),	
-		
+			query: ({ postId, ...updateData }) => ({
+				url: `/posts/${postId}`,
+				method: "PATCH",
+				body: updateData,
+			}),
+			transformResponse: postResponseTransformer,
+			invalidatesTags: (result, error, arg) => [
+				{ type: "Post", id: "LIST" },
+				{ type: "Post", id: arg.postId },
+			],
+		}),
+
 		deletePost: builder.mutation<void, string>({
 			query: (postId) => ({
 				url: `/posts/${postId}`,

@@ -4,6 +4,18 @@ import { sub } from 'date-fns';
 import { AddCommentRequest, AddReplyRequest, Comment, CommentResponse } from "./types";
 import { request } from "http";
 
+const commentResponseTransformer = (c: CommentResponse): Comment => ({
+  ...c,
+  createdAt: new Date(c.createdAt).toISOString(),
+  replies: c.replies?.map(r => ({
+    ...r,
+    createdAt: new Date(r.createdAt).toISOString(),
+  }) as Comment),
+});
+
+const commentsResponseTransformer = (response: CommentResponse[]) => {
+  return response.map(commentResponseTransformer);
+};
 
 // type CommentsState = EntityState<Comment, string>;
 // const commentsAdapter = createEntityAdapter<Comment>({
@@ -15,35 +27,17 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCommentsByPostId: builder.query<Comment[], string>({
       query: (postId) => `/posts/${postId}/comments`,
-      transformResponse: (response: CommentResponse[]) => {
-        return response.map(c => ({
-          ...c,
-          createdAt: new Date(c.createdAt).toISOString(),
-          replies: c.replies?.map(r => ({
-            ...r,
-            createdAt: new Date(r.createdAt).toISOString(),
-          })),
-        })) as Comment[];
-      },
+      transformResponse: commentsResponseTransformer,
       providesTags: (result = [], error, arg) => [
         { type: 'Comment', id: `LIST/${arg}` } as const,
         ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
       ],
 
     }),
-    
+
     getCommentsByUserId: builder.query<Comment[], string>({
       query: (userId) => `/users/${userId}/comments`,
-      transformResponse: (response: CommentResponse[]) => {
-        return response.map(c => ({
-          ...c,
-          createdAt: new Date(c.createdAt).toISOString(),
-          replies: c.replies?.map(r => ({
-            ...r,
-            createdAt: new Date(r.createdAt).toISOString(),
-          })),
-        })) as Comment[];
-      },
+      transformResponse: commentsResponseTransformer,
       providesTags: (result = [], error, arg) => [
         { type: 'Comment', id: `LIST/${arg}` } as const,
         ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
@@ -55,6 +49,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [
         { type: 'Comment', id: arg },
       ],
+      transformResponse: commentResponseTransformer
     }),
 
     createComment: builder.mutation<Comment, AddCommentRequest>({
@@ -63,6 +58,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: initialComment,
       }),
+      transformResponse: commentResponseTransformer,
       // invalidatesTags: (result, error, arg) => [
       //   { type: 'Comment', id: `LIST/${arg.postId}` },
       //   { type: 'Comment', id: arg.parentCommentId || '' } as const,
@@ -92,6 +88,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: initialComment,
       }),
+      transformResponse: commentResponseTransformer,
       // invalidatesTags: (result, error, arg) => [
       //   { type: 'Comment', id: `LIST/${arg.postId}` },
       //   { type: 'Comment', id: arg.parentCommentId },
@@ -129,6 +126,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         url: `comments/${comment.id}/upvote`,
         method: 'PATCH'
       }),
+      transformResponse: commentResponseTransformer,
       onQueryStarted: async (comment, lifecycleApi) => {
         let upvotes = comment.upvotes;
         let downvotes = comment.downvotes;
@@ -191,6 +189,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         url: `comments/${comment.id}/downvote`,
         method: 'PATCH'
       }),
+      transformResponse: commentResponseTransformer,
       onQueryStarted: async (comment, lifecycleApi) => {
         let upvotes = comment.upvotes;
         let downvotes = comment.downvotes;
