@@ -9,6 +9,8 @@ using ExpertBridge.Api.Middleware;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
+using System.Security.Claims;
+using ExpertBridge.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +64,6 @@ builder.Services.AddRepositories();
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();
 
@@ -79,8 +80,14 @@ if (app.Environment.IsProduction())
 }
 
 app.UseRouting();
+
+app.UseCors("AllowAll");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<EmailVerifiedMiddleware>();
+
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
 app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
