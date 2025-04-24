@@ -142,7 +142,7 @@ public class CommentsController(
     [Route("/api/profiles/{profileId}/[controller]")]
     [HttpGet]
     [AllowAnonymous]
-    public async Task<List<CommentResponse>> GetAllByUserId([FromRoute] string profileId)
+    public async Task<List<CommentResponse>> GetAllByProfileId([FromRoute] string profileId)
     {
         ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
         var user = await _dbContext.Profiles
