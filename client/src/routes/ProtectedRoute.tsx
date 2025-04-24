@@ -1,13 +1,15 @@
+import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
+import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { auth } from "@/lib/firebase";
 import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useSignOut from "@/lib/firebase/useSignOut";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [signOut, loading] = useSignOut(auth);
+  const [signOut] = useSignOut(auth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,14 +24,42 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     appUser
   ] = useIsUserLoggedIn();
 
+  const [tryAgain, setTryAgain] = useState(true);
+
+
   // Handle login errors (e.g., token expired)
   useEffect(() => {
-    if (loginError && !loginLoading) {
+    if (loginError) {
+      if (loginLoading) return;
       console.log('ProtectedRoute: Error during auth', loginError);
+    }
+  }, [loginError]);
+
+  const signUserOut = useCallback(async () => {
+    if (!appUser) {
+      if (loginLoading) return;
+      if (tryAgain) {
+        await new Promise(res => setTimeout(res, 5000));
+        setTryAgain(false);
+        return;
+      }
+
       signOut();
       navigate('/login');
+
     }
-  }, [loginError, loginLoading, signOut, navigate]);
+  }, [appUser, loginLoading, tryAgain, navigate, signOut]);
+
+  useEffect(() => {
+    signUserOut();
+  }, [signUserOut]);
+
+  // useEffect(() => {
+  //   if (!isLoggedIn && !loginLoading) {
+  //     signOut();
+  //     navigate('/login');
+  //   }
+  // }, [signOut, navigate, isLoggedIn, loginLoading]);
 
   // Handle valid auth but unverified email or missing onboarding
   useEffect(() => {
@@ -55,7 +85,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   // ✅ All good, show protected children
-  return <>{children}</>;
+  return children;
 };
 
 export default ProtectedRoute;
