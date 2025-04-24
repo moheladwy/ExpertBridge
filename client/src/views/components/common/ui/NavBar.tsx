@@ -33,14 +33,11 @@ const NavBar = () => {
 	const [signOut, loading, error] = useSignOut(auth);
 
 	const handleSignOut = useCallback(async () => {
-		try {
-			await signOut();
-			console.log("Signed Out");
-			navigate("/login"); // Redirect to login page after signing out
-		} catch (error) {
-			console.error("Error signing out:", error);
-		}
-	}, [signOut]);
+		await signOut();
+		console.log("Signed Out");
+		navigate("/login"); // Redirect to login page after signing out
+
+	}, [signOut, navigate]);
 
 	const [open, setOpen] = useState(false);
 	const [searchInput, setSearchInput] = useState("");
@@ -74,10 +71,10 @@ const NavBar = () => {
 					<b>Expert</b>Bridge
 				</h1>
 
-				<Link to="/home" 
+				<Link to="/home"
 					className={`flex justify-center items-center ml-5 py-5 px-3 max-sm:hidden hover:bg-blue-950 
-						${location.pathname === '/home'? 'bg-blue-950' : ''
-					}`}
+						${location.pathname === '/home' ? 'bg-blue-950' : ''
+						}`}
 				>
 					<div className="text-white font-light max-sm:hidden">
 						Home
@@ -151,7 +148,7 @@ const NavBar = () => {
 								<DropdownMenuTrigger>
 									{/* Profile Pic */}
 									<div className="flex justify-center items-center">
-										{userProfile?.profilePictureUrl ? 
+										{userProfile?.profilePictureUrl ?
 											<img
 												src={
 													userProfile.profilePictureUrl
@@ -160,8 +157,8 @@ const NavBar = () => {
 												height={45}
 												className="rounded-full"
 											/>
-										:
-											<img 
+											:
+											<img
 												src={defaultProfile}
 												alt="Profile Picture"
 												width={45}
