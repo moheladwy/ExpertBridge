@@ -58,6 +58,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: initialComment,
       }),
+      transformResponse: commentResponseTransformer,
       // invalidatesTags: (result, error, arg) => [
       //   { type: 'Comment', id: `LIST/${arg.postId}` },
       //   { type: 'Comment', id: arg.parentCommentId || '' } as const,
@@ -87,6 +88,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: initialComment,
       }),
+      transformResponse: commentResponseTransformer,
       // invalidatesTags: (result, error, arg) => [
       //   { type: 'Comment', id: `LIST/${arg.postId}` },
       //   { type: 'Comment', id: arg.parentCommentId },
@@ -124,6 +126,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         url: `comments/${comment.id}/upvote`,
         method: 'PATCH'
       }),
+      transformResponse: commentResponseTransformer,
       onQueryStarted: async (comment, lifecycleApi) => {
         let upvotes = comment.upvotes;
         let downvotes = comment.downvotes;
@@ -186,6 +189,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         url: `comments/${comment.id}/downvote`,
         method: 'PATCH'
       }),
+      transformResponse: commentResponseTransformer,
       onQueryStarted: async (comment, lifecycleApi) => {
         let upvotes = comment.upvotes;
         let downvotes = comment.downvotes;
