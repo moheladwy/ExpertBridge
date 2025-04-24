@@ -11,6 +11,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { AuthError, User } from "firebase/auth";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCurrentAuthUser } from "./useCurrentAuthUser";
+import useSignOut from "@/lib/firebase/useSignOut";
 
 export type IsLoggedInError =
 	| AuthError
@@ -30,6 +31,7 @@ export default (): IsUserLoggedInHook => {
 	// const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
 	const authUser = useCurrentAuthUser();
 	const uid = useMemo(() => authUser?.uid, [authUser?.uid]);
+	const [signOut] = useSignOut(auth);
 
 	const {
 		data: appUser,
@@ -48,9 +50,15 @@ export default (): IsUserLoggedInHook => {
 	// retry so that the error state changes after the next try.
 	// This was one of the most interesting bugs I had to debug.
 	useEffect(() => {
+		if (authUser) {
+			if (!authUser.emailVerified) {
+				signOut();
+			}
+		}
+
 		if (uid === authUser?.uid) return;
 		retryQuery();
-	}, [uid, retryQuery, authUser]);
+	}, [uid, retryQuery, authUser, signOut]);
 
 	// We are checking against the uid becuase firebase sdk
 	// returns a new reference each time we ask it for the currentUser.
@@ -65,14 +73,14 @@ export default (): IsUserLoggedInHook => {
 	// 	}
 	// }, [authError]);
 
-	// useEffect(() => {
-	// 	if (authLoading || userLoading) return;
-	// 	if (userError) {
-	// 		console.error(userErrorMessage);
-	// 		setError(userErrorMessage);
-	// 		setLoading(false);
-	// 	}
-	// }, [userError, authLoading, userLoading]);
+	useEffect(() => {
+		if (userLoading) return;
+		if (userError) {
+			console.error(userErrorMessage);
+			setError(userErrorMessage);
+			setLoading(false);
+		}
+	}, [userError, userLoading, userErrorMessage]);
 
 	useEffect(() => {
 		if (authUser && appUser) {
