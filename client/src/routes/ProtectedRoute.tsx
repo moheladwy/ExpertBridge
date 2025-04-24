@@ -10,6 +10,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [signOut, loading] = useSignOut(auth);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log('protected route mounting...');
+  }, []);
+
   const [
     isLoggedIn,
     loginLoading,

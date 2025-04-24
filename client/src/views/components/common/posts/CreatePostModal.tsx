@@ -38,6 +38,10 @@ const postSchema = z.object({
 const steps = ["Ask Question", "Describe Your Problem", "Add Media"];
 
 const CreatePostModal: React.FC = () => {
+  useEffect(() => {
+    console.log('modal mounting...');
+  }, []);
+
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [title, setTitle] = useState("");

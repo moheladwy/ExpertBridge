@@ -19,22 +19,25 @@ import {
 } from "@/views/components/custom/dropdown-menu";
 import { Box, Modal } from "@mui/material";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
 import ReactPlayer from "react-player";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import TimeAgo from "../../custom/TimeAgo";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+import { ProfileResponse } from "@/features/profiles/types";
 
 interface PostCardProps {
 	postId: string;
+	currUserId?: string | null;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ postId }) => {
+const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	const post = useAppSelector((state) => selectPostById(state, postId));
 	const [open, setOpen] = useState(false);
-	const [, , , , userProfile] = useIsUserLoggedIn();
+	const currentUserId = useMemo(() => currUserId, [currUserId]);
+	// const [, , , , userProfile] = useIsUserLoggedIn();
 
 	const [deletePost, deleteResult] = useDeletePostMutation();
 
@@ -116,16 +119,16 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 				<div className="flex items-center space-x-3">
 					<Link to={`/profile/${post.author.id}`}>
 						{
-							post.author.profilePictureUrl ? 
+							post.author.profilePictureUrl ?
 								<img
 									src={post.author.profilePictureUrl}
 									width={40}
 									height={40}
 									className="rounded-full"
 								/>
-							: <img 
-								  src={defaultProfile}
-                  width={40}
+								: <img
+									src={defaultProfile}
+									width={40}
 									height={40}
 									className="rounded-full"
 								/>
@@ -164,7 +167,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId }) => {
 										<h6>Copy link</h6>
 									</div>
 								</DropdownMenuItem>
-								{post.author.id === userProfile?.id && (
+								{post.author.id === currentUserId && (
 									<DropdownMenuItem>
 										<div
 											className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
