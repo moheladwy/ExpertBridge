@@ -9,6 +9,9 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 			transformResponse: (response: ProfileResponse) => {
 				return response;
 			},
+			onQueryStarted: () => {
+				console.log('fetching user profile...');
+			},
 			providesTags: ["CurrentUser"],
 		}),
 

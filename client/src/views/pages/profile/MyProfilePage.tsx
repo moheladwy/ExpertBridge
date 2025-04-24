@@ -15,12 +15,13 @@ const MyProfilePage = () => {
 
 	if (isLoading)
 		return <div className="p-8 text-center">Loading profile...</div>;
-	if (error)
+	if (error) {
 		return (
 			<div className="p-8 text-center text-red-500">
 				Error loading profile
 			</div>
 		);
+	}
 
 	const fullName = `${profile?.firstName || ""} ${profile?.lastName || ""}`;
 	const jobTitle = profile?.jobTitle || "Plumber";
@@ -93,7 +94,7 @@ const MyProfilePage = () => {
 											height={110}
 										/>
 									) : (
-										<img 
+										<img
 											src={defaultProfile}
 											className="rounded-full"
 											width={110}
