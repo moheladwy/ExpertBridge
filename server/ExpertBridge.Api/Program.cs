@@ -12,6 +12,8 @@ using Serilog;
 using System.Security.Claims;
 using ExpertBridge.Api.Models;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +64,25 @@ builder.AddHttpClientForFirebaseService();
 builder.AddSwaggerGen();
 builder.AddCors();
 
-builder.Services.AddControllers();
+builder.Services.AddResponseCaching();
+builder.Services.AddControllers(options =>
+{
+    options.CacheProfiles.Add(CacheProfiles.Default,
+        new CacheProfile
+        {
+            Duration = 300,
+            Location = ResponseCacheLocation.Any
+        });
+
+    options.CacheProfiles.Add(CacheProfiles.PersonalizedContent,
+        new CacheProfile
+        {
+            Duration = 180,
+            Location = ResponseCacheLocation.Any,
+            VaryByHeader = "Authorization",
+        });
+});
+
 builder.Services.AddServices();
 builder.Services.AddRepositories();
 
@@ -101,7 +121,18 @@ app.UseAuthorization();
 app.UseMiddleware<EmailVerifiedMiddleware>();
 
 // app.UseResponseCompression();
-// app.UseResponseCaching();
+
+// Response caching: 
+app.UseResponseCaching();
+app.Use(async (context, next) =>
+{
+    context.Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+    {
+        Private = true, // Sotre on browser cache only. No storing on proxy cahches.
+    };
+
+    await next();
+});
 
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();

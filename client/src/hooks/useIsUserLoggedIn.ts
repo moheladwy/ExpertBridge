@@ -42,8 +42,8 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 		refetch: retryQuery,
 	} = useGetCurrentUserProfileQuery();
 
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(appUser ? true : false);
+	const [loading, setLoading] = useState(userLoading);
 	const [error, setError] = useState<IsLoggedInError>(undefined);
 
 	// If a query like this is used (fired) multiple times
@@ -57,10 +57,10 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 			}
 		}
 
-		if (uid === authUser?.uid) return;
-
-		retryQuery();
-		console.log('refetching get current profile...');
+		// if (uid === authUser?.uid) return;
+		// setError(undefined);
+		// retryQuery();
+		// console.log('refetching get current profile...');
 	}, [retryQuery, authUser, signOut, uid]);
 
 	// We are checking against the uid becuase firebase sdk
@@ -122,7 +122,7 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 		setLoading(userLoading);
 	}, [userLoading]);
 
-	return [isLoggedIn, loading, error, authUser, appUser];
+	return [isLoggedIn, userLoading, error, authUser, appUser];
 };
 
 export default useIsUserLoggedIn;

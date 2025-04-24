@@ -15,6 +15,7 @@ using ExpertBridge.Api.Requests.DeleteFileFromComment;
 using ExpertBridge.Api.Requests.EditComment;
 using ExpertBridge.Api.Requests.ReportComment;
 using ExpertBridge.Api.Responses;
+using ExpertBridge.Api.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
+[ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent, Duration = 60)]
 public class CommentsController(
     ExpertBridgeDbContext _dbContext,
     AuthorizationHelper _authHelper
