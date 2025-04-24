@@ -57,10 +57,10 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 			}
 		}
 
-		if (uid === authUser?.uid) return;
-		setError(undefined);
-		retryQuery();
-		console.log('refetching get current profile...');
+		// if (uid === authUser?.uid) return;
+		// setError(undefined);
+		// retryQuery();
+		// console.log('refetching get current profile...');
 	}, [retryQuery, authUser, signOut, uid]);
 
 	// We are checking against the uid becuase firebase sdk
