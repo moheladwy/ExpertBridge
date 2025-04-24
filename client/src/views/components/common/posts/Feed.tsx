@@ -5,9 +5,10 @@ import { selectPostIds, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useAppSelector } from "@/app/hooks";
 import CreatePostModal from "./CreatePostModal";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
+import { useEffect } from "react";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 const Feed = () => {
-  
   const {
     data: posts,
     isFetching: postsLoading,
@@ -17,7 +18,12 @@ const Feed = () => {
     refetch
   } = useGetPostsQuery();
 
+  useEffect(() => {
+    console.log('feed mounting...');
+  }, []);
+
   const orderedPostIds: string[] = useAppSelector(selectPostIds);
+  const [, , , , appUser] = useIsUserLoggedIn();
 
   useRefetchOnLogin(refetch);
 
@@ -63,7 +69,7 @@ const Feed = () => {
       ) : (
         <div className="space-y-4">
           {orderedPostIds.map(postId => (
-            <PostCard key={postId} postId={postId} />
+            <PostCard key={postId} postId={postId} currUserId={appUser?.id} />
           ))}
         </div>
       )}

@@ -22,7 +22,7 @@ import {
 } from "@/views/components/custom/command";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { Search } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 
