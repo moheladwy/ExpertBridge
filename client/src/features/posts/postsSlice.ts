@@ -188,6 +188,18 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			},
 		}),
 
+		updatePost: builder.mutation<Post, { postId: string; title?: string; content?: string }>({
+      query: ({ postId, ...updateData }) => ({
+        url: `/posts/${postId}`,
+        method: "PATCH",
+        body: updateData,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Post", id: "LIST" },
+        { type: "Post", id: arg.postId },
+      ],
+    }),	
+		
 		deletePost: builder.mutation<void, string>({
 			query: (postId) => ({
 				url: `/posts/${postId}`,
@@ -207,6 +219,7 @@ export const {
 	useCreatePostMutation,
 	useUpvotePostMutation,
 	useDownvotePostMutation,
+	useUpdatePostMutation,
 	useDeletePostMutation,
 } = postsApiSlice;
 

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useIsUserLoggedIn from "./useIsUserLoggedIn";
 
-export default (refetch: (...args: any) => any) => {
+const useRefetchOnLogin = (refetch: (...args: any) => any) => {
   // Here we are checking against the appUser because it gets changed
   // every time the auth user changes.
   // (a real change to auth user, not just a reference change with the same user still logged in)
@@ -10,14 +10,22 @@ export default (refetch: (...args: any) => any) => {
 
   const [lastId, setLastId] = useState<string | undefined | null>();
 
+  const memo = useMemo(() => refetch, [refetch]);
+
+  useEffect(() => {
+    console.log('refetch on login being used...');
+  }, []);
+
   useEffect(() => {
     const currentId = appUser?.id;
     if (lastId === currentId) return;
 
     setLastId(currentId);
 
-    refetch();
+    memo();
 
     console.log("refetching...");
-  }, [appUser, refetch, isLoggedIn, authUser, lastId]);
+  }, [appUser, memo, isLoggedIn, authUser, lastId]);
 };
+
+export default useRefetchOnLogin;

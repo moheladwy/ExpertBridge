@@ -18,6 +18,7 @@ import LogoIcon from "@/assets/Logo-Icon/Logo-Icon.svg";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
 import { z } from "zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import useSignOut from "@/lib/firebase/useSignOut";
 
 /**
  * Zod schema for login form validation
@@ -45,6 +46,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 const LoginPage: React.FC = () => {
   const [isLoggedIn] = useIsUserLoggedIn();
   const navigate = useNavigate();
+  const [signOut] = useSignOut(auth);
 
   // Main component state
   const [loading, setLoading] = useState(false);
@@ -106,12 +108,14 @@ const LoginPage: React.FC = () => {
       console.error("Login error:", error);
       toast.error("Invalid email or password.");
       setSignInError("Invalid email or password.");
+      signOut();
     } else if (createError || createErrorMessage) {
       console.error("Google login error:", createError || createErrorMessage);
       toast.error("Google login failed. Please try again.");
       setSignInError("Google login failed. Please try again.");
+      signOut();
     }
-  }, [error, createError, createErrorMessage]);
+  }, [error, createError, createErrorMessage, signOut]);
 
   /**
    * Update success state when authentication succeeds through any method
@@ -203,7 +207,7 @@ const LoginPage: React.FC = () => {
       className="flex justify-center items-center min-h-screen"
       style={{ backgroundColor: "rgb(15 23 42 / 1)" }}
     >
-      <div className="p-8 w-full max-w-md bg-gray-800 rounded-lg shadow-lg text-white">
+      <div className="p-8 w-full h-screen sm:h-auto sm:max-w-md bg-gray-800 sm:rounded-lg sm:shadow-lg text-white">
         <div className="flex flex-col gap-6">
           {/* Login Form */}
           <form onSubmit={handleSubmit}>

@@ -317,9 +317,12 @@ const SignUpPage: React.FC = (): JSX.Element => {
   }, [createUserLoading]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen" style={{ backgroundColor: "rgb(15 23 42 / 1)" }}>
-      <div className="p-8 w-full max-w-md bg-gray-800 rounded-lg shadow-lg text-white">
-        <div className="flex flex-col gap-6">
+    <div
+      className="flex justify-center items-center min-h-screen"
+      style={{ backgroundColor: "rgb(15 23 42 / 1)" }}
+    >
+      <div className="p-8 w-full h-screen sm:h-auto sm:max-w-md bg-gray-800 sm:rounded-lg sm:shadow-lg text-white">
+       <div className="flex flex-col gap-6">
           {/* Sign-Up Form */}
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
@@ -373,7 +376,6 @@ const SignUpPage: React.FC = (): JSX.Element => {
                       className="border-gray-700 bg-gray-700 text-white"
                       required
                     />
-                    {errors.firstName && <p className="text-red-400 text-sm">{errors.firstName}</p>}
                   </div>
 
                   {/* Last Name Field */}
@@ -390,7 +392,16 @@ const SignUpPage: React.FC = (): JSX.Element => {
                       className="border-gray-700 bg-gray-700 text-white"
                       required
                     />
-                    {errors.lastName && <p className="text-red-400 text-sm">{errors.lastName}</p>}
+                  </div>
+                  
+                  {/* Error messages for first and last name */}
+                  <div className="grid grid-cols-2 gap-4 col-span-2 mt-1">
+                    <div>
+                      {errors.firstName && <p className="text-red-400 text-sm">{errors.firstName}</p>}
+                    </div>
+                    <div>
+                      {errors.lastName && <p className="text-red-400 text-sm">{errors.lastName}</p>}
+                    </div>
                   </div>
                 </div>
 
@@ -521,9 +532,6 @@ const SignUpPage: React.FC = (): JSX.Element => {
               </Button>
             </div>
           </form>
-
-          {/* Error Messages */}
-          {/* {signUpError && <p className="text-red-400 text-center mt-4">{signUpError}</p>} */}
 
           {/* Terms of Service and Privacy Policy Footer */}
           <div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">

@@ -10,6 +10,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [signOut, loading] = useSignOut(auth);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log('protected route mounting...');
+  }, []);
+
   const [
     isLoggedIn,
     loginLoading,
@@ -44,11 +48,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, [authUser, appUser, signOut, navigate]);
-
-  // ⛔️ Not logged in, redirect to login
-  if (!loginLoading && !isLoggedIn) {
-    return <Navigate to="/login" replace />;
-  }
 
   // ⏳ Still verifying auth state
   if (loginLoading) {

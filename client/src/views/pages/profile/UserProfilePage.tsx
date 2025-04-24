@@ -23,7 +23,7 @@ const UserProfilePage = () => {
 	// Check if the requested profile is the current user's profile
 	useEffect(() => {
 		if (userId && authUser && appUser && userId === appUser.id) {
-			navigate("/profile");
+			navigate("/profile", { replace: true });
 		}
 	}, [userId, authUser, navigate, appUser]);
 

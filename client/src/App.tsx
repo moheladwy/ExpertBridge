@@ -9,13 +9,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { saveAuthUser, selectAuthUser } from "./features/auth/authSlice";
+
 import { useLocation } from "react-router-dom";
 import AuthPromptModal from "./views/components/common/ui/AuthPromptModal";
+
+import { useCurrentAuthUser } from "./hooks/useCurrentAuthUser";
 
 function App() {
 
   const [updateUser] = useUpdateUserMutation();
-  const [authUser, loading, error] = useAuthSubscribtion(auth);
+  const authUser = useCurrentAuthUser();
 
   const [showInitialAuthPrompt, setShowInitialAuthPrompt] = useState(false);
   const location = useLocation();
@@ -35,7 +38,7 @@ function App() {
     // });
 
   
-    if (!authUser && !loading && !isLandingPage) {
+    if (!authUser && !isLandingPage) {
       console.log("setting timeout for auth prompt");
       const timer = setTimeout(() => {
         console.log("timeout finished setting showInitialAuthPrompt true");
@@ -54,7 +57,7 @@ function App() {
     //   }
     // };
 
-  }, [authUser, loading, isLandingPage]);
+  }, [authUser, isLandingPage]);
 
 
 
@@ -62,13 +65,15 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
 
-      if (user?.uid === authUser?.uid)
-        return;
-
       if (!user) return;
 
+      if (!user.emailVerified) {
+        await auth.signOut();
+        return;
+      }
+
       console.log('invalidating profile cache!.........................................');
- 
+
       const name = user.displayName?.split(' ') || [];
       const request: UpdateUserRequest = {
         firstName: name[0],
