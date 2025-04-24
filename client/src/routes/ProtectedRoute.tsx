@@ -49,11 +49,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [authUser, appUser, signOut, navigate]);
 
-  // ⛔️ Not logged in, redirect to login
-  if (!loginLoading && !isLoggedIn) {
-    return <Navigate to="/login" replace />;
-  }
-
   // ⏳ Still verifying auth state
   if (loginLoading) {
     return <div>Loading...</div>;
