@@ -31,6 +31,24 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
       ],
 
     }),
+    
+    getCommentsByUserId: builder.query<Comment[], string>({
+      query: (userId) => `/users/${userId}/comments`,
+      transformResponse: (response: CommentResponse[]) => {
+        return response.map(c => ({
+          ...c,
+          createdAt: new Date(c.createdAt).toISOString(),
+          replies: c.replies?.map(r => ({
+            ...r,
+            createdAt: new Date(r.createdAt).toISOString(),
+          })),
+        })) as Comment[];
+      },
+      providesTags: (result = [], error, arg) => [
+        { type: 'Comment', id: `LIST/${arg}` } as const,
+        ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
+      ],
+    }),
 
     getComment: builder.query<Comment, string>({
       query: (commentId) => `/comments/${commentId}`,
@@ -236,6 +254,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetCommentQuery,
   useGetCommentsByPostIdQuery,
+  useGetCommentsByUserIdQuery,
   useCreateCommentMutation,
   useCreateReplyMutation,
   useUpvoteCommentMutation,

@@ -14,6 +14,7 @@ import PostCard from "@/views/components/common/posts/PostCard";
 import CommentCard from "@/views/components/common/comments/CommentCard";
 import { useAppSelector } from "@/app/hooks";
 import { selectAllPosts, useGetPostsQuery } from "@/features/posts/postsSlice";
+import { useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
 
 const UserProfilePage = () => {
 	const { userId } = useParams<{ userId: string }>();
@@ -27,18 +28,27 @@ const UserProfilePage = () => {
 	const [activeTab, setActiveTab] = useState("latest");
 
 	// Get all posts
-  const { data: postsData } = useGetPostsQuery();
-  const allPosts = useAppSelector(selectAllPosts);
+	const { data: postsData } = useGetPostsQuery();
+	const allPosts = useAppSelector(selectAllPosts);
+
+	// Filter posts by user ID
+	const userPosts = useMemo(() => {
+		return allPosts.filter(post => post.author.id === userId);
+	}, [allPosts, userId]);
+
+  // Calculate total upvotes from all user posts
+  const totalUpvotes = useMemo(() => {
+    return userPosts.reduce((sum, post) => sum + post.upvotes, 0);
+  }, [userPosts]);
   
-  // Filter posts by user ID
-  const userPosts = useMemo(() => {
-    return allPosts.filter(post => post.author.id === userId);
-  }, [allPosts, userId]);
-	
-	// Check if the requested profile is the current user's profile
+  const totalDownvotes = useMemo(() => {
+    return userPosts.reduce((sum, post) => sum + post.downvotes, 0);
+  }, [userPosts]);
+
+  // Check if the requested profile is the current user's profile
 	useEffect(() => {
 		if (userId && authUser && appUser && userId === appUser.id) {
-			navigate("/profile");
+			navigate("/profile", { replace: true });
 		}
 	}, [userId, authUser, navigate, appUser]);
 
@@ -52,13 +62,13 @@ const UserProfilePage = () => {
 	const fullName = `${profile?.firstName || ""} ${profile?.lastName || ""}`;
 	const jobTitle = profile?.jobTitle || "Expert";
 	const location = "Giza, Egypt"; // This would come from profile data if available
-	const bio = profile?.email || "No bio available";
+	const bio = "No bio available";
 
 	// Placeholder stats - these would come from API calls
 	const stats = {
 		questions: userPosts.length,
-		upVotes: "+50K",
-		completedJobs: 30,
+		upVotes: totalUpvotes - totalDownvotes,
+		completedJobs: 0,
 	};
 
 	// Don't render anything if error and no profile
@@ -249,22 +259,6 @@ const UserProfilePage = () => {
 
 							{/* Answered Questions (Comments) Tab Content */}
 							<TabsContent value="answers" className="space-y-4">
-								{/* {userComments.length > 0 ? (
-									userComments.map((comment) => (
-										<div key={comment.id} className="border rounded-lg p-4 mb-4">
-											<div className="mb-2 text-sm text-gray-500">
-												Comment on a post:
-											</div>
-											<CommentCard 
-												comment={comment} 
-											/>
-										</div>
-									))
-								) : (
-									<div className="text-center py-8 text-gray-500">
-										This user hasn't answered any questions yet.
-									</div>
-								)} */}
 								<div className="text-center py-8 text-gray-500">
 									This user hasn't answered any questions yet.
 								</div>	
