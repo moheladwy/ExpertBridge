@@ -24,9 +24,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     appUser
   ] = useIsUserLoggedIn();
 
-  const [tryAgain, setTryAgain] = useState(true);
-
-
   // Handle login errors (e.g., token expired)
   useEffect(() => {
     if (loginError) {
@@ -38,17 +35,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const signUserOut = useCallback(async () => {
     if (!appUser) {
       if (loginLoading) return;
-      if (tryAgain) {
-        await new Promise(res => setTimeout(res, 5000));
-        setTryAgain(false);
-        return;
-      }
+      // if (tryAgain) {
+      //   await new Promise(res => setTimeout(res, 5000));
+      //   setTryAgain(false);
+      //   return;
+      // }
 
       signOut();
       navigate('/login');
 
     }
-  }, [appUser, loginLoading, tryAgain, navigate, signOut]);
+  }, [appUser, loginLoading, navigate, signOut]);
 
   useEffect(() => {
     signUserOut();
