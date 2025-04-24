@@ -3,9 +3,11 @@ import { Button } from "@/views/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/views/components/ui/tabs";
 import { Pencil } from "lucide-react";
 import { Badge } from "@/views/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Separator } from "@/views/components/ui/separator";
-import defaultProfile from "../../../assets/Profile-pic/ProfilePic.svg"
+import defaultProfile from "../../../assets/Profile-pic/ProfilePic.svg";
+import { Skeleton } from "@/views/components/ui/skeleton";
+import toast from "react-hot-toast";
 
 const MyProfilePage = () => {
 	const { data: profile, isLoading, error } = useGetCurrentUserProfileQuery();
