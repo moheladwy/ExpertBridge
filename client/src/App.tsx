@@ -24,10 +24,8 @@ function App() {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
 
-
-  // POTENTIAL LEAK DUE TO TIMER. (NEEDS TO BE FIXED)
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: NodeJS.Timeout | undefined;
 
     // console.log({
     //   authUser,
@@ -40,7 +38,7 @@ function App() {
   
     if (!authUser && !isLandingPage) {
       console.log("setting timeout for auth prompt");
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         console.log("timeout finished setting showInitialAuthPrompt true");
         setShowInitialAuthPrompt(true);
       }, 10000);
@@ -50,17 +48,14 @@ function App() {
     }
 
   
-    // for some reason the functionalilty breaks when trying to clear the timer if this is uncommented.
-    // return () => {
-    //   if (timer) {
-    //     clearTimeout(timer);
-    //   }
-    // };
+    return () => {
+      if (timer) {
+        console.log("clearing timeout for auth prompt");
+        clearTimeout(timer);
+      }
+    };
 
-  }, [authUser, isLandingPage]);
-
-
-
+  }, [authUser, isLandingPage]); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
