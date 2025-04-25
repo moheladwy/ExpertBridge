@@ -2,6 +2,7 @@ import {
 	createEntityAdapter,
 	createSelector,
 	EntityState,
+	Update,
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 import { AddPostRequest, Post, PostResponse } from "./types";
@@ -63,9 +64,18 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 							'getPosts',
 							undefined,
 							(draft) => {
-								const posts = Object.values(draft.entities).concat(createdPost);
-								postsAdapter.setAll(draft, posts);
+								// const posts = Object.values(draft.entities).concat(createdPost);
+								// postsAdapter.setAll(draft, posts);
+								postsAdapter.addOne(draft, createdPost);
 							}
+						),
+					);
+
+					const getPostPatchResult = lifecycleApi.dispatch(
+						postsApiSlice.util.upsertQueryData(
+							'getPost',
+							createdPost.id,
+							createdPost,
 						),
 					);
 				} catch {
@@ -281,8 +291,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 							"getPosts",
 							undefined,
 							(draft) => {
-								const posts = Object.values(draft.entities).filter(p => p.id !== postId);
-								postsAdapter.setAll(draft, posts);
+								postsAdapter.removeOne(draft, postId);
 							},
 						),
 					);
@@ -296,7 +305,6 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 							}
 						),
 					);
-
 
 				} catch {
 					console.error('error while deleting post');

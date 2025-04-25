@@ -72,6 +72,12 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
               console.log(draft);
             }),
           );
+          const getCommentsByUserPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData('getCommentsByUserId', createdComment.authorId, (draft) => {
+              Object.assign(draft, draft.concat(createdComment));
+              console.log(draft);
+            }),
+          );
           const getCommentPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.upsertQueryData('getComment', createdComment.id, createdComment),
           );
@@ -93,6 +99,9 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
       //   { type: 'Comment', id: `LIST/${arg.postId}` },
       //   { type: 'Comment', id: arg.parentCommentId },
       // ],
+      invalidatesTags: (result, error, arg) => [
+        { type: 'Comment', id: `LIST/${result?.authorId}` }
+      ],
       onQueryStarted: async (request, lifecycleApi) => {
         try {
           console.log(`Req: ${request}`, request.postId);
@@ -162,6 +171,19 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
           }),
         );
 
+        const getCommentsByUserPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getCommentsByUserId', comment.authorId, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.find(c => c.id == comment.id);
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
         const getCommentPatchResult = lifecycleApi.dispatch(
           commentsApiSlice.util.updateQueryData('getComment', comment.id, (draft) => {
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
@@ -214,6 +236,19 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
 
         const getCommentsByPostPatchResult = lifecycleApi.dispatch(
           commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId, (draft) => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.find(c => c.id == comment.id);
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        const getCommentsByUserPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getCommentsByUserId', comment.authorId, (draft) => {
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
             const updateCandidate = draft.find(c => c.id == comment.id);
             if (updateCandidate) {
