@@ -14,7 +14,7 @@ import PostCard from "@/views/components/common/posts/PostCard";
 import CommentCard from "@/views/components/common/comments/CommentCard";
 import { useAppSelector } from "@/app/hooks";
 import { selectAllPosts, useGetPostsQuery } from "@/features/posts/postsSlice";
-import { useGetCommentsByPostIdQuery, useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
+import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
 
 const UserProfilePage = () => {
 	const { userId } = useParams<{ userId: string }>();
@@ -214,7 +214,7 @@ const UserProfilePage = () => {
                   <div className="text-sm text-gray-500">Questions Asked</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-semibold">
+                  <div className={`text-3xl font-semibold ${stats.votes < 0 ? 'text-red-500' : ''}`}>
                     {stats.votes}
                   </div>
                   <div className="text-sm text-gray-500">Total Votes</div>
