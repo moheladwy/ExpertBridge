@@ -3,17 +3,20 @@ using System;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ExpertBridge.Data.Migrations
+namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    partial class ExpertBridgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250425154636_MediaSoftDeletable")]
+    partial class MediaSoftDeletable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
