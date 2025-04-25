@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.Data.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,19 +20,25 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength);
 
-        builder.HasIndex(x => x.ProviderId).IsUnique();
+        builder.HasIndex(x => x.ProviderId)
+            .HasFilter(IndexFilters.NotDeleted)
+            .IsUnique();
 
         builder.Property(x => x.Email)
             .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxEmailLength);
 
-        builder.HasIndex(x => x.Email).IsUnique();
+        builder.HasIndex(x => x.Email)
+            .HasFilter(IndexFilters.NotDeleted)
+            .IsUnique();
 
         builder.Property(x => x.Username)
             .IsRequired(false)
             .HasMaxLength(UserEntityConstraints.MaxUsernameLength);
 
-        builder.HasIndex(x => x.Username).IsUnique();
+        builder.HasIndex(x => x.Username)
+            .HasFilter(IndexFilters.NotDeleted)
+            .IsUnique();
 
         builder.Property(x => x.PhoneNumber)
             .IsRequired(false)
