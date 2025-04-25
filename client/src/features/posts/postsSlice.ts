@@ -6,6 +6,7 @@ import {
 import { apiSlice } from "../api/apiSlice";
 import { AddPostRequest, Post, PostResponse } from "./types";
 import { sub } from "date-fns";
+import { PostAddOutlined } from "@mui/icons-material";
 
 type PostsState = EntityState<Post, string>;
 const postsAdapter = createEntityAdapter<Post>({
@@ -52,8 +53,25 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 				method: "POST",
 				body: initialPost,
 			}),
-			invalidatesTags: [{ type: "Post", id: "LIST" }],
+			// invalidatesTags: [{ type: "Post", id: "LIST" }],
 			transformResponse: postResponseTransformer,
+			onQueryStarted: async (request, lifecycleApi) => {
+				try {
+					const { data: createdPost } = await lifecycleApi.queryFulfilled;
+					const getPostsPatchResult = lifecycleApi.dispatch(
+						postsApiSlice.util.updateQueryData(
+							'getPosts',
+							undefined,
+							(draft) => {
+								const posts = Object.values(draft.entities).concat(createdPost);
+								postsAdapter.setAll(draft, posts);
+							}
+						),
+					);
+				} catch {
+					console.error('Post creation failed');
+				}
+			}
 		}),
 
 		upvotePost: builder.mutation<Post, Post>({
@@ -202,11 +220,47 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 				method: "PATCH",
 				body: updateData,
 			}),
-			transformResponse: postResponseTransformer,
-			invalidatesTags: (result, error, arg) => [
-				{ type: "Post", id: "LIST" },
-				{ type: "Post", id: arg.postId },
-			],
+			// transformResponse: postResponseTransformer,
+			// invalidatesTags: (result, error, arg) => [
+			// 	{ type: "Post", id: "LIST" },
+			// 	{ type: "Post", id: arg.postId },
+			// ],
+			onQueryStarted: async (request, lifecycleApi) => {
+				const getPostsPatchResult = lifecycleApi.dispatch(
+					postsApiSlice.util.updateQueryData(
+						"getPosts",
+						undefined,
+						(draft) => {
+							const updateCandidate = draft.entities[request.postId];
+							if (updateCandidate) {
+								updateCandidate.title = request.title ?? updateCandidate.title;
+								updateCandidate.content = request.content ?? updateCandidate.content;
+							}
+						}
+					),
+				);
+
+				const getPostPatchResult = lifecycleApi.dispatch(
+					postsApiSlice.util.updateQueryData(
+						"getPost",
+						request.postId,
+						(draft) => {
+							// The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+							if (draft) {
+								draft.title = request.title ?? draft.title;
+								draft.content = request.content ?? draft.content;
+							}
+						}
+					),
+				);
+
+				try {
+					await lifecycleApi.queryFulfilled;
+				} catch {
+					getPostsPatchResult.undo();
+					getPostPatchResult.undo();
+				}
+			},
 		}),
 
 		deletePost: builder.mutation<void, string>({
@@ -214,10 +268,40 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 				url: `/posts/${postId}`,
 				method: "DELETE",
 			}),
-			invalidatesTags: (result, extra, arg) => [
-				{ type: "Post", id: "LIST" },
-				{ type: "Post", id: arg },
-			],
+			// invalidatesTags: (result, extra, arg) => [
+			// 	{ type: "Post", id: "LIST" },
+			// 	{ type: "Post", id: arg },
+			// ],
+			onQueryStarted: async (postId, lifecycleApi) => {
+				try {
+					const response = await lifecycleApi.queryFulfilled;
+
+					const getPostsPatchResult = lifecycleApi.dispatch(
+						postsApiSlice.util.updateQueryData(
+							"getPosts",
+							undefined,
+							(draft) => {
+								const posts = Object.values(draft.entities).filter(p => p.id !== postId);
+								postsAdapter.setAll(draft, posts);
+							},
+						),
+					);
+
+					const getPostPatchResult = lifecycleApi.dispatch(
+						postsApiSlice.util.updateQueryData(
+							"getPost",
+							postId,
+							(draft) => {
+								Object.assign(draft, null);
+							}
+						),
+					);
+
+
+				} catch {
+					console.error('error while deleting post');
+				}
+			},
 		}),
 	}),
 });
