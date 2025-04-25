@@ -156,6 +156,33 @@ public class CommentsController(
             .ToListAsync();
     }
 
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("/api/profiles/{profileId}/[controller]/votes")]
+    public async Task<List<GetCommentVotesResponse>> GetAllUpvotedPostsByProfileId([FromRoute] string profileId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
+
+        var profile = await _dbContext.Profiles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == profileId);
+        if (profile is null)
+            throw new ProfileNotFoundException($"Profile with id={profileId} was not found");
+
+        var votes = await _dbContext.CommentVotes
+            .AsNoTracking()
+            .Select(pv => new GetCommentVotesResponse
+            {
+                IsUpvoted = pv.IsUpvote,
+                ProfileId = pv.ProfileId,
+                CommentId = pv.CommentId
+            })
+            .Where(v => v.ProfileId == profileId)
+            .ToListAsync();
+
+        return votes;
+    }
+
     [HttpPatch("{commentId}")]
     public async Task<IActionResult> Patch([FromRoute] string commentId, [FromBody] PatchCommentRequest request)
     {
