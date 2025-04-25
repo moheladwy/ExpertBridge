@@ -24,11 +24,12 @@ public class ProfilesController : ControllerBase
         _authHelper = authHelper;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ProfileResponse> GetProfile()
     {
         var user = await _authHelper.GetCurrentUserAsync(User);
-        if (user == null) throw new UnauthorizedException();
+        if (user == null) throw new UnauthorizedGetMyProfileException();
 
         var profile = await _dbContext.Profiles
             .FullyPopulatedProfileQuery(p => p.UserId == user.Id)

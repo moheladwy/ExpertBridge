@@ -65,3 +65,14 @@ public class UnauthorizedException : Exception
     {
     }
 }
+
+public class UnauthorizedGetMyProfileException : UnauthorizedException
+{
+    public UnauthorizedGetMyProfileException() { }
+    public UnauthorizedGetMyProfileException(string message) : base(message) { }
+    public UnauthorizedGetMyProfileException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
+
+

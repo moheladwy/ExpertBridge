@@ -29,6 +29,14 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
             await Results.NotFound(ex.Message)
                 .ExecuteAsync(httpContext);
         }
+        catch (UnauthorizedGetMyProfileException ex)
+        {
+            await Results.Problem(
+                    title: "You are not authorized to get your profile.",
+                    statusCode: StatusCodes.Status419AuthenticationTimeout
+                )
+                .ExecuteAsync(httpContext);
+        }
         catch (UnauthorizedException ex)
         {
             await Results.Unauthorized()
