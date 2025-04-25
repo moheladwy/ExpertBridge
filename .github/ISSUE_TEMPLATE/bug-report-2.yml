@@ -1,0 +1,47 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[Bug]: "
+labels: [bug]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this issue template. Please provide as much detail as possible.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the issue.
+      placeholder: Describe the issue you're facing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behavior
+      description: What is currently happening? Include steps to reproduce if possible.
+      placeholder: Describe what is happening now.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen instead?
+      placeholder: Describe the expected or wanted behavior.
+    validations:
+      required: true
+
+  - type: input
+    id: image
+    attributes:
+      label: Screenshot or Image URL
+      description: Provide a link to an image or screenshot that shows the issue or desired outcome.
+      placeholder: https://example.com/screenshot.png
+    validations:
+      required: false
