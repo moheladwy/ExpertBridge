@@ -15,7 +15,6 @@ namespace ExpertBridge.Api.Queries
         {
             return query
                 .AsNoTracking()
-                .Where(p => !p.IsDeleted)
                 .Include(p => p.Author)
                 .Include(p => p.Votes)
                 .Include(p => p.Medias)

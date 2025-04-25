@@ -28,8 +28,9 @@ const baseQueryWithRetry = retry(
 		if (
 			result.error?.status === 404
 			|| result.error?.status === 400
-			|| result.error?.status === 500
+			|| result.error?.status === 401
 			|| result.error?.status === 429 // too many requests
+			|| result.error?.status === 500
 		) {
 			retry.fail(result.error, result.meta)
 		}

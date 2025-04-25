@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class FurtherRefineMediaModel : Migration
+    public partial class FixNotDeletedIndexFilter : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,6 +41,18 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "MediaTypes");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Email",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_ProviderId",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Username",
+                table: "Users");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_MediaObject",
@@ -125,6 +137,19 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                 oldType: "character varying(450)",
                 oldNullable: true);
 
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DeletedAt",
+                table: "ProfileMedias",
+                type: "timestamp with time zone",
+                nullable: true);
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsDeleted",
+                table: "ProfileMedias",
+                type: "boolean",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_ProfileMedias",
                 table: "ProfileMedias",
@@ -140,7 +165,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Key = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,7 +190,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Key = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,7 +215,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Key = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -209,7 +240,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Key = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,7 +265,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Key = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,6 +279,27 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true,
+                filter: "(\"IsDeleted\") = false");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_ProviderId",
+                table: "Users",
+                column: "ProviderId",
+                unique: true,
+                filter: "(\"IsDeleted\") = false");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true,
+                filter: "(\"IsDeleted\") = false");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProfileMedias_Key",
@@ -338,12 +394,32 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
             migrationBuilder.DropTable(
                 name: "ProfileExperienceMedias");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Email",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_ProviderId",
+                table: "Users");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Username",
+                table: "Users");
+
             migrationBuilder.DropPrimaryKey(
                 name: "PK_ProfileMedias",
                 table: "ProfileMedias");
 
             migrationBuilder.DropIndex(
                 name: "IX_ProfileMedias_Key",
+                table: "ProfileMedias");
+
+            migrationBuilder.DropColumn(
+                name: "DeletedAt",
+                table: "ProfileMedias");
+
+            migrationBuilder.DropColumn(
+                name: "IsDeleted",
                 table: "ProfileMedias");
 
             migrationBuilder.RenameTable(
@@ -431,6 +507,24 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                 {
                     table.PrimaryKey("PK_MediaTypes", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_ProviderId",
+                table: "Users",
+                column: "ProviderId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MediaObject_ChatId",

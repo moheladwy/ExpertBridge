@@ -20,5 +20,7 @@ namespace ExpertBridge.Api.Responses
         public string? JobTitle { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public bool IsOnboarded { get; set; }
+        public int CommentsUpvotes { get; set; }
+        public int CommentsDownvotes { get; set; }
     }
 }

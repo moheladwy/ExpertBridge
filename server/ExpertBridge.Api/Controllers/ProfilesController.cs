@@ -24,16 +24,15 @@ public class ProfilesController : ControllerBase
         _authHelper = authHelper;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ProfileResponse> GetProfile()
     {
-        var user = await _authHelper.GetCurrentUserAsync(User);
-        if (user == null) throw new UnauthorizedException();
+        var user = await _authHelper.GetCurrentUserAsync();
+        if (user == null) throw new UnauthorizedGetMyProfileException();
 
         var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .Where(p => p.UserId == user.Id)
-            .Include(p => p.User)
+            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
             .SelectProfileResponseFromProfile()
             .FirstOrDefaultAsync();
 
@@ -49,9 +48,7 @@ public class ProfilesController : ControllerBase
     public async Task<ProfileResponse> GetProfile(string id)
     {
         var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .Where(p => p.Id == id)
-            .Include(p => p.User)
+            .FullyPopulatedProfileQuery(profile => profile.Id == id)
             .SelectProfileResponseFromProfile()
             .FirstOrDefaultAsync();
 
