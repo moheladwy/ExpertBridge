@@ -96,8 +96,9 @@ const LoginPage: React.FC = () => {
    */
   useEffect(() => {
     if (success) {
-      setSuccess(false);
-      navigate("/home");
+      if (loggedInUser || authUser) {
+        navigate("/home");
+      }
     }
   }, [success, navigate, authUser]);
 
