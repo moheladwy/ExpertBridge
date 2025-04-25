@@ -5,6 +5,6 @@ namespace ExpertBridge.Api.Data.EntityConfiguration
 {
     public static class IndexFilters
     {
-        public const string NotDeleted = "IsDeleted = 0";
+        public const string NotDeleted = "(\"IsDeleted\") = false";
     }
 }

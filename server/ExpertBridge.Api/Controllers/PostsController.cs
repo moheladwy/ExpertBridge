@@ -114,33 +114,6 @@ public class PostsController : ControllerBase
             .ToListAsync();
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("/api/profiles/{profileId}/[controller]/votes")]
-    public async Task<List<GetPostVotesResponse>> GetAllPostVotesByProfileId([FromRoute] string profileId)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
-
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == profileId);
-        if (profile is null)
-            throw new ProfileNotFoundException($"Profile with id={profileId} was not found");
-
-        var votes = await _dbContext.PostVotes
-            .AsNoTracking()
-            .Select(pv => new GetPostVotesResponse
-            {
-                IsUpvoted = pv.IsUpvote,
-                ProfileId = pv.ProfileId,
-                PostId = pv.PostId
-            })
-            .Where(v => v.ProfileId == profileId)
-            .ToListAsync();
-
-        return votes;
-    }
-
     /// <summary>
     ///     Create a new post.
     /// </summary>

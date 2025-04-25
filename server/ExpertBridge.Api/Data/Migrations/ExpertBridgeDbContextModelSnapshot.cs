@@ -1042,15 +1042,15 @@ namespace ExpertBridge.Data.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique()
-                        .HasFilter("IsDeleted = 0");
+                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.HasIndex("ProviderId")
                         .IsUnique()
-                        .HasFilter("IsDeleted = 0");
+                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.HasIndex("Username")
                         .IsUnique()
-                        .HasFilter("IsDeleted = 0");
+                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.ToTable("Users");
                 });

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    [Migration("20250425155131_RemoveIndexFilterOnMediaKey")]
-    partial class RemoveIndexFilterOnMediaKey
+    [Migration("20250425174728_FixNotDeletedIndexFilter")]
+    partial class FixNotDeletedIndexFilter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1045,15 +1045,15 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique()
-                        .HasFilter("IsDeleted = 0");
+                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.HasIndex("ProviderId")
                         .IsUnique()
-                        .HasFilter("IsDeleted = 0");
+                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.HasIndex("Username")
                         .IsUnique()
-                        .HasFilter("IsDeleted = 0");
+                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.ToTable("Users");
                 });

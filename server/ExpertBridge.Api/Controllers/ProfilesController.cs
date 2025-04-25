@@ -31,9 +31,7 @@ public class ProfilesController : ControllerBase
         if (user == null) throw new UnauthorizedException();
 
         var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .Where(p => p.UserId == user.Id)
-            .Include(p => p.User)
+            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
             .SelectProfileResponseFromProfile()
             .FirstOrDefaultAsync();
 
@@ -49,9 +47,7 @@ public class ProfilesController : ControllerBase
     public async Task<ProfileResponse> GetProfile(string id)
     {
         var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .Where(p => p.Id == id)
-            .Include(p => p.User)
+            .FullyPopulatedProfileQuery(profile => profile.Id == id)
             .SelectProfileResponseFromProfile()
             .FirstOrDefaultAsync();
 
