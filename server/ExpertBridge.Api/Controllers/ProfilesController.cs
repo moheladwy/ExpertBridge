@@ -28,7 +28,7 @@ public class ProfilesController : ControllerBase
     [HttpGet]
     public async Task<ProfileResponse> GetProfile()
     {
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         if (user == null) throw new UnauthorizedGetMyProfileException();
 
         var profile = await _dbContext.Profiles

@@ -38,7 +38,7 @@ public class CommentsController(
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
 
         if (user == null)
         {
@@ -107,7 +107,7 @@ public class CommentsController(
             throw new PostNotFoundException($"Post with id={postId} was not found");
         }
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         var comments = await _dbContext.Comments
@@ -123,7 +123,7 @@ public class CommentsController(
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         var comment = await _dbContext.Comments
@@ -161,7 +161,7 @@ public class CommentsController(
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
@@ -214,7 +214,7 @@ public class CommentsController(
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
@@ -270,7 +270,7 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
         // Check if the user is authorized to edit the comment
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         if (user is null)
         {
             throw new UnauthorizedException();
@@ -307,7 +307,7 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
         // Check if the user is authorized to delete the comment
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
 
         // Check if the comment exists and belongs to the user

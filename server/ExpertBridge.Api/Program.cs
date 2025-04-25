@@ -64,6 +64,8 @@ builder.AddHttpClientForFirebaseService();
 builder.AddSwaggerGen();
 builder.AddCors();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddResponseCaching();
 builder.Services.AddControllers(options =>
 {

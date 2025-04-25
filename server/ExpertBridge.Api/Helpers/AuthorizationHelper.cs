@@ -11,10 +11,14 @@ namespace ExpertBridge.Api.Helpers
     public class AuthorizationHelper
     {
         private readonly ExpertBridgeDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthorizationHelper(ExpertBridgeDbContext dbContext)
+        public AuthorizationHelper(
+            ExpertBridgeDbContext dbContext,
+            IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -25,9 +29,9 @@ namespace ExpertBridge.Api.Helpers
         /// 1. The user model from the database populated with Profile nav prop. <br/>
         /// 2. null if no authentication took place.
         /// </returns>
-        public async Task<User?> GetCurrentUserAsync(ClaimsPrincipal? claims)
+        public async Task<User?> GetCurrentUserAsync()
         {
-            string? email = claims?.FindFirstValue(ClaimTypes.Email);
+            string? email = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
 
             var user = await _dbContext.Users
                 .Include(u => u.Profile)
