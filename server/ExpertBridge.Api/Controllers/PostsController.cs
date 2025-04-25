@@ -117,7 +117,7 @@ public class PostsController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     [Route("/api/profiles/{profileId}/[controller]/votes")]
-    public async Task<List<GetPostVotesResponse>> GetAllUpvotedPostsByProfileId([FromRoute] string profileId)
+    public async Task<List<GetPostVotesResponse>> GetAllPostVotesByProfileId([FromRoute] string profileId)
     {
         ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
 

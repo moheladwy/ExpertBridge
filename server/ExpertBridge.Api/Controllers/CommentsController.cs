@@ -159,7 +159,7 @@ public class CommentsController(
     [AllowAnonymous]
     [HttpGet]
     [Route("/api/profiles/{profileId}/[controller]/votes")]
-    public async Task<List<GetCommentVotesResponse>> GetAllUpvotedPostsByProfileId([FromRoute] string profileId)
+    public async Task<List<GetCommentVotesResponse>> GetAllCommentVotesByProfileId([FromRoute] string profileId)
     {
         ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
 
@@ -181,30 +181,6 @@ public class CommentsController(
             .ToListAsync();
 
         return votes;
-    }
-
-    [HttpPatch("{commentId}")]
-    public async Task<IActionResult> Patch([FromRoute] string commentId, [FromBody] PatchCommentRequest request)
-    {
-        throw new NotImplementedException();
-
-
-        // CONSIDER!
-        // This approach will make the patch action(endpoint) responsible for
-        // too many things that are kind of unrelated to each other.
-        // This will make it harder on the RTK side to know what to do
-        // before each patch request (due to optimistic UI updates).
-
-        var upvote = request.Upvote.GetValueOrDefault();
-        var downvote = request.Downvote.GetValueOrDefault();
-        if (upvote || downvote)
-        {
-            // go to a voting service that takes care of this
-        }
-
-        // comment.Content = request.Content ?? comment.Content
-
-        // return content
     }
 
     [HttpPatch("{commentId}/upvote")]
