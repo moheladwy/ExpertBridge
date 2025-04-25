@@ -26,7 +26,6 @@ namespace ExpertBridge.Api.Data.EntityConfiguration
                 .IsRequired();
 
             builder.HasIndex(x => x.Key)
-                .HasFilter(IndexFilters.NotDeleted)
                 .IsUnique();
 
             builder.Property(x => x.CreatedAt)
