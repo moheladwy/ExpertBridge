@@ -36,7 +36,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
     }),
 
     getCommentsByUserId: builder.query<Comment[], string>({
-      query: (userId) => `/users/${userId}/comments`,
+      query: (profileId) => `/profiles/${profileId}/comments`,
       transformResponse: commentsResponseTransformer,
       providesTags: (result = [], error, arg) => [
         { type: 'Comment', id: `LIST/${arg}` } as const,
