@@ -20,6 +20,7 @@ import FileUploadForm from "../../custom/FileUploadForm";
 import { MediaObject } from "@/features/media/types";
 import { z } from "zod";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 
 // Character limits
 const TITLE_MAX_LENGTH = 256;
@@ -52,6 +53,7 @@ const CreatePostModal: React.FC = () => {
   const [bodyError, setBodyError] = useState("");
   const [mediaList, setMediaList] = useState<MediaObject[]>([]);
   const [isLoggedIn, , , authUser, userProfile] = useIsUserLoggedIn();
+  const { showAuthPrompt } = useAuthPrompt();
 
   const [createPost, createPostResult] =
     useCreatePostMutation();
@@ -76,7 +78,13 @@ const CreatePostModal: React.FC = () => {
     }
   }, [isSuccess, isError]);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    if (isLoggedIn) {
+      setOpen(true);
+    } else {
+      showAuthPrompt();
+    }
+  }
 
   const resetForm = useCallback(() => {
     setTitle("");

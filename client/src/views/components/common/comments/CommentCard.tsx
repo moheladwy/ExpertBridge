@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import CommentVoteButtons from "./CommentVoteButtons";
 import TimeAgo from "../../custom/TimeAgo";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 
 interface CommentItemProps {
   comment: Comment;
@@ -15,6 +17,8 @@ interface CommentItemProps {
 const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replyText, setReplyText] = useState("");
+  const authUser = useCurrentAuthUser();
+  const { showAuthPrompt } = useAuthPrompt();
   // const [replies, setReplies] = useState<Comment[]>(comment.replies || []);
 
   const [createReply, { isLoading, isSuccess, isError }] = useCreateReplyMutation();
@@ -28,6 +32,13 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
   }, [isSuccess, isError, isLoading]);
 
   const handleReplySubmit = async () => {
+
+    if (!authUser) {
+      showAuthPrompt();
+      return;
+    }
+
+
     if (!replyText.trim()) return;
 
     await createReply({

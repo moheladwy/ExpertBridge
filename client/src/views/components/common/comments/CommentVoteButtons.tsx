@@ -3,12 +3,17 @@ import { Comment } from "@/features/comments/types";
 import { ArrowBigUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser"; 
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 
 interface CommentVoteButtonsProps {
   comment: Comment;
 }
 
 const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
+  const authUser = useCurrentAuthUser();
+  const { showAuthPrompt } = useAuthPrompt();
+
   const [upvoteComment, upvoteResult] = useUpvoteCommentMutation();
   const [downvoteComment, downvoteResult] = useDownvoteCommentMutation();
 
@@ -34,10 +39,18 @@ const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
   const voteDifference = commentVotes.upvotes - commentVotes.downvotes;
 
   const handleUpvote = async () => {
+    if (!authUser){
+      showAuthPrompt();
+      return;
+    }
     await upvoteComment(comment);
   };
 
   const handleDownvote = async () => {
+    if (!authUser) {
+      showAuthPrompt();
+      return;
+    }
     await downvoteComment(comment);
   };
 
