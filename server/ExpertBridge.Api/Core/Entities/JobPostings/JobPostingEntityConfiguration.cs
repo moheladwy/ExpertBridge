@@ -60,5 +60,13 @@ public class JobPostingEntityConfiguration : IEntityTypeConfiguration<JobPosting
             .WithOne(j => j.JobPosting)
             .HasForeignKey<Jobs.Job>(j => j.JobPostingId)
             .IsRequired(false);
+
+        // Configure one-to-many relationship with JobPostingMedia
+        builder.HasMany(jp => jp.Medias)
+            .WithOne(m => m.JobPosting)
+            .HasForeignKey(m => m.JobPostingId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false)
+            ;
     }
 }

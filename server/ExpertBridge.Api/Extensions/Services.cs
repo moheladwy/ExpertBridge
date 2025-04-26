@@ -7,6 +7,7 @@ using ExpertBridge.Api.Application.Repositories.Profiles;
 using ExpertBridge.Api.Application.Repositories.Tags;
 using ExpertBridge.Api.Application.Repositories.Users;
 using ExpertBridge.Api.Application.Services;
+using ExpertBridge.Api.BackgroundServices;
 using ExpertBridge.Api.Core.Entities.Comments;
 using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.Profiles;
@@ -41,6 +42,7 @@ public static class Services
             .AddScoped<ICommentsService, CommentsService>()
             .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
+            .AddHostedService<S3CleaningBackgroundService>()
             ;
     }
 

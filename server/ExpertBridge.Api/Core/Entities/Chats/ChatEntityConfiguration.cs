@@ -31,5 +31,12 @@ public class ChatEntityConfiguration : IEntityTypeConfiguration<Chat>
         // Enforce exactly 2 participants
         builder.Navigation(c => c.Participants)
             .AutoInclude();
+
+        builder.HasMany(c => c.Medias)
+            .WithOne(m => m.Chat)
+            .HasForeignKey(m => m.ChatId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Cascade)
+            ;
     }
 }

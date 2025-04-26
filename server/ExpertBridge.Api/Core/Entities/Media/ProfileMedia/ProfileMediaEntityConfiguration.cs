@@ -12,11 +12,5 @@ public class ProfileMediaEntityConfiguration : IEntityTypeConfiguration<ProfileM
     public void Configure(EntityTypeBuilder<ProfileMedia> builder)
     {
         builder.ConfigureAbstractMedia();
-
-        // Profile relationship (One-to-Many)
-        builder.HasOne(m => m.Profile)
-            .WithMany(p => p.Medias)
-            .HasForeignKey(m => m.ProfileId)
-            .IsRequired();
     }
 }
