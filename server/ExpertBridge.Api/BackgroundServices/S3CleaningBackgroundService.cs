@@ -44,9 +44,12 @@ namespace ExpertBridge.Api.BackgroundServices
                     var s3Client = scope.ServiceProvider.GetRequiredService<IAmazonS3>();
                     var awsSettings = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<AwsSettings>>().Value;
 
-                    var keys = await s3Client
-                        .GetAllObjectKeysAsync(
-                        awsSettings.BucketName, "", new Dictionary<string, object>());
+                    var onHoldGrants = dbContext.MediaGrants
+                        .Where(g => g.OnHold && g.GrantedAt < DateTime.UtcNow.AddHours(5));
+
+                    //var keys = await s3Client
+                    //    .GetAllObjectKeysAsync(
+                    //    awsSettings.BucketName, "", new Dictionary<string, object>());
 
                     List<string> validKeys = [];
                     List<MediaObject> deletedMedias = [];
@@ -129,13 +132,15 @@ namespace ExpertBridge.Api.BackgroundServices
                                 deletedMedias.Add(media);
                         }, stoppingToken);
 
-                    if (deletedMedias.Count > 0 && keys.Count - validKeys.Count > 0)
+                    if (deletedMedias.Count + onHoldGrants.Count() > 1)
                     {
                         await s3Client.DeleteObjectsAsync(
                             new DeleteObjectsRequest
                             {
                                 BucketName = awsSettings.BucketName,
-                                Objects = keys
+                                Objects =
+                                    deletedMedias.Select(m => m.Key)
+                                    .Concat(onHoldGrants.Select(g => g.Key))
                                     .Where(k => !validKeys.Contains(k))
                                     .Select(k => new KeyVersion { Key = k })
                                     .ToList()
@@ -144,6 +149,7 @@ namespace ExpertBridge.Api.BackgroundServices
 
                         // Delete deleted medias from database
                         dbContext.RemoveRange(deletedMedias);
+                        dbContext.RemoveRange(onHoldGrants);
                         await dbContext.SaveChangesAsync(stoppingToken);
                     }
                 }
