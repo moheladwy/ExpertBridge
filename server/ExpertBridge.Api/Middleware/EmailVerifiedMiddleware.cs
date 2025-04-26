@@ -17,18 +17,29 @@ namespace ExpertBridge.Api.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var isAuth = context.User?.Identity?.IsAuthenticated ?? false;
-
-            if (isAuth)
+            // Allow initial creation for non email-verified users. 
+            if (context.Request.Path.HasValue
+                && context.Request.Path.Value
+                    .EndsWith("/api/users", StringComparison.InvariantCultureIgnoreCase)
+                && context.Request.Method == "PUT")
             {
-                bool isEmailVerified = context.User.FindFirstValue("email_verified") == "true";
-                if (!isEmailVerified)
-                {
-                    throw new UnauthorizedException("Email not verified");
-                }
+                await _next(context);
             }
+            else
+            {
+                var isAuth = context.User?.Identity?.IsAuthenticated ?? false;
 
-            await _next(context);
+                if (isAuth)
+                {
+                    bool isEmailVerified = context.User.FindFirstValue("email_verified") == "true";
+                    if (!isEmailVerified)
+                    {
+                        throw new UnauthorizedException("Email not verified");
+                    }
+                }
+
+                await _next(context);
+            }
         }
     }
 }

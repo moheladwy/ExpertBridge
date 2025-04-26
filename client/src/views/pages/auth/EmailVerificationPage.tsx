@@ -45,18 +45,19 @@ const EmailVerificationPage = () => {
   const handleCheckVerification = async () => {
     try {
       // Force refresh the token to get updated email verification status
-      if (authUser) {
-        await authUser.reload();
-        window.location.reload();
-      }
+      // if (authUser) {
+      //   await authUser.reload();
+      //   window.location.reload();
+      // }
+      navigate('/login');
     } catch (error) {
       console.error("Error refreshing user data:", error);
     }
   };
 
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  // }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">

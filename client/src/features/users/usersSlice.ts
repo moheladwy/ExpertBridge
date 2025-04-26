@@ -5,12 +5,15 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		updateUser: builder.mutation<
 			AppUser | undefined,
-			UpdateUserRequest | CreateUserRequest
+			UpdateUserRequest
 		>({
 			query: (user) => ({
 				url: "/users",
 				method: "PUT",
 				body: user,
+				headers: {
+					'Authorization': `Bearer ${user.token}`,
+				}
 			}),
 
 			invalidatesTags: ["CurrentUser"],
