@@ -66,9 +66,13 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
     return await registerWithEmailAndPassword(email, passowrd);
   }, [registerWithEmailAndPassword]);
 
-  const create = useCallback(async (user: CreateUserRequest | UpdateUserRequest) => {
-    await createAppUser(user);
-  }, [createAppUser]);
+  const create = useCallback(async (user: UpdateUserRequest) => {
+    const token = await (emailUser || googleUser)?.user.getIdToken();
+    await createAppUser({
+      ...user,
+      token
+    });
+  }, [createAppUser, emailUser, googleUser]);
 
   useEffect(() => {
     console.log('useCreateUser Hook');

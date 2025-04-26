@@ -1,13 +1,34 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Linq.Expressions;
 using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Responses;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Queries
 {
     public static class ProfileQueries
     {
+        public static IQueryable<Profile> FullyPopulatedProfileQuery(this IQueryable<Profile> query)
+        {
+            return query
+                .AsNoTracking()
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .ThenInclude(c => c.Votes)
+                ;
+        }
+
+        public static IQueryable<Profile> FullyPopulatedProfileQuery(
+            this IQueryable<Profile> query,
+            Expression<Func<Profile, bool>> predicate)
+        {
+            return query
+                .FullyPopulatedProfileQuery()
+                .Where(predicate);
+        }
+
         public static IQueryable<ProfileResponse> SelectProfileResponseFromProfile(this IQueryable<Profile> query)
         {
             return query
@@ -26,7 +47,9 @@ namespace ExpertBridge.Api.Queries
                     Rating = p.Rating,
                     RatingCount = p.RatingCount,
                     Username = p.Username,
-                    IsOnboarded = p.User.IsOnboarded
+                    IsOnboarded = p.User.IsOnboarded,
+                    CommentsUpvotes = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)),
+                    CommentsDownvotes = p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
                 });                
         }
 

@@ -13,4 +13,6 @@ export type ProfileResponse = {
 	jobTitle?: string;
 	profilePictureUrl?: string;
 	isOnboarded: boolean;
+	commentsUpvotes: number;
+	commentsDownvotes: number;
 };

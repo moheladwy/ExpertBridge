@@ -25,6 +25,7 @@ export interface UpdateUserRequest {
 	phoneNumber?: string | null;
 	profilePictureUrl?: string | null;
 	isEmailVerified: boolean;
+	token?: string;
 }
 
 export type CreateUserError = string | undefined;

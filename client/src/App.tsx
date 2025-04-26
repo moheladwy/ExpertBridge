@@ -62,18 +62,19 @@ function AppContent() {
 
   }, [authUser, isLandingPage, isAuthPromptOpen]);
 
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
 
       if (!user) return;
 
-      if (!user.emailVerified) {
-        await auth.signOut();
-        return;
-      }
+      // if (!user.emailVerified) {
+      //   await auth.signOut();
+      //   return;
+      // }
 
       console.log('invalidating profile cache!.........................................');
-
+      const token = await user.getIdToken();
       const name = user.displayName?.split(' ') || [];
       const request: UpdateUserRequest = {
         firstName: name[0],
@@ -83,6 +84,7 @@ function AppContent() {
         providerId: user.uid,
         profilePictureUrl: user.photoURL,
         isEmailVerified: user.emailVerified,
+        token,
       };
 
       await updateUser(request);

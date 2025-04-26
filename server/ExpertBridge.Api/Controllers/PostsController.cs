@@ -63,7 +63,7 @@ public class PostsController : ControllerBase
     public async Task<PostResponse> GetById([FromRoute] string postId)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         var post = await _dbContext.Posts
@@ -86,7 +86,7 @@ public class PostsController : ControllerBase
     {
         Log.Information($"User from HTTP Context: {HttpContext.User.FindFirstValue(ClaimTypes.Email)}");
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         return await _dbContext.Posts
@@ -114,33 +114,6 @@ public class PostsController : ControllerBase
             .ToListAsync();
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("/api/profiles/{profileId}/[controller]/votes")]
-    public async Task<List<GetPostVotesResponse>> GetAllPostVotesByProfileId([FromRoute] string profileId)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
-
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == profileId);
-        if (profile is null)
-            throw new ProfileNotFoundException($"Profile with id={profileId} was not found");
-
-        var votes = await _dbContext.PostVotes
-            .AsNoTracking()
-            .Select(pv => new GetPostVotesResponse
-            {
-                IsUpvoted = pv.IsUpvote,
-                ProfileId = pv.ProfileId,
-                PostId = pv.PostId
-            })
-            .Where(v => v.ProfileId == profileId)
-            .ToListAsync();
-
-        return votes;
-    }
-
     /// <summary>
     ///     Create a new post.
     /// </summary>
@@ -163,7 +136,7 @@ public class PostsController : ControllerBase
     public async Task<PostResponse> Create([FromBody] CreatePostRequest request)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         if (string.IsNullOrEmpty(userProfileId))
@@ -243,7 +216,7 @@ public class PostsController : ControllerBase
     public async Task<PostResponse> Upvote([FromRoute] string postId)
     {
         // Get the current user from the HTTP context
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         // if the user is not authenticated, throw an exception
@@ -325,7 +298,7 @@ public class PostsController : ControllerBase
     public async Task<PostResponse> Downvote([FromRoute] string postId)
     {
         // Get the current user from the HTTP context
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         // if the user is not authenticated, throw an exception
@@ -400,7 +373,7 @@ public class PostsController : ControllerBase
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         // Get the current user from the HTTP context
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         if (user is null)
         {
             throw new UnauthorizedException($"Unauthorized Access from User {User}");
@@ -460,7 +433,7 @@ public class PostsController : ControllerBase
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
 
         // Check if the post exists in the database

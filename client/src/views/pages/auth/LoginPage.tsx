@@ -97,6 +97,7 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     if (success) {
       if (loggedInUser || authUser) {
+        if (!loggedInUser?.user.emailVerified) return;
         navigate("/home");
       }
     }

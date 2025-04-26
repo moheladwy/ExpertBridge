@@ -38,7 +38,7 @@ public class CommentsController(
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
 
         if (user == null)
         {
@@ -107,7 +107,7 @@ public class CommentsController(
             throw new PostNotFoundException($"Post with id={postId} was not found");
         }
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         var comments = await _dbContext.Comments
@@ -123,7 +123,7 @@ public class CommentsController(
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
 
         var comment = await _dbContext.Comments
@@ -156,39 +156,12 @@ public class CommentsController(
             .ToListAsync();
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("/api/profiles/{profileId}/[controller]/votes")]
-    public async Task<List<GetCommentVotesResponse>> GetAllCommentVotesByProfileId([FromRoute] string profileId)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
-
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == profileId);
-        if (profile is null)
-            throw new ProfileNotFoundException($"Profile with id={profileId} was not found");
-
-        var votes = await _dbContext.CommentVotes
-            .AsNoTracking()
-            .Select(pv => new GetCommentVotesResponse
-            {
-                IsUpvoted = pv.IsUpvote,
-                ProfileId = pv.ProfileId,
-                CommentId = pv.CommentId
-            })
-            .Where(v => v.ProfileId == profileId)
-            .ToListAsync();
-
-        return votes;
-    }
-
     [HttpPatch("{commentId}/upvote")]
     public async Task<CommentResponse> Upvote([FromRoute] string commentId)
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
@@ -241,7 +214,7 @@ public class CommentsController(
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
         var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
@@ -297,7 +270,7 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
         // Check if the user is authorized to edit the comment
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         if (user is null)
         {
             throw new UnauthorizedException();
@@ -334,7 +307,7 @@ public class CommentsController(
         ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
         // Check if the user is authorized to delete the comment
-        var user = await _authHelper.GetCurrentUserAsync(User);
+        var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
 
         // Check if the comment exists and belongs to the user
