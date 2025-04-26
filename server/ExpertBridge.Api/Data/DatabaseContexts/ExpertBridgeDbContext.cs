@@ -21,6 +21,7 @@ using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags;
 using ExpertBridge.Api.Core.Entities.Media.ChatMedia;
 using ExpertBridge.Api.Core.Entities.Media.CommentMedia;
 using ExpertBridge.Api.Core.Entities.Media.JobPostingMedia;
+using ExpertBridge.Api.Core.Entities.Media.MediaGrants;
 using ExpertBridge.Api.Core.Entities.Media.PostMedia;
 using ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia;
 using ExpertBridge.Api.Core.Entities.Media.ProfileMedia;
@@ -65,6 +66,7 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
     public DbSet<CommentMedia> CommentMedias { get; set; }
     public DbSet<JobPostingMedia> JobPostingMedias { get; set; }
     public DbSet<PostMedia> PostMedias { get; set; }
+    public DbSet<MediaGrant> MediaGrants { get; set; }
 
 
     /// <summary>
@@ -119,5 +121,6 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
         modelBuilder.ApplyConfiguration(new ChatParticipantEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileExperienceEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileExperienceMediaEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new MediaGrantEntityConfiguration());
     }
 }
