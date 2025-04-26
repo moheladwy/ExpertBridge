@@ -12,11 +12,5 @@ public class PostMediaEntityConfiguration : IEntityTypeConfiguration<PostMedia>
     public void Configure(EntityTypeBuilder<PostMedia> builder)
     {
         builder.ConfigureAbstractMedia();
-
-        // Post relationship (One-to-Many)
-        builder.HasOne(pm => pm.Post)
-            .WithMany(post => post.Medias)
-            .HasForeignKey(pm => pm.PostId)
-            .IsRequired();
     }
 }

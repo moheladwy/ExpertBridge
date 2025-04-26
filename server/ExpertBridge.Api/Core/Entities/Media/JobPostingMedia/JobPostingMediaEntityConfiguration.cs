@@ -12,11 +12,5 @@ public class JobPostingMediaEntityConfiguration : IEntityTypeConfiguration<JobPo
     public void Configure(EntityTypeBuilder<JobPostingMedia> builder)
     {
         builder.ConfigureAbstractMedia();
-
-        builder.HasOne(jpm => jpm.JobPosting)
-            .WithMany(jp => jp.Medias)
-            .HasForeignKey(jpm => jpm.JobPostingId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

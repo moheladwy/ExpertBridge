@@ -41,5 +41,13 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
         //    .WithMany(p => p.Posts)
         //    .HasForeignKey(p => p.AuthorId)
         //    .IsRequired();
+
+        // Configure one-to-many relationship with PostMedia
+        builder.HasMany(p => p.Medias)
+            .WithOne(m => m.Post)
+            .HasForeignKey(pm => pm.PostId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
+        ;
     }
 }

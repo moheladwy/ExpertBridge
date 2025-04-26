@@ -43,5 +43,12 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .WithOne(p => p.Author)
             .HasForeignKey(p => p.AuthorId)
             .IsRequired();
+
+        builder.HasMany(p => p.Medias)
+            .WithOne(m => m.Profile)
+            .HasForeignKey(m => m.ProfileId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false)
+            ;
     }
 }

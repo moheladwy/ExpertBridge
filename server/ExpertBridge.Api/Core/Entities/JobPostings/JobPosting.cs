@@ -5,15 +5,15 @@ using ExpertBridge.Api.Core.Entities.Media.JobPostingMedia;
 
 namespace ExpertBridge.Api.Core.Entities.JobPostings;
 
-public class JobPosting
+public class JobPosting : BaseModel, ISoftDeletable
 {
     // Properties
-    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Title { get; set; }
     public string Description { get; set; }
     public double Cost { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     // Foreign keys
     public string AuthorId { get; set; }

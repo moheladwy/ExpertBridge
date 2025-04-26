@@ -6,11 +6,11 @@ using ExpertBridge.Api.Core.Entities.Media.ChatMedia;
 
 namespace ExpertBridge.Api.Core.Entities.Chats;
 
-public class Chat
+public class Chat : BaseModel, ISoftDeletable
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? EndedAt { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     // Navigation properties
     public ICollection<ChatParticipant> Participants { get; set; } = [];

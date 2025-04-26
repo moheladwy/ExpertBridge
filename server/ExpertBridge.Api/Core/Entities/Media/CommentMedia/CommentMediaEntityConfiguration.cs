@@ -12,11 +12,5 @@ public class CommentMediaEntityConfiguration : IEntityTypeConfiguration<CommentM
     public void Configure(EntityTypeBuilder<CommentMedia> builder)
     {
         builder.ConfigureAbstractMedia();
-
-        // Comment relationship (One-to-One)
-        builder.HasOne(x => x.Comment)
-            .WithOne(x => x.Media)
-            .HasForeignKey<CommentMedia>(x => x.CommentId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
