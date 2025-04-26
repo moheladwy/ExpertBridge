@@ -45,6 +45,9 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
                   'x-amz-meta-file-type': metadata[i].type,
                   'x-amz-meta-file-extension': metadata[i].extension,
                   'x-amz-meta-file-key': presignedUrls[i].key,
+                  'x-amz-meta-cache-control': 'public,max-age=31536000',
+                  'x-amz-meta-max-size': '157286400',
+                  'Cache-Control': 'public,max-age=31536000',
                 },
                 body: file.file,
               })

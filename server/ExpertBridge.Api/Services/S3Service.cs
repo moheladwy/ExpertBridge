@@ -7,6 +7,7 @@ using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Api.Settings;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Services;
@@ -28,12 +29,21 @@ public class S3Service
     {
         ArgumentNullException.ThrowIfNull(file, nameof(file));
 
+        if (file.Size > _awsSettings.MaxFileSize)
+        {
+            throw new InvalidOperationException($"File size exceeds the maximum allowed size of {_awsSettings.MaxFileSize} bytes.");
+        }
+
         var request = new GetPreSignedUrlRequest
         {
             BucketName = _awsSettings.BucketName,
             Key = Guid.NewGuid().ToString(),
             Expires = DateTime.UtcNow.AddMinutes(60),
             Verb = HttpVerb.PUT,
+            Headers =
+            {
+                ["Cache-Control"] = _awsSettings.CacheControl
+            }
         };
 
         request.Metadata.Add("file-name", file.Name);
@@ -41,6 +51,8 @@ public class S3Service
         request.Metadata.Add("file-type", file.Type);
         request.Metadata.Add("file-extension", file.Extension);
         request.Metadata.Add("file-key", request.Key);
+        request.Metadata.Add("max-size", _awsSettings.MaxFileSize.ToString());
+        request.Metadata.Add("cache-control", _awsSettings.CacheControl);
 
         var response = new PresignedUrlResponse
         {
