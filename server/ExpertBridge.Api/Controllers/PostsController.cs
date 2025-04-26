@@ -175,6 +175,16 @@ public class PostsController : ControllerBase
 
             await _dbContext.PostMedias.AddRangeAsync(postMedia);
             post.Medias = postMedia;
+
+            var grants = _dbContext.MediaGrants
+                .Where(grant => postMedia.Any(p => p.Key == grant.Key));
+
+            foreach (var grant in grants)
+            {
+                grant.IsActive = true;
+                grant.OnHold = false;
+                grant.ActivatedAt = DateTime.UtcNow;
+            }
         }
 
         try

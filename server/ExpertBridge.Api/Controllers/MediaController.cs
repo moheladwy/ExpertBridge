@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Amazon.S3.Model;
+using ExpertBridge.Api.Core.Entities.Media;
 using ExpertBridge.Api.Core.Interfaces.Services;
+using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Responses;
@@ -25,10 +27,12 @@ namespace ExpertBridge.Api.Controllers;
 public class MediaController : ControllerBase
 {
     private readonly S3Service _s3Service;
+    private readonly ExpertBridgeDbContext _dbContext;
 
-    public MediaController(S3Service s3Service)
+    public MediaController(S3Service s3Service, ExpertBridgeDbContext dbContext)
     {
         _s3Service = s3Service;
+        _dbContext = dbContext;
     }
 
     [HttpPost("generate-urls")] // generate-url?count=3
@@ -43,6 +47,17 @@ public class MediaController : ControllerBase
         {
             urls.Add(await _s3Service.GetPresignedPutUrlAsync(file));
         }
+
+        await _dbContext.MediaGrants.AddRangeAsync(
+            urls.Select(url => new MediaGrant
+            {
+                Key = url.Key,
+                GrantedAt = DateTime.UtcNow,
+                IsActive = false,
+                OnHold = true
+            }));
+
+        await _dbContext.SaveChangesAsync();
 
         return urls;
     }
