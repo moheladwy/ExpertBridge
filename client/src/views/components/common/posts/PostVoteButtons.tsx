@@ -5,13 +5,17 @@ import { IconButton } from "@mui/material";
 import { ArrowBigUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 
 interface PostVoteButtonsProps {
   post: Post;
 }
 
 const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
+
+  const authUser = useCurrentAuthUser();
+  const { showAuthPrompt } = useAuthPrompt();
 
   const [upvotePost, upvoteResult] = useUpvotePostMutation();
   const [downvotePost, downvoteResult] = useDownvotePostMutation();
@@ -38,6 +42,10 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
   const voteDifference = post.upvotes - post.downvotes;
 
   const handleUpvote = async () => {
+    if (!authUser) {
+      showAuthPrompt();
+      return;
+    }
     await upvotePost(post);
 
     // setPostVotes((prev) => {
@@ -61,6 +69,10 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
   };
 
   const handleDownvote = async () => {
+    if (!authUser){
+      showAuthPrompt();
+      return;
+    }
     await downvotePost(post);
   };
 
