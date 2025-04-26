@@ -35,19 +35,19 @@ function App() {
     //   pathname: location.pathname
     // });
 
-  
+
     if (!authUser && !isLandingPage) {
       console.log("setting timeout for auth prompt");
       timer = setTimeout(() => {
         console.log("timeout finished setting showInitialAuthPrompt true");
         setShowInitialAuthPrompt(true);
       }, 10000);
-      
+
     } else {
       setShowInitialAuthPrompt(false);
     }
 
-  
+
     return () => {
       if (timer) {
         console.log("clearing timeout for auth prompt");
@@ -55,20 +55,20 @@ function App() {
       }
     };
 
-  }, [authUser, isLandingPage]); 
+  }, [authUser, isLandingPage]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
 
       if (!user) return;
 
-      if (!user.emailVerified) {
-        await auth.signOut();
-        return;
-      }
+      // if (!user.emailVerified) {
+      //   await auth.signOut();
+      //   return;
+      // }
 
       console.log('invalidating profile cache!.........................................');
-
+      const token = await user.getIdToken();
       const name = user.displayName?.split(' ') || [];
       const request: UpdateUserRequest = {
         firstName: name[0],
@@ -78,6 +78,7 @@ function App() {
         providerId: user.uid,
         profilePictureUrl: user.photoURL,
         isEmailVerified: user.emailVerified,
+        token,
       };
 
       await updateUser(request);
