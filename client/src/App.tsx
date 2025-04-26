@@ -14,8 +14,9 @@ import { useLocation } from "react-router-dom";
 import AuthPromptModal from "./views/components/common/ui/AuthPromptModal";
 
 import { useCurrentAuthUser } from "./hooks/useCurrentAuthUser";
+import { AuthPromptProvider, useAuthPrompt } from "./contexts/AuthPromptContext";
 
-function App() {
+function AppContent() {
 
   const [updateUser] = useUpdateUserMutation();
   const authUser = useCurrentAuthUser();
@@ -23,6 +24,8 @@ function App() {
   const [showInitialAuthPrompt, setShowInitialAuthPrompt] = useState(false);
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
+
+  const { isAuthPromptOpen, hideAuthPrompt } = useAuthPrompt();
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -40,7 +43,9 @@ function App() {
       console.log("setting timeout for auth prompt");
       timer = setTimeout(() => {
         console.log("timeout finished setting showInitialAuthPrompt true");
-        setShowInitialAuthPrompt(true);
+        if (!isAuthPromptOpen) {
+          setShowInitialAuthPrompt(true);
+        }
       }, 10000);
 
     } else {
@@ -55,7 +60,8 @@ function App() {
       }
     };
 
-  }, [authUser, isLandingPage]);
+  }, [authUser, isLandingPage, isAuthPromptOpen]);
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -124,15 +130,23 @@ function App() {
         description="Create an account to unlock all features and get a personalized experience on ExpertBridge."
       />
 
-      {/* <AuthPromptModal
-        open={true}
-        onOpenChange={() => {true}}
-        title="Tailor Your Experience"
-        description="Create an account to unlock all features and get a personalized experience on ExpertBridge."
-      /> */}
+      <AuthPromptModal
+        open={isAuthPromptOpen}
+        onOpenChange={(open) => !open && hideAuthPrompt()}
+        title="Authentication Required"
+        description="Please log in or sign up to continue with this action."
+      />
 
     </>
   );
 }
 
+function App() {
+  return (
+    <AuthPromptProvider> 
+      <AppContent />
+    </AuthPromptProvider>
+
+  )
+}
 export default App;

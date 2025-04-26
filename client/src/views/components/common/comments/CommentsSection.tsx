@@ -7,7 +7,8 @@ import toast from "react-hot-toast";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
-
+import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 
 interface CommentsSectionProps {
   postId: string;
@@ -17,7 +18,9 @@ const MAX_COMMENT_LENGTH = 5000;
 
 const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 
-  const [,,, authUser, userProfile] = useIsUserLoggedIn();
+  const authUser = useCurrentAuthUser();
+  const { showAuthPrompt } = useAuthPrompt();
+  const [,,,, userProfile] = useIsUserLoggedIn();
 
   const {
     data: comments,
@@ -70,6 +73,11 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!authUser){
+      showAuthPrompt();
+      return;
+    }
     
     // Validate comment text
     if (!commentText.trim()) {
@@ -84,6 +92,15 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     setCommentText("");
     setMedia([]);
     setCommentError(""); // Clear error on successful submission
+  };
+
+  const handleAttachClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+    if (!authUser) {
+      e.preventDefault();
+      showAuthPrompt();
+      return;
+    }
+    
   };
 
   return (
@@ -142,7 +159,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
               )}
               
               <div className="flex justify-end gap-2 items-center">
-                <IconButton component="label">
+                <IconButton component="label" onClick={handleAttachClick}>
                   <AttachFile />
                   <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
                 </IconButton>
