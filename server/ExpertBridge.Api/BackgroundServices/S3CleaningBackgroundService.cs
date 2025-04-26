@@ -45,7 +45,7 @@ namespace ExpertBridge.Api.BackgroundServices
                     var awsSettings = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<AwsSettings>>().Value;
 
                     var onHoldGrants = dbContext.MediaGrants
-                        .Where(g => g.OnHold && g.GrantedAt < DateTime.UtcNow.AddHours(5));
+                        .Where(g => g.OnHold && g.GrantedAt < DateTime.UtcNow.AddHours(-1));
 
                     //var keys = await s3Client
                     //    .GetAllObjectKeysAsync(
