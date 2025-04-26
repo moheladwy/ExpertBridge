@@ -43,5 +43,11 @@ public class ProfileExperienceEntityConfiguration : IEntityTypeConfiguration<Pro
             .HasForeignKey(x => x.ProfileId)
             .IsRequired();
 
+        builder.HasMany(x => x.Medias)
+            .WithOne(x => x.ProfileExperience)
+            .HasForeignKey(x => x.ProfileExperienceId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false)
+            ;
     }
 }

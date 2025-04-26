@@ -12,12 +12,5 @@ public class ChatMediaEntityConfiguration : IEntityTypeConfiguration<ChatMedia>
     public void Configure(EntityTypeBuilder<ChatMedia> builder)
     {
         builder.ConfigureAbstractMedia();
-
-        // Chat relationship (One-to-Many)
-        builder.HasOne(x => x.Chat)
-            .WithMany(x => x.Medias)
-            .HasForeignKey(x => x.ChatId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

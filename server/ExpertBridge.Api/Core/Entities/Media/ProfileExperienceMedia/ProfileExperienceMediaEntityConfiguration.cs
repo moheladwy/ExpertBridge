@@ -12,11 +12,5 @@ public class ProfileExperienceMediaEntityConfiguration : IEntityTypeConfiguratio
     public void Configure(EntityTypeBuilder<ProfileExperienceMedia> builder)
     {
         builder.ConfigureAbstractMedia();
-
-        // ProfileExperience relationship (One-to-Many)
-        builder.HasOne(pem => pem.ProfileExperience)
-            .WithMany(profileExperience => profileExperience.Medias)
-            .HasForeignKey(pem => pem.ProfileExperienceId)
-            .IsRequired();
     }
 }

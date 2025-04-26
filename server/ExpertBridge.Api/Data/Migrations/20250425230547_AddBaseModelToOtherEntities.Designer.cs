@@ -3,17 +3,20 @@ using System;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ExpertBridge.Data.Migrations
+namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    partial class ExpertBridgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250425230547_AddBaseModelToOtherEntities")]
+    partial class AddBaseModelToOtherEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -470,6 +473,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("ChatId")
+                        .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -517,6 +521,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("CommentId")
+                        .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -575,6 +580,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("JobPostingId")
+                        .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Key")
@@ -635,6 +641,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("PostId")
+                        .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Type")
@@ -682,6 +689,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("ProfileExperienceId")
+                        .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Type")
@@ -729,6 +737,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("ProfileId")
+                        .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Type")
@@ -1322,7 +1331,8 @@ namespace ExpertBridge.Data.Migrations
                     b.HasOne("ExpertBridge.Api.Core.Entities.Chats.Chat", "Chat")
                         .WithMany("Medias")
                         .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Chat");
                 });
@@ -1332,7 +1342,8 @@ namespace ExpertBridge.Data.Migrations
                     b.HasOne("ExpertBridge.Api.Core.Entities.Comments.Comment", "Comment")
                         .WithOne("Media")
                         .HasForeignKey("ExpertBridge.Api.Core.Entities.Media.CommentMedia.CommentMedia", "CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Comment");
                 });
@@ -1342,7 +1353,8 @@ namespace ExpertBridge.Data.Migrations
                     b.HasOne("ExpertBridge.Api.Core.Entities.JobPostings.JobPosting", "JobPosting")
                         .WithMany("Medias")
                         .HasForeignKey("JobPostingId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("JobPosting");
                 });
@@ -1352,7 +1364,8 @@ namespace ExpertBridge.Data.Migrations
                     b.HasOne("ExpertBridge.Api.Core.Entities.Posts.Post", "Post")
                         .WithMany("Medias")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Post");
                 });
@@ -1362,7 +1375,8 @@ namespace ExpertBridge.Data.Migrations
                     b.HasOne("ExpertBridge.Api.Core.Entities.ProfileExperiences.ProfileExperience", "ProfileExperience")
                         .WithMany("Medias")
                         .HasForeignKey("ProfileExperienceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ProfileExperience");
                 });
@@ -1372,7 +1386,8 @@ namespace ExpertBridge.Data.Migrations
                     b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("Medias")
                         .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Profile");
                 });

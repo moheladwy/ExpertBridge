@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.Core.Entities.Media.CommentMedia;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -59,5 +60,13 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
         builder.HasMany(c => c.Replies)
             .WithOne(c => c.ParentComment)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Configure one-to-one relationship with CommentMedia
+        builder.HasOne(c => c.Media)
+            .WithOne(m => m.Comment)
+            .HasForeignKey<CommentMedia>(m => m.CommentId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Cascade)
+            ;
     }
 }
