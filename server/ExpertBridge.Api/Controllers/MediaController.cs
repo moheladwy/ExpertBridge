@@ -3,6 +3,7 @@
 
 using Amazon.S3.Model;
 using ExpertBridge.Api.Core.Entities.Media;
+using ExpertBridge.Api.Core.Entities.Media.MediaGrants;
 using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
