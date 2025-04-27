@@ -14,6 +14,8 @@ import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
 import PostCard from "@/views/components/common/posts/PostCard";
 import CommentCard from "@/views/components/common/comments/CommentCard";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
+import ProfileCommentCard from "@/views/components/common/comments/ProfileCommentCard";
 
 
 const MyProfilePage = () => {
@@ -250,45 +252,37 @@ const MyProfilePage = () => {
   							</TabsList>
   
   							{/* Latest Questions (Posts) Tab Content */}
-  							<TabsContent value="questions" className="space-y-4">
-  								{userPosts.length > 0 ? (
-  									userPosts.map((post) => (
-  										<PostCard 
-  											key={post.id} 
-  											postId={post.id} 
-  											currUserId={appUser?.id}
-  										/>
-  									))
-  								) : (
-  									<div className="text-center py-8 text-gray-500">
-  										You haven't asked any questions yet.
-  									</div>
-  								)}
-  							</TabsContent>
+                <TabsContent value="questions" className="space-y-4">
+                  {userPosts.length > 0 ? (
+                    userPosts.map((post) => (
+                      <ProfilePostCard 
+                        key={post.id} 
+                        post={post}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      You haven't asked any questions yet.
+                    </div>
+                  )}
+                </TabsContent>
   
   							{/* Answered Questions (Comments) Tab Content */}
-  							<TabsContent value="answers" className="space-y-4">
-  								{userComments && userComments.length > 0 ? (
-  									userComments.map((comment) => (
-  										<div key={comment.id} className="border rounded-lg p-4 mb-4">
-  											<div className="mb-2 text-sm text-gray-500">
-  												<span className="font-semibold">On Post: </span>
-  												<a 
-  													href={`/feed/${comment.postId}`}
-  													className="hover:text-blue-600 hover:underline"
-  												>
-  													{getPostTitleById(comment.postId)}
-  												</a>
-  											</div>
-  											<CommentCard comment={comment} />
-  										</div>
-  									))
-  								) : (
-  									<div className="text-center py-8 text-gray-500">
-  										You haven't answered any questions yet.
-  									</div>
-  								)}
-  							</TabsContent>
+                <TabsContent value="answers" className="space-y-4">
+                  {userComments && userComments.length > 0 ? (
+                    userComments.map((comment) => (
+                      <ProfileCommentCard 
+                        key={comment.id} 
+                        comment={comment}
+                        postTitle={getPostTitleById(comment.postId)}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      You haven't answered any questions yet.
+                    </div>
+                  )}
+                </TabsContent>
   						</Tabs>
   					)}
   				</div>

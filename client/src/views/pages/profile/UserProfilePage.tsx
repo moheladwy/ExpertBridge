@@ -15,6 +15,8 @@ import CommentCard from "@/views/components/common/comments/CommentCard";
 import { useAppSelector } from "@/app/hooks";
 import { selectAllPosts, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
+import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
+import ProfileCommentCard from "@/views/components/common/comments/ProfileCommentCard";
 
 const UserProfilePage = () => {
 	const { userId } = useParams<{ userId: string }>();
@@ -264,10 +266,9 @@ const UserProfilePage = () => {
                 <TabsContent value="questions" className="space-y-4">
                   {userPosts.length > 0 ? (
                     userPosts.map((post) => (
-                      <PostCard 
+                      <ProfilePostCard 
                         key={post.id} 
-                        postId={post.id} 
-                        currUserId={appUser?.id}
+                        post={post}
                       />
                     ))
                   ) : (
@@ -281,18 +282,11 @@ const UserProfilePage = () => {
                 <TabsContent value="answers" className="space-y-4">
                   {userComments && userComments.length > 0 ? (
                     userComments.map((comment) => (
-                      <div key={comment.id} className="border rounded-lg p-4 mb-4">
-                        <div className="mb-2 text-sm text-gray-500">
-                          <span className="font-semibold">On Post: </span>
-                          <a 
-                            href={`/feed/${comment.postId}`}
-                            className="hover:text-blue-600 hover:underline"
-                          >
-                            {getPostTitleById(comment.postId)}
-                          </a>
-                        </div>
-                        <CommentCard comment={comment} />
-                      </div>
+                      <ProfileCommentCard 
+                        key={comment.id} 
+                        comment={comment}
+                        postTitle={getPostTitleById(comment.postId)}
+                      />
                     ))
                   ) : (
                     <div className="text-center py-8 text-gray-500">
