@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
    * Update success state when authentication succeeds through any method
    */
   useEffect(() => {
-    setSuccess(isLoggedIn || loggedInUser != null || createUserSuccess);
+    setSuccess(isLoggedIn || loggedInUser !== null || createUserSuccess || authUser !== null);
     if (isLoggedIn || loggedInUser != null || createUserSuccess) {
       toast.success("Login successful!");
     }
