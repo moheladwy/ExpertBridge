@@ -6,9 +6,10 @@ import CommentCard from "./CommentCard";
 import toast from "react-hot-toast";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
-import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg"
 import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
+import { Skeleton } from "@/views/components/ui/skeleton";
 
 interface CommentsSectionProps {
   postId: string;
@@ -53,11 +54,6 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     }
   }, [commentsSuccess, comments]);
 
-
-  if (commentsLoading) {
-    return <p>Loading...</p>;
-  }
-  
   // Calculate characters left
   const charsLeft = MAX_COMMENT_LENGTH - commentText.length;
   
@@ -183,9 +179,26 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
         <h2>Comments</h2>
       </div>
 
-      {/* Comment List */}
-      {
-        comments &&
+      {/* Comment List with Loading States */}
+      {commentsLoading ? (
+        // Skeleton UI for loading comments
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex gap-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="w-full">
+                <Skeleton className="h-4 w-32 mb-2" />
+                <Skeleton className="h-3 w-20 mb-3" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : isCommentsError ? (
+        <div className="p-4 rounded-md bg-gray-50 text-center">
+          <p className="text-gray-500">Unable to load comments. Please try again later.</p>
+        </div>
+      ) : comments && comments.length > 0 ? (
         [...comments]
           .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
           .map((comment) => (
@@ -194,7 +207,11 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
               comment={comment}
             />
           ))
-      }
+      ) : (
+        <div className="p-4 rounded-md bg-gray-50 text-center">
+          <p className="text-gray-500">No comments yet. Be the first to share your thoughts!</p>
+        </div>
+      )}
     </div>
   );
 }
