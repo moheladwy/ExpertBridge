@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <Reference Include="FirebaseAdmin">
+        <HintPath>..\..\..\..\.nuget\packages\firebaseadmin\3.2.0\lib\net6.0\FirebaseAdmin.dll</HintPath>
+      </Reference>
+      <Reference Include="FluentValidation">
+        <HintPath>..\..\..\..\.nuget\packages\fluentvalidation\11.11.0\lib\net8.0\FluentValidation.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore">
+        <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\9.0.4\lib\net8.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore.Abstractions">
+        <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.abstractions\9.0.4\lib\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Pgvector" />
+      <PackageReference Include="Pgvector.EntityFrameworkCore" />
+    </ItemGroup>
+
+</Project>

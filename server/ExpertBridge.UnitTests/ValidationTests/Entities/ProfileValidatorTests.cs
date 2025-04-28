@@ -1,9 +1,6 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Media;
-using ExpertBridge.Api.Core.Entities.Profiles;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Media;
+using ExpertBridge.Core.Entities.Profiles;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -11,6 +8,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class ProfileValidatorTests
 {
     private readonly ProfileEntityValidator _profileEntityValidator = new();
+
     private readonly Profile _validProfile = new()
     {
         Id = Guid.NewGuid().ToString(),
@@ -140,7 +138,8 @@ public class ProfileValidatorTests
 
         // Act
         var resultOfNegativeRating = _profileEntityValidator.TestValidate(profileWithNegativeRating);
-        var resultOfRatingGreaterThanMaxValue = _profileEntityValidator.TestValidate(profileWithRatingGreaterThanMaxValue);
+        var resultOfRatingGreaterThanMaxValue =
+            _profileEntityValidator.TestValidate(profileWithRatingGreaterThanMaxValue);
 
         // Assert
         resultOfNegativeRating.ShouldHaveValidationErrorFor(x => x.Rating);
@@ -172,7 +171,8 @@ public class ProfileValidatorTests
         profileWithEmptyProfilePictureUrl.ProfilePictureUrl = string.Empty;
 
         var profileWithLongProfilePictureUrl = _validProfile;
-        profileWithLongProfilePictureUrl.ProfilePictureUrl = new string('a', MediaEntityConstraints.MaxMediaUrlLength + 1);
+        profileWithLongProfilePictureUrl.ProfilePictureUrl =
+            new string('a', MediaEntityConstraints.MaxMediaUrlLength + 1);
 
         // Act
         var resultOfNullProfilePictureUrl = _profileEntityValidator.TestValidate(profileWithNullProfilePictureUrl);
