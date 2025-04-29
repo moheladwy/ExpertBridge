@@ -5,4 +5,4 @@ python-dotenv
 pydantic~=2.10.6
 pylint
 requests
-gunicorn~=21.2.0
+gunicorn~=23.0.0
