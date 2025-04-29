@@ -111,6 +111,28 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 
 	// console.log(post);
 
+  //TO BE REMOVED
+  const medias = [
+    {
+      id: "1",
+      name: "Cool Mountain",
+      url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb", // image
+      type: "image/jpeg",
+    },
+    {
+      id: "2",
+      name: "Sunset",
+      url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b", // image
+      type: "image/png",
+    },
+    // {
+    //   id: "3",
+    //   name: "Sample Video",
+    //   url: "https://www.w3schools.com/html/mov_bbb.mp4", // video
+    //   type: "video/mp4",
+    // },
+  ];
+
 	return (
 		<>
 			<Modal
@@ -254,7 +276,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				</div>
 
 				{/* Media */}
-				<div
+				{/* <div
 					className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}
 				>
 					{post.medias.length > 0 ? (
@@ -264,11 +286,47 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 							<img
 								src={post.medias[0].url}
 								onClick={handleOpen}
-								alt="oh shit it did not load..."
+								alt="Question media"
 							/>
 						)
 					) : null}
-				</div>
+				</div> */}
+
+        <div
+          className={`grid gap-2 w-full rounded-md overflow-hidden ${
+            post.medias.length === 1
+              ? 'grid-cols-1'
+              : post.medias.length === 2
+              ? 'grid-cols-2'
+              : 'grid-cols-2 sm:grid-cols-3'
+          }`}
+        >
+          {medias.map((media, index) => (
+            <div
+              key={index}
+              className={`relative aspect-video bg-slate-200 flex justify-center items-center cursor-pointer overflow-hidden rounded-md ${
+              (medias.length === 1) ? 'col-span-full' : ''
+              }`}
+            >
+              {media.type.startsWith("video") ? (
+                <ReactPlayer
+                  url={media.url}
+                  width="100%"
+                  height="100%"
+                  controls
+                  style={{ pointerEvents: "none" }}
+                />
+              ) : (
+                <img
+                  src={media.url}
+                  alt={`media-${index}`}
+                  onClick={handleOpen}
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+          ))}
+        </div>
 
 				{/* Post Metadata */}
 				{/* Tags */}
