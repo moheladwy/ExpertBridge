@@ -14,13 +14,13 @@ using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.BackgroundServices
 {
-    public class S3CleaningBackgroundService : BackgroundService
+    public class S3CleaningWorker : BackgroundService
     {
-        private readonly ILogger<S3CleaningBackgroundService> _logger;
+        private readonly ILogger<S3CleaningWorker> _logger;
         private readonly IServiceProvider _services;
 
-        public S3CleaningBackgroundService(
-            ILogger<S3CleaningBackgroundService> logger,
+        public S3CleaningWorker(
+            ILogger<S3CleaningWorker> logger,
             IServiceProvider services)
         {
             _logger = logger;
