@@ -125,12 +125,12 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
       url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b", // image
       type: "image/png",
     },
-    // {
-    //   id: "3",
-    //   name: "Sample Video",
-    //   url: "https://www.w3schools.com/html/mov_bbb.mp4", // video
-    //   type: "video/mp4",
-    // },
+    {
+      id: "3",
+      name: "Sample Video",
+      url: "https://www.w3schools.com/html/mov_bbb.mp4", // video
+      type: "video/mp4",
+    },
   ];
 
 	return (
@@ -294,17 +294,15 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 
         <div
           className={`grid gap-2 w-full rounded-md overflow-hidden ${
-            post.medias.length === 1
+            medias.length === 1
               ? 'grid-cols-1'
-              : post.medias.length === 2
-              ? 'grid-cols-2'
-              : 'grid-cols-2 sm:grid-cols-3'
+              : 'grid-cols-2'
           }`}
         >
           {medias.map((media, index) => (
             <div
               key={index}
-              className={`relative aspect-video bg-slate-200 flex justify-center items-center cursor-pointer overflow-hidden rounded-md ${
+              className={`relative aspect-auto bg-slate-200 flex justify-center items-center cursor-pointer overflow-hidden rounded-md ${
               (medias.length === 1) ? 'col-span-full' : ''
               }`}
             >
