@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Linq.Expressions;
+using ExpertBridge.Api.Application.Interfaces.Repositories;
+using ExpertBridge.Api.Application.Interfaces.Services;
 using ExpertBridge.Api.Core;
-using ExpertBridge.Api.Core.Interfaces.Repositories;
-using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Models;
 
 namespace ExpertBridge.Api.Application.Repositories.Users;

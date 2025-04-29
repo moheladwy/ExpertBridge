@@ -3,11 +3,9 @@
 
 using Amazon.S3;
 using Amazon.S3.Model;
-using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Api.Settings;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Services;

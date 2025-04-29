@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Api.Settings;
-using ExpertBridge.Api.Core.Interfaces.Services;
 using FirebaseAdmin.Auth;
 using Microsoft.Extensions.Options;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Api.Application.Interfaces.Services;
 
 namespace ExpertBridge.Api.Application.Services;
 

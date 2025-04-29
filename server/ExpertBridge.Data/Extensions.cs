@@ -4,6 +4,8 @@
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExpertBridge.Api.Data;
 

@@ -3,7 +3,7 @@
 
 using System.Linq.Expressions;
 
-namespace ExpertBridge.Api.Core.Interfaces.Repositories;
+namespace ExpertBridge.Api.Application.Interfaces.Repositories;
 
 public interface IEntityRepository<T> where T : class
 {
