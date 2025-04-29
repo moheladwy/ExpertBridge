@@ -70,7 +70,7 @@ public class ChatValidatorTests
     {
         // Arrange
         var chatWithInvalidEndedAt = _validChat;
-        chatWithInvalidEndedAt.EndedAt = _validChat.CreatedAt.AddSeconds(-1);
+        chatWithInvalidEndedAt.EndedAt = _validChat.CreatedAt.Value.AddSeconds(-1);
 
         // Act
         var resultOfInvalidEndedAt = _chatEntityValidator.TestValidate(chatWithInvalidEndedAt);

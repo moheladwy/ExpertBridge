@@ -128,7 +128,7 @@ public class JobReviewValidatorTests
         jobReviewWithLastModifiedGreaterThanNow.LastModified = DateTime.UtcNow.AddDays(1);
 
         var jobReviewWithLastModifiedLessThanCreatedAt = _validJobReview;
-        jobReviewWithLastModifiedLessThanCreatedAt.LastModified = _validJobReview.CreatedAt.AddDays(1);
+        jobReviewWithLastModifiedLessThanCreatedAt.LastModified = _validJobReview.CreatedAt.Value.AddDays(1);
 
         // Act
         var resultOfLastModifiedGreaterThanNow = _jobReviewEntityValidator.TestValidate(jobReviewWithLastModifiedGreaterThanNow);
