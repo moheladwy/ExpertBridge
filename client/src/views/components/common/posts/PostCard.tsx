@@ -49,7 +49,8 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
-	const post = useAppSelector((state) => selectPostById(state, postId));
+	const memoizedPostId = useMemo(() => postId, [postId]);
+	const post = useAppSelector((state) => selectPostById(state, memoizedPostId));
 	const [open, setOpen] = useState(false);
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 

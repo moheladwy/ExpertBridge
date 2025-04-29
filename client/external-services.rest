@@ -1,0 +1,8 @@
+POST http://categorizer.expertbridge.duckdns.org/categorize
+Content-Type: application/json
+
+{
+  "title": "A new post for the niggers",
+  "content": "My car is behaving like a real nigger real soon too bad",
+  "tags": []
+}
