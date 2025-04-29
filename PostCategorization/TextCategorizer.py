@@ -1,7 +1,7 @@
 import json
 from groq import Groq
 from pydantic import ValidationError
-from OuputFormat import CategorizationResponse, TranslateTagsResponse
+from OutputFormat import CategorizationResponse, TranslateTagsResponse
 
 
 class TextCategorizer:

@@ -1,6 +1,6 @@
 import requests
 import json
-from OuputFormat import CategorizationResponse, TranslateTagsResponse
+from OutputFormat import CategorizationResponse, TranslateTagsResponse
 from pydantic import ValidationError
 
 # BASE_URL = "https://categorizer.expertbridge.duckdns.org"
