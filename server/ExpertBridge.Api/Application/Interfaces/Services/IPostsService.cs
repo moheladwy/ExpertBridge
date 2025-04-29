@@ -3,7 +3,7 @@
 
 using ExpertBridge.Api.Responses;
 
-namespace ExpertBridge.Api.Core.Interfaces.Services;
+namespace ExpertBridge.Api.Application.Interfaces.Services;
 
 public interface IPostsService
 {

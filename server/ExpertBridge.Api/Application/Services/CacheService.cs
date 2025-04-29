@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using ExpertBridge.Api.Core.Interfaces.Services;
+using ExpertBridge.Api.Application.Interfaces.Services;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace ExpertBridge.Api.Application.Services;

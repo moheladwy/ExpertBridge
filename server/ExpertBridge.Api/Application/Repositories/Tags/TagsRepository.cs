@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Linq.Expressions;
+using ExpertBridge.Api.Application.Interfaces.Repositories;
 using ExpertBridge.Api.Core.Entities.Tags;
-using ExpertBridge.Api.Core.Interfaces.Repositories;
 using ExpertBridge.Api.Data.DatabaseContexts;
 
 namespace ExpertBridge.Api.Application.Repositories.Tags;
