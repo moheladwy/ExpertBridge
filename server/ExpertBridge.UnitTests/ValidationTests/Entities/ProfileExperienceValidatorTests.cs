@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.ProfileExperiences;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.ProfileExperiences;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -138,7 +135,8 @@ public class ProfileExperienceValidatorTests
         profileExperienceWithInvalidStartDate.StartDate = DateTime.UtcNow.AddYears(1);
 
         // Act
-        var resultOfInvalidStartDate = _profileExperienceEntityValidator.TestValidate(profileExperienceWithInvalidStartDate);
+        var resultOfInvalidStartDate =
+            _profileExperienceEntityValidator.TestValidate(profileExperienceWithInvalidStartDate);
 
         // Assert
         resultOfInvalidStartDate.ShouldHaveValidationErrorFor(x => x.StartDate);
@@ -152,10 +150,10 @@ public class ProfileExperienceValidatorTests
         profileExperienceWithInvalidEndDate.EndDate = _validProfileExperience.StartDate.AddYears(-1);
 
         // Act
-        var resultOfInvalidEndDate = _profileExperienceEntityValidator.TestValidate(profileExperienceWithInvalidEndDate);
+        var resultOfInvalidEndDate =
+            _profileExperienceEntityValidator.TestValidate(profileExperienceWithInvalidEndDate);
 
         // Assert
         resultOfInvalidEndDate.ShouldHaveValidationErrorFor(x => x.EndDate);
     }
-
 }

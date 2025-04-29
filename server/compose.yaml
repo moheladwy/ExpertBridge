@@ -1,6 +1,6 @@
-﻿services:
+services:
   expertbridge.api:
     image: expertbridge.api
     build:
       context: .
-      dockerfile: ExpertBridge.Api/Dockerfile
+      dockerfile: Dockerfile

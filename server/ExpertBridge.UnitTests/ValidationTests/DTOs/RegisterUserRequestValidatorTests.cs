@@ -1,9 +1,6 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Users;
-using ExpertBridge.Api.Requests.RegisterUser;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Users;
+using ExpertBridge.Core.Requests.RegisterUser;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.DTOs;
@@ -11,6 +8,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.DTOs;
 public class RegisterUserRequestValidatorTests
 {
     private readonly RegisterUserRequestValidator _registerUserRequestValidator = new();
+
     private readonly RegisterUserRequest _validRegisterUserRequest = new()
     {
         Email = "test@gmail.com",
@@ -68,12 +66,15 @@ public class RegisterUserRequestValidatorTests
         registerUserRequestWithEmptyFirebaseId.ProviderId = string.Empty;
 
         var registerUserRequestWithInvalidFirebaseId = _validRegisterUserRequest;
-        registerUserRequestWithInvalidFirebaseId.ProviderId = new string('n', GlobalEntitiesConstraints.MaxIdLength + 1);
+        registerUserRequestWithInvalidFirebaseId.ProviderId =
+            new string('n', GlobalEntitiesConstraints.MaxIdLength + 1);
 
         // Act
         var resultOfNullFirebaseId = _registerUserRequestValidator.TestValidate(registerUserRequestWithNullFirebaseId);
-        var resultOfEmptyFirebaseId = _registerUserRequestValidator.TestValidate(registerUserRequestWithEmptyFirebaseId);
-        var resultOfInvalidFirebaseId = _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidFirebaseId);
+        var resultOfEmptyFirebaseId =
+            _registerUserRequestValidator.TestValidate(registerUserRequestWithEmptyFirebaseId);
+        var resultOfInvalidFirebaseId =
+            _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidFirebaseId);
 
         // Assert
         resultOfNullFirebaseId.ShouldHaveValidationErrorFor(x => x.ProviderId);
@@ -97,7 +98,8 @@ public class RegisterUserRequestValidatorTests
         // Act
         var resultOfNullFirstName = _registerUserRequestValidator.TestValidate(registerUserRequestWithNullFirstName);
         var resultOfEmptyFirstName = _registerUserRequestValidator.TestValidate(registerUserRequestWithEmptyFirstName);
-        var resultOfInvalidFirstName = _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidFirstName);
+        var resultOfInvalidFirstName =
+            _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidFirstName);
 
         // Assert
         resultOfNullFirstName.ShouldHaveValidationErrorFor(x => x.FirstName);
@@ -121,7 +123,8 @@ public class RegisterUserRequestValidatorTests
         // Act
         var resultOfNullLastName = _registerUserRequestValidator.TestValidate(registerUserRequestWithNullLastName);
         var resultOfEmptyLastName = _registerUserRequestValidator.TestValidate(registerUserRequestWithEmptyLastName);
-        var resultOfInvalidLastName = _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidLastName);
+        var resultOfInvalidLastName =
+            _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidLastName);
 
         // Assert
         resultOfNullLastName.ShouldHaveValidationErrorFor(x => x.LastName);
@@ -145,7 +148,8 @@ public class RegisterUserRequestValidatorTests
         // Act
         var resultOfNullUsername = _registerUserRequestValidator.TestValidate(registerUserRequestWithNullUsername);
         var resultOfEmptyUsername = _registerUserRequestValidator.TestValidate(registerUserRequestWithEmptyUsername);
-        var resultOfInvalidUsername = _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidUsername);
+        var resultOfInvalidUsername =
+            _registerUserRequestValidator.TestValidate(registerUserRequestWithInvalidUsername);
 
         // Assert
         resultOfNullUsername.ShouldHaveValidationErrorFor(x => x.Username);

@@ -1,11 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities.Media;
-using ExpertBridge.Api.Responses;
-using ExpertBridge.Api.Settings;
+﻿using ExpertBridge.Core.Entities.Media;
+using ExpertBridge.Core.Responses;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ExpertBridge.Api.Queries
 {
@@ -14,7 +9,7 @@ namespace ExpertBridge.Api.Queries
         // WARNING!
         // This method uses a hardcoded URL for the media object.
         // This is a magic string that will be a pain in the ass to maintain
-        // and cause dependent modules to rebuild on change. 
+        // and cause dependent modules to rebuild on change.
         public static IQueryable<MediaObjectResponse> SelectMediaObjectResponse(
             this IQueryable<MediaObject> query)
         {

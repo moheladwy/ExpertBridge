@@ -1,8 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿
 
 using System.Security.Claims;
-using ExpertBridge.Api.Models;
+using ExpertBridge.Core.Entities;
 
 namespace ExpertBridge.Api.Middleware
 {
@@ -17,7 +16,7 @@ namespace ExpertBridge.Api.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // Allow initial creation for non email-verified users. 
+            // Allow initial creation for non email-verified users.
             if (context.Request.Path.HasValue
                 && context.Request.Path.Value
                     .EndsWith("/api/users", StringComparison.InvariantCultureIgnoreCase)

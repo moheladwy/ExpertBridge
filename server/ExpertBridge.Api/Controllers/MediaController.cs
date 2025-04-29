@@ -1,11 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities.Media.MediaGrants;
-using ExpertBridge.Api.Data.DatabaseContexts;
-using ExpertBridge.Api.Requests;
-using ExpertBridge.Api.Responses;
 using ExpertBridge.Api.Services;
+using ExpertBridge.Core.Entities.Media.MediaGrants;
+using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Responses;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

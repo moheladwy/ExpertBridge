@@ -5,9 +5,11 @@ on:
     branches-ignore: ["main"]
     paths:
         - "server/**"
+        - ".github/workflows/lint-dotnet.yml"
   pull_request:
     paths:
         - "server/**"
+        - ".github/workflows/lint-dotnet.yml"
 
 jobs:
   lint:

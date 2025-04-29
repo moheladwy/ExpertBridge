@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Chats;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Chats;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,11 +7,10 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class ChatValidatorTests
 {
     private readonly ChatEntityValidator _chatEntityValidator = new();
+
     private readonly Chat _validChat = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        CreatedAt = DateTime.UtcNow.AddDays(-1),
-        EndedAt = DateTime.MaxValue
+        Id = Guid.NewGuid().ToString(), CreatedAt = DateTime.UtcNow.AddDays(-1), EndedAt = DateTime.MaxValue
     };
 
     [Fact]

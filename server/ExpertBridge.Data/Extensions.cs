@@ -1,13 +1,12 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Api.Data.DatabaseContexts;
-using ExpertBridge.Api.Data.Interceptors;
+
+using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ExpertBridge.Api.Data;
+namespace ExpertBridge.Data;
 
 public static class Extensions
 {
@@ -25,7 +24,10 @@ public static class Extensions
         var connectionString = configuration.GetConnectionString("Postgresql")!;
         services.AddDbContext<ExpertBridgeDbContext>(options =>
         {
-            options.UseNpgsql(connectionString);
+            options.UseNpgsql(connectionString, o =>
+            {
+                o.UseVector();
+            });
             options.AddInterceptors(new SoftDeleteInterceptor());
         });
         return services;
