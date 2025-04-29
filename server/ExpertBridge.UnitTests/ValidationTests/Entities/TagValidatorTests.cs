@@ -8,7 +8,7 @@ public class TagValidatorTests
 {
     private readonly Tag _tag = new()
     {
-        Id = Guid.NewGuid().ToString(), Name = "Test Tag", Description = "Test Description"
+        Id = Guid.NewGuid().ToString(), EnglishName = "Test Tag", Description = "Test Description"
     };
 
     private readonly TagEntityValidator _tagValidator = new();
@@ -52,13 +52,13 @@ public class TagValidatorTests
     {
         // Arrange
         var tagWithNullName = _tag;
-        tagWithNullName.Name = null;
+        tagWithNullName.EnglishName = null;
 
         var tagWithEmptyName = _tag;
-        tagWithEmptyName.Name = string.Empty;
+        tagWithEmptyName.EnglishName = string.Empty;
 
         var tagWithLongName = _tag;
-        tagWithLongName.Name = new string('a', TagEntityConstraints.MaxNameLength + 1);
+        tagWithLongName.EnglishName = new string('a', TagEntityConstraints.MaxNameLength + 1);
 
         // Act
         var resultOfNullName = _tagValidator.TestValidate(tagWithNullName);
@@ -66,9 +66,9 @@ public class TagValidatorTests
         var resultOfLongName = _tagValidator.TestValidate(tagWithLongName);
 
         // Assert
-        resultOfNullName.ShouldHaveValidationErrorFor(x => x.Name);
-        resultOfEmptyName.ShouldHaveValidationErrorFor(x => x.Name);
-        resultOfLongName.ShouldHaveValidationErrorFor(x => x.Name);
+        resultOfNullName.ShouldHaveValidationErrorFor(x => x.EnglishName);
+        resultOfEmptyName.ShouldHaveValidationErrorFor(x => x.EnglishName);
+        resultOfLongName.ShouldHaveValidationErrorFor(x => x.EnglishName);
     }
 
     [Fact]
