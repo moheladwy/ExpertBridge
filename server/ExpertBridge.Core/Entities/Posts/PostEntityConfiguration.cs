@@ -1,0 +1,53 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace ExpertBridge.Api.Core.Entities.Posts;
+
+public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
+{
+    public void Configure(EntityTypeBuilder<Post> builder)
+    {
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id)
+            .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.Title)
+            .IsRequired()
+            .HasMaxLength(PostEntityConstraints.MaxTitleLength);
+
+        builder.HasIndex(x => x.Title);
+
+        builder.Property(x => x.Content)
+            .IsRequired()
+            .HasMaxLength(PostEntityConstraints.MaxContentLength);
+
+        builder.Property(x => x.CreatedAt)
+            .IsRequired()
+            .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.LastModified)
+            .IsRequired(false)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.IsDeleted)
+            .IsRequired();
+
+        // Configure one-to-many relationship
+        //builder.HasOne(p => p.Author)
+        //    .WithMany(p => p.Posts)
+        //    .HasForeignKey(p => p.AuthorId)
+        //    .IsRequired();
+
+        // Configure one-to-many relationship with PostMedia
+        builder.HasMany(p => p.Medias)
+            .WithOne(m => m.Post)
+            .HasForeignKey(pm => pm.PostId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
+        ;
+    }
+}
