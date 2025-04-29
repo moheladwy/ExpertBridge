@@ -1,14 +1,10 @@
 using ExpertBridge.Api.BackgroundServices;
+using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.HttpClients;
-using ExpertBridge.Api.Models;
-using ExpertBridge.Api.Requests.RegisterUser;
 using ExpertBridge.Api.Services;
-using ExpertBridge.Api.VectorSearch;
 using ExpertBridge.Core.Interfaces.Services;
 using ExpertBridge.Core.Requests.RegisterUser;
 using FluentValidation;
-using Refit;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -27,7 +23,9 @@ public static class Services
             .AddScoped<ICacheService, CacheService>()
             .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
-            .AddHostedService<S3CleaningBackgroundService>()
+            .AddHostedService<S3CleaningWorker>()
+            .AddHostedService<PostCreatedHandlerWorker>()
+            .AddScoped<TaggingService>()
             ;
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
     }

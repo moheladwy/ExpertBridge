@@ -13,9 +13,9 @@ public class TagEntityValidator : AbstractValidator<Tag>
             .NotEmpty().WithMessage("Id is required")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
-        RuleFor(x => x.Name)
-            .NotNull().WithMessage("Name is required")
-            .NotEmpty().WithMessage("Name is required")
+        RuleFor(x => x.EnglishName)
+            .NotNull().WithMessage("EnglishName is required")
+            .NotEmpty().WithMessage("EnglishName is required")
             .MaximumLength(TagEntityConstraints.MaxNameLength).WithMessage($"Name must be less than {TagEntityConstraints.MaxNameLength} characters");
 
         RuleFor(x => x.Description)

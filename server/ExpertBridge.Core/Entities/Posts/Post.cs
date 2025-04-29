@@ -1,7 +1,6 @@
 
 
 // using System.Numerics;
-using ExpertBridge.Api.Core.Entities;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.Media.PostMedia;

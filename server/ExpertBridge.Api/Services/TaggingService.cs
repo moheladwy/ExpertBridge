@@ -1,14 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.PostTags;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags;
-using ExpertBridge.Api.Core.Entities.Posts;
-using ExpertBridge.Api.Core.Entities.Tags;
-using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
 using ExpertBridge.Core.Entities.Tags;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Services
@@ -27,16 +24,17 @@ namespace ExpertBridge.Api.Services
             List<Tag> rawTags = [];
 
             tags.Tags.ForEach(async tag =>
-            {
+             {
                 var existingTag = await _dbContext.Tags
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(t => t.Name == tag.Tag);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.EnglishName == tag.EnglishName || t.ArabicName == tag.ArabicName);
 
                 if (existingTag == null)
                 {
                     existingTag = new Tag
                     {
-                        Name = tag.Tag,
+                        EnglishName = tag.EnglishName,
+                        ArabicName = tag.ArabicName,
                         Description = tag.Description
                     };
                     await _dbContext.Tags.AddAsync(existingTag);
@@ -48,7 +46,7 @@ namespace ExpertBridge.Api.Services
             var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId);
 
             await AddTagsToPostInternalAsync(post.Id, rawTags);
-            await AddTagsToUserProfileInternalAsync(authorId, rawTags);
+            await AddTagsToUserProfileInternalAsync(authorId, rawTags.Select(t => t.Id));
 
             post.Language = tags.Language;
             post.IsTagged = true;
@@ -79,18 +77,24 @@ namespace ExpertBridge.Api.Services
         /// This method should not be called from outside because it's just
         /// a step in a bigger Unit of Work. It does not commit the changes.
         /// </summary>
-        private async Task AddTagsToUserProfileInternalAsync(string profileId, IEnumerable<Tag> tags)
+        private async Task AddTagsToUserProfileInternalAsync(string profileId, IEnumerable<string> tagIds)
         {
-            await _dbContext.ProfileTags.AddRangeAsync(tags.Select(tag => new ProfileTag
+            await _dbContext.ProfileTags.AddRangeAsync(tagIds.Select(tag => new ProfileTag
             {
                 ProfileId = profileId,
-                Tag = tag
+                TagId = tag
             }));
         }
 
         public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags)
         {
-            await AddTagsToUserProfileInternalAsync(profileId, tags);
+            await AddTagsToUserProfileInternalAsync(profileId, tags.Select(t => t.Id));
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<string> tagIds)
+        {
+            await AddTagsToUserProfileInternalAsync(profileId, tagIds);
             await _dbContext.SaveChangesAsync();
         }
     }

@@ -2,13 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 
-using System.ComponentModel.Design.Serialization;
 using System.Threading.Channels;
-using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.HttpClients;
 using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Services;
+using ExpertBridge.Data.DatabaseContexts;
 
 namespace ExpertBridge.Api.BackgroundServices
 {
