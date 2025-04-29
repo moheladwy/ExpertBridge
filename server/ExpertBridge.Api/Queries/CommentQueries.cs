@@ -60,7 +60,7 @@ namespace ExpertBridge.Api.Queries
                 Downvotes = c.Votes.Count(v => !v.IsUpvote),
                 IsUpvoted = c.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
                 IsDownvoted = c.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
-                CreatedAt = c.CreatedAt,
+                CreatedAt = c.CreatedAt.Value,
                 Replies = c.Replies
                             .AsQueryable()
                             .OrderBy(c => c.CreatedAt)

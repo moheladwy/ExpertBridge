@@ -54,7 +54,7 @@ namespace ExpertBridge.Api.Queries
                 Title = p.Title,
                 Content = p.Content,
                 Author = p.Author.SelectAuthorResponseFromProfile(),
-                CreatedAt = p.CreatedAt,
+                CreatedAt = p.CreatedAt.Value,
                 Id = p.Id,
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),
