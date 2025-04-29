@@ -24,7 +24,7 @@ namespace ExpertBridge.Api.Extensions
             var categorizerSettings = config.Get<PostCategorizerSettings>();
 
             builder.Services.AddRefitClient<IPostCategroizerClient>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri(categorizerSettings?.Url ?? string.Empty));
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(categorizerSettings?.BaseUrl ?? string.Empty));
         }
     }
 }

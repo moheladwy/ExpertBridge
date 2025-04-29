@@ -9,6 +9,7 @@ namespace ExpertBridge.Api.HttpClients
 {
     public interface IPostCategroizerClient
     {
+        [Headers("Content-Type: application/json")]
         [Post("/categorize")]
         Task<ApiResponse<PostCategorizerResponse>> GetPostTagsAsync([Body] PostCategorizerRequest request);
     }

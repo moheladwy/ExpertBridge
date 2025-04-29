@@ -42,17 +42,16 @@ namespace ExpertBridge.Api.BackgroundServices
 
                         var response = await client.GetPostTagsAsync(new PostCategorizerRequest
                         {
-                            Post = $"{post.Title} {post.Content}",
+                            Title = post.Title,
+                            Content = post.Content,
                         });
 
                         if (!response.IsSuccessStatusCode || response.Content == null)
                         {
-                            throw new Exception($"Request to categorizer failed with status code: {response.StatusCode}");
+                            throw new Exception($"Request to categorizer failed with status code: {response.StatusCode}, {response.Error.Content}");
                         }
 
                         var tags = response.Content;
-
-                        var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
                         var taggingService = scope.ServiceProvider.GetRequiredService<TaggingService>();
 
                         await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, tags);

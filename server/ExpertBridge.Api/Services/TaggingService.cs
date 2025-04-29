@@ -23,8 +23,8 @@ namespace ExpertBridge.Api.Services
         {
             List<Tag> rawTags = [];
 
-            tags.Tags.ForEach(async tag =>
-             {
+            foreach (var tag in tags.Tags)
+            { 
                 var existingTag = await _dbContext.Tags
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.EnglishName == tag.EnglishName || t.ArabicName == tag.ArabicName);
@@ -41,7 +41,7 @@ namespace ExpertBridge.Api.Services
                 }
 
                 rawTags.Add(existingTag);
-            });
+            }
 
             var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId);
 

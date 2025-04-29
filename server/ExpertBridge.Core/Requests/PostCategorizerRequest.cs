@@ -5,6 +5,8 @@ namespace ExpertBridge.Api.Requests
 {
     public class PostCategorizerRequest
     {
-        public string Post { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public List<string> Tags { get; set; } = [];
     }
 }
