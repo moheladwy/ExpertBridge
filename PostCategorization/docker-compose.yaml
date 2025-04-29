@@ -12,5 +12,6 @@ services:
       - .env
     environment:
       - GROQ_API_KEY=${GROQ_API_KEY}
+      - FLASK_DEBUG=${FLASK_DEBUG:-0}
     volumes:
       - ./data:/app

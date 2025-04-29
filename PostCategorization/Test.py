@@ -1,9 +1,13 @@
 import requests
 import json
+from OuputFormat import CategorizationResponse, TranslateTagsResponse
+from pydantic import ValidationError
 
-BASE_URL = "https://categorizer.expertbridge.duckdns.org"
-CATEGORIZE_ENDOPOINT = BASE_URL + "/categorize"
+# BASE_URL = "https://categorizer.expertbridge.duckdns.org"
+BASE_URL = "http://127.0.0.1:5000"
+CATEGORIZE_ENDPOINT = BASE_URL + "/categorize"
 TRANSLATE_ENDPOINT = BASE_URL + "/translate-tags"
+
 
 def test_categorize_api():
     """Test the categorize API with an Arabic car problem post"""
@@ -18,16 +22,14 @@ def test_categorize_api():
 
     # Prepare the request payload according to InputFormat structure
     payload = {
-        "post": {
-            "title": post_title,
-            "content": post_content,
-            "tags": []  # Optional, can be empty
-        }
+        "title": post_title,
+        "content": post_content,
+        "tags": []  # Optional, can be empty
     }
 
     # Send POST request to the API
     try:
-        response = requests.post(CATEGORIZE_ENDOPOINT, json=payload)
+        response = requests.post(CATEGORIZE_ENDPOINT, json=payload)
 
         # Check if request was successful
         if response.status_code == 200:
@@ -39,15 +41,20 @@ def test_categorize_api():
             print(json.dumps(result, ensure_ascii=False, indent=2))
             print("```")
 
-            # Print validation based on CategorizationResponse format
-            print("\nValidation:")
-            print(f"Language detected: {result.get('language', 'Not found')}")
-            print(f"Number of tags: {len(result.get('tags', []))}")
-            print("Tags:")
-            for tag in result.get('tags', []):
-                print(
-                    f"- English: {tag.get('EnglishName')} | Arabic: {tag.get('ArabicName')}")
-                print(f"  Description: {tag.get('Description')}")
+            # Validate response against schema
+            try:
+                validated_response = CategorizationResponse.model_validate(
+                    result)
+                print("\nValidation successful!")
+                print(f"Language detected: {validated_response.language}")
+                print(f"Number of tags: {len(validated_response.tags)}")
+                print("Tags:")
+                for tag in validated_response.tags:
+                    print(
+                        f"- English: {tag.EnglishName} | Arabic: {tag.ArabicName}")
+                    print(f"  Description: {tag.Description}")
+            except ValidationError as ve:
+                print(f"Response validation failed: {ve}")
 
         else:
             print(f"Request failed with status code: {response.status_code}")
@@ -81,12 +88,18 @@ def test_translate_tags_api():
             print(json.dumps(result, ensure_ascii=False, indent=2))
             print("```")
 
-            # Print tags with translations and descriptions
-            print("\nTranslated Tags:")
-            for tag in result.get('tags', []):
-                print(
-                    f"- English: {tag.get('EnglishName')} | Arabic: {tag.get('ArabicName')}")
-                print(f"  Description: {tag.get('Description')}")
+            # Validate response against schema
+            try:
+                validated_response = TranslateTagsResponse.model_validate(
+                    result)
+                print("\nValidation successful!")
+                print("Translated Tags:")
+                for tag in validated_response.tags:
+                    print(
+                        f"- English: {tag.EnglishName} | Arabic: {tag.ArabicName}")
+                    print(f"  Description: {tag.Description}")
+            except ValidationError as ve:
+                print(f"Response validation failed: {ve}")
 
         else:
             print(f"Request failed with status code: {response.status_code}")
