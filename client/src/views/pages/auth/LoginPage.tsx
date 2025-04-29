@@ -19,6 +19,7 @@ import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
 import { z } from "zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import useSignOut from "@/lib/firebase/useSignOut";
+import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 
 /**
  * Zod schema for login form validation
@@ -42,17 +43,28 @@ type LoginFormData = z.infer<typeof loginSchema>;
  * Provides authentication functionality for users to sign in to the application.
  * Supports email/password login and Google OAuth sign-in.
  * Includes form validation, loading states, and error handling.
- */
+*/
 const LoginPage: React.FC = () => {
-  const [isLoggedIn] = useIsUserLoggedIn();
-  const navigate = useNavigate();
-  const [signOut] = useSignOut(auth);
+  // Form State Management
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    setFormData({ email: '', password: '' });
+  }, []);
 
   // Main component state
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [signInError, setSignInError] = useState<string>("");
+  const navigate = useNavigate();
 
+  const [isLoggedIn, , , , appUser] = useIsUserLoggedIn();
+  const [signOut] = useSignOut(auth);
   /**
    * Email/Password Login Hook
    * loginWithEmailAndPassword: Function to authenticate with email/password
@@ -83,25 +95,42 @@ const LoginPage: React.FC = () => {
     createUserSuccess,
   ] = useCreateUser(auth);
 
-  // Form State Management
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [signInError, setSignInError] = useState<string>("");
+  const au = useCurrentAuthUser();
+  useEffect(() => {
+    if (appUser && au) {
+      navigate('/home');
+    }
+  }, []);
 
   /**
    * Navigate to home page on successful login
    */
   useEffect(() => {
     if (success) {
-      if (loggedInUser || authUser) {
-        if (!loggedInUser?.user.emailVerified) return;
-        navigate("/home");
-      }
+      // console.log('success');
+      // console.log(authUser);
+      // console.log(loggedInUser);
+      const user = loggedInUser || authUser;
+
+      // console.log('user: ', user);
+      if (!user) return;
+      if (!user.user?.emailVerified) return;
+
+      navigate("/home");
+      setFormData({ email: '', password: '' });
+      setSuccess(false);
     }
-  }, [success, navigate, authUser]);
+  }, [success, navigate, authUser, loggedInUser]);
+
+  /**
+   * Update success state when authentication succeeds through any method
+  */
+  useEffect(() => {
+    setSuccess(isLoggedIn || loggedInUser !== null || authUser !== null);
+    if (isLoggedIn || loggedInUser != null || authUser !== null) {
+      toast.success("Login successful!");
+    }
+  }, [isLoggedIn, loggedInUser, createUserSuccess, authUser]);
 
   /**
    * Handle authentication errors and display appropriate messages
@@ -121,14 +150,11 @@ const LoginPage: React.FC = () => {
   }, [error, createError, createErrorMessage, signOut]);
 
   /**
-   * Update success state when authentication succeeds through any method
+   * Update overall loading state based on individual loading states
    */
   useEffect(() => {
-    setSuccess(isLoggedIn || loggedInUser !== null || createUserSuccess || authUser !== null);
-    if (isLoggedIn || loggedInUser != null || createUserSuccess) {
-      toast.success("Login successful!");
-    }
-  }, [isLoggedIn, loggedInUser, createUserSuccess]);
+    setLoading(createLoading || loginLoading);
+  }, [createLoading, loginLoading]);
 
   /**
    * Form validation function using Zod schema for the login form in the LoginPage.
@@ -153,10 +179,10 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  // Debug logging for loading state
-  const __ = loading
-    ? console.log("LoginPage: loading...")
-    : console.log("LoginPage: not loading");
+  // // Debug logging for loading state
+  // const __ = loading
+  //   ? console.log("LoginPage: loading...")
+  //   : console.log("LoginPage: not loading");
 
   /**
    * Handles form input changes and clears any previous sign-in errors
@@ -190,13 +216,6 @@ const LoginPage: React.FC = () => {
   const handleGoogleSignIn = async () => {
     await signInWithGoogle();
   };
-
-  /**
-   * Update overall loading state based on individual loading states
-   */
-  useEffect(() => {
-    setLoading(createLoading || loginLoading);
-  }, [createLoading, loginLoading]);
 
   /**
    * Toggle password visibility
