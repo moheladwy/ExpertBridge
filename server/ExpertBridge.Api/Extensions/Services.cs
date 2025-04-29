@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.Application.Interfaces.Repositories;
+using ExpertBridge.Api.Application.Interfaces.Services;
 using ExpertBridge.Api.Application.Repositories.Comments;
 using ExpertBridge.Api.Application.Repositories.Posts;
 using ExpertBridge.Api.Application.Repositories.Profiles;
@@ -13,8 +15,6 @@ using ExpertBridge.Api.Core.Entities.Posts;
 using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Entities.Tags;
 using ExpertBridge.Api.Core.Entities.Users;
-using ExpertBridge.Api.Core.Interfaces.Repositories;
-using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Requests.RegisterUser;
 using ExpertBridge.Api.Services;

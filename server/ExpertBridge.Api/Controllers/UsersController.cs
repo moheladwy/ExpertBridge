@@ -2,10 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Security.Claims;
-using ExpertBridge.Api.Core;
 using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Entities.Users;
-using ExpertBridge.Api.Core.Interfaces.Services;
 using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Requests.RegisterUser;
