@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.JobPostings;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,6 +7,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class JobPostingValidatorTests
 {
     private readonly JobPostingEntityValidator _jobPostingEntityValidator = new();
+
     private readonly JobPosting _validJobPosting = new()
     {
         Id = Guid.NewGuid().ToString(),
@@ -162,7 +160,8 @@ public class JobPostingValidatorTests
         jobPostingWithEmptyDescription.Description = string.Empty;
 
         var jobPostingWithLongDescription = _validJobPosting;
-        jobPostingWithLongDescription.Description = new string('a', JobPostingEntityConstraints.MaxDescriptionLength + 1);
+        jobPostingWithLongDescription.Description =
+            new string('a', JobPostingEntityConstraints.MaxDescriptionLength + 1);
 
         // Act
         var resultOfNullDescription = _jobPostingEntityValidator.TestValidate(jobPostingWithNullDescription);

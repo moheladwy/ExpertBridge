@@ -1,9 +1,6 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Users;
-using ExpertBridge.Api.Requests.UpdateUserRequest;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Users;
+using ExpertBridge.Core.Requests.UpdateUserRequest;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.DTOs;
@@ -11,6 +8,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.DTOs;
 public class UpdateUserRequestValidatorTests
 {
     private readonly UpdateUserRequestValidator _updateUserRequestValidator = new();
+
     private readonly UpdateUserRequest _validUpdateUserRequest = new()
     {
         ProviderId = Guid.NewGuid().ToString(),
@@ -69,11 +67,13 @@ public class UpdateUserRequestValidatorTests
         updateUserRequestWithInvalidPhoneNumber.PhoneNumber = "test.test";
 
         var updateUserRequestWithLongPhoneNumber = _validUpdateUserRequest;
-        updateUserRequestWithLongPhoneNumber.PhoneNumber = new string('1', UserEntityConstraints.MaxPhoneNumberLength + 1);
+        updateUserRequestWithLongPhoneNumber.PhoneNumber =
+            new string('1', UserEntityConstraints.MaxPhoneNumberLength + 1);
 
         // Act
         var resultOfEmptyPhoneNumber = _updateUserRequestValidator.TestValidate(updateUserRequestWithEmptyPhoneNumber);
-        var resultOfInvalidPhoneNumber = _updateUserRequestValidator.TestValidate(updateUserRequestWithInvalidPhoneNumber);
+        var resultOfInvalidPhoneNumber =
+            _updateUserRequestValidator.TestValidate(updateUserRequestWithInvalidPhoneNumber);
         var resultOfLongPhoneNumber = _updateUserRequestValidator.TestValidate(updateUserRequestWithLongPhoneNumber);
 
         // Assert
@@ -98,7 +98,8 @@ public class UpdateUserRequestValidatorTests
         // Act
         var resultOfNullProviderId = _updateUserRequestValidator.TestValidate(updateUserRequestWithNullProviderId);
         var resultOfEmptyProviderId = _updateUserRequestValidator.TestValidate(updateUserRequestWithEmptyProviderId);
-        var resultOfInvalidProviderId = _updateUserRequestValidator.TestValidate(updateUserRequestWithInvalidProviderId);
+        var resultOfInvalidProviderId =
+            _updateUserRequestValidator.TestValidate(updateUserRequestWithInvalidProviderId);
 
         // Assert
         resultOfNullProviderId.ShouldHaveValidationErrorFor(x => x.ProviderId);

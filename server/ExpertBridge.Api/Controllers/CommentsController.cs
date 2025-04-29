@@ -1,16 +1,13 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities.Comments;
-using ExpertBridge.Api.Core.Entities.CommentVotes;
-using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
-using ExpertBridge.Api.Requests.CreateComment;
-using ExpertBridge.Api.Requests.EditComment;
-using ExpertBridge.Api.Responses;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Comments;
+using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Requests.CreateComment;
+using ExpertBridge.Core.Requests.EditComment;
+using ExpertBridge.Core.Responses;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -64,7 +61,7 @@ public class CommentsController(
         {
             AuthorId = user.Profile.Id,
             Author = profile,
-            Content = request.Content,
+            Content = request.Content.Trim(),
             ParentCommentId = request.ParentCommentId,
             ParentComment = parentComment,
             Post = post,
@@ -284,7 +281,7 @@ public class CommentsController(
         // Update the comment content if provided
         if (!string.IsNullOrEmpty(request.Content))
         {
-            comment.Content = request.Content;
+            comment.Content = request.Content.Trim();
             await _dbContext.SaveChangesAsync();
         }
 

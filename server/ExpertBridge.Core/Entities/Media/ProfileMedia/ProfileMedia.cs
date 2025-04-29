@@ -1,9 +1,6 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+using ExpertBridge.Core.Entities.Profiles;
 
-using ExpertBridge.Api.Core.Entities.Profiles;
-
-namespace ExpertBridge.Api.Core.Entities.Media.ProfileMedia;
+namespace ExpertBridge.Core.Entities.Media.ProfileMedia;
 
 public class ProfileMedia : MediaObject
 {

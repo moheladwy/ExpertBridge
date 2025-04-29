@@ -1,0 +1,16 @@
+services:
+  post-categorization:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: post-categorization:dev
+    container_name: post-categorization
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    volumes:
+      - ./data:/app

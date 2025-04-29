@@ -1,9 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+
 
 using FluentValidation;
 
-namespace ExpertBridge.Api.Core.Entities.Chats;
+namespace ExpertBridge.Core.Entities.Chats;
 
 public class ChatEntityValidator : AbstractValidator<Chat>
 {

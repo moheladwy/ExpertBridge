@@ -25,6 +25,7 @@ import { Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 
 const NavBar = () => {
 	const navigate = useNavigate();
@@ -35,7 +36,7 @@ const NavBar = () => {
 	const handleSignOut = useCallback(async () => {
 		await signOut();
 		console.log("Signed Out");
-		navigate("/login"); // Redirect to login page after signing out
+		navigate("/login", { replace: true }); // Redirect to login page after signing out
 
 	}, [signOut, navigate]);
 

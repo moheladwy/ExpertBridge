@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.JobCategories;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.JobCategories;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,11 +7,10 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class JobCategoryValidatorTests
 {
     private readonly JobCategoryEntityValidator _jobCategoryEntityValidator = new();
+
     private readonly JobCategory _validJobCategory = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Name = "Job Category Name",
-        Description = "Job Category Description"
+        Id = Guid.NewGuid().ToString(), Name = "Job Category Name", Description = "Job Category Description"
     };
 
     [Fact]
@@ -86,7 +82,8 @@ public class JobCategoryValidatorTests
         jobCategoryWithEmptyDescription.Description = string.Empty;
 
         var jobCategoryWithLongDescription = _validJobCategory;
-        jobCategoryWithLongDescription.Description = new string('a', JobCategoryEntityConstraints.MaxDescriptionLength + 1);
+        jobCategoryWithLongDescription.Description =
+            new string('a', JobCategoryEntityConstraints.MaxDescriptionLength + 1);
 
         // Act
         var resultOfNullDescription = _jobCategoryEntityValidator.TestValidate(jobCategoryWithNullDescription);

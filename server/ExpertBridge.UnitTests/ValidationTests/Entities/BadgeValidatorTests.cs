@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Badges;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Badges;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,11 +7,10 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class BadgeValidatorTests
 {
     private readonly BadgeEntityValidator _badgeEntityValidator = new();
+
     private readonly Badge _validBadge = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Name = "Badge Name",
-        Description = "Badge Description"
+        Id = Guid.NewGuid().ToString(), Name = "Badge Name", Description = "Badge Description"
     };
 
     [Fact]

@@ -23,4 +23,5 @@
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
   </ItemGroup>
 
-</Project>
+</Project>      
+

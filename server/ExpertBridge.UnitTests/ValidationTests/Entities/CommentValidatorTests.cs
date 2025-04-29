@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Comments;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Comments;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,6 +7,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class CommentValidatorTests
 {
     private readonly CommentEntityValidator _commentEntityValidator = new();
+
     private readonly Comment _validComment = new()
     {
         Id = Guid.NewGuid().ToString(),
@@ -17,7 +15,7 @@ public class CommentValidatorTests
         Content = "Comment Content",
         CreatedAt = DateTime.UtcNow.AddDays(-1),
         LastModified = DateTime.UtcNow.AddMinutes(-4),
-        PostId = Guid.NewGuid().ToString(),
+        PostId = Guid.NewGuid().ToString()
     };
 
     [Fact]
@@ -134,8 +132,10 @@ public class CommentValidatorTests
         commentWithLastModifiedLessThanCreatedAt.LastModified = _validComment.CreatedAt.Value.AddDays(-1);
 
         // Act
-        var resultOfLastModifiedGreaterThanNow = _commentEntityValidator.TestValidate(commentWithLastModifiedGreaterThanNow);
-        var resultOfLastModifiedLessThanCreatedAt = _commentEntityValidator.TestValidate(commentWithLastModifiedLessThanCreatedAt);
+        var resultOfLastModifiedGreaterThanNow =
+            _commentEntityValidator.TestValidate(commentWithLastModifiedGreaterThanNow);
+        var resultOfLastModifiedLessThanCreatedAt =
+            _commentEntityValidator.TestValidate(commentWithLastModifiedLessThanCreatedAt);
 
         // Assert
         resultOfLastModifiedGreaterThanNow.ShouldHaveValidationErrorFor(x => x.LastModified);

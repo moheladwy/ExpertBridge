@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.PostVotes;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.PostVotes;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,6 +7,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class PostVoteValidatorTests
 {
     private readonly PostVoteEntityValidator _postVoteEntityValidator = new();
+
     private readonly PostVote _validPostVote = new()
     {
         Id = Guid.NewGuid().ToString(),

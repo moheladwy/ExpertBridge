@@ -1,16 +1,15 @@
 using System.Security.Claims;
-using ExpertBridge.Api.Core.Entities.Media.PostMedia;
-using ExpertBridge.Api.Core.Entities.Posts;
-using ExpertBridge.Api.Core.Entities.PostVotes;
-using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
-using ExpertBridge.Api.Requests.CreatePost;
-using ExpertBridge.Api.Requests.EditPost;
-using ExpertBridge.Api.Responses;
-using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Media.PostMedia;
+using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core.Entities.PostVotes;
+using ExpertBridge.Core.Requests.CreatePost;
+using ExpertBridge.Core.Requests.EditPost;
+using ExpertBridge.Core.Responses;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -151,8 +150,8 @@ public class PostsController : ControllerBase
 
         var post = new Post
         {
-            Title = request.Title,
-            Content = request.Content,
+            Title = request.Title.Trim(),
+            Content = request.Content.Trim(),
             AuthorId = userProfileId
         };
 
@@ -166,7 +165,7 @@ public class PostsController : ControllerBase
                 postMedia.Add(new PostMedia
                 {
                     Post = post,
-                    Name = post.Title,
+                    Name = post.Title.Trim(),
                     Type = media.Type,
                     Key = media.Key,
                 });
@@ -404,12 +403,12 @@ public class PostsController : ControllerBase
         // Update the post with the new values and save changes to the database.
         if (!string.IsNullOrEmpty(request.Title))
         {
-            post.Title = request.Title;
+            post.Title = request.Title.Trim();
         }
 
         if (!string.IsNullOrEmpty(request.Content))
         {
-            post.Content = request.Content;
+            post.Content = request.Content.Trim();
         }
 
         await _dbContext.SaveChangesAsync();

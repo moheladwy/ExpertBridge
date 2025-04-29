@@ -1,14 +1,11 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
 using System.Security.Claims;
-using ExpertBridge.Api.Core.Entities.Profiles;
-using ExpertBridge.Api.Core.Entities.Users;
-using ExpertBridge.Api.Data.DatabaseContexts;
-using ExpertBridge.Api.Models;
-using ExpertBridge.Api.Requests.RegisterUser;
-using ExpertBridge.Api.Requests.UpdateUserRequest;
-using ExpertBridge.Api.Responses;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Entities.Users;
+using ExpertBridge.Core.Requests.RegisterUser;
+using ExpertBridge.Core.Requests.UpdateUserRequest;
+using ExpertBridge.Core.Responses;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

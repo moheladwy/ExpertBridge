@@ -1,35 +1,17 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Data.Interceptors;
+﻿using ExpertBridge.Core.Entities;
+using ExpertBridge.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.UnitTests;
 
 public class SoftDeleteInterceptorTests
 {
-    private class TestEntity : ISoftDeletable
-    {
-        public int Id { get; set; }
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedAt { get; set; }
-    }
-
-    private class TestDbContext : DbContext
-    {
-        public TestDbContext(DbContextOptions<TestDbContext> options)
-            : base(options) { }
-
-        public DbSet<TestEntity> TestEntities { get; set; } = null!;
-    }
-
     [Fact]
     public async Task SavingChanges_WhenEntityIsDeleted_ShouldSoftDelete()
     {
         // Arrange
         var options = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb_" + Guid.NewGuid())
+            .UseInMemoryDatabase("TestDb_" + Guid.NewGuid())
             .AddInterceptors(new SoftDeleteInterceptor())
             .Options;
 
@@ -56,7 +38,7 @@ public class SoftDeleteInterceptorTests
     {
         // Arrange
         var options = new DbContextOptionsBuilder<TestDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb_" + Guid.NewGuid())
+            .UseInMemoryDatabase("TestDb_" + Guid.NewGuid())
             .AddInterceptors(new SoftDeleteInterceptor())
             .Options;
 
@@ -76,5 +58,22 @@ public class SoftDeleteInterceptorTests
         Assert.True(softDeletedEntity.IsDeleted);
         Assert.NotNull(softDeletedEntity.DeletedAt);
         Assert.True(softDeletedEntity.DeletedAt <= DateTime.UtcNow);
+    }
+
+    private class TestEntity : ISoftDeletable
+    {
+        public int Id { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
+    }
+
+    private class TestDbContext : DbContext
+    {
+        public TestDbContext(DbContextOptions<TestDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<TestEntity> TestEntities { get; set; } = null!;
     }
 }

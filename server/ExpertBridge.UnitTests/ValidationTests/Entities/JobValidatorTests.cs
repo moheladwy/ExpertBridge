@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Jobs;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Jobs;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,6 +7,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class JobValidatorTests
 {
     private readonly JobEntityValidator _jobEntityValidator = new();
+
     private readonly Job _validJob = new()
     {
         Id = Guid.NewGuid().ToString(),
@@ -96,7 +94,8 @@ public class JobValidatorTests
 
         // Act
         var resultOfEndedAtLessThanStartedAt = _jobEntityValidator.TestValidate(jobWithEndedAtLessThanStartedAt);
-        var resultOfEndedAtGreaterThanCurrentDate = _jobEntityValidator.TestValidate(jobWithEndedAtGreaterThanCurrentDate);
+        var resultOfEndedAtGreaterThanCurrentDate =
+            _jobEntityValidator.TestValidate(jobWithEndedAtGreaterThanCurrentDate);
 
         // Assert
         resultOfEndedAtLessThanStartedAt.ShouldHaveValidationErrorFor(x => x.EndedAt);

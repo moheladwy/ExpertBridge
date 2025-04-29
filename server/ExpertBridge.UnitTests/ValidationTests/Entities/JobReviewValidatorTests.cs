@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Jobs.JobReviews;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.JobReviews;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,6 +7,7 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class JobReviewValidatorTests
 {
     private readonly JobReviewEntityValidator _jobReviewEntityValidator = new();
+
     private readonly JobReview _validJobReview = new()
     {
         Id = Guid.NewGuid().ToString(),
@@ -112,8 +110,10 @@ public class JobReviewValidatorTests
         jobReviewWithCreatedAtGreaterThanLastModified.LastModified = DateTime.UtcNow;
 
         // Act
-        var resultOfCreatedAtGreaterThanNow = _jobReviewEntityValidator.TestValidate(jobReviewWithCreatedAtGreaterThanNow);
-        var resultOfCreatedAtGreaterThanLastModified = _jobReviewEntityValidator.TestValidate(jobReviewWithCreatedAtGreaterThanLastModified);
+        var resultOfCreatedAtGreaterThanNow =
+            _jobReviewEntityValidator.TestValidate(jobReviewWithCreatedAtGreaterThanNow);
+        var resultOfCreatedAtGreaterThanLastModified =
+            _jobReviewEntityValidator.TestValidate(jobReviewWithCreatedAtGreaterThanLastModified);
 
         // Assert
         resultOfCreatedAtGreaterThanNow.ShouldHaveValidationErrorFor(x => x.CreatedAt);
@@ -131,8 +131,10 @@ public class JobReviewValidatorTests
         jobReviewWithLastModifiedLessThanCreatedAt.LastModified = _validJobReview.CreatedAt.Value.AddDays(1);
 
         // Act
-        var resultOfLastModifiedGreaterThanNow = _jobReviewEntityValidator.TestValidate(jobReviewWithLastModifiedGreaterThanNow);
-        var resultOfLastModifiedLessThanCreatedAt = _jobReviewEntityValidator.TestValidate(jobReviewWithLastModifiedLessThanCreatedAt);
+        var resultOfLastModifiedGreaterThanNow =
+            _jobReviewEntityValidator.TestValidate(jobReviewWithLastModifiedGreaterThanNow);
+        var resultOfLastModifiedLessThanCreatedAt =
+            _jobReviewEntityValidator.TestValidate(jobReviewWithLastModifiedLessThanCreatedAt);
 
         // Assert
         resultOfLastModifiedGreaterThanNow.ShouldHaveValidationErrorFor(x => x.LastModified);
@@ -210,5 +212,4 @@ public class JobReviewValidatorTests
         resultOfEmptyJobId.ShouldHaveValidationErrorFor(x => x.JobId);
         resultOfLongJobId.ShouldHaveValidationErrorFor(x => x.JobId);
     }
-
 }

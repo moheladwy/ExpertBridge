@@ -17,6 +17,17 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/views/components/custom/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/views/components/ui/alert-dialog"
 import { Box, Modal } from "@mui/material";
 import toast from "react-hot-toast";
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +42,7 @@ import { Edit as EditIcon } from "lucide-react";
 import EditPostModal from "./EditPostModal";
 
 
+
 interface PostCardProps {
 	postId: string;
 	currUserId?: string | null;
@@ -43,6 +55,8 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [deletePost, deleteResult] = useDeletePostMutation();
+  // conferm delete dialog
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	useEffect(() => {
 		if (deleteResult.isSuccess) {
@@ -172,6 +186,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 								</DropdownMenuItem>
 								{post.author.id === currentUserId && (
 								  <>
+                    {/* Edit */}
 										<DropdownMenuItem>
                       <div
                         className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
@@ -181,21 +196,44 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
                         <h6>Edit post</h6>
                       </div>
                     </DropdownMenuItem>
-         						<DropdownMenuItem>
-  										<div
-  											className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
-  											onClick={handleDeletePost}
-  										>
-  											<DeleteIcon className="w-5 text-red-700" />
-  											<h6 className="text-red-700">
-  												Delete post
-  											</h6>
-  										</div>
-  									</DropdownMenuItem>
+                    {/* Delete */}
+                    <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+                      <div
+                        className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+                        >
+                        <DeleteIcon className="w-5 text-red-700" />
+                        <h6 className="text-red-700">
+                          Delete post
+                        </h6>
+                      </div>
+                    </DropdownMenuItem>
 								  </> 
 								)}
 							</DropdownMenuContent>
 						</DropdownMenu>
+
+            {/* Delete confermation dialog */}
+            <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your question.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      handleDeletePost();
+                      setShowDeleteDialog(false);
+                    }}
+                    className="bg-red-700 hover:bg-red-900">
+                      Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 					</div>
 				</div>
 

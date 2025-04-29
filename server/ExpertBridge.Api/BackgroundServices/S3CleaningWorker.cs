@@ -1,14 +1,8 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.S3.Model;
-using ExpertBridge.Api.Core.Entities.Media;
-using ExpertBridge.Api.Core.Entities.Media.PostMedia;
-using ExpertBridge.Api.Data.DatabaseContexts;
-using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Entities.Media;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -32,7 +26,7 @@ namespace ExpertBridge.Api.BackgroundServices
             var period = 60 * 60 * 24 * 2; // 2 days;
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
-            while (!stoppingToken.IsCancellationRequested 
+            while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
                 _logger.LogInformation("S3 Cleaning Service Started...");
