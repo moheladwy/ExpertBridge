@@ -1,19 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Api.Settings.Serilog;
-using ExpertBridge.Api.Data;
+
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
+using ExpertBridge.Api.Settings;
+using ExpertBridge.Api.Settings.Serilog;
+using ExpertBridge.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Serilog;
-using System.Security.Claims;
-using ExpertBridge.Api.Models;
-using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.AI;
 using Microsoft.Net.Http.Headers;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +49,6 @@ builder.Services.Configure<ExpertBridgeRateLimitSettings>(
     builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
 
 builder.Services.AddDatabase(builder.Configuration);
-
 builder.AddSeqEndpoint(connectionName: "Seq");
 builder.AddRedisDistributedCache(connectionName: "Redis");
 builder.AddS3ObjectService();
@@ -85,8 +81,13 @@ builder.Services.AddControllers(options =>
         });
 });
 
+builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(
+    serviceProvider => new OllamaEmbeddingGenerator(
+        builder.Configuration["Ollama:Url"]!,
+        builder.Configuration["Ollama:ModelId"]!)
+);
+
 builder.Services.AddServices();
-builder.Services.AddRepositories();
 
 var rateLimitOptions = new ExpertBridgeRateLimitSettings();
 builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName)
@@ -124,15 +125,14 @@ app.UseMiddleware<EmailVerifiedMiddleware>();
 
 // app.UseResponseCompression();
 
-// Response caching: 
+// Response caching:
 app.UseResponseCaching();
 app.Use(async (context, next) =>
 {
     context.Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
     {
-        Private = true, // Sotre on browser cache only. No storing on proxy cahches.
+        Private = true, // Store on browser cache only. No storing on proxy caches.
     };
-
     await next();
 });
 

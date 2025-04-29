@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Skills;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Skills;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,11 +7,10 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class SkillValidatorTests
 {
     private readonly SkillEntityValidator _skillEntityValidator = new();
+
     private readonly Skill _validSkill = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Name = "Test Skill",
-        Description = "Test Description"
+        Id = Guid.NewGuid().ToString(), Name = "Test Skill", Description = "Test Description"
     };
 
     [Fact]

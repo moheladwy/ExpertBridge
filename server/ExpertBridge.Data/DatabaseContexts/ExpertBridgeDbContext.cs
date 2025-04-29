@@ -1,40 +1,37 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
 using System.Linq.Expressions;
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Areas;
-using ExpertBridge.Api.Core.Entities.Badges;
-using ExpertBridge.Api.Core.Entities.Chats;
-using ExpertBridge.Api.Core.Entities.Comments;
-using ExpertBridge.Api.Core.Entities.CommentVotes;
-using ExpertBridge.Api.Core.Entities.JobCategories;
-using ExpertBridge.Api.Core.Entities.JobPostings;
-using ExpertBridge.Api.Core.Entities.Jobs;
-using ExpertBridge.Api.Core.Entities.Jobs.JobReviews;
-using ExpertBridge.Api.Core.Entities.JobStatuses;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ChatParticipants;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.PostTags;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileBadges;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileSkills;
-using ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags;
-using ExpertBridge.Api.Core.Entities.Media.ChatMedia;
-using ExpertBridge.Api.Core.Entities.Media.CommentMedia;
-using ExpertBridge.Api.Core.Entities.Media.JobPostingMedia;
-using ExpertBridge.Api.Core.Entities.Media.MediaGrants;
-using ExpertBridge.Api.Core.Entities.Media.PostMedia;
-using ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia;
-using ExpertBridge.Api.Core.Entities.Media.ProfileMedia;
-using ExpertBridge.Api.Core.Entities.Posts;
-using ExpertBridge.Api.Core.Entities.PostVotes;
-using ExpertBridge.Api.Core.Entities.ProfileExperiences;
-using ExpertBridge.Api.Core.Entities.Profiles;
-using ExpertBridge.Api.Core.Entities.Skills;
-using ExpertBridge.Api.Core.Entities.Tags;
-using ExpertBridge.Api.Core.Entities.Users;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Areas;
+using ExpertBridge.Core.Entities.Badges;
+using ExpertBridge.Core.Entities.Chats;
+using ExpertBridge.Core.Entities.Comments;
+using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.JobCategories;
+using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities.JobReviews;
+using ExpertBridge.Core.Entities.Jobs;
+using ExpertBridge.Core.Entities.JobStatuses;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
+using ExpertBridge.Core.Entities.Media.ChatMedia;
+using ExpertBridge.Core.Entities.Media.CommentMedia;
+using ExpertBridge.Core.Entities.Media.JobPostingMedia;
+using ExpertBridge.Core.Entities.Media.MediaGrants;
+using ExpertBridge.Core.Entities.Media.PostMedia;
+using ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
+using ExpertBridge.Core.Entities.Media.ProfileMedia;
+using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core.Entities.PostVotes;
+using ExpertBridge.Core.Entities.ProfileExperiences;
+using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Entities.Skills;
+using ExpertBridge.Core.Entities.Tags;
+using ExpertBridge.Core.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Data.DatabaseContexts;
+namespace ExpertBridge.Data.DatabaseContexts;
 
 public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> options) : DbContext(options)
 {
@@ -78,6 +75,7 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.HasPostgresExtension("vector");
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -90,8 +88,6 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
                 entityType.SetQueryFilter(lambda);
             }
         }
-
-
 
         modelBuilder.ApplyConfiguration(new TagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobEntityConfiguration());

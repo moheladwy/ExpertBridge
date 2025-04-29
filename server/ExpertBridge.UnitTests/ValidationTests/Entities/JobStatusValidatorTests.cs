@@ -1,8 +1,5 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.JobStatuses;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.JobStatuses;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
@@ -10,10 +7,10 @@ namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 public class JobStatusValidatorTests
 {
     private readonly JobStatusEntityValidator _jobStatusEntityValidator = new();
+
     private readonly JobStatus _validJobStatus = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Status = JobStatusEnum.Completed
+        Id = Guid.NewGuid().ToString(), Status = JobStatusEnum.Completed
     };
 
     [Fact]

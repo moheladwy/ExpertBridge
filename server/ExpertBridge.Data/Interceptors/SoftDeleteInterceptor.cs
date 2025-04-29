@@ -1,11 +1,10 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿
 
-using ExpertBridge.Api.Core.Entities;
+using ExpertBridge.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace ExpertBridge.Api.Data.Interceptors;
+namespace ExpertBridge.Data.Interceptors;
 
 public class SoftDeleteInterceptor : SaveChangesInterceptor
 {

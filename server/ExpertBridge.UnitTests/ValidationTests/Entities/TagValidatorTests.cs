@@ -1,21 +1,17 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities;
-using ExpertBridge.Api.Core.Entities.Tags;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Tags;
 using FluentValidation.TestHelper;
 
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class TagValidatorTests
 {
-    private readonly TagEntityValidator _tagValidator = new();
     private readonly Tag _tag = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Name = "Test Tag",
-        Description = "Test Description"
+        Id = Guid.NewGuid().ToString(), Name = "Test Tag", Description = "Test Description"
     };
+
+    private readonly TagEntityValidator _tagValidator = new();
 
     [Fact]
     public void ValidateTag_WhenTagIsValid_ShouldReturnTrue()

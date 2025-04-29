@@ -1,9 +1,7 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+using ExpertBridge.Core.Entities.Jobs;
+using ExpertBridge.Core.Entities.Profiles;
 
-using ExpertBridge.Api.Core.Entities.Profiles;
-
-namespace ExpertBridge.Api.Core.Entities.Jobs.JobReviews;
+namespace ExpertBridge.Core.Entities.JobReviews;
 
 public class JobReview
 {

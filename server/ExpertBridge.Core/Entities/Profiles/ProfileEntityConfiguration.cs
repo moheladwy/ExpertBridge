@@ -1,11 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Core.Entities.Media;
+using ExpertBridge.Core.Entities.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ExpertBridge.Api.Core.Entities.Profiles;
+namespace ExpertBridge.Core.Entities.Profiles;
 
 public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
 {
