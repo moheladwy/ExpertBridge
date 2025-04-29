@@ -36,6 +36,7 @@ text_categorizer = TextCategorizer(
 @app.route("/categorize", methods=["POST"])
 def categorize():
     try:
+        print(request.get_json())
         # Validate and parse the request body
         request_data = CategorizeRequest.model_validate(
             request.get_json(), strict=True)

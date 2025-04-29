@@ -1,5 +1,7 @@
 using System.Security.Claims;
+using System.Threading.Channels;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
@@ -132,7 +134,9 @@ public class PostsController : ControllerBase
     ///     Thrown when the request is null.
     /// </exception>
     [HttpPost]
-    public async Task<PostResponse> Create([FromBody] CreatePostRequest request)
+    public async Task<PostResponse> Create(
+        [FromBody] CreatePostRequest request,
+        [FromServices] Channel<PostCreatedMessage> _channel)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         var user = await _authHelper.GetCurrentUserAsync();
@@ -190,6 +194,13 @@ public class PostsController : ControllerBase
         try
         {
             await _dbContext.SaveChangesAsync();
+            await _channel.Writer.WriteAsync(new PostCreatedMessage
+            {
+               AuthorId = userProfileId,
+               Content = post.Content,
+               PostId = post.Id,
+               Title = post.Title,
+            });
         }
         catch (Exception ex)
         {
@@ -258,7 +269,6 @@ public class PostsController : ControllerBase
         {
             // If the vote exists but is a downvote, update it to an upvote
             vote.IsUpvote = true;
-            vote.LastModified = DateTime.UtcNow;
         }
         else
         {
@@ -340,7 +350,6 @@ public class PostsController : ControllerBase
         {
             // If the vote exists but is a upvote, update it to a downvote
             vote.IsUpvote = false;
-            vote.LastModified = DateTime.UtcNow;
         }
         else
         {
@@ -413,7 +422,6 @@ public class PostsController : ControllerBase
             post.Content = request.Content.Trim();
         }
 
-        post.LastModified = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync();
 
         // Return the updated post

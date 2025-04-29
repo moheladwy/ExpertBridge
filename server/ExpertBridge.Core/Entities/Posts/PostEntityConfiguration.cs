@@ -49,7 +49,7 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired(false);
         ;
 
-        builder.Property(p => p.Embeddings)
+        builder.Property(p => p.Embedding)
             .HasColumnType("vector(1024)")
             .IsRequired(false);
     }

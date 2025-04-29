@@ -129,7 +129,7 @@ public class CommentValidatorTests
         commentWithLastModifiedGreaterThanNow.LastModified = DateTime.UtcNow.AddDays(1);
 
         var commentWithLastModifiedLessThanCreatedAt = _validComment;
-        commentWithLastModifiedLessThanCreatedAt.LastModified = _validComment.CreatedAt.AddDays(-1);
+        commentWithLastModifiedLessThanCreatedAt.LastModified = _validComment.CreatedAt.Value.AddDays(-1);
 
         // Act
         var resultOfLastModifiedGreaterThanNow =

@@ -134,7 +134,7 @@ public class PostValidatorTests
     {
         // Arrange
         var postWithInvalidLastModified = _validPost;
-        postWithInvalidLastModified.LastModified = _validPost.CreatedAt.AddDays(-1);
+        postWithInvalidLastModified.LastModified = _validPost.CreatedAt.Value.AddDays(-1);
 
         // Act
         var resultOfInvalidLastModified = _postEntityValidator.TestValidate(postWithInvalidLastModified);

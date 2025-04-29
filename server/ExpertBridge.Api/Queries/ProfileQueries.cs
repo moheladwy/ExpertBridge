@@ -35,7 +35,7 @@ namespace ExpertBridge.Api.Queries
                 {
                     Id = p.Id,
                     UserId = p.UserId,
-                    CreatedAt = p.CreatedAt,
+                    CreatedAt = p.CreatedAt.Value,
                     Email = p.Email,
                     FirstName = p.FirstName,
                     LastName = p.LastName,

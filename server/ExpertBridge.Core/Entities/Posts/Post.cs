@@ -15,13 +15,14 @@ public class Post : BaseModel, ISoftDeletable
     public required string Title { get; set; }
     public required string Content { get; set; }
     public required string AuthorId { get; set; }
+    public string? Language { get; set; }
     public bool IsTagged { get; set; }
     public bool IsProcessed { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
 
     // [Column(TypeName = "vector(1024)")]
-    public Vector? Embeddings { get; set; }
+    public Vector? Embedding { get; set; }
 
     // Add to navigation properties
     public Profile Author { get; set; }
