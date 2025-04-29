@@ -64,7 +64,7 @@ public class CommentsController(
         {
             AuthorId = user.Profile.Id,
             Author = profile,
-            Content = request.Content,
+            Content = request.Content.Trim(),
             ParentCommentId = request.ParentCommentId,
             ParentComment = parentComment,
             Post = post,
@@ -286,7 +286,7 @@ public class CommentsController(
         // Update the comment content if provided
         if (!string.IsNullOrEmpty(request.Content))
         {
-            comment.Content = request.Content;
+            comment.Content = request.Content.Trim();
             comment.LastModified = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
         }
