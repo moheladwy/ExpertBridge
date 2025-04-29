@@ -57,6 +57,8 @@ builder.AddFirebaseApp();
 builder.AddFirebaseAuthentication();
 builder.AddHttpClientForFirebaseService();
 
+builder.AddRefitHttpClients();
+
 builder.AddSwaggerGen();
 builder.AddCors();
 

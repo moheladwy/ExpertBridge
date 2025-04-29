@@ -2,10 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 
+using System.ComponentModel.Design.Serialization;
 using System.Threading.Channels;
+using ExpertBridge.Api.Data.DatabaseContexts;
 using ExpertBridge.Api.HttpClients;
 using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Requests;
+using ExpertBridge.Api.Services;
 
 namespace ExpertBridge.Api.BackgroundServices
 {
@@ -43,12 +46,17 @@ namespace ExpertBridge.Api.BackgroundServices
                             Post = $"{post.Title} {post.Content}",
                         });
 
-                        if (!response.IsSuccessStatusCode)
+                        if (!response.IsSuccessStatusCode || response.Content == null)
                         {
                             throw new Exception($"Request to categorizer failed with status code: {response.StatusCode}");
                         }
 
                         var tags = response.Content;
+
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
+                        var taggingService = scope.ServiceProvider.GetRequiredService<TaggingService>();
+
+                        await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, tags);
                     }
                     catch (Exception ex)
                     {
@@ -59,8 +67,12 @@ namespace ExpertBridge.Api.BackgroundServices
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    $"{nameof(PostCreatedHandlerWorker)} ran into unexpected error: " +
-                    $"An error occurred while reading from the channel.");
+                    @$"{nameof(PostCreatedHandlerWorker)} ran into unexpected error: 
+                    An error occurred while reading from the channel.");
+            }
+            finally
+            {
+                _logger.LogInformation($"Terminating {nameof(PostCreatedHandlerWorker)}.");
             }
         }
     }
