@@ -1,5 +1,5 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.11-slim
+FROM python:3.12-alpine
 
 # Set the working directory in the container
 WORKDIR /app
@@ -18,3 +18,8 @@ EXPOSE 5000
 
 # Command to run the application
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+
+# CMD ["gunicorn","--bind", "0.0.0.0:5000", "app:app"]
+
+# Use Gunicorn for production, Flask dev server for development
+# CMD ["sh", "-c", "if [ \"$FLASK_DEBUG\" = \"1\" ]; then flask run --host=0.0.0.0 --port=5000; else gunicorn --bind 0.0.0.0:5000 app:app; fi"]
