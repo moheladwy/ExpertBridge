@@ -150,8 +150,8 @@ public class PostsController : ControllerBase
 
         var post = new Post
         {
-            Title = request.Title,
-            Content = request.Content,
+            Title = request.Title.Trim(),
+            Content = request.Content.Trim(),
             AuthorId = userProfileId
         };
 
@@ -165,7 +165,7 @@ public class PostsController : ControllerBase
                 postMedia.Add(new PostMedia
                 {
                     Post = post,
-                    Name = post.Title,
+                    Name = post.Title.Trim(),
                     Type = media.Type,
                     Key = media.Key,
                 });
@@ -405,12 +405,12 @@ public class PostsController : ControllerBase
         // Update the post with the new values and save changes to the database.
         if (!string.IsNullOrEmpty(request.Title))
         {
-            post.Title = request.Title;
+            post.Title = request.Title.Trim();
         }
 
         if (!string.IsNullOrEmpty(request.Content))
         {
-            post.Content = request.Content;
+            post.Content = request.Content.Trim();
         }
 
         post.LastModified = DateTime.UtcNow;
