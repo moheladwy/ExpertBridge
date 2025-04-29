@@ -1,12 +1,12 @@
 import requests
 import json
 
+BASE_URL = "https://categorizer.expertbridge.duckdns.org"
+CATEGORIZE_ENDOPOINT = BASE_URL + "/categorize"
+TRANSLATE_ENDPOINT = BASE_URL + "/translate-tags"
 
 def test_categorize_api():
     """Test the categorize API with an Arabic car problem post"""
-    # API endpoint (using localhost)
-    url = 'http://127.0.0.1:5000/categorize'
-
     # Test post with proper title and content separation
     post_title = "مشكلة في العربية: صوت غريب وأداء مش طبيعي – محتاج نصائح!"
     post_content = """السلام عليكم يا جماعة،
@@ -27,7 +27,7 @@ def test_categorize_api():
 
     # Send POST request to the API
     try:
-        response = requests.post(url, json=payload)
+        response = requests.post(CATEGORIZE_ENDOPOINT, json=payload)
 
         # Check if request was successful
         if response.status_code == 200:
@@ -35,7 +35,9 @@ def test_categorize_api():
             result = response.json()
             print("Request successful!")
             print("\nAPI Response:")
+            print("```json")
             print(json.dumps(result, ensure_ascii=False, indent=2))
+            print("```")
 
             # Print validation based on CategorizationResponse format
             print("\nValidation:")
@@ -57,9 +59,6 @@ def test_categorize_api():
 
 def test_translate_tags_api():
     """Test the translate-tags API with a mix of English and Arabic tags"""
-    # API endpoint (using localhost)
-    url = 'http://127.0.0.1:5000/translate-tags'
-
     # Test tags in different languages
     tags = ["car maintenance", "محرك", "transmission", "صيانة", "engine noise"]
 
@@ -70,7 +69,7 @@ def test_translate_tags_api():
 
     # Send POST request to the API
     try:
-        response = requests.post(url, json=payload)
+        response = requests.post(TRANSLATE_ENDPOINT, json=payload)
 
         # Check if request was successful
         if response.status_code == 200:
@@ -78,7 +77,9 @@ def test_translate_tags_api():
             result = response.json()
             print("Request successful!")
             print("\nTranslate Tags API Response:")
+            print("```json")
             print(json.dumps(result, ensure_ascii=False, indent=2))
+            print("```")
 
             # Print tags with translations and descriptions
             print("\nTranslated Tags:")
@@ -96,6 +97,6 @@ def test_translate_tags_api():
 
 
 if __name__ == "__main__":
-    # test_categorize_api()
-    # print("\n" + "="*50 + "\n")
+    test_categorize_api()
+    print("\n" + "="*50 + "\n")
     test_translate_tags_api()
