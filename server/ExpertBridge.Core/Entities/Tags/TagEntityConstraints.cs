@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.Tags;
 
 public class TagEntityConstraints

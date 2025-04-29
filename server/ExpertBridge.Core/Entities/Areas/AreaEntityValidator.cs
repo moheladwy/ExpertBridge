@@ -1,5 +1,3 @@
-
-
 using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Areas;

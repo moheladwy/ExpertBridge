@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.Posts;
 
 namespace ExpertBridge.Core.Entities.Media.PostMedia;

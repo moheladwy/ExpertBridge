@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.Comments;
 
 namespace ExpertBridge.Core.Entities.Media.CommentMedia;

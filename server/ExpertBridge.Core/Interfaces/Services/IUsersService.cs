@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Requests.RegisterUser;
 using ExpertBridge.Core.Requests.UpdateUserRequest;
 using ExpertBridge.Core.Responses;

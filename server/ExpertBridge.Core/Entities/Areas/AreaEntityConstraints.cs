@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.Areas;
 
 public class AreaEntityConstraints

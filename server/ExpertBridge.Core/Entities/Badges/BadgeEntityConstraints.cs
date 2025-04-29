@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.Badges;
 
 public class BadgeEntityConstraints

@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

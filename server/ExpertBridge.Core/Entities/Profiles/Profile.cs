@@ -1,5 +1,3 @@
-
-
 using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;

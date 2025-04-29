@@ -1,7 +1,4 @@
-
-
 namespace ExpertBridge.Core.Interfaces.Services;
-
 public interface ICacheService
 {
     Task<T?> GetAsync<T>(string key);

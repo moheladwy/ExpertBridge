@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.JobReviews;
 
 public static class JobReviewEntityConstraints

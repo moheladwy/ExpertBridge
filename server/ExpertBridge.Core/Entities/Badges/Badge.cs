@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 
 namespace ExpertBridge.Core.Entities.Badges;

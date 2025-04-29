@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
 
 namespace ExpertBridge.Core.Entities.Skills;

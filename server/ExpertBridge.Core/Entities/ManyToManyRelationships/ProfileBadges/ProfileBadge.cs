@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 
 public class ProfileBadge

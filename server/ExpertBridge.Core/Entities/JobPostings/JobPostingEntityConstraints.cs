@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.JobPostings;
 
 public class JobPostingEntityConstraints

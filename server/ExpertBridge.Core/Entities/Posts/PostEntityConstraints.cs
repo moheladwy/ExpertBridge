@@ -1,7 +1,4 @@
-
-
 namespace ExpertBridge.Core.Entities.Posts;
-
 public class PostEntityConstraints
 {
     public const int MaxTitleLength = 256;

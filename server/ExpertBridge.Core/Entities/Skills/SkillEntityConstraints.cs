@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.Skills;
 
 public class SkillEntityConstraints

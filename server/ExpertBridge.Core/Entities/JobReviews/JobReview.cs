@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.Profiles;
 

@@ -1,9 +1,6 @@
-
-
 using System.Linq.Expressions;
 
 namespace ExpertBridge.Core.Interfaces.Repositories;
-
 public interface IEntityRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(string id);

@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.Jobs;
 
 namespace ExpertBridge.Core.Entities.JobStatuses;

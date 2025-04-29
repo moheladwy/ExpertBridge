@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.Comments;
 
 public class CommentEntityConstraints

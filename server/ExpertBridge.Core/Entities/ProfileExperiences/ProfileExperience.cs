@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
 
 namespace ExpertBridge.Core.Entities.ProfileExperiences;

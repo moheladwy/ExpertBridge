@@ -1,5 +1,3 @@
-
-
 namespace ExpertBridge.Core.Entities.Media.ChatMedia;
 
 public class ChatMedia : MediaObject
