@@ -32,12 +32,21 @@ using ExpertBridge.Api.Core.Entities.Profiles;
 using ExpertBridge.Api.Core.Entities.Skills;
 using ExpertBridge.Api.Core.Entities.Tags;
 using ExpertBridge.Api.Core.Entities.Users;
+using ExpertBridge.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ExpertBridge.Api.Data.DatabaseContexts;
 
-public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> options) : DbContext(options)
+public sealed class ExpertBridgeDbContext : DbContext
 {
+    public ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext> options)
+        : base(options)
+    {
+        ChangeTracker.Tracked += UpdateTimestamps;
+        ChangeTracker.StateChanged += UpdateTimestamps;
+    }
+
     public DbSet<User> Users { get; set; }
     public DbSet<Profile> Profiles { get; set; }
     public DbSet<ProfileExperience> ProfileExperiences { get; set; }
@@ -122,5 +131,24 @@ public sealed class ExpertBridgeDbContext(DbContextOptions<ExpertBridgeDbContext
         modelBuilder.ApplyConfiguration(new ProfileExperienceEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileExperienceMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new MediaGrantEntityConfiguration());
+    }
+
+    // Event handlers
+    private static void UpdateTimestamps(object? sender, EntityEntryEventArgs e)
+    {
+        if (e.Entry.Entity is ITimestamped entityWithTimestamps)
+        {
+            switch (e.Entry.State)
+            {
+                case EntityState.Modified:
+                    entityWithTimestamps.LastModified = DateTime.UtcNow;
+                    Console.WriteLine($"Stamped for update: {e.Entry.Entity}");
+                    break;
+                case EntityState.Added:
+                    entityWithTimestamps.CreatedAt = DateTime.UtcNow;
+                    Console.WriteLine($"Stamped for insert: {e.Entry.Entity}");
+                    break;
+            }
+        }
     }
 }

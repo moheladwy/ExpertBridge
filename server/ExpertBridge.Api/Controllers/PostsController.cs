@@ -259,7 +259,6 @@ public class PostsController : ControllerBase
         {
             // If the vote exists but is a downvote, update it to an upvote
             vote.IsUpvote = true;
-            vote.LastModified = DateTime.UtcNow;
         }
         else
         {
@@ -341,7 +340,6 @@ public class PostsController : ControllerBase
         {
             // If the vote exists but is a upvote, update it to a downvote
             vote.IsUpvote = false;
-            vote.LastModified = DateTime.UtcNow;
         }
         else
         {
@@ -414,7 +412,6 @@ public class PostsController : ControllerBase
             post.Content = request.Content;
         }
 
-        post.LastModified = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync();
 
         // Return the updated post
