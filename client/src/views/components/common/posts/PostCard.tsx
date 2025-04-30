@@ -52,6 +52,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	const memoizedPostId = useMemo(() => postId, [postId]);
 	const post = useAppSelector((state) => selectPostById(state, memoizedPostId));
 	const [open, setOpen] = useState(false);
+  const [picToBeOpened, setPicToBeOpened] = useState(0);
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -86,7 +87,11 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 			});
 	};
 
-	const handleOpen = () => setOpen(true);
+	const handleOpen = (index: number) => {
+    setPicToBeOpened(index);
+    setOpen(true)
+  };
+
 	const handleClose = () => {
 		setOpen(false);
 	};
@@ -96,43 +101,22 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	};
 
 	//Manage diffrent media typs
-	if (post.medias?.length > 0) {
-		if (post.medias[0].type.startsWith("image")) {
-			media = (
-				<img
-					src={post.medias[0].url!}
-					alt="Post content"
-					onClick={handleOpen}
-				/>
-			);
-		} else if (post.medias[0].type.startsWith("video")) {
-			media = <ReactPlayer url={post.medias[0].url!} controls />;
-		}
-	}
+	// if (post.medias?.length > 0) {
+	// 	if (post.medias[0].type.startsWith("image")) {
+	// 		media = (
+	// 			<img
+	// 				src={post.medias[0].url!}
+	// 				alt="Post content"
+	// 				onClick={handleOpen}
+	// 			/>
+	// 		);
+	// 	} else if (post.medias[0].type.startsWith("video")) {
+	// 		media = <ReactPlayer url={post.medias[0].url!} controls />;
+	// 	}
+	// }
 
 	// console.log(post);
 
-  //TO BE REMOVED
-  const medias = [
-    {
-      id: "1",
-      name: "Cool Mountain",
-      url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb", // image
-      type: "image/jpeg",
-    },
-    {
-      id: "2",
-      name: "Sunset",
-      url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b", // image
-      type: "image/png",
-    },
-    {
-      id: "3",
-      name: "Sample Video",
-      url: "https://www.w3schools.com/html/mov_bbb.mp4", // video
-      type: "video/mp4",
-    },
-  ];
 
 	return (
 		<>
@@ -142,9 +126,9 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				aria-labelledby="create-post-modal"
 				className="flex justify-center items-center"
 			>
-				{post.medias?.[0]?.url ? (
+				{post.medias?.[picToBeOpened]?.url ? (
 					<img
-						src={post.medias[0].url}
+						src={post.medias[picToBeOpened].url}
 						alt="Post content"
 						className="max-w-full max-h-[90vh] object-contain"
 					/>
@@ -277,34 +261,18 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				</div>
 
 				{/* Media */}
-				{/* <div
-					className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}
-				>
-					{post.medias.length > 0 ? (
-						post.medias[0].type.startsWith("video") ? (
-							<ReactPlayer url={post.medias[0].url} controls />
-						) : (
-							<img
-								src={post.medias[0].url}
-								onClick={handleOpen}
-								alt="Question media"
-							/>
-						)
-					) : null}
-				</div> */}
-
-        <div
+				<div
           className={`grid gap-2 w-full rounded-md overflow-hidden ${
-            medias.length === 1
+            post.medias.length === 1
               ? 'grid-cols-1'
               : 'grid-cols-2'
           }`}
         >
-          {medias.map((media, index) => (
+					{post.medias.map((media, index) => (
             <div
               key={index}
               className={`relative aspect-auto bg-slate-200 flex justify-center items-center cursor-pointer overflow-hidden rounded-md ${
-              (medias.length === 1) ? 'col-span-full' : ''
+              (post.medias.length === 1) ? 'col-span-full' : ''
               }`}
             >
               {media.type.startsWith("video") ? (
@@ -319,7 +287,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
                 <img
                   src={media.url}
                   alt={`media-${index}`}
-                  onClick={handleOpen}
+                  onClick={() => handleOpen(index)}
                   className="w-full h-full object-cover"
                 />
               )}
