@@ -28,6 +28,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/views/components/ui/alert-dialog"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/views/components/ui/carousel"
 import { Box, Modal } from "@mui/material";
 import toast from "react-hot-toast";
 import { useEffect, useMemo, useState } from "react";
@@ -52,6 +59,9 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	const memoizedPostId = useMemo(() => postId, [postId]);
 	const post = useAppSelector((state) => selectPostById(state, memoizedPostId));
 	const [open, setOpen] = useState(false);
+  const [picToBeOpened, setPicToBeOpened] = useState(0);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -86,7 +96,11 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 			});
 	};
 
-	const handleOpen = () => setOpen(true);
+	const handleOpen = (index: number) => {
+    setPicToBeOpened(index);
+    setOpen(true)
+  };
+
 	const handleClose = () => {
 		setOpen(false);
 	};
@@ -96,21 +110,22 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	};
 
 	//Manage diffrent media typs
-	if (post.medias?.length > 0) {
-		if (post.medias[0].type.startsWith("image")) {
-			media = (
-				<img
-					src={post.medias[0].url!}
-					alt="Post content"
-					onClick={handleOpen}
-				/>
-			);
-		} else if (post.medias[0].type.startsWith("video")) {
-			media = <ReactPlayer url={post.medias[0].url!} controls />;
-		}
-	}
+	// if (post.medias?.length > 0) {
+	// 	if (post.medias[0].type.startsWith("image")) {
+	// 		media = (
+	// 			<img
+	// 				src={post.medias[0].url!}
+	// 				alt="Post content"
+	// 				onClick={handleOpen}
+	// 			/>
+	// 		);
+	// 	} else if (post.medias[0].type.startsWith("video")) {
+	// 		media = <ReactPlayer url={post.medias[0].url!} controls />;
+	// 	}
+	// }
 
 	// console.log(post);
+
 
 	return (
 		<>
@@ -120,9 +135,9 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				aria-labelledby="create-post-modal"
 				className="flex justify-center items-center"
 			>
-				{post.medias?.[0]?.url ? (
+				{post.medias?.[picToBeOpened]?.url ? (
 					<img
-						src={post.medias[0].url}
+						src={post.medias[picToBeOpened].url}
 						alt="Post content"
 						className="max-w-full max-h-[90vh] object-contain"
 					/>
@@ -256,20 +271,56 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 
 				{/* Media */}
 				<div
-					className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}
-				>
-					{post.medias.length > 0 ? (
-						post.medias[0].type.startsWith("video") ? (
-							<ReactPlayer url={post.medias[0].url} controls />
-						) : (
-							<img
-								src={post.medias[0].url}
-								onClick={handleOpen}
-								alt="oh shit it did not load..."
-							/>
-						)
-					) : null}
-				</div>
+          className={`aspect-auto flex justify-center items-center w-full rounded-md`}
+        >
+          <Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
+            <CarouselContent>
+              {post.medias.map((media, index) => (
+                <CarouselItem>
+                  {media.type.startsWith("video") ? (
+                    <ReactPlayer
+                      url={media.url}
+                      width="100%"
+                      height="100%"
+                      controls
+                      style={{ pointerEvents: "none" }}
+                    />
+                  ) : (
+                    <img
+                      src={media.url}
+                      alt={`media-${index}`}
+                      onClick={() => handleOpen(index)}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </CarouselItem>
+              ))}
+
+            </CarouselContent>
+              {
+                post.medias.length > 1 && 
+                <div className="max-sm:hidden">
+                  <CarouselPrevious />
+                  <CarouselNext/>
+                </div>
+              }
+          </Carousel>
+        </div>
+
+        {/* Media Dots */}
+        {
+          post.medias.length > 1 && 
+          <div className="flex justify-center items-center mt-1 gap-2">
+            {post.medias.map((_, index) => (
+              <span
+                key={index}
+                className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${
+                  index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
+        }
 
 				{/* Post Metadata */}
 				{/* Tags */}
