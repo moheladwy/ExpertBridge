@@ -300,10 +300,10 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
               {/* Carousel Controls (overlayed inside the media) */}
               {post.medias.length > 1 && (
                 <>
-                  <div className="absolute top-1/2 left-14 -translate-y-1/2 z-20">
+                  <div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
                     <CarouselPrevious />
                   </div>
-                  <div className="absolute top-1/2 right-14 -translate-y-1/2 z-10">
+                  <div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
                     <CarouselNext />
                   </div>
                 </>
