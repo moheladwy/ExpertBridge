@@ -28,6 +28,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/views/components/ui/alert-dialog"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/views/components/ui/carousel"
 import { Box, Modal } from "@mui/material";
 import toast from "react-hot-toast";
 import { useEffect, useMemo, useState } from "react";
@@ -262,37 +269,41 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 
 				{/* Media */}
 				<div
-          className={`grid gap-2 w-full rounded-md overflow-hidden ${
-            post.medias.length === 1
-              ? 'grid-cols-1'
-              : 'grid-cols-2'
-          }`}
+          className={`aspect-auto flex justify-center items-center w-full rounded-md`}
         >
-					{post.medias.map((media, index) => (
-            <div
-              key={index}
-              className={`relative aspect-auto bg-slate-200 flex justify-center items-center cursor-pointer overflow-hidden rounded-md ${
-              (post.medias.length === 1) ? 'col-span-full' : ''
-              }`}
-            >
-              {media.type.startsWith("video") ? (
-                <ReactPlayer
-                  url={media.url}
-                  width="100%"
-                  height="100%"
-                  controls
-                  style={{ pointerEvents: "none" }}
-                />
-              ) : (
-                <img
-                  src={media.url}
-                  alt={`media-${index}`}
-                  onClick={() => handleOpen(index)}
-                  className="w-full h-full object-cover"
-                />
-              )}
-            </div>
-          ))}
+          <Carousel>
+            <CarouselContent>
+              {post.medias.map((media, index) => (
+                <CarouselItem>
+                  {media.type.startsWith("video") ? (
+                    <ReactPlayer
+                      url={media.url}
+                      width="100%"
+                      height="100%"
+                      controls
+                      style={{ pointerEvents: "none" }}
+                    />
+                  ) : (
+                    <img
+                      src={media.url}
+                      alt={`media-${index}`}
+                      onClick={() => handleOpen(index)}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </CarouselItem>
+              ))}
+
+            </CarouselContent>
+              {
+                post.medias.length > 1 && 
+                <div>
+                  <CarouselPrevious />
+                  <CarouselNext/>
+                </div>
+              }
+          </Carousel>
+
         </div>
 
 				{/* Post Metadata */}
