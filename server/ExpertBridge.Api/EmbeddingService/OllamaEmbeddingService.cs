@@ -1,7 +1,7 @@
 using Microsoft.Extensions.AI;
 using Pgvector;
 
-namespace ExpertBridge.Api.VectorSearch;
+namespace ExpertBridge.Api.EmbeddingService;
 
 public class OllamaEmbeddingService(
         IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator

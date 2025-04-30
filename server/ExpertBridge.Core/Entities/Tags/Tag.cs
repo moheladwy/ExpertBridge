@@ -3,10 +3,10 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
 
 namespace ExpertBridge.Core.Entities.Tags;
 
-public class Tag
+public class Tag : BaseModel
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string Name { get; set; }
+    public string EnglishName { get; set; }
+    public string ArabicName { get; set; }
     public string Description { get; set; }
 
     public ICollection<ProfileTag> ProfileTags { get; set; } = [];

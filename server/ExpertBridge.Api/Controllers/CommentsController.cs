@@ -189,7 +189,6 @@ public class CommentsController(
             else
             {
                 vote.IsUpvote = true;
-                vote.LastModified = DateTime.UtcNow;
             }
         }
 
@@ -238,7 +237,6 @@ public class CommentsController(
             if (vote.IsUpvote)
             {
                 vote.IsUpvote = false;
-                vote.LastModified = DateTime.UtcNow;
             }
             else
             {
@@ -284,7 +282,6 @@ public class CommentsController(
         if (!string.IsNullOrEmpty(request.Content))
         {
             comment.Content = request.Content.Trim();
-            comment.LastModified = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
         }
 

@@ -1,6 +1,6 @@
 using Pgvector;
 
-namespace ExpertBridge.Api.VectorSearch;
+namespace ExpertBridge.Api.EmbeddingService;
 
 public interface IEmbeddingService
 {

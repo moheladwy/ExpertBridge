@@ -1,4 +1,3 @@
-import json
 from flask import Flask
 from flask_cors import CORS
 import os
@@ -10,6 +9,13 @@ from InputFormat import CategorizeRequest, TranslateTagsRequest
 
 app = Flask(__name__)
 CORS(app)
+
+# Default to 'development' if not set
+ENV = os.getenv('FLASK_ENV', 'development')
+
+# Use FLASK_DEBUG instead of FLASK_ENV
+DEBUG = os.getenv('FLASK_DEBUG', '1') == '1'
+app.config['DEBUG'] = DEBUG
 
 
 # Initialize the API key
@@ -30,21 +36,22 @@ text_categorizer = TextCategorizer(
 @app.route("/categorize", methods=["POST"])
 def categorize():
     try:
+        print(request.get_json())
         # Validate and parse the request body
         request_data = CategorizeRequest.model_validate(
             request.get_json(), strict=True)
 
         # Combine title and content for categorization
-        post_text = f"Title: {request_data.post.title}\n\nContent:\n{request_data.post.content}\n\nTags:\n{request_data.post.tags}"
+        post_text = f"Title: {request_data.title}\n\nContent:\n{request_data.content}\n\nTags:\n{request_data.tags}"
 
         # Call the categorize method and return the response
         return text_categorizer.categorize(post_text.strip())
     except ValidationError as ve:
-        return jsonify({"error": "Validation error: " + str(ve)})
+        return jsonify({"error": "Validation error: " + str(ve)}), 400
     except ValueError as ve:
-        return jsonify({"error": "Value error: " + str(ve)})
+        return jsonify({"error": "Value error: " + str(ve)}), 400
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/translate-tags", methods=["POST"])
@@ -57,11 +64,11 @@ def translate_tags():
         # Call the translate_tags method and return the response
         return text_categorizer.translate_tags(request_data.tags)
     except ValidationError as ve:
-        return jsonify({"error": "Validation error: " + str(ve)})
+        return jsonify({"error": "Validation error: " + str(ve)}), 400
     except ValueError as ve:
-        return jsonify({"error": "Value error: " + str(ve)})
+        return jsonify({"error": "Value error: " + str(ve)}), 400
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": str(e)}), 500
 
 
 # Run the app

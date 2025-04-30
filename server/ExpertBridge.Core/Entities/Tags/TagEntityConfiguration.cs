@@ -12,11 +12,12 @@ public class TagEntityConfiguration : IEntityTypeConfiguration<Tag>
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
             .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.Name)
+        builder.Property(x => x.EnglishName)
             .IsRequired()
             .HasMaxLength(TagEntityConstraints.MaxNameLength);
 
-        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasIndex(x => x.EnglishName).IsUnique();
+        builder.HasIndex(x => x.ArabicName).IsUnique();
 
         builder.Property(x => x.Description)
             .IsRequired()

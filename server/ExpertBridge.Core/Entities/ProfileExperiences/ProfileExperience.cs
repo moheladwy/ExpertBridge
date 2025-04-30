@@ -9,7 +9,7 @@ public class ProfileExperience : BaseModel, ISoftDeletable
     public string Description { get; set; }
     public string Company { get; set; }
     public string Location { get; set; }
-    public DateTime StartDate { get; set; } = DateTime.UtcNow;
+    public DateTime StartDate { get; set; } 
     public DateTime? EndDate { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }

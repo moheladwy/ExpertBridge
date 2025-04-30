@@ -3,13 +3,10 @@ using ExpertBridge.Core.Entities.Profiles;
 
 namespace ExpertBridge.Core.Entities.JobReviews;
 
-public class JobReview
+public class JobReview : BaseModel
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Content { get; set; }
     public int Rating { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? LastModified { get; set; }
     public bool IsDeleted { get; set; }
 
     // Foreign keys
