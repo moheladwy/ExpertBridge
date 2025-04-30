@@ -3,11 +3,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
+namespace ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 
-public class ProfileTagEntityConfiguration : IEntityTypeConfiguration<ProfileTag>
+public class UserInterestEntityConfiguration : IEntityTypeConfiguration<UserInterest>
 {
-    public void Configure(EntityTypeBuilder<ProfileTag> builder)
+    public void Configure(EntityTypeBuilder<UserInterest> builder)
     {
         // Configure composite key
         builder.HasKey(pt => new { pt.ProfileId, pt.TagId });

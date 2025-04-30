@@ -1,4 +1,5 @@
 using ExpertBridge.Core.Entities.Media;
+using ExpertBridge.Core.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -45,6 +46,11 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .WithOne(m => m.Profile)
             .HasForeignKey(m => m.ProfileId)
             .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false)
+            ;
+
+        builder.Property(x => x.UserInterestEmbedding)
+            .HasColumnType(ColumnTypes.Vector1024)
             .IsRequired(false)
             ;
     }
