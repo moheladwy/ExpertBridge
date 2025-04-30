@@ -75,3 +75,13 @@ public class UnauthorizedGetMyProfileException : UnauthorizedException
 }
 
 
+public class RemoteServiceCallFailedException : Exception
+{
+    public RemoteServiceCallFailedException() { }
+    public RemoteServiceCallFailedException(string message) : base(message) { }
+    public RemoteServiceCallFailedException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
+
+

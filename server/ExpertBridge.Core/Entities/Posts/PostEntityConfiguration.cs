@@ -1,5 +1,6 @@
 
 
+using ExpertBridge.Core.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -47,10 +48,9 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .HasForeignKey(pm => pm.PostId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
-        ;
 
         builder.Property(p => p.Embedding)
-            .HasColumnType("vector(1024)")
+            .HasColumnType(ColumnTypes.Vector1024)
             .IsRequired(false);
     }
 }

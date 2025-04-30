@@ -1,9 +1,12 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Threading.Channels;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
+using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
@@ -13,63 +16,105 @@ namespace ExpertBridge.Api.Services
     public class TaggingService
     {
         private readonly ExpertBridgeDbContext _dbContext;
+        private readonly ChannelWriter<UserInterestsUpdatedMessage> _channel;
 
-        public TaggingService(ExpertBridgeDbContext dbContext)
+        public TaggingService(
+            ExpertBridgeDbContext dbContext,
+            Channel<UserInterestsUpdatedMessage> channel)
         {
             _dbContext = dbContext;
+            _channel = channel.Writer;
         }
 
-        public async Task AddRawTagsToPostAsync(string postId, string authorId, PostCategorizerResponse tags)
+        // FUNCTIONAL PROGRAMMING IS MAD!
+        // FUNCTIONAL PROGRAMMING IS MAD!
+        // FUNCTIONAL PROGRAMMING IS MAD!
+
+        /// <summary>
+        /// Adds tags to a post and user profile.
+        /// <br/>
+        /// This operation is atomic.
+        /// It writes to DB and commits changes. 
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <param name="authorId"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public async Task AddRawTagsToPostAsync(
+            string postId,
+            string authorId,
+            PostCategorizerResponse tags,
+            CancellationToken cancellationToken = default)
         {
-            List<Tag> rawTags = [];
+            ArgumentNullException.ThrowIfNull(postId);
+            ArgumentNullException.ThrowIfNull(tags);
 
-            foreach (var tag in tags.Tags)
-            { 
-                var existingTag = await _dbContext.Tags
+            var tagList = tags.Tags.ToList();
+
+            var englishNames = tagList.Select(t => t.EnglishName).ToList();
+            var arabicNames = tagList.Select(t => t.ArabicName).ToList();
+
+            var existingTags = await _dbContext.Tags
                 .AsNoTracking()
-                .FirstOrDefaultAsync(t => t.EnglishName == tag.EnglishName || t.ArabicName == tag.ArabicName);
+                .Where(t => englishNames.Contains(t.EnglishName) || arabicNames.Contains(t.ArabicName))
+                .ToListAsync(cancellationToken); // materialize the query to use it in next calculations.
 
-                if (existingTag == null)
-                {
-                    existingTag = new Tag
-                    {
-                        EnglishName = tag.EnglishName,
-                        ArabicName = tag.ArabicName,
-                        Description = tag.Description
-                    };
-                    await _dbContext.Tags.AddAsync(existingTag);
-                }
+            var newRawTags = tagList
+                .Where(t => !existingTags
+                    .Any(et => et.EnglishName == t.EnglishName || et.ArabicName == t.ArabicName))
+                .ToList(); // this LINQ is only client side, thus we can use Any().
 
-                rawTags.Add(existingTag);
-            }
+            var newTags = newRawTags.Select(tag => new Tag
+            {
+                EnglishName = tag.EnglishName,
+                ArabicName = tag.ArabicName,
+                Description = tag.Description
+            }).ToList();
 
-            var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId);
+            await _dbContext.AddRangeAsync(newTags, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken); // Save new tags to generate their IDs
 
-            await AddTagsToPostInternalAsync(post.Id, rawTags);
-            await AddTagsToUserProfileInternalAsync(authorId, rawTags.Select(t => t.Id));
+            var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId, cancellationToken);
+
+            var tagsToAdd = newTags.Concat(existingTags);
+
+            await AddTagsToPostInternalAsync(post.Id, tagsToAdd.Select(t => t.Id), cancellationToken);
+            await AddTagsToUserProfileInternalAsync(authorId, tagsToAdd.Select(t => t.Id), cancellationToken);
 
             post.Language = tags.Language;
             post.IsTagged = true;
 
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         /// <summary>
         /// This method should not be called from outside because it's just
-        /// a step in a bigger Unit of Work. It does not commit the changes.
+        /// a step in a bigger Unit of Work. It does not commit the changes to DB.
         /// </summary>
-        private async Task AddTagsToPostInternalAsync(string postId, IEnumerable<Tag> tags)
+        private async Task AddTagsToPostInternalAsync(
+            string postId,
+            IEnumerable<string> tagIds,
+            CancellationToken cancellationToken = default)
         {
-            await _dbContext.PostTags.AddRangeAsync(tags.Select(tag => new PostTag
-            {
-                PostId = postId,
-                Tag = tag
-            }));
+            var existingTagIds = await _dbContext.PostTags
+                .Where(pt => pt.PostId == postId && tagIds.Contains(pt.TagId))
+                .Select(pt => pt.TagId)
+                .ToListAsync(cancellationToken);
+
+            var newPostTags = tagIds
+                .Where(tagId => !existingTagIds.Contains(tagId))
+                .Select(tagId => new PostTag
+                {
+                    PostId = postId,
+                    TagId = tagId
+                });
+
+            await _dbContext.PostTags.AddRangeAsync(newPostTags, cancellationToken);
         }
 
         public async Task AddTagsToPostAsync(string postId, IEnumerable<Tag> tags)
         {
-            await AddTagsToPostInternalAsync(postId, tags);
+            await AddTagsToPostInternalAsync(postId, tags.Select(t => t.Id));
             await _dbContext.SaveChangesAsync();
         }
 
@@ -77,13 +122,25 @@ namespace ExpertBridge.Api.Services
         /// This method should not be called from outside because it's just
         /// a step in a bigger Unit of Work. It does not commit the changes.
         /// </summary>
-        private async Task AddTagsToUserProfileInternalAsync(string profileId, IEnumerable<string> tagIds)
+        private async Task AddTagsToUserProfileInternalAsync(
+            string profileId,
+            IEnumerable<string> tagIds,
+            CancellationToken cancellationToken = default)
         {
-            await _dbContext.ProfileTags.AddRangeAsync(tagIds.Select(tag => new ProfileTag
-            {
-                ProfileId = profileId,
-                TagId = tag
-            }));
+            var existingTagIds = await _dbContext.UserInterests
+                .Where(ui => ui.ProfileId == profileId && tagIds.Contains(ui.TagId))
+                .Select(pt => pt.TagId)
+                .ToListAsync(cancellationToken);
+
+            var newUserInterests = tagIds
+                .Where(tagId => !existingTagIds.Contains(tagId))
+                .Select(tagId => new UserInterest
+                {
+                    ProfileId= profileId,
+                    TagId = tagId
+                });
+
+            await _dbContext.UserInterests.AddRangeAsync(newUserInterests, cancellationToken);
         }
 
         public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags)

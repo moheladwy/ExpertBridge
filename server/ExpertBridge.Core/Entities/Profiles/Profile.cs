@@ -3,9 +3,10 @@ using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Media.ProfileMedia;
 using ExpertBridge.Core.Entities.PostVotes;
+using Pgvector;
 
 namespace ExpertBridge.Core.Entities.Profiles;
 
@@ -25,6 +26,8 @@ public partial class Profile : BaseModel, ISoftDeletable
     public bool IsBanned { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
+
+    public Vector? UserInterestEmbedding { get; set; }
 }
 
 public partial class Profile
@@ -45,7 +48,7 @@ public partial class Profile
     public ICollection<Jobs.Job> JobsAsWorker { get; set; } = [];
     public ChatParticipant ChatParticipant { get; set; }
     public ICollection<ProfileSkill> ProfileSkills { get; set; } = [];
-    public ICollection<ProfileTag> ProfileTags { get; set; } = [];
+    public ICollection<UserInterest> ProfileTags { get; set; } = [];
     public ICollection<ProfileBadge> ProfileBadges { get; set; } = [];
     public ICollection<PostVote> PostVotes { get; set; } = [];
     public ICollection<CommentVote> CommentVotes { get; set; } = [];

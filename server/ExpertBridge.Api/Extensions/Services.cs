@@ -2,7 +2,7 @@ using System.Threading.Channels;
 using ExpertBridge.Api.BackgroundServices;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Interfaces.Services;
 using ExpertBridge.Core.Requests.RegisterUser;
@@ -25,9 +25,6 @@ public static class Services
             .AddScoped<ICacheService, CacheService>()
             .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
-            .AddSingleton(_ => Channel.CreateUnbounded<PostCreatedMessage>())
-            .AddHostedService<S3CleaningWorker>()
-            .AddHostedService<PostCreatedHandlerWorker>()
             .AddScoped<TaggingService>()
             ;
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();

@@ -14,7 +14,7 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Media.ChatMedia;
 using ExpertBridge.Core.Entities.Media.CommentMedia;
 using ExpertBridge.Core.Entities.Media.JobPostingMedia;
@@ -61,7 +61,7 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<JobCategory> JobCategories { get; set; }
     public DbSet<JobPosting> JobPostings { get; set; }
     public DbSet<ProfileBadge> ProfileBadges { get; set; }
-    public DbSet<ProfileTag> ProfileTags { get; set; }
+    public DbSet<UserInterest> UserInterests { get; set; }
     public DbSet<ProfileSkill> ProfileSkills { get; set; }
     public DbSet<Chat> Chats { get; set; }
     public DbSet<ChatParticipant> ChatParticipants { get; set; }
@@ -115,7 +115,7 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PostMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ChatMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new ProfileTagEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new UserInterestEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CommentVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobCategoryEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileBadgeEntityConfiguration());

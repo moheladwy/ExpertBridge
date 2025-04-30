@@ -28,6 +28,8 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 
 const NavBar = () => {
+	useGetCurrentUserProfileQuery();
+
 	const navigate = useNavigate();
 	const [isLoggedIn, loginLoading, loginError, authUser, userProfile] =
 		useIsUserLoggedIn();
