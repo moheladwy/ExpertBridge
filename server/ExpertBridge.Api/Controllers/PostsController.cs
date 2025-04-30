@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using System.Threading.Channels;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;

@@ -1,6 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Threading.Channels;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Responses;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags;
@@ -13,10 +15,14 @@ namespace ExpertBridge.Api.Services
     public class TaggingService
     {
         private readonly ExpertBridgeDbContext _dbContext;
+        private readonly ChannelWriter<UserInterestsUpdatedMessage> _channel;
 
-        public TaggingService(ExpertBridgeDbContext dbContext)
+        public TaggingService(
+            ExpertBridgeDbContext dbContext,
+            Channel<UserInterestsUpdatedMessage> channel)
         {
             _dbContext = dbContext;
+            _channel = channel.Writer;
         }
 
         // FUNCTIONAL PROGRAMMING IS MAD!
@@ -60,6 +66,11 @@ namespace ExpertBridge.Api.Services
             post.IsTagged = true;
 
             await _dbContext.SaveChangesAsync();
+
+            await _channel.WriteAsync(new UserInterestsUpdatedMessage
+            {
+                UserProfileId = authorId,
+            });
         }
 
         /// <summary>

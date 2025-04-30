@@ -59,6 +59,9 @@ builder.AddHttpClientForFirebaseService();
 
 builder.AddRefitHttpClients();
 
+builder.AddIpcChannels();
+builder.AddBackgroundWorkers();
+
 builder.AddSwaggerGen();
 builder.AddCors();
 
