@@ -60,6 +60,8 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	const post = useAppSelector((state) => selectPostById(state, memoizedPostId));
 	const [open, setOpen] = useState(false);
   const [picToBeOpened, setPicToBeOpened] = useState(0);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -271,7 +273,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				<div
           className={`aspect-auto flex justify-center items-center w-full rounded-md`}
         >
-          <Carousel>
+          <Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
             <CarouselContent>
               {post.medias.map((media, index) => (
                 <CarouselItem>
@@ -297,14 +299,28 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
             </CarouselContent>
               {
                 post.medias.length > 1 && 
-                <div>
+                <div className="max-sm:hidden">
                   <CarouselPrevious />
                   <CarouselNext/>
                 </div>
               }
           </Carousel>
-
         </div>
+
+        {/* Media Dots */}
+        {
+          post.medias.length > 1 && 
+          <div className="flex justify-center items-center mt-1 gap-2">
+            {post.medias.map((_, index) => (
+              <span
+                key={index}
+                className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${
+                  index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
+        }
 
 				{/* Post Metadata */}
 				{/* Tags */}
