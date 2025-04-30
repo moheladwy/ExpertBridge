@@ -276,7 +276,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
           <Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
             <CarouselContent>
               {post.medias.map((media, index) => (
-                <CarouselItem>
+                <CarouselItem className="cursor-pointer">
                   {media.type.startsWith("video") ? (
                     <ReactPlayer
                       url={media.url}
@@ -297,13 +297,17 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
               ))}
 
             </CarouselContent>
-              {
-                post.medias.length > 1 && 
-                <div className="max-sm:hidden">
-                  <CarouselPrevious />
-                  <CarouselNext/>
-                </div>
-              }
+              {/* Carousel Controls (overlayed inside the media) */}
+              {post.medias.length > 1 && (
+                <>
+                  <div className="absolute top-1/2 left-14 -translate-y-1/2 z-20">
+                    <CarouselPrevious />
+                  </div>
+                  <div className="absolute top-1/2 right-14 -translate-y-1/2 z-10">
+                    <CarouselNext />
+                  </div>
+                </>
+              )}
           </Carousel>
         </div>
 
