@@ -19,34 +19,42 @@ namespace ExpertBridge.Api.Services
             _dbContext = dbContext;
         }
 
+        // FUNCTIONAL PROGRAMMING IS MAD!
+        // FUNCTIONAL PROGRAMMING IS MAD!
+        // FUNCTIONAL PROGRAMMING IS MAD!
         public async Task AddRawTagsToPostAsync(string postId, string authorId, PostCategorizerResponse tags)
         {
-            List<Tag> rawTags = [];
+            ArgumentNullException.ThrowIfNull(postId);
+            ArgumentNullException.ThrowIfNull(tags);
 
-            foreach (var tag in tags.Tags)
-            { 
-                var existingTag = await _dbContext.Tags
+            var englishNames = tags.Tags.Select(t => t.EnglishName);
+            var arabicNames = tags.Tags.Select(t => t.ArabicName);
+
+            var existingTags = _dbContext.Tags
                 .AsNoTracking()
-                .FirstOrDefaultAsync(t => t.EnglishName == tag.EnglishName || t.ArabicName == tag.ArabicName);
+                .Where(t => englishNames.Contains(t.EnglishName) || arabicNames.Contains(t.ArabicName));
 
-                if (existingTag == null)
-                {
-                    existingTag = new Tag
-                    {
-                        EnglishName = tag.EnglishName,
-                        ArabicName = tag.ArabicName,
-                        Description = tag.Description
-                    };
-                    await _dbContext.Tags.AddAsync(existingTag);
-                }
+            var newRawTags = tags.Tags
+                .Where(t => !existingTags
+                        .Any(et => et.EnglishName == t.EnglishName
+                            || et.ArabicName == t.ArabicName));
 
-                rawTags.Add(existingTag);
-            }
+
+            var newTags = newRawTags.Select(tag => new Tag
+            {
+                EnglishName = tag.EnglishName,
+                ArabicName = tag.ArabicName,
+                Description = tag.Description
+            });
+
+            await _dbContext.AddRangeAsync(newTags);
 
             var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId);
 
-            await AddTagsToPostInternalAsync(post.Id, rawTags);
-            await AddTagsToUserProfileInternalAsync(authorId, rawTags.Select(t => t.Id));
+            var tagsToAdd = newTags.Concat(existingTags);
+
+            await AddTagsToPostInternalAsync(post.Id, tagsToAdd);
+            await AddTagsToUserProfileInternalAsync(authorId, tagsToAdd.Select(t => t.Id));
 
             post.Language = tags.Language;
             post.IsTagged = true;

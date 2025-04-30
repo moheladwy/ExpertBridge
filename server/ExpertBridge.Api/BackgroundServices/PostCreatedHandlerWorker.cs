@@ -7,6 +7,7 @@ using ExpertBridge.Api.HttpClients;
 using ExpertBridge.Api.Models;
 using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Services;
+using ExpertBridge.Core.Entities;
 using ExpertBridge.Data.DatabaseContexts;
 
 namespace ExpertBridge.Api.BackgroundServices
@@ -48,7 +49,9 @@ namespace ExpertBridge.Api.BackgroundServices
 
                         if (!response.IsSuccessStatusCode || response.Content == null)
                         {
-                            throw new Exception($"Request to categorizer failed with status code: {response.StatusCode}, {response.Error.Content}");
+                            throw new RemoteServiceCallFailedException(
+                                $"Request to categorizer failed with status code: " +
+                                $"{response.StatusCode}, {response.Error?.Content}");
                         }
 
                         var tags = response.Content;
