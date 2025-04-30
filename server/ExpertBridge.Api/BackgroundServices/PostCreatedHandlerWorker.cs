@@ -12,19 +12,29 @@ using ExpertBridge.Data.DatabaseContexts;
 
 namespace ExpertBridge.Api.BackgroundServices
 {
+    /// <summary>
+    /// Handles the creation of posts and categorizes them using a remote service.
+    /// Responsible for every operation needs to take place when a post is created.
+    /// </summary>
     public class PostCreatedHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ChannelReader<PostCreatedMessage> _channel;
+        private readonly ChannelWriter<UserInterestsUpdatedMessage> _userInterestsUpdatedChannel;
+        private readonly ChannelWriter<EmbedPostMessage> _embedPostChannel;
+        private readonly ChannelReader<PostCreatedMessage> _postCreatedChannel;
         private readonly ILogger<PostCreatedHandlerWorker> _logger;
 
         public PostCreatedHandlerWorker(
             IServiceProvider services,
-            Channel<PostCreatedMessage> channel,
+            Channel<PostCreatedMessage> postCreatedChannel,
+            Channel<EmbedPostMessage> embedPostChannel,
+            Channel<UserInterestsUpdatedMessage> userInterestsUpdatedChannel,
             ILogger<PostCreatedHandlerWorker> logger)
         {
             _services = services;
-            _channel = channel.Reader;
+            _userInterestsUpdatedChannel = userInterestsUpdatedChannel.Writer;
+            _embedPostChannel = embedPostChannel.Writer;
+            _postCreatedChannel = postCreatedChannel.Reader;
             _logger = logger;
         }
 
@@ -32,12 +42,19 @@ namespace ExpertBridge.Api.BackgroundServices
         {
             try
             {
-                while (await _channel.WaitToReadAsync(stoppingToken))
+                while (await _postCreatedChannel.WaitToReadAsync(stoppingToken))
                 {
-                    var post = await _channel.ReadAsync(stoppingToken);
+                    var post = await _postCreatedChannel.ReadAsync(stoppingToken);
 
                     try
                     {
+                        await _embedPostChannel.WriteAsync(new EmbedPostMessage
+                        {
+                            PostId = post.PostId,
+                            Title = post.Title,
+                            Content = post.Content,
+                        }, stoppingToken);
+
                         using var scope = _services.CreateScope();
                         var client = scope.ServiceProvider.GetRequiredService<IPostCategroizerClient>();
 
@@ -57,7 +74,13 @@ namespace ExpertBridge.Api.BackgroundServices
                         var tags = response.Content;
                         var taggingService = scope.ServiceProvider.GetRequiredService<TaggingService>();
 
-                        await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, tags);
+                        // Atomic Operation.
+                        await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, tags, stoppingToken);
+
+                        await _userInterestsUpdatedChannel.WriteAsync(new UserInterestsUpdatedMessage
+                        {
+                            UserProfileId = post.AuthorId,
+                        }, stoppingToken);
                     }
                     catch (Exception ex)
                     {

@@ -13,6 +13,7 @@ namespace ExpertBridge.Api.Extensions
             builder.Services
                 .AddSingleton(_ => Channel.CreateUnbounded<PostCreatedMessage>())
                 .AddSingleton(_ => Channel.CreateUnbounded<UserInterestsUpdatedMessage>())
+                .AddSingleton(_ => Channel.CreateUnbounded<EmbedPostMessage>())
                 ;
 
             return builder;

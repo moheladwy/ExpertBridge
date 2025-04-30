@@ -3,28 +3,31 @@
 
 
 using System.Threading.Channels;
+using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.HttpClients;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Data.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.BackgroundServices
 {
     public class UserInterestsUpdatedHandlerWorker : BackgroundService
     {
-        private readonly ExpertBridgeDbContext _dbContext;
+        private readonly IServiceProvider _services;
         private readonly ILogger<UserInterestsUpdatedHandlerWorker> _logger;
         private readonly ChannelReader<UserInterestsUpdatedMessage> _channel;
 
         public UserInterestsUpdatedHandlerWorker(
-            ExpertBridgeDbContext dbContext,
+            IServiceProvider services,
             ILogger<UserInterestsUpdatedHandlerWorker> logger,
             Channel<UserInterestsUpdatedMessage> channel)
         {
-            _dbContext = dbContext;
+            _services = services;
             _logger = logger;
             _channel = channel.Reader;
         }
@@ -39,7 +42,38 @@ namespace ExpertBridge.Api.BackgroundServices
 
                     try
                     {
-                        
+                        using var scope = _services.CreateScope();
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
+                        var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
+
+                        var userInterests = await dbContext.UserInterests
+                            .AsNoTracking()
+                            .Include(ui => ui.Tag)
+                            .Where(ui => ui.ProfileId == message.UserProfileId)
+                            .ToListAsync(stoppingToken);
+
+                        var text = userInterests.Aggregate(
+                            string.Empty, (current, userInterest) =>
+                                $"{current} {userInterest.Tag.ArabicName} {userInterest.Tag.ArabicName}"
+                        );
+
+                        var embedding = await embeddingService.GenerateEmbedding(text);
+
+                        if (embedding is null)
+                        {
+                            throw new RemoteServiceCallFailedException(
+                                $"Error: Embedding service returned null embedding for user=${message.UserProfileId}.");
+                        }
+
+                        var user = await dbContext.Profiles
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(p => p.Id == message.UserProfileId, stoppingToken);
+
+                        if (user is not null)
+                        {
+                            user.UserInterestEmbedding = embedding;
+                            await dbContext.SaveChangesAsync(stoppingToken);
+                        }
                     }
                     catch (Exception ex)
                     {

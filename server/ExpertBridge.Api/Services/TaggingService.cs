@@ -29,7 +29,22 @@ namespace ExpertBridge.Api.Services
         // FUNCTIONAL PROGRAMMING IS MAD!
         // FUNCTIONAL PROGRAMMING IS MAD!
         // FUNCTIONAL PROGRAMMING IS MAD!
-        public async Task AddRawTagsToPostAsync(string postId, string authorId, PostCategorizerResponse tags)
+
+        /// <summary>
+        /// Adds tags to a post and user profile.
+        /// <br/>
+        /// This operation is atomic.
+        /// It writes to DB and commits changes. 
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <param name="authorId"></param>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        public async Task AddRawTagsToPostAsync(
+            string postId,
+            string authorId,
+            PostCategorizerResponse tags,
+            CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(postId);
             ArgumentNullException.ThrowIfNull(tags);
@@ -42,7 +57,7 @@ namespace ExpertBridge.Api.Services
             var existingTags = await _dbContext.Tags
                 .AsNoTracking()
                 .Where(t => englishNames.Contains(t.EnglishName) || arabicNames.Contains(t.ArabicName))
-                .ToListAsync(); // materialize the query to use it in next calculations.
+                .ToListAsync(cancellationToken); // materialize the query to use it in next calculations.
 
             var newRawTags = tagList
                 .Where(t => !existingTags
@@ -56,37 +71,35 @@ namespace ExpertBridge.Api.Services
                 Description = tag.Description
             }).ToList();
 
-            await _dbContext.AddRangeAsync(newTags);
-            await _dbContext.SaveChangesAsync(); // Save new tags to generate their IDs
+            await _dbContext.AddRangeAsync(newTags, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken); // Save new tags to generate their IDs
 
-            var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId);
+            var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId, cancellationToken);
 
             var tagsToAdd = newTags.Concat(existingTags);
 
-            await AddTagsToPostInternalAsync(post.Id, tagsToAdd.Select(t => t.Id));
-            await AddTagsToUserProfileInternalAsync(authorId, tagsToAdd.Select(t => t.Id));
+            await AddTagsToPostInternalAsync(post.Id, tagsToAdd.Select(t => t.Id), cancellationToken);
+            await AddTagsToUserProfileInternalAsync(authorId, tagsToAdd.Select(t => t.Id), cancellationToken);
 
             post.Language = tags.Language;
             post.IsTagged = true;
 
-            await _dbContext.SaveChangesAsync();
-
-            await _channel.WriteAsync(new UserInterestsUpdatedMessage
-            {
-                UserProfileId = authorId,
-            });
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         /// <summary>
         /// This method should not be called from outside because it's just
         /// a step in a bigger Unit of Work. It does not commit the changes to DB.
         /// </summary>
-        private async Task AddTagsToPostInternalAsync(string postId, IEnumerable<string> tagIds)
+        private async Task AddTagsToPostInternalAsync(
+            string postId,
+            IEnumerable<string> tagIds,
+            CancellationToken cancellationToken = default)
         {
             var existingTagIds = await _dbContext.PostTags
                 .Where(pt => pt.PostId == postId && tagIds.Contains(pt.TagId))
                 .Select(pt => pt.TagId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var newPostTags = tagIds
                 .Where(tagId => !existingTagIds.Contains(tagId))
@@ -96,7 +109,7 @@ namespace ExpertBridge.Api.Services
                     TagId = tagId
                 });
 
-            await _dbContext.PostTags.AddRangeAsync(newPostTags);
+            await _dbContext.PostTags.AddRangeAsync(newPostTags, cancellationToken);
         }
 
         public async Task AddTagsToPostAsync(string postId, IEnumerable<Tag> tags)
@@ -109,12 +122,15 @@ namespace ExpertBridge.Api.Services
         /// This method should not be called from outside because it's just
         /// a step in a bigger Unit of Work. It does not commit the changes.
         /// </summary>
-        private async Task AddTagsToUserProfileInternalAsync(string profileId, IEnumerable<string> tagIds)
+        private async Task AddTagsToUserProfileInternalAsync(
+            string profileId,
+            IEnumerable<string> tagIds,
+            CancellationToken cancellationToken = default)
         {
             var existingTagIds = await _dbContext.UserInterests
                 .Where(ui => ui.ProfileId == profileId && tagIds.Contains(ui.TagId))
                 .Select(pt => pt.TagId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var newUserInterests = tagIds
                 .Where(tagId => !existingTagIds.Contains(tagId))
@@ -124,7 +140,7 @@ namespace ExpertBridge.Api.Services
                     TagId = tagId
                 });
 
-            await _dbContext.UserInterests.AddRangeAsync(newUserInterests);
+            await _dbContext.UserInterests.AddRangeAsync(newUserInterests, cancellationToken);
         }
 
         public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags)
