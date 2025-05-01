@@ -41,11 +41,15 @@ class TranslateTagsResponse(BaseModel):
                              description="The list of translated tags with their descriptions")
 
 
-with open("output-format.json", "w", encoding="utf-8") as f:
-    json.dump(CategorizationResponse.model_json_schema(),
-              f, ensure_ascii=False, indent=2)
+def generate_json_schemas():
+    with open("output-format.json", "w", encoding="utf-8") as f:
+        json.dump(CategorizationResponse.model_json_schema(),
+                  f, ensure_ascii=False, indent=2)
+
+    with open("output-format-translate.json", "w", encoding="utf-8") as f:
+        json.dump(TranslateTagsResponse.model_json_schema(),
+                  f, ensure_ascii=False, indent=2)
 
 
-with open("output-format-translate.json", "w", encoding="utf-8") as f:
-    json.dump(TranslateTagsResponse.model_json_schema(),
-              f, ensure_ascii=False, indent=2)
+if __name__ == "__main__":
+    generate_json_schemas()
