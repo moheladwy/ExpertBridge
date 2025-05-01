@@ -62,6 +62,8 @@ builder.AddRefitHttpClients();
 builder.AddIpcChannels();
 builder.AddBackgroundWorkers();
 
+builder.AddEmbeddingServices();
+
 builder.AddSwaggerGen();
 builder.AddCors();
 
@@ -85,12 +87,6 @@ builder.Services.AddControllers(options =>
             VaryByHeader = "Authorization",
         });
 });
-
-builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(
-    serviceProvider => new OllamaEmbeddingGenerator(
-        builder.Configuration["Ollama:Url"]!,
-        builder.Configuration["Ollama:ModelId"]!)
-);
 
 builder.Services.AddServices();
 
