@@ -1,6 +1,7 @@
-using ExpertBridge.Api.Settings;
+using ExpertBridge.Api.Services;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Providers;
+using ExpertBridge.GroqLibrary.Settings;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;
@@ -36,13 +37,18 @@ public static class GroqApi
     /// <seealso cref="GroqLlmTextProvider" />
     public static void AddGroqApiServices(this IServiceCollection services, IConfiguration configuration)
     {
-        configuration.GetSection("Groq").Bind(new GroqSettings());
+        configuration.GetSection(GroqSettings.Section).Bind(new GroqSettings());
 
-        services.Configure<GroqSettings>(configuration.GetSection("Groq"));
+        services.Configure<GroqSettings>(configuration.GetSection(GroqSettings.Section));
         services.AddScoped(sp =>
         {
             var settings = sp.GetRequiredService<IOptions<GroqSettings>>().Value;
             return new GroqLlmTextProvider(settings.ApiKey, settings.Model);
         });
+
+        services
+            .AddScoped<GroqPostTaggingService>()
+            .AddScoped<TagProcessorService>()
+            ;
     }
 }

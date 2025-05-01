@@ -27,6 +27,7 @@ public static class Services
             .AddScoped<S3Service>()
             .AddScoped<TaggingService>()
             ;
+
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
     }
 }
