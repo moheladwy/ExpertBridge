@@ -1,8 +1,5 @@
-using System.Threading.Channels;
-using ExpertBridge.Api.BackgroundServices;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Interfaces.Services;
 using ExpertBridge.Core.Requests.RegisterUser;
@@ -10,10 +7,13 @@ using FluentValidation;
 
 namespace ExpertBridge.Api.Extensions;
 
+/// <summary>
+///     Provides extension methods for adding services to the dependency injection container.
+/// </summary>
 public static class Services
 {
     /// <summary>
-    ///     Adds the services to the services collection.
+    ///     Adds the services to the service's collection.
     /// </summary>
     /// <param name="services">
     ///     The service collection to add the services to.

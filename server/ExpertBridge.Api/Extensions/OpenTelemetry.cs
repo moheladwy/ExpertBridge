@@ -1,5 +1,3 @@
-
-
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -70,9 +68,10 @@ internal static class OpenTelemetry
         var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
         if (useOtlpExporter)
+        {
             builder.Services.AddOpenTelemetry().UseOtlpExporter();
+        }
 
         return builder;
     }
-
 }
