@@ -38,8 +38,9 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                     var s3Client = scope.ServiceProvider.GetRequiredService<IAmazonS3>();
                     var awsSettings = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<AwsSettings>>().Value;
 
-                    var onHoldGrants = dbContext.MediaGrants
-                        .Where(g => g.OnHold && g.GrantedAt < DateTime.UtcNow.AddHours(-1));
+                    var onHoldGrants = await dbContext.MediaGrants
+                        .Where(g => g.OnHold && g.GrantedAt < DateTime.UtcNow.AddHours(-1))
+                        .ToListAsync(stoppingToken);
 
                     //var keys = await s3Client
                     //    .GetAllObjectKeysAsync(
@@ -126,7 +127,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                                 deletedMedias.Add(media);
                         }, stoppingToken);
 
-                    if (deletedMedias.Count + onHoldGrants.Count() > 1)
+                    if (deletedMedias.Count + onHoldGrants.Count > 0)
                     {
                         await s3Client.DeleteObjectsAsync(
                             new DeleteObjectsRequest
@@ -134,8 +135,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                                 BucketName = awsSettings.BucketName,
                                 Objects =
                                     deletedMedias.Select(m => m.Key)
-                                    .Concat(onHoldGrants.Select(g => g.Key))
                                     .Where(k => !validKeys.Contains(k))
+                                    .Concat(onHoldGrants.Select(g => g.Key))
                                     .Select(k => new KeyVersion { Key = k })
                                     .ToList()
                             },
