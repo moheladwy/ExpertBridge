@@ -1,7 +1,11 @@
+using System.Threading.Channels;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Queries;
+using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
@@ -56,5 +60,26 @@ public class ProfilesController : ControllerBase
             throw new ProfileNotFoundException($"Profile with id={id} was not found");
 
         return profile;
+    }
+
+    [HttpPost("onboard")]
+    public async Task<ProfileResponse> OnboardUser(
+        [FromBody] OnboardUserRequest request,
+        [FromServices] TaggingService _taggingService)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var user = await _authHelper.GetCurrentUserAsync();
+
+        user.IsOnboarded = true;
+
+        await _taggingService.AddTagsToUserProfileAsync(user.Profile.Id, request.TagIds);
+
+        var response = await _dbContext.Profiles
+            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
+            .SelectProfileResponseFromProfile()
+            .FirstOrDefaultAsync();
+
+        return response;
     }
 }

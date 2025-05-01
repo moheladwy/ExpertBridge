@@ -10,7 +10,7 @@ using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Data.DatabaseContexts;
 
-namespace ExpertBridge.Api.BackgroundServices
+namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
     /// <summary>
     /// Handles the creation of posts and categorizes them using a remote service.
@@ -19,7 +19,6 @@ namespace ExpertBridge.Api.BackgroundServices
     public class PostCreatedHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ChannelWriter<UserInterestsUpdatedMessage> _userInterestsUpdatedChannel;
         private readonly ChannelWriter<EmbedPostMessage> _embedPostChannel;
         private readonly ChannelReader<PostCreatedMessage> _postCreatedChannel;
         private readonly ILogger<PostCreatedHandlerWorker> _logger;
@@ -28,11 +27,9 @@ namespace ExpertBridge.Api.BackgroundServices
             IServiceProvider services,
             Channel<PostCreatedMessage> postCreatedChannel,
             Channel<EmbedPostMessage> embedPostChannel,
-            Channel<UserInterestsUpdatedMessage> userInterestsUpdatedChannel,
             ILogger<PostCreatedHandlerWorker> logger)
         {
             _services = services;
-            _userInterestsUpdatedChannel = userInterestsUpdatedChannel.Writer;
             _embedPostChannel = embedPostChannel.Writer;
             _postCreatedChannel = postCreatedChannel.Reader;
             _logger = logger;
@@ -56,31 +53,31 @@ namespace ExpertBridge.Api.BackgroundServices
                         }, stoppingToken);
 
                         using var scope = _services.CreateScope();
-                        var client = scope.ServiceProvider.GetRequiredService<IPostCategroizerClient>();
+                        //var client = scope.ServiceProvider.GetRequiredService<IPostCategroizerClient>();
 
-                        var response = await client.GetPostTagsAsync(new PostCategorizerRequest
-                        {
-                            Title = post.Title,
-                            Content = post.Content,
-                        });
+                        //var response = await client.GetPostTagsAsync(new PostCategorizerRequest
+                        //{
+                        //    Title = post.Title,
+                        //    Content = post.Content,
+                        //});
 
-                        if (!response.IsSuccessStatusCode || response.Content == null)
-                        {
-                            throw new RemoteServiceCallFailedException(
-                                $"Request to categorizer failed with status code: " +
-                                $"{response.StatusCode}, {response.Error?.Content}");
-                        }
+                        //if (!response.IsSuccessStatusCode || response.Content == null)
+                        //{
+                        //    throw new RemoteServiceCallFailedException(
+                        //        $"Request to categorizer failed with status code: " +
+                        //        $"{response.StatusCode}, {response.Error?.Content}");
+                        //}
 
-                        var tags = response.Content;
+                        //var tags = response.Content;
+
+                        var groqService = scope.ServiceProvider.GetRequiredService<GroqPostTaggingService>();
+                        var tags = await groqService
+                            .GeneratePostTagsAsync(post.Title, post.Content, new List<string>());
+
                         var taggingService = scope.ServiceProvider.GetRequiredService<TaggingService>();
 
                         // Atomic Operation.
                         await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, tags, stoppingToken);
-
-                        await _userInterestsUpdatedChannel.WriteAsync(new UserInterestsUpdatedMessage
-                        {
-                            UserProfileId = post.AuthorId,
-                        }, stoppingToken);
                     }
                     catch (Exception ex)
                     {

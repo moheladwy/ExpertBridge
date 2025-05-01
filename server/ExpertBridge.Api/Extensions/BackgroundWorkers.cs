@@ -1,7 +1,8 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Api.BackgroundServices;
+using ExpertBridge.Api.BackgroundServices.Handlers;
+using ExpertBridge.Api.BackgroundServices.PeriodicJobs;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -23,10 +24,11 @@ public static class BackgroundWorkers
 
         builder.Services
             .AddHostedService<S3CleaningWorker>()
-            .AddHostedService<PeriodicPostTaggingCleanerWorker>()
+            .AddHostedService<PeriodicPostTaggingWorker>()
             .AddHostedService<PostCreatedHandlerWorker>()
             .AddHostedService<UserInterestsUpdatedHandlerWorker>()
             .AddHostedService<PostEmbeddingHandlerWorker>()
+            .AddHostedService<PeriodicUserInterestUpdaterWorker>()
             ;
 
         return builder;

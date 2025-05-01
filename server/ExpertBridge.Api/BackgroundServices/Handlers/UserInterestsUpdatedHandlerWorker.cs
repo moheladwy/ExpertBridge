@@ -14,7 +14,7 @@ using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.BackgroundServices
+namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
     public class UserInterestsUpdatedHandlerWorker : BackgroundService
     {

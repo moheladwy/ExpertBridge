@@ -18,11 +18,14 @@ public static class RateLimiting
     /// <returns>
     ///     The updated service collection with rate limiting configured.
     /// </returns>
-    public static IServiceCollection AddRateLimiting(
-        this IServiceCollection services,
-        ExpertBridgeRateLimitSettings rateLimitOptions)
+    public static WebApplicationBuilder AddRateLimiting(
+        this WebApplicationBuilder builder)
     {
-        services.AddRateLimiter(options =>
+        var rateLimitOptions = new ExpertBridgeRateLimitSettings();
+        builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName)
+            .Bind(rateLimitOptions);
+
+        builder.Services.AddRateLimiter(options =>
         {
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
                 RateLimitPartition.GetFixedWindowLimiter(
@@ -47,6 +50,6 @@ public static class RateLimiting
             };
         });
 
-        return services;
+        return builder;
     }
 }

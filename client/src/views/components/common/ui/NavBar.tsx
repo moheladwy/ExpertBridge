@@ -30,9 +30,30 @@ import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice
 const NavBar = () => {
 	useGetCurrentUserProfileQuery();
 
+
+	//to get the active location
+	const location = useLocation();
 	const navigate = useNavigate();
+
 	const [isLoggedIn, loginLoading, loginError, authUser, userProfile] =
 		useIsUserLoggedIn();
+
+	useEffect(() => {
+		if (userProfile) {
+			if (!userProfile.isOnboarded) {
+				navigate('/onboarding');
+			}
+		}
+	}, [userProfile, navigate]);
+
+	useEffect(() => {
+		if (location.pathname.includes('onboarding')) {
+			if (userProfile?.isOnboarded === true) {
+				navigate('/home');
+			}
+		}
+	}, [navigate, location.pathname]);
+
 	const [signOut, loading, error] = useSignOut(auth);
 
 	const handleSignOut = useCallback(async () => {
@@ -44,9 +65,6 @@ const NavBar = () => {
 
 	const [open, setOpen] = useState(false);
 	const [searchInput, setSearchInput] = useState("");
-
-	//to get the active location
-	const location = useLocation();
 
 	const handelSearch = () => {
 		setOpen((open) => !open);

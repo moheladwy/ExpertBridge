@@ -16,14 +16,14 @@ namespace ExpertBridge.Api.Services
     public class TaggingService
     {
         private readonly ExpertBridgeDbContext _dbContext;
-        private readonly ChannelWriter<UserInterestsUpdatedMessage> _channel;
+        private readonly ChannelWriter<UserInterestsUpdatedMessage> _userInterestsChannel;
 
         public TaggingService(
             ExpertBridgeDbContext dbContext,
-            Channel<UserInterestsUpdatedMessage> channel)
+            Channel<UserInterestsUpdatedMessage> userInterestsChannel)
         {
             _dbContext = dbContext;
-            _channel = channel.Writer;
+            _userInterestsChannel = userInterestsChannel;
         }
 
         // FUNCTIONAL PROGRAMMING IS MAD!
@@ -85,6 +85,11 @@ namespace ExpertBridge.Api.Services
             post.IsTagged = true;
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            await _userInterestsChannel.WriteAsync(new UserInterestsUpdatedMessage
+            {
+                UserProfileId = authorId
+            }, cancellationToken);
         }
 
         /// <summary>
@@ -145,14 +150,22 @@ namespace ExpertBridge.Api.Services
 
         public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags)
         {
-            await AddTagsToUserProfileInternalAsync(profileId, tags.Select(t => t.Id));
-            await _dbContext.SaveChangesAsync();
+            await AddTagsToUserProfileAsync(profileId, tags.Select(t => t.Id));
         }
 
+        // This is the method that will be called all of the time.
+        // Wheather the code calls this or the other overload, eventually
+        // this method is the one to be called and it's the one responsible
+        // for commiting changes to DB.
         public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<string> tagIds)
         {
             await AddTagsToUserProfileInternalAsync(profileId, tagIds);
             await _dbContext.SaveChangesAsync();
+
+            await _userInterestsChannel.WriteAsync(new UserInterestsUpdatedMessage
+            {
+                UserProfileId = profileId,
+            });
         }
     }
 }
