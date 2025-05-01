@@ -40,7 +40,7 @@ namespace ExpertBridge.Api.BackgroundServices
 
                     var onHoldGrants = await dbContext.MediaGrants
                         .Where(g => g.OnHold && g.GrantedAt < DateTime.UtcNow.AddHours(-1))
-                        ToListAsync(stoppingToken);
+                        .ToListAsync(stoppingToken);
 
                     //var keys = await s3Client
                     //    .GetAllObjectKeysAsync(
