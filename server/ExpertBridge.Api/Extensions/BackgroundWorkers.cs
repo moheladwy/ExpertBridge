@@ -28,6 +28,7 @@ public static class BackgroundWorkers
             .AddHostedService<PostCreatedHandlerWorker>()
             .AddHostedService<UserInterestsUpdatedHandlerWorker>()
             .AddHostedService<PostEmbeddingHandlerWorker>()
+            .AddHostedService<PeriodicUserInterestUpdaterWorker>()
             ;
 
         return builder;

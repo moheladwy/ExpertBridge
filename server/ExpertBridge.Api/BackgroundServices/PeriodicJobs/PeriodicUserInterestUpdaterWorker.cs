@@ -12,19 +12,16 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
     {
         private readonly IServiceProvider _services;
         private readonly ChannelWriter<UserInterestsUpdatedMessage> _channel;
-        private readonly ExpertBridgeDbContext _dbContext;
         private readonly ILogger<PeriodicUserInterestUpdaterWorker> _logger;
 
         public PeriodicUserInterestUpdaterWorker(
             IServiceProvider services,
             Channel<UserInterestsUpdatedMessage> channel,
-            ExpertBridgeDbContext dbContext,
             ILogger<PeriodicUserInterestUpdaterWorker> logger
             )
         {
             _services = services;
             _channel = channel.Writer;
-            _dbContext = dbContext;
             _logger = logger;
         }
 
