@@ -35,20 +35,23 @@ public static class GroqApi
     /// </remarks>
     /// <seealso cref="GroqApiChatCompletionClient" />
     /// <seealso cref="GroqLlmTextProvider" />
-    public static void AddGroqApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static WebApplicationBuilder AddGroqApiServices(
+        this WebApplicationBuilder builder)
     {
-        configuration.GetSection(GroqSettings.Section).Bind(new GroqSettings());
+        builder.Configuration.GetSection(GroqSettings.Section).Bind(new GroqSettings());
 
-        services.Configure<GroqSettings>(configuration.GetSection(GroqSettings.Section));
-        services.AddScoped(sp =>
+        builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
+        builder.Services.AddScoped(sp =>
         {
             var settings = sp.GetRequiredService<IOptions<GroqSettings>>().Value;
             return new GroqLlmTextProvider(settings.ApiKey, settings.Model);
         });
 
-        services
+        builder.Services
             .AddScoped<GroqPostTaggingService>()
             .AddScoped<TagProcessorService>()
             ;
+
+        return builder;
     }
 }
