@@ -7,7 +7,7 @@ namespace ExpertBridge.Api.Settings
     {
         public const string Section = "Ollama";
 
-        public string Url { get; set; }
+        public string Endpoint { get; set; }
         public string ModelId { get; set; }
     }
 }
