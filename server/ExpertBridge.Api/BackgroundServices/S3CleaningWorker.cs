@@ -126,7 +126,7 @@ namespace ExpertBridge.Api.BackgroundServices
                                 deletedMedias.Add(media);
                         }, stoppingToken);
 
-                    if (deletedMedias.Count + onHoldGrants.Count() > 1)
+                    if (deletedMedias.Count + onHoldGrants.Count() > 0)
                     {
                         await s3Client.DeleteObjectsAsync(
                             new DeleteObjectsRequest
