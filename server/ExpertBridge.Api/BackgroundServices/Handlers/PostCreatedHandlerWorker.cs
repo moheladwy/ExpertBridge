@@ -10,7 +10,7 @@ using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Data.DatabaseContexts;
 
-namespace ExpertBridge.Api.BackgroundServices
+namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
     /// <summary>
     /// Handles the creation of posts and categorizes them using a remote service.
@@ -19,7 +19,6 @@ namespace ExpertBridge.Api.BackgroundServices
     public class PostCreatedHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ChannelWriter<UserInterestsUpdatedMessage> _userInterestsUpdatedChannel;
         private readonly ChannelWriter<EmbedPostMessage> _embedPostChannel;
         private readonly ChannelReader<PostCreatedMessage> _postCreatedChannel;
         private readonly ILogger<PostCreatedHandlerWorker> _logger;
@@ -28,11 +27,9 @@ namespace ExpertBridge.Api.BackgroundServices
             IServiceProvider services,
             Channel<PostCreatedMessage> postCreatedChannel,
             Channel<EmbedPostMessage> embedPostChannel,
-            Channel<UserInterestsUpdatedMessage> userInterestsUpdatedChannel,
             ILogger<PostCreatedHandlerWorker> logger)
         {
             _services = services;
-            _userInterestsUpdatedChannel = userInterestsUpdatedChannel.Writer;
             _embedPostChannel = embedPostChannel.Writer;
             _postCreatedChannel = postCreatedChannel.Reader;
             _logger = logger;
@@ -81,11 +78,6 @@ namespace ExpertBridge.Api.BackgroundServices
 
                         // Atomic Operation.
                         await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, tags, stoppingToken);
-
-                        await _userInterestsUpdatedChannel.WriteAsync(new UserInterestsUpdatedMessage
-                        {
-                            UserProfileId = post.AuthorId,
-                        }, stoppingToken);
                     }
                     catch (Exception ex)
                     {

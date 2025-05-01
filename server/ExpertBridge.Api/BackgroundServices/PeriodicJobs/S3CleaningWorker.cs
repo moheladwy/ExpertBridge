@@ -6,7 +6,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace ExpertBridge.Api.BackgroundServices
+namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
     public class S3CleaningWorker : BackgroundService
     {

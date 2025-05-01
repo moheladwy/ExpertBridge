@@ -12,17 +12,17 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.BackgroundServices
+namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
-    public class PeriodicPostTaggingCleanerWorker : BackgroundService
+    public class PeriodicPostTaggingWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<PeriodicPostTaggingCleanerWorker> _logger;
+        private readonly ILogger<PeriodicPostTaggingWorker> _logger;
         private readonly ChannelWriter<PostCreatedMessage> _postCreatedChannel;
 
-        public PeriodicPostTaggingCleanerWorker(
+        public PeriodicPostTaggingWorker(
             IServiceProvider services,
-            ILogger<PeriodicPostTaggingCleanerWorker> logger,
+            ILogger<PeriodicPostTaggingWorker> logger,
             Channel<PostCreatedMessage> postCreatedChannel)
         {
             _services = services;
@@ -32,13 +32,13 @@ namespace ExpertBridge.Api.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var period = 60 * 60 * 24 * 2; // 2 days;
+            var period = 60 * 60 * 24 * 1; // 1 day
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation($"{nameof(PeriodicPostTaggingCleanerWorker)} Started...");
+                _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Started...");
 
                 try
                 {
@@ -48,6 +48,13 @@ namespace ExpertBridge.Api.BackgroundServices
                     var unTaggedPosts = await dbContext.Posts
                         .AsNoTracking()
                         .Where(p => p.IsDeleted == false && !p.IsTagged)
+                        .Select(p => new
+                        {
+                            p.Id,
+                            p.AuthorId,
+                            p.Content,
+                            p.Title
+                        })
                         .ToListAsync(stoppingToken);
 
                     // That might look like a weird design decision.
@@ -70,11 +77,11 @@ namespace ExpertBridge.Api.BackgroundServices
                 catch (Exception ex)
                 {
                     _logger.LogError(ex,
-                        $"Failed to execute {nameof(PeriodicPostTaggingCleanerWorker)} with exception message {ex.Message}."
+                        $"Failed to execute {nameof(PeriodicPostTaggingWorker)} with exception message {ex.Message}."
                         );
                 }
 
-                _logger.LogInformation($"{nameof(PeriodicPostTaggingCleanerWorker)} Finished.");
+                _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Finished.");
             }
         }
     }
