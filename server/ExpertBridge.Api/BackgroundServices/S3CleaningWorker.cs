@@ -135,8 +135,8 @@ namespace ExpertBridge.Api.BackgroundServices
                                 BucketName = awsSettings.BucketName,
                                 Objects =
                                     deletedMedias.Select(m => m.Key)
-                                    .Concat(onHoldGrants.Select(g => g.Key))
                                     .Where(k => !validKeys.Contains(k))
+                                    .Concat(onHoldGrants.Select(g => g.Key))
                                     .Select(k => new KeyVersion { Key = k })
                                     .ToList()
                             },
