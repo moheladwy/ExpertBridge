@@ -1,4 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
+import { profilesApiSlice } from "../profiles/profilesSlice";
 import { AppUser, CreateUserRequest, UpdateUserRequest } from "./types";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
@@ -17,7 +18,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 			}),
 
 			invalidatesTags: ["CurrentUser"],
-			onQueryStarted: () => {
+			onQueryStarted: async (request, lifecycleApi) => {
 				console.log("mutation ongoing");
 			},
 		}),
