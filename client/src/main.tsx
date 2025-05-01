@@ -93,7 +93,7 @@ const router = createBrowserRouter([
 		element: <EmailVerificationPage />,
 	},
 	{
-		path: "interests",
+		path: "onboarding",
 		element: (
 			<ProtectedRoute>
 				<Interests />

@@ -42,6 +42,35 @@ public class TagProcessorService
     }
 
     /// <summary>
+    /// Translates and generates a collection of categorizer tags using the Groq Large Language Model (LLM) API.
+    /// This method processes the existing tags, communicates with the Groq LLM, and deserializes
+    /// the categorization response into a list of categorizer tag objects.
+    /// </summary>
+    /// <param name="existingTags">A collection of existing tags to be translated and processed.</param>
+    /// <returns>A collection of categorizer tags containing translated tag details.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="existingTags"/> parameter is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the response from the Groq LLM API cannot be deserialized
+    /// or when the deserialization result is null.</exception>
+    /// <exception cref="JsonException">Thrown when a JSON parsing error occurs during deserialization of the response.</exception>
+    public async Task<IEnumerable<CategorizerTag>> TranslateTagsAsync(IReadOnlyCollection<string> existingTags)
+    {
+        ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
+        try
+        {
+            var systemPrompt = GetSystemPrompt();
+            var userPrompt = GetUserPrompt(existingTags);
+            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+            var result = JsonSerializer.Deserialize<List<CategorizerTag>>(response, _jsonSerializerOptions)
+                         ?? throw new InvalidOperationException("Failed to deserialize the categorizer response: null result");
+            return result;
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException($"Failed to parse the categorizer response: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
     /// Retrieves the content of the output format schema file used for tag translation.
     /// </summary>
     /// <returns>
@@ -105,34 +134,5 @@ public class TagProcessorService
         ];
 
         return string.Join("\n", userPrompt);
-    }
-
-    /// <summary>
-    /// Translates and generates a collection of categorizer tags using the Groq Large Language Model (LLM) API.
-    /// This method processes the existing tags, communicates with the Groq LLM, and deserializes
-    /// the categorization response into a list of categorizer tag objects.
-    /// </summary>
-    /// <param name="existingTags">A collection of existing tags to be translated and processed.</param>
-    /// <returns>A collection of categorizer tags containing translated tag details.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="existingTags"/> parameter is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the response from the Groq LLM API cannot be deserialized
-    /// or when the deserialization result is null.</exception>
-    /// <exception cref="JsonException">Thrown when a JSON parsing error occurs during deserialization of the response.</exception>
-    public async Task<IEnumerable<CategorizerTag>> TranslateTagsAsync(IReadOnlyCollection<string> existingTags)
-    {
-        ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
-        try
-        {
-            var systemPrompt = GetSystemPrompt();
-            var userPrompt = GetUserPrompt(existingTags);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
-            var result = JsonSerializer.Deserialize<List<CategorizerTag>>(response, _jsonSerializerOptions)
-                         ?? throw new InvalidOperationException("Failed to deserialize the categorizer response: null result");
-            return result;
-        }
-        catch (JsonException ex)
-        {
-            throw new InvalidOperationException($"Failed to parse the categorizer response: {ex.Message}", ex);
-        }
     }
 }

@@ -1,6 +1,7 @@
-using ExpertBridge.Api.Settings;
+using ExpertBridge.Api.Services;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Providers;
+using ExpertBridge.GroqLibrary.Settings;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;
@@ -34,20 +35,23 @@ public static class GroqApi
     /// </remarks>
     /// <seealso cref="GroqApiChatCompletionClient" />
     /// <seealso cref="GroqLlmTextProvider" />
-    public static void AddGroqApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static WebApplicationBuilder AddGroqApiServices(
+        this WebApplicationBuilder builder)
     {
-        // Bind configuration to settings
-        configuration.GetSection("Groq").Bind(new GroqSettings());
+        builder.Configuration.GetSection(GroqSettings.Section).Bind(new GroqSettings());
 
-        // Register settings
-        services.Configure<GroqSettings>(configuration.GetSection("Groq"));
-
-        // Register the GroqLlmTextProvider with its dependencies
-        services.AddScoped<GroqLlmTextProvider>(sp =>
+        builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
+        builder.Services.AddScoped(sp =>
         {
-            // Using IOptions pattern
             var settings = sp.GetRequiredService<IOptions<GroqSettings>>().Value;
             return new GroqLlmTextProvider(settings.ApiKey, settings.Model);
         });
+
+        builder.Services
+            .AddScoped<GroqPostTaggingService>()
+            .AddScoped<TagProcessorService>()
+            ;
+
+        return builder;
     }
 }

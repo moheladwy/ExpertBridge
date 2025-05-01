@@ -9,7 +9,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.BackgroundServices
+namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
     public class PostEmbeddingHandlerWorker : BackgroundService
     {
