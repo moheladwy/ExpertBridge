@@ -4,6 +4,9 @@ using Serilog;
 
 namespace ExpertBridge.Api.Extensions;
 
+/// <summary>
+///     Provides extension methods for handling database migrations during application startup.
+/// </summary>
 internal static class DbMigration
 {
     /// <summary>

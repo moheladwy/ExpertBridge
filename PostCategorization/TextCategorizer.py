@@ -106,7 +106,7 @@ class TextCategorizer:
         user_content: list[str] = [
             "Translate and provide descriptions for the following tags:",
             "```",
-            ", ".join(tags),
+            "["+", ".join(tags)+"]",
             "```",
             "For each tag:",
             "1. Provide both English and Egyption Arabic translations",
