@@ -99,7 +99,7 @@ builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName)
     .Bind(rateLimitOptions);
 
 builder.Services.AddRateLimiting(rateLimitOptions);
-builder.Services.AddGroqApiServices();
+builder.Services.AddGroqApiServices(builder.Configuration);
 
 var app = builder.Build();
 

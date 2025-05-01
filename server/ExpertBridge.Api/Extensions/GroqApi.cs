@@ -1,8 +1,7 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
+using ExpertBridge.Api.Settings;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Providers;
+using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -35,11 +34,20 @@ public static class GroqApi
     /// </remarks>
     /// <seealso cref="GroqApiChatCompletionClient" />
     /// <seealso cref="GroqLlmTextProvider" />
-    public static void AddGroqApiServices(this IServiceCollection services) =>
-        services
-            .AddScoped<GroqLlmTextProvider>();
-    // .AddScoped<GroqApiChatCompletionClient>()
-    // .AddScoped<GroqApiAudioClient>()
-    // .AddScoped<GroqApiToolClient>()
-    // .AddScoped<GroqApiVisionClient>()
+    public static void AddGroqApiServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Bind configuration to settings
+        configuration.GetSection("Groq").Bind(new GroqSettings());
+
+        // Register settings
+        services.Configure<GroqSettings>(configuration.GetSection("Groq"));
+
+        // Register the GroqLlmTextProvider with its dependencies
+        services.AddScoped<GroqLlmTextProvider>(sp =>
+        {
+            // Using IOptions pattern
+            var settings = sp.GetRequiredService<IOptions<GroqSettings>>().Value;
+            return new GroqLlmTextProvider(settings.ApiKey, settings.Model);
+        });
+    }
 }
