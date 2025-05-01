@@ -56,22 +56,27 @@ namespace ExpertBridge.Api.BackgroundServices
                         }, stoppingToken);
 
                         using var scope = _services.CreateScope();
-                        var client = scope.ServiceProvider.GetRequiredService<IPostCategroizerClient>();
+                        //var client = scope.ServiceProvider.GetRequiredService<IPostCategroizerClient>();
 
-                        var response = await client.GetPostTagsAsync(new PostCategorizerRequest
-                        {
-                            Title = post.Title,
-                            Content = post.Content,
-                        });
+                        //var response = await client.GetPostTagsAsync(new PostCategorizerRequest
+                        //{
+                        //    Title = post.Title,
+                        //    Content = post.Content,
+                        //});
 
-                        if (!response.IsSuccessStatusCode || response.Content == null)
-                        {
-                            throw new RemoteServiceCallFailedException(
-                                $"Request to categorizer failed with status code: " +
-                                $"{response.StatusCode}, {response.Error?.Content}");
-                        }
+                        //if (!response.IsSuccessStatusCode || response.Content == null)
+                        //{
+                        //    throw new RemoteServiceCallFailedException(
+                        //        $"Request to categorizer failed with status code: " +
+                        //        $"{response.StatusCode}, {response.Error?.Content}");
+                        //}
 
-                        var tags = response.Content;
+                        //var tags = response.Content;
+
+                        var groqService = scope.ServiceProvider.GetRequiredService<GroqPostTaggingService>();
+                        var tags = await groqService
+                            .GeneratePostTagsAsync(post.Title, post.Content, new List<string>());
+
                         var taggingService = scope.ServiceProvider.GetRequiredService<TaggingService>();
 
                         // Atomic Operation.

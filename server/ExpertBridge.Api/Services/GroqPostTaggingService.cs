@@ -8,7 +8,7 @@ namespace ExpertBridge.Api.Services;
 /// Service responsible for categorizing posts by analyzing their content, title, and existing tags.
 /// Utilizes a GroqLlmProvider to process and generate categorization results.
 /// </summary>
-public class PostCategorizationService
+public class GroqPostTaggingService
 {
     /// <summary>
     /// An instance of <see cref="GroqLlmTextProvider"/> used to interact with the Groq Large Language Model (LLM)
@@ -27,13 +27,52 @@ public class PostCategorizationService
     /// Relies on a GroqLlmTextProvider instance for interacting with a language model to generate
     /// categorization results.
     /// </summary>
-    public PostCategorizationService(GroqLlmTextProvider groqLlmTextProvider)
+    public GroqPostTaggingService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
         _jsonSerializerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
+    }
+
+    /// <summary>
+    /// Asynchronously categorizes a post by analyzing its title, content, and existing tags.
+    /// Uses the GroqLlmTextProvider to generate categorization results and processes the
+    /// response to return a PostCategorizerResponse object, which contains language information
+    /// and categorized tags.
+    /// </summary>
+    /// <param name="title">The title of the post to be categorized. Must not be null or empty.</param>
+    /// <param name="content">The content of the post to be categorized. Must not be null or empty.</param>
+    /// <param name="existingTags">A collection of tags associated with the post. Must not be null.</param>
+    /// <returns>A <see cref="PostCategorizerResponse"/> object containing the language and categorized tags of the post.</returns>
+    /// <exception cref="ArgumentException">Thrown if the title or content is null or empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if the existingTags collection is null.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the deserialization of the categorizer response fails or returns a null result.
+    /// </exception>
+    /// <exception cref="JsonException">Thrown if an error occurs while parsing the categorizer response.</exception>
+    public async Task<PostCategorizerResponse> GeneratePostTagsAsync(
+        string title,
+        string content,
+        IReadOnlyCollection<string> existingTags)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(title, nameof(title));
+        ArgumentException.ThrowIfNullOrEmpty(content, nameof(content));
+        ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
+        try
+        {
+            var systemPrompt = GetSystemPrompt();
+            var userPrompt = GetUserPrompt(title, content, existingTags);
+            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+            var result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
+                         ?? throw new InvalidOperationException("Failed to deserialize the categorizer response: null result");
+            return result;
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException($"Failed to parse the categorizer response: {ex.Message}", ex);
+        }
     }
 
     /// <summary>
@@ -117,43 +156,5 @@ public class PostCategorizationService
         ];
 
         return string.Join("\n", userPrompt);
-    }
-
-
-    /// <summary>
-    /// Asynchronously categorizes a post by analyzing its title, content, and existing tags.
-    /// Uses the GroqLlmTextProvider to generate categorization results and processes the
-    /// response to return a PostCategorizerResponse object, which contains language information
-    /// and categorized tags.
-    /// </summary>
-    /// <param name="title">The title of the post to be categorized. Must not be null or empty.</param>
-    /// <param name="content">The content of the post to be categorized. Must not be null or empty.</param>
-    /// <param name="existingTags">A collection of tags associated with the post. Must not be null.</param>
-    /// <returns>A <see cref="PostCategorizerResponse"/> object containing the language and categorized tags of the post.</returns>
-    /// <exception cref="ArgumentException">Thrown if the title or content is null or empty.</exception>
-    /// <exception cref="ArgumentNullException">Thrown if the existingTags collection is null.</exception>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if the deserialization of the categorizer response fails or returns a null result.
-    /// </exception>
-    /// <exception cref="JsonException">Thrown if an error occurs while parsing the categorizer response.</exception>
-    public async Task<PostCategorizerResponse> CategorizePostAsync(string title, string content,
-        IReadOnlyCollection<string> existingTags)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(title, nameof(title));
-        ArgumentException.ThrowIfNullOrEmpty(content, nameof(content));
-        ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
-        try
-        {
-            var systemPrompt = GetSystemPrompt();
-            var userPrompt = GetUserPrompt(title, content, existingTags);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
-            var result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
-                         ?? throw new InvalidOperationException("Failed to deserialize the categorizer response: null result");
-            return result;
-        }
-        catch (JsonException ex)
-        {
-            throw new InvalidOperationException($"Failed to parse the categorizer response: {ex.Message}", ex);
-        }
     }
 }

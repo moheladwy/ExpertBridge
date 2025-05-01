@@ -36,16 +36,11 @@ public static class GroqApi
     /// <seealso cref="GroqLlmTextProvider" />
     public static void AddGroqApiServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // Bind configuration to settings
         configuration.GetSection("Groq").Bind(new GroqSettings());
 
-        // Register settings
         services.Configure<GroqSettings>(configuration.GetSection("Groq"));
-
-        // Register the GroqLlmTextProvider with its dependencies
-        services.AddScoped<GroqLlmTextProvider>(sp =>
+        services.AddScoped(sp =>
         {
-            // Using IOptions pattern
             var settings = sp.GetRequiredService<IOptions<GroqSettings>>().Value;
             return new GroqLlmTextProvider(settings.ApiKey, settings.Model);
         });
