@@ -46,6 +46,7 @@ public static class GroqApi
         .AddScoped<GroqLlmTextProvider>()
         .AddScoped<GroqPostTaggingService>()
         .AddScoped<TagProcessorService>()
+        .AddScoped<NSFWDetectionService>()
         ;
         return builder;
     }
