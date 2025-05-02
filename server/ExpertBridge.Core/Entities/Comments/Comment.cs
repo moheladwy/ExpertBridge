@@ -13,6 +13,7 @@ public class Comment : BaseModel, ISoftDeletable
     public required string PostId { get; set; }
     public required string Content { get; set; }
     public string? ParentCommentId { get; set; }
+    public bool IsProcessed { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
 

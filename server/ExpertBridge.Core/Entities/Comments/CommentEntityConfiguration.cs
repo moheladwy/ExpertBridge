@@ -17,6 +17,8 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
             .IsRequired()
             .HasMaxLength(CommentEntityConstraints.MaxContentLength);
 
+        builder.HasIndex(x => x.IsProcessed);
+
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .ValueGeneratedOnAdd();
