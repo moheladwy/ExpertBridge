@@ -66,7 +66,6 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         }
 
                         var user = await dbContext.Profiles
-                            .AsNoTracking()
                             .FirstOrDefaultAsync(p => p.Id == message.UserProfileId, stoppingToken);
 
                         if (user is not null)

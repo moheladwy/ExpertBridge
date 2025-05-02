@@ -47,7 +47,6 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
 
                         var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
                         var existingPost = await dbContext.Posts
-                            .AsNoTracking()
                             .FirstOrDefaultAsync(p => p.Id == post.PostId, stoppingToken);
 
                         if (existingPost is not null)
