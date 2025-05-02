@@ -10,4 +10,3 @@ namespace ExpertBridge.Api.Models.IPC
         public string AuthorId { get; set; }
     }
 }
-}
