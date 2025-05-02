@@ -81,6 +81,9 @@ namespace ExpertBridge.Api.Extensions
             builder.Services.Configure<ExpertBridgeRateLimitSettings>(
                 builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
 
+            builder.Services.Configure<InappropriateLanguageThresholds>(
+                builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));
+
             builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 
             return builder;

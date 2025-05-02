@@ -26,6 +26,8 @@ public static class IpcChannels
             .AddSingleton(_ => Channel.CreateUnbounded<PostCreatedMessage>())
             .AddSingleton(_ => Channel.CreateUnbounded<UserInterestsUpdatedMessage>())
             .AddSingleton(_ => Channel.CreateUnbounded<EmbedPostMessage>())
+            .AddSingleton(_ => Channel.CreateUnbounded<DetectInappropriatePostMessage>())
+            .AddSingleton(_ => Channel.CreateUnbounded<DetectInappropriateCommentMessage>())
             ;
 
         return builder;

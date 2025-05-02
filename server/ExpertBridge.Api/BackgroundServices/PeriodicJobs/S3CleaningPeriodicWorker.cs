@@ -8,13 +8,13 @@ using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
-    public class S3CleaningWorker : BackgroundService
+    public class S3CleaningPeriodicWorker : BackgroundService
     {
-        private readonly ILogger<S3CleaningWorker> _logger;
+        private readonly ILogger<S3CleaningPeriodicWorker> _logger;
         private readonly IServiceProvider _services;
 
-        public S3CleaningWorker(
-            ILogger<S3CleaningWorker> logger,
+        public S3CleaningPeriodicWorker(
+            ILogger<S3CleaningPeriodicWorker> logger,
             IServiceProvider services)
         {
             _logger = logger;
@@ -23,6 +23,9 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            // This delay to break the synchronization with the start of each Priodic Worker's period.
+            await Task.Delay(TimeSpan.FromHours(12), stoppingToken);
+
             var period = 60 * 60 * 24 * 2; // 2 days;
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 

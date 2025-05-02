@@ -14,15 +14,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
-    public class PeriodicPostTaggingWorker : BackgroundService
+    public class PostTaggingPeriodicWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<PeriodicPostTaggingWorker> _logger;
+        private readonly ILogger<PostTaggingPeriodicWorker> _logger;
         private readonly ChannelWriter<PostCreatedMessage> _postCreatedChannel;
 
-        public PeriodicPostTaggingWorker(
+        public PostTaggingPeriodicWorker(
             IServiceProvider services,
-            ILogger<PeriodicPostTaggingWorker> logger,
+            ILogger<PostTaggingPeriodicWorker> logger,
             Channel<PostCreatedMessage> postCreatedChannel)
         {
             _services = services;
@@ -32,30 +32,22 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            // This delay to break the synchronization with the start of each Priodic Worker's period.
+            await Task.Delay(TimeSpan.FromHours(8), stoppingToken);
+
             var period = 60 * 60 * 24 * 1; // 1 day
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Started...");
+                _logger.LogInformation($"{nameof(PostTaggingPeriodicWorker)} Started...");
 
                 try
                 {
                     using var scope = _services.CreateScope();
                     var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
 
-                    var unTaggedPosts = await dbContext.Posts
-                        .AsNoTracking()
-                        .Where(p => p.IsDeleted == false && !p.IsTagged)
-                        .Select(p => new
-                        {
-                            p.Id,
-                            p.AuthorId,
-                            p.Content,
-                            p.Title
-                        })
-                        .ToListAsync(stoppingToken);
 
                     // That might look like a weird design decision.
                     // But look, the GROQ API we are using is limited, and thus
@@ -63,25 +55,40 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                     // The queing nature of the PostCreatedWorker allows us to send the requests
                     // one by one ensuring that we are not exceeding the rate limit.
 
-                    foreach (var post in unTaggedPosts)
-                    {
-                        await _postCreatedChannel.WriteAsync(new PostCreatedMessage
+                    await dbContext.Posts
+                        .AsNoTracking()
+                        .Where(p => p.IsDeleted == false && !p.IsTagged)
+                        .Select(p => new PostCreatedMessage
                         {
-                            AuthorId = post.AuthorId,
-                            Content = post.Content,
-                            PostId = post.Id,
-                            Title = post.Title
-                        }, stoppingToken);
-                    }
+                            PostId = p.Id,
+                            AuthorId = p.AuthorId,
+                            Content = p.Content,
+                            Title = p.Title
+                        })
+                        .ForEachAsync(async post =>
+                            await _postCreatedChannel.WriteAsync(post, stoppingToken),
+                            stoppingToken
+                        );
+
+                    //foreach (var post in unTaggedPosts)
+                    //{
+                    //    await _postCreatedChannel.WriteAsync(new PostCreatedMessage
+                    //    {
+                    //        AuthorId = post.AuthorId,
+                    //        Content = post.Content,
+                    //        PostId = post.Id,
+                    //        Title = post.Title
+                    //    }, stoppingToken);
+                    //}
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex,
-                        $"Failed to execute {nameof(PeriodicPostTaggingWorker)} with exception message {ex.Message}."
+                        $"Failed to execute {nameof(PostTaggingPeriodicWorker)} with exception message {ex.Message}."
                         );
                 }
 
-                _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Finished.");
+                _logger.LogInformation($"{nameof(PostTaggingPeriodicWorker)} Finished.");
             }
         }
     }

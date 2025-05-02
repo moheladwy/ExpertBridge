@@ -1,6 +1,6 @@
-namespace ExpertBridge.Api.Models;
+namespace ExpertBridge.Core.Responses;
 
-public class NsfwDetectionResponse
+public class InappropriateLanguageDetectionResponse
 {
     public double Toxicity { get; set; }
     public double SevereToxicity { get; set; }

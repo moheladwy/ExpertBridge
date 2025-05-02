@@ -1,5 +1,6 @@
 using System.Text.Json;
 using ExpertBridge.Api.Models;
+using ExpertBridge.Core.Responses;
 using ExpertBridge.GroqLibrary.Providers;
 
 namespace ExpertBridge.Api.Services;
@@ -9,7 +10,7 @@ namespace ExpertBridge.Api.Services;
 ///     This service provides functionality to analyze text and return NSFW detection results categorized
 ///     into various predefined metrics.
 /// </summary>
-public sealed class NSFWDetectionService
+public sealed class GroqInappropriateLanguageDetectionService
 {
     /// <summary>
     ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
@@ -28,7 +29,7 @@ public sealed class NSFWDetectionService
     ///     Service for detecting NSFW (Not Safe for Work) content using Groq Large Language Model (LLM) API.
     ///     Handles interactions with the <see cref="GroqLlmTextProvider" /> for analyzing and generating text-related tasks.
     /// </summary>
-    public NSFWDetectionService(GroqLlmTextProvider groqLlmTextProvider)
+    public GroqInappropriateLanguageDetectionService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
         _jsonSerializerOptions = new JsonSerializerOptions
@@ -43,10 +44,10 @@ public sealed class NSFWDetectionService
     ///     Processes text using the Groq Large Language Model (LLM) API and returns the analysis as a structured response.
     /// </summary>
     /// <param name="text">The input text to be analyzed for NSFW content. Must not be null or empty.</param>
-    /// <returns>A <see cref="NsfwDetectionResponse" /> object containing the detection results for multiple NSFW categories.</returns>
+    /// <returns>A <see cref="InappropriateLanguageDetectionResponse" /> object containing the detection results for multiple NSFW categories.</returns>
     /// <exception cref="ArgumentException">Thrown when the provided <paramref name="text" /> is null or empty.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the response fails deserialization or parsing.</exception>
-    public async Task<NsfwDetectionResponse> DetectAsync(string text)
+    public async Task<InappropriateLanguageDetectionResponse> DetectAsync(string text)
     {
         ArgumentException.ThrowIfNullOrEmpty(text, nameof(text));
         try
@@ -54,7 +55,7 @@ public sealed class NSFWDetectionService
             var systemPrompt = GetSystemPrompt();
             var userPrompt = GetUserPrompt(text);
             var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
-            var result = JsonSerializer.Deserialize<NsfwDetectionResponse>(response, _jsonSerializerOptions)
+            var result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the nsfw detection response: null result");
             return result;
