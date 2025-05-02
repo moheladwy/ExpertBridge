@@ -1,4 +1,4 @@
-import { useCreateCommentMutation, useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
+import { useCreateCommentMutation, useDeleteCommentMutation, useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
 import { AttachFile } from "@mui/icons-material";
 import { Button, IconButton, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg"
 import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Skeleton } from "@/views/components/ui/skeleton";
+import { DeleteCommentRequest } from "@/features/comments/types";
 
 interface CommentsSectionProps {
   postId: string;
@@ -21,7 +22,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 
   const authUser = useCurrentAuthUser();
   const { showAuthPrompt } = useAuthPrompt();
-  const [,,,, userProfile] = useIsUserLoggedIn();
+  const [, , , , userProfile] = useIsUserLoggedIn();
 
   const {
     data: comments,
@@ -35,6 +36,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
   useRefetchOnLogin(refetch);
 
   const [createComment, { isLoading, isSuccess, isError }] = useCreateCommentMutation();
+  const [deleteComment, deleteResult] = useDeleteCommentMutation();
 
   useEffect(() => {
     if (isError) toast.error("An error occurred while creating your comment");
@@ -47,7 +49,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
   const [commentText, setCommentText] = useState("");
   const [media, setMedia] = useState<File[]>([]);
   const [commentError, setCommentError] = useState(""); // New state for error tracking
-  
+
   useEffect(() => {
     if (commentsSuccess) {
       // post.comments = Object.values(comments.entities);
@@ -56,7 +58,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 
   // Calculate characters left
   const charsLeft = MAX_COMMENT_LENGTH - commentText.length;
-  
+
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     if (newValue.length <= MAX_COMMENT_LENGTH) {
@@ -70,11 +72,11 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!authUser){
+    if (!authUser) {
       showAuthPrompt();
       return;
     }
-    
+
     // Validate comment text
     if (!commentText.trim()) {
       setCommentError("Comment cannot be empty");
@@ -96,8 +98,21 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
       showAuthPrompt();
       return;
     }
-    
+
   };
+
+  const handleDeleteComment = async (request: DeleteCommentRequest) => {
+    await deleteComment(request);
+  };
+
+  useEffect(() => {
+    if (deleteResult.isSuccess) {
+      toast.success('Comment deleted successfully.');
+    }
+    else if (deleteResult.isError) {
+      toast.error('An error occurred while deleting your comment.');
+    }
+  }, [deleteResult.isSuccess, deleteResult.isError]);
 
   return (
     <div>
@@ -110,21 +125,21 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
               {
                 userProfile?.profilePictureUrl
                   ? <img
-                      src={userProfile.profilePictureUrl}
-                      width={45}
-                      height={45}
-                      className="rounded-full"
-                    />
-                  : <img 
-                      src={defaultProfile}
-                      width={45}
-                      height={45}
-                      className="rounded-full"
-                    />
+                    src={userProfile.profilePictureUrl}
+                    width={45}
+                    height={45}
+                    className="rounded-full"
+                  />
+                  : <img
+                    src={defaultProfile}
+                    width={45}
+                    height={45}
+                    className="rounded-full"
+                  />
               }
             </div>
 
-            <div className="flex flex-col gap-3 w-full">  
+            <div className="flex flex-col gap-3 w-full">
               {/* Comment Text Field */}
               <TextField
                 fullWidth
@@ -144,28 +159,28 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
                 error={!!commentError}
                 helperText={commentError}
               />
-              
+
               {/* Character counter */}
               {!commentError && (
                 <div className="flex justify-end">
-                  <Typography 
-                    variant="caption" 
+                  <Typography
+                    variant="caption"
                     color={charsLeft === 0 ? "error" : "text.secondary"}
                   >
                     {charsLeft} characters left
                   </Typography>
                 </div>
               )}
-              
+
               <div className="flex justify-end gap-2 items-center">
                 <IconButton component="label" onClick={handleAttachClick}>
                   <AttachFile />
                   <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
                 </IconButton>
 
-                <Button 
-                  variant="contained" 
-                  color="primary" 
+                <Button
+                  variant="contained"
+                  color="primary"
                   type="submit"
                   disabled={isLoading}
                   className="bg-main-blue hover:bg-blue-950"
@@ -208,6 +223,8 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
             <CommentCard
               key={comment.id}
               comment={comment}
+              currentUserId={userProfile?.id}
+              onDelete={handleDeleteComment}
             />
           ))
       ) : (

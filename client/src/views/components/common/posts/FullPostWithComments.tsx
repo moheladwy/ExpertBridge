@@ -134,7 +134,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                           <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
                             <div
                               className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
-                              >
+                            >
                               <DeleteIcon className="w-5 text-red-700" />
                               <h6 className="text-red-700">
                                 Delete post
@@ -162,7 +162,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                               setShowDeleteDialog(false);
                             }}
                             className="bg-red-700 hover:bg-red-900">
-                              Delete
+                            Delete
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -173,24 +173,28 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                   <div className="flex flex-col justify-center gap-3">
                     {/* Author Info */}
                     <div className="flex items-center space-x-3">
-                      {
-                        post.author.profilePictureUrl ? 
-                          <img
-                            src={post.author.profilePictureUrl}
-                            width={40}
-                            height={40}
-                            className="rounded-full"
-                          />
-                        : <img 
-                            src={defaultProfile}
-                            width={40}
-                            height={40}
-                            className="rounded-full"
-                          />
-                      }
+                      <Link to={`/profile/${post.author.id}`}>
+                        {
+                          post.author.profilePictureUrl ?
+                            <img
+                              src={post.author.profilePictureUrl}
+                              width={40}
+                              height={40}
+                              className="rounded-full"
+                            />
+                            : <img
+                              src={defaultProfile}
+                              width={40}
+                              height={40}
+                              className="rounded-full"
+                            />
+                        }
+                      </Link>
                       <div>
                         {/* Name */}
-                        <h3 className="text-md font-semibold">{post.author.firstName + ' ' + post.author.lastName}</h3>
+                        <Link to={`/profile/${post.author.id}`}>
+                          <h3 className="text-md font-semibold">{post.author.firstName + ' ' + post.author.lastName}</h3>
+                        </Link>
                         {/* Publish Date */}
                         <div className="flex justify-between items-center text-sm text-gray-500">
                           <span>
@@ -239,30 +243,29 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                         ))}
 
                       </CarouselContent>
-                        {/* Carousel Controls (overlayed inside the media) */}
-                        {post.medias.length > 1 && (
-                          <>
-                            <div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
-                              <CarouselPrevious />
-                            </div>
-                            <div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
-                              <CarouselNext />
-                            </div>
-                          </>
-                        )}
+                      {/* Carousel Controls (overlayed inside the media) */}
+                      {post.medias.length > 1 && (
+                        <>
+                          <div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
+                            <CarouselPrevious />
+                          </div>
+                          <div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
+                            <CarouselNext />
+                          </div>
+                        </>
+                      )}
                     </Carousel>
                   </div>
 
                   {/* Media Dots */}
                   {
-                    post.medias.length > 1 && 
+                    post.medias.length > 1 &&
                     <div className="flex justify-center items-center mt-1 gap-2">
                       {post.medias.map((_, index) => (
                         <span
                           key={index}
-                          className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${
-                            index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
-                          }`}
+                          className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
+                            }`}
                         />
                       ))}
                     </div>
@@ -276,8 +279,8 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                 </div>
               </>
             )
-            : 
-            <p>Post not found.</p>
+              :
+              <p>Post not found.</p>
           }
         </div>
       </div>

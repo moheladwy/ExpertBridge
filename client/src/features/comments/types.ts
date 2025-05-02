@@ -43,3 +43,18 @@ export interface AddReplyRequest {
   postId: string;
   parentCommentId: string;
 }
+
+export interface DeleteCommentRequest {
+  commentId: string;
+  postId: string;
+  authorId: string;
+  parentCommentId?: string | null;
+}
+
+export interface UpdateCommentRequest {
+  commentId: string;
+  content: string;
+  authorId: string;
+  parentCommentId?: string | null;
+  postId: string;
+}

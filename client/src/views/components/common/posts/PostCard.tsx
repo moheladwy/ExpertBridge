@@ -18,22 +18,22 @@ import {
 	DropdownMenuTrigger,
 } from "@/views/components/custom/dropdown-menu";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
 } from "@/views/components/ui/alert-dialog"
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
 } from "@/views/components/ui/carousel"
 import { Box, Modal } from "@mui/material";
 import toast from "react-hot-toast";
@@ -59,15 +59,15 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	const memoizedPostId = useMemo(() => postId, [postId]);
 	const post = useAppSelector((state) => selectPostById(state, memoizedPostId));
 	const [open, setOpen] = useState(false);
-  const [picToBeOpened, setPicToBeOpened] = useState(0);
-  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+	const [picToBeOpened, setPicToBeOpened] = useState(0);
+	const [activeMediaIndex, setActiveMediaIndex] = useState(0);
 
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [deletePost, deleteResult] = useDeletePostMutation();
-  // conferm delete dialog
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	// conferm delete dialog
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	useEffect(() => {
 		if (deleteResult.isSuccess) {
@@ -97,9 +97,9 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	};
 
 	const handleOpen = (index: number) => {
-    setPicToBeOpened(index);
-    setOpen(true)
-  };
+		setPicToBeOpened(index);
+		setOpen(true)
+	};
 
 	const handleClose = () => {
 		setOpen(false);
@@ -201,55 +201,55 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 									</div>
 								</DropdownMenuItem>
 								{post.author.id === currentUserId && (
-								  <>
-                    {/* Edit */}
+									<>
+										{/* Edit */}
 										<DropdownMenuItem>
-                      <div
-                        className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
-                        onClick={() => setIsEditModalOpen(true)}
-                      >
-                        <EditIcon className="w-5" />
-                        <h6>Edit post</h6>
-                      </div>
-                    </DropdownMenuItem>
-                    {/* Delete */}
-                    <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
-                      <div
-                        className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
-                        >
-                        <DeleteIcon className="w-5 text-red-700" />
-                        <h6 className="text-red-700">
-                          Delete post
-                        </h6>
-                      </div>
-                    </DropdownMenuItem>
-								  </> 
+											<div
+												className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+												onClick={() => setIsEditModalOpen(true)}
+											>
+												<EditIcon className="w-5" />
+												<h6>Edit post</h6>
+											</div>
+										</DropdownMenuItem>
+										{/* Delete */}
+										<DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+											<div
+												className="flex items-center text-gray-800 justify-center gap-2 cursor-pointer"
+											>
+												<DeleteIcon className="w-5 text-red-700" />
+												<h6 className="text-red-700">
+													Delete post
+												</h6>
+											</div>
+										</DropdownMenuItem>
+									</>
 								)}
 							</DropdownMenuContent>
 						</DropdownMenu>
 
-            {/* Delete confermation dialog */}
-            <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your question.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => {
-                      handleDeletePost();
-                      setShowDeleteDialog(false);
-                    }}
-                    className="bg-red-700 hover:bg-red-900">
-                      Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+						{/* Delete confermation dialog */}
+						<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+									<AlertDialogDescription>
+										This action cannot be undone. This will permanently delete your question.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction
+										onClick={() => {
+											handleDeletePost();
+											setShowDeleteDialog(false);
+										}}
+										className="bg-red-700 hover:bg-red-900">
+										Delete
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
 					</div>
 				</div>
 
@@ -260,71 +260,70 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 							{post.title}
 						</h2>
 					</div>
-				</Link>
 
-				{/* Post Content */}
-				<div className="break-words">
-					<p className="text-gray-600 whitespace-pre-wrap" dir="auto">
-						{post.content}
-					</p>
-				</div>
+					{/* Post Content */}
+					<div className="break-words">
+						<p className="text-gray-600 whitespace-pre-wrap" dir="auto">
+							{post.content}
+						</p>
+					</div>
+				</Link>
 
 				{/* Media */}
 				<div
-          className={`aspect-auto flex justify-center items-center w-full rounded-md`}
-        >
-          <Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
-            <CarouselContent>
-              {post.medias.map((media, index) => (
-                <CarouselItem className="cursor-pointer">
-                  {media.type.startsWith("video") ? (
-                    <ReactPlayer
-                      url={media.url}
-                      width="100%"
-                      height="100%"
-                      controls
-                      style={{ pointerEvents: "none" }}
-                    />
-                  ) : (
-                    <img
-                      src={media.url}
-                      alt={`media-${index}`}
-                      onClick={() => handleOpen(index)}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </CarouselItem>
-              ))}
+					className={`aspect-auto flex justify-center items-center w-full rounded-md`}
+				>
+					<Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
+						<CarouselContent>
+							{post.medias.map((media, index) => (
+								<CarouselItem className="cursor-pointer">
+									{media.type.startsWith("video") ? (
+										<ReactPlayer
+											url={media.url}
+											width="100%"
+											height="100%"
+											controls
+											style={{ pointerEvents: "none" }}
+										/>
+									) : (
+										<img
+											src={media.url}
+											alt={`media-${index}`}
+											onClick={() => handleOpen(index)}
+											className="w-full h-full object-cover"
+										/>
+									)}
+								</CarouselItem>
+							))}
 
-            </CarouselContent>
-              {/* Carousel Controls (overlayed inside the media) */}
-              {post.medias.length > 1 && (
-                <>
-                  <div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
-                    <CarouselPrevious />
-                  </div>
-                  <div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
-                    <CarouselNext />
-                  </div>
-                </>
-              )}
-          </Carousel>
-        </div>
+						</CarouselContent>
+						{/* Carousel Controls (overlayed inside the media) */}
+						{post.medias.length > 1 && (
+							<>
+								<div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
+									<CarouselPrevious />
+								</div>
+								<div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
+									<CarouselNext />
+								</div>
+							</>
+						)}
+					</Carousel>
+				</div>
 
-        {/* Media Dots */}
-        {
-          post.medias.length > 1 && 
-          <div className="flex justify-center items-center mt-1 gap-2">
-            {post.medias.map((_, index) => (
-              <span
-                key={index}
-                className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${
-                  index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
-                }`}
-              />
-            ))}
-          </div>
-        }
+				{/* Media Dots */}
+				{
+					post.medias.length > 1 &&
+					<div className="flex justify-center items-center mt-1 gap-2">
+						{post.medias.map((_, index) => (
+							<span
+								key={index}
+								className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
+									}`}
+							/>
+						))}
+					</div>
+				}
 
 				{/* Post Metadata */}
 				{/* Tags */}
@@ -359,11 +358,11 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 					</div>
 				</div>
 			</div>
-      <EditPostModal
-        post={post}
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-      />
+			<EditPostModal
+				post={post}
+				isOpen={isEditModalOpen}
+				onClose={() => setIsEditModalOpen(false)}
+			/>
 		</>
 	);
 };
