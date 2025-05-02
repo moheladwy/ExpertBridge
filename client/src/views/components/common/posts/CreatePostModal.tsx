@@ -108,7 +108,7 @@ const CreatePostModal: React.FC = () => {
     setOpen(false);
     resetForm();
   }, [setOpen, resetForm]);
-  
+
   // Updated handleNext function with direct validation
   const handleNext = () => {
     // Validate based on current step
@@ -167,7 +167,7 @@ const CreatePostModal: React.FC = () => {
       }
     }
   };
-  
+
   // Handle title input with character limit
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -178,7 +178,7 @@ const CreatePostModal: React.FC = () => {
       }
     }
   };
-  
+
   // Handle body input with character limit
   const handleBodyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -205,7 +205,7 @@ const CreatePostModal: React.FC = () => {
                 height={45}
                 className="rounded-full"
               />
-              : <img 
+              : <img
                 src={defaultProfile}
                 alt="Profile Picture"
                 width={45}
@@ -280,11 +280,11 @@ const CreatePostModal: React.FC = () => {
                   error={!!titleError}
                   helperText={titleError || ""}
                 />
-                
+
                 {!titleError && (
                   <div className="flex justify-end mt-1">
-                    <Typography 
-                      variant="caption" 
+                    <Typography
+                      variant="caption"
                       color={titleCharsLeft < 1 ? "error" : "green"}
                     >
                       {titleCharsLeft} characters left
@@ -313,10 +313,10 @@ const CreatePostModal: React.FC = () => {
                   error={!!bodyError}
                   helperText={bodyError || ""}
                 />
-                
+
                 {!bodyError && (
                   <div className="flex justify-end mt-1">
-                    <Typography 
+                    <Typography
                       variant="caption"
                       color={bodyCharsLeft < 1 ? "error" : "green"}
                     >
@@ -329,7 +329,10 @@ const CreatePostModal: React.FC = () => {
 
             {/* media */}
             {activeStep === 2 && (
-              <FileUploadForm onSubmit={handleSubmit} setParentMediaList={setMediaList} />
+              <FileUploadForm
+                onSubmit={handleSubmit}
+                setParentMediaList={setMediaList}
+              />
             )}
           </Box>
 

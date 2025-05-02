@@ -8,6 +8,7 @@ interface PostFormProps {
   userId: number;
 }
 
+// DEPRECATED!
 const PostForm: React.FC<PostFormProps> = ({ userId }) => {
 
   const [createPost, { isLoading, isSuccess, isError }] = useCreatePostMutation();

@@ -11,6 +11,9 @@ import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Skeleton } from "@/views/components/ui/skeleton";
 import { DeleteCommentRequest } from "@/features/comments/types";
+import FileUploadForm from "../../custom/FileUploadForm";
+import { MediaObject } from "@/features/media/types";
+import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
 
 interface CommentsSectionProps {
   postId: string;
@@ -33,22 +36,23 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     refetch,
   } = useGetCommentsByPostIdQuery(postId);
 
-  useRefetchOnLogin(refetch);
-
   const [createComment, { isLoading, isSuccess, isError }] = useCreateCommentMutation();
   const [deleteComment, deleteResult] = useDeleteCommentMutation();
 
-  useEffect(() => {
-    if (isError) toast.error("An error occurred while creating your comment");
-    if (isSuccess) {
-      toast.success("comment created successfully");
-    }
-  }, [isSuccess, isError]);
+  useRefetchOnLogin(refetch);
 
   // form data
   const [commentText, setCommentText] = useState("");
   const [media, setMedia] = useState<File[]>([]);
   const [commentError, setCommentError] = useState(""); // New state for error tracking
+
+  useEffect(() => {
+    if (isError) toast.error("An error occurred while creating your comment");
+    if (isSuccess) {
+      toast.success("Comment created successfully");
+      setCommentText("");
+    }
+  }, [isSuccess, isError]);
 
   useEffect(() => {
     if (commentsSuccess) {
@@ -69,6 +73,14 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     }
   };
 
+  const {
+    uploadMedia,
+    uploadResult
+  } = useCallbackOnMediaUploadSuccess(createComment, { postId, content: commentText });
+
+  const [showMediaForm, setShowMediaForm] = useState(false);
+  const [mediaList, setMediaList] = useState<MediaObject[]>([]);
+
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -83,22 +95,14 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
       return;
     }
     console.log("New comment:", commentText, media);
-    await createComment({
-      postId,
-      content: commentText
-    });
-    setCommentText("");
+
+    await uploadMedia({ mediaList });
+    // await createComment({
+    //   postId,
+    //   content: commentText
+    // });
     setMedia([]);
     setCommentError(""); // Clear error on successful submission
-  };
-
-  const handleAttachClick = (e: React.MouseEvent<HTMLLabelElement>) => {
-    if (!authUser) {
-      e.preventDefault();
-      showAuthPrompt();
-      return;
-    }
-
   };
 
   const handleDeleteComment = async (request: DeleteCommentRequest) => {
@@ -114,11 +118,21 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     }
   }, [deleteResult.isSuccess, deleteResult.isError]);
 
+  const handleAttachClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!authUser) {
+      showAuthPrompt();
+      return;
+    }
+    setShowMediaForm(prev => !prev);
+  };
+
   return (
     <div>
       {/* Add Comment Form */}
       <div className="mt-6">
-        <form onSubmit={handleCommentSubmit} className="space-y-3">
+        <div onSubmit={handleCommentSubmit} className="space-y-3">
           <div className="flex justify-center gap-3">
             {/* Profile Pic */}
             <div>
@@ -155,10 +169,30 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
                   }
                 }}
                 onChange={handleCommentChange}
-                disabled={isLoading}
+                disabled={isLoading || uploadResult.isLoading}
                 error={!!commentError}
                 helperText={commentError}
               />
+
+              {showMediaForm && (
+                <div className="border p-2 rounded-md bg-gray-50">
+                  {/* You can replace this div with your actual FileUploadForm component */}
+                  <p className="text-sm mb-2">Attach files:</p>
+
+                  <FileUploadForm
+                    onSubmit={handleCommentSubmit}
+                    setParentMediaList={setMediaList}
+                  />
+
+                  {media.length > 0 && (
+                    <ul className="mt-2 list-disc pl-5 text-sm text-gray-600">
+                      {media.map((file, idx) => (
+                        <li key={idx}>{file.name}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
 
               {/* Character counter */}
               {!commentError && (
@@ -175,14 +209,13 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
               <div className="flex justify-end gap-2 items-center">
                 <IconButton component="label" onClick={handleAttachClick}>
                   <AttachFile />
-                  <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
                 </IconButton>
 
                 <Button
                   variant="contained"
                   color="primary"
-                  type="submit"
-                  disabled={isLoading}
+                  onClick={handleCommentSubmit}
+                  disabled={isLoading || uploadResult.isLoading}
                   className="bg-main-blue hover:bg-blue-950"
                 >
                   Add Comment
@@ -190,7 +223,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
               </div>
             </div>
           </div>
-        </form>
+        </div>
       </div>
 
       <div className="flex items-center justify-between font-semibold text-lg my-3">
