@@ -14,23 +14,19 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
     /// <summary>
     /// Handles the creation of posts and categorizes them using a remote service.
-    /// Responsible for every operation needs to take place when a post is created.
     /// </summary>
     public class PostCreatedHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ChannelWriter<EmbedPostMessage> _embedPostChannel;
         private readonly ChannelReader<PostCreatedMessage> _postCreatedChannel;
         private readonly ILogger<PostCreatedHandlerWorker> _logger;
 
         public PostCreatedHandlerWorker(
             IServiceProvider services,
             Channel<PostCreatedMessage> postCreatedChannel,
-            Channel<EmbedPostMessage> embedPostChannel,
             ILogger<PostCreatedHandlerWorker> logger)
         {
             _services = services;
-            _embedPostChannel = embedPostChannel.Writer;
             _postCreatedChannel = postCreatedChannel.Reader;
             _logger = logger;
         }
@@ -45,13 +41,6 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
 
                     try
                     {
-                        await _embedPostChannel.WriteAsync(new EmbedPostMessage
-                        {
-                            PostId = post.PostId,
-                            Title = post.Title,
-                            Content = post.Content,
-                        }, stoppingToken);
-
                         using var scope = _services.CreateScope();
                         //var client = scope.ServiceProvider.GetRequiredService<IPostCategroizerClient>();
 

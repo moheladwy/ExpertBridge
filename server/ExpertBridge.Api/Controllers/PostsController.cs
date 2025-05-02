@@ -136,7 +136,8 @@ public class PostsController : ControllerBase
     [HttpPost]
     public async Task<PostResponse> Create(
         [FromBody] CreatePostRequest request,
-        [FromServices] Channel<PostCreatedMessage> _channel)
+        [FromServices] Channel<PostCreatedMessage> _postCreatedChannel,
+        [FromServices] Channel<EmbedPostMessage> _embedPostChannel)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         var user = await _authHelper.GetCurrentUserAsync();
@@ -194,12 +195,19 @@ public class PostsController : ControllerBase
         try
         {
             await _dbContext.SaveChangesAsync();
-            await _channel.Writer.WriteAsync(new PostCreatedMessage
+            await _postCreatedChannel.Writer.WriteAsync(new PostCreatedMessage
             {
                AuthorId = userProfileId,
                Content = post.Content,
                PostId = post.Id,
                Title = post.Title,
+            });
+
+            await _embedPostChannel.Writer.WriteAsync(new EmbedPostMessage
+            {
+                PostId = post.Id,
+                Title = post.Title,
+                Content = post.Content,
             });
         }
         catch (Exception ex)

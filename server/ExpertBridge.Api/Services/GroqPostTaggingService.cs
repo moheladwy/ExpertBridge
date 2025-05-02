@@ -31,7 +31,12 @@ public sealed class GroqPostTaggingService
     public GroqPostTaggingService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
-        _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            AllowOutOfOrderMetadataProperties = true,
+            AllowTrailingCommas = true,
+        };
     }
 
     /// <summary>

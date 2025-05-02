@@ -3,37 +3,32 @@
 
 
 using System.Threading.Channels;
-using Amazon.S3.Model;
-using Amazon.S3;
 using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
-    public class PostTaggingPeriodicWorker : BackgroundService
+    public class PostEmbeddingPeriodicWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<PostTaggingPeriodicWorker> _logger;
-        private readonly ChannelWriter<PostCreatedMessage> _postCreatedChannel;
+        private readonly ILogger<PostEmbeddingPeriodicWorker> _logger;
+        private readonly ChannelWriter<EmbedPostMessage> _embedPostChannel;
 
-        public PostTaggingPeriodicWorker(
+        public PostEmbeddingPeriodicWorker(
             IServiceProvider services,
-            ILogger<PostTaggingPeriodicWorker> logger,
-            Channel<PostCreatedMessage> postCreatedChannel)
+            ILogger<PostEmbeddingPeriodicWorker> logger,
+            Channel<EmbedPostMessage> postEmbeddingChannel)
         {
             _services = services;
             _logger = logger;
-            _postCreatedChannel = postCreatedChannel.Writer;
+            _embedPostChannel = postEmbeddingChannel.Writer;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             // This delay to break the synchronization with the start of each Priodic Worker's period.
-            await Task.Delay(TimeSpan.FromHours(8), stoppingToken);
+            await Task.Delay(TimeSpan.FromHours(20), stoppingToken);
 
             var period = 60 * 60 * 24 * 1; // 1 day
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
@@ -41,7 +36,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation($"{nameof(PostTaggingPeriodicWorker)} Started...");
+                _logger.LogInformation($"{nameof(PostEmbeddingPeriodicWorker)} Started...");
 
                 try
                 {
@@ -56,16 +51,15 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
                     await dbContext.Posts
                         .AsNoTracking()
-                        .Where(p => p.IsDeleted == false && !p.IsTagged)
-                        .Select(p => new PostCreatedMessage
+                        .Where(p => p.Embedding == null)
+                        .Select(p => new EmbedPostMessage
                         {
                             PostId = p.Id,
-                            AuthorId = p.AuthorId,
                             Content = p.Content,
                             Title = p.Title
                         })
                         .ForEachAsync(async post =>
-                            await _postCreatedChannel.WriteAsync(post, stoppingToken),
+                            await _embedPostChannel.WriteAsync(post, stoppingToken),
                             stoppingToken
                         );
 
@@ -83,11 +77,11 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 catch (Exception ex)
                 {
                     _logger.LogError(ex,
-                        $"Failed to execute {nameof(PostTaggingPeriodicWorker)} with exception message {ex.Message}."
+                        $"Failed to execute {nameof(PostEmbeddingPeriodicWorker)} with exception message {ex.Message}."
                         );
                 }
 
-                _logger.LogInformation($"{nameof(PostTaggingPeriodicWorker)} Finished.");
+                _logger.LogInformation($"{nameof(PostEmbeddingPeriodicWorker)} Finished.");
             }
         }
     }

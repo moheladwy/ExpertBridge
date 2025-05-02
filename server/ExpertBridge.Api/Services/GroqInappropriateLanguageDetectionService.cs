@@ -34,7 +34,9 @@ public sealed class GroqInappropriateLanguageDetectionService
         _groqLlmTextProvider = groqLlmTextProvider;
         _jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            AllowOutOfOrderMetadataProperties = true,
+            AllowTrailingCommas = true,
         };
     }
 
