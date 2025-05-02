@@ -80,7 +80,7 @@ public sealed class NSFWDetectionService
     {
         List<string> systemPrompt =
         [
-            "You are an AI moderation assistant specialized in detecting various forms of toxicity in user‐generated text.",
+            "You are an AI moderation assistant specialized in detecting various forms of toxicity in user‐generated text whether in English, Egyptian Arabic, or another language.",
             "When given a piece of text, you must assign a probability between 0 and 1 to each of the following categories:",
             "Toxicity, SevereToxicity, Obscene, Threat, Insult, IdentityAttack, SexualExplicit.",
             "Your response must be a single JSON object that exactly matches the provided “NsfwDetectionResponse” pydantic schema",
