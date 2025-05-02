@@ -1,4 +1,4 @@
-import { PresignedUrl } from "../media/types";
+import { MediaObjectResponse, PresignedUrl } from "../media/types";
 import { Author } from "../users/types";
 
 export interface Comment {
@@ -13,6 +13,7 @@ export interface Comment {
   downvotes: number;
   isUpvoted: boolean;
   isDownvoted: boolean;
+  medias: MediaObjectResponse[];
   replies?: Comment[] | null; // Only one level of replies
 }
 

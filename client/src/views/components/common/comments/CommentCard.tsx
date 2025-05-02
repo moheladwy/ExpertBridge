@@ -32,6 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/views/components/ui/alert-dialog"
+import MediaCarousel from "../media/MediaCarousel";
 
 interface CommentItemProps {
   comment: Comment;
@@ -258,6 +259,8 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment, currentUserId, onDel
           <p className="text-gray-700 whitespace-pre-wrap" dir="auto">{comment.content}</p>
         )}
       </div>
+
+      <MediaCarousel medias={comment.medias} />
 
       {/* Comment Actions */}
       {isReply ? null :

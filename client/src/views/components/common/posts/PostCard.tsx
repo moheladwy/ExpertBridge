@@ -47,6 +47,7 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 import { ProfileResponse } from "@/features/profiles/types";
 import { Edit as EditIcon } from "lucide-react";
 import EditPostModal from "./EditPostModal";
+import MediaCarousel from "../media/MediaCarousel";
 
 
 
@@ -58,9 +59,6 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	const memoizedPostId = useMemo(() => postId, [postId]);
 	const post = useAppSelector((state) => selectPostById(state, memoizedPostId));
-	const [open, setOpen] = useState(false);
-	const [picToBeOpened, setPicToBeOpened] = useState(0);
-	const [activeMediaIndex, setActiveMediaIndex] = useState(0);
 
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 
@@ -82,8 +80,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	if (!post) return null;
 
 	const totalCommentsNumber = post.comments;
-	let media;
-
+	
 	const handleCopyLink = () => {
 		const postUrl = `${window.location.origin}/feed/${post.id}`;
 		navigator.clipboard
@@ -96,19 +93,11 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 			});
 	};
 
-	const handleOpen = (index: number) => {
-		setPicToBeOpened(index);
-		setOpen(true)
-	};
-
-	const handleClose = () => {
-		setOpen(false);
-	};
-
 	const handleDeletePost = async () => {
 		await deletePost(post.id);
 	};
 
+	// let media;
 	//Manage diffrent media typs
 	// if (post.medias?.length > 0) {
 	// 	if (post.medias[0].type.startsWith("image")) {
@@ -129,24 +118,6 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 
 	return (
 		<>
-			<Modal
-				open={open}
-				onClose={handleClose}
-				aria-labelledby="create-post-modal"
-				className="flex justify-center items-center"
-			>
-				{post.medias?.[picToBeOpened]?.url ? (
-					<img
-						src={post.medias[picToBeOpened].url}
-						alt="Post content"
-						className="max-w-full max-h-[90vh] object-contain"
-					/>
-				) : (
-					<div className="p-4 text-center">
-						<p>No media available</p>
-					</div>
-				)}
-			</Modal>
 			<div className="flex flex-col gap-3 bg-white shadow-md rounded-lg p-4 border border-gray-200">
 				{/* Author Info */}
 				<div className="flex items-center space-x-3">
@@ -269,61 +240,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 					</div>
 				</Link>
 
-				{/* Media */}
-				<div
-					className={`aspect-auto flex justify-center items-center w-full rounded-md`}
-				>
-					<Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
-						<CarouselContent>
-							{post.medias.map((media, index) => (
-								<CarouselItem className="cursor-pointer">
-									{media.type.startsWith("video") ? (
-										<ReactPlayer
-											url={media.url}
-											width="100%"
-											height="100%"
-											controls
-											style={{ pointerEvents: "none" }}
-										/>
-									) : (
-										<img
-											src={media.url}
-											alt={`media-${index}`}
-											onClick={() => handleOpen(index)}
-											className="w-full h-full object-cover"
-										/>
-									)}
-								</CarouselItem>
-							))}
-
-						</CarouselContent>
-						{/* Carousel Controls (overlayed inside the media) */}
-						{post.medias.length > 1 && (
-							<>
-								<div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
-									<CarouselPrevious />
-								</div>
-								<div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
-									<CarouselNext />
-								</div>
-							</>
-						)}
-					</Carousel>
-				</div>
-
-				{/* Media Dots */}
-				{
-					post.medias.length > 1 &&
-					<div className="flex justify-center items-center mt-1 gap-2">
-						{post.medias.map((_, index) => (
-							<span
-								key={index}
-								className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
-									}`}
-							/>
-						))}
-					</div>
-				}
+				<MediaCarousel medias={post.medias} />
 
 				{/* Post Metadata */}
 				{/* Tags */}
