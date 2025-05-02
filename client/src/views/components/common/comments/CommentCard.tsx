@@ -83,7 +83,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
 
       {/* Comment Content */}
       <div className="w-full break-words">
-        <p className="text-gray-700 whitespace-pre-wrap">{comment.content}</p>
+        <p className="text-gray-700 whitespace-pre-wrap" dir="auto">{comment.content}</p>
       </div>
 
       {/* Comment Actions */}
@@ -108,6 +108,11 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
           value={replyText}
           onChange={(e) => setReplyText(e.target.value)}
           disabled={isLoading}
+          slotProps={{
+            htmlInput: {
+              dir: "auto"
+            }
+          }}
         />
         <div className="w-full flex mt-2 justify-end">
           <Button onClick={handleReplySubmit} variant="contained" size="small" className="bg-main-blue hover:bg-blue-950"
@@ -154,7 +159,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment }) => {
                   </div>
                 </div>
                 <div className="w-full break-words">
-                  <p className="text-gray-700 whitespace-pre-wrap">{reply.content}</p>
+                  <p className="text-gray-700 whitespace-pre-wrap" dir="auto">{reply.content}</p>
                 </div>
               </div>
             ))}

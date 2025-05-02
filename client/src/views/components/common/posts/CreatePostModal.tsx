@@ -266,6 +266,7 @@ const CreatePostModal: React.FC = () => {
                   onChange={handleTitleChange}
                   inputProps={{
                     maxLength: TITLE_MAX_LENGTH,
+                    dir: "auto"
                   }}
                   required
                   error={!!titleError}
@@ -298,6 +299,7 @@ const CreatePostModal: React.FC = () => {
                   onChange={handleBodyChange}
                   inputProps={{
                     maxLength: BODY_MAX_LENGTH,
+                    dir: "auto"
                   }}
                   required
                   error={!!bodyError}

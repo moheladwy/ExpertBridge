@@ -116,9 +116,10 @@ const EditPostModal: React.FC<EditPostModalProps> = ({ post, isOpen, onClose }) 
                 className={errors.title ? "border-red-500 focus-visible:ring-red-500" : ""} // Added focus style for error
                 aria-invalid={!!errors.title} // Accessibility improvement
                 aria-describedby={errors.title ? "title-error" : undefined} // Accessibility improvement
+                dir="auto"
               />
               {errors.title && (
-                <p id="title-error" className="text-red-500 text-sm">{errors.title}</p> // Added id for aria-describedby
+                <p id="title-error" dir="auto" className="text-red-500 text-sm">{errors.title}</p> // Added id for aria-describedby
               )}
             </div>
             <div className="space-y-2">
@@ -135,6 +136,7 @@ const EditPostModal: React.FC<EditPostModalProps> = ({ post, isOpen, onClose }) 
                 className={errors.content ? "border-red-500 focus-visible:ring-red-500" : ""} // Added focus style for error
                 aria-invalid={!!errors.content} // Accessibility improvement
                 aria-describedby={errors.content ? "content-error" : undefined} // Accessibility improvement
+                dir="auto"
               />
               {errors.content && (
                 <p id="content-error" className="text-red-500 text-sm">{errors.content}</p> // Added id for aria-describedby

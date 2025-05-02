@@ -203,12 +203,12 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
 
                   {/* Post Header */}
                   <div className="break-words">
-                    <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">{post.title}</h2>
+                    <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap" dir="auto">{post.title}</h2>
                   </div>
 
                   {/* Post Content */}
                   <div className="break-words">
-                    <p className="text-gray-600 whitespace-pre-wrap">{post.content}</p>
+                    <p className="text-gray-600 whitespace-pre-wrap" dir="auto">{post.content}</p>
                   </div>
 
                   {/* Media */}
@@ -276,7 +276,8 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                 </div>
               </>
             )
-              : <p>Post not found.</p>
+            : 
+            <p>Post not found.</p>
           }
         </div>
       </div>
