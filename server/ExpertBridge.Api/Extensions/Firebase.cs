@@ -40,14 +40,12 @@ internal static class Firebase
     /// <param name="builder">
     ///     The WebApplicationBuilder to add the HttpClient service to.
     /// </param>
-    public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder)
-    {
+    public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder) =>
         builder.Services.AddHttpClient<HttpClient>((sp, httpClient) =>
         {
             var settings = sp.GetRequiredService<IOptions<FirebaseSettings>>().Value;
             httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
         });
-    }
 
     /// <summary>
     ///     Adds the Firebase authentication service to the application builder.

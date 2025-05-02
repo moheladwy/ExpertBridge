@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
-import { ProfileResponse } from "./types";
+import { OnboardUserRequest, ProfileResponse } from "./types";
 
 export const profilesApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
@@ -25,8 +25,37 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 				{ type: "Profile", id: arg },
 			],
 		}),
+
+		onboardUser: builder.mutation<ProfileResponse, OnboardUserRequest>({
+			query: (request) => ({
+				url: '/profiles/onboard',
+				method: 'POST',
+				body: request
+			}),
+			onQueryStarted: async (request, lifecycleApi) => {
+				const patchResult = lifecycleApi.dispatch(
+					profilesApiSlice.util.updateQueryData(
+						'getCurrentUserProfile',
+						undefined,
+						(draft) => {
+							draft.isOnboarded = true;
+						}
+					),
+				);
+
+				try {
+					await lifecycleApi.queryFulfilled;
+				} catch {
+					patchResult.undo();
+				}
+			},
+		}),
+
 	}),
 });
 
-export const { useGetCurrentUserProfileQuery, useGetProfileByIdQuery } =
-	profilesApiSlice;
+export const {
+	useGetCurrentUserProfileQuery,
+	useGetProfileByIdQuery,
+	useOnboardUserMutation,
+} = profilesApiSlice;

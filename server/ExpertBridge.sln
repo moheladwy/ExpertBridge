@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Core", "Expert
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Data", "ExpertBridge.Data\ExpertBridge.Data.csproj", "{F87F6A03-77A6-4D4B-B4EC-424035AA39D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.GroqLibrary", "ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj", "{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,9 @@ Global
 		{F87F6A03-77A6-4D4B-B4EC-424035AA39D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F87F6A03-77A6-4D4B-B4EC-424035AA39D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F87F6A03-77A6-4D4B-B4EC-424035AA39D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Literal
+import json
 
 
 class Tags(BaseModel):
@@ -38,3 +39,17 @@ class TranslateTagsResponse(BaseModel):
     tags: List[Tags] = Field(...,
                              min_length=1,
                              description="The list of translated tags with their descriptions")
+
+
+def generate_json_schemas():
+    with open("output-format.json", "w", encoding="utf-8") as f:
+        json.dump(CategorizationResponse.model_json_schema(),
+                  f, ensure_ascii=False, indent=2)
+
+    with open("output-format-translate.json", "w", encoding="utf-8") as f:
+        json.dump(TranslateTagsResponse.model_json_schema(),
+                  f, ensure_ascii=False, indent=2)
+
+
+if __name__ == "__main__":
+    generate_json_schemas()

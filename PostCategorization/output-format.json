@@ -1,0 +1,67 @@
+{
+  "$defs": {
+    "Tags": {
+      "properties": {
+        "EnglishName": {
+          "description": "The English tag name, must be separated by space ' ' and must be lowercase.",
+          "maxLength": 256,
+          "minLength": 3,
+          "title": "Englishname",
+          "type": "string"
+        },
+        "ArabicName": {
+          "description": "The Arabic tag name, must be separated by space ' ' and must be lowercase.",
+          "maxLength": 256,
+          "minLength": 3,
+          "title": "Arabicname",
+          "type": "string"
+        },
+        "Description": {
+          "description": "The description of the tag, should be concise and informative, and it must be in English and lowercase.",
+          "maxLength": 1024,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "EnglishName",
+        "ArabicName",
+        "Description"
+      ],
+      "title": "Tags",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "language": {
+      "description": "The detected language of the post",
+      "enum": [
+        "English",
+        "Arabic",
+        "Mixed",
+        "Other"
+      ],
+      "maxLength": 10,
+      "minLength": 3,
+      "title": "Language",
+      "type": "string"
+    },
+    "tags": {
+      "description": "The list of tags for the post with their descriptions",
+      "items": {
+        "$ref": "#/$defs/Tags"
+      },
+      "maxItems": 6,
+      "minItems": 3,
+      "title": "Tags",
+      "type": "array"
+    }
+  },
+  "required": [
+    "language",
+    "tags"
+  ],
+  "title": "CategorizationResponse",
+  "type": "object"
+}

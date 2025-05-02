@@ -16,3 +16,7 @@ export type ProfileResponse = {
 	commentsUpvotes: number;
 	commentsDownvotes: number;
 };
+
+export interface OnboardUserRequest {
+	tagIds: string[];
+}

@@ -449,7 +449,7 @@ namespace ExpertBridge.Data.Migrations
                     b.ToTable("ProfileSkills");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags.ProfileTag", b =>
+            modelBuilder.Entity("ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests.UserInterest", b =>
                 {
                     b.Property<string>("ProfileId")
                         .HasColumnType("character varying(450)");
@@ -461,7 +461,7 @@ namespace ExpertBridge.Data.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("ProfileTags");
+                    b.ToTable("UserInterests");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.Media.ChatMedia.ChatMedia", b =>
@@ -989,6 +989,9 @@ namespace ExpertBridge.Data.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(450)");
 
+                    b.Property<Vector>("UserInterestEmbedding")
+                        .HasColumnType("vector(1024)");
+
                     b.Property<string>("Username")
                         .HasColumnType("text");
 
@@ -1356,7 +1359,7 @@ namespace ExpertBridge.Data.Migrations
                     b.Navigation("Skill");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileTags.ProfileTag", b =>
+            modelBuilder.Entity("ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests.UserInterest", b =>
                 {
                     b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("ProfileTags")
