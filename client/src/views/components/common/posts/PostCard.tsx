@@ -135,7 +135,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				aria-labelledby="create-post-modal"
 				className="flex justify-center items-center"
 			>
-				{post.medias?.[picToBeOpened]?.url ? (
+				{post?.medias?.[picToBeOpened]?.url ? (
 					<img
 						src={post.medias[picToBeOpened].url}
 						alt="Post content"

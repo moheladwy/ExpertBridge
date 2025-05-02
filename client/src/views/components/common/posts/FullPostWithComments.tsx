@@ -87,27 +87,27 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
     <>
       <div className="w-full flex justify-center">
         <div className="w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="create-post-modal"
+            className="flex justify-center items-center"
+          >
+            {post?.medias?.[picToBeOpened]?.url ? (
+              <img
+                src={post.medias[picToBeOpened].url}
+                alt="Post content"
+                className="max-w-full max-h-[90vh] object-contain"
+              />
+            ) : (
+              <div className="p-4 text-center">
+                <p>No media available</p>
+              </div>
+            )}
+          </Modal>
           {
             post ? (
               <>
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="create-post-modal"
-                  className="flex justify-center items-center"
-                >
-                  {post.medias?.[picToBeOpened]?.url ? (
-                    <img
-                      src={post.medias[picToBeOpened].url}
-                      alt="Post content"
-                      className="max-w-full max-h-[90vh] object-contain"
-                    />
-                  ) : (
-                    <div className="p-4 text-center">
-                      <p>No media available</p>
-                    </div>
-                  )}
-                </Modal>
                 <div className="flex flex-col gap-3 bg-white shadow-md rounded-lg p-4 border border-gray-200">
                   {/* Post Header */}
                   <div className="flex items-center justify-between pb-3 border-b border-gray-300">
@@ -203,12 +203,12 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
 
                   {/* Post Header */}
                   <div className="break-words">
-                    <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap" dir="auto">{post.title}</h2>
+                    <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">{post.title}</h2>
                   </div>
 
                   {/* Post Content */}
                   <div className="break-words">
-                    <p className="text-gray-600 whitespace-pre-wrap" dir="auto">{post.content}</p>
+                    <p className="text-gray-600 whitespace-pre-wrap">{post.content}</p>
                   </div>
 
                   {/* Media */}
@@ -276,8 +276,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                 </div>
               </>
             )
-            : 
-            <p>Post not found.</p>
+              : <p>Post not found.</p>
           }
         </div>
       </div>
