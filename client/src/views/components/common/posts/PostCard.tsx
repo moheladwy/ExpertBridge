@@ -256,7 +256,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				{/* Post Title */}
 				<Link to={`/feed/${post.id}`}>
 					<div className="break-words">
-						<h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">
+						<h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap" dir="auto">
 							{post.title}
 						</h2>
 					</div>
@@ -264,7 +264,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 
 				{/* Post Content */}
 				<div className="break-words">
-					<p className="text-gray-600 whitespace-pre-wrap">
+					<p className="text-gray-600 whitespace-pre-wrap" dir="auto">
 						{post.content}
 					</p>
 				</div>
