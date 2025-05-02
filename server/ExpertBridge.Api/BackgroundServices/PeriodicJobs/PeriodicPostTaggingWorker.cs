@@ -3,14 +3,10 @@
 
 
 using System.Threading.Channels;
-using Amazon.S3.Model;
-using Amazon.S3;
 using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
@@ -38,7 +34,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Started...");
+                // _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Started...");
+                Log.Information("{WorkerName} Started...", nameof(PeriodicPostTaggingWorker));
 
                 try
                 {
@@ -76,12 +73,15 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        $"Failed to execute {nameof(PeriodicPostTaggingWorker)} with exception message {ex.Message}."
-                        );
+                    // _logger.LogError(ex,
+                    //     $"Failed to execute {nameof(PeriodicPostTaggingWorker)} with exception message {ex.Message}."
+                    //     );
+                    Log.Error(ex, "Failed to execute {WorkerName} with exception message {Message}.",
+                        nameof(PeriodicPostTaggingWorker), ex.Message);
                 }
 
-                _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Finished.");
+                // _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Finished.");
+                Log.Information("{WorkerName} Finished.", nameof(PeriodicPostTaggingWorker));
             }
         }
     }

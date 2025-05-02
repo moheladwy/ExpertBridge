@@ -5,6 +5,7 @@ using System.Threading.Channels;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
@@ -33,7 +34,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation($"{nameof(PeriodicUserInterestUpdaterWorker)} Started...");
+                // _logger.LogInformation($"{nameof(PeriodicUserInterestUpdaterWorker)} Started...");
+                Log.Information("{WorkerName} Started...", nameof(PeriodicUserInterestUpdaterWorker));
 
                 try
                 {
@@ -56,12 +58,16 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        $"Failed to execute {nameof(PeriodicUserInterestUpdaterWorker)} with exception message {ex.Message}."
-                        );
+                    // _logger.LogError(ex,
+                    //     $"Failed to execute {nameof(PeriodicUserInterestUpdaterWorker)} with exception message {ex.Message}."
+                    //     );
+                    Log.Error(ex,
+                        "Failed to execute {WorkerName} with exception message {ExceptionMessage}.",
+                        nameof(PeriodicUserInterestUpdaterWorker), ex.Message);
                 }
 
-                _logger.LogInformation($"{nameof(PeriodicUserInterestUpdaterWorker)} Finished.");
+                // _logger.LogInformation($"{nameof(PeriodicUserInterestUpdaterWorker)} Finished.");
+                Log.Information("{WorkerName} Finished.", nameof(PeriodicUserInterestUpdaterWorker));
             }
         }
     }

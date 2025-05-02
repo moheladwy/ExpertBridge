@@ -8,6 +8,7 @@ using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
@@ -58,20 +59,28 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"An error occurred while processing " +
-                            $"message with post id={post.PostId}.");
+                        // I commented out the logger because it was not being used in serilog.
+                        // _logger.LogError(ex, $"An error occurred while processing " +
+                        //     $"message with post id={post.PostId}.");
+                        Log.Error(ex,
+                            "An error occurred while processing message with post id={post.PostId}.",
+                            post.PostId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    @$"{nameof(PostEmbeddingHandlerWorker)} ran into unexpected error: 
-                    An error occurred while reading from the channel.");
+                // _logger.LogError(ex,
+                //     @$"{nameof(PostEmbeddingHandlerWorker)} ran into unexpected error:
+                //     An error occurred while reading from the channel.");
+                Log.Error(ex,
+                    "An error occurred while reading from the channel in {nameof(PostEmbeddingHandlerWorker)}.",
+                    nameof(PostEmbeddingHandlerWorker));
             }
             finally
             {
-                _logger.LogInformation($"Terminating {nameof(PostEmbeddingHandlerWorker)}.");
+                // _logger.LogInformation($"Terminating {nameof(PostEmbeddingHandlerWorker)}.");
+                Log.Information("Terminating {nameof(PostEmbeddingHandlerWorker)}.", nameof(PostEmbeddingHandlerWorker));
             }
         }
     }
