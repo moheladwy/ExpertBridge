@@ -42,11 +42,11 @@ class TranslateTagsResponse(BaseModel):
 
 
 def generate_json_schemas():
-    with open("output-format.json", "w", encoding="utf-8") as f:
+    with open("PostCategorizationOutputFormat.json", "w", encoding="utf-8") as f:
         json.dump(CategorizationResponse.model_json_schema(),
                   f, ensure_ascii=False, indent=2)
 
-    with open("output-format-translate.json", "w", encoding="utf-8") as f:
+    with open("TranslateTagResponseOutputFormat.json", "w", encoding="utf-8") as f:
         json.dump(TranslateTagsResponse.model_json_schema(),
                   f, ensure_ascii=False, indent=2)
 

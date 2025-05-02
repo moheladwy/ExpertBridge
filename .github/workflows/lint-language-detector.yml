@@ -1,4 +1,4 @@
-name: Python Linting
+name: Python Linting Language Detector
 
 on:
   push:
