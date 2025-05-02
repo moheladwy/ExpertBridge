@@ -141,12 +141,12 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
 
                 {/* Post Header */}
                 <div className="break-words">
-                  <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">{post.title}</h2>
+                  <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap" dir="auto">{post.title}</h2>
                 </div>
 
                 {/* Post Content */}
                 <div className="break-words">
-                  <p className="text-gray-600 whitespace-pre-wrap">{post.content}</p>
+                  <p className="text-gray-600 whitespace-pre-wrap" dir="auto">{post.content}</p>
                 </div>
 
                 {/* Media */}
@@ -156,7 +156,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                       (
                         post.medias[0].type.startsWith('video')
                           ? <ReactPlayer url={post.medias[0].url} controls />
-                          : <img src={post.medias[0].url} onClick={handleOpen} alt="oh shit it did not load..." />
+                          : <img src={post.medias[0].url} onClick={handleOpen} alt="post image" />
                       )
                       : null
                   }
