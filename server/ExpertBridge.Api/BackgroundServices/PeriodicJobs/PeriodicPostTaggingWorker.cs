@@ -32,7 +32,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var period = 60;// * 60 * 24 * 1; // 1 day
+            var period = 60 * 60 * 24 * 1; // 1 day
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
             while (!stoppingToken.IsCancellationRequested
