@@ -28,10 +28,10 @@ public sealed class NSFWDetectionService
     ///     Service for detecting NSFW (Not Safe for Work) content using Groq Large Language Model (LLM) API.
     ///     Handles interactions with the <see cref="GroqLlmTextProvider" /> for analyzing and generating text-related tasks.
     /// </summary>
-    public NSFWDetectionService(GroqLlmTextProvider groqLlmTextProvider, JsonSerializerOptions jsonSerializerOptions)
+    public NSFWDetectionService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
-        _jsonSerializerOptions = jsonSerializerOptions;
+        _jsonSerializerOptions =  new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
     /// <summary>
