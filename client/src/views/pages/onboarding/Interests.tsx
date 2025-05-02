@@ -18,6 +18,7 @@ import { useUpdateUserMutation } from "@/features/users/usersSlice";
 import { useGetCurrentUserProfileQuery, useOnboardUserMutation } from "@/features/profiles/profilesSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 
 
@@ -29,6 +30,8 @@ function Interests() {
   const [interests, setInterests] = useState<{ interest: string; interestStatus: boolean }[]>([]);
 
   const [searchInput, setSearchInput] = useState("");
+
+  const [,,,, userProfile] = useIsUserLoggedIn();
 
   // Filtered & limited suggestions (excluding already selected)
   const filteredSuggestions = tags
@@ -75,6 +78,14 @@ function Interests() {
       tagIds: selectedTagIds,
     });
   }
+
+  useEffect(() => {
+    if (userProfile) {
+      if (userProfile.isOnboarded) {
+        navigate('/home');
+      }
+    }
+  }, [userProfile, navigate]);
 
   useEffect(() => {
     if (onboardingResult.isSuccess) {
