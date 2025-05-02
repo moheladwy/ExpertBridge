@@ -30,10 +30,18 @@ const BODY_MAX_LENGTH = 5000;
 const postSchema = z.object({
   title: z.string()
     .min(1, "Title is required")
-    .max(TITLE_MAX_LENGTH, "Title cannot exceed 256 characters"),
+    .max(TITLE_MAX_LENGTH, "Title cannot exceed 256 characters")
+    .refine(
+      (val) => val.trim().split(/\s+/).filter(Boolean).length >= 3,
+      { message: "Title must be at least 3 words" }
+    ),
   content: z.string()
     .min(1, "Content is required")
-    .max(BODY_MAX_LENGTH, "Content cannot exceed 5000 characters"),
+    .max(BODY_MAX_LENGTH, "Content cannot exceed 5000 characters")
+    .refine(
+      (val) => val.trim().split(/\s+/).filter(Boolean).length >= 10,
+      { message: "Content must be at least 10 words" }
+    ),
 });
 
 const steps = ["Ask Question", "Describe Your Problem", "Add Media"];
