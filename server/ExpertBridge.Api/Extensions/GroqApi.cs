@@ -39,16 +39,18 @@ public static class GroqApi
     public static WebApplicationBuilder AddGroqApiServices(
         this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<GroqApiChatCompletionClient>(sp =>
-            {
-                var httpClient = sp.GetRequiredService<GroqHttpClient>();
-                return new GroqApiChatCompletionClient(httpClient);
-            })
+
+        builder.Services
+            .AddScoped<GroqApiChatCompletionClient>()
             .AddScoped<GroqLlmTextProvider>()
             .AddScoped<GroqPostTaggingService>()
             .AddScoped<TagProcessorService>()
             .AddScoped<NSFWDetectionService>()
             ;
+
+        // Adding an HttpClient to a service should take place after registering this
+        // service with the DI frist.
+        builder.AddGroqHttpClient();
         return builder;
     }
 
@@ -70,7 +72,7 @@ public static class GroqApi
     {
         var settings = builder.Configuration.GetSection(GroqSettings.Section).Get<GroqSettings>()!;
 
-        builder.Services.AddHttpClient<GroqHttpClient>(client =>
+        builder.Services.AddHttpClient<GroqApiChatCompletionClient>(client =>
         {
             client.BaseAddress = new Uri(GroqApiEndpoints.BaseUrl);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.ApiKey);

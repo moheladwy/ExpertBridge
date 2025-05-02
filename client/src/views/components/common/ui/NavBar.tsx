@@ -46,14 +46,6 @@ const NavBar = () => {
 		}
 	}, [userProfile, navigate]);
 
-	useEffect(() => {
-		if (location.pathname.includes('onboarding')) {
-			if (userProfile?.isOnboarded === true) {
-				navigate('/home');
-			}
-		}
-	}, [navigate, location.pathname]);
-
 	const [signOut, loading, error] = useSignOut(auth);
 
 	const handleSignOut = useCallback(async () => {
