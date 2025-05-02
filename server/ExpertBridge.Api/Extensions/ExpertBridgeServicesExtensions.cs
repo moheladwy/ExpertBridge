@@ -41,7 +41,6 @@ namespace ExpertBridge.Api.Extensions
             builder.AddEmbeddingServices();
             builder.AddRefitHttpClients();
             builder
-                .AddGroqHttpClient()
                 .AddGroqApiServices()
                 ;
 
