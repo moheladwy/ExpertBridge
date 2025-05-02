@@ -53,14 +53,14 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 
       {/* Post Title */}
       <div className="break-words">
-        <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap">
+        <h2 className="text-lg font-bold text-gray-700 whitespace-pre-wrap" dir="auto">
           {post.title}
         </h2>
       </div>
 
       {/* Post Content */}
       <div className="break-words">
-        <p className="text-gray-600 whitespace-pre-wrap line-clamp-3">
+        <p className="text-gray-600 whitespace-pre-wrap line-clamp-3" dir="auto">
           {post.content}
         </p>
       </div>
@@ -73,6 +73,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
             <span
               key={index}
               className="text-xs bg-gray-200 px-2 py-1 rounded-full"
+              dir="auto"
             >
               {tag.name}
             </span>
