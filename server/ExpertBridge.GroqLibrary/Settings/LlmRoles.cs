@@ -5,7 +5,7 @@ namespace ExpertBridge.GroqLibrary.Settings;
 /// </summary>
 /// <remarks>
 ///     This class defines roles commonly used in interactions with language models:
-///     - <c>SystemRole</c>, <c>UserRole</c>, <c>ToolRole</c>
+///     - <c>SystemRole</c>, <c>UserRole</c>, <c>ToolRole</c>, <c>AssistantRole</c>
 /// </remarks>
 public static class LlmRoles
 {
@@ -38,4 +38,13 @@ public static class LlmRoles
     ///     messages or outputs that originate from external functions or systems during API workflows.
     /// </remarks>
     public const string ToolRole = "tool";
+
+    /// <summary>
+    /// Represents the constant value associated with the assistant's role in a conversation with language models (LLMs).
+    /// </summary>
+    /// <remarks>
+    /// The <c>AssistantRole</c> is typically used to define the role of the language model acting as an assistant
+    /// in the interaction. It helps in specifying the assistant's responses and behavior in such exchanges.
+    /// </remarks>
+    public const string AssistantRole = "assistant";
 }

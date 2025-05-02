@@ -1,8 +1,8 @@
+using System.Net.Http.Headers;
 using ExpertBridge.Api.Services;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Providers;
 using ExpertBridge.GroqLibrary.Settings;
-using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -38,19 +38,42 @@ public static class GroqApi
     public static WebApplicationBuilder AddGroqApiServices(
         this WebApplicationBuilder builder)
     {
-        builder.Configuration.GetSection(GroqSettings.Section).Bind(new GroqSettings());
-
-        builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
-        builder.Services.AddScoped(sp =>
+        builder.Services.AddScoped<GroqApiChatCompletionClient>(sp =>
         {
-            var settings = sp.GetRequiredService<IOptions<GroqSettings>>().Value;
-            return new GroqLlmTextProvider(settings.ApiKey, settings.Model);
-        });
+            var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(GroqSettings.Section);
+            return new GroqApiChatCompletionClient(httpClient);
+        })
+        .AddScoped<GroqLlmTextProvider>()
+        .AddScoped<GroqPostTaggingService>()
+        .AddScoped<TagProcessorService>()
+        ;
+        return builder;
+    }
 
-        builder.Services
-            .AddScoped<GroqPostTaggingService>()
-            .AddScoped<TagProcessorService>()
-            ;
+    /// <summary>
+    /// Adds an HTTP client configured for Groq API endpoints to the application's dependency injection container.
+    /// </summary>
+    /// <param name="builder">
+    /// The <see cref="WebApplicationBuilder" /> used to configure the application's service container.
+    /// </param>
+    /// <returns>
+    /// The modified <see cref="WebApplicationBuilder" /> with the Groq API HTTP client configured.
+    /// </returns>
+    /// <remarks>
+    /// This method registers an <see cref="IHttpClientFactory" /> named after the Groq settings section,
+    /// pre-configured with the Groq API base URL and the authorization header using the Groq API key.
+    /// </remarks>
+    /// <seealso cref="GroqSettings" />
+    /// <seealso cref="GroqApiEndpoints" />
+    public static WebApplicationBuilder AddGroqHttpClientFactory(this WebApplicationBuilder builder)
+    {
+        var settings = builder.Configuration.GetSection(GroqSettings.Section).Get<GroqSettings>()!;
+
+        builder.Services.AddHttpClient(GroqSettings.Section, client =>
+        {
+            client.BaseAddress = new Uri(GroqApiEndpoints.BaseUrl);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.ApiKey);
+        });
 
         return builder;
     }

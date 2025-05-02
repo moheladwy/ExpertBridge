@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using ExpertBridge.GroqLibrary.Models;
@@ -18,7 +17,7 @@ namespace ExpertBridge.GroqLibrary.Clients;
 /// <example>
 ///     Instances of this class should be disposed of properly to release unmanaged resources.
 /// </example>
-public class GroqApiToolClient : IDisposable
+public sealed class GroqApiToolClient : IDisposable
 {
     /// <summary>Handles API communication for generating chat completions using the Groq API.</summary>
     private readonly GroqApiChatCompletionClient _chatCompletionClient;
@@ -27,26 +26,17 @@ public class GroqApiToolClient : IDisposable
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    ///     Initializes a new instance of the GroqApiToolClient with a new HttpClient.
+    /// Initializes a new instance of the GroqApiToolClient with a specified GroqApiChatCompletionClient and HttpClient.
     /// </summary>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
-    public GroqApiToolClient(string apiKey)
-    {
-        _httpClient = new HttpClient();
-        _chatCompletionClient = new GroqApiChatCompletionClient(apiKey);
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the GroqApiToolClient with a provided HttpClient.
-    /// </summary>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
-    /// <param name="httpClient">The HttpClient instance to use for API requests.</param>
-    public GroqApiToolClient(string apiKey, HttpClient httpClient)
+    /// <param name="groqApiChatCompletionClient">
+    /// The client of type <see cref="GroqApiChatCompletionClient"/> responsible for handling chat completions
+    /// with the Groq API.
+    /// </param>
+    /// <param name="httpClient">The <see cref="HttpClient"/> instance used for HTTP communication.</param>
+    public GroqApiToolClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _chatCompletionClient = new GroqApiChatCompletionClient(apiKey, httpClient);
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+        _chatCompletionClient = groqApiChatCompletionClient;
     }
 
     /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>

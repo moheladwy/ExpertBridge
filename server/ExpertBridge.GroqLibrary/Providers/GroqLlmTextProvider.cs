@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Interfaces;
+using ExpertBridge.GroqLibrary.Models;
 using ExpertBridge.GroqLibrary.Settings;
 
 namespace ExpertBridge.GroqLibrary.Providers;
@@ -11,32 +12,21 @@ namespace ExpertBridge.GroqLibrary.Providers;
 ///     Implements <see cref="ILlmProvider" /> interface for consistent LLM operations
 ///     and <see cref="IDisposable" /> for proper resource cleanup.
 /// </summary>
-public class GroqLlmTextProvider : ILlmProvider, IDisposable
+public sealed class GroqLlmTextProvider : ILlmProvider, IDisposable
 {
     private readonly GroqApiChatCompletionClient _client;
     private readonly string _model;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GroqLlmTextProvider" /> class.
-    /// </summary>
-    /// <param name="apiKey">The API key for authentication with Groq API.</param>
-    /// <param name="model">The name of the LLM model to use for generation.</param>
-    public GroqLlmTextProvider(string apiKey, string model)
-    {
-        _client = new GroqApiChatCompletionClient(apiKey);
-        _model = model;
-    }
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="GroqLlmTextProvider" /> class with a custom HTTP client.
     /// </summary>
-    /// <param name="apiKey">The API key for authentication with Groq API.</param>
-    /// <param name="model">The name of the LLM model to use for generation.</param>
-    /// <param name="httpClient">The HTTP client to use for API requests.</param>
-    public GroqLlmTextProvider(string apiKey, string model, HttpClient httpClient)
+    /// <param name="groqApiChatCompletionClient">
+    ///     The <see cref="GroqApiChatCompletionClient" /> instance to be used for API requests.
+    /// </param>
+    public GroqLlmTextProvider(GroqApiChatCompletionClient groqApiChatCompletionClient)
     {
-        _client = new GroqApiChatCompletionClient(apiKey, httpClient);
-        _model = model;
+        _client = groqApiChatCompletionClient;
+        _model = GroqTextModels.LLAMA3_70B_8192;
     }
 
     /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>

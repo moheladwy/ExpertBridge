@@ -4,9 +4,13 @@
 using ExpertBridge.Api.Settings.Serilog;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Data;
+using ExpertBridge.GroqLibrary.Settings;
 
 namespace ExpertBridge.Api.Extensions
 {
+    /// <summary>
+    /// Provides extension methods for configuring and adding services required by the ExpertBridge application.
+    /// </summary>
     public static class ExpertBridgeServicesExtensions
     {
         /// <summary>
@@ -21,7 +25,7 @@ namespace ExpertBridge.Api.Extensions
             // CONSIDER!
             builder.ConfigureExpertBridgeSettings(); // Move all .Configure settings calls here in this method call?
 
-            // Infrastructure 
+            // Infrastructure
             builder.Services.AddDatabase(builder.Configuration);
             builder.AddSeqEndpoint(connectionName: "Seq");
             builder.AddRedisDistributedCache(connectionName: "Redis");
@@ -36,7 +40,10 @@ namespace ExpertBridge.Api.Extensions
             // External remote services
             builder.AddEmbeddingServices();
             builder.AddRefitHttpClients();
-            builder.AddGroqApiServices();
+            builder
+                .AddGroqHttpClientFactory()
+                .AddGroqApiServices()
+                ;
 
             // Background jobs
             builder.AddIpcChannels();
@@ -47,6 +54,11 @@ namespace ExpertBridge.Api.Extensions
             return builder;
         }
 
+        /// <summary>
+        /// Configures the settings required by the ExpertBridge application.
+        /// </summary>
+        /// <param name="builder">The WebApplicationBuilder instance to configure.</param>
+        /// <returns>The modified WebApplicationBuilder with the configured application settings.</returns>
         private static WebApplicationBuilder ConfigureExpertBridgeSettings(this WebApplicationBuilder builder)
         {
             builder.Services.Configure<ConnectionStrings>(
@@ -69,6 +81,8 @@ namespace ExpertBridge.Api.Extensions
 
             builder.Services.Configure<ExpertBridgeRateLimitSettings>(
                 builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
+
+            builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 
             return builder;
         }
