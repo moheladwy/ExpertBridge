@@ -29,6 +29,7 @@ export interface CommentResponse {
   downvotes: number;
   isUpvoted: boolean;
   isDownvoted: boolean;
+  medias: MediaObjectResponse[];
   replies?: CommentResponse[] | null; // Only one level of replies
 }
 
