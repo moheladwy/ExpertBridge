@@ -5,7 +5,7 @@ export const mediaApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     uploadMedia: builder.mutation<PresignedUrl[], UploadMediaRequest>({
       queryFn: async (request, baseQueryApi, extra, baseQuery) => {
-        if (request.mediaList.length == 0) {
+        if (request.mediaList.length === 0) {
           return { data: [] };
         }
 

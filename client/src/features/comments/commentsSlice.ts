@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSelector, EntityState } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 import { sub } from 'date-fns';
-import { AddCommentRequest, AddReplyRequest, Comment, CommentResponse } from "./types";
+import { AddCommentRequest, AddReplyRequest, Comment, CommentResponse, DeleteCommentRequest, UpdateCommentRequest } from "./types";
 import { request } from "http";
 
 const commentResponseTransformer = (c: CommentResponse): Comment => ({
@@ -99,19 +99,19 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
       //   { type: 'Comment', id: `LIST/${arg.postId}` },
       //   { type: 'Comment', id: arg.parentCommentId },
       // ],
-      invalidatesTags: (result, error, arg) => [
-        { type: 'Comment', id: `LIST/${result?.authorId}` }
-      ],
+
+      // No need to invalidate this anymore 
+      // because the profile page does not show replies.
+
+      // invalidatesTags: (result, error, arg) => [
+      //   { type: 'Comment', id: `LIST/${result?.authorId}` }
+      // ],
       onQueryStarted: async (request, lifecycleApi) => {
         try {
-          console.log(`Req: ${request}`, request.postId);
           const { data: createdReply } = await lifecycleApi.queryFulfilled;
           const getCommentsByPostPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId, (draft) => {
-              const parent = draft.find(c => c.id == request.parentCommentId);
-              console.log(parent?.postId);
-              console.log(draft);
-              console.log(`Parent: ${parent}`);
+              const parent = draft.find(c => c.id === request.parentCommentId);
               if (parent) {
                 Object.assign(parent, { ...parent, replies: (parent.replies || []).concat(createdReply) });
               }
@@ -161,7 +161,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         const getCommentsByPostPatchResult = lifecycleApi.dispatch(
           commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId, (draft) => {
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-            const updateCandidate = draft.find(c => c.id == comment.id);
+            const updateCandidate = draft.find(c => c.id === comment.id);
             if (updateCandidate) {
               updateCandidate.upvotes = upvotes;
               updateCandidate.downvotes = downvotes;
@@ -174,7 +174,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         const getCommentsByUserPatchResult = lifecycleApi.dispatch(
           commentsApiSlice.util.updateQueryData('getCommentsByUserId', comment.authorId, (draft) => {
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-            const updateCandidate = draft.find(c => c.id == comment.id);
+            const updateCandidate = draft.find(c => c.id === comment.id);
             if (updateCandidate) {
               updateCandidate.upvotes = upvotes;
               updateCandidate.downvotes = downvotes;
@@ -237,7 +237,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         const getCommentsByPostPatchResult = lifecycleApi.dispatch(
           commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId, (draft) => {
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-            const updateCandidate = draft.find(c => c.id == comment.id);
+            const updateCandidate = draft.find(c => c.id === comment.id);
             if (updateCandidate) {
               updateCandidate.upvotes = upvotes;
               updateCandidate.downvotes = downvotes;
@@ -250,7 +250,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         const getCommentsByUserPatchResult = lifecycleApi.dispatch(
           commentsApiSlice.util.updateQueryData('getCommentsByUserId', comment.authorId, (draft) => {
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
-            const updateCandidate = draft.find(c => c.id == comment.id);
+            const updateCandidate = draft.find(c => c.id === comment.id);
             if (updateCandidate) {
               updateCandidate.upvotes = upvotes;
               updateCandidate.downvotes = downvotes;
@@ -282,6 +282,168 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
+    updateComment: builder.mutation<Comment, UpdateCommentRequest>({
+      query: (request) => ({
+        url: `/comments/${request.commentId}`,
+        method: 'PATCH',
+        body: request,
+      }),
+      onQueryStarted: async (request, lifecycleApi) => {
+        const getByPostPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData(
+            "getCommentsByPostId",
+            request.postId,
+            (draft) => {
+              const updateCandidate = draft.find(c => c.id === request.commentId)
+              if (updateCandidate) {
+                updateCandidate.content = request.content ?? updateCandidate.content;
+              }
+            }
+          ),
+        );
+
+        const getByUserPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData(
+            "getCommentsByUserId",
+            request.authorId,
+            (draft) => {
+              const updateCandidate = draft.find(c => c.id === request.commentId)
+              if (updateCandidate) {
+                updateCandidate.content = request.content ?? updateCandidate.content;
+              }
+            }
+          ),
+        );
+
+        const getCommentPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData(
+            "getComment",
+            request.commentId,
+            (draft) => {
+              if (draft) {
+                draft.content = request.content ?? draft.content;
+              }
+            }
+          ),
+        );
+
+        // Handle reply edits
+        if (request.parentCommentId) {
+          const getCommentsByPostPatchResult2 = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData(
+              'getCommentsByPostId',
+              request.postId,
+              (draft) => {
+                const parent = draft.find(c => c.id === request.parentCommentId);
+                if (parent?.replies) {
+                  const reply = parent.replies.find(r => r.id === request.commentId);
+                  if (reply) {
+                    reply.content = request.content ?? reply.content;
+                  }
+                }
+              }),
+          );
+
+          const getCommentPatchResult2 = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData(
+              'getComment',
+              request.parentCommentId,
+              (draft) => {
+                const parent = draft;
+                if (parent?.replies) {
+                  const reply = parent.replies.find(r => r.id === request.commentId);
+                  if (reply) {
+                    reply.content = request.content ?? reply.content;
+                  }
+                }
+              }),
+          );
+
+          try {
+            await lifecycleApi.queryFulfilled;
+          } catch {
+            getCommentsByPostPatchResult2.undo();
+            getCommentPatchResult2.undo();
+          }
+        }
+
+        try {
+          await lifecycleApi.queryFulfilled;
+        } catch {
+          getByPostPatchResult.undo();
+          getByUserPatchResult.undo();
+          getCommentPatchResult.undo();
+        }
+      },
+    }),
+
+    deleteComment: builder.mutation<void, DeleteCommentRequest>({
+      query: (request) => ({
+        url: `/comments/${request.commentId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_, __, arg) => [
+        { type: 'Comment', id: `LIST/${arg.authorId}` }
+      ],
+      onQueryStarted: async (request, lifecycleApi) => {
+        try {
+          const response = await lifecycleApi.queryFulfilled;
+
+          const getCommentsByPostPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData(
+              "getCommentsByPostId",
+              request.postId,
+              (draft) => {
+                Object.assign(draft, draft.filter(c => c.id !== request.commentId));
+              },
+            ),
+          );
+
+          const getCommentPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData(
+              "getComment",
+              request.commentId,
+              (draft) => {
+                Object.assign(draft, null);
+              }
+            ),
+          );
+
+          // Handle reply deletion
+          if (request.parentCommentId) {
+            const getCommentsByPostPatchResult = lifecycleApi.dispatch(
+              commentsApiSlice.util.updateQueryData(
+                'getCommentsByPostId',
+                request.postId,
+                (draft) => {
+                  const parent = draft.find(c => c.id === request.parentCommentId);
+                  if (parent) {
+                    Object.assign(parent, {
+                      ...parent,
+                      replies: (parent.replies || []).filter(r => r.id !== request.commentId)
+                    });
+                  }
+                }),
+            );
+
+            const getCommentPatchResult = lifecycleApi.dispatch(
+              commentsApiSlice.util.updateQueryData(
+                'getComment',
+                request.parentCommentId,
+                (draft) => {
+                  Object.assign(draft, {
+                    ...draft, replies: (draft.replies || []).filter(r => r.id !== request.commentId)
+                  });
+                }),
+            );
+          }
+
+        } catch {
+          console.error('error while deleting post');
+        }
+      },
+    })
+
   }),
 });
 
@@ -293,6 +455,8 @@ export const {
   useCreateReplyMutation,
   useUpvoteCommentMutation,
   useDownvoteCommentMutation,
+  useDeleteCommentMutation,
+  useUpdateCommentMutation,
 } = commentsApiSlice;
 
 

@@ -2,6 +2,7 @@
 
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;
+using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Profiles;
 
 namespace ExpertBridge.Core.Entities.Comments;
@@ -21,5 +22,5 @@ public class Comment : BaseModel, ISoftDeletable
     public Comment ParentComment { get; set; }
     public ICollection<Comment> Replies { get; set; } = [];
     public ICollection<CommentVote> Votes { get; set; } = [];
-    public CommentMedia Media { get; set; }
+    public ICollection<CommentMedia> Medias { get; set; } = [];
 }

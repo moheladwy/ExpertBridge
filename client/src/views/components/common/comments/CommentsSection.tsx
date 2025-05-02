@@ -1,4 +1,4 @@
-import { useCreateCommentMutation, useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
+import { useCreateCommentMutation, useDeleteCommentMutation, useGetCommentsByPostIdQuery } from "@/features/comments/commentsSlice";
 import { AttachFile } from "@mui/icons-material";
 import { Button, IconButton, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -10,6 +10,10 @@ import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg"
 import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Skeleton } from "@/views/components/ui/skeleton";
+import { DeleteCommentRequest } from "@/features/comments/types";
+import FileUploadForm from "../../custom/FileUploadForm";
+import { MediaObject } from "@/features/media/types";
+import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
 
 interface CommentsSectionProps {
   postId: string;
@@ -21,7 +25,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 
   const authUser = useCurrentAuthUser();
   const { showAuthPrompt } = useAuthPrompt();
-  const [,,,, userProfile] = useIsUserLoggedIn();
+  const [, , , , userProfile] = useIsUserLoggedIn();
 
   const {
     data: comments,
@@ -32,22 +36,24 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     refetch,
   } = useGetCommentsByPostIdQuery(postId);
 
-  useRefetchOnLogin(refetch);
-
   const [createComment, { isLoading, isSuccess, isError }] = useCreateCommentMutation();
+  const [deleteComment, deleteResult] = useDeleteCommentMutation();
 
-  useEffect(() => {
-    if (isError) toast.error("An error occurred while creating your comment");
-    if (isSuccess) {
-      toast.success("comment created successfully");
-    }
-  }, [isSuccess, isError]);
+  useRefetchOnLogin(refetch);
 
   // form data
   const [commentText, setCommentText] = useState("");
   const [media, setMedia] = useState<File[]>([]);
   const [commentError, setCommentError] = useState(""); // New state for error tracking
-  
+
+  useEffect(() => {
+    if (isError) toast.error("An error occurred while creating your comment");
+    if (isSuccess) {
+      toast.success("Comment created successfully");
+      setCommentText("");
+    }
+  }, [isSuccess, isError]);
+
   useEffect(() => {
     if (commentsSuccess) {
       // post.comments = Object.values(comments.entities);
@@ -56,7 +62,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 
   // Calculate characters left
   const charsLeft = MAX_COMMENT_LENGTH - commentText.length;
-  
+
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     if (newValue.length <= MAX_COMMENT_LENGTH) {
@@ -67,64 +73,87 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
     }
   };
 
+  const {
+    uploadMedia,
+    uploadResult
+  } = useCallbackOnMediaUploadSuccess(createComment, { postId, content: commentText });
+
+  const [showMediaForm, setShowMediaForm] = useState(false);
+  const [mediaList, setMediaList] = useState<MediaObject[]>([]);
+
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!authUser){
+    if (!authUser) {
       showAuthPrompt();
       return;
     }
-    
+
     // Validate comment text
     if (!commentText.trim()) {
       setCommentError("Comment cannot be empty");
       return;
     }
     console.log("New comment:", commentText, media);
-    await createComment({
-      postId,
-      content: commentText
-    });
-    setCommentText("");
+
+    await uploadMedia({ mediaList });
+    // await createComment({
+    //   postId,
+    //   content: commentText
+    // });
     setMedia([]);
     setCommentError(""); // Clear error on successful submission
   };
 
+  const handleDeleteComment = async (request: DeleteCommentRequest) => {
+    await deleteComment(request);
+  };
+
+  useEffect(() => {
+    if (deleteResult.isSuccess) {
+      toast.success('Comment deleted successfully.');
+    }
+    else if (deleteResult.isError) {
+      toast.error('An error occurred while deleting your comment.');
+    }
+  }, [deleteResult.isSuccess, deleteResult.isError]);
+
   const handleAttachClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (!authUser) {
-      e.preventDefault();
       showAuthPrompt();
       return;
     }
-    
+    setShowMediaForm(prev => !prev);
   };
 
   return (
     <div>
       {/* Add Comment Form */}
       <div className="mt-6">
-        <form onSubmit={handleCommentSubmit} className="space-y-3">
+        <div onSubmit={handleCommentSubmit} className="space-y-3">
           <div className="flex justify-center gap-3">
             {/* Profile Pic */}
             <div>
               {
                 userProfile?.profilePictureUrl
                   ? <img
-                      src={userProfile.profilePictureUrl}
-                      width={45}
-                      height={45}
-                      className="rounded-full"
-                    />
-                  : <img 
-                      src={defaultProfile}
-                      width={45}
-                      height={45}
-                      className="rounded-full"
-                    />
+                    src={userProfile.profilePictureUrl}
+                    width={45}
+                    height={45}
+                    className="rounded-full"
+                  />
+                  : <img
+                    src={defaultProfile}
+                    width={45}
+                    height={45}
+                    className="rounded-full"
+                  />
               }
             </div>
 
-            <div className="flex flex-col gap-3 w-full">  
+            <div className="flex flex-col gap-3 w-full">
               {/* Comment Text Field */}
               <TextField
                 fullWidth
@@ -140,34 +169,53 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
                   }
                 }}
                 onChange={handleCommentChange}
-                disabled={isLoading}
+                disabled={isLoading || uploadResult.isLoading}
                 error={!!commentError}
                 helperText={commentError}
               />
-              
+
+              {showMediaForm && (
+                <div className="border p-2 rounded-md bg-gray-50">
+                  {/* You can replace this div with your actual FileUploadForm component */}
+                  <p className="text-sm mb-2">Attach files:</p>
+
+                  <FileUploadForm
+                    onSubmit={handleCommentSubmit}
+                    setParentMediaList={setMediaList}
+                  />
+
+                  {media.length > 0 && (
+                    <ul className="mt-2 list-disc pl-5 text-sm text-gray-600">
+                      {media.map((file, idx) => (
+                        <li key={idx}>{file.name}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+
               {/* Character counter */}
               {!commentError && (
                 <div className="flex justify-end">
-                  <Typography 
-                    variant="caption" 
+                  <Typography
+                    variant="caption"
                     color={charsLeft === 0 ? "error" : "text.secondary"}
                   >
                     {charsLeft} characters left
                   </Typography>
                 </div>
               )}
-              
+
               <div className="flex justify-end gap-2 items-center">
                 <IconButton component="label" onClick={handleAttachClick}>
                   <AttachFile />
-                  <input type="file" hidden multiple onChange={(e) => setMedia([...media, ...(e.target.files || [])])} />
                 </IconButton>
 
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  type="submit"
-                  disabled={isLoading}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleCommentSubmit}
+                  disabled={isLoading || uploadResult.isLoading}
                   className="bg-main-blue hover:bg-blue-950"
                 >
                   Add Comment
@@ -175,7 +223,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
               </div>
             </div>
           </div>
-        </form>
+        </div>
       </div>
 
       <div className="flex items-center justify-between font-semibold text-lg my-3">
@@ -208,6 +256,8 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
             <CommentCard
               key={comment.id}
               comment={comment}
+              currentUserId={userProfile?.id}
+              onDelete={handleDeleteComment}
             />
           ))
       ) : (
