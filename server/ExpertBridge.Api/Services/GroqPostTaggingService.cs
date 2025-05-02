@@ -5,51 +5,49 @@ using ExpertBridge.GroqLibrary.Providers;
 namespace ExpertBridge.Api.Services;
 
 /// <summary>
-/// Service responsible for categorizing posts by analyzing their content, title, and existing tags.
-/// Utilizes a GroqLlmProvider to process and generate categorization results.
+///     Service responsible for categorizing posts by analyzing their content, title, and existing tags.
+///     Utilizes a GroqLlmProvider to process and generate categorization results.
 /// </summary>
-public class GroqPostTaggingService
+public sealed class GroqPostTaggingService
 {
     /// <summary>
-    /// An instance of <see cref="GroqLlmTextProvider"/> used to interact with the Groq Large Language Model (LLM)
-    /// API for generating text-based categorizations in the context of post-analysis.
+    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     API for generating text-based categorizations in the context of post-analysis.
     /// </summary>
     private readonly GroqLlmTextProvider _groqLlmTextProvider;
 
     /// <summary>
-    /// An instance of <see cref="JsonSerializerOptions"/> configured for deserializing JSON responses in a case-insensitive manner,
-    /// ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
+    ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
+    ///     case-insensitive manner,
+    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
-    /// Service responsible for categorizing posts by analyzing their title, content, and existing tags.
-    /// Relies on a GroqLlmTextProvider instance for interacting with a language model to generate
-    /// categorization results.
+    ///     Service responsible for categorizing posts by analyzing their title, content, and existing tags.
+    ///     Relies on a GroqLlmTextProvider instance for interacting with a language model to generate
+    ///     categorization results.
     /// </summary>
     public GroqPostTaggingService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
-        _jsonSerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
+        _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
     /// <summary>
-    /// Asynchronously categorizes a post by analyzing its title, content, and existing tags.
-    /// Uses the GroqLlmTextProvider to generate categorization results and processes the
-    /// response to return a PostCategorizerResponse object, which contains language information
-    /// and categorized tags.
+    ///     Asynchronously categorizes a post by analyzing its title, content, and existing tags.
+    ///     Uses the GroqLlmTextProvider to generate categorization results and processes the
+    ///     response to return a PostCategorizerResponse object, which contains language information
+    ///     and categorized tags.
     /// </summary>
     /// <param name="title">The title of the post to be categorized. Must not be null or empty.</param>
     /// <param name="content">The content of the post to be categorized. Must not be null or empty.</param>
     /// <param name="existingTags">A collection of tags associated with the post. Must not be null.</param>
-    /// <returns>A <see cref="PostCategorizerResponse"/> object containing the language and categorized tags of the post.</returns>
+    /// <returns>A <see cref="PostCategorizerResponse" /> object containing the language and categorized tags of the post.</returns>
     /// <exception cref="ArgumentException">Thrown if the title or content is null or empty.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the existingTags collection is null.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown if the deserialization of the categorizer response fails or returns a null result.
+    ///     Thrown if the deserialization of the categorizer response fails or returns a null result.
     /// </exception>
     /// <exception cref="JsonException">Thrown if an error occurs while parsing the categorizer response.</exception>
     public async Task<PostCategorizerResponse> GeneratePostTagsAsync(
@@ -66,7 +64,8 @@ public class GroqPostTaggingService
             var userPrompt = GetUserPrompt(title, content, existingTags);
             var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
             var result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
-                         ?? throw new InvalidOperationException("Failed to deserialize the categorizer response: null result");
+                         ?? throw new InvalidOperationException(
+                             "Failed to deserialize the categorizer response: null result");
             return result;
         }
         catch (JsonException ex)
@@ -76,21 +75,21 @@ public class GroqPostTaggingService
     }
 
     /// <summary>
-    /// Retrieves the schema definition for the output format used in the post-categorization process.
-    /// Reads the schema information from the "PostCategorizationOutputFormat.json" file.
+    ///     Retrieves the schema definition for the output format used in the post-categorization process.
+    ///     Reads the schema information from the "PostCategorizationOutputFormat.json" file.
     /// </summary>
     /// <returns>
-    /// A string containing the JSON schema definition for the expected output format.
+    ///     A string containing the JSON schema definition for the expected output format.
     /// </returns>
-    private static string GetOutputFormatSchema() => File.ReadAllText("PostCategorizationOutputFormat.json");
+    private static string GetOutputFormatSchema() => File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
 
     /// <summary>
-    /// Generates a predefined system prompt used to instruct the text categorization AI on how to process
-    /// and categorize posts. The prompt includes detailed guidelines for handling posts in English and
-    /// Arabic, ensuring proper language detection, tag translation, and generation of structured output.
+    ///     Generates a predefined system prompt used to instruct the text categorization AI on how to process
+    ///     and categorize posts. The prompt includes detailed guidelines for handling posts in English and
+    ///     Arabic, ensuring proper language detection, tag translation, and generation of structured output.
     /// </summary>
     /// <returns>
-    /// A string containing the formatted system prompt with specific instructions for the categorization process.
+    ///     A string containing the formatted system prompt with specific instructions for the categorization process.
     /// </returns>
     private static string GetSystemPrompt()
     {
@@ -116,9 +115,9 @@ public class GroqPostTaggingService
     }
 
     /// <summary>
-    /// Generates a formatted prompt for the categorization task by including the post's title, content,
-    /// existing tags, and specific instructions for processing. Combines these elements into a structured
-    /// string to be used as input for the language model.
+    ///     Generates a formatted prompt for the categorization task by including the post's title, content,
+    ///     existing tags, and specific instructions for processing. Combines these elements into a structured
+    ///     string to be used as input for the language model.
     /// </summary>
     /// <param name="title">The title of the post to be categorized.</param>
     /// <param name="content">The content of the post to be categorized.</param>

@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using ExpertBridge.GroqLibrary.Settings;
@@ -13,7 +12,7 @@ namespace ExpertBridge.GroqLibrary.Clients;
 ///     by leveraging the Groq API. It can be initialized with its own HttpClient or use a shared one for network
 ///     communication. The class also includes mechanisms for integrating with the GroqApiChatCompletionClient.
 /// </remarks>
-public class GroqApiAudioClient : IDisposable
+public sealed class GroqApiAudioClient : IDisposable
 {
     /// <summary>
     ///     The client responsible for interacting with chat completion functionalities in the Groq API.
@@ -23,34 +22,20 @@ public class GroqApiAudioClient : IDisposable
     /// <summary>The HTTP client used for making API requests.</summary>
     private readonly HttpClient _httpClient;
 
-
-    /// <summary>
-    ///     Provides methods for interacting with the Groq Vision APIs, leveraging HTTP-based requests for communication.
-    /// </summary>
-    /// <remarks>
-    ///     This client is designed to integrate with the Groq API services for vision-specific functionalities and can utilize
-    ///     a shared or dedicated HttpClient.
-    ///     It also supports integration with the GroqApiChatCompletionClient for combined capabilities.
-    /// </remarks>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
-    public GroqApiAudioClient(string apiKey)
-    {
-        _chatCompletionClient = new GroqApiChatCompletionClient(apiKey);
-        _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-    }
-
     /// <summary>
     ///     Initializes a new instance of the GroqApiAudioClient with a provided HttpClient.
     /// </summary>
     /// <remarks>This constructor allows for the use of a shared HttpClient for API requests.</remarks>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
-    /// <param name="httpClient">The HttpClient instance to use for API requests.</param>
-    public GroqApiAudioClient(string apiKey, HttpClient httpClient)
+    /// <param name="groqApiChatCompletionClient">
+    ///     The <see cref="GroqApiChatCompletionClient"/> instance to be used for chat completion functionalities.
+    /// </param>
+    /// <param name="httpClient">
+    ///     The <see cref="HttpClient"/> instance to use for audio-related API requests.
+    /// </param>
+    public GroqApiAudioClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
     {
+        _chatCompletionClient = groqApiChatCompletionClient;
         _httpClient = httpClient;
-        _chatCompletionClient = new GroqApiChatCompletionClient(apiKey, httpClient);
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
     /// <summary>

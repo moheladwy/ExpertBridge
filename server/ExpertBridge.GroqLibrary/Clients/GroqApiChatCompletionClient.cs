@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -17,30 +16,18 @@ namespace ExpertBridge.GroqLibrary.Clients;
 ///     via an API key provided during initialization. Ensure any HttpClient provided is properly
 ///     configured for network communication with the Groq API.
 /// </remarks>
-public class GroqApiChatCompletionClient : IDisposable
+public sealed class GroqApiChatCompletionClient : IDisposable
 {
     /// <summary>The HTTP client used for making API requests.</summary>
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    ///     Initializes a new instance of the GroqApiChatCompletionClient with a new HttpClient.
-    /// </summary>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
-    public GroqApiChatCompletionClient(string apiKey)
-    {
-        _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-    }
-
-    /// <summary>
     ///     Initializes a new instance of the GroqApiChatCompletionClient with a provided HttpClient.
     /// </summary>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
     /// <param name="httpClient">The HttpClient instance to use for API requests.</param>
-    public GroqApiChatCompletionClient(string apiKey, HttpClient httpClient)
+    public GroqApiChatCompletionClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
     /// <summary>
@@ -60,10 +47,7 @@ public class GroqApiChatCompletionClient : IDisposable
     /// <exception cref="HttpRequestException">Thrown when the API request fails.</exception>
     public async Task<JsonObject?> CreateChatCompletionAsync(JsonObject request)
     {
-        var response =
-            await _httpClient.PostAsJsonAsync(GroqApiEndpoints.BaseUrl + GroqApiEndpoints.ChatCompletionsEndpoint,
-                request);
-
+        var response = await _httpClient.PostAsJsonAsync(GroqApiEndpoints.ChatCompletionsEndpoint, request);
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
@@ -85,10 +69,11 @@ public class GroqApiChatCompletionClient : IDisposable
         request["stream"] = true;
         var content = new StringContent(request.ToJsonString(), Encoding.UTF8, "application/json");
         using var requestMessage =
-            new HttpRequestMessage(HttpMethod.Post, GroqApiEndpoints.BaseUrl + GroqApiEndpoints.ChatCompletionsEndpoint)
+            new HttpRequestMessage(HttpMethod.Post, GroqApiEndpoints.ChatCompletionsEndpoint)
             {
                 Content = content
             };
+        // using var response1 = await _httpClient.PostAsJsonAsync(GroqApiEndpoints.ChatCompletionsEndpoint, content);
         using var response = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         using var stream = await response.Content.ReadAsStreamAsync();

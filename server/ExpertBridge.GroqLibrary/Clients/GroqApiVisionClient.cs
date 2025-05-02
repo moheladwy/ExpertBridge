@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using ExpertBridge.GroqLibrary.Models;
@@ -20,7 +19,7 @@ namespace ExpertBridge.GroqLibrary.Clients;
 ///     used
 ///     for making the requests. Additionally, users can specify models and configurations for controlling behavior.
 /// </remarks>
-public class GroqApiVisionClient : IDisposable
+public sealed class GroqApiVisionClient : IDisposable
 {
     /// <summary>
     ///     The client responsible for interacting with chat completion functionalities in the Groq API.
@@ -35,29 +34,20 @@ public class GroqApiVisionClient : IDisposable
     ///     Provides methods for interacting with the Groq Vision APIs, leveraging HTTP-based requests for communication.
     /// </summary>
     /// <remarks>
-    ///     This client is designed to integrate with the Groq API services for vision-specific functionalities and can utilize
-    ///     a shared or dedicated HttpClient.
+    ///     This client is designed to integrate with the Groq API services for vision-specific functionalities and can
+    ///     uses a shared or dedicated HttpClient.
     ///     It also supports integration with the GroqApiChatCompletionClient for combined capabilities.
     /// </remarks>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
-    public GroqApiVisionClient(string apiKey)
-    {
-        _chatCompletionClient = new GroqApiChatCompletionClient(apiKey);
-        _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the GroqApiVisionClient with a provided HttpClient.
-    /// </summary>
-    /// <remarks>This constructor allows for the use of a shared HttpClient for API requests.</remarks>
-    /// <param name="apiKey">The API key for authentication with Groq services.</param>
-    /// <param name="httpClient">The HttpClient instance to use for API requests.</param>
-    public GroqApiVisionClient(string apiKey, HttpClient httpClient)
+    /// <param name="groqApiChatCompletionClient">
+    ///     The client of type <see cref="GroqApiChatCompletionClient"/> responsible for handling chat completions
+    /// </param>
+    /// <param name="httpClient">
+    ///     The <see cref="HttpClient"/> instance used for HTTP communication with the Groq API.
+    /// </param>
+    public GroqApiVisionClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _chatCompletionClient = new GroqApiChatCompletionClient(apiKey, httpClient);
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+        _chatCompletionClient = groqApiChatCompletionClient;
     }
 
     /// <summary>
