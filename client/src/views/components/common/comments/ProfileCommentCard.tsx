@@ -21,6 +21,7 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({ comment, postTi
           <Link 
             to={`/feed/${comment.postId}`}
             className="hover:text-blue-600 hover:underline"
+            dir="auto"
           >
             {postTitle}
           </Link>
@@ -60,7 +61,7 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({ comment, postTi
 
       {/* Comment Content */}
       <div className="w-full break-words">
-        <p className="text-gray-700 whitespace-pre-wrap">{comment.content}</p>
+        <p className="text-gray-700 whitespace-pre-wrap" dir="auto">{comment.content}</p>
       </div>
 
       {/* Vote Display */}
