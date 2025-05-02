@@ -31,7 +31,10 @@ public sealed class NSFWDetectionService
     public NSFWDetectionService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
-        _jsonSerializerOptions =  new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
     }
 
     /// <summary>

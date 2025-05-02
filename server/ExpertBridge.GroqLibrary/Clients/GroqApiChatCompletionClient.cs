@@ -35,6 +35,10 @@ public sealed class GroqApiChatCompletionClient : IDisposable
     /// </summary>
     public void Dispose()
     {
+        // WARNING!
+        // You DO NOT dispose services from the DI manually!
+        // HttpClient
+
         //_httpClient.Dispose();
         GC.SuppressFinalize(this);
     }
