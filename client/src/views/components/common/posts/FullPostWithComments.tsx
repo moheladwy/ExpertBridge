@@ -17,6 +17,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/views/components/custom/dropdown-menu"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/views/components/ui/carousel"
 import toast from "react-hot-toast";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { useDeletePostMutation } from "@/features/posts/postsSlice";
@@ -30,9 +37,16 @@ interface FullPostWithCommentsProps {
 
 const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, deletePost }) => {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpen = (index: number) => {
+    setPicToBeOpened(index);
+    setOpen(true)
+  };
+
   const [, , , , userProfile] = useIsUserLoggedIn();
+
+  const [picToBeOpened, setPicToBeOpened] = useState(0);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
 
   const handleCopyLink = () => {
     const postUrl = `${window.location.origin}/feed/${post?.id}`;
@@ -49,6 +63,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
     deletePost(post.id);
   }
 
+
   // if (!post) return <p>Post not found.</p>;
 
   // console.log(post.isUpvoted);
@@ -57,10 +72,15 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
     <>
       <div className="w-full flex justify-center">
         <div className="w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
-          <Modal open={open} onClose={handleClose} aria-labelledby="create-post-modal" className="flex justify-center items-center">
-            {post?.medias?.[0]?.url ? (
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="create-post-modal"
+            className="flex justify-center items-center"
+          >
+            {post.medias?.[picToBeOpened]?.url ? (
               <img
-                src={post.medias[0].url}
+                src={post.medias[picToBeOpened].url}
                 alt="Post content"
                 className="max-w-full max-h-[90vh] object-contain"
               />
@@ -150,17 +170,61 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                 </div>
 
                 {/* Media */}
-                <div className={`flex justify-center items-center bg-slate-500 w-full aspect-video rounded-md overflow-hidden cursor-pointer ${post.medias?.length > 0 ? "block" : "hidden"}`}>
-                  {
-                    post.medias.length > 0 ?
-                      (
-                        post.medias[0].type.startsWith('video')
-                          ? <ReactPlayer url={post.medias[0].url} controls />
-                          : <img src={post.medias[0].url} onClick={handleOpen} alt="oh shit it did not load..." />
-                      )
-                      : null
-                  }
+                <div
+                  className={`aspect-auto flex justify-center items-center w-full rounded-md`}
+                >
+                  <Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
+                    <CarouselContent>
+                      {post.medias.map((media, index) => (
+                        <CarouselItem className="cursor-pointer">
+                          {media.type.startsWith("video") ? (
+                            <ReactPlayer
+                              url={media.url}
+                              width="100%"
+                              height="100%"
+                              controls
+                              style={{ pointerEvents: "none" }}
+                            />
+                          ) : (
+                            <img
+                              src={media.url}
+                              alt={`media-${index}`}
+                              onClick={() => handleOpen(index)}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                        </CarouselItem>
+                      ))}
+
+                    </CarouselContent>
+                      {/* Carousel Controls (overlayed inside the media) */}
+                      {post.medias.length > 1 && (
+                        <>
+                          <div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
+                            <CarouselPrevious />
+                          </div>
+                          <div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
+                            <CarouselNext />
+                          </div>
+                        </>
+                      )}
+                  </Carousel>
                 </div>
+
+                {/* Media Dots */}
+                {
+                  post.medias.length > 1 && 
+                  <div className="flex justify-center items-center mt-1 gap-2">
+                    {post.medias.map((_, index) => (
+                      <span
+                        key={index}
+                        className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${
+                          index === activeMediaIndex ? "bg-main-blue" : "bg-gray-400"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                }
 
                 {/* Post Voting */}
                 <PostVoteButtons post={post} />
