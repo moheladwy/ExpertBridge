@@ -133,8 +133,11 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
                 variant="outlined"
                 placeholder="Add a comment..."
                 value={commentText}
-                inputProps={{
-                  maxLength: MAX_COMMENT_LENGTH,
+                slotProps={{
+                  htmlInput: {
+                    maxLength: MAX_COMMENT_LENGTH,
+                    dir: 'auto'
+                  }
                 }}
                 onChange={handleCommentChange}
                 disabled={isLoading}
