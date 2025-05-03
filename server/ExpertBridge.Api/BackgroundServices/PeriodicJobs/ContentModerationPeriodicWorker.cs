@@ -5,6 +5,7 @@ using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Channels;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
@@ -39,7 +40,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation($"{nameof(ContentModerationPeriodicWorker)} Started...");
+                // _logger.LogInformation($"{nameof(ContentModerationPeriodicWorker)} Started...");
+                Log.Information("{WorkerName} Started...", nameof(ContentModerationPeriodicWorker));
 
                 try
                 {
@@ -83,12 +85,16 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        $"Failed to execute {nameof(ContentModerationPeriodicWorker)} with exception message {ex.Message}."
-                        );
+                    // _logger.LogError(ex,
+                    //     $"Failed to execute {nameof(ContentModerationPeriodicWorker)} with exception message {ex.Message}."
+                    //     );
+                    Log.Error(ex,
+                        "Failed to execute {WorkerName} with exception message {ExceptionMessage}.",
+                        nameof(ContentModerationPeriodicWorker), ex.Message);
                 }
 
-                _logger.LogInformation($"{nameof(ContentModerationPeriodicWorker)} Finished.");
+                // _logger.LogInformation($"{nameof(ContentModerationPeriodicWorker)} Finished.");
+                Log.Information("{WorkerName} Finished.", nameof(ContentModerationPeriodicWorker));
             }
         }
     }
