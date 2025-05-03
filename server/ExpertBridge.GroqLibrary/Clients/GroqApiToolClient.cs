@@ -14,10 +14,7 @@ namespace ExpertBridge.GroqLibrary.Clients;
 ///     authentication via an API key. It supports operations such as retrieving a list of models
 ///     and executing conversations with tool assistance.
 /// </remarks>
-/// <example>
-///     Instances of this class should be disposed of properly to release unmanaged resources.
-/// </example>
-public sealed class GroqApiToolClient : IDisposable
+public sealed class GroqApiToolClient
 {
     /// <summary>Handles API communication for generating chat completions using the Groq API.</summary>
     private readonly GroqApiChatCompletionClient _chatCompletionClient;
@@ -39,14 +36,6 @@ public sealed class GroqApiToolClient : IDisposable
         _chatCompletionClient = groqApiChatCompletionClient;
     }
 
-    /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-        _chatCompletionClient.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
     /// <summary>
     ///     Retrieves a list of available models from the Groq API.
     /// </summary>
@@ -54,7 +43,7 @@ public sealed class GroqApiToolClient : IDisposable
     /// <exception cref="HttpRequestException">Thrown when the API request fails.</exception>
     public async Task<JsonObject?> ListModelsAsync()
     {
-        var uri = new Uri($"{GroqApiEndpoints.BaseUrl}/models");
+        var uri = new Uri(GroqApiEndpoints.GetAllModelsEndpoint);
         var response = await _httpClient.GetAsync(uri);
         response.EnsureSuccessStatusCode();
 
@@ -68,14 +57,14 @@ public sealed class GroqApiToolClient : IDisposable
     ///     Runs a multi-turn conversation with tool-augmented capabilities using the Groq API.
     /// </summary>
     /// <param name="userPrompt">The initial user prompt to start the conversation.</param>
-    /// <param name="tools">List of tools that the model can use during the conversation.</param>
+    /// <param name="tools">Collection of tools that the model can use during the conversation.</param>
     /// <param name="model">The model to use for the conversation.</param>
     /// <param name="systemMessage">The system message providing context and instructions for the model.</param>
     /// <returns>The final AI response as a string after tool interactions are complete.</returns>
     /// <exception cref="HttpRequestException">Thrown when API requests fail.</exception>
     /// <exception cref="JsonException">Thrown when parsing JSON responses fails.</exception>
     /// <exception cref="Exception">Thrown for any other unexpected errors.</exception>
-    public async Task<string> RunConversationWithToolsAsync(string userPrompt, List<Tool> tools, string model,
+    public async Task<string> RunConversationWithToolsAsync(string userPrompt, IReadOnlyCollection<Tool> tools, string model,
         string systemMessage)
     {
         try
@@ -110,38 +99,38 @@ public sealed class GroqApiToolClient : IDisposable
             var responseMessage = response?["choices"]?[0]?["message"]?.AsObject();
             var toolCalls = responseMessage?["tool_calls"]?.AsArray();
 
-            if (toolCalls != null && toolCalls.Count > 0)
+            if (toolCalls == null || toolCalls.Count <= 0)
             {
-                messages.Add(responseMessage);
-                foreach (var toolCall in toolCalls)
-                {
-                    var functionName = toolCall?["function"]?["name"]?.GetValue<string>();
-                    var functionArgs = toolCall?["function"]?["arguments"]?.GetValue<string>();
-                    var toolCallId = toolCall?["id"]?.GetValue<string>();
-
-                    if (!string.IsNullOrEmpty(functionName) && !string.IsNullOrEmpty(functionArgs))
-                    {
-                        var tool = tools.Find(t => t.Function.Name == functionName);
-                        if (tool != null)
-                        {
-                            var functionResponse = await tool.Function.ExecuteAsync(functionArgs);
-                            messages.Add(new JsonObject
-                            {
-                                ["tool_call_id"] = toolCallId,
-                                ["role"] = LlmRoles.ToolRole,
-                                ["name"] = functionName,
-                                ["content"] = functionResponse
-                            });
-                        }
-                    }
-                }
-
-                request["messages"] = JsonSerializer.SerializeToNode(messages);
-                var secondResponse = await _chatCompletionClient.CreateChatCompletionAsync(request);
-                return secondResponse?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
+                return responseMessage?["content"]?.GetValue<string>() ?? string.Empty;
             }
 
-            return responseMessage?["content"]?.GetValue<string>() ?? string.Empty;
+            messages.Add(responseMessage);
+            foreach (var toolCall in toolCalls)
+            {
+                var functionName = toolCall?["function"]?["name"]?.GetValue<string>();
+                var functionArgs = toolCall?["function"]?["arguments"]?.GetValue<string>();
+                var toolCallId = toolCall?["id"]?.GetValue<string>();
+
+                if (!string.IsNullOrEmpty(functionName) && !string.IsNullOrEmpty(functionArgs))
+                {
+                    var tool = tools.ToList().Find(t => t.Function.Name == functionName);
+                    if (tool != null)
+                    {
+                        var functionResponse = await tool.Function.ExecuteAsync(functionArgs);
+                        messages.Add(new JsonObject
+                        {
+                            ["tool_call_id"] = toolCallId,
+                            ["role"] = LlmRoles.ToolRole,
+                            ["name"] = functionName,
+                            ["content"] = functionResponse
+                        });
+                    }
+                }
+            }
+
+            request["messages"] = JsonSerializer.SerializeToNode(messages);
+            var secondResponse = await _chatCompletionClient.CreateChatCompletionAsync(request);
+            return secondResponse?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
         }
         catch (HttpRequestException ex)
         {

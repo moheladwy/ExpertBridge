@@ -8,22 +8,22 @@ namespace ExpertBridge.Api.Services;
 ///     A service for processing and analyzing tags or textual categorizations using
 ///     the Groq Large Language Model (LLM) API. It provides functionality for generating,
 ///     processing, and handling text-based categorizations leveraging the integration
-///     with <see cref="GroqLlmTextProvider" /> for efficient communication with the Groq LLM.
+///     with <see cref="GroqLlmTextTextProvider" /> for efficient communication with the Groq LLM.
 ///     The service also supports flexible and robust JSON parsing with case-insensitive
 ///     property deserialization settings.
 /// </summary>
 public class TagProcessorService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     An instance of <see cref="GroqLlmTextTextProvider" /> used to interact with the Groq Large Language Model (LLM)
     ///     API for generating text-based categorizations in the context of post-analysis.
     /// </summary>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
+    private readonly GroqLlmTextTextProvider _groqLlmTextTextProvider;
 
     /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
-    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
+    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
@@ -33,9 +33,9 @@ public class TagProcessorService
     ///     with the Groq LLM API for generating text-based categorizations and processes
     ///     the results with case-insensitive JSON deserialization for robust and flexible parsing.
     /// </summary>
-    public TagProcessorService(GroqLlmTextProvider groqLlmTextProvider)
+    public TagProcessorService(GroqLlmTextTextProvider groqLlmTextTextProvider)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _groqLlmTextTextProvider = groqLlmTextTextProvider;
         _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
@@ -59,7 +59,7 @@ public class TagProcessorService
         {
             var systemPrompt = GetSystemPrompt();
             var userPrompt = GetUserPrompt(existingTags);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+            var response = await _groqLlmTextTextProvider.GenerateAsync(systemPrompt, userPrompt);
             var result = JsonSerializer.Deserialize<List<CategorizerTag>>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the categorizer response: null result");

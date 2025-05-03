@@ -9,28 +9,24 @@ namespace ExpertBridge.GroqLibrary.Providers;
 
 /// <summary>
 ///     Provides integration with Groq LLM (Large Language Model) API for text generation.
-///     Implements <see cref="ILlmProvider" /> interface for consistent LLM operations
-///     and <see cref="IDisposable" /> for proper resource cleanup.
+///     Implements <see cref="ILlmTextProvider" /> interface for consistent LLM operations.
 /// </summary>
-public sealed class GroqLlmTextProvider : ILlmProvider, IDisposable
+public sealed class GroqLlmTextTextProvider : ILlmTextProvider
 {
     private readonly GroqApiChatCompletionClient _client;
     private readonly string _model;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GroqLlmTextProvider" /> class with a custom HTTP client.
+    ///     Initializes a new instance of the <see cref="GroqLlmTextTextProvider" /> class with a custom HTTP client.
     /// </summary>
     /// <param name="groqApiChatCompletionClient">
     ///     The <see cref="GroqApiChatCompletionClient" /> instance to be used for API requests.
     /// </param>
-    public GroqLlmTextProvider(GroqApiChatCompletionClient groqApiChatCompletionClient)
+    public GroqLlmTextTextProvider(GroqApiChatCompletionClient groqApiChatCompletionClient)
     {
         _client = groqApiChatCompletionClient;
         _model = GroqTextModels.LLAMA3_70B_8192;
     }
-
-    /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-    public void Dispose() => _client.Dispose();
 
     /// <summary>
     ///     Generates text based on the provided user prompt using the configured LLM model.

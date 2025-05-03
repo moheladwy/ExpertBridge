@@ -19,23 +19,19 @@ namespace ExpertBridge.GroqLibrary.Clients;
 ///     used
 ///     for making the requests. Additionally, users can specify models and configurations for controlling behavior.
 /// </remarks>
-public sealed class GroqApiVisionClient : IDisposable
+public sealed class GroqApiVisionClient
 {
     /// <summary>
     ///     The client responsible for interacting with chat completion functionalities in the Groq API.
     /// </summary>
     private readonly GroqApiChatCompletionClient _chatCompletionClient;
 
-    /// <summary>The HTTP client used for making API requests.</summary>
-    private readonly HttpClient _httpClient;
-
-
     /// <summary>
     ///     Provides methods for interacting with the Groq Vision APIs, leveraging HTTP-based requests for communication.
     /// </summary>
     /// <remarks>
     ///     This client is designed to integrate with the Groq API services for vision-specific functionalities and can
-    ///     uses a shared or dedicated HttpClient.
+    ///     use a shared or dedicated HttpClient.
     ///     It also supports integration with the GroqApiChatCompletionClient for combined capabilities.
     /// </remarks>
     /// <param name="groqApiChatCompletionClient">
@@ -46,37 +42,8 @@ public sealed class GroqApiVisionClient : IDisposable
     /// </param>
     public GroqApiVisionClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
     {
-        _httpClient = httpClient;
         _chatCompletionClient = groqApiChatCompletionClient;
     }
-
-    /// <summary>
-    ///     Releases the resources used by the GroqApiVisionClient, including the associated HttpClient.
-    /// </summary>
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-        _chatCompletionClient.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    ///     Converts an image file to a base64 encoded string.
-    /// </summary>
-    /// <param name="imagePath">The path to the image file.</param>
-    /// <returns>A base64 encoded string representation of the image.</returns>
-    /// <exception cref="FileNotFoundException">Thrown when the image file is not found.</exception>
-    private static async Task<string> ConvertImageToBase64(string imagePath)
-    {
-        if (!File.Exists(imagePath))
-        {
-            throw new FileNotFoundException($"Image file not found: {imagePath}");
-        }
-
-        var imageBytes = await File.ReadAllBytesAsync(imagePath);
-        return Convert.ToBase64String(imageBytes);
-    }
-
 
     /// <summary>
     ///     Base method for creating vision-based completions using the Groq API.
@@ -331,5 +298,22 @@ public sealed class GroqApiVisionClient : IDisposable
         {
             throw new ArgumentException("Invalid image URL format");
         }
+    }
+
+    /// <summary>
+    ///     Converts an image file to a base64 encoded string.
+    /// </summary>
+    /// <param name="imagePath">The path to the image file.</param>
+    /// <returns>A base64 encoded string representation of the image.</returns>
+    /// <exception cref="FileNotFoundException">Thrown when the image file is not found.</exception>
+    private static async Task<string> ConvertImageToBase64(string imagePath)
+    {
+        if (!File.Exists(imagePath))
+        {
+            throw new FileNotFoundException($"Image file not found: {imagePath}");
+        }
+
+        var imageBytes = await File.ReadAllBytesAsync(imagePath);
+        return Convert.ToBase64String(imageBytes);
     }
 }

@@ -11,32 +11,32 @@ namespace ExpertBridge.Api.Services;
 public sealed class GroqPostTaggingService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     An instance of <see cref="GroqLlmTextTextProvider" /> used to interact with the Groq Large Language Model (LLM)
     ///     API for generating text-based categorizations in the context of post-analysis.
     /// </summary>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
+    private readonly GroqLlmTextTextProvider _groqLlmTextTextProvider;
 
     /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
-    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
+    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
     ///     Service responsible for categorizing posts by analyzing their title, content, and existing tags.
-    ///     Relies on a GroqLlmTextProvider instance for interacting with a language model to generate
+    ///     Relies on a GroqLlmTextTextProvider instance for interacting with a language model to generate
     ///     categorization results.
     /// </summary>
-    public GroqPostTaggingService(GroqLlmTextProvider groqLlmTextProvider)
+    public GroqPostTaggingService(GroqLlmTextTextProvider groqLlmTextTextProvider)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _groqLlmTextTextProvider = groqLlmTextTextProvider;
         _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
     /// <summary>
     ///     Asynchronously categorizes a post by analyzing its title, content, and existing tags.
-    ///     Uses the GroqLlmTextProvider to generate categorization results and processes the
+    ///     Uses the GroqLlmTextTextProvider to generate categorization results and processes the
     ///     response to return a PostCategorizerResponse object, which contains language information
     ///     and categorized tags.
     /// </summary>
@@ -62,7 +62,7 @@ public sealed class GroqPostTaggingService
         {
             var systemPrompt = GetSystemPrompt();
             var userPrompt = GetUserPrompt(title, content, existingTags);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+            var response = await _groqLlmTextTextProvider.GenerateAsync(systemPrompt, userPrompt);
             var result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the categorizer response: null result");

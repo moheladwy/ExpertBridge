@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using ExpertBridge.GroqLibrary.Settings;
@@ -12,7 +13,7 @@ namespace ExpertBridge.GroqLibrary.Clients;
 ///     by leveraging the Groq API. It can be initialized with its own HttpClient or use a shared one for network
 ///     communication. The class also includes mechanisms for integrating with the GroqApiChatCompletionClient.
 /// </remarks>
-public sealed class GroqApiAudioClient : IDisposable
+public sealed class GroqApiAudioClient
 {
     /// <summary>
     ///     The client responsible for interacting with chat completion functionalities in the Groq API.
@@ -39,16 +40,6 @@ public sealed class GroqApiAudioClient : IDisposable
     }
 
     /// <summary>
-    ///     Releases the resources used by the GroqApiAudioClient, including the associated HttpClient.
-    /// </summary>
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-        _chatCompletionClient.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
     ///     Creates a transcription of an audio file using the Groq API.
     /// </summary>
     /// <param name="audioFile">The audio file stream to transcribe.</param>
@@ -64,28 +55,36 @@ public sealed class GroqApiAudioClient : IDisposable
         string? prompt = null, string responseFormat = "json", string? language = null, float? temperature = null)
     {
         using var content = new MultipartFormDataContent();
-        content.Add(new StreamContent(audioFile), "file", fileName);
-        content.Add(new StringContent(model), "model");
+
+        using var fileContent = new StreamContent(audioFile);
+        content.Add(fileContent, "file", fileName);
+
+        using var modelContent = new StringContent(model);
+        content.Add(modelContent, "model");
 
         if (!string.IsNullOrEmpty(prompt))
         {
-            content.Add(new StringContent(prompt), "prompt");
+            using var promptContent = new StringContent(prompt);
+            content.Add(promptContent, "prompt");
         }
 
-        content.Add(new StringContent(responseFormat), "response_format");
+        using var responseFormatContent = new StringContent(responseFormat);
+        content.Add(responseFormatContent, "response_format");
 
         if (!string.IsNullOrEmpty(language))
         {
-            content.Add(new StringContent(language), "language");
+            using var languageContent = new StringContent(language);
+            content.Add(languageContent, "language");
         }
 
         if (temperature.HasValue)
         {
-            content.Add(new StringContent(temperature.Value.ToString()), "temperature");
+            using var temperatureContent = new StringContent(temperature.Value.ToString(CultureInfo.CurrentCulture));
+            content.Add(temperatureContent, "temperature");
         }
 
-        var response = await _httpClient.PostAsync(GroqApiEndpoints.BaseUrl + GroqApiEndpoints.TranscriptionsEndpoint,
-            content);
+        var transcriptionsEndpoint = new Uri(GroqApiEndpoints.TranscriptionsEndpoint);
+        var response = await _httpClient.PostAsync(transcriptionsEndpoint, content);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<JsonObject>();
     }
@@ -105,23 +104,29 @@ public sealed class GroqApiAudioClient : IDisposable
         string? prompt = null, string responseFormat = "json", float? temperature = null)
     {
         using var content = new MultipartFormDataContent();
-        content.Add(new StreamContent(audioFile), "file", fileName);
-        content.Add(new StringContent(model), "model");
+        using var fileContent = new StreamContent(audioFile);
+        content.Add(fileContent, "file", fileName);
+
+        using var modelContent = new StringContent(model);
+        content.Add(modelContent, "model");
 
         if (!string.IsNullOrEmpty(prompt))
         {
-            content.Add(new StringContent(prompt), "prompt");
+            using var promptContent = new StringContent(prompt);
+            content.Add(promptContent, "prompt");
         }
 
-        content.Add(new StringContent(responseFormat), "response_format");
+        using var responseFormatContent = new StringContent(responseFormat);
+        content.Add(responseFormatContent, "response_format");
 
         if (temperature.HasValue)
         {
-            content.Add(new StringContent(temperature.Value.ToString()), "temperature");
+            using var temperatureContent = new StringContent(temperature.Value.ToString(CultureInfo.CurrentCulture));
+            content.Add(temperatureContent, "temperature");
         }
 
-        var response =
-            await _httpClient.PostAsync(GroqApiEndpoints.BaseUrl + GroqApiEndpoints.TranslationsEndpoint, content);
+        var translationsEndpoint = new Uri(GroqApiEndpoints.TranslationsEndpoint);
+        var response = await _httpClient.PostAsync(translationsEndpoint, content);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<JsonObject>();
     }

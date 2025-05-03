@@ -12,10 +12,10 @@ namespace ExpertBridge.Api.Services;
 public sealed class NSFWDetectionService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     An instance of <see cref="GroqLlmTextTextProvider" /> used to interact with the Groq Large Language Model (LLM)
     ///     API for text-based generation.
     /// </summary>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
+    private readonly GroqLlmTextTextProvider _groqLlmTextTextProvider;
 
     /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
@@ -26,11 +26,11 @@ public sealed class NSFWDetectionService
 
     /// <summary>
     ///     Service for detecting NSFW (Not Safe for Work) content using Groq Large Language Model (LLM) API.
-    ///     Handles interactions with the <see cref="GroqLlmTextProvider" /> for analyzing and generating text-related tasks.
+    ///     Handles interactions with the <see cref="GroqLlmTextTextProvider" /> for analyzing and generating text-related tasks.
     /// </summary>
-    public NSFWDetectionService(GroqLlmTextProvider groqLlmTextProvider)
+    public NSFWDetectionService(GroqLlmTextTextProvider groqLlmTextTextProvider)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _groqLlmTextTextProvider = groqLlmTextTextProvider;
         _jsonSerializerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -53,7 +53,7 @@ public sealed class NSFWDetectionService
         {
             var systemPrompt = GetSystemPrompt();
             var userPrompt = GetUserPrompt(text);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+            var response = await _groqLlmTextTextProvider.GenerateAsync(systemPrompt, userPrompt);
             var result = JsonSerializer.Deserialize<NsfwDetectionResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the nsfw detection response: null result");
