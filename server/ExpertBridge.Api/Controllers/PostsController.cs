@@ -85,7 +85,8 @@ public class PostsController : ControllerBase
     [HttpGet]
     public async Task<List<PostResponse>> GetAll()
     {
-        Log.Information($"User from HTTP Context: {HttpContext.User.FindFirstValue(ClaimTypes.Email)}");
+        Log.Information("User from HTTP Context: {FindFirstValue}",
+            HttpContext.User.FindFirstValue(ClaimTypes.Email));
 
         var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;

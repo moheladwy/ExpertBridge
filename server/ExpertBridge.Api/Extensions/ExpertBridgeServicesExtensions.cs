@@ -50,6 +50,10 @@ namespace ExpertBridge.Api.Extensions
 
             builder.Services.AddServices();
 
+            // var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
+            // if (!Directory.Exists(logDirectory))
+            //     Directory.CreateDirectory(logDirectory);
+
             return builder;
         }
 

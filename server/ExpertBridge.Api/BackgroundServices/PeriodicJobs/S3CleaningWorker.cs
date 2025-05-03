@@ -5,6 +5,7 @@ using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
@@ -29,7 +30,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation("S3 Cleaning Service Started...");
+                // _logger.LogInformation("S3 Cleaning Service Started...");
+                Log.Information("S3 Cleaning Service Started...");
 
                 try
                 {
@@ -150,12 +152,16 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        $"Failed to execute S3 Cleaning Service with exception message {ex.Message}."
-                        );
+                    // _logger.LogError(ex,
+                    //     $"Failed to execute S3 Cleaning Service with exception message {ex.Message}."
+                    //     );
+                    Log.Error(ex,
+                        "Failed to execute S3 Cleaning Service with exception message {ex.Message}.",
+                        ex.Message);
                 }
 
-                _logger.LogInformation("S3 Cleaning Service Finished.");
+                // _logger.LogInformation("S3 Cleaning Service Finished.");
+                Log.Information("S3 Cleaning Service Finished.");
             }
         }
     }
