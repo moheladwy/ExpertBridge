@@ -43,8 +43,7 @@ public sealed class GroqApiToolClient
     /// <exception cref="HttpRequestException">Thrown when the API request fails.</exception>
     public async Task<JsonObject?> ListModelsAsync()
     {
-        var uri = new Uri(GroqApiEndpoints.GetAllModelsEndpoint);
-        var response = await _httpClient.GetAsync(uri);
+        var response = await _httpClient.GetAsync(GroqApiEndpoints.GetAllModelsEndpoint);
         response.EnsureSuccessStatusCode();
 
         var responseString = await response.Content.ReadAsStringAsync();
