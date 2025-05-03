@@ -86,7 +86,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     {
                         // _logger.LogError(ex, $"An error occurred while processing " +
                         //     $"message with comment id={comment.CommentId}.");
-                        Log.Error("An error occurred while processing message with comment id={CommentId}.",
+                        Log.Error(ex, "An error occurred while processing message with comment id={CommentId}.",
                             comment.CommentId);
                     }
                 }
