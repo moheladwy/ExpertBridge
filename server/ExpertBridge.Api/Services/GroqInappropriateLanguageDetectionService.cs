@@ -1,7 +1,10 @@
 using System.Text.Json;
 using ExpertBridge.Api.Models;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.GroqLibrary.Providers;
+using Polly;
+using Polly.Registry;
 
 namespace ExpertBridge.Api.Services;
 
@@ -25,13 +28,18 @@ public sealed class GroqInappropriateLanguageDetectionService
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
+    private readonly ResiliencePipeline _resiliencePipeline;
+
     /// <summary>
     ///     Service for detecting NSFW (Not Safe for Work) content using Groq Large Language Model (LLM) API.
     ///     Handles interactions with the <see cref="GroqLlmTextProvider" /> for analyzing and generating text-related tasks.
     /// </summary>
-    public GroqInappropriateLanguageDetectionService(GroqLlmTextProvider groqLlmTextProvider)
+    public GroqInappropriateLanguageDetectionService(
+        GroqLlmTextProvider groqLlmTextProvider,
+        ResiliencePipelineProvider<string> resilience)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
+        _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
@@ -49,17 +57,24 @@ public sealed class GroqInappropriateLanguageDetectionService
     /// <returns>A <see cref="InappropriateLanguageDetectionResponse" /> object containing the detection results for multiple NSFW categories.</returns>
     /// <exception cref="ArgumentException">Thrown when the provided <paramref name="text" /> is null or empty.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the response fails deserialization or parsing.</exception>
-    public async Task<InappropriateLanguageDetectionResponse> DetectAsync(string text)
+    public async Task<InappropriateLanguageDetectionResponse?> DetectAsync(string text)
     {
         ArgumentException.ThrowIfNullOrEmpty(text, nameof(text));
         try
         {
-            var systemPrompt = GetSystemPrompt();
-            var userPrompt = GetUserPrompt(text);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
-            var result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response, _jsonSerializerOptions)
-                         ?? throw new InvalidOperationException(
-                             "Failed to deserialize the nsfw detection response: null result");
+            InappropriateLanguageDetectionResponse result = null;
+
+            // Use the resilience pipeline to handle transient errors and retries
+            await _resiliencePipeline.ExecuteAsync(async ct =>
+            {
+                var systemPrompt = GetSystemPrompt();
+                var userPrompt = GetUserPrompt(text);
+                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response, _jsonSerializerOptions)
+                             ?? throw new InvalidOperationException(
+                                 "Failed to deserialize the nsfw detection response: null result");
+            });
+
             return result;
         }
         catch (JsonException ex)

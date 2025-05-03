@@ -76,7 +76,9 @@ public static class GroqApi
         {
             client.BaseAddress = new Uri(GroqApiEndpoints.BaseUrl);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.ApiKey);
-        });
+        })
+            .AddStandardResilienceHandler();
+            ;
 
         return builder;
     }

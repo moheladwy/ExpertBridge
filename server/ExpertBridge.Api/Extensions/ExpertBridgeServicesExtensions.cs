@@ -5,6 +5,11 @@ using ExpertBridge.Api.Settings.Serilog;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Data;
 using ExpertBridge.GroqLibrary.Settings;
+using Polly;
+using Polly.Retry;
+using Polly.Timeout;
+using System.Text.Json;
+using Serilog;
 
 namespace ExpertBridge.Api.Extensions
 {
@@ -50,7 +55,31 @@ namespace ExpertBridge.Api.Extensions
 
             builder.Services.AddServices();
 
-             var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
+            builder.Services.AddResiliencePipeline(ResiliencePipelines.MalformedJsonModelResponse, static builder =>
+            {
+                // See: https://www.pollydocs.org/strategies/retry.html
+                builder.AddRetry(new RetryStrategyOptions
+                {
+                    ShouldHandle = new PredicateBuilder().Handle<JsonException>(),
+                    MaxRetryAttempts = 5,
+                    Delay = TimeSpan.FromSeconds(2),
+                    BackoffType = DelayBackoffType.Exponential,
+                    UseJitter = true,
+                    OnRetry = context =>
+                    {
+                        // Log the retry attempt
+                        Log.Information("Retrying due to a malformed json in model response. Attempt");
+                        return ValueTask.CompletedTask;
+                    }
+                });
+
+                // See: https://www.pollydocs.org/strategies/timeout.html
+                builder.AddTimeout(TimeSpan.FromSeconds(90));
+            });
+
+
+
+            var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
             if (!Directory.Exists(logDirectory))
                 Directory.CreateDirectory(logDirectory);
 
