@@ -45,7 +45,7 @@ public static class GroqApi
             .AddScoped<GroqLlmTextProvider>()
             .AddScoped<GroqPostTaggingService>()
             .AddScoped<TagProcessorService>()
-            .AddScoped<NSFWDetectionService>()
+            .AddScoped<GroqInappropriateLanguageDetectionService>()
             ;
 
         // Adding an HttpClient to a service should take place after registering this
@@ -76,7 +76,9 @@ public static class GroqApi
         {
             client.BaseAddress = new Uri(GroqApiEndpoints.BaseUrl);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.ApiKey);
-        });
+        })
+            .AddStandardResilienceHandler();
+            ;
 
         return builder;
     }

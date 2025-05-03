@@ -23,12 +23,18 @@ public static class BackgroundWorkers
         // AKA. event-driven.
 
         builder.Services
-            .AddHostedService<S3CleaningWorker>()
-            .AddHostedService<PeriodicPostTaggingWorker>()
-            .AddHostedService<PostCreatedHandlerWorker>()
-            .AddHostedService<UserInterestsUpdatedHandlerWorker>()
+            .AddHostedService<S3CleaningPeriodicWorker>()
+            .AddHostedService<PostTaggingPeriodicWorker>()
+            .AddHostedService<PostEmbeddingPeriodicWorker>()
+            .AddHostedService<UserInterestUpdaterPeriodicWorker>()
+            .AddHostedService<ContentModerationPeriodicWorker>()
+
+            .AddHostedService<PostProcessingPipelineHandlerWorker>()
+            .AddHostedService<PostTaggingHandlerWorker>()
             .AddHostedService<PostEmbeddingHandlerWorker>()
-            .AddHostedService<PeriodicUserInterestUpdaterWorker>()
+            .AddHostedService<UserInterestsUpdatedHandlerWorker>()
+            .AddHostedService<InappropriatePostDetectionHandlerWorker>()
+            .AddHostedService<InappropriateCommentDetectionHandlerWorker>()
             ;
 
         return builder;

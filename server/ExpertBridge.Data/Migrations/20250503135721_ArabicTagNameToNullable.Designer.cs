@@ -3,18 +3,21 @@ using System;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
 
 #nullable disable
 
-namespace ExpertBridge.Data.Migrations
+namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    partial class ExpertBridgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250503135721_ArabicTagNameToNullable")]
+    partial class ArabicTagNameToNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -786,79 +789,6 @@ namespace ExpertBridge.Data.Migrations
                     b.HasIndex("ProfileId");
 
                     b.ToTable("ProfileMedias");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Core.Entities.ModerationReports.ModerationReport", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ContentId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("IdentityAttack")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Insult")
-                        .HasColumnType("double precision");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsNegative")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsResolved")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("Obscene")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("SevereToxicity")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("SexualExplicit")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Threat")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Toxicity")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContentId");
-
-                    b.HasIndex("IsNegative");
-
-                    b.HasIndex("IsNegative", "ContentId");
-
-                    b.ToTable("ModerationReports");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.PostVotes.PostVote", b =>

@@ -26,6 +26,7 @@ public static class Services
             .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
             .AddScoped<TaggingService>()
+            .AddScoped<ContentModerationService>()
             ;
 
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();

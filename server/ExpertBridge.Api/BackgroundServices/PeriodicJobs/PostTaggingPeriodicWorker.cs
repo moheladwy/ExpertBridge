@@ -10,16 +10,16 @@ using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
-    public class PeriodicPostTaggingWorker : BackgroundService
+    public class PostTaggingPeriodicWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<PeriodicPostTaggingWorker> _logger;
-        private readonly ChannelWriter<PostCreatedMessage> _postCreatedChannel;
+        private readonly ILogger<PostTaggingPeriodicWorker> _logger;
+        private readonly ChannelWriter<TagPostMessage> _postCreatedChannel;
 
-        public PeriodicPostTaggingWorker(
+        public PostTaggingPeriodicWorker(
             IServiceProvider services,
-            ILogger<PeriodicPostTaggingWorker> logger,
-            Channel<PostCreatedMessage> postCreatedChannel)
+            ILogger<PostTaggingPeriodicWorker> logger,
+            Channel<TagPostMessage> postCreatedChannel)
         {
             _services = services;
             _logger = logger;
@@ -28,6 +28,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+
             var period = 60 * 60 * 24 * 1; // 1 day
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
@@ -35,7 +37,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
                 // _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Started...");
-                Log.Information("{WorkerName} Started...", nameof(PeriodicPostTaggingWorker));
+                Log.Information("{WorkerName} Started...", nameof(PostTaggingPeriodicWorker));
 
                 try
                 {
@@ -44,7 +46,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
                     var unTaggedPosts = await dbContext.Posts
                         .AsNoTracking()
-                        .Where(p => p.IsDeleted == false && !p.IsTagged)
+                        .Where(p => p.IsDeleted == false && !p.IsTagged && p.IsProcessed)
                         .Select(p => new
                         {
                             p.Id,
@@ -62,7 +64,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
                     foreach (var post in unTaggedPosts)
                     {
-                        await _postCreatedChannel.WriteAsync(new PostCreatedMessage
+                        await _postCreatedChannel.WriteAsync(new TagPostMessage
                         {
                             AuthorId = post.AuthorId,
                             Content = post.Content,
@@ -77,11 +79,11 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                     //     $"Failed to execute {nameof(PeriodicPostTaggingWorker)} with exception message {ex.Message}."
                     //     );
                     Log.Error(ex, "Failed to execute {WorkerName} with exception message {Message}.",
-                        nameof(PeriodicPostTaggingWorker), ex.Message);
+                        nameof(PostTaggingPeriodicWorker), ex.Message);
                 }
 
                 // _logger.LogInformation($"{nameof(PeriodicPostTaggingWorker)} Finished.");
-                Log.Information("{WorkerName} Finished.", nameof(PeriodicPostTaggingWorker));
+                Log.Information("{WorkerName} Finished.", nameof(PostTaggingPeriodicWorker));
             }
         }
     }

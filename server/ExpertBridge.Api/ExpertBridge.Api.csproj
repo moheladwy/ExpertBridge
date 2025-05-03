@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
     <PackageReference Include="Microsoft.Extensions.AI" />
     <PackageReference Include="Microsoft.Extensions.AI.Ollama" />
+    <PackageReference Include="Microsoft.Extensions.Resilience" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />
@@ -52,6 +53,10 @@
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
     <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>

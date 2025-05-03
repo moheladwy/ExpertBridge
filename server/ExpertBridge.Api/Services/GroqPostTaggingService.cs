@@ -1,6 +1,9 @@
 using System.Text.Json;
 using ExpertBridge.Api.Responses;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.GroqLibrary.Providers;
+using Polly;
+using Polly.Registry;
 
 namespace ExpertBridge.Api.Services;
 
@@ -23,15 +26,25 @@ public sealed class GroqPostTaggingService
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
+    private readonly ResiliencePipeline _resiliencePipeline;
+
     /// <summary>
     ///     Service responsible for categorizing posts by analyzing their title, content, and existing tags.
     ///     Relies on a GroqLlmTextProvider instance for interacting with a language model to generate
     ///     categorization results.
     /// </summary>
-    public GroqPostTaggingService(GroqLlmTextProvider groqLlmTextProvider)
+    public GroqPostTaggingService(
+        GroqLlmTextProvider groqLlmTextProvider,
+        ResiliencePipelineProvider<string> resilience)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
-        _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            AllowOutOfOrderMetadataProperties = true,
+            AllowTrailingCommas = true,
+        };
     }
 
     /// <summary>
@@ -50,7 +63,7 @@ public sealed class GroqPostTaggingService
     ///     Thrown if the deserialization of the categorizer response fails or returns a null result.
     /// </exception>
     /// <exception cref="JsonException">Thrown if an error occurs while parsing the categorizer response.</exception>
-    public async Task<PostCategorizerResponse> GeneratePostTagsAsync(
+    public async Task<PostCategorizerResponse?> GeneratePostTagsAsync(
         string title,
         string content,
         IReadOnlyCollection<string> existingTags)
@@ -60,12 +73,21 @@ public sealed class GroqPostTaggingService
         ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
         try
         {
-            var systemPrompt = GetSystemPrompt();
-            var userPrompt = GetUserPrompt(title, content, existingTags);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
-            var result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
-                         ?? throw new InvalidOperationException(
-                             "Failed to deserialize the categorizer response: null result");
+            PostCategorizerResponse result = null;
+
+            // Use the resilience pipeline to handle transient errors and retries
+            await _resiliencePipeline.ExecuteAsync(async ct =>
+            {
+                var systemPrompt = GetSystemPrompt();
+                var userPrompt = GetUserPrompt(title, content, existingTags);
+                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
+                             ?? throw new InvalidOperationException(
+                                 "Failed to deserialize the categorizer response: null result");
+
+                return ValueTask.CompletedTask;
+            });
+            
             return result;
         }
         catch (JsonException ex)
