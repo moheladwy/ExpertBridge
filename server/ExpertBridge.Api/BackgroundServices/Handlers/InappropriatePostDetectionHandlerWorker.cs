@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Threading.Channels;
 using Serilog;
+using ExpertBridge.Core.Entities.ModerationReports;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
@@ -64,10 +65,11 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         var existingPost = await dbContext.Posts
                             .FirstOrDefaultAsync(p => p.Id == post.PostId, stoppingToken);
 
-                        var moderationService = scope.ServiceProvider
-                            .GetRequiredService<ContentModerationService>();
+                        //var moderationService = scope.ServiceProvider
+                        //    .GetRequiredService<ContentModerationService>();
 
                         bool isAppropriate = true;
+                        var reason = "No issues.";
 
                         if (existingPost is not null)
                         {
@@ -80,11 +82,36 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                                 || results.Obscene >= thresholds.Obscene)
                             {
                                 // Mark as inappropriate and mark as deleted ...
-                                await moderationService.ReportPostAsync(post.PostId, results, isNegative: true);
+                                //await moderationService.ReportPostAsync(post.PostId, results, isNegative: true);
                                 isAppropriate = false;
+                                reason = "Your comment does not follow our Community Guidelines.";
                             }
 
+                            await dbContext.ModerationReports
+                                .AddAsync(new ModerationReport
+                                {
+                                    ContentType = ContentTypes.Post,
+                                    AuthorId = existingPost.AuthorId,
+                                    ContentId = existingPost.Id,
+                                    IsNegative = !isAppropriate,
+                                    Reason = reason,
+                                    IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
+                                    IdentityAttack = results.IdentityAttack,
+                                    Obscene = results.Obscene,
+                                    Insult = results.Insult,
+                                    SevereToxicity = results.SevereToxicity,
+                                    SexualExplicit = results.SexualExplicit,
+                                    Threat = results.Threat,
+                                    Toxicity = results.Toxicity,
+                                }, stoppingToken);
+
                             existingPost .IsProcessed = true;
+
+                            if (!isAppropriate)
+                            {
+                                dbContext.Posts.Remove(existingPost);
+                            }
+
                             await dbContext.SaveChangesAsync(stoppingToken);
 
                             await _acknowledgeChannel.WriteAsync(new AcknowledgePostProcessingMessage

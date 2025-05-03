@@ -9,7 +9,7 @@ namespace ExpertBridge.Core.Entities.ModerationReports
 {
     public class ModerationReport : BaseModel, ISoftDeletable
     {
-        public ContentType ContentType { get; set; } // Enum for content type (e.g., Post, Comment, etc.)
+        public ContentTypes ContentType { get; set; } // Enum for content type (e.g., Post, Comment, etc.)
         public string ContentId { get; set; }
         public string AuthorId { get; set; }
         public string Reason { get; set; }

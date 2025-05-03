@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExpertBridge.Core.Entities
 {
-    public enum ContentType
+    public enum ContentTypes
     {
         Post,
         Comment,

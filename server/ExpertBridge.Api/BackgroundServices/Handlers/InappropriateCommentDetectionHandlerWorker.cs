@@ -8,6 +8,7 @@ using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -61,8 +62,11 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         var existingComment = await dbContext.Comments
                             .FirstOrDefaultAsync(c => c.Id == comment.CommentId, stoppingToken);
 
-                        var moderationService = scope.ServiceProvider
-                            .GetRequiredService<ContentModerationService>();
+                        //var moderationService = scope.ServiceProvider
+                        //    .GetRequiredService<ContentModerationService>();
+
+                        bool isAppropriate = true;
+                        var reason = "No issues.";
 
                         if (existingComment is not null)
                         {
@@ -75,10 +79,37 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                                 || results.Obscene >= thresholds.Obscene)
                             {
                                 // Mark as inappropriate and mark as deleted ...
-                                await moderationService.ReportCommentAsync(comment.CommentId, results);
+                                //await moderationService.ReportPostAsync(post.PostId, results, isNegative: true);
+                                isAppropriate = false;
+                                reason = "Your comment does not follow our Community Guidelines.";
                             }
 
+                            await dbContext.ModerationReports
+                                .AddAsync(new ModerationReport
+                                {
+                                    ContentType = ContentTypes.Comment,
+                                    AuthorId = existingComment.AuthorId,
+                                    ContentId = existingComment.Id,
+                                    IsNegative = !isAppropriate,
+                                    Reason = reason,
+                                    IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
+                                    IdentityAttack = results.IdentityAttack,
+                                    Obscene = results.Obscene,
+                                    Insult = results.Insult,
+                                    SevereToxicity = results.SevereToxicity,
+                                    SexualExplicit = results.SexualExplicit,
+                                    Threat = results.Threat,
+                                    Toxicity = results.Toxicity,
+                                }, stoppingToken);
+
                             existingComment.IsProcessed = true;
+
+                            if (!isAppropriate)
+                            {
+                                dbContext.Comments.Remove(existingComment);
+                            }
+
+                            await dbContext.SaveChangesAsync(stoppingToken);
                             await dbContext.SaveChangesAsync(stoppingToken);
                         }
                     }
