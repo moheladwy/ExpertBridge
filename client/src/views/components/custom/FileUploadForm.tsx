@@ -89,7 +89,7 @@ const FileUploadForm: React.FC<FileUploadFormProps> = ({ onSubmit, setParentMedi
                 <div className='flex justify-center items-center'>
                   <FileUpload
                     limit={3}
-                    multiple
+                    multiple 
                     name='images'
                     setParentMediaList={setParentMediaList}
                   />

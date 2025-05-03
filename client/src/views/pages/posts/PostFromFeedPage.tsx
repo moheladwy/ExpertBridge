@@ -30,6 +30,10 @@ const PostFromFeedPage: React.FC = () => {
     }
   }, [deleteResult.isSuccess, deleteResult.isError, deleteResult.error, navigate]);
 
+  if (!post) {
+    return <Navigate to={`/posts/${postId}`} />
+  }
+
   // Loading skeleton while checking if post exists in state
   if (!post && !deleteResult.isSuccess) {
     // We'll show a quick loading skeleton before redirecting
@@ -66,10 +70,6 @@ const PostFromFeedPage: React.FC = () => {
         </div>
       </div>
     );
-    // The Navigate component will handle the redirect after a brief display of the skeleton
-    setTimeout(() => {
-      return <Navigate to={`/posts/${postId}`} />;
-    }, 500);
   }
   return (
     <FullPostWithComments post={post} deletePost={deletePost} />

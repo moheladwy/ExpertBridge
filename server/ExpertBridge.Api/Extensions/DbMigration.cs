@@ -22,6 +22,7 @@ internal static class DbMigration
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var dbContext = services.GetRequiredService<ExpertBridgeDbContext>();
+
             await dbContext.Database.MigrateAsync();
         }
         catch (InvalidOperationException e)
