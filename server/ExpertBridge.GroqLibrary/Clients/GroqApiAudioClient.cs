@@ -83,8 +83,7 @@ public sealed class GroqApiAudioClient
             content.Add(temperatureContent, "temperature");
         }
 
-        var transcriptionsEndpoint = new Uri(GroqApiEndpoints.TranscriptionsEndpoint);
-        var response = await _httpClient.PostAsync(transcriptionsEndpoint, content);
+        var response = await _httpClient.PostAsync(GroqApiEndpoints.TranscriptionsEndpoint, content);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<JsonObject>();
     }
@@ -125,8 +124,7 @@ public sealed class GroqApiAudioClient
             content.Add(temperatureContent, "temperature");
         }
 
-        var translationsEndpoint = new Uri(GroqApiEndpoints.TranslationsEndpoint);
-        var response = await _httpClient.PostAsync(translationsEndpoint, content);
+        var response = await _httpClient.PostAsync(GroqApiEndpoints.TranslationsEndpoint, content);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<JsonObject>();
     }
