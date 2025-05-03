@@ -11,6 +11,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Threading.Channels;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
@@ -83,20 +84,27 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"An error occurred while processing " +
-                            $"message with post id={post.PostId}.");
+                        // _logger.LogError(ex, $"An error occurred while processing " +
+                        //     $"message with post id={post.PostId}.");
+                        Log.Error(ex,
+                            "An error occurred while processing message with post id={PostId}.",
+                            post.PostId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    @$"{nameof(DetectInappropriatePostHandlerWorker)} ran into unexpected error: 
-                    An error occurred while reading from the channel.");
+                // _logger.LogError(ex,
+                //     @$"{nameof(DetectInappropriatePostHandlerWorker)} ran into unexpected error:
+                //     An error occurred while reading from the channel.");
+                Log.Error(ex,
+                    "{WorkerName} ran into unexpected error: An error occurred while reading from the channel.",
+                    nameof(DetectInappropriatePostHandlerWorker));
             }
             finally
             {
-                _logger.LogInformation($"Terminating {nameof(DetectInappropriatePostHandlerWorker)}.");
+                // _logger.LogInformation($"Terminating {nameof(DetectInappropriatePostHandlerWorker)}.");
+                Log.Information("Terminating {WorkerName}.", nameof(DetectInappropriatePostHandlerWorker));
             }
         }
     }

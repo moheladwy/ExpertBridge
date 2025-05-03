@@ -6,6 +6,7 @@ using System.Threading.Channels;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
@@ -36,7 +37,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation($"{nameof(PostEmbeddingPeriodicWorker)} Started...");
+                // _logger.LogInformation($"{nameof(PostEmbeddingPeriodicWorker)} Started...");
+                Log.Information("{WorkerName} Started...", nameof(PostEmbeddingPeriodicWorker));
 
                 try
                 {
@@ -76,12 +78,16 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        $"Failed to execute {nameof(PostEmbeddingPeriodicWorker)} with exception message {ex.Message}."
-                        );
+                    // _logger.LogError(ex,
+                    //     $"Failed to execute {nameof(PostEmbeddingPeriodicWorker)} with exception message {ex.Message}."
+                    //     );
+                    Log.Error(ex,
+                        "Failed to execute {WorkerName} with exception message {Message}.",
+                        nameof(PostEmbeddingPeriodicWorker), ex.Message);
                 }
 
-                _logger.LogInformation($"{nameof(PostEmbeddingPeriodicWorker)} Finished.");
+                // _logger.LogInformation($"{nameof(PostEmbeddingPeriodicWorker)} Finished.");
+                Log.Information("{WorkerName} Finished.", nameof(PostEmbeddingPeriodicWorker));
             }
         }
     }
