@@ -71,6 +71,13 @@ public sealed class GroqLlmTextProvider : ILlmProvider, IDisposable
         };
 
         var response = await _client.CreateChatCompletionAsync(request);
-        return response?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
+        var result =  response?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
+
+        var start = result.IndexOf('{', StringComparison.Ordinal);
+        var end = result.LastIndexOf('}');
+
+        return result
+            .Substring(start, end - start + 1)
+            .TrimEnd('`', '\n', '\r', ',');
     }
 }
