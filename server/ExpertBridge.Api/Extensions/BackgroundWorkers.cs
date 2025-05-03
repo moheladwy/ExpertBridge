@@ -24,15 +24,17 @@ public static class BackgroundWorkers
 
         builder.Services
             .AddHostedService<S3CleaningPeriodicWorker>()
-            .AddHostedService<PeriodicPostTaggingWorker>()
+            .AddHostedService<PostTaggingPeriodicWorker>()
             .AddHostedService<PostEmbeddingPeriodicWorker>()
             .AddHostedService<UserInterestUpdaterPeriodicWorker>()
             .AddHostedService<ContentModerationPeriodicWorker>()
-            .AddHostedService<PostCreatedHandlerWorker>()
+
+            .AddHostedService<PostProcessingPipelineHandlerWorker>()
+            .AddHostedService<PostTaggingHandlerWorker>()
             .AddHostedService<PostEmbeddingHandlerWorker>()
             .AddHostedService<UserInterestsUpdatedHandlerWorker>()
-            .AddHostedService<DetectInappropriatePostHandlerWorker>()
-            .AddHostedService<DetectInappropriateCommentHandlerWorker>()
+            .AddHostedService<InappropriatePostDetectionHandlerWorker>()
+            .AddHostedService<InappropriateCommentDetectionHandlerWorker>()
             ;
 
         return builder;

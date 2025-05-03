@@ -53,7 +53,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
                     await dbContext.Posts
                         .AsNoTracking()
-                        .Where(p => p.Embedding == null)
+                        .Where(p => p.Embedding == null && p.IsProcessed)
                         .Select(p => new EmbedPostMessage
                         {
                             PostId = p.Id,

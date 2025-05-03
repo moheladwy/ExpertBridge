@@ -19,7 +19,8 @@ namespace ExpertBridge.Api.Services
 
         public async Task ReportPostAsync(
             string postId,
-            InappropriateLanguageDetectionResponse results)
+            InappropriateLanguageDetectionResponse results,
+            bool isNegative)
         {
 
         }

@@ -15,18 +15,21 @@ using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
-    public class DetectInappropriatePostHandlerWorker : BackgroundService
+    public class InappropriatePostDetectionHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
+        private readonly ChannelWriter<AcknowledgePostProcessingMessage> _acknowledgeChannel;
         private readonly ChannelReader<DetectInappropriatePostMessage> _channel;
-        private readonly ILogger<DetectInappropriatePostHandlerWorker> _logger;
+        private readonly ILogger<InappropriatePostDetectionHandlerWorker> _logger;
 
-        public DetectInappropriatePostHandlerWorker(
+        public InappropriatePostDetectionHandlerWorker(
             IServiceProvider services,
             Channel<DetectInappropriatePostMessage> channel,
-            ILogger<DetectInappropriatePostHandlerWorker> logger)
+            Channel<AcknowledgePostProcessingMessage> acknowledgeChannel,
+            ILogger<InappropriatePostDetectionHandlerWorker> logger)
         {
             _services = services;
+            _acknowledgeChannel = acknowledgeChannel.Writer;
             _channel = channel.Reader;
             _logger = logger;
         }
@@ -64,6 +67,8 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         var moderationService = scope.ServiceProvider
                             .GetRequiredService<ContentModerationService>();
 
+                        bool isAppropriate = true;
+
                         if (existingPost is not null)
                         {
                             if (results.Insult >= thresholds.Insult
@@ -75,11 +80,17 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                                 || results.Obscene >= thresholds.Obscene)
                             {
                                 // Mark as inappropriate and mark as deleted ...
-                                await moderationService.ReportPostAsync(post.PostId, results);
+                                await moderationService.ReportPostAsync(post.PostId, results, isNegative: true);
+                                isAppropriate = false;
                             }
 
                             existingPost .IsProcessed = true;
                             await dbContext.SaveChangesAsync(stoppingToken);
+
+                            await _acknowledgeChannel.WriteAsync(new AcknowledgePostProcessingMessage
+                            {
+                                IsAppropriate = isAppropriate,
+                            }, stoppingToken);
                         }
                     }
                     catch (Exception ex)
@@ -99,12 +110,12 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 //     An error occurred while reading from the channel.");
                 Log.Error(ex,
                     "{WorkerName} ran into unexpected error: An error occurred while reading from the channel.",
-                    nameof(DetectInappropriatePostHandlerWorker));
+                    nameof(InappropriatePostDetectionHandlerWorker));
             }
             finally
             {
                 // _logger.LogInformation($"Terminating {nameof(DetectInappropriatePostHandlerWorker)}.");
-                Log.Information("Terminating {WorkerName}.", nameof(DetectInappropriatePostHandlerWorker));
+                Log.Information("Terminating {WorkerName}.", nameof(InappropriatePostDetectionHandlerWorker));
             }
         }
     }

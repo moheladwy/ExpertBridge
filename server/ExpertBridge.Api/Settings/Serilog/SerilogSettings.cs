@@ -2,6 +2,8 @@
 
 public class SerilogSettings
 {
+    public const string Section = "Serilog";
+
     public string[] Using { get; set; } = Array.Empty<string>();
     public MinimumLevel MinimumLevel { get; set; } = new();
     public WriteTo[] WriteTo { get; set; } = Array.Empty<WriteTo>();

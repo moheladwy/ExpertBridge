@@ -15,16 +15,16 @@ using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
-    public class DetectInappropriateCommentHandlerWorker : BackgroundService
+    public class InappropriateCommentDetectionHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
         private readonly ChannelReader<DetectInappropriateCommentMessage> _channel;
-        private readonly ILogger<DetectInappropriateCommentHandlerWorker> _logger;
+        private readonly ILogger<InappropriateCommentDetectionHandlerWorker> _logger;
 
-        public DetectInappropriateCommentHandlerWorker(
+        public InappropriateCommentDetectionHandlerWorker(
             IServiceProvider services,
             Channel<DetectInappropriateCommentMessage> channel,
-            ILogger<DetectInappropriateCommentHandlerWorker> logger)
+            ILogger<InappropriateCommentDetectionHandlerWorker> logger)
         {
             _services = services;
             _channel = channel.Reader;
@@ -98,12 +98,12 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 //     An error occurred while reading from the channel.");
                 Log.Error(ex,
                     "{WorkerName} ran into unexpected error: An error occurred while reading from the channel.",
-                    nameof(DetectInappropriateCommentHandlerWorker));
+                    nameof(InappropriateCommentDetectionHandlerWorker));
             }
             finally
             {
                 // _logger.LogInformation($"Terminating {nameof(DetectInappropriateCommentHandlerWorker)}.");
-                Log.Information("Terminating {WorkerName}.", nameof(DetectInappropriateCommentHandlerWorker));
+                Log.Information("Terminating {WorkerName}.", nameof(InappropriateCommentDetectionHandlerWorker));
             }
         }
     }

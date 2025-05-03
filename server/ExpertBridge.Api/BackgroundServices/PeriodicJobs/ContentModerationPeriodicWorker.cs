@@ -12,19 +12,19 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
     public class ContentModerationPeriodicWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ChannelWriter<DetectInappropriatePostMessage> _inappropriatePostChannel;
+        private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingPipelineChannel;
         private readonly ChannelWriter<DetectInappropriateCommentMessage> _inappropriateCommentChannel;
         private readonly ILogger<ContentModerationPeriodicWorker> _logger;
 
         public ContentModerationPeriodicWorker(
             IServiceProvider services,
-            Channel<DetectInappropriatePostMessage> inappropriatePostChannel,
+            Channel<PostProcessingPipelineMessage> postProcessingPipelineChannel,
             Channel<DetectInappropriateCommentMessage> inappropriateCommentChannel,
             ILogger<ContentModerationPeriodicWorker> logger
             )
         {
             _services = services;
-            _inappropriatePostChannel = inappropriatePostChannel.Writer;
+            _postProcessingPipelineChannel = postProcessingPipelineChannel.Writer;
             _inappropriateCommentChannel = inappropriateCommentChannel.Writer;
             _logger = logger;
         }
@@ -57,7 +57,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                     await dbContext.Posts
                         .AsNoTracking()
                         .Where(p => !p.IsProcessed)
-                        .Select(p => new DetectInappropriatePostMessage
+                        .Select(p => new PostProcessingPipelineMessage
                         {
                             PostId = p.Id,
                             AuthorId = p.AuthorId,
@@ -65,7 +65,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                             Title = p.Title
                         })
                         .ForEachAsync(async post =>
-                            await _inappropriatePostChannel.WriteAsync(post, stoppingToken),
+                            await _postProcessingPipelineChannel.WriteAsync(post, stoppingToken),
                             stoppingToken
                         );
 

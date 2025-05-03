@@ -50,9 +50,9 @@ namespace ExpertBridge.Api.Extensions
 
             builder.Services.AddServices();
 
-            // var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
-            // if (!Directory.Exists(logDirectory))
-            //     Directory.CreateDirectory(logDirectory);
+             var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
+            if (!Directory.Exists(logDirectory))
+                Directory.CreateDirectory(logDirectory);
 
             return builder;
         }
@@ -65,22 +65,22 @@ namespace ExpertBridge.Api.Extensions
         private static WebApplicationBuilder ConfigureExpertBridgeSettings(this WebApplicationBuilder builder)
         {
             builder.Services.Configure<ConnectionStrings>(
-                builder.Configuration.GetSection("ConnectionStrings"));
+                builder.Configuration.GetSection(ConnectionStrings.Section));
 
             builder.Services.Configure<FirebaseSettings>(
-                builder.Configuration.GetSection("Firebase"));
+                builder.Configuration.GetSection(FirebaseSettings.Section));
 
             builder.Services.Configure<FirebaseAuthSettings>(
-                builder.Configuration.GetSection("Authentication:Firebase"));
+                builder.Configuration.GetSection(FirebaseAuthSettings.Section));
 
             builder.Services.Configure<AwsSettings>(
-                builder.Configuration.GetSection("AwsS3"));
+                builder.Configuration.GetSection(AwsSettings.Section));
 
             builder.Services.Configure<AiSettings>(
-                builder.Configuration.GetSection("AI"));
+                builder.Configuration.GetSection(AiSettings.Section));
 
             builder.Services.Configure<SerilogSettings>(
-                builder.Configuration.GetSection("Serilog"));
+                builder.Configuration.GetSection(SerilogSettings.Section));
 
             builder.Services.Configure<ExpertBridgeRateLimitSettings>(
                 builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));

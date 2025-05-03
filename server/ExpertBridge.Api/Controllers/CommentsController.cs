@@ -1,5 +1,7 @@
 using System.Linq;
+using System.Threading.Channels;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
@@ -28,7 +30,9 @@ public class CommentsController(
 {
     [Route("/api/[controller]")]
     [HttpPost]
-    public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
+    public async Task<CommentResponse> Create(
+        [FromBody] CreateCommentRequest request,
+        [FromServices] Channel<DetectInappropriateCommentMessage> _channel)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
@@ -104,6 +108,13 @@ public class CommentsController(
         }
 
         await _dbContext.SaveChangesAsync();
+
+        await _channel.Writer.WriteAsync(new DetectInappropriateCommentMessage
+        {
+            CommentId = comment.Id,
+            Content = comment.Content,
+            AuthorId = comment.AuthorId,
+        });
 
         return comment.SelectCommentResponseFromFullComment(profile.Id);
     }

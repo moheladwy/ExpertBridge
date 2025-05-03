@@ -16,19 +16,19 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
     /// <summary>
     /// Handles the creation of posts and categorizes them using a remote service.
     /// </summary>
-    public class PostCreatedHandlerWorker : BackgroundService
+    public class PostTaggingHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ChannelReader<PostCreatedMessage> _postCreatedChannel;
-        private readonly ILogger<PostCreatedHandlerWorker> _logger;
+        private readonly ChannelReader<TagPostMessage> _tagPostChannel;
+        private readonly ILogger<PostTaggingHandlerWorker> _logger;
 
-        public PostCreatedHandlerWorker(
+        public PostTaggingHandlerWorker(
             IServiceProvider services,
-            Channel<PostCreatedMessage> postCreatedChannel,
-            ILogger<PostCreatedHandlerWorker> logger)
+            Channel<TagPostMessage> tagPostChannel,
+            ILogger<PostTaggingHandlerWorker> logger)
         {
             _services = services;
-            _postCreatedChannel = postCreatedChannel.Reader;
+            _tagPostChannel = tagPostChannel.Reader;
             _logger = logger;
         }
 
@@ -36,9 +36,9 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
         {
             try
             {
-                while (await _postCreatedChannel.WaitToReadAsync(stoppingToken))
+                while (await _tagPostChannel.WaitToReadAsync(stoppingToken))
                 {
-                    var post = await _postCreatedChannel.ReadAsync(stoppingToken);
+                    var post = await _tagPostChannel.ReadAsync(stoppingToken);
 
                     try
                     {
@@ -84,14 +84,14 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 //     @$"{nameof(PostCreatedHandlerWorker)} ran into unexpected error:
                 //     An error occurred while reading from the channel.");
                 Log.Error(ex,
-                    "An error occurred while reading from the channel in {nameof(PostCreatedHandlerWorker)}.",
-                    nameof(PostCreatedHandlerWorker));
+                    "An error occurred while reading from the channel in {0}.",
+                    nameof(PostTaggingHandlerWorker));
             }
             finally
             {
                 // _logger.LogInformation($"Terminating {nameof(PostCreatedHandlerWorker)}.");
-                Log.Information("Terminating {nameof(PostCreatedHandlerWorker)}.",
-                    nameof(PostCreatedHandlerWorker));
+                Log.Information("Terminating {0}.",
+                    nameof(PostTaggingHandlerWorker));
             }
         }
     }
