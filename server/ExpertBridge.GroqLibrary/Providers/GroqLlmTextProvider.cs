@@ -11,18 +11,18 @@ namespace ExpertBridge.GroqLibrary.Providers;
 ///     Provides integration with Groq LLM (Large Language Model) API for text generation.
 ///     Implements <see cref="ILlmTextProvider" /> interface for consistent LLM operations.
 /// </summary>
-public sealed class GroqLlmTextTextProvider : ILlmTextProvider
+public sealed class GroqLlmTextProvider : ILlmTextProvider
 {
     private readonly GroqApiChatCompletionClient _client;
     private readonly string _model;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GroqLlmTextTextProvider" /> class with a custom HTTP client.
+    ///     Initializes a new instance of the <see cref="GroqLlmTextProvider" /> class with a custom HTTP client.
     /// </summary>
     /// <param name="groqApiChatCompletionClient">
     ///     The <see cref="GroqApiChatCompletionClient" /> instance to be used for API requests.
     /// </param>
-    public GroqLlmTextTextProvider(GroqApiChatCompletionClient groqApiChatCompletionClient)
+    public GroqLlmTextProvider(GroqApiChatCompletionClient groqApiChatCompletionClient)
     {
         _client = groqApiChatCompletionClient;
         _model = GroqTextModels.LLAMA3_70B_8192;
