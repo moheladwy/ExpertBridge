@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 
+using System.Text;
 using System.Threading.Channels;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Extensions;
@@ -46,18 +47,19 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
                         var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
 
-                        var userInterests = await dbContext.UserInterests
+                        var userInterests = dbContext.UserInterests
                             .AsNoTracking()
                             .Include(ui => ui.Tag)
                             .Where(ui => ui.ProfileId == message.UserProfileId)
-                            .ToListAsync(stoppingToken);
+                            .Select(ui => $"{ui.Tag.EnglishName} {ui.Tag.ArabicName} ");
 
-                        var text = userInterests.Aggregate(
-                            string.Empty, (current, userInterest) =>
-                                $"{current} {userInterest.Tag.ArabicName} {userInterest.Tag.ArabicName}"
-                        );
+                        var text = new StringBuilder();
+                        foreach (var userInterest in userInterests)
+                        {
+                            text.Append(userInterest);
+                        }
 
-                        var embedding = await embeddingService.GenerateEmbedding(text);
+                        var embedding = await embeddingService.GenerateEmbedding(text.ToString());
 
                         if (embedding is null)
                         {
