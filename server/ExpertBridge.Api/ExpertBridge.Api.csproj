@@ -32,6 +32,10 @@
     <PackageReference Include="Refit" />
     <PackageReference Include="Refit.HttpClientFactory" />
     <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Enrichers.Environment" />
+    <PackageReference Include="Serilog.Enrichers.Process" />
+    <PackageReference Include="Serilog.Enrichers.Thread" />
+    <PackageReference Include="Serilog.Sinks.File" />
     <PackageReference Include="Serilog.Sinks.Seq" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="AWSSDK.S3" />
@@ -48,6 +52,10 @@
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
     <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>

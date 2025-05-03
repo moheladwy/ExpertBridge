@@ -14,6 +14,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
@@ -78,20 +79,29 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"An error occurred while processing " +
-                            $"message with user profile id={message.UserProfileId}.");
+                        // _logger.LogError(ex, $"An error occurred while processing " +
+                        //     $"message with user profile id={message.UserProfileId}.");
+                        Log.Error(ex,
+                            "An error occurred while processing message with user profile id={userProfileId}.",
+                            message.UserProfileId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    @$"{nameof(UserInterestsUpdatedHandlerWorker)} ran into unexpected error: 
-                    An error occurred while reading from the channel.");
+                // _logger.LogError(ex,
+                //     @$"{nameof(UserInterestsUpdatedHandlerWorker)} ran into unexpected error:
+                //     An error occurred while reading from the channel.");
+                Log.Error(ex,
+                    "An error occurred while reading from the channel in " +
+                    "{nameof(UserInterestsUpdatedHandlerWorker)}.",
+                    nameof(UserInterestsUpdatedHandlerWorker));
             }
             finally
             {
-                _logger.LogInformation($"Terminating {nameof(UserInterestsUpdatedHandlerWorker)}.");
+                // _logger.LogInformation($"Terminating {nameof(UserInterestsUpdatedHandlerWorker)}.");
+                Log.Information("Terminating {nameof(UserInterestsUpdatedHandlerWorker)}.",
+                    nameof(UserInterestsUpdatedHandlerWorker));
             }
         }
     }

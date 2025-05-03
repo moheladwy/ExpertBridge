@@ -9,6 +9,7 @@ using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Data.DatabaseContexts;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
@@ -70,19 +71,27 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"An error occurred while processing post with id={post.PostId}.");
+                        // _logger.LogError(ex, $"An error occurred while processing post with id={post.PostId}.");
+                        Log.Error(ex,
+                            "An error occurred while processing post with id={post.PostId}.",
+                            post.PostId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    @$"{nameof(PostCreatedHandlerWorker)} ran into unexpected error: 
-                    An error occurred while reading from the channel.");
+                // _logger.LogError(ex,
+                //     @$"{nameof(PostCreatedHandlerWorker)} ran into unexpected error:
+                //     An error occurred while reading from the channel.");
+                Log.Error(ex,
+                    "An error occurred while reading from the channel in {nameof(PostCreatedHandlerWorker)}.",
+                    nameof(PostCreatedHandlerWorker));
             }
             finally
             {
-                _logger.LogInformation($"Terminating {nameof(PostCreatedHandlerWorker)}.");
+                // _logger.LogInformation($"Terminating {nameof(PostCreatedHandlerWorker)}.");
+                Log.Information("Terminating {nameof(PostCreatedHandlerWorker)}.",
+                    nameof(PostCreatedHandlerWorker));
             }
         }
     }

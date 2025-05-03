@@ -24,7 +24,7 @@ public static class BackgroundWorkers
 
         builder.Services
             .AddHostedService<S3CleaningPeriodicWorker>()
-            .AddHostedService<PostTaggingPeriodicWorker>()
+            .AddHostedService<PeriodicPostTaggingWorker>()
             .AddHostedService<PostEmbeddingPeriodicWorker>()
             .AddHostedService<UserInterestUpdaterPeriodicWorker>()
             .AddHostedService<ContentModerationPeriodicWorker>()
