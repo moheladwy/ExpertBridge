@@ -3,7 +3,7 @@ namespace ExpertBridge.GroqLibrary.Interfaces;
 /// <summary>
 ///     Provides an interface for interacting with Large Language Models (LLM) to generate text responses.
 /// </summary>
-public interface ILlmProvider
+public interface ILlmTextProvider
 {
     /// <summary>
     ///     Generates a response using the LLM based on the user's prompt.
