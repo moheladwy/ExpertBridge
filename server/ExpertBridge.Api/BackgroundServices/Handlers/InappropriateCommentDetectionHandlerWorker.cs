@@ -110,7 +110,6 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                             }
 
                             await dbContext.SaveChangesAsync(stoppingToken);
-                            await dbContext.SaveChangesAsync(stoppingToken);
                         }
                     }
                     catch (Exception ex)
