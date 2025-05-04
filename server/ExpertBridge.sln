@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		Dockerfile = Dockerfile
+		postgresql-compose.yaml = postgresql-compose.yaml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Host", "ExpertBridge.Host\ExpertBridge.Host.csproj", "{B723AD57-31E0-4232-9C6A-87A7BA4B6C3C}"
@@ -20,6 +21,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Data", "ExpertBridge.Data\ExpertBridge.Data.csproj", "{F87F6A03-77A6-4D4B-B4EC-424035AA39D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.GroqLibrary", "ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj", "{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Admin", "ExpertBridge.Admin\ExpertBridge.Admin.csproj", "{479CC770-2151-42A9-8D72-3B5653EC86C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,5 +54,9 @@ Global
 		{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

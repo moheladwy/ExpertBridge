@@ -8,3 +8,9 @@ services:
     ports:
       - "5027:8080"
 
+  expertbridge.admin:
+    image: expertbridge.admin
+    build:
+      context: .
+      dockerfile: ExpertBridge.Admin/Dockerfile
+
