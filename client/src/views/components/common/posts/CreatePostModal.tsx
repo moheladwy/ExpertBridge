@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useCreatePostMutation } from "../../../../features/posts/postsSlice";
+import { useCreatePostMutation } from "@/features/posts/postsSlice.ts";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import toast from "react-hot-toast";
 import {
@@ -12,12 +12,12 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
-import FileUploadForm from "../../custom/FileUploadForm";
+import FileUploadForm from "@/views/components/custom/FileUploadForm";
 import { MediaObject } from "@/features/media/types";
 import { z } from "zod";
-import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
+import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
-import { Separator } from "../../ui/separator";
+import { Separator } from "@/views/components/ui/separator";
 
 // Character limits
 const TITLE_MAX_LENGTH = 256;
@@ -41,15 +41,12 @@ const postSchema = z.object({
 		}),
 });
 
-const steps = ["Ask Question", "Describe Your Problem", "Add Media"];
-
 const CreatePostModal: React.FC = () => {
 	useEffect(() => {
 		console.log("modal mounting...");
 	}, []);
 
 	const [open, setOpen] = useState(false);
-	const [activeStep, setActiveStep] = useState(0);
 	const [title, setTitle] = useState("");
 	const [body, setBody] = useState("");
 	const [media, setMedia] = useState<File[]>([]);
@@ -89,7 +86,6 @@ const CreatePostModal: React.FC = () => {
 		setTitle("");
 		setBody("");
 		setMedia([]);
-		setActiveStep(0);
 		setError("");
 		setTitleError("");
 		setBodyError("");
@@ -99,45 +95,6 @@ const CreatePostModal: React.FC = () => {
 		setOpen(false);
 		resetForm();
 	}, [setOpen, resetForm]);
-
-	// // Updated handleNext function with direct validation
-	// const handleNext = () => {
-	// 	// Validate based on current step
-	// 	if (activeStep === 0) {
-	// 		try {
-	// 			// Validate the title string directly
-	// 			postSchema.shape.title.parse(title);
-	// 			setTitleError(""); // Clear error if validation passes
-	// 			setActiveStep((prev) => prev + 1); // Proceed to next step
-	// 		} catch (err) {
-	// 			// Handle validation errors
-	// 			if (err instanceof z.ZodError) {
-	// 				setTitleError(err.errors[0].message);
-	// 			} else {
-	// 				setTitleError("An unexpected error occurred");
-	// 			}
-	// 		}
-	// 	} else if (activeStep === 1) {
-	// 		try {
-	// 			// Validate the body string directly
-	// 			postSchema.shape.content.parse(body);
-	// 			setBodyError(""); // Clear error if validation passes
-	// 			setActiveStep((prev) => prev + 1); // Proceed to next step
-	// 		} catch (err) {
-	// 			// Handle validation errors
-	// 			if (err instanceof z.ZodError) {
-	// 				setBodyError(err.errors[0].message);
-	// 			} else {
-	// 				setBodyError("An unexpected error occurred");
-	// 			}
-	// 		}
-	// 	} else {
-	// 		// If we're not on a step that needs validation, just proceed
-	// 		setActiveStep((prev) => prev + 1);
-	// 	}
-	// };
-
-	// const handleBack = () => setActiveStep((prev) => prev - 1);
 
 	const handleSubmit = async () => {
 		try {
@@ -187,18 +144,18 @@ const CreatePostModal: React.FC = () => {
 	return (
 		<>
 			<div
-				className="flex justify-center items-center gap-2 bg-white shadow-md rounded-lg p-4 border border-gray-200"
+				className="flex justify-center items-center gap-2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700"
 				onClick={handleOpen}
 			>
 				{isLoggedIn && (
-					<div className="bg-white flex justify-center items-center">
+					<div className="bg-white dark:bg-gray-800 flex justify-center items-center">
 						{userProfile?.profilePictureUrl ? (
 							<img
 								src={userProfile.profilePictureUrl}
 								width={45}
 								height={45}
 								className="rounded-full"
-							/>
+							 	alt="Profile Picture"/>
 						) : (
 							<img
 								src={defaultProfile}
@@ -210,7 +167,7 @@ const CreatePostModal: React.FC = () => {
 						)}
 					</div>
 				)}
-				<Button className=" bg-gray-100 text-gray-500 px-5 hover:bg-gray-200 hover:text-main-blue w-full rounded-full">
+				<Button className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 px-5 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue dark:hover:text-blue-400 w-full rounded-full">
 					<div className="w-full text-left">
 						What do you want to ask?
 					</div>
@@ -225,11 +182,11 @@ const CreatePostModal: React.FC = () => {
 				aria-disabled={isLoading || uploadResult.isLoading}
 				className="flex items-center justify-center"
 			>
-				<div className="bg-white rounded-lg shadow-xl p-6 w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 relative">
+				<div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 relative dark:text-white">
 					{/* Close Button */}
 					<div className="absolute top-3 right-3">
 						<IconButton onClick={handleClose}>
-							<CloseIcon />
+							<CloseIcon className="dark:text-gray-300" />
 						</IconButton>
 					</div>
 
@@ -237,12 +194,12 @@ const CreatePostModal: React.FC = () => {
 						variant="h6"
 						gutterBottom
 						id="create-post-modal"
-						className="max-sm:text-md"
+						className="max-sm:text-md dark:text-white"
 					>
 						Ask Your Question
 					</Typography>
 
-					<Separator />
+					<Separator className="dark:bg-gray-600" />
 
 					{/* User Profile Info */}
 					<Box className="flex items-center mb-4 mt-2">
@@ -265,7 +222,7 @@ const CreatePostModal: React.FC = () => {
 								/>
 							)}
 						</div>
-						<Typography variant="subtitle1" className="font-medium">
+						<Typography variant="subtitle1" className="font-medium dark:text-white">
 							{authUser?.displayName || "User"}
 						</Typography>
 					</Box>
@@ -283,12 +240,16 @@ const CreatePostModal: React.FC = () => {
 									htmlInput: {
 										maxLength: TITLE_MAX_LENGTH,
 										dir: "auto",
-										className: "text-lg",
+										className: "text-lg dark:text-white",
 									},
 								}}
 								required
 								error={!!titleError}
 								helperText={titleError || ""}
+								className="dark:bg-gray-700 dark:rounded"
+								InputLabelProps={{
+									className: "dark:text-gray-300"
+								}}
 							/>
 							{!titleError && (
 								<div className="flex justify-end mt-1">
@@ -299,6 +260,7 @@ const CreatePostModal: React.FC = () => {
 												? "error"
 												: "green"
 										}
+										className={titleCharsLeft < 1 ? "text-red-500" : "text-green-500 dark:text-green-400"}
 									>
 										{titleCharsLeft} characters left
 									</Typography>
@@ -320,12 +282,16 @@ const CreatePostModal: React.FC = () => {
 									htmlInput: {
 										maxLength: BODY_MAX_LENGTH,
 										dir: "auto",
-										className: "text-md",
+										className: "text-md dark:text-white",
 									},
 								}}
 								required
 								error={!!bodyError}
 								helperText={bodyError || ""}
+								className="dark:bg-gray-700 dark:rounded"
+								InputLabelProps={{
+									className: "dark:text-gray-300"
+								}}
 							/>
 							{!bodyError && (
 								<div className="flex justify-end mt-1">
@@ -336,6 +302,7 @@ const CreatePostModal: React.FC = () => {
 												? "error"
 												: "green"
 										}
+										className={bodyCharsLeft < 1 ? "text-red-500" : "text-green-500 dark:text-green-400"}
 									>
 										{bodyCharsLeft} characters left
 									</Typography>
@@ -345,14 +312,15 @@ const CreatePostModal: React.FC = () => {
 
 						{/* Media Upload Section */}
 						<div className="w-full">
-							<Box className="border border-gray-300 rounded p-3 mt-2">
+							<Box className="border border-gray-300 dark:border-gray-600 rounded p-3 mt-2">
 								<Box className="flex items-center justify-between">
-									<Typography variant="body2">
+									<Typography variant="body2" className="dark:text-gray-200">
 										Add to your question
 									</Typography>
 									<Typography
 										variant="caption"
 										color="textSecondary"
+										className="dark:text-gray-400"
 									>
 										You can upload up to 3 images or videos
 									</Typography>
@@ -369,6 +337,7 @@ const CreatePostModal: React.FC = () => {
 														?.click()
 												}
 												size="small"
+												className="dark:text-blue-400"
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -391,6 +360,7 @@ const CreatePostModal: React.FC = () => {
 														?.click()
 												}
 												size="small"
+												className="dark:text-blue-400"
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -429,12 +399,14 @@ const CreatePostModal: React.FC = () => {
 							"&:hover": { backgroundColor: "#0e1c3b" },
 							py: 1.5,
 						}}
+						className="dark:bg-blue-700 dark:hover:bg-blue-800"
 					>
 						Publish Your Question
 					</Button>
 				</div>
 			</Modal>
 		</>
+
 	);
 };
 
