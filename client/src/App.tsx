@@ -115,12 +115,12 @@ function AppContent() {
 	// });
 
 	return (
-		<ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 			<div className="fixed top-0 left-0 right-0 z-50">
 				<NavBar />
 			</div>
 
-			<div className="pt-16">
+			<div className="pt-16 dark:bg-gray-900 bg-gray-100 min-h-screen">
 				<Toaster />
 				<Outlet /> {/* Renders the current route's element */}
 			</div>
