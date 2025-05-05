@@ -20,12 +20,12 @@ This document outlines the security, configuration, and maintenance decisions ma
 
 ---
 
-## **3. Firewall & Network Rules**
+## **2. Firewall & Network Rules**
 * **Fail2Ban**: Installed and configured to ban IPs after repeated failed login attempts.
 
 ---
 
-## **4. Malware & Rootkit Scanning**
+## **3. Malware & Rootkit Scanning**
 
 * **ClamAV**: Installed ClamAV for antivirus protection to scan for potential malware.
 * **rkhunter & chkrootkit**: Both rootkit scanners were installed and configured to check the system for known rootkits and trojans.
@@ -35,7 +35,7 @@ This document outlines the security, configuration, and maintenance decisions ma
 
 ---
 
-## **7. Final Notes**
+## **4. Final Notes**
 
 * **Threat Model Awareness**: This VPS is assumed to be accessible from the public internet and is treated as hostile territory.
 * **Zero Trust Mindset**: No internal process or IP is inherently trusted.
