@@ -1,7 +1,3 @@
-Great! Based on your updates, here's a revised version of your VPS Configuration Manifesto with the new information integrated:
-
----
-
 # **VPS Configuration Manifesto**
 
 *Last updated: 5-5-2025
