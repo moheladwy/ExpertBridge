@@ -5,18 +5,18 @@
  * email, and passwords. Provides a consistent UI matching the login page, with proper error
  * handling and user feedback through toast notifications.
  */
-import React, { JSX, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { auth } from "@/lib/firebase";
+import React, {JSX, useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {auth} from "@/lib/firebase";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
-import { useCreateUser } from "@/hooks/useCreateUser";
+import {useCreateUser} from "@/hooks/useCreateUser";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import LogoIcon from "@/assets/Logo-Icon/Logo-Icon.svg";
-import { z } from "zod";
-import { toast } from "sonner";
-import { Button } from "@/views/components/ui/button";
-import { Label } from "@/views/components/ui/label";
-import { Input } from "@/views/components/ui/input";
+import {z} from "zod";
+import {toast} from "sonner";
+import {Button} from "@/views/components/ui/button";
+import {Label} from "@/views/components/ui/label";
+import {Input} from "@/views/components/ui/input";
 
 /**
  * Zod schema for signup form validation
@@ -503,7 +503,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
                 {/* Sign-Up Button */}
                 <Button
                   type="submit"
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                   disabled={loading}
                 >
                   {createUserLoading ? "Signing Up..." : "Sign Up"}
@@ -521,11 +521,11 @@ const SignUpPage: React.FC = (): JSX.Element => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full border-gray-700 text-white hover:bg-gray-700"
+                className="w-full border-gray-700 text-black hover:text-white dark:hover:text-white dark:bg-white dark:hover:bg-gray-700 hover:bg-gray-700"
                 disabled={loading}
                 onClick={handleGoogleSignIn}
               >
-                <div className="flex items-center text-black">
+                <div className="flex items-center">
                   <img src={GoogleLogo} alt="Google Logo" className="h-5 w-5 mr-2" />
                   {createUserLoading ? "Signing up with Google..." : "Continue with Google"}
                 </div>

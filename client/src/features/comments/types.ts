@@ -1,4 +1,4 @@
-import { PresignedUrl } from "../media/types";
+import { MediaObjectResponse, PresignedUrl } from "../media/types";
 import { Author } from "../users/types";
 
 export interface Comment {
@@ -13,6 +13,7 @@ export interface Comment {
   downvotes: number;
   isUpvoted: boolean;
   isDownvoted: boolean;
+  medias: MediaObjectResponse[];
   replies?: Comment[] | null; // Only one level of replies
 }
 
@@ -28,6 +29,7 @@ export interface CommentResponse {
   downvotes: number;
   isUpvoted: boolean;
   isDownvoted: boolean;
+  medias: MediaObjectResponse[];
   replies?: CommentResponse[] | null; // Only one level of replies
 }
 
@@ -42,4 +44,19 @@ export interface AddReplyRequest {
   content: string;
   postId: string;
   parentCommentId: string;
+}
+
+export interface DeleteCommentRequest {
+  commentId: string;
+  postId: string;
+  authorId: string;
+  parentCommentId?: string | null;
+}
+
+export interface UpdateCommentRequest {
+  commentId: string;
+  content: string;
+  authorId: string;
+  parentCommentId?: string | null;
+  postId: string;
 }

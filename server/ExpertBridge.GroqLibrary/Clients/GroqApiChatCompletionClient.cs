@@ -16,7 +16,7 @@ namespace ExpertBridge.GroqLibrary.Clients;
 ///     via an API key provided during initialization. Ensure any HttpClient provided is properly
 ///     configured for network communication with the Groq API.
 /// </remarks>
-public sealed class GroqApiChatCompletionClient : IDisposable
+public sealed class GroqApiChatCompletionClient
 {
     /// <summary>The HTTP client used for making API requests.</summary>
     private readonly HttpClient _httpClient;
@@ -28,15 +28,6 @@ public sealed class GroqApiChatCompletionClient : IDisposable
     public GroqApiChatCompletionClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
-    }
-
-    /// <summary>
-    ///     Releases the resources used by the GroqApiChatCompletionClient instance, including the underlying HttpClient.
-    /// </summary>
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-        GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -66,6 +57,7 @@ public sealed class GroqApiChatCompletionClient : IDisposable
     /// <exception cref="HttpRequestException">Thrown when the API request fails.</exception>
     public async IAsyncEnumerable<JsonObject?> CreateChatCompletionStreamAsync(JsonObject request)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
         request["stream"] = true;
         var content = new StringContent(request.ToJsonString(), Encoding.UTF8, "application/json");
         using var requestMessage =
@@ -73,7 +65,6 @@ public sealed class GroqApiChatCompletionClient : IDisposable
             {
                 Content = content
             };
-        // using var response1 = await _httpClient.PostAsJsonAsync(GroqApiEndpoints.ChatCompletionsEndpoint, content);
         using var response = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         using var stream = await response.Content.ReadAsStreamAsync();

@@ -16,6 +16,7 @@ namespace ExpertBridge.Api.Queries
                 .Where(c => c.ParentCommentId == null)
                 .Include(c => c.Votes)
                 .Include(c => c.Author)
+                .Include(c => c.Medias)
                 .Include(c => c.Replies)
                 .ThenInclude(r => r.Author)
                 ;
@@ -58,6 +59,7 @@ namespace ExpertBridge.Api.Queries
                 IsUpvoted = c.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
                 IsDownvoted = c.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
                 CreatedAt = c.CreatedAt.Value,
+                Medias = c.Medias.AsQueryable().SelectMediaObjectResponse().ToList(),
                 Replies = c.Replies
                             .AsQueryable()
                             .OrderBy(c => c.CreatedAt)

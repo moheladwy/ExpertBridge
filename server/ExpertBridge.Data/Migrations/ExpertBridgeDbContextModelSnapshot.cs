@@ -165,6 +165,9 @@ namespace ExpertBridge.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsProcessed")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("LastModified")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
@@ -179,6 +182,8 @@ namespace ExpertBridge.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("IsProcessed");
 
                     b.HasIndex("ParentCommentId");
 
@@ -550,8 +555,7 @@ namespace ExpertBridge.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId")
-                        .IsUnique();
+                    b.HasIndex("CommentId");
 
                     b.HasIndex("Key")
                         .IsUnique();
@@ -784,6 +788,79 @@ namespace ExpertBridge.Data.Migrations
                     b.ToTable("ProfileMedias");
                 });
 
+            modelBuilder.Entity("ExpertBridge.Core.Entities.ModerationReports.ModerationReport", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContentId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("IdentityAttack")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Insult")
+                        .HasColumnType("double precision");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsNegative")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsResolved")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("Obscene")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("SevereToxicity")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("SexualExplicit")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Threat")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Toxicity")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentId");
+
+                    b.HasIndex("IsNegative");
+
+                    b.HasIndex("IsNegative", "ContentId");
+
+                    b.ToTable("ModerationReports");
+                });
+
             modelBuilder.Entity("ExpertBridge.Core.Entities.PostVotes.PostVote", b =>
                 {
                     b.Property<string>("Id")
@@ -869,6 +946,10 @@ namespace ExpertBridge.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("IsProcessed");
+
+                    b.HasIndex("IsTagged");
 
                     b.HasIndex("Title");
 
@@ -1036,7 +1117,6 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("ArabicName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -1391,8 +1471,8 @@ namespace ExpertBridge.Data.Migrations
             modelBuilder.Entity("ExpertBridge.Core.Entities.Media.CommentMedia.CommentMedia", b =>
                 {
                     b.HasOne("ExpertBridge.Core.Entities.Comments.Comment", "Comment")
-                        .WithOne("Media")
-                        .HasForeignKey("ExpertBridge.Core.Entities.Media.CommentMedia.CommentMedia", "CommentId")
+                        .WithMany("Medias")
+                        .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Comment");
@@ -1509,8 +1589,7 @@ namespace ExpertBridge.Data.Migrations
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.Comments.Comment", b =>
                 {
-                    b.Navigation("Media")
-                        .IsRequired();
+                    b.Navigation("Medias");
 
                     b.Navigation("Replies");
 

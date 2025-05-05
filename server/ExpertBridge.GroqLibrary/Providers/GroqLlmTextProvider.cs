@@ -9,10 +9,9 @@ namespace ExpertBridge.GroqLibrary.Providers;
 
 /// <summary>
 ///     Provides integration with Groq LLM (Large Language Model) API for text generation.
-///     Implements <see cref="ILlmProvider" /> interface for consistent LLM operations
-///     and <see cref="IDisposable" /> for proper resource cleanup.
+///     Implements <see cref="ILlmTextProvider" /> interface for consistent LLM operations.
 /// </summary>
-public sealed class GroqLlmTextProvider : ILlmProvider, IDisposable
+public sealed class GroqLlmTextProvider : ILlmTextProvider
 {
     private readonly GroqApiChatCompletionClient _client;
     private readonly string _model;
@@ -28,9 +27,6 @@ public sealed class GroqLlmTextProvider : ILlmProvider, IDisposable
         _client = groqApiChatCompletionClient;
         _model = GroqTextModels.LLAMA3_70B_8192;
     }
-
-    /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-    public void Dispose() => _client.Dispose();
 
     /// <summary>
     ///     Generates text based on the provided user prompt using the configured LLM model.
@@ -71,6 +67,13 @@ public sealed class GroqLlmTextProvider : ILlmProvider, IDisposable
         };
 
         var response = await _client.CreateChatCompletionAsync(request);
-        return response?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
+        var result =  response?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
+
+        var start = result.IndexOf('{', StringComparison.Ordinal);
+        var end = result.LastIndexOf('}');
+
+        return result
+            .Substring(start, end - start + 1)
+            .TrimEnd('`', '\n', '\r', ',');
     }
 }

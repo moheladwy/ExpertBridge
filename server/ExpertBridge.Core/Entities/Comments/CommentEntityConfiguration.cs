@@ -17,6 +17,8 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
             .IsRequired()
             .HasMaxLength(CommentEntityConstraints.MaxContentLength);
 
+        builder.HasIndex(x => x.IsProcessed);
+
         builder.Property(x => x.CreatedAt)
             .IsRequired()
             .ValueGeneratedOnAdd();
@@ -59,9 +61,9 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
             .OnDelete(DeleteBehavior.Cascade);
 
         // Configure one-to-one relationship with CommentMedia
-        builder.HasOne(c => c.Media)
+        builder.HasMany(c => c.Medias)
             .WithOne(m => m.Comment)
-            .HasForeignKey<CommentMedia>(m => m.CommentId)
+            .HasForeignKey(m => m.CommentId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade)
             ;

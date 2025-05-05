@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 
+using System.Text;
 using System.Threading.Channels;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Extensions;
@@ -13,6 +14,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
@@ -46,18 +48,19 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
                         var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
 
-                        var userInterests = await dbContext.UserInterests
+                        var userInterests = dbContext.UserInterests
                             .AsNoTracking()
                             .Include(ui => ui.Tag)
                             .Where(ui => ui.ProfileId == message.UserProfileId)
-                            .ToListAsync(stoppingToken);
+                            .Select(ui => $"{ui.Tag.EnglishName} {ui.Tag.ArabicName} ");
 
-                        var text = userInterests.Aggregate(
-                            string.Empty, (current, userInterest) =>
-                                $"{current} {userInterest.Tag.ArabicName} {userInterest.Tag.ArabicName}"
-                        );
+                        var text = new StringBuilder();
+                        foreach (var userInterest in userInterests)
+                        {
+                            text.Append(userInterest);
+                        }
 
-                        var embedding = await embeddingService.GenerateEmbedding(text);
+                        var embedding = await embeddingService.GenerateEmbedding(text.ToString());
 
                         if (embedding is null)
                         {
@@ -66,7 +69,6 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         }
 
                         var user = await dbContext.Profiles
-                            .AsNoTracking()
                             .FirstOrDefaultAsync(p => p.Id == message.UserProfileId, stoppingToken);
 
                         if (user is not null)
@@ -77,20 +79,29 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"An error occurred while processing " +
-                            $"message with user profile id={message.UserProfileId}.");
+                        // _logger.LogError(ex, $"An error occurred while processing " +
+                        //     $"message with user profile id={message.UserProfileId}.");
+                        Log.Error(ex,
+                            "An error occurred while processing message with user profile id={userProfileId}.",
+                            message.UserProfileId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    @$"{nameof(UserInterestsUpdatedHandlerWorker)} ran into unexpected error: 
-                    An error occurred while reading from the channel.");
+                // _logger.LogError(ex,
+                //     @$"{nameof(UserInterestsUpdatedHandlerWorker)} ran into unexpected error:
+                //     An error occurred while reading from the channel.");
+                Log.Error(ex,
+                    "An error occurred while reading from the channel in " +
+                    "{nameof(UserInterestsUpdatedHandlerWorker)}.",
+                    nameof(UserInterestsUpdatedHandlerWorker));
             }
             finally
             {
-                _logger.LogInformation($"Terminating {nameof(UserInterestsUpdatedHandlerWorker)}.");
+                // _logger.LogInformation($"Terminating {nameof(UserInterestsUpdatedHandlerWorker)}.");
+                Log.Information("Terminating {nameof(UserInterestsUpdatedHandlerWorker)}.",
+                    nameof(UserInterestsUpdatedHandlerWorker));
             }
         }
     }

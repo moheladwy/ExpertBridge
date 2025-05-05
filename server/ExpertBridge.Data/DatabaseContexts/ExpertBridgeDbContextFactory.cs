@@ -23,6 +23,10 @@ public class ExpertBridgeDbContextFactory : IDesignTimeDbContextFactory<ExpertBr
         optionsBuilder.UseNpgsql(connectionString, o =>
         {
             o.UseVector();
+            o.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(60),
+                errorCodesToAdd: null);
         });
         return new ExpertBridgeDbContext(optionsBuilder.Options);
     }

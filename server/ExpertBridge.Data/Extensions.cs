@@ -27,6 +27,10 @@ public static class Extensions
             options.UseNpgsql(connectionString, o =>
             {
                 o.UseVector();
+                o.EnableRetryOnFailure(
+                    maxRetryCount: 10,
+                    maxRetryDelay: TimeSpan.FromSeconds(60),
+                    errorCodesToAdd: null);
             });
             options.AddInterceptors(new SoftDeleteInterceptor());
         });

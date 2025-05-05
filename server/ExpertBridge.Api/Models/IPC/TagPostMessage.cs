@@ -3,7 +3,7 @@
 
 namespace ExpertBridge.Api.Models.IPC
 {
-    public class PostCreatedMessage
+    public class TagPostMessage
     {
         public string PostId { get; set; }
 

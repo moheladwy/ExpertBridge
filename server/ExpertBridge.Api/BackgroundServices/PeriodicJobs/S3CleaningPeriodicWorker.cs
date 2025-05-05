@@ -5,16 +5,17 @@ using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
-    public class S3CleaningWorker : BackgroundService
+    public class S3CleaningPeriodicWorker : BackgroundService
     {
-        private readonly ILogger<S3CleaningWorker> _logger;
+        private readonly ILogger<S3CleaningPeriodicWorker> _logger;
         private readonly IServiceProvider _services;
 
-        public S3CleaningWorker(
-            ILogger<S3CleaningWorker> logger,
+        public S3CleaningPeriodicWorker(
+            ILogger<S3CleaningPeriodicWorker> logger,
             IServiceProvider services)
         {
             _logger = logger;
@@ -23,13 +24,17 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            // This delay to break the synchronization with the start of each Priodic Worker's period.
+            await Task.Delay(TimeSpan.FromHours(12), stoppingToken);
+
             var period = 60 * 60 * 24 * 2; // 2 days;
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
             while (!stoppingToken.IsCancellationRequested
                     && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                _logger.LogInformation("S3 Cleaning Service Started...");
+                // _logger.LogInformation("S3 Cleaning Service Started...");
+                Log.Information("S3 Cleaning Service Started...");
 
                 try
                 {
@@ -150,12 +155,16 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        $"Failed to execute S3 Cleaning Service with exception message {ex.Message}."
-                        );
+                    // _logger.LogError(ex,
+                    //     $"Failed to execute S3 Cleaning Service with exception message {ex.Message}."
+                    //     );
+                    Log.Error(ex,
+                        "Failed to execute S3 Cleaning Service with exception message {ex.Message}.",
+                        ex.Message);
                 }
 
-                _logger.LogInformation("S3 Cleaning Service Finished.");
+                // _logger.LogInformation("S3 Cleaning Service Finished.");
+                Log.Information("S3 Cleaning Service Finished.");
             }
         }
     }

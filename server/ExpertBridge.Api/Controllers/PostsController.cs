@@ -85,7 +85,8 @@ public class PostsController : ControllerBase
     [HttpGet]
     public async Task<List<PostResponse>> GetAll()
     {
-        Log.Information($"User from HTTP Context: {HttpContext.User.FindFirstValue(ClaimTypes.Email)}");
+        Log.Information("User from HTTP Context: {FindFirstValue}",
+            HttpContext.User.FindFirstValue(ClaimTypes.Email));
 
         var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile?.Id ?? string.Empty;
@@ -136,7 +137,7 @@ public class PostsController : ControllerBase
     [HttpPost]
     public async Task<PostResponse> Create(
         [FromBody] CreatePostRequest request,
-        [FromServices] Channel<PostCreatedMessage> _channel)
+        [FromServices] Channel<PostProcessingPipelineMessage> _channel)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         var user = await _authHelper.GetCurrentUserAsync();
@@ -194,7 +195,8 @@ public class PostsController : ControllerBase
         try
         {
             await _dbContext.SaveChangesAsync();
-            await _channel.Writer.WriteAsync(new PostCreatedMessage
+
+            await _channel.Writer.WriteAsync(new PostProcessingPipelineMessage
             {
                AuthorId = userProfileId,
                Content = post.Content,

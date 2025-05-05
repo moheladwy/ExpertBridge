@@ -1,9 +1,14 @@
+using System.Linq;
+using System.Threading.Channels;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.Media.CommentMedia;
+using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Requests.CreateComment;
 using ExpertBridge.Core.Requests.EditComment;
 using ExpertBridge.Core.Responses;
@@ -25,7 +30,9 @@ public class CommentsController(
 {
     [Route("/api/[controller]")]
     [HttpPost]
-    public async Task<CommentResponse> Create([FromBody] CreateCommentRequest request)
+    public async Task<CommentResponse> Create(
+        [FromBody] CreateCommentRequest request,
+        [FromServices] Channel<DetectInappropriateCommentMessage> _channel)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
@@ -69,7 +76,45 @@ public class CommentsController(
         };
 
         await _dbContext.Comments.AddAsync(comment);
+
+        if (request.Media?.Count > 0)
+        {
+            var commentMedia = new List<CommentMedia>();
+            foreach (var media in request.Media)
+            {
+                commentMedia.Add(new CommentMedia
+                {
+                    Comment = comment,
+                    Name = comment.Content.Trim(),
+                    Type = media.Type,
+                    Key = media.Key,
+                });
+
+            }
+
+            await _dbContext.CommentMedias.AddRangeAsync(commentMedia);
+            comment.Medias = commentMedia;
+
+            var keys = commentMedia.Select(m => m.Key);
+            var grants = _dbContext.MediaGrants
+                .Where(grant => keys.Contains(grant.Key));
+
+            foreach (var grant in grants)
+            {
+                grant.IsActive = true;
+                grant.OnHold = false;
+                grant.ActivatedAt = DateTime.UtcNow;
+            }
+        }
+
         await _dbContext.SaveChangesAsync();
+
+        await _channel.Writer.WriteAsync(new DetectInappropriateCommentMessage
+        {
+            CommentId = comment.Id,
+            Content = comment.Content,
+            AuthorId = comment.AuthorId,
+        });
 
         return comment.SelectCommentResponseFromFullComment(profile.Id);
     }

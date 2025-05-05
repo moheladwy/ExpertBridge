@@ -1,6 +1,16 @@
 services:
   expertbridge.api:
-    image: expertbridge.api
+    image: expertbridge-api:dev
+    container_name: expertbridge-api
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "5027:8080"
+
+  expertbridge.admin:
+    image: expertbridge.admin
+    build:
+      context: .
+      dockerfile: ExpertBridge.Admin/Dockerfile
+

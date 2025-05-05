@@ -5,6 +5,11 @@ using ExpertBridge.Api.Settings.Serilog;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Data;
 using ExpertBridge.GroqLibrary.Settings;
+using Polly;
+using Polly.Retry;
+using Polly.Timeout;
+using System.Text.Json;
+using Serilog;
 
 namespace ExpertBridge.Api.Extensions
 {
@@ -41,7 +46,6 @@ namespace ExpertBridge.Api.Extensions
             builder.AddEmbeddingServices();
             builder.AddRefitHttpClients();
             builder
-                .AddGroqHttpClient()
                 .AddGroqApiServices()
                 ;
 
@@ -50,6 +54,34 @@ namespace ExpertBridge.Api.Extensions
             builder.AddBackgroundWorkers();
 
             builder.Services.AddServices();
+
+            builder.Services.AddResiliencePipeline(ResiliencePipelines.MalformedJsonModelResponse, static builder =>
+            {
+                // See: https://www.pollydocs.org/strategies/retry.html
+                builder.AddRetry(new RetryStrategyOptions
+                {
+                    ShouldHandle = new PredicateBuilder().Handle<JsonException>(),
+                    MaxRetryAttempts = 5,
+                    Delay = TimeSpan.FromSeconds(2),
+                    BackoffType = DelayBackoffType.Exponential,
+                    UseJitter = true,
+                    OnRetry = context =>
+                    {
+                        // Log the retry attempt
+                        Log.Information("Retrying due to a malformed json in model response. Attempt");
+                        return ValueTask.CompletedTask;
+                    }
+                });
+
+                // See: https://www.pollydocs.org/strategies/timeout.html
+                builder.AddTimeout(TimeSpan.FromSeconds(90));
+            });
+
+
+
+            var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
+            if (!Directory.Exists(logDirectory))
+                Directory.CreateDirectory(logDirectory);
 
             return builder;
         }
@@ -62,25 +94,28 @@ namespace ExpertBridge.Api.Extensions
         private static WebApplicationBuilder ConfigureExpertBridgeSettings(this WebApplicationBuilder builder)
         {
             builder.Services.Configure<ConnectionStrings>(
-                builder.Configuration.GetSection("ConnectionStrings"));
+                builder.Configuration.GetSection(ConnectionStrings.Section));
 
             builder.Services.Configure<FirebaseSettings>(
-                builder.Configuration.GetSection("Firebase"));
+                builder.Configuration.GetSection(FirebaseSettings.Section));
 
             builder.Services.Configure<FirebaseAuthSettings>(
-                builder.Configuration.GetSection("Authentication:Firebase"));
+                builder.Configuration.GetSection(FirebaseAuthSettings.Section));
 
             builder.Services.Configure<AwsSettings>(
-                builder.Configuration.GetSection("AwsS3"));
+                builder.Configuration.GetSection(AwsSettings.Section));
 
             builder.Services.Configure<AiSettings>(
-                builder.Configuration.GetSection("AI"));
+                builder.Configuration.GetSection(AiSettings.Section));
 
             builder.Services.Configure<SerilogSettings>(
-                builder.Configuration.GetSection("Serilog"));
+                builder.Configuration.GetSection(SerilogSettings.Section));
 
             builder.Services.Configure<ExpertBridgeRateLimitSettings>(
                 builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
+
+            builder.Services.Configure<InappropriateLanguageThresholds>(
+                builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));
 
             builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 

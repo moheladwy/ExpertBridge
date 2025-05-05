@@ -9,29 +9,26 @@ using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Data.DatabaseContexts;
+using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
     /// <summary>
     /// Handles the creation of posts and categorizes them using a remote service.
-    /// Responsible for every operation needs to take place when a post is created.
     /// </summary>
-    public class PostCreatedHandlerWorker : BackgroundService
+    public class PostTaggingHandlerWorker : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ChannelWriter<EmbedPostMessage> _embedPostChannel;
-        private readonly ChannelReader<PostCreatedMessage> _postCreatedChannel;
-        private readonly ILogger<PostCreatedHandlerWorker> _logger;
+        private readonly ChannelReader<TagPostMessage> _tagPostChannel;
+        private readonly ILogger<PostTaggingHandlerWorker> _logger;
 
-        public PostCreatedHandlerWorker(
+        public PostTaggingHandlerWorker(
             IServiceProvider services,
-            Channel<PostCreatedMessage> postCreatedChannel,
-            Channel<EmbedPostMessage> embedPostChannel,
-            ILogger<PostCreatedHandlerWorker> logger)
+            Channel<TagPostMessage> tagPostChannel,
+            ILogger<PostTaggingHandlerWorker> logger)
         {
             _services = services;
-            _embedPostChannel = embedPostChannel.Writer;
-            _postCreatedChannel = postCreatedChannel.Reader;
+            _tagPostChannel = tagPostChannel.Reader;
             _logger = logger;
         }
 
@@ -39,19 +36,12 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
         {
             try
             {
-                while (await _postCreatedChannel.WaitToReadAsync(stoppingToken))
+                while (await _tagPostChannel.WaitToReadAsync(stoppingToken))
                 {
-                    var post = await _postCreatedChannel.ReadAsync(stoppingToken);
+                    var post = await _tagPostChannel.ReadAsync(stoppingToken);
 
                     try
                     {
-                        await _embedPostChannel.WriteAsync(new EmbedPostMessage
-                        {
-                            PostId = post.PostId,
-                            Title = post.Title,
-                            Content = post.Content,
-                        }, stoppingToken);
-
                         using var scope = _services.CreateScope();
                         //var client = scope.ServiceProvider.GetRequiredService<IPostCategroizerClient>();
 
@@ -81,19 +71,27 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, $"An error occurred while processing post with id={post.PostId}.");
+                        // _logger.LogError(ex, $"An error occurred while processing post with id={post.PostId}.");
+                        Log.Error(ex,
+                            "An error occurred while processing post with id={post.PostId}.",
+                            post.PostId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    @$"{nameof(PostCreatedHandlerWorker)} ran into unexpected error: 
-                    An error occurred while reading from the channel.");
+                // _logger.LogError(ex,
+                //     @$"{nameof(PostCreatedHandlerWorker)} ran into unexpected error:
+                //     An error occurred while reading from the channel.");
+                Log.Error(ex,
+                    "An error occurred while reading from the channel in {0}.",
+                    nameof(PostTaggingHandlerWorker));
             }
             finally
             {
-                _logger.LogInformation($"Terminating {nameof(PostCreatedHandlerWorker)}.");
+                // _logger.LogInformation($"Terminating {nameof(PostCreatedHandlerWorker)}.");
+                Log.Information("Terminating {0}.",
+                    nameof(PostTaggingHandlerWorker));
             }
         }
     }

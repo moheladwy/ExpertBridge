@@ -81,7 +81,10 @@ public sealed class S3Service
             Key = Guid.NewGuid().ToString(),
             Expires = DateTime.UtcNow.AddMinutes(60),
             Verb = HttpVerb.PUT,
-            Headers = { ["Cache-Control"] = _awsSettings.CacheControl }
+            Headers =
+            {
+                ["Cache-Control"] = _awsSettings.CacheControl
+            },
         };
 
         request.Metadata.Add("file-name", file.Name);
@@ -94,7 +97,8 @@ public sealed class S3Service
 
         var response = new PresignedUrlResponse
         {
-            Url = await _s3Client.GetPreSignedURLAsync(request), Key = request.Key
+            Url = await _s3Client.GetPreSignedURLAsync(request),
+            Key = request.Key
         };
 
         return response;
@@ -119,7 +123,11 @@ public sealed class S3Service
             BucketName = _awsSettings.BucketName, Key = key, Expires = DateTime.UtcNow.AddMinutes(60)
         };
 
-        var response = new PresignedUrlResponse { Url = await _s3Client.GetPreSignedURLAsync(request), Key = key };
+        var response = new PresignedUrlResponse
+        {
+            Url = await _s3Client.GetPreSignedURLAsync(request),
+            Key = key
+        };
 
         return response;
     }

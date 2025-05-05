@@ -20,6 +20,8 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .HasMaxLength(PostEntityConstraints.MaxTitleLength);
 
         builder.HasIndex(x => x.Title);
+        builder.HasIndex(x => x.IsProcessed);
+        builder.HasIndex(x => x.IsTagged);
 
         builder.Property(x => x.Content)
             .IsRequired()

@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
     <PackageReference Include="Microsoft.Extensions.AI" />
     <PackageReference Include="Microsoft.Extensions.AI.Ollama" />
+    <PackageReference Include="Microsoft.Extensions.Resilience" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />
@@ -32,6 +33,10 @@
     <PackageReference Include="Refit" />
     <PackageReference Include="Refit.HttpClientFactory" />
     <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Enrichers.Environment" />
+    <PackageReference Include="Serilog.Enrichers.Process" />
+    <PackageReference Include="Serilog.Enrichers.Thread" />
+    <PackageReference Include="Serilog.Sinks.File" />
     <PackageReference Include="Serilog.Sinks.Seq" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="AWSSDK.S3" />
@@ -48,6 +53,10 @@
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
     <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>
