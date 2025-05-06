@@ -23,6 +23,7 @@ using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
 using ExpertBridge.Core.Entities.Media.ProfileMedia;
 using ExpertBridge.Core.Entities.ModerationReports;
+using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Entities.ProfileExperiences;
@@ -75,6 +76,7 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<PostMedia> PostMedias { get; set; }
     public DbSet<MediaGrant> MediaGrants { get; set; }
     public DbSet<ModerationReport> ModerationReports { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
 
     /// <summary>
@@ -130,6 +132,7 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ProfileExperienceMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new MediaGrantEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ModerationReportEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
     }
 
     // Event handlers
