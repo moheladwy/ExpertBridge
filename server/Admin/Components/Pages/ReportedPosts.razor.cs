@@ -3,7 +3,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Admin.Components.Pages;
+namespace Admin.Components.Pages;
 
 public sealed partial class ReportedPosts : ComponentBase
 {
@@ -26,6 +26,7 @@ public sealed partial class ReportedPosts : ComponentBase
     {
         var posts = await _dbContext.Posts
             .AsNoTracking()
+            .IgnoreQueryFilters()
             .Where(p => p.IsDeleted)
             .Include(p => p.Author)
             .Include(p => p.Comments)

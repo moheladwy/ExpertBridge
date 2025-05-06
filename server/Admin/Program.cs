@@ -1,5 +1,6 @@
-using ExpertBridge.Admin.Components;
+using Admin.Components;
 using ExpertBridge.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatabase(builder.Configuration);

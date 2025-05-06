@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ExpertBridge.Admin\ExpertBridge.Admin.csproj" />
+      <ProjectReference Include="..\Admin\Admin.csproj" />
       <ProjectReference Include="..\ExpertBridge.Api\ExpertBridge.Api.csproj" />
     </ItemGroup>
 

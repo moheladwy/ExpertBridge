@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Data", "Expert
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.GroqLibrary", "ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj", "{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Admin", "ExpertBridge.Admin\ExpertBridge.Admin.csproj", "{479CC770-2151-42A9-8D72-3B5653EC86C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admin", "Admin\Admin.csproj", "{479CC770-2151-42A9-8D72-3B5653EC86C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
