@@ -20,11 +20,12 @@ import {
 	CommandList,
 } from "@/views/components/custom/command";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
-import { Search } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
+import { useGetNotificationsQuery } from "@/features/notifications/notificationsSlice";
 import { ModeToggle } from "../theme/ToggleMode";
 
 const NavBar = () => {
@@ -36,6 +37,11 @@ const NavBar = () => {
 
 	const [isLoggedIn, loginLoading, loginError, authUser, userProfile] =
 		useIsUserLoggedIn();
+
+	const { data: notifications } = useGetNotificationsQuery(userProfile?.id ?? '');
+
+	// TODO: Refactor to the same model as the one used by RTK Query standard.
+	const hasNewNotifications = (notifications?.filter(n => n.isRead === false).length) ?? 0 > 0;
 
 	useEffect(() => {
 		if (userProfile) {
@@ -160,6 +166,19 @@ const NavBar = () => {
 								</CommandList>
 							</CommandDialog>
 
+							<Link
+								to="/notifications"
+								className="text-white hover:text-blue-300 relative"
+							>
+								<Bell className="w-6 h-6" />
+								{/* Optional: Red dot for unread indicator */}
+								{
+									hasNewNotifications
+										? <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+										: null
+								}
+							</Link>
+							
 							<ModeToggle />
 
 							{/* Profile Pic */}

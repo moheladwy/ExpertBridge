@@ -91,6 +91,18 @@ internal static class Startup
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             });
+
+            options.AddPolicy("SignalRClients", policy =>
+            {
+                policy.WithOrigins(
+                    "http://localhost:5173",
+                    "http://localhost:5174",
+                    "https://expert-bridge.netlify.app"
+                    )
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
         });
 
         return builder;

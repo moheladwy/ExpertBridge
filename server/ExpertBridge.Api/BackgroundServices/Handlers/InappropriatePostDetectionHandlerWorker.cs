@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using System.Threading.Channels;
 using Serilog;
 using ExpertBridge.Core.Entities.ModerationReports;
+using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {

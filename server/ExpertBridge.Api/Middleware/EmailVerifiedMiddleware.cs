@@ -2,6 +2,7 @@
 
 using System.Security.Claims;
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.Middleware
 {

@@ -5,6 +5,7 @@ using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;

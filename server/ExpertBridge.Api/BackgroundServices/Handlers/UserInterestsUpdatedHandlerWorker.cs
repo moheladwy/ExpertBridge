@@ -12,6 +12,7 @@ using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
