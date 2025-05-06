@@ -115,7 +115,7 @@ const LoginPage: React.FC = () => {
       // console.log('user: ', user);
       if (!user) return;
       if (!user.user?.emailVerified) return;
-
+      
       navigate("/home");
       setFormData({ email: '', password: '' });
       setSuccess(false);

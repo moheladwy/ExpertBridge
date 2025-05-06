@@ -1,29 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { User } from "firebase/auth";
+import { ProfileResponse } from "../profiles/types";
 
 // export type AuthUser = User;
-export interface AuthUser {
-  uid: string;
-}
 
-const initialState: { authUser: AuthUser | undefined | null } = { authUser: null };
+const initialState: { currentUser: ProfileResponse | undefined | null } = { currentUser: null };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    saveAuthUser: (state, action: { payload: AuthUser | undefined | null }) => {
-      state.authUser = action.payload;
+    userLoggedIn: (state, action) => {
+      state.currentUser = action.payload.user;
+      // state.token = action.payload.token;
+
+      // localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+    },
+
+    // update the store
+    updateUser: (state, action) => {
+      state.currentUser = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload));
+    },
+    userLoggedOut: (state) => {
+      state.currentUser = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
-  selectors: {
-    selectAuthUser: (state) => state.authUser,
-  }
 });
 
-// Action creators are generated for each case reducer function
-export const { saveAuthUser } = authSlice.actions;
-
-export const { selectAuthUser } = authSlice.selectors;
+export const { userLoggedIn, userLoggedOut, updateUser } = authSlice.actions;
 
 export default authSlice.reducer;

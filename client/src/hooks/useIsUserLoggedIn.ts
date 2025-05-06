@@ -1,5 +1,4 @@
 import { useAppSelector } from "@/app/hooks";
-import { selectAuthUser } from "@/features/auth/authSlice";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { ProfileResponse } from "@/features/profiles/types";
 import { AppUser, UpdateUserRequest } from "@/features/users/types";
@@ -12,6 +11,7 @@ import { AuthError, User } from "firebase/auth";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCurrentAuthUser } from "./useCurrentAuthUser";
 import useSignOut from "@/lib/firebase/useSignOut";
+import useAuthCheck from "./useAuthCheck";
 
 export type IsLoggedInError =
 	| AuthError
@@ -29,6 +29,8 @@ export type IsUserLoggedInHook = [
 
 const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 	// const [authUser, authLoading, authError] = useAuthSubscribtion(auth);
+	const { currentUser } = useAppSelector(state => state.auth);
+
 	const authUser = useCurrentAuthUser();
 	const [signOut] = useSignOut(auth);
 
