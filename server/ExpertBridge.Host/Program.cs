@@ -1,5 +1,3 @@
-
-
 var builder = DistributedApplication.CreateBuilder(args);
 
 var redis = builder
@@ -24,6 +22,10 @@ builder.AddProject<Projects.ExpertBridge_Api>("ExpertBridgeApi")
     .WithReference(seq)
     .WaitFor(redis)
     .WaitFor(seq)
+    .WithOtlpExporter()
+    .WithExternalHttpEndpoints();
+
+builder.AddProject<Projects.ExpertBridge_Admin>("ExpertBridgeAdmin")
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 

@@ -2,7 +2,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import useSignOut from "@/lib/firebase/useSignOut";
 import RegisterBtn from "../../custom/RegisterBtn";
-import { Avatar } from "@/views/components/custom/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -24,13 +23,13 @@ import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import { Bell, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
-import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { useGetNotificationsQuery } from "@/features/notifications/notificationsSlice";
+import { ModeToggle } from "../theme/ToggleMode";
 
 const NavBar = () => {
 	useGetCurrentUserProfileQuery();
-
 
 	//to get the active location
 	const location = useLocation();
@@ -47,7 +46,7 @@ const NavBar = () => {
 	useEffect(() => {
 		if (userProfile) {
 			if (!userProfile.isOnboarded) {
-				navigate('/onboarding');
+				navigate("/onboarding");
 			}
 		}
 	}, [userProfile, navigate]);
@@ -58,7 +57,6 @@ const NavBar = () => {
 		await signOut();
 		console.log("Signed Out");
 		navigate("/login", { replace: true }); // Redirect to login page after signing out
-
 	}, [signOut, navigate]);
 
 	const [open, setOpen] = useState(false);
@@ -90,11 +88,10 @@ const NavBar = () => {
 					<b>Expert</b>Bridge
 				</h1>
 
-				<Link to="/home"
-					className={
-						`flex justify-center items-center ml-5 py-5 px-3 max-sm:hidden hover:bg-blue-950
-							${location.pathname === '/home' ? 'bg-blue-950' : ''}`
-					}
+				<Link
+					to="/home"
+					className={`flex justify-center items-center ml-5 py-5 px-3 max-sm:hidden hover:bg-blue-950
+							${location.pathname === "/home" ? "bg-blue-950" : ""}`}
 				>
 					<div className="text-white font-light max-sm:hidden">
 						Home
@@ -104,7 +101,10 @@ const NavBar = () => {
 				{isLoggedIn ? (
 					<>
 						{/* TO ADD THE REAL LINK LATER */}
-						<Link to="/jobs" className="flex justify-center items-center py-5 px-3 max-sm:hidden hover:bg-blue-950">
+						<Link
+							to="/jobs"
+							className="flex justify-center items-center py-5 px-3 max-sm:hidden hover:bg-blue-950"
+						>
 							<div className="text-white font-light max-sm:hidden">
 								Jobs
 							</div>
@@ -113,7 +113,10 @@ const NavBar = () => {
 				) : (
 					<>
 						{/* TO ADD THE REAL LINK LATER */}
-						<Link to="/AboutUs" className="flex justify-center items-center py-5 px-3 max-sm:hidden hover:bg-blue-950">
+						<Link
+							to="/AboutUs"
+							className="flex justify-center items-center py-5 px-3 max-sm:hidden hover:bg-blue-950"
+						>
 							<div className="text-white font-light max-sm:hidden">
 								About Us
 							</div>
@@ -175,13 +178,15 @@ const NavBar = () => {
 										: null
 								}
 							</Link>
+							
+							<ModeToggle />
 
 							{/* Profile Pic */}
 							<DropdownMenu>
 								<DropdownMenuTrigger>
 									{/* Profile Pic */}
 									<div className="flex justify-center items-center">
-										{userProfile?.profilePictureUrl ?
+										{userProfile?.profilePictureUrl ? (
 											<img
 												src={
 													userProfile.profilePictureUrl
@@ -190,7 +195,7 @@ const NavBar = () => {
 												height={45}
 												className="rounded-full"
 											/>
-											:
+										) : (
 											<img
 												src={defaultProfile}
 												alt="Profile Picture"
@@ -198,7 +203,7 @@ const NavBar = () => {
 												height={45}
 												className="rounded-full"
 											/>
-										}
+										)}
 									</div>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>

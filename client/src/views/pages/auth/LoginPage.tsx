@@ -4,22 +4,22 @@
  * Features form validation using Zod schema and provides feedback through toast notifications.
  * Redirects to home page upon successful login.
  */
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 import useSignInWithEmailAndPassword from "@/lib/firebase/EmailAuth/useSignInWithEmailAndPassword";
-import { auth } from "@/lib/firebase";
-import { useCreateUser } from "@/hooks/useCreateUser";
+import {auth} from "@/lib/firebase";
+import {useCreateUser} from "@/hooks/useCreateUser";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
-import { toast } from "sonner";
-import { Button } from "@/views/components/ui/button";
-import { Label } from "@/views/components/ui/label";
-import { Input } from "@/views/components/ui/input";
+import {toast} from "sonner";
+import {Button} from "@/views/components/ui/button";
+import {Label} from "@/views/components/ui/label";
+import {Input} from "@/views/components/ui/input";
 import LogoIcon from "@/assets/Logo-Icon/Logo-Icon.svg";
 import GoogleLogo from "@/assets/Login-SignupAssets/Google-Logo.svg";
-import { z } from "zod";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import {z} from "zod";
+import {EyeIcon, EyeOffIcon} from "lucide-react";
 import useSignOut from "@/lib/firebase/useSignOut";
-import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
+import {useCurrentAuthUser} from "@/hooks/useCurrentAuthUser";
 
 /**
  * Zod schema for login form validation
@@ -328,7 +328,7 @@ const LoginPage: React.FC = () => {
                 {/* Login Button */}
                 <Button
                   type="submit"
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                   disabled={loading}
                 >
                   {loginLoading ? "Logging in..." : "Login"}
@@ -346,7 +346,7 @@ const LoginPage: React.FC = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full border-gray-700 text-black hover:text-white hover:bg-gray-700"
+                className="w-full border-gray-700 text-black hover:text-white dark:bg-white dark:hover:bg-gray-700 hover:bg-gray-700"
                 disabled={loading}
                 onClick={handleGoogleSignIn}
               >

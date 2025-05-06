@@ -20,9 +20,9 @@ const Filters = () => {
         onChange={handleChange}
         aria-label="Platform"
       >
-        <ToggleButton value="Recent">Recent</ToggleButton>
-        <ToggleButton value="Most Upvoted">Most Upvoted</ToggleButton>
-        <ToggleButton value="Trending">Trending</ToggleButton>
+        <ToggleButton value="Recent" className="dark:text-white">Recent</ToggleButton>
+        <ToggleButton value="Most Upvoted" className="dark:text-white">Most Upvoted</ToggleButton>
+        <ToggleButton value="Trending" className="dark:text-white">Trending</ToggleButton>
       </ToggleButtonGroup>
     </>
   );
