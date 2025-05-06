@@ -34,7 +34,17 @@ namespace ExpertBridge.Api.Services
 
         public async Task NotifyNewCommentAsync(Comment comment)
         {
-
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = comment.Post.AuthorId,
+                Message = $"{comment.Author.FirstName} commented on your post: {comment.Content}",
+                ActionUrl = $"/posts/{comment.PostId}",
+                IconUrl = comment.Author.ProfilePictureUrl,
+                IconActionUrl = $"/profiles/{comment.AuthorId}",
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow,
+                Id = Guid.NewGuid().ToString(),
+            });
         }
 
         public async Task NotifyNewReplyAsync(Comment comment)

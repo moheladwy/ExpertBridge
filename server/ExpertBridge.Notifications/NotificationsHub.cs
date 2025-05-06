@@ -24,6 +24,11 @@ namespace ExpertBridge.Notifications
             await base.OnDisconnectedAsync(exception);
         }
 
-        public string ConnectionId => Context.ConnectionId;
+        // This is a remotely callable method from the client side.
+        // DO NOT TURN INTO A PROPERTY!
+        public string GetConnectionId()
+        {
+            return Context.ConnectionId;
+        }
     }
 }

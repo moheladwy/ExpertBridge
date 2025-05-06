@@ -70,7 +70,7 @@ if (app.Environment.IsProduction())
 app.UseRouting();
 app.UseRateLimiter();
 // app.UseRequestLocalization();
-app.UseCors("AllowAll");
+app.UseCors("SignalRClients");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -91,7 +91,7 @@ app.Use(async (context, next) =>
 });
 
 app.MapControllers();
-app.MapHub<NotificationsHub>("/notificationsHub");
+app.MapHub<NotificationsHub>("/api/notificationsHub");
 //app.MapHub<ChatHub>("/chatHub");
 app.MapPrometheusScrapingEndpoint();
 app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });

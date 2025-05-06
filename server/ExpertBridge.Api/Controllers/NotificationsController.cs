@@ -44,5 +44,27 @@ namespace ExpertBridge.Api.Controllers
 
             return notifications;
         }
+
+        [HttpPatch]
+        public async Task MarkAllRead()
+        {
+            var user = await _authHelper.GetCurrentUserAsync();
+
+            if (user == null || user.Profile == null)
+            {
+                throw new UnauthorizedException();
+            }
+
+            var notifications = await _dbContext.Notifications
+                .Where(n => n.RecipientId == user.Profile.Id && !n.IsRead)
+                .ToListAsync();
+
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
