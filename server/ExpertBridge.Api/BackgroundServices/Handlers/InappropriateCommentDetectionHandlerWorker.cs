@@ -9,6 +9,7 @@ using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

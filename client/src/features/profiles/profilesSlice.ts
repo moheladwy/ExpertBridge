@@ -1,4 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
+import { userLoggedIn } from "../auth/authSlice";
 import { OnboardUserRequest, ProfileResponse } from "./types";
 
 export const profilesApiSlice = apiSlice.injectEndpoints({
@@ -6,13 +7,18 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 		// Get current user profile (single profile response)
 		getCurrentUserProfile: builder.query<ProfileResponse, void>({
 			query: () => `/profiles`,
+			providesTags: ["CurrentUser"],
 			transformResponse: (response: ProfileResponse) => {
 				return response;
 			},
 			onQueryStarted: () => {
 				console.log('fetching user profile...');
 			},
-			providesTags: ["CurrentUser"],
+			onCacheEntryAdded: async (arg, lifecycleApi) => {
+				const { data: user } = await lifecycleApi.cacheDataLoaded;
+
+				lifecycleApi.dispatch(userLoggedIn({ currentUser: user }));
+			},
 		}),
 
 		// Get profile by ID (single profile response)

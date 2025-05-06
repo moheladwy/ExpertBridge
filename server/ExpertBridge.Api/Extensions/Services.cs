@@ -27,6 +27,7 @@ public static class Services
             .AddScoped<S3Service>()
             .AddScoped<TaggingService>()
             .AddScoped<ContentModerationService>()
+            .AddScoped<NotificationFacade>()
             ;
 
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
