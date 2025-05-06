@@ -1,0 +1,46 @@
+name: Build and Push API and Admin Docker Images
+
+on:
+    push:
+        branches: ["main"]
+        paths:
+            - "server/**"
+            - ".github/workflows/build-server-docker-image.yml"
+
+env:
+    API_IMAGE_NAME: expert-bridge-api
+    ADMIN_IMAGE_NAME: expert-bridge-admin
+    TAG: ${{ github.sha }}
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Login to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Build the API Docker image
+              run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.API_IMAGE_NAME}}:${{ env.TAG }} .
+              working-directory: ./server/Api
+
+            - name: Build the Admin Docker image
+              run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.ADMIN_IMAGE_NAME}}:${{ env.TAG }} .
+              working-directory: ./server/Admin
+
+            - name: Tag the API Docker image
+              run: |
+                  docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{env.API_IMAGE_NAME}}:${{ env.TAG }} ${{ secrets.DOCKERHUB_USERNAME }}/${{env.API_IMAGE_NAME}}:latest
+                  docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{env.ADMIN_IMAGE_NAME}}:${{ env.TAG }} ${{ secrets.DOCKERHUB_USERNAME }}/${{env.ADMIN_IMAGE_NAME}}:latest
+
+            - name: Push the Docker image
+              run: |
+                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{env.API_IMAGE_NAME}}:${{ env.TAG }}
+                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{env.ADMIN_IMAGE_NAME}}:${{ env.TAG }}
+                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{env.API_IMAGE_NAME}}:latest
+                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{env.ADMIN_IMAGE_NAME}}:latest
