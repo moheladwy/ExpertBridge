@@ -1,5 +1,5 @@
 using Admin.Components;
-using ExpertBridge.Data;
+using Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

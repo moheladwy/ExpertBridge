@@ -1,5 +1,5 @@
-using ExpertBridge.Core.Entities.Posts;
-using ExpertBridge.Data.DatabaseContexts;
+using Core.Entities.Posts;
+using Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 

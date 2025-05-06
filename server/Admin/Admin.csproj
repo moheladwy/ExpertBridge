@@ -6,14 +6,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+      <ProjectReference Include="..\Core\Core.csproj" />
+      <ProjectReference Include="..\Data\Data.csproj" />
+      <ProjectReference Include="..\Notifications\Notifications.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
-      <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

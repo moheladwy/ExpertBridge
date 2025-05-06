@@ -1,0 +1,23 @@
+﻿using Api.DataGenerator;
+using Data.DatabaseContexts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class FakerController(
+    ExpertBridgeDbContext _dbContext
+    )
+    : ControllerBase
+{
+    [HttpGet("generate")]
+    [AllowAnonymous]
+    public IActionResult Index()
+    {
+        Generator.SeedDatabase(_dbContext);
+
+        return Ok();
+    }
+}
