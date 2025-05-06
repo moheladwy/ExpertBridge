@@ -4,7 +4,7 @@ using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Queries;
 using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;

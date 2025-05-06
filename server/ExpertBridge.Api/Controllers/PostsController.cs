@@ -8,6 +8,7 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Responses;

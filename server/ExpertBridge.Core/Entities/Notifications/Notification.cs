@@ -13,7 +13,10 @@ namespace ExpertBridge.Core.Entities.Notifications
 
     public class Notification : BaseModel
     {
-        public string RecipientId { get; set; } // The profile ID of the recipient
+        /// <summary>
+        /// The profile ID of the recipient
+        /// </summary>
+        public string RecipientId { get; set; } 
         public string Message { get; set; }
         public bool IsRead { get; set; }
         public string? ActionUrl { get; set; }
