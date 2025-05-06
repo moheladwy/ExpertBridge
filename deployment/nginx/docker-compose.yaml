@@ -1,0 +1,25 @@
+services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    ports:
+      - '80:80'
+      - '4081:81'
+      - '443:443'
+    networks:
+      - shared
+      - nginx-proxy-manager
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
+networks:
+  nginx-proxy-manager:
+    name: nginx-proxy-manager
+    driver: bridge
+  shared:
+    name: shared
+    external: true
