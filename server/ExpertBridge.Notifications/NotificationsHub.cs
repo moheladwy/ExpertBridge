@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ExpertBridge.Notifications.Models;
+using Microsoft.AspNetCore.SignalR;
+
+namespace ExpertBridge.Notifications
+{
+    public interface INotificationClient
+    {
+        Task ReceiveNotification(Notification notification);
+    }
+
+    public class NotificationsHub : Hub<INotificationClient>
+    {
+        public override async Task OnConnectedAsync()
+        {
+            await base.OnConnectedAsync();
+        }
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            await base.OnDisconnectedAsync(exception);
+        }
+
+        public string ConnectionId => Context.ConnectionId;
+    }
+}

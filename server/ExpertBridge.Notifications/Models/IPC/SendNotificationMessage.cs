@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExpertBridge.Core.Entities.Notifications
+namespace ExpertBridge.Notifications.Models.IPC
 {
-    // This model is for representing the notification object
-    // used inside the context of this project (Notifications project).
-    // It should have the same shape as the NotificationResponse returned
-    // from the NotificationsController.
-
-    public class Notification : BaseModel
+    public class SendNotificationMessage
     {
+        public string NotificationId { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string RecipientId { get; set; } // The profile ID of the recipient
         public string Message { get; set; }
         public bool IsRead { get; set; }

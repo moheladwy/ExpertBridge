@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExpertBridge.Core.Entities.Notifications
+namespace ExpertBridge.Core.Responses
 {
-    // This model is for representing the notification object
-    // used inside the context of this project (Notifications project).
-    // It should have the same shape as the NotificationResponse returned
-    // from the NotificationsController.
-
-    public class Notification : BaseModel
+    public class NotificationResponse
     {
+        public string Id { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string RecipientId { get; set; } // The profile ID of the recipient
         public string Message { get; set; }
         public bool IsRead { get; set; }
