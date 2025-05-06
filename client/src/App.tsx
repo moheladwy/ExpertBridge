@@ -19,7 +19,7 @@ import useAuthCheck from "./hooks/useAuthCheck";
 
 function AppContent() {
 
-  useAuthCheck();
+  // useAuthCheck();
 
   const [updateUser] = useUpdateUserMutation();
   const authUser = useCurrentAuthUser();

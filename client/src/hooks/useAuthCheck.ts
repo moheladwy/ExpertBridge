@@ -8,16 +8,18 @@ const useAuthCheck = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const userJson = localStorage.getItem('user') ?? '';
+    const userJson = localStorage.getItem('user');
     // const token = localStorage.getItem("token");
     // const theme = localStorage.getItem("theme") || 'light';
-    const user = JSON.parse(userJson);
-    if (user) {
-      dispatch(
-        userLoggedIn({
-          currentUser: user,
-        })
-      );
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      if (user) {
+        dispatch(
+          userLoggedIn({
+            currentUser: user,
+          })
+        );
+      }
     }
 
     // set theme

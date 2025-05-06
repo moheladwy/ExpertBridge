@@ -1,5 +1,6 @@
 import { useAppDispatch } from '@/app/hooks';
 import { userLoggedOut } from '@/features/auth/authSlice';
+import { notificationsApiSlice } from '@/features/notifications/notificationsSlice';
 import { profilesApiSlice } from '@/features/profiles/profilesSlice';
 import { Auth, AuthError } from 'firebase/auth';
 import { useCallback, useState } from 'react';
@@ -22,6 +23,7 @@ export default (auth: Auth): SignOutHook => {
       await auth.signOut();
       dispatch(userLoggedOut());
       dispatch(profilesApiSlice.util.resetApiState());
+      dispatch(notificationsApiSlice.util.resetApiState());
       return true;
     } catch (err) {
       setError(err as AuthError);
