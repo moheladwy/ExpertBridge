@@ -82,7 +82,7 @@ services:
   
   ExpertBridgeAdmin:
     container_name: "ExpertBridgeAdmin"
-    image: "expert-bridge-admin:latest"
+    image: "only1adwy/expert-bridge-admin:latest"
     env_file:
       - ".env"
     environment:
