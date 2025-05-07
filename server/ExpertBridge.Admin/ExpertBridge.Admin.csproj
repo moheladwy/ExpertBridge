@@ -8,6 +8,7 @@
     <ItemGroup>
       <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
       <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
+      <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj" />
       <ProjectReference Include="..\ExpertBridge.Notifications\ExpertBridge.Notifications.csproj" />
     </ItemGroup>
 

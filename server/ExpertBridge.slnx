@@ -11,6 +11,7 @@
   <Project Path="ExpertBridge.Api\ExpertBridge.Api.csproj" Type="Classic C#" />
   <Project Path="ExpertBridge.Core\ExpertBridge.Core.csproj" Type="Classic C#" />
   <Project Path="ExpertBridge.Data\ExpertBridge.Data.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.Extensions\ExpertBridge.Extensions.csproj" Type="Classic C#" />
   <Project Path="ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" Type="Classic C#" />
   <Project Path="ExpertBridge.Host\ExpertBridge.Host.csproj" Type="Classic C#" />
   <Project Path="ExpertBridge.Notifications\ExpertBridge.Notifications.csproj" Type="Classic C#" />
