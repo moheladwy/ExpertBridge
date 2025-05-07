@@ -70,6 +70,6 @@ public class SoftDeleteInterceptorTests
         {
         }
 
-        public DbSet<TestEntity> TestEntities { get; } = null!;
+        public DbSet<TestEntity> TestEntities { get; set; } = null!;
     }
 }
