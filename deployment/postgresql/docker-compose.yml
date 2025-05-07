@@ -106,3 +106,6 @@ networks:
   shared:
     name: shared
     external: true
+  prometheus:
+    name: prometheus
+    external: true
