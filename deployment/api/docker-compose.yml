@@ -69,7 +69,8 @@ services:
       Groq__Apikey: ${Groq__Apikey}
       Groq__Model: ${Groq__Model}
     volumes:
-      - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridge/FirebaseOAuthCredentialsExpertBridge.json
+      - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridgeApi/FirebaseOAuthCredentialsExpertBridge.json
+      - expert-bridge-api-logs:/ExpertBridgeApi/logs
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     networks: 
@@ -79,6 +80,31 @@ services:
       - ExpertBridgeRedis
     restart: unless-stopped
   
+  ExpertBridgeAdmin:
+    container_name: "ExpertBridgeAdmin"
+    image: "expert-bridge-admin:latest"
+    env_file:
+      - ".env"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "8080"
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+      ConnectionStrings__Seq: ${ConnectionStrings__Seq}
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    volumes:
+      - expertbridge-admin-logs:/ExpertBridgeAdmin/logs
+    networks: 
+      - expert-bridge
+      - shared
+    depends_on:
+      - Seq
+
   Seq:
     container_name: "seq"
     image: "docker.io/datalust/seq:2024.3"
@@ -113,6 +139,21 @@ volumes:
       type: none
       device: /root/deployments/expert-bridge/seq-data
       o: bind
+  expertbridge-api-logs:
+    name: "expertbridge-api-logs"
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/expert-bridge/api-logs
+      o: bind
+  expertbridge-admin-logs:
+    name: "expertbridge-admin-logs"
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/expert-bridge/admin-logs
+      o: bind
+            
 
 networks:
   expert-bridge:

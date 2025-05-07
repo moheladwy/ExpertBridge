@@ -14,7 +14,11 @@ env:
 
 jobs:
     build-and-push:
+        name: Build and Push Docker Images
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: server
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -26,12 +30,10 @@ jobs:
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Build the API Docker image
-              run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.API_IMAGE_NAME}}:${{ env.TAG }} .
-              working-directory: ./server/Api
+              run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.API_IMAGE_NAME}}:${{ env.TAG }} . --file ExpertBridge.Api/Dockerfile
 
             - name: Build the Admin Docker image
-              run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.ADMIN_IMAGE_NAME}}:${{ env.TAG }} .
-              working-directory: ./server/Admin
+              run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.ADMIN_IMAGE_NAME}}:${{ env.TAG }} . --file ExpertBridge.Admin/Dockerfile
 
             - name: Tag the API Docker image
               run: |
