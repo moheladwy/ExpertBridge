@@ -4,7 +4,6 @@
 
 using System.Threading.Channels;
 using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Services;
 using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers

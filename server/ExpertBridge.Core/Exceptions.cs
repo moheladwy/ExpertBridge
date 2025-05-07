@@ -1,6 +1,6 @@
 
 
-namespace ExpertBridge.Core.Exceptions;
+namespace ExpertBridge.Core;
 
 public abstract class HttpNotFoundException : Exception
 {

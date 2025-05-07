@@ -1,5 +1,5 @@
 using System.Text.Json;
-using ExpertBridge.Api.Responses;
+using ExpertBridge.Core.Responses;
 using ExpertBridge.GroqLibrary.Providers;
 
 namespace ExpertBridge.Api.Services;

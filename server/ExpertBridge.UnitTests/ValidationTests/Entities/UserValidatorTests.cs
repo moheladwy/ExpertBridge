@@ -1,7 +1,3 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Users;
-using FluentValidation.TestHelper;
-
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class UserValidatorTests

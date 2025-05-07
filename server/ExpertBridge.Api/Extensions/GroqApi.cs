@@ -1,5 +1,4 @@
 using System.Net.Http.Headers;
-using ExpertBridge.Api.HttpClients;
 using ExpertBridge.Api.Services;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Providers;

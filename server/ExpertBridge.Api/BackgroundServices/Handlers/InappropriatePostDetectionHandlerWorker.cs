@@ -2,18 +2,17 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 
-using ExpertBridge.Api.Extensions;
+using System.Threading.Channels;
+using ExpertBridge.Core;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.ModerationReports;
+using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Threading.Channels;
 using Serilog;
-using ExpertBridge.Core.Entities.ModerationReports;
-using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {

@@ -1,8 +1,8 @@
+using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Core.Requests.RegisterUser;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Services;
-using ExpertBridge.Core.Interfaces.Services;
-using ExpertBridge.Core.Requests.RegisterUser;
 using FluentValidation;
 
 namespace ExpertBridge.Api.Extensions;

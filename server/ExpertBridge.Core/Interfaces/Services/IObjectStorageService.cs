@@ -2,9 +2,9 @@
 //// The .NET Foundation licenses this file to you under the MIT license.
 
 //using Amazon.S3.Model;
-//using ExpertBridge.Api.Responses;
+//using Api.Responses;
 
-//namespace ExpertBridge.Api.Core.Interfaces.Services;
+//namespace Api.Core.Interfaces.Services;
 
 //public interface IObjectStorageService
 //{

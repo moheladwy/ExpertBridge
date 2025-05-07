@@ -1,8 +1,3 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Users;
-using ExpertBridge.Core.Requests.RegisterUser;
-using FluentValidation.TestHelper;
-
 namespace ExpertBridge.UnitTests.ValidationTests.DTOs;
 
 public class RegisterUserRequestValidatorTests

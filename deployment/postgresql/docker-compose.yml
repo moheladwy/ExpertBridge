@@ -1,18 +1,16 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: pgvector/pgvector:pg17
     container_name: postgres
     env_file:
       - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGADMIN_CONFIG_FORCE_SSL: "True"
-      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
-    ports:
-      - target: 5432
-        published: 5432
-        protocol: tcp
+    # ports:
+    #   - target: 5432
+    #     published: 5432
+    #     protocol: tcp
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -22,8 +20,16 @@ services:
       timeout: 30s
       retries: 5
       start_period: 3s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
     networks:
-      - postgres_network
+      - postgresql
+      - shared
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -33,45 +39,73 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_FORCE_SSL: "True"
+      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
+      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: "False"
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: "False"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-    ports:
-      - target: 80
-        published: 5050
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    # ports:
+    #   - target: 80
+    #     published: 5050
     depends_on:
       - postgres
     restart: unless-stopped
     networks:
-      - postgres_network
+      - postgresql
+      - shared
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
 
   postgresal-exporter:
     image: prometheuscommunity/postgres-exporter
     container_name: postgresql-exporter
-    ports:
-      - target: 9187
-        published: 9187
+    # ports:
+    #   - "9187:9187"
     environment:
       DATA_SOURCE_NAME: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}/${DB_NAME}?sslmode=disable"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     networks:
-      - postgres_network
-      - prometheus
+      - postgresql
+      - shared
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
 
 volumes:
   postgres_data:
     name: postgres_data
     driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/postgresql/data
+      o: bind
   pgadmin_data:
     name: pgadmin_data
     driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/postgresql/pgadmin-data
+      o: bind
     
 networks:
-  postgres_network:
-    name: postgres_network
+  postgresql:
+    name: postgresql
     driver: bridge
+  shared:
+    name: shared
+    external: true
   prometheus:
     name: prometheus
     external: true

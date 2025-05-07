@@ -54,14 +54,14 @@ namespace ExpertBridge.Api.Services
 
         public async Task NotifyCommentVotedAsync(CommentVote vote)
         {
-            
+
         }
-        
+
         public async Task NotifyPostVotedAsync(PostVote vote)
         {
-            
+
         }
-        
+
         public async Task NotifyCommentDeletedAsync(Comment comment)
         {
 

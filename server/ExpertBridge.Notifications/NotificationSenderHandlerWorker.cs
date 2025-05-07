@@ -53,7 +53,7 @@ namespace ExpertBridge.Notifications
                     catch (Exception ex)
                     {
                         _logger.LogError(ex,
-                            "Pipeline: An error occurred while processing notification with id={0}.",
+                            "Pipeline: An error occurred while processing notification with id={NotificationId}.",
                             notification.NotificationId);
                     }
                 }
@@ -61,12 +61,12 @@ namespace ExpertBridge.Notifications
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "An error occurred while reading from the channel in {0}.",
+                    "An error occurred while reading from the channel in {NotificationSenderHandlerWorker}.",
                     nameof(NotificationSenderHandlerWorker));
             }
             finally
             {
-                _logger.LogInformation("Terminating {0}.",
+                _logger.LogInformation("Terminating {NotificationSenderHandlerWorker}.",
                     nameof(NotificationSenderHandlerWorker));
             }
         }

@@ -3,6 +3,8 @@ services:
     image: grafana/grafana-enterprise:latest
     container_name: grafana
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     ports:
       - '3000:3000'
     environment:
@@ -13,6 +15,7 @@ services:
     networks:
       - prometheus
       - grafana
+      - shared
 
 networks:
   grafana:
@@ -21,6 +24,9 @@ networks:
   prometheus:
     name: prometheus
     driver: bridge
+    external: true
+  shared:
+    name: shared
     external: true
 
 volumes:

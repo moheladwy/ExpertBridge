@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Tags;
 

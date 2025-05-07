@@ -1,6 +1,4 @@
-﻿
-
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Responses;
 using Microsoft.EntityFrameworkCore;

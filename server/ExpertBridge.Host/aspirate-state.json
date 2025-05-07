@@ -1,0 +1,31 @@
+{
+  "projectPath": ".",
+  "outputPath": "aspirate-output",
+  "containerImageTags": [
+    "latest"
+  ],
+  "containerBuilder": "docker",
+  "outputFormat": "compose",
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": false,
+  "secrets": {
+    "salt": "2vpYANV4sI7aBHhe",
+    "hash": "QtWb4w2ls5dWW8/uke\u002BVukUi2I/mget4fOkH5Nqh39E=",
+    "secrets": {
+      "Redis": {
+        "value": "2vpYANV4sI7aBHheMNkNwusfrRRynOwUc6KOHXtpjbuv"
+      },
+      "Seq": {
+        "value": "2vpYANV4sI7aBHhezMHc8Zp81Q3OXEeGQJamq3ppmA=="
+      },
+      "ExpertBridgeApi": {
+        "ConnectionStrings__Redis": "2vpYANV4sI7aBHheMNkNwusfrRRynOwUc6KOHXtpjbuv",
+        "ConnectionStrings__Seq": "2vpYANV4sI7aBHhezMHc8Zp81Q3OXEeGQJamq3ppmA=="
+      },
+      "ExpertBridgeAdmin": {
+        "ConnectionStrings__Seq": "2vpYANV4sI7aBHhezMHc8Zp81Q3OXEeGQJamq3ppmA=="
+      }
+    }
+  },
+  "processAllComponents": true
+}

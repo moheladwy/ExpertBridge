@@ -1,11 +1,9 @@
-﻿using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Queries;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Exceptions;
+﻿using ExpertBridge.Core;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Queries;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
