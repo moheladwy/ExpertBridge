@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.0"/>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <UserSecretsId>d50a9cb7-f345-40c7-9546-7d0a36e9edc8</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+        <PackageReference Include="Aspire.Hosting.Redis" />
+        <PackageReference Include="Aspire.Hosting.Seq" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ExpertBridge.Admin\ExpertBridge.Admin.csproj" />
+      <ProjectReference Include="..\ExpertBridge.Api\ExpertBridge.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="obj\" />
+    </ItemGroup>
+
+</Project>

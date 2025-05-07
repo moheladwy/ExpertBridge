@@ -1,0 +1,42 @@
+﻿using System.Security.Claims;
+using ExpertBridge.Core;
+
+namespace ExpertBridge.Api.Middleware
+{
+    public class EmailVerifiedMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public EmailVerifiedMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            // Allow initial creation for non email-verified users.
+            if (context.Request.Path.HasValue
+                && context.Request.Path.Value
+                    .EndsWith("/api/users", StringComparison.InvariantCultureIgnoreCase)
+                && context.Request.Method == "PUT")
+            {
+                await _next(context);
+            }
+            else
+            {
+                var isAuth = context.User?.Identity?.IsAuthenticated ?? false;
+
+                if (isAuth)
+                {
+                    bool isEmailVerified = context.User.FindFirstValue("email_verified") == "true";
+                    if (!isEmailVerified)
+                    {
+                        throw new UnauthorizedException("Email not verified");
+                    }
+                }
+
+                await _next(context);
+            }
+        }
+    }
+}

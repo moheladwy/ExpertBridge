@@ -7,12 +7,12 @@
     <File Path="Dockerfile" />
     <File Path="postgresql-compose.yaml" />
   </Folder>
-  <Project Path="Admin\Admin.csproj" Type="Classic C#" />
-  <Project Path="Api\Api.csproj" Type="Classic C#" />
-  <Project Path="Core\Core.csproj" Type="Classic C#" />
-  <Project Path="Data\Data.csproj" Type="Classic C#" />
-  <Project Path="GroqLibrary\GroqLibrary.csproj" Type="Classic C#" />
-  <Project Path="Host\Host.csproj" Type="Classic C#" />
-  <Project Path="Notifications\Notifications.csproj" Type="Classic C#" />
-  <Project Path="UnitTests\UnitTests.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.Admin\ExpertBridge.Admin.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.Api\ExpertBridge.Api.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.Core\ExpertBridge.Core.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.Data\ExpertBridge.Data.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.Host\ExpertBridge.Host.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.Notifications\ExpertBridge.Notifications.csproj" Type="Classic C#" />
+  <Project Path="ExpertBridge.UnitTests\ExpertBridge.UnitTests.csproj" Type="Classic C#" />
 </Solution>
