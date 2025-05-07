@@ -70,7 +70,7 @@ services:
       Groq__Model: ${Groq__Model}
     volumes:
       - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridgeApi/FirebaseOAuthCredentialsExpertBridge.json
-      - expert-bridge-api-logs:/ExpertBridgeApi/logs
+      - expertbridge-api-logs:/ExpertBridgeApi/logs
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     networks: 
