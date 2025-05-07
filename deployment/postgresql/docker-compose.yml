@@ -7,10 +7,6 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGADMIN_CONFIG_FORCE_SSL: "True"
-      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
-      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: "False"
-      PGADMIN_CONFIG_WTF_CSRF_ENABLED: "False"
     # ports:
     #   - target: 5432
     #     published: 5432
@@ -43,6 +39,10 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_FORCE_SSL: "True"
+      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
+      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: "False"
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: "False"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     labels:
