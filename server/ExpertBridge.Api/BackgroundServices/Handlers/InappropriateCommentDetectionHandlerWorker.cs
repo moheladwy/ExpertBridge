@@ -10,6 +10,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;

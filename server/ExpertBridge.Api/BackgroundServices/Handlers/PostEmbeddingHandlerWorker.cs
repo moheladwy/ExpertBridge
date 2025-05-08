@@ -7,6 +7,7 @@ using ExpertBridge.Core;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

@@ -11,6 +11,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -2,6 +2,7 @@
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
