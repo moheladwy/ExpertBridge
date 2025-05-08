@@ -3,7 +3,7 @@ using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Responses;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Queries
+namespace ExpertBridge.Data.Queries
 {
     public static class PostQueries
     {
