@@ -9,7 +9,7 @@ using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
-    public class ContentModerationPeriodicWorker : BackgroundService
+    public class ContentModerationPeriodicWorker : PeriodicWorker<ContentModerationPeriodicWorker>
     {
         private readonly IServiceProvider _services;
         private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingPipelineChannel;
@@ -20,8 +20,8 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             IServiceProvider services,
             Channel<PostProcessingPipelineMessage> postProcessingPipelineChannel,
             Channel<DetectInappropriateCommentMessage> inappropriateCommentChannel,
-            ILogger<ContentModerationPeriodicWorker> logger
-            )
+            ILogger<ContentModerationPeriodicWorker> logger)
+            : base(4, nameof(ContentModerationPeriodicWorker), logger)
         {
             _services = services;
             _postProcessingPipelineChannel = postProcessingPipelineChannel.Writer;
@@ -29,72 +29,56 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             _logger = logger;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteInternalAsync(CancellationToken stoppingToken)
         {
-            // This delay to break the synchronization with the start of each Priodic Worker's period.
-            await Task.Delay(TimeSpan.FromHours(4), stoppingToken);
-
-            var period = 60 * 60 * 24 * 1; // 1 day
-            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
-
-            while (!stoppingToken.IsCancellationRequested
-                    && await timer.WaitForNextTickAsync(stoppingToken))
+            try
             {
-                // _logger.LogInformation($"{nameof(ContentModerationPeriodicWorker)} Started...");
-                Log.Information("{WorkerName} Started...", nameof(ContentModerationPeriodicWorker));
+                using var scope = _services.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
 
-                try
-                {
-                    using var scope = _services.CreateScope();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
+                // That might look like a weird design decision.
+                // But look, the GROQ API we are using is limited, and thus
+                // we need to make sure that we are not sending too many requests
+                // The queing nature of the PostCreatedWorker allows us to send the requests
+                // one by one ensuring that we are not exceeding the rate limit.
 
-                    // That might look like a weird design decision.
-                    // But look, the GROQ API we are using is limited, and thus
-                    // we need to make sure that we are not sending too many requests
-                    // The queing nature of the PostCreatedWorker allows us to send the requests
-                    // one by one ensuring that we are not exceeding the rate limit.
+                await dbContext.Posts
+                    .AsNoTracking()
+                    .Where(p => !p.IsProcessed)
+                    .Select(p => new PostProcessingPipelineMessage
+                    {
+                        PostId = p.Id,
+                        AuthorId = p.AuthorId,
+                        Content = p.Content,
+                        Title = p.Title
+                    })
+                    .ForEachAsync(async post =>
+                        await _postProcessingPipelineChannel.WriteAsync(post, stoppingToken),
+                        stoppingToken
+                    );
 
-                    await dbContext.Posts
-                        .AsNoTracking()
-                        .Where(p => !p.IsProcessed)
-                        .Select(p => new PostProcessingPipelineMessage
-                        {
-                            PostId = p.Id,
-                            AuthorId = p.AuthorId,
-                            Content = p.Content,
-                            Title = p.Title
-                        })
-                        .ForEachAsync(async post =>
-                            await _postProcessingPipelineChannel.WriteAsync(post, stoppingToken),
-                            stoppingToken
-                        );
-
-                    await dbContext.Comments
-                        .AsNoTracking()
-                        .Where(c => !c.IsProcessed)
-                        .Select(c => new DetectInappropriateCommentMessage
-                        {
-                            CommentId = c.Id,
-                            AuthorId = c.AuthorId,
-                            Content = c.Content,
-                        })
-                        .ForEachAsync(async comment =>
-                            await _inappropriateCommentChannel.WriteAsync(comment, stoppingToken),
-                            stoppingToken
-                        );
-                }
-                catch (Exception ex)
-                {
-                    // _logger.LogError(ex,
-                    //     $"Failed to execute {nameof(ContentModerationPeriodicWorker)} with exception message {ex.Message}."
-                    //     );
-                    Log.Error(ex,
-                        "Failed to execute {WorkerName} with exception message {ExceptionMessage}.",
-                        nameof(ContentModerationPeriodicWorker), ex.Message);
-                }
-
-                // _logger.LogInformation($"{nameof(ContentModerationPeriodicWorker)} Finished.");
-                Log.Information("{WorkerName} Finished.", nameof(ContentModerationPeriodicWorker));
+                await dbContext.Comments
+                    .AsNoTracking()
+                    .Where(c => !c.IsProcessed)
+                    .Select(c => new DetectInappropriateCommentMessage
+                    {
+                        CommentId = c.Id,
+                        AuthorId = c.AuthorId,
+                        Content = c.Content,
+                    })
+                    .ForEachAsync(async comment =>
+                        await _inappropriateCommentChannel.WriteAsync(comment, stoppingToken),
+                        stoppingToken
+                    );
+            }
+            catch (Exception ex)
+            {
+                // _logger.LogError(ex,
+                //     $"Failed to execute {nameof(ContentModerationPeriodicWorker)} with exception message {ex.Message}."
+                //     );
+                Log.Error(ex,
+                    "Failed to execute {WorkerName} with exception message {ExceptionMessage}.",
+                    nameof(ContentModerationPeriodicWorker), ex.Message);
             }
         }
     }

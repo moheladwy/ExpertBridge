@@ -27,10 +27,10 @@ builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 
-builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
-    .WithReference(seq)
-    .WaitFor(seq)
-    .WithOtlpExporter()
-    .WithExternalHttpEndpoints();
+//builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
+//    .WithReference(seq)
+//    .WaitFor(seq)
+//    .WithOtlpExporter()
+//    .WithExternalHttpEndpoints();
 
 builder.Build().Run();
