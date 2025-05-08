@@ -1,7 +1,6 @@
-using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
-using ExpertBridge.Data.Queries;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,11 +19,11 @@ public sealed partial class DeletedPosts : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        reportedPosts = await GetReportedPosts();
+        reportedPosts = await GetDeletedPosts();
         await base.OnInitializedAsync();
     }
 
-    private async Task<List<PostResponse>> GetReportedPosts()
+    private async Task<List<PostResponse>> GetDeletedPosts()
     {
         var posts = await _dbContext.Posts
             .IgnoreQueryFilters()
