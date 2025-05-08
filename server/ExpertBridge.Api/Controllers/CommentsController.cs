@@ -116,7 +116,9 @@ public class CommentsController(
             AuthorId = comment.AuthorId,
         });
 
-        await _notificationFacade.NotifyNewCommentAsync(comment);
+
+        if (comment.AuthorId != comment.Post.AuthorId)
+            await _notificationFacade.NotifyNewCommentAsync(comment);
 
         return comment.SelectCommentResponseFromFullComment(profile.Id);
     }
