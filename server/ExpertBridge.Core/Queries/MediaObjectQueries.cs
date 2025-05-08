@@ -2,7 +2,7 @@
 using ExpertBridge.Core.Responses;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Data.Queries
+namespace ExpertBridge.Core.Queries
 {
     public static class MediaObjectQueries
     {

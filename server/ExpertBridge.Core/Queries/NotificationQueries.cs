@@ -4,7 +4,7 @@
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Responses;
 
-namespace ExpertBridge.Data.Queries
+namespace ExpertBridge.Core.Queries
 {
     public static class NotificationQueries
     {

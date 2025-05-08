@@ -11,8 +11,8 @@ using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Data.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -117,9 +117,7 @@ public class CommentsController(
             AuthorId = comment.AuthorId,
         });
 
-
-        if (comment.AuthorId != comment.Post.AuthorId)
-            await _notificationFacade.NotifyNewCommentAsync(comment);
+        await _notificationFacade.NotifyNewCommentAsync(comment);
 
         return comment.SelectCommentResponseFromFullComment(profile.Id);
     }
