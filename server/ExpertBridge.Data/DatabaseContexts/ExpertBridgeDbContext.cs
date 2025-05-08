@@ -53,7 +53,6 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<JobReview> JobReviews { get; set; }
-    public DbSet<JobStatus> JobStatuses { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostVote> PostVotes { get; set; }
@@ -115,7 +114,6 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobReviewEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new JobStatusEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ChatMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingEntityConfiguration());

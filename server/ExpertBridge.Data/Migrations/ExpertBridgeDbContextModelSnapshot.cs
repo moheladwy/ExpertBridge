@@ -330,23 +330,6 @@ namespace ExpertBridge.Data.Migrations
                     b.ToTable("JobReviews");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Core.Entities.JobStatuses.JobStatus", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JobStatuses");
-                });
-
             modelBuilder.Entity("ExpertBridge.Core.Entities.Jobs.Job", b =>
                 {
                     b.Property<string>("Id")
@@ -368,12 +351,13 @@ namespace ExpertBridge.Data.Migrations
                     b.Property<string>("JobPostingId")
                         .HasColumnType("character varying(450)");
 
-                    b.Property<string>("JobStatusId")
-                        .IsRequired()
-                        .HasColumnType("character varying(450)");
-
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("WorkerId")
                         .IsRequired()
@@ -385,8 +369,6 @@ namespace ExpertBridge.Data.Migrations
 
                     b.HasIndex("JobPostingId")
                         .IsUnique();
-
-                    b.HasIndex("JobStatusId");
 
                     b.HasIndex("WorkerId");
 
@@ -1394,12 +1376,6 @@ namespace ExpertBridge.Data.Migrations
                         .WithOne("Job")
                         .HasForeignKey("ExpertBridge.Core.Entities.Jobs.Job", "JobPostingId");
 
-                    b.HasOne("ExpertBridge.Core.Entities.JobStatuses.JobStatus", "Status")
-                        .WithMany("Jobs")
-                        .HasForeignKey("JobStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "Worker")
                         .WithMany("JobsAsWorker")
                         .HasForeignKey("WorkerId")
@@ -1409,8 +1385,6 @@ namespace ExpertBridge.Data.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("JobPosting");
-
-                    b.Navigation("Status");
 
                     b.Navigation("Worker");
                 });
@@ -1658,11 +1632,6 @@ namespace ExpertBridge.Data.Migrations
                     b.Navigation("Job");
 
                     b.Navigation("Medias");
-                });
-
-            modelBuilder.Entity("ExpertBridge.Core.Entities.JobStatuses.JobStatus", b =>
-                {
-                    b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.Jobs.Job", b =>

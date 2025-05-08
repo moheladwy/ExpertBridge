@@ -8,13 +8,15 @@ public class Job
     public DateTime? EndedAt { get; set; }
 
     // Foreign keys
-    public string JobStatusId { get; set; }
+    // public string JobStatusId { get; set; }
+    public JobStatuses.JobStatusEnum Status { get; set; }
+
     public string WorkerId { get; set; }
     public string AuthorId { get; set; }
     public string JobPostingId { get; set; }
 
     // Navigation properties
-    public Entities.JobStatuses.JobStatus Status { get; set; }
+    // public Entities.JobStatuses.JobStatus Status { get; set; }
     public JobReviews.JobReview Review { get; set; }
     public JobPostings.JobPosting JobPosting { get; set; }
     public Profiles.Profile Author { get; set; }

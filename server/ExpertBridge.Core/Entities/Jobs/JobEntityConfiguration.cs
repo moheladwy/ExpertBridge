@@ -24,16 +24,23 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired(false);
 
         // JobStatus (One-to-One)
-        builder.HasOne(j => j.Status)
-            .WithMany(s => s.Jobs)
-            .HasForeignKey(j => j.JobStatusId)
-            .IsRequired();
+        // builder.HasOne(j => j.Status)
+        //     .WithMany(s => s.Jobs)
+        //     .HasForeignKey(j => j.JobStatusId)
+        //     .IsRequired();
+
+        builder.Property(j => j.Status)
+            .IsRequired()
+            .HasConversion<string>() 
+            .HasMaxLength(GlobalEntitiesConstraints.MaxEnumsLength);
 
         // Author Profile (One-to-Many)
         builder.HasOne(j => j.Author)
             .WithMany(p => p.JobsAsAuthor)
             .HasForeignKey(j => j.AuthorId)
             .IsRequired();
+
+        
 
         // Worker Profile (One-to-Many)
         builder.HasOne(j => j.Worker)
