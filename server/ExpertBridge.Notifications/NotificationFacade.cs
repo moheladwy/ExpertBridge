@@ -35,30 +35,85 @@ namespace ExpertBridge.Notifications
 
         public async Task NotifyNewCommentAsync(Comment comment)
         {
-            await NotifyInternalAsync(new Notification
+            if (comment.ParentComment != null)
             {
-                RecipientId = comment.Post.AuthorId,
-                Message = $"{comment.Author.FirstName} commented on your post: {comment.Content}",
-                ActionUrl = $"/posts/{comment.PostId}",
-                IconUrl = comment.Author.ProfilePictureUrl,
-                IconActionUrl = $"/profiles/{comment.AuthorId}",
-                SenderId = comment.AuthorId,
-            });
+                await NotifyNewReplyAsync(comment);
+            }
+            else
+            {
+                await NotifyInternalAsync(new Notification
+                {
+                    RecipientId = comment.Post.AuthorId,
+                    Message = $"{comment.Author.FirstName} commented on your post: {comment.Content}",
+                    ActionUrl = $"/posts/{comment.PostId}/#comment-{comment.Id}",
+                    IconUrl = comment.Author.ProfilePictureUrl,
+                    IconActionUrl = $"/profiles/{comment.AuthorId}",
+                    SenderId = comment.AuthorId,
+                });
+            }
         }
 
         public async Task NotifyNewReplyAsync(Comment comment)
         {
+            var notifications = new List<Notification>
+            {
+                // Notify post owner
+                new Notification
+                {
+                    RecipientId = comment.Post.AuthorId,
+                    Message = $"{comment.Author.FirstName} replied to a comment on your post: {comment.Content}",
+                    ActionUrl = $"/posts/{comment.PostId}/#comment-{comment.Id}",
+                    IconUrl = comment.Author.ProfilePictureUrl,
+                    IconActionUrl = $"/profiles/{comment.AuthorId}",
+                    SenderId = comment.AuthorId,
+                }
+            };
 
+            if (comment.ParentComment != null)
+            {
+                // Notify comment owner (new reply)
+                notifications.Add(new Notification
+                {
+                    RecipientId = comment.ParentComment.AuthorId,
+                    Message = $"{comment.Author.FirstName} replied to you comment: {comment.Content}",
+                    ActionUrl = $"/posts/{comment.PostId}/#comment-{comment.Id}",
+                    IconUrl = comment.Author.ProfilePictureUrl,
+                    IconActionUrl = $"/profiles/{comment.AuthorId}",
+                    SenderId = comment.AuthorId,
+                });
+            }
+
+            await NotifyInternalAsync(notifications);
         }
 
         public async Task NotifyCommentVotedAsync(CommentVote vote)
         {
+            ArgumentNullException.ThrowIfNull(vote);
 
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = vote.Comment.AuthorId,
+                Message = $"Your comment \"{vote.Comment.Content}\" recieved a new vote",
+                ActionUrl = $"/posts/{vote.Comment.PostId}/#comment-{vote.Comment.Id}",
+                IconUrl = vote.Comment.Author.ProfilePictureUrl,
+                IconActionUrl = $"/profile",
+                SenderId = vote.ProfileId,
+            });
         }
 
         public async Task NotifyPostVotedAsync(PostVote vote)
         {
+            ArgumentNullException.ThrowIfNull(vote);
 
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = vote.Post.AuthorId,
+                Message = $"Your post \"{vote.Post.Title}\" recieved a new vote",
+                ActionUrl = $"/posts/{vote.Post.Id}",
+                IconUrl = vote.Post.Author.ProfilePictureUrl,
+                IconActionUrl = $"/profile",
+                SenderId = vote.ProfileId,
+            });
         }
 
         public async Task NotifyCommentDeletedAsync(Comment comment, ModerationReport report)
@@ -66,7 +121,7 @@ namespace ExpertBridge.Notifications
             await NotifyInternalAsync(new Notification
             {
                 RecipientId = comment.AuthorId,
-                Message = $"Your comment was removed: {report.Reason}",
+                Message = $"Your comment was removed: {report.Reason}.\nComment: {comment.Content}",
                 ActionUrl = $"/profile",
             });
         }
@@ -76,7 +131,7 @@ namespace ExpertBridge.Notifications
             await NotifyInternalAsync(new Notification
             {
                 RecipientId = post.AuthorId,
-                Message = $"Your question was removed: {report.Reason}",
+                Message = $"Your post was removed: {report.Reason}.\nPost: {post.Title}",
                 ActionUrl = $"/profile",
             });
         }

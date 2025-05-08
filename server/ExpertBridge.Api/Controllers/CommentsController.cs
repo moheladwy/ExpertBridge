@@ -197,13 +197,18 @@ public class CommentsController(
     }
 
     [HttpPatch("{commentId}/upvote")]
-    public async Task<CommentResponse> Upvote([FromRoute] string commentId)
+    public async Task<CommentResponse> Upvote(
+        [FromRoute] string commentId,
+        [FromServices] NotificationFacade _notifications)
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
         var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
-        var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+
+        var comment = await _dbContext.Comments
+            .Include(c => c.Author)
+            .FirstOrDefaultAsync(c => c.Id == commentId);
 
         if (user == null || string.IsNullOrEmpty(userProfileId))
         {
@@ -215,6 +220,8 @@ public class CommentsController(
         }
 
         var vote = await _dbContext.CommentVotes
+            .Include(v => v.Comment)
+            .ThenInclude(c => c.Author)
             .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
 
         if (vote == null)
@@ -223,7 +230,9 @@ public class CommentsController(
             {
                 ProfileId = userProfileId,
                 CommentId = comment.Id,
-                IsUpvote = true
+                IsUpvote = true,
+                Comment = comment,
+                Profile = user.Profile,
             };
 
             await _dbContext.AddAsync(vote);
@@ -241,6 +250,7 @@ public class CommentsController(
         }
 
         await _dbContext.SaveChangesAsync();
+        await _notifications.NotifyCommentVotedAsync(vote);
 
         return await _dbContext.Comments
             .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
@@ -249,13 +259,18 @@ public class CommentsController(
     }
 
     [HttpPatch("{commentId}/downvote")]
-    public async Task<CommentResponse> Downvote([FromRoute] string commentId)
+    public async Task<CommentResponse> Downvote(
+        [FromRoute] string commentId,
+        [FromServices] NotificationFacade _notifications)
     {
         ArgumentException.ThrowIfNullOrEmpty(commentId);
 
         var user = await _authHelper.GetCurrentUserAsync();
         var userProfileId = user?.Profile.Id ?? string.Empty;
-        var comment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+
+        var comment = await _dbContext.Comments
+            .Include(c => c.Author)
+            .FirstOrDefaultAsync(c => c.Id == commentId);
 
         if (user == null || string.IsNullOrEmpty(userProfileId))
         {
@@ -267,6 +282,8 @@ public class CommentsController(
         }
 
         var vote = await _dbContext.CommentVotes
+            .Include(v => v.Comment)
+            .ThenInclude(c => c.Author)
             .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
 
         if (vote == null)
@@ -276,6 +293,7 @@ public class CommentsController(
                 ProfileId = userProfileId,
                 CommentId = comment.Id,
                 IsUpvote = false,
+                Comment = comment,
             };
 
             await _dbContext.AddAsync(vote);
@@ -293,6 +311,7 @@ public class CommentsController(
         }
 
         await _dbContext.SaveChangesAsync();
+        await _notifications.NotifyCommentVotedAsync(vote);
 
         return await _dbContext.Comments
             .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
