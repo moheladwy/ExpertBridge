@@ -42,8 +42,6 @@ namespace ExpertBridge.Notifications
                 ActionUrl = $"/posts/{comment.PostId}",
                 IconUrl = comment.Author.ProfilePictureUrl,
                 IconActionUrl = $"/profiles/{comment.AuthorId}",
-                IsRead = false,
-                CreatedAt = DateTime.UtcNow,
                 SenderId = comment.AuthorId,
             });
         }
@@ -65,12 +63,22 @@ namespace ExpertBridge.Notifications
 
         public async Task NotifyCommentDeletedAsync(Comment comment, ModerationReport report)
         {
-
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = comment.AuthorId,
+                Message = $"Your comment was removed: {report.Reason}",
+                ActionUrl = $"/profile",
+            });
         }
 
         public async Task NotifyPostDeletedAsync(Post post, ModerationReport report)
         {
-
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = post.AuthorId,
+                Message = $"Your question was removed: {report.Reason}",
+                ActionUrl = $"/profile",
+            });
         }
 
         private async Task NotifyInternalAsync(params List<Notification> notifications)
