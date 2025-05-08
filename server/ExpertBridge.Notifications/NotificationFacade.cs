@@ -141,10 +141,10 @@ namespace ExpertBridge.Notifications
             var toSend = notifications
                 .Where(n => n.RecipientId != n.SenderId);
 
-            await _dbContext.Notifications.AddRangeAsync(notifications);
+            await _dbContext.Notifications.AddRangeAsync(toSend);
             await _dbContext.SaveChangesAsync();
 
-            foreach (var notification in notifications)
+            foreach (var notification in toSend)
             {
                 await _channel.Writer.WriteAsync(new SendNotificationMessage
                 {
