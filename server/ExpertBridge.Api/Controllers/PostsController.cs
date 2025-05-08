@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using System.Threading.Channels;
-using ExpertBridge.Core;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
@@ -17,6 +16,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Notifications;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -237,7 +238,9 @@ public class PostsController : ControllerBase
     ///     The post response with the updated votes count.
     /// </returns>
     [HttpPatch("{postId}/upvote")]
-    public async Task<PostResponse> Upvote([FromRoute] string postId)
+    public async Task<PostResponse> Upvote(
+        [FromRoute] string postId,
+        [FromServices] NotificationFacade _notifications)
     {
         // Get the current user from the HTTP context
         var user = await _authHelper.GetCurrentUserAsync();
@@ -251,38 +254,52 @@ public class PostsController : ControllerBase
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
 
         // Check if the post exists in the database
-        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
-        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
+        var post = await _dbContext.Posts
+            .Include(p => p.Author)
+            .FirstOrDefaultAsync(p => p.Id == postId);
+
+        if (post is null)
+        {
+            throw new PostNotFoundException($"Post with id={postId} does not exist!");
+        }
 
         var vote = await _dbContext.PostVotes
-                .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
+            .Include(v => v.Post)
+            .ThenInclude(p => p.Author)
+            .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
 
         if (vote is null)
         {
             // If the vote does not exist, create a new one
-            var newVote = new PostVote
+            vote = new PostVote
             {
                 Post = post,
                 Profile = user.Profile,
                 IsUpvote = true,
             };
-            await _dbContext.PostVotes.AddAsync(newVote);
-        }
-        else if (!vote.IsUpvote)
-        {
-            // If the vote exists but is a downvote, update it to an upvote
-            vote.IsUpvote = true;
+
+            await _dbContext.PostVotes.AddAsync(vote);
         }
         else
         {
-            // If the vote exists and is an upvote, remove it (toggle behavior)
-            _dbContext.PostVotes.Remove(vote);
+            if (vote.IsUpvote == false)
+            {
+                // If the vote exists but is a downvote, update it to an upvote
+                vote.IsUpvote = true;
+            }
+            else
+            {
+                // If the vote exists and is an upvote, remove it (toggle behavior)
+                _dbContext.PostVotes.Remove(vote);
+            }
         }
 
         // Save changes to the database
         try
         {
             await _dbContext.SaveChangesAsync();
+
+            await _notifications.NotifyPostVotedAsync(vote);
         }
         catch (Exception ex)
         {
@@ -318,7 +335,9 @@ public class PostsController : ControllerBase
     ///     Thrown when the post with the given ID does not exist.
     /// </exception>
     [HttpPatch("{postId}/downvote")]
-    public async Task<PostResponse> Downvote([FromRoute] string postId)
+    public async Task<PostResponse> Downvote(
+        [FromRoute] string postId,
+        [FromServices] NotificationFacade _notifications)
     {
         // Get the current user from the HTTP context
         var user = await _authHelper.GetCurrentUserAsync();
@@ -332,36 +351,50 @@ public class PostsController : ControllerBase
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
 
         // Check if the post exists in the database
-        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
-        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
+        var post = await _dbContext.Posts
+            .Include(p => p.Author)
+            .FirstOrDefaultAsync(p => p.Id == postId);
+
+        if (post is null)
+        {
+            throw new PostNotFoundException($"Post with id={postId} does not exist!");
+        }
 
         var vote = await _dbContext.PostVotes
-                .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
+            .Include(v => v.Post)
+            .ThenInclude(p => p.Author)
+            .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
 
-        if (vote is null)
+        if (vote == null)
         {
             // If the vote does not exist, create a new one
-            var newVote = new PostVote
+            vote = new PostVote
             {
                 PostId = postId,
                 ProfileId = userProfileId,
                 IsUpvote = false,
+                Post = post,
             };
-            await _dbContext.PostVotes.AddAsync(newVote);
-        }
-        else if (vote.IsUpvote)
-        {
-            // If the vote exists but is a upvote, update it to a downvote
-            vote.IsUpvote = false;
+
+            await _dbContext.PostVotes.AddAsync(vote);
         }
         else
         {
-            // If the vote exists and is a downvote, remove it (toggle behavior)
-            _dbContext.PostVotes.Remove(vote);
+            if (vote.IsUpvote)
+            {
+                // If the vote exists but is a upvote, update it to a downvote
+                vote.IsUpvote = false;
+            }
+            else
+            {
+                // If the vote exists and is a downvote, remove it (toggle behavior)
+                _dbContext.PostVotes.Remove(vote);
+            }
         }
 
         // Save changes to the database
         await _dbContext.SaveChangesAsync();
+        await _notifications.NotifyPostVotedAsync(vote);
 
         return await _dbContext.Posts
             .FullyPopulatedPostQuery(p => p.Id == postId)
@@ -388,7 +421,10 @@ public class PostsController : ControllerBase
     ///     The updated post.
     /// </returns>
     [HttpPatch("{postId}")]
-    public async Task<PostResponse> Edit([FromRoute] string postId, [FromBody] EditPostRequest request)
+    public async Task<PostResponse> Edit(
+        [FromRoute] string postId,
+        [FromBody] EditPostRequest request,
+        [FromServices] Channel<PostProcessingPipelineMessage> _channel)
     {
         // Check if the postId is valid
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
@@ -423,6 +459,14 @@ public class PostsController : ControllerBase
         if (!string.IsNullOrEmpty(request.Content))
         {
             post.Content = request.Content.Trim();
+
+            await _channel.Writer.WriteAsync(new PostProcessingPipelineMessage
+            {
+                AuthorId = userProfileId,
+                Content = post.Content,
+                PostId = post.Id,
+                Title = post.Title,
+            });
         }
 
         await _dbContext.SaveChangesAsync();

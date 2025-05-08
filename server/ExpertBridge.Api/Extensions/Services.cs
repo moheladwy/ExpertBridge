@@ -4,6 +4,7 @@ using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Services;
 using FluentValidation;
+using ExpertBridge.Notifications;
 
 namespace ExpertBridge.Api.Extensions;
 

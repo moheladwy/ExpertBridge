@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ExpertBridge.Notifications
+namespace ExpertBridge.Notifications.BackgroundServices
 {
     public class NotificationSenderHandlerWorker : BackgroundService
     {

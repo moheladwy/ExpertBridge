@@ -9,10 +9,11 @@ using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
+using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Notifications;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {
@@ -83,29 +84,33 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         reason = "Your comment does not follow our Community Guidelines.";
                     }
 
-                    await dbContext.ModerationReports
-                        .AddAsync(new ModerationReport
-                        {
-                            ContentType = ContentTypes.Post,
-                            AuthorId = existingPost.AuthorId,
-                            ContentId = existingPost.Id,
-                            IsNegative = !isAppropriate,
-                            Reason = reason,
-                            IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
-                            IdentityAttack = results.IdentityAttack,
-                            Obscene = results.Obscene,
-                            Insult = results.Insult,
-                            SevereToxicity = results.SevereToxicity,
-                            SexualExplicit = results.SexualExplicit,
-                            Threat = results.Threat,
-                            Toxicity = results.Toxicity,
-                        }, stoppingToken);
+                    var report = new ModerationReport
+                    {
+                        ContentType = ContentTypes.Post,
+                        AuthorId = existingPost.AuthorId,
+                        ContentId = existingPost.Id,
+                        IsNegative = !isAppropriate,
+                        Reason = reason,
+                        IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
+                        IdentityAttack = results.IdentityAttack,
+                        Obscene = results.Obscene,
+                        Insult = results.Insult,
+                        SevereToxicity = results.SevereToxicity,
+                        SexualExplicit = results.SexualExplicit,
+                        Threat = results.Threat,
+                        Toxicity = results.Toxicity,
+                    };
+
+                    await dbContext.ModerationReports.AddAsync(report, stoppingToken);
 
                     existingPost .IsProcessed = true;
 
                     if (!isAppropriate)
                     {
                         dbContext.Posts.Remove(existingPost);
+
+                        var notifications = scope.ServiceProvider.GetRequiredService<NotificationFacade>();
+                        await notifications.NotifyPostDeletedAsync(existingPost, report);
                     }
 
                     await dbContext.SaveChangesAsync(stoppingToken);

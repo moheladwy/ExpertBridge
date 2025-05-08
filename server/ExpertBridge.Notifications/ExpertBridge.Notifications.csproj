@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
+  </ItemGroup>
+
 </Project>

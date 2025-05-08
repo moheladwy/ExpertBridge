@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace ExpertBridge.Notifications.Models
 {
+    /// <summary>
+    /// Techincally, this is the Core.NotificationResponse model.
+    /// But we don't want to couple it with that model so we have more
+    /// flixibility in the future in case of changes to the notifications system
+    /// or it being used by other systems. 
+    /// </summary>
     public class Notification
     {
         public string Id { get; set; }

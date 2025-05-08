@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using ExpertBridge.Notifications.BackgroundServices;
 using ExpertBridge.Notifications.Models.IPC;
 using Microsoft.Extensions.DependencyInjection;
 
