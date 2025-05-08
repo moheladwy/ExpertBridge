@@ -3,7 +3,7 @@ using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Responses;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Queries
+namespace ExpertBridge.Core.Queries
 {
     public static class ProfileQueries
     {
