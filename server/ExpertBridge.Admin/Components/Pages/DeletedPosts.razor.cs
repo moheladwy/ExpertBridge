@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Admin.Components.Pages;
 
-public sealed partial class ReportedPosts : ComponentBase
+public sealed partial class DeletedPosts : ComponentBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
     private List<Post>? reportedPosts;
 
-    public ReportedPosts(ExpertBridgeDbContext dbContext)
+    public DeletedPosts(ExpertBridgeDbContext dbContext)
     {
         _dbContext = dbContext;
         reportedPosts = [];
@@ -24,16 +24,13 @@ public sealed partial class ReportedPosts : ComponentBase
 
     private async Task<List<Post>> GetReportedPosts()
     {
-        var posts = await _dbContext.Posts
-            .AsNoTracking()
-            .IgnoreQueryFilters()
-            .Where(p => p.IsDeleted)
-            .Include(p => p.Author)
-            .Include(p => p.Comments)
-            .Include(p => p.Votes)
-            .Include(p=> p.Medias)
-            .ToListAsync();
+        // var posts = await _dbContext.Posts
+            // .IgnoreQueryFilters()
+            // .FullyPopulatedPostQuery(p => p.IsDeleted)
+            // .SelectPostResponseFromFullPost(userProfileId)
+            // .FirstOrDefaultAsync();
 
-        return posts;
+        // return posts;
+        throw new NotImplementedException();
     }
 }
