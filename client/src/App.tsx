@@ -8,7 +8,7 @@ import { useUpdateUserMutation } from "./features/users/usersSlice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { saveAuthUser, selectAuthUser } from "./features/auth/authSlice";
+// import { saveAuthUser, selectAuthUser } from "./features/auth/authSlice";
 
 import { useLocation } from "react-router-dom";
 import AuthPromptModal from "./views/components/common/ui/AuthPromptModal";

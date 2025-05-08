@@ -1,9 +1,9 @@
 
 
 //
-//using ExpertBridge.Api.Responses;
+//using Api.Responses;
 
-//namespace ExpertBridge.Api.Core.Interfaces.Services;
+//namespace Api.Core.Interfaces.Services;
 
 //public interface IProfilesService
 //{

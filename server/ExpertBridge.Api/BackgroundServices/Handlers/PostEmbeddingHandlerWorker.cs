@@ -3,10 +3,10 @@
 
 
 using System.Threading.Channels;
+using ExpertBridge.Core;
+using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

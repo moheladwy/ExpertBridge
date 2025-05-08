@@ -2,7 +2,7 @@
 
 namespace ExpertBridge.Api.Settings;
 
-public class ConnectionStrings
+public sealed class ConnectionStrings
 {
     public const string Section = "ConnectionStrings";
 

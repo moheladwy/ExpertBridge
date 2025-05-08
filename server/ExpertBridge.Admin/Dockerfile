@@ -1,23 +1,21 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
-WORKDIR /ExpertBridge.Admin
+WORKDIR /ExpertBridgeAdmin
 EXPOSE 8080
-EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ExpertBridge.Admin/ExpertBridge.Admin.csproj", "ExpertBridge.Admin/"]
-RUN dotnet restore "ExpertBridge.Admin/ExpertBridge.Admin.csproj"
 COPY . .
+RUN dotnet restore
 WORKDIR "/src/ExpertBridge.Admin"
-RUN dotnet build "./ExpertBridge.Admin.csproj" -c $BUILD_CONFIGURATION -o /ExpertBridge.Admin/build
+RUN dotnet build -c $BUILD_CONFIGURATION -o /ExpertBridgeAdmin/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ExpertBridge.Admin.csproj" -c $BUILD_CONFIGURATION -o /ExpertBridge.Admin/publish /p:UseAppHost=false
+RUN dotnet publish "./ExpertBridge.Admin.csproj" -c $BUILD_CONFIGURATION -o /ExpertBridgeAdmin/publish /p:UseAppHost=false
 
 FROM base AS final
-WORKDIR /ExpertBridge.Admin
-COPY --from=publish /ExpertBridge.Admin/publish .
+WORKDIR /ExpertBridgeAdmin
+COPY --from=publish /ExpertBridgeAdmin/publish .
 ENTRYPOINT ["dotnet", "ExpertBridge.Admin.dll"]

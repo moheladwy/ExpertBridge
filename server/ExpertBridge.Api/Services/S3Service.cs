@@ -1,8 +1,8 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Responses;
+using ExpertBridge.Api.Settings;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Services;

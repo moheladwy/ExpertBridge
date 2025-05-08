@@ -1,7 +1,6 @@
 ﻿using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

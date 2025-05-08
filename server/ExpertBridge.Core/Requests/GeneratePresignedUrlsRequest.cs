@@ -1,6 +1,4 @@
-﻿
-
-using ExpertBridge.Core.Entities;
+﻿using ExpertBridge.Core.Entities;
 
 namespace ExpertBridge.Core.Requests
 {

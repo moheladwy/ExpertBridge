@@ -1,8 +1,4 @@
-﻿using ExpertBridge.Core.Entities;
-using ExpertBridge.Data.Interceptors;
-using Microsoft.EntityFrameworkCore;
-
-namespace ExpertBridge.UnitTests;
+﻿namespace ExpertBridge.UnitTests;
 
 public class SoftDeleteInterceptorTests
 {

@@ -1,7 +1,3 @@
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Jobs;
-using FluentValidation.TestHelper;
-
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class JobValidatorTests

@@ -1,5 +1,5 @@
-﻿using ExpertBridge.Api.DataGenerator;
-using ExpertBridge.Data.DatabaseContexts;
+﻿using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.DataGenerator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

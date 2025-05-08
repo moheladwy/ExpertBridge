@@ -1,7 +1,5 @@
-
-
 using System.Diagnostics;
-using ExpertBridge.Core.Entities;
+using ExpertBridge.Core;
 using Serilog;
 using Serilog.Context;
 

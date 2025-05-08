@@ -1,0 +1,25 @@
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    volumes:
+      - ./models:/root/.ollama
+    networks:
+      - ollama
+      - shared
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+networks:
+  ollama:
+    name: ollama
+    driver: bridge
+  shared:
+    external: true
+    driver: bridge
+    name: shared

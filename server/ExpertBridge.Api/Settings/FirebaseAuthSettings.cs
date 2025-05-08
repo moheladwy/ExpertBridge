@@ -1,6 +1,6 @@
 ﻿namespace ExpertBridge.Api.Settings;
 
-public class FirebaseAuthSettings
+public sealed class FirebaseAuthSettings
 {
     public const string Section = "Authentication:Firebase";
 

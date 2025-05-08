@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Users;
 using FluentValidation;

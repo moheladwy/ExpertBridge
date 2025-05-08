@@ -19,4 +19,8 @@
       <ProjectReference Include="..\ExpertBridge.Api\ExpertBridge.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="obj\" />
+    </ItemGroup>
+
 </Project>

@@ -1,10 +1,10 @@
 ﻿using System.Threading.Channels;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Responses;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Tags;
+using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.Models.IPC;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Services;

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace ExpertBridge.Api.Settings;
 
-internal class AuthTokenSettings
+internal sealed class AuthTokenSettings
 {
     [JsonPropertyName("kind")]
 

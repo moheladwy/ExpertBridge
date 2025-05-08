@@ -5,7 +5,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./config.yml:/etc/prometheus/prometheus.yml
+      - ./config.yaml:/etc/prometheus/prometheus.yml
       - prometheus-storage:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -14,14 +14,24 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     networks:
       - prometheus
+      - shared
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   prometheus:
     name: prometheus
     driver: bridge
+  shared:
+    name: shared
+    external: true
 
 volumes:
   prometheus-storage:
     name: prometheus-storage
     driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/prometheus/data
+      o: bind

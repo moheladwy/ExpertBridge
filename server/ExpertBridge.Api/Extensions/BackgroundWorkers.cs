@@ -28,7 +28,6 @@ public static class BackgroundWorkers
             .AddHostedService<PostEmbeddingPeriodicWorker>()
             .AddHostedService<UserInterestUpdaterPeriodicWorker>()
             .AddHostedService<ContentModerationPeriodicWorker>()
-
             .AddHostedService<PostProcessingPipelineHandlerWorker>()
             .AddHostedService<PostTaggingHandlerWorker>()
             .AddHostedService<PostEmbeddingHandlerWorker>()
