@@ -3,7 +3,6 @@
 
 
 using System.Threading.Channels;
-using ExpertBridge.Core;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Data.DatabaseContexts;
@@ -40,7 +39,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
         protected override async Task ExecuteInternalAsync(
             DetectInappropriatePostMessage post,
             CancellationToken stoppingToken)
-        {            
+        {
             try
             {
                 using var scope = _services.CreateScope();
@@ -130,7 +129,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     "An error occurred while processing message with post id={PostId}.",
                     post.PostId);
             }
-                
+
         }
     }
 }

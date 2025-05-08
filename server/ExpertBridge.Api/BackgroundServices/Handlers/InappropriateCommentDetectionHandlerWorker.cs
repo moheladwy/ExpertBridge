@@ -3,7 +3,6 @@
 
 
 using System.Threading.Channels;
-using ExpertBridge.Core;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Data.DatabaseContexts;
@@ -121,7 +120,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 Log.Error(ex, "An error occurred while processing message with comment id={CommentId}.",
                     comment.CommentId);
             }
-                
+
         }
     }
 }

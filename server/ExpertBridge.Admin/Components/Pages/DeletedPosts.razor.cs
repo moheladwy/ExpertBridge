@@ -1,16 +1,17 @@
-using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core.Queries;
+using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Admin.Components.Pages;
 
-public sealed partial class ReportedPosts : ComponentBase
+public sealed partial class DeletedPosts : ComponentBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
-    private List<Post>? reportedPosts;
+    private List<PostResponse>? reportedPosts;
 
-    public ReportedPosts(ExpertBridgeDbContext dbContext)
+    public DeletedPosts(ExpertBridgeDbContext dbContext)
     {
         _dbContext = dbContext;
         reportedPosts = [];
@@ -18,20 +19,16 @@ public sealed partial class ReportedPosts : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        reportedPosts = await GetReportedPosts();
+        reportedPosts = await GetDeletedPosts();
         await base.OnInitializedAsync();
     }
 
-    private async Task<List<Post>> GetReportedPosts()
+    private async Task<List<PostResponse>> GetDeletedPosts()
     {
         var posts = await _dbContext.Posts
-            .AsNoTracking()
             .IgnoreQueryFilters()
-            .Where(p => p.IsDeleted)
-            .Include(p => p.Author)
-            .Include(p => p.Comments)
-            .Include(p => p.Votes)
-            .Include(p=> p.Medias)
+            .FullyPopulatedPostQuery(p => p.IsDeleted)
+            .SelectPostResponseFromFullPost(null)
             .ToListAsync();
 
         return posts;
