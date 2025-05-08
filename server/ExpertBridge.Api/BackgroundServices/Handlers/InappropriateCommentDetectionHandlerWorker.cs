@@ -3,13 +3,13 @@
 
 
 using System.Threading.Channels;
-using ExpertBridge.Core;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -115,7 +115,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 Log.Error(ex, "An error occurred while processing message with comment id={CommentId}.",
                     comment.CommentId);
             }
-                
+
         }
     }
 }

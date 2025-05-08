@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using ExpertBridge.Core;
+using ExpertBridge.Core.Exceptions;
 using Serilog;
 using Serilog.Context;
 

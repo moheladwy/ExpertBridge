@@ -2,6 +2,7 @@ using System.Security.Claims;
 using ExpertBridge.Core;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Users;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests.RegisterUser;
 using ExpertBridge.Core.Requests.UpdateUserRequest;
 using ExpertBridge.Core.Responses;

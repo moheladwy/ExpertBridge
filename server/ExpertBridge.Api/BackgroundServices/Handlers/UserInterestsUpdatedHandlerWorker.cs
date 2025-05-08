@@ -4,10 +4,10 @@
 
 using System.Text;
 using System.Threading.Channels;
-using ExpertBridge.Core;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -32,7 +32,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
         protected override async Task ExecuteInternalAsync(
             UserInterestsUpdatedMessage message,
             CancellationToken stoppingToken)
-        {            
+        {
             try
             {
                 using var scope = _services.CreateScope();
@@ -76,7 +76,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     "An error occurred while processing message with user profile id={userProfileId}.",
                     message.UserProfileId);
             }
-                
+
         }
     }
 }
