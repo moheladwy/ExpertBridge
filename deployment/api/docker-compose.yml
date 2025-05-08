@@ -4,12 +4,15 @@ services:
     image: "redis:alpine"
     volumes:
     - "expertbridge-redis-data:/data"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     command:
     - "--save"
     - "300"
     - "1"
     networks: 
-      - expert-bridge-network
+      - expert-bridge
+      - shared
     healthcheck:
       test: "redis-cli ping"
       interval: 10s
@@ -19,10 +22,13 @@ services:
   
   ExpertBridgeApi:
     image: "only1adwy/expert-bridge-api:latest"
-    container_name: ExpertBridgeApi
-    ports:
-      - target: 8080
-        published: 8080
+    deploy:
+      mode: replicated
+      replicas: 1 
+      update_config:
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
     env_file:
       - ".env"
     environment:
@@ -43,9 +49,10 @@ services:
       Firebase__ClientId: ${Firebase__ClientId}
       Firebase__AuthUri: ${Firebase__AuthUri}
       Firebase__TokenUri: ${Firebase__TokenUri}
-      Firebase__auth_provider_x509_cert_url: ${Firebase__auth_provider_x509_cert_url}
-      Firebase__client_x509_cert_url: ${Firebase__client_x509_cert_url}
+      Firebase__ClientX509CertUrl: ${Firebase__ClientX509CertUrl}
       Firebase__UniverseDomain: ${Firebase__UniverseDomain}
+      Firebase__AuthProviderX509CertUrl: ${Firebase__AuthProviderX509CertUrl}
+      Firebase__AuthenticationTokenUri: ${Firebase__AuthenticationTokenUri}
       Authentication__Firebase__Issuer: ${Authentication__Firebase__Issuer}
       Authentication__Firebase__Audience: ${Authentication__Firebase__Audience}
       Authentication__Firebase__TokenUri: ${Authentication__Firebase__TokenUri}
@@ -54,50 +61,105 @@ services:
       AwsS3__AwsKey: ${AwsS3__AwsKey}
       AwsS3__AwsSecret: ${AwsS3__AwsSecret}
       AwsS3__BucketUrl: ${AwsS3__BucketUrl}
+      AwsS3__CacheControl: ${AwsS3__CacheControl}
+      AwsS3__MaxFileSize: ${AwsS3__MaxFileSize}
+      PostCategorizer__BaseUrl: ${PostCategorizer__BaseUrl}
+      Ollama__Endpoint: ${Ollama__Endpoint}
+      Ollama__ModelId: ${Ollama__ModelId}
+      Groq__Apikey: ${Groq__Apikey}
+      Groq__Model: ${Groq__Model}
     volumes:
-      - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridge/FirebaseOAuthCredentialsExpertBridge.json
+      - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridgeApi/FirebaseOAuthCredentialsExpertBridge.json
+      - expertbridge-api-logs:/ExpertBridgeApi/logs
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     networks: 
-      - expert-bridge-network
-      - postgres_network
-      - prometheus
+      - expert-bridge
+      - shared
     depends_on:
       - ExpertBridgeRedis
     restart: unless-stopped
   
+  ExpertBridgeAdmin:
+    container_name: "ExpertBridgeAdmin"
+    image: "only1adwy/expert-bridge-admin:latest"
+    env_file:
+      - ".env"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "8080"
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+      ConnectionStrings__Seq: ${ConnectionStrings__Seq}
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    volumes:
+      - expertbridge-admin-logs:/ExpertBridgeAdmin/logs
+    networks: 
+      - expert-bridge
+      - shared
+    depends_on:
+      - Seq
+
   Seq:
-      container_name: "seq"
-      image: "docker.io/datalust/seq:2024.3"
-      environment:
-        ACCEPT_EULA: "Y"
-      volumes:
+    container_name: "seq"
+    image: "docker.io/datalust/seq:2024.3"
+    environment:
+      ACCEPT_EULA: "Y"
+    volumes:
       - "expertbridge-seq-data:/data"
-      networks:
-          - expert-bridge-network 
-      ports:
-      - target: 80
-        published: 4002
-      - target: 5341
-        published: 5341
-      restart: unless-stopped
-      
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - expert-bridge 
+      - shared
+    ports:
+    - target: 80
+      published: 4002
+    - target: 5341
+      published: 5341
+    restart: unless-stopped
+
 volumes:
   expertbridge-redis-data: 
     name: "expertbridge-redis-data"
     driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/expert-bridge/redis-data
+      o: bind
   expertbridge-seq-data:
     name: "expertbridge-seq-data"
     driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/expert-bridge/seq-data
+      o: bind
+  expertbridge-api-logs:
+    name: "expertbridge-api-logs"
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/expert-bridge/api-logs
+      o: bind
+  expertbridge-admin-logs:
+    name: "expertbridge-admin-logs"
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/deployments/expert-bridge/admin-logs
+      o: bind
+            
 
 networks:
-  expert-bridge-network:
+  expert-bridge:
+    name: "expert-bridge"
     driver: bridge
-    name: "expert-bridge-network"
-  postgres_network:
+  shared:
+    name: shared
     driver: bridge
-    name: postgres_network
-    external: true
-  prometheus:
-    name: prometheus
     external: true

@@ -1,6 +1,6 @@
 namespace ExpertBridge.Api.Settings;
 
-public class FirebaseSettings
+public sealed class FirebaseSettings
 {
     public const string Section = "Firebase";
 

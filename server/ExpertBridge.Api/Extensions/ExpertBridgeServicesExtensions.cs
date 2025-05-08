@@ -1,14 +1,13 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Api.Settings.Serilog;
-using ExpertBridge.Api.Settings;
+using System.Text.Json;
 using ExpertBridge.Data;
+using ExpertBridge.Api.Settings;
+using ExpertBridge.Api.Settings.Serilog;
 using ExpertBridge.GroqLibrary.Settings;
 using Polly;
 using Polly.Retry;
-using Polly.Timeout;
-using System.Text.Json;
 using Serilog;
 
 namespace ExpertBridge.Api.Extensions

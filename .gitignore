@@ -49,3 +49,5 @@ coverage.xml
 .env
 .venv
 .DS_Store
+*.bak
+my-db-compose

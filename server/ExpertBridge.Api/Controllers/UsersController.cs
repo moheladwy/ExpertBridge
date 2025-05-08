@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using ExpertBridge.Core.Entities;
+using ExpertBridge.Core;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Requests.RegisterUser;

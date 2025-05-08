@@ -1,10 +1,8 @@
 ﻿
 
-using System.Text.Json.Serialization;
-
 namespace ExpertBridge.Api.Settings;
 
-public class AwsSettings
+public sealed class AwsSettings
 {
     public const string Section = "AwsS3";
 

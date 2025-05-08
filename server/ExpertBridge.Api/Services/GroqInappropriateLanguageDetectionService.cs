@@ -1,7 +1,6 @@
 using System.Text.Json;
-using ExpertBridge.Api.Models;
-using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Responses;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.GroqLibrary.Providers;
 using Polly;
 using Polly.Registry;

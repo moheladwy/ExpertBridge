@@ -30,6 +30,7 @@ import {
 } from "@mui/material/styles";
 import PostFromUrlPage from "./views/pages/posts/PostFromUrlPage.tsx";
 import UserProfilePage from "./views/pages/profile/UserProfilePage.tsx";
+import Notifications from "./views/pages/notifications/Notifications.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
 				path: "profile/:userId",
 				element: (
 					<UserProfilePage />
+				),
+			},
+			{
+				path: "notifications",
+				element: (
+					<ProtectedRoute>
+						<Notifications />
+					</ProtectedRoute>
 				),
 			},
 		],

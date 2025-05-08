@@ -25,7 +25,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Areas.Area", b =>
+            modelBuilder.Entity("Api.Core.Entities.Areas.Area", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Areas");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Badges.Badge", b =>
+            modelBuilder.Entity("Api.Core.Entities.Badges.Badge", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Badges");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Chats.Chat", b =>
+            modelBuilder.Entity("Api.Core.Entities.Chats.Chat", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -96,7 +96,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Chats");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.CommentVotes.CommentVote", b =>
+            modelBuilder.Entity("Api.Core.Entities.CommentVotes.CommentVote", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +131,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("CommentVotes");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Comments.Comment", b =>
+            modelBuilder.Entity("Api.Core.Entities.Comments.Comment", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,7 +179,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.JobCategories.JobCategory", b =>
+            modelBuilder.Entity("Api.Core.Entities.JobCategories.JobCategory", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -204,7 +204,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("JobCategories");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.JobPostings.JobPosting", b =>
+            modelBuilder.Entity("Api.Core.Entities.JobPostings.JobPosting", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,7 +258,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("JobPostings");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.JobStatuses.JobStatus", b =>
+            modelBuilder.Entity("Api.Core.Entities.JobStatuses.JobStatus", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,7 +275,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("JobStatuses");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Jobs.Job", b =>
+            modelBuilder.Entity("Api.Core.Entities.Jobs.Job", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -321,7 +321,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Jobs");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Jobs.JobReviews.JobReview", b =>
+            modelBuilder.Entity("Api.Core.Entities.Jobs.JobReviews.JobReview", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -371,7 +371,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("JobReviews");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ChatParticipants.ChatParticipant", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ChatParticipants.ChatParticipant", b =>
                 {
                     b.Property<string>("ChatId")
                         .HasColumnType("character varying(450)");
@@ -387,7 +387,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ChatParticipants");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.PostTags.PostTag", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.PostTags.PostTag", b =>
                 {
                     b.Property<string>("PostId")
                         .HasColumnType("character varying(450)");
@@ -402,7 +402,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("PostTags");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileBadges.ProfileBadge", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ProfileBadges.ProfileBadge", b =>
                 {
                     b.Property<string>("ProfileId")
                         .HasColumnType("character varying(450)");
@@ -417,7 +417,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ProfileBadges");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileSkills.ProfileSkill", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ProfileSkills.ProfileSkill", b =>
                 {
                     b.Property<string>("ProfileId")
                         .HasColumnType("character varying(450)");
@@ -432,7 +432,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ProfileSkills");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags.ProfileTag", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ProfileTags.ProfileTag", b =>
                 {
                     b.Property<string>("ProfileId")
                         .HasColumnType("character varying(450)");
@@ -447,7 +447,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ProfileTags");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ChatMedia.ChatMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.ChatMedia.ChatMedia", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -495,7 +495,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ChatMedias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.CommentMedia.CommentMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.CommentMedia.CommentMedia", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -544,7 +544,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("CommentMedias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.JobPostingMedia.JobPostingMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.JobPostingMedia.JobPostingMedia", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -592,7 +592,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("JobPostingMedias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.PostMedia.PostMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.PostMedia.PostMedia", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -640,7 +640,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("PostMedias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia.ProfileExperienceMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.ProfileExperienceMedia.ProfileExperienceMedia", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -688,7 +688,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ProfileExperienceMedias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileMedia.ProfileMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.ProfileMedia.ProfileMedia", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -736,7 +736,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ProfileMedias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.PostVotes.PostVote", b =>
+            modelBuilder.Entity("Api.Core.Entities.PostVotes.PostVote", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -771,7 +771,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("PostVotes");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Posts.Post", b =>
+            modelBuilder.Entity("Api.Core.Entities.Posts.Post", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -821,7 +821,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
+            modelBuilder.Entity("Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -866,7 +866,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("ProfileExperiences");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Profiles.Profile", b =>
+            modelBuilder.Entity("Api.Core.Entities.Profiles.Profile", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -934,7 +934,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Profiles");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Skills.Skill", b =>
+            modelBuilder.Entity("Api.Core.Entities.Skills.Skill", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -959,7 +959,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Tags.Tag", b =>
+            modelBuilder.Entity("Api.Core.Entities.Tags.Tag", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -984,7 +984,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Users.User", b =>
+            modelBuilder.Entity("Api.Core.Entities.Users.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -1058,9 +1058,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Areas.Area", b =>
+            modelBuilder.Entity("Api.Core.Entities.Areas.Area", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("Areas")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1069,15 +1069,15 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.CommentVotes.CommentVote", b =>
+            modelBuilder.Entity("Api.Core.Entities.CommentVotes.CommentVote", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Comments.Comment", "Comment")
+                    b.HasOne("Api.Core.Entities.Comments.Comment", "Comment")
                         .WithMany("Votes")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("CommentVotes")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1088,20 +1088,20 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Comments.Comment", b =>
+            modelBuilder.Entity("Api.Core.Entities.Comments.Comment", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Author")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Comments.Comment", "ParentComment")
+                    b.HasOne("Api.Core.Entities.Comments.Comment", "ParentComment")
                         .WithMany("Replies")
                         .HasForeignKey("ParentCommentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Posts.Post", "Post")
+                    b.HasOne("Api.Core.Entities.Posts.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1114,21 +1114,21 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.JobPostings.JobPosting", b =>
+            modelBuilder.Entity("Api.Core.Entities.JobPostings.JobPosting", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Areas.Area", "Area")
+                    b.HasOne("Api.Core.Entities.Areas.Area", "Area")
                         .WithMany("JobPostings")
                         .HasForeignKey("AreaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Author")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Author")
                         .WithMany("JobPostings")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.JobCategories.JobCategory", "Category")
+                    b.HasOne("Api.Core.Entities.JobCategories.JobCategory", "Category")
                         .WithMany("JobPostings")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1141,25 +1141,25 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Jobs.Job", b =>
+            modelBuilder.Entity("Api.Core.Entities.Jobs.Job", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Author")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Author")
                         .WithMany("JobsAsAuthor")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.JobPostings.JobPosting", "JobPosting")
+                    b.HasOne("Api.Core.Entities.JobPostings.JobPosting", "JobPosting")
                         .WithOne("Job")
-                        .HasForeignKey("ExpertBridge.Api.Core.Entities.Jobs.Job", "JobPostingId");
+                        .HasForeignKey("Api.Core.Entities.Jobs.Job", "JobPostingId");
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.JobStatuses.JobStatus", "Status")
+                    b.HasOne("Api.Core.Entities.JobStatuses.JobStatus", "Status")
                         .WithMany("Jobs")
                         .HasForeignKey("JobStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Worker")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Worker")
                         .WithMany("JobsAsWorker")
                         .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1174,21 +1174,21 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Worker");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Jobs.JobReviews.JobReview", b =>
+            modelBuilder.Entity("Api.Core.Entities.Jobs.JobReviews.JobReview", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Customer")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Jobs.Job", "Job")
+                    b.HasOne("Api.Core.Entities.Jobs.Job", "Job")
                         .WithOne("Review")
-                        .HasForeignKey("ExpertBridge.Api.Core.Entities.Jobs.JobReviews.JobReview", "JobId")
+                        .HasForeignKey("Api.Core.Entities.Jobs.JobReviews.JobReview", "JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Worker")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Worker")
                         .WithMany()
                         .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1201,17 +1201,17 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Worker");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ChatParticipants.ChatParticipant", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ChatParticipants.ChatParticipant", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Chats.Chat", "Chat")
+                    b.HasOne("Api.Core.Entities.Chats.Chat", "Chat")
                         .WithMany("Participants")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithOne("ChatParticipant")
-                        .HasForeignKey("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ChatParticipants.ChatParticipant", "ProfileId")
+                        .HasForeignKey("Api.Core.Entities.ManyToManyRelationships.ChatParticipants.ChatParticipant", "ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1220,15 +1220,15 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.PostTags.PostTag", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.PostTags.PostTag", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Posts.Post", "Post")
+                    b.HasOne("Api.Core.Entities.Posts.Post", "Post")
                         .WithMany("PostTags")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Tags.Tag", "Tag")
+                    b.HasOne("Api.Core.Entities.Tags.Tag", "Tag")
                         .WithMany("PostTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1239,15 +1239,15 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileBadges.ProfileBadge", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ProfileBadges.ProfileBadge", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Badges.Badge", "Badge")
+                    b.HasOne("Api.Core.Entities.Badges.Badge", "Badge")
                         .WithMany("ProfileBadges")
                         .HasForeignKey("BadgeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("ProfileBadges")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1258,15 +1258,15 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileSkills.ProfileSkill", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ProfileSkills.ProfileSkill", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("ProfileSkills")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Skills.Skill", "Skill")
+                    b.HasOne("Api.Core.Entities.Skills.Skill", "Skill")
                         .WithMany("ProfileSkills")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1277,15 +1277,15 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Skill");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ManyToManyRelationships.ProfileTags.ProfileTag", b =>
+            modelBuilder.Entity("Api.Core.Entities.ManyToManyRelationships.ProfileTags.ProfileTag", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("ProfileTags")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Tags.Tag", "Tag")
+                    b.HasOne("Api.Core.Entities.Tags.Tag", "Tag")
                         .WithMany("ProfileTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1296,9 +1296,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ChatMedia.ChatMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.ChatMedia.ChatMedia", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Chats.Chat", "Chat")
+                    b.HasOne("Api.Core.Entities.Chats.Chat", "Chat")
                         .WithMany("Medias")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1307,20 +1307,20 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Chat");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.CommentMedia.CommentMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.CommentMedia.CommentMedia", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Comments.Comment", "Comment")
+                    b.HasOne("Api.Core.Entities.Comments.Comment", "Comment")
                         .WithOne("Media")
-                        .HasForeignKey("ExpertBridge.Api.Core.Entities.Media.CommentMedia.CommentMedia", "CommentId")
+                        .HasForeignKey("Api.Core.Entities.Media.CommentMedia.CommentMedia", "CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Comment");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.JobPostingMedia.JobPostingMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.JobPostingMedia.JobPostingMedia", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.JobPostings.JobPosting", "JobPosting")
+                    b.HasOne("Api.Core.Entities.JobPostings.JobPosting", "JobPosting")
                         .WithMany("Medias")
                         .HasForeignKey("JobPostingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1329,9 +1329,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("JobPosting");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.PostMedia.PostMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.PostMedia.PostMedia", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Posts.Post", "Post")
+                    b.HasOne("Api.Core.Entities.Posts.Post", "Post")
                         .WithMany("Medias")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1340,9 +1340,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileExperienceMedia.ProfileExperienceMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.ProfileExperienceMedia.ProfileExperienceMedia", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.ProfileExperiences.ProfileExperience", "ProfileExperience")
+                    b.HasOne("Api.Core.Entities.ProfileExperiences.ProfileExperience", "ProfileExperience")
                         .WithMany("Medias")
                         .HasForeignKey("ProfileExperienceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1351,9 +1351,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("ProfileExperience");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Media.ProfileMedia.ProfileMedia", b =>
+            modelBuilder.Entity("Api.Core.Entities.Media.ProfileMedia.ProfileMedia", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("Medias")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1362,15 +1362,15 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.PostVotes.PostVote", b =>
+            modelBuilder.Entity("Api.Core.Entities.PostVotes.PostVote", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Posts.Post", "Post")
+                    b.HasOne("Api.Core.Entities.Posts.Post", "Post")
                         .WithMany("Votes")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("PostVotes")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1381,9 +1381,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Posts.Post", b =>
+            modelBuilder.Entity("Api.Core.Entities.Posts.Post", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Author")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Author")
                         .WithMany("Posts")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1392,9 +1392,9 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
+            modelBuilder.Entity("Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Profiles.Profile", "Profile")
+                    b.HasOne("Api.Core.Entities.Profiles.Profile", "Profile")
                         .WithMany("Experiences")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1403,35 +1403,35 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Profiles.Profile", b =>
+            modelBuilder.Entity("Api.Core.Entities.Profiles.Profile", b =>
                 {
-                    b.HasOne("ExpertBridge.Api.Core.Entities.Users.User", "User")
+                    b.HasOne("Api.Core.Entities.Users.User", "User")
                         .WithOne("Profile")
-                        .HasForeignKey("ExpertBridge.Api.Core.Entities.Profiles.Profile", "UserId")
+                        .HasForeignKey("Api.Core.Entities.Profiles.Profile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Areas.Area", b =>
+            modelBuilder.Entity("Api.Core.Entities.Areas.Area", b =>
                 {
                     b.Navigation("JobPostings");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Badges.Badge", b =>
+            modelBuilder.Entity("Api.Core.Entities.Badges.Badge", b =>
                 {
                     b.Navigation("ProfileBadges");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Chats.Chat", b =>
+            modelBuilder.Entity("Api.Core.Entities.Chats.Chat", b =>
                 {
                     b.Navigation("Medias");
 
                     b.Navigation("Participants");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Comments.Comment", b =>
+            modelBuilder.Entity("Api.Core.Entities.Comments.Comment", b =>
                 {
                     b.Navigation("Media")
                         .IsRequired();
@@ -1441,30 +1441,30 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.JobCategories.JobCategory", b =>
+            modelBuilder.Entity("Api.Core.Entities.JobCategories.JobCategory", b =>
                 {
                     b.Navigation("JobPostings");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.JobPostings.JobPosting", b =>
+            modelBuilder.Entity("Api.Core.Entities.JobPostings.JobPosting", b =>
                 {
                     b.Navigation("Job");
 
                     b.Navigation("Medias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.JobStatuses.JobStatus", b =>
+            modelBuilder.Entity("Api.Core.Entities.JobStatuses.JobStatus", b =>
                 {
                     b.Navigation("Jobs");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Jobs.Job", b =>
+            modelBuilder.Entity("Api.Core.Entities.Jobs.Job", b =>
                 {
                     b.Navigation("Review")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Posts.Post", b =>
+            modelBuilder.Entity("Api.Core.Entities.Posts.Post", b =>
                 {
                     b.Navigation("Comments");
 
@@ -1475,12 +1475,12 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
+            modelBuilder.Entity("Api.Core.Entities.ProfileExperiences.ProfileExperience", b =>
                 {
                     b.Navigation("Medias");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Profiles.Profile", b =>
+            modelBuilder.Entity("Api.Core.Entities.Profiles.Profile", b =>
                 {
                     b.Navigation("Areas");
 
@@ -1512,19 +1512,19 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("ProfileTags");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Skills.Skill", b =>
+            modelBuilder.Entity("Api.Core.Entities.Skills.Skill", b =>
                 {
                     b.Navigation("ProfileSkills");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Tags.Tag", b =>
+            modelBuilder.Entity("Api.Core.Entities.Tags.Tag", b =>
                 {
                     b.Navigation("PostTags");
 
                     b.Navigation("ProfileTags");
                 });
 
-            modelBuilder.Entity("ExpertBridge.Api.Core.Entities.Users.User", b =>
+            modelBuilder.Entity("Api.Core.Entities.Users.User", b =>
                 {
                     b.Navigation("Profile")
                         .IsRequired();

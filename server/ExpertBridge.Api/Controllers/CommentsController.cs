@@ -1,18 +1,17 @@
-using System.Linq;
 using System.Threading.Channels;
-using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Queries;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Entities;
+using ExpertBridge.Core;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;
-using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Requests.CreateComment;
 using ExpertBridge.Core.Requests.EditComment;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Api.Services;
+using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +31,7 @@ public class CommentsController(
     [HttpPost]
     public async Task<CommentResponse> Create(
         [FromBody] CreateCommentRequest request,
+        [FromServices] NotificationFacade _notificationFacade,
         [FromServices] Channel<DetectInappropriateCommentMessage> _channel)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -115,6 +115,8 @@ public class CommentsController(
             Content = comment.Content,
             AuthorId = comment.AuthorId,
         });
+
+        await _notificationFacade.NotifyNewCommentAsync(comment);
 
         return comment.SelectCommentResponseFromFullComment(profile.Id);
     }

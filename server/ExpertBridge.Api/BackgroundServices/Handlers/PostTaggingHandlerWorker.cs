@@ -3,12 +3,8 @@
 
 
 using System.Threading.Channels;
-using ExpertBridge.Api.HttpClients;
 using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Requests;
 using ExpertBridge.Api.Services;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Data.DatabaseContexts;
 using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers

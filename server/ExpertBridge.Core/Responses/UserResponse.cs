@@ -1,8 +1,3 @@
-
-
-
-
-
 using ExpertBridge.Core.Entities.Users;
 
 namespace ExpertBridge.Core.Responses;

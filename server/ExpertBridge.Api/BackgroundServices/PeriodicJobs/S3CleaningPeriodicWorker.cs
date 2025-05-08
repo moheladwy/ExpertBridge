@@ -1,8 +1,8 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
-using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;

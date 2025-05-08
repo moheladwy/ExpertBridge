@@ -4,15 +4,10 @@
 
 using System.Text;
 using System.Threading.Channels;
-using ExpertBridge.Api.EmbeddingService;
-using ExpertBridge.Api.Extensions;
-using ExpertBridge.Api.HttpClients;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Requests;
-using ExpertBridge.Api.Services;
-using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.EmbeddingService;
+using ExpertBridge.Api.Models.IPC;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

@@ -1,14 +1,11 @@
-
-
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
 using ExpertBridge.Api.Settings;
-using ExpertBridge.Api.Settings.Serilog;
-using ExpertBridge.Data;
+using ExpertBridge.Notifications;
+using ExpertBridge.Notifications.Extensions;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.AI;
 using Microsoft.Net.Http.Headers;
 using Serilog;
 
@@ -26,6 +23,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 });
 
 builder.AddExpertBridgeServices();
+builder.Services.AddExpertBridgeNotifications();
 
 builder.AddSwaggerGen();
 builder.AddCors();
@@ -72,7 +70,7 @@ if (app.Environment.IsProduction())
 app.UseRouting();
 app.UseRateLimiter();
 // app.UseRequestLocalization();
-app.UseCors("AllowAll");
+app.UseCors("SignalRClients");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -93,6 +91,8 @@ app.Use(async (context, next) =>
 });
 
 app.MapControllers();
+app.MapHub<NotificationsHub>("/api/notificationsHub");
+//app.MapHub<ChatHub>("/chatHub");
 app.MapPrometheusScrapingEndpoint();
 app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 // Only health checks tagged with the "live" tag must pass for app to be considered alive

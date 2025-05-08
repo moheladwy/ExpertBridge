@@ -1,3 +1,5 @@
+using Projects;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var redis = builder
@@ -17,7 +19,7 @@ var seq = builder.AddSeq("Seq", port: 4002)
     .WithOtlpExporter()
     .PublishAsConnectionString();
 
-builder.AddProject<Projects.ExpertBridge_Api>("ExpertBridgeApi")
+builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
     .WithReference(redis)
     .WithReference(seq)
     .WaitFor(redis)
@@ -25,7 +27,9 @@ builder.AddProject<Projects.ExpertBridge_Api>("ExpertBridgeApi")
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 
-builder.AddProject<Projects.ExpertBridge_Admin>("ExpertBridgeAdmin")
+builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
+    .WithReference(seq)
+    .WaitFor(seq)
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 
