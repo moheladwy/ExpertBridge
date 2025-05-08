@@ -6,6 +6,7 @@ using ExpertBridge.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.Controllers
 {

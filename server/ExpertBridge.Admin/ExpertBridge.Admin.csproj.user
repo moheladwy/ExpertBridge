@@ -1,15 +1,6 @@
-<<<<<<< HEAD
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ActiveDebugProfile>https</ActiveDebugProfile>
   </PropertyGroup>
 </Project>
-=======
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <ActiveDebugProfile>https</ActiveDebugProfile>
-    </PropertyGroup>
-</Project>
->>>>>>> 68360f4bd89a93b34ef9e00242d8b19c1a3662aa

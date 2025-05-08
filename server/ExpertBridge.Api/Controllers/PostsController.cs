@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using System.Threading.Channels;
-using ExpertBridge.Core;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
@@ -16,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.Controllers;
 

@@ -9,6 +9,7 @@ using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Models.IPC;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {

@@ -1,5 +1,5 @@
 using System.Threading.Channels;
-using ExpertBridge.Core;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;
@@ -15,6 +15,7 @@ using ExpertBridge.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ExpertBridge.Notifications;
 
 namespace ExpertBridge.Api.Controllers;
 

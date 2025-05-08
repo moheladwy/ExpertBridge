@@ -13,6 +13,7 @@ using ExpertBridge.Api.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
+using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
 {

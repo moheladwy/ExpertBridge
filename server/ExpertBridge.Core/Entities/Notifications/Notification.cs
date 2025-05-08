@@ -17,6 +17,7 @@ namespace ExpertBridge.Core.Entities.Notifications
         /// The profile ID of the recipient
         /// </summary>
         public string RecipientId { get; set; }
+        public string? SenderId { get; set; } // The profile ID of the action creator
         public string Message { get; set; }
         public bool IsRead { get; set; }
         public string? ActionUrl { get; set; }

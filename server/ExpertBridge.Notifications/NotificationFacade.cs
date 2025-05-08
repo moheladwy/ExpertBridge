@@ -10,7 +10,7 @@ using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications.Models.IPC;
 
-namespace ExpertBridge.Api.Services
+namespace ExpertBridge.Notifications
 {
     /// <summary>
     /// This Facade is responsible for handling notifiactions.
@@ -43,7 +43,7 @@ namespace ExpertBridge.Api.Services
                 IconActionUrl = $"/profiles/{comment.AuthorId}",
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow,
-                Id = Guid.NewGuid().ToString(),
+                SenderId = comment.AuthorId,
             });
         }
 
@@ -74,6 +74,9 @@ namespace ExpertBridge.Api.Services
 
         private async Task NotifyInternalAsync(params List<Notification> notifications)
         {
+            var toSend = notifications
+                .Where(n => n.RecipientId != n.SenderId);
+
             await _dbContext.Notifications.AddRangeAsync(notifications);
             await _dbContext.SaveChangesAsync();
 
