@@ -387,7 +387,10 @@ public class PostsController : ControllerBase
     ///     The updated post.
     /// </returns>
     [HttpPatch("{postId}")]
-    public async Task<PostResponse> Edit([FromRoute] string postId, [FromBody] EditPostRequest request)
+    public async Task<PostResponse> Edit(
+        [FromRoute] string postId,
+        [FromBody] EditPostRequest request,
+        [FromServices] Channel<PostProcessingPipelineMessage> _channel)
     {
         // Check if the postId is valid
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
@@ -422,6 +425,14 @@ public class PostsController : ControllerBase
         if (!string.IsNullOrEmpty(request.Content))
         {
             post.Content = request.Content.Trim();
+
+            await _channel.Writer.WriteAsync(new PostProcessingPipelineMessage
+            {
+                AuthorId = userProfileId,
+                Content = post.Content,
+                PostId = post.Id,
+                Title = post.Title,
+            });
         }
 
         await _dbContext.SaveChangesAsync();

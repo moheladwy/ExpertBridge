@@ -301,7 +301,10 @@ public class CommentsController(
     }
 
     [HttpPatch("{commentId}")]
-    public async Task<CommentResponse> Edit([FromRoute] string commentId, [FromBody] EditCommentRequest request)
+    public async Task<CommentResponse> Edit(
+        [FromRoute] string commentId,
+        [FromBody] EditCommentRequest request,
+        [FromServices] Channel<DetectInappropriateCommentMessage> _channel)
     {
         // Check if the request is not null
         ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -331,6 +334,13 @@ public class CommentsController(
         {
             comment.Content = request.Content.Trim();
             await _dbContext.SaveChangesAsync();
+
+            await _channel.Writer.WriteAsync(new DetectInappropriateCommentMessage
+            {
+                CommentId = comment.Id,
+                Content = comment.Content,
+                AuthorId = comment.AuthorId,
+            });
         }
 
         // Return the updated comment

@@ -4,6 +4,7 @@
 using System.Threading.Channels;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
@@ -62,12 +63,12 @@ namespace ExpertBridge.Notifications
 
         }
 
-        public async Task NotifyCommentDeletedAsync(Comment comment)
+        public async Task NotifyCommentDeletedAsync(Comment comment, ModerationReport report)
         {
 
         }
 
-        public async Task NotifyPostDeletedAsync(Post post)
+        public async Task NotifyPostDeletedAsync(Post post, ModerationReport report)
         {
 
         }
