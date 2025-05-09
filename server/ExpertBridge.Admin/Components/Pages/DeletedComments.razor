@@ -1,0 +1,30 @@
+@page "/deleted-comments"
+@using ExpertBridge.Admin.Components.SubModules
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Deleted Comments</h1>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        @if (Comments.Any())
+        {
+            <div class="space-y-6">
+                @foreach (var comment in Comments)
+                {
+                    <div class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                        <Comment CommentResponse=comment />
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center py-12">
+                <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-gray-500 text-lg font-medium">No deleted comments found</p>
+                <p class="text-gray-400 text-sm mt-1">Deleted comments will appear here</p>
+            </div>
+        }
+    </div>
+</div>

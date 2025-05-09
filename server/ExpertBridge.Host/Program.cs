@@ -1,9 +1,10 @@
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
+var redisPassword = builder.Configuration["Redis:REDIS_PASSWORD"]!;
 
 var redis = builder
-    .AddRedis("Redis", port: 4001)
+    .AddRedis("Redis", port: 6379)
     .WithImage("redis", "alpine")
     .WithContainerName("expertbridge-redis")
     .WithDataVolume("expertbridge-redis-data")
@@ -17,7 +18,7 @@ var seq = builder.AddSeq("Seq", port: 4002)
     .WithDataVolume("expertbridge-seq-data")
     .WithLifetime(ContainerLifetime.Persistent)
     .WithOtlpExporter()
-    .PublishAsConnectionString();
+    .WithExternalHttpEndpoints();
 
 builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
     .WithReference(redis)
@@ -28,8 +29,10 @@ builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
     .WithExternalHttpEndpoints();
 
 builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
+    .WithReference(redis)
     .WithReference(seq)
     .WaitFor(seq)
+    .WaitFor(redis)
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 

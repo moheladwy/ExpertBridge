@@ -23,7 +23,7 @@ public static class Services
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>()
             .AddTransient<IFirebaseAuthService, FirebaseAuthService>()
-            .AddScoped<ICacheService, CacheService>()
+            // .AddScoped<ICacheService, CacheService>()
             .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
             .AddScoped<TaggingService>()

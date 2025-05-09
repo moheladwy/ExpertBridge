@@ -1,5 +1,6 @@
 using ExpertBridge.Data;
 using ExpertBridge.Admin.Components;
+using ExpertBridge.Extensions.Caching;
 using ExpertBridge.Extensions.CORS;
 using ExpertBridge.Extensions.HealthChecks;
 using ExpertBridge.Extensions.Logging;
@@ -14,6 +15,7 @@ builder.AddCors();
 builder.AddSerilogLogging();
 builder.ConfigureOpenTelemetry();
 builder.ConfigureHttpClientDefaults();
+builder.AddFusionCache();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
