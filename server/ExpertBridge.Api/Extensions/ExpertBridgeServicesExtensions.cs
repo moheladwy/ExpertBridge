@@ -5,6 +5,7 @@ using System.Text.Json;
 using ExpertBridge.Data;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Settings.Serilog;
+using ExpertBridge.Extensions.Caching;
 using ExpertBridge.GroqLibrary.Settings;
 using Polly;
 using Polly.Retry;
@@ -32,7 +33,8 @@ namespace ExpertBridge.Api.Extensions
             // Infrastructure
             builder.Services.AddDatabase(builder.Configuration);
             builder.AddSeqEndpoint(connectionName: "Seq");
-            builder.AddRedisDistributedCache(connectionName: "Redis");
+            // builder.AddRedisDistributedCache(connectionName: "Redis");
+            builder.AddFusionCache();
             builder.AddS3ObjectService();
             builder.AddRateLimiting();
 

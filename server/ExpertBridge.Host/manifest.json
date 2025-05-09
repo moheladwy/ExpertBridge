@@ -2,24 +2,55 @@
   "$schema": "https://json.schemastore.org/aspire-8.0.json",
   "resources": {
     "Redis": {
-      "type": "parameter.v0",
-      "connectionString": "{Redis.value}",
-      "value": "{Redis.inputs.value}",
-      "inputs": {
-        "value": {
-          "type": "string",
-          "secret": true
+      "type": "container.v0",
+      "connectionString": "{Redis.bindings.tcp.host}:{Redis.bindings.tcp.port},password={Redis-password.value}",
+      "image": "docker.io/redis:alpine",
+      "entrypoint": "/bin/sh",
+      "args": [
+        "-c",
+        "redis-server --requirepass $REDIS_PASSWORD --save 300 1"
+      ],
+      "volumes": [
+        {
+          "name": "expertbridge-redis-data",
+          "target": "/data",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "REDIS_PASSWORD": "expertbridge_redis_password"
+      },
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "targetPort": 6379
         }
       }
     },
     "Seq": {
-      "type": "parameter.v0",
-      "connectionString": "{Seq.value}",
-      "value": "{Seq.inputs.value}",
-      "inputs": {
-        "value": {
-          "type": "string",
-          "secret": true
+      "type": "container.v0",
+      "connectionString": "{Seq.bindings.http.url}",
+      "image": "docker.io/datalust/seq:2024.3",
+      "volumes": [
+        {
+          "name": "expertbridge-seq-data",
+          "target": "/data",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "ACCEPT_EULA": "Y"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "port": 4002,
+          "targetPort": 80,
+          "external": true
         }
       }
     },

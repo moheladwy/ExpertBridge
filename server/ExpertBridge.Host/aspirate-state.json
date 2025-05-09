@@ -19,11 +19,14 @@
         "value": "2vpYANV4sI7aBHhezMHc8Zp81Q3OXEeGQJamq3ppmA=="
       },
       "ExpertBridgeApi": {
-        "ConnectionStrings__Redis": "2vpYANV4sI7aBHheMNkNwusfrRRynOwUc6KOHXtpjbuv",
-        "ConnectionStrings__Seq": "2vpYANV4sI7aBHhezMHc8Zp81Q3OXEeGQJamq3ppmA=="
+        "ConnectionStrings__Redis": "2vpYANV4sI7aBHheX8\u002BHE1P1otXRJk7ADF9PQFtpjbuvEQWNyTxNoV4JBUjPD7ORsIUNntJQSVqb3utuyV0Yt6aKUmqLZw==",
+        "ConnectionStrings__Seq": "2vpYANV4sI7aBHheBODm4gmtP/J9YOZyPQW8WmF4naLmBBztm3Rb6Q8="
       },
       "ExpertBridgeAdmin": {
-        "ConnectionStrings__Seq": "2vpYANV4sI7aBHhezMHc8Zp81Q3OXEeGQJamq3ppmA=="
+        "ConnectionStrings__Seq": "2vpYANV4sI7aBHheBODm4gmtP/J9YOZyPQW8WmF4naLmBBztm3Rb6Q8="
+      },
+      "Redis-password": {
+        "value": "2vpYANV4sI7aBHheFQHrmvlEHxjhcjd0ejIGjEQ4qqHkH1v/m1EGonJKBA7QT4b/\u002BIU="
       }
     }
   },
