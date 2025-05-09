@@ -3,20 +3,23 @@ namespace ExpertBridge.Core.Entities.Jobs;
 public class Job
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Title {get; set; }
+    public string Description {get; set;}
     public double ActualCost { get; set; }
-    public DateTime StartedAt { get; set; }
+    public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
+    public JobStatuses.JobStatusEnum Status { get; set; }
+    public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+
 
     // Foreign keys
-    // public string JobStatusId { get; set; }
-    public JobStatuses.JobStatusEnum Status { get; set; }
 
     public string WorkerId { get; set; }
     public string AuthorId { get; set; }
-    public string JobPostingId { get; set; }
+    public string? JobPostingId { get; set; }
 
     // Navigation properties
-    // public Entities.JobStatuses.JobStatus Status { get; set; }
     public JobReviews.JobReview Review { get; set; }
     public JobPostings.JobPosting JobPosting { get; set; }
     public Profiles.Profile Author { get; set; }

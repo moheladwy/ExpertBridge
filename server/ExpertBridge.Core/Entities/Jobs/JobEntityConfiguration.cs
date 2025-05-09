@@ -1,3 +1,4 @@
+using ExpertBridge.Core.Entities.JobReviews;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,26 +14,36 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
             .ValueGeneratedOnAdd();
 
+        builder.Property(x => x.Title)
+            .IsRequired()
+            .HasMaxLength(GlobalEntitiesConstraints.MaxTitleLength);
+
+        builder.Property(x => x.Description)
+            .IsRequired()
+            .HasMaxLength(GlobalEntitiesConstraints.MaxDescriptionLength);
+
         builder.Property(x => x.ActualCost)
             .IsRequired()
             .HasPrecision(18, 2);
 
         builder.Property(x => x.StartedAt)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.EndedAt)
             .IsRequired(false);
 
-        // JobStatus (One-to-One)
-        // builder.HasOne(j => j.Status)
-        //     .WithMany(s => s.Jobs)
-        //     .HasForeignKey(j => j.JobStatusId)
-        //     .IsRequired();
+        
 
         builder.Property(j => j.Status)
             .IsRequired()
             .HasConversion<string>() 
             .HasMaxLength(GlobalEntitiesConstraints.MaxEnumsLength);
+
+        builder.Property(x => x.CreatedAt)
+            .IsRequired();
+
+        builder.Property(x => x.UpdatedAt)
+            .IsRequired(false);
 
         // Author Profile (One-to-Many)
         builder.HasOne(j => j.Author)
@@ -52,6 +63,12 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
         builder.HasOne(j => j.JobPosting)
             .WithOne(jp => jp.Job)
             .HasForeignKey<Job>(j => j.JobPostingId)
+            .IsRequired(false);
+
+        // JobReview (One-to-One)
+        builder.HasOne(j => j.Review)
+            .WithOne(r => r.Job)
+            .HasForeignKey<JobReview>(r => r.JobId)
             .IsRequired(false);
     }
 }
