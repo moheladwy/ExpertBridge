@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatabase(builder.Configuration);
 
+builder.Services.Configure<CacheSettings>(
+                builder.Configuration.GetSection(CacheSettings.SectionName));
 builder.AddDefaultHealthChecks();
 builder.AddCors();
 builder.AddSerilogLogging();
