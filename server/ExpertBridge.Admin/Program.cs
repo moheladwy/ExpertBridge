@@ -1,5 +1,6 @@
 using ExpertBridge.Data;
 using ExpertBridge.Admin.Components;
+using ExpertBridge.Extensions.Caching;
 using ExpertBridge.Extensions.CORS;
 using ExpertBridge.Extensions.HealthChecks;
 using ExpertBridge.Extensions.Logging;
@@ -9,11 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatabase(builder.Configuration);
 
+builder.Services.Configure<CacheSettings>(
+                builder.Configuration.GetSection(CacheSettings.SectionName));
 builder.AddDefaultHealthChecks();
 builder.AddCors();
 builder.AddSerilogLogging();
 builder.ConfigureOpenTelemetry();
 builder.ConfigureHttpClientDefaults();
+builder.AddFusionCache();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

@@ -22,10 +22,12 @@ public static class HealthChecks
     public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
-        var connectionString = builder.Configuration.GetConnectionString("Postgresql")!;
+        var npgsqlConnectionString = builder.Configuration.GetConnectionString("Postgresql")!;
+        var redisConnectionString = builder.Configuration["Redis:ConnectionString"]!;
         builder.Services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
-            .AddNpgSql(connectionString, tags: ["live"]);
+            .AddNpgSql(npgsqlConnectionString, tags: ["live"])
+            .AddRedis(redisConnectionString, "Redis",  tags: ["live"], timeout: TimeSpan.FromSeconds(30));
 
         return builder;
     }
