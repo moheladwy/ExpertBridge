@@ -39,6 +39,11 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
             await Results.Unauthorized()
                 .ExecuteAsync(httpContext);
         }
+        catch (ForbiddenAccessException ex)
+        {
+            await Results.Forbid()
+                .ExecuteAsync(httpContext);
+        }
         catch (Exception ex)
         {
             Log.Error(

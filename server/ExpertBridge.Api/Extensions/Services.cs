@@ -5,6 +5,7 @@ using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Services;
 using FluentValidation;
 using ExpertBridge.Notifications;
+using ExpertBridge.Api.DomainServices;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -24,11 +25,7 @@ public static class Services
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>()
             .AddTransient<IFirebaseAuthService, FirebaseAuthService>()
             .AddScoped<ICacheService, CacheService>()
-            .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
-            .AddScoped<TaggingService>()
-            .AddScoped<ContentModerationService>()
-            .AddScoped<NotificationFacade>()
             ;
 
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
