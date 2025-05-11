@@ -23,6 +23,7 @@ namespace ExpertBridge.Api.Extensions
                 .AddScoped<TaggingService>()
                 .AddScoped<UserService>()
                 .AddScoped<AuthorizationHelper>()
+                .AddScoped<PostService>()
                 ;
 
             return services;
