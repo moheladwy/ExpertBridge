@@ -25,21 +25,24 @@ namespace ExpertBridge.Api.DomainServices
         private readonly ExpertBridgeDbContext _dbContext;
         private readonly MediaAttachmentService _mediaService;
         private readonly NotificationFacade _notificationFacade;
+        private readonly ILogger<CommentService> _logger;
         private readonly ChannelWriter<DetectInappropriateCommentMessage> _inappropriateCommentChannel;
 
         public CommentService(
             ExpertBridgeDbContext dbContext,
             MediaAttachmentService mediaService,
             NotificationFacade notificationFacade,
-            Channel<DetectInappropriateCommentMessage> inappropriateCommentChannel)
+            Channel<DetectInappropriateCommentMessage> inappropriateCommentChannel,
+            ILogger<CommentService> logger)
         {
             _dbContext = dbContext;
             _mediaService = mediaService;
             _notificationFacade = notificationFacade;
+            _logger = logger;
             _inappropriateCommentChannel = inappropriateCommentChannel.Writer;
         }
 
-        public async Task<Comment> CreateCommentAsync(CreateCommentRequest request, Profile authorProfile)
+        public async Task<CommentResponse> CreateCommentAsync(CreateCommentRequest request, Profile authorProfile)
         {
             ArgumentNullException.ThrowIfNull(request);
             ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
@@ -124,21 +127,22 @@ namespace ExpertBridge.Api.DomainServices
             //        "Failed to retrieve the comment after creation, indicating a data consistency issue.");
             //}
 
-            return comment;
+            return comment.SelectCommentResponseFromFullComment(authorProfile.Id);
         }
 
-        public async Task<Comment?> GetCommentAsync(string commentId)
+        public async Task<CommentResponse?> GetCommentAsync(string commentId, string? userProfileId)
         {
             ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
             var comment = await _dbContext.Comments
                 .FullyPopulatedCommentQuery(c => c.Id == commentId) // Uses your existing query extension
+                .SelectCommentResponseFromFullComment(userProfileId)
                 .FirstOrDefaultAsync();
 
             return comment;
         }
 
-        public async Task<IQueryable<Comment>> GetCommentsByPostAsync(string postId)
+        public async Task<List<CommentResponse>> GetCommentsByPostAsync(string postId, string? userProfileId)
         {
             ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
 
@@ -149,13 +153,15 @@ namespace ExpertBridge.Api.DomainServices
                 throw new PostNotFoundException($"Post with id={postId} was not found for retrieving comments.");
             }
 
-            var commentEntities = _dbContext.Comments
-                .FullyPopulatedCommentQuery(c => c.PostId == postId);
+            var commentEntities = await _dbContext.Comments
+                .FullyPopulatedCommentQuery(c => c.PostId == postId)
+                .SelectCommentResponseFromFullComment(userProfileId)
+                .ToListAsync();
 
             return commentEntities;
         }
 
-        public async Task<IQueryable<Comment>> GetCommentsByProfileAsync(string profileId)
+        public async Task<List<CommentResponse>> GetCommentsByProfileAsync(string profileId, string? userProfileId)
         {
             ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
 
@@ -170,13 +176,15 @@ namespace ExpertBridge.Api.DomainServices
             // the perspective for IsUpvoted/IsDownvoted is often the *requesting user*, not profileId.
             // If profileId is meant to be the perspective, then pass profileId to SelectCommentResponseFromFullComment.
             // Usually, it's the *current authenticated user's* perspective.
-            var comments = _dbContext.Comments
-                .FullyPopulatedCommentQuery(c => c.AuthorId == profileId);
+            var comments = await _dbContext.Comments
+                .FullyPopulatedCommentQuery(c => c.AuthorId == profileId)
+                .SelectCommentResponseFromFullComment(userProfileId)
+                .ToListAsync();
 
             return comments;
         }
 
-        public async Task<Comment?> VoteCommentAsync(string commentId, Profile voterProfile, bool isUpvoteIntent)
+        public async Task<CommentResponse?> VoteCommentAsync(string commentId, Profile voterProfile, bool isUpvoteIntent)
         {
             ArgumentException.ThrowIfNullOrEmpty(commentId);
             ArgumentNullException.ThrowIfNull(voterProfile);
@@ -237,12 +245,13 @@ namespace ExpertBridge.Api.DomainServices
             // Re-fetch the comment with all details for the response
             var updatedComment = await _dbContext.Comments
                 .FullyPopulatedCommentQuery(c => c.Id == commentId)
+                .SelectCommentResponseFromFullComment(voterProfile.Id)
                 .FirstOrDefaultAsync(); // Use FirstOrDefaultAsync as it might be null if something went wrong (though unlikely)
 
             return updatedComment;
         }
 
-        public async Task<Comment?> EditCommentAsync(string commentId, EditCommentRequest request, Profile editorProfile)
+        public async Task<CommentResponse?> EditCommentAsync(string commentId, EditCommentRequest request, Profile editorProfile)
         {
             ArgumentNullException.ThrowIfNull(request, nameof(request));
             ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
@@ -266,7 +275,7 @@ namespace ExpertBridge.Api.DomainServices
             if (comment.AuthorId != editorProfile.Id)
             {
                 // Log this attempt
-                // _logger.LogWarning("User {EditorProfileId} attempted to edit comment {CommentId} owned by {AuthorId}.", editorProfile.Id, comment.Id, comment.AuthorId);
+                _logger.LogWarning("User {EditorProfileId} attempted to edit comment {CommentId} owned by {AuthorId}.", editorProfile.Id, comment.Id, comment.AuthorId);
                 throw new UnauthorizedException(
                     $"User {editorProfile.Id} is not authorized to edit comment {commentId}.");
             }
@@ -290,6 +299,7 @@ namespace ExpertBridge.Api.DomainServices
             // Re-fetch with full population to ensure response is complete.
             var updatedCommentEntity = await _dbContext.Comments
                 .FullyPopulatedCommentQuery(c => c.Id == commentId)
+                .SelectCommentResponseFromFullComment(editorProfile.Id)
                 .FirstOrDefaultAsync();
 
             return updatedCommentEntity;
@@ -316,12 +326,12 @@ namespace ExpertBridge.Api.DomainServices
 
             if (comment.AuthorId != deleterProfile.Id)
             {
-                // Optionally, check for admin/moderator roles if they can delete others' comments
-                // if (!await _userService.IsAdminOrModeratorAsync(deleterProfile))
-                // {
+                //Optionally, check for admin / moderator roles if they can delete others' comments
+                //if (!await _userService.IsAdminOrModeratorAsync(deleterProfile))
+                //{
                 //    _logger.LogWarning("User {DeleterProfileId} attempted to delete comment {CommentId} owned by {AuthorId}.", deleterProfile.Id, comment.Id, comment.AuthorId);
                 //    throw new ForbiddenAccessException($"User {deleterProfile.Id} is not authorized to delete comment {commentId}.");
-                // }
+                //}
 
                 throw new ForbiddenAccessException($"User {deleterProfile.Id} is not authorized to delete comment {commentId}.");
             }

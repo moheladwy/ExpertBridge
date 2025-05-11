@@ -47,24 +47,23 @@ public class CommentsController : ControllerBase
         var authorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
         var comment = await _commentService.CreateCommentAsync(request, authorProfile);
-        var commentResponse = comment.SelectCommentResponseFromFullComment(authorProfile.Id);
 
         // HTTP 201 Created with Location header pointing to the new resource
-        return CreatedAtAction(nameof(Get), new { commentId = commentResponse.Id }, commentResponse);
+        return CreatedAtAction(nameof(Get), new { commentId = comment.Id }, comment);
     }
 
     [HttpGet("{commentId}", Name = "GetCommentById")] // Ensure Name is present for CreatedAtAction
     public async Task<CommentResponse> Get([FromRoute] string commentId)
     {
         var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
-        var comment = await _commentService.GetCommentAsync(commentId);
+        var comment = await _commentService.GetCommentAsync(commentId, userProfileId);
 
         if (comment == null)
         {
             throw new CommentNotFoundException($"No comment was found with id={commentId}.");
         }
 
-        return comment.SelectCommentResponseFromFullComment(userProfileId);
+        return comment;
     }
 
     // CONSIDER!
@@ -83,12 +82,10 @@ public class CommentsController : ControllerBase
     public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {
         var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
-        var comments = await _commentService.GetCommentsByPostAsync(postId);
-        var response = await comments
-            .SelectCommentResponseFromFullComment(userProfileId)
-            .ToListAsync();
+        var comments = await _commentService
+            .GetCommentsByPostAsync(postId, userProfileId);
 
-        return response;
+        return comments;
     }
 
     [Route("/api/profiles/{profileId}/[controller]")]
@@ -96,7 +93,6 @@ public class CommentsController : ControllerBase
     [AllowAnonymous]
     public async Task<List<CommentResponse>> GetAllByProfileId([FromRoute] string profileId)
     {
-        var comments = await _commentService.GetCommentsByProfileAsync(profileId);
 
         // currentMaybeUserProfileId is passed for consistency, but for "comments by profile X",
         // the perspective for IsUpvoted/IsDownvoted is often the *requesting user*, not profileId.
@@ -104,11 +100,9 @@ public class CommentsController : ControllerBase
         // Usually, it's the *current authenticated user's* perspective.
 
         var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
-        var response = await comments
-            .SelectCommentResponseFromFullComment(userProfileId) // Use current user's perspective for votes
-            .ToListAsync();
+        var comments = await _commentService.GetCommentsByProfileAsync(profileId, userProfileId);
 
-        return response;
+        return comments;
     }
 
     [HttpPatch("{commentId}/upvote")]
@@ -122,8 +116,7 @@ public class CommentsController : ControllerBase
             throw new CommentNotFoundException();
         }
 
-        return updatedComment
-            .SelectCommentResponseFromFullComment(voterProfile.Id);
+        return updatedComment;
     }
 
     [HttpPatch("{commentId}/downvote")]
@@ -137,8 +130,7 @@ public class CommentsController : ControllerBase
             throw new CommentNotFoundException();
         }
 
-        return updatedComment
-            .SelectCommentResponseFromFullComment(voterProfile.Id);
+        return updatedComment;
     }
 
     [HttpPatch("{commentId}")]
@@ -156,8 +148,7 @@ public class CommentsController : ControllerBase
             throw new CommentNotFoundException($"Error: Comment {commentId} edit process result unclear.");
         }
 
-        return updatedComment
-            .SelectCommentResponseFromFullComment(editorProfile.Id);
+        return updatedComment;
     }
 
     [HttpDelete("{commentId}")]
