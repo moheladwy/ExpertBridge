@@ -15,21 +15,16 @@ namespace ExpertBridge.Notifications
 {
     /// <summary>
     /// This Facade is responsible for handling notifiactions.
-    /// <br/>
-    /// 1. Storing them in the database.
-    /// <br/>
-    /// 2. Sending them to the notification channel for processing by the Hub.
+    /// Sending them to the notification channel for processing by the Hub <br/>
+    /// and sending them to the database for persistence.
     /// </summary>
     public class NotificationFacade
     {
-        private readonly ExpertBridgeDbContext _dbContext;
-        private readonly Channel<SendNotificationMessage> _channel;
+        private readonly Channel<SendNotificationsRequestMessage> _channel;
 
         public NotificationFacade(
-            ExpertBridgeDbContext dbContext,
-            Channel<SendNotificationMessage> channel)
+            Channel<SendNotificationsRequestMessage> channel)
         {
-            _dbContext = dbContext;
             _channel = channel;
         }
 
@@ -141,23 +136,22 @@ namespace ExpertBridge.Notifications
             var toSend = notifications
                 .Where(n => n.RecipientId != n.SenderId);
 
-            await _dbContext.Notifications.AddRangeAsync(toSend);
-            await _dbContext.SaveChangesAsync();
+            //await _dbContext.Notifications.AddRangeAsync(toSend);
+            //await _dbContext.SaveChangesAsync();
 
-            foreach (var notification in toSend)
+            await _channel.Writer.WriteAsync(new SendNotificationsRequestMessage
             {
-                await _channel.Writer.WriteAsync(new SendNotificationMessage
+                Notifications = toSend.Select(notification => new SendNotificationMessage
                 {
-                    NotificationId = notification.Id,
                     RecipientId = notification.RecipientId,
+                    SenderId = notification.SenderId,
                     Message = notification.Message,
                     ActionUrl = notification.ActionUrl,
                     IconUrl = notification.IconUrl,
                     IconActionUrl = notification.IconActionUrl,
                     IsRead = notification.IsRead,
-                    CreatedAt = notification.CreatedAt ?? DateTime.UtcNow,
-                });
-            }
+                }).ToList()
+            });
         }
     }
 }

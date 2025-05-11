@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ExpertBridge.Notifications;
+using ExpertBridge.Api.DomainServices;
+using ExpertBridge.Core.Entities.Posts;
+using Serilog;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -24,103 +27,43 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent, Duration = 60)]
-public class CommentsController(
-    ExpertBridgeDbContext _dbContext,
-    AuthorizationHelper _authHelper
-    ) : ControllerBase
+public class CommentsController : ControllerBase
 {
-    [Route("/api/[controller]")]
-    [HttpPost]
-    public async Task<CommentResponse> Create(
-        [FromBody] CreateCommentRequest request,
-        [FromServices] NotificationFacade _notificationFacade,
-        [FromServices] Channel<DetectInappropriateCommentMessage> _channel)
+    private readonly UserService _userService;
+    private readonly CommentService _commentService;
+
+    public CommentsController(
+        UserService userService,
+        CommentService commentService)
     {
-        ArgumentNullException.ThrowIfNull(request);
-        ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
+        _userService = userService;
+        _commentService = commentService;
+    }
 
-        var user = await _authHelper.GetCurrentUserAsync();
+    [HttpPost]
+    public async Task<ActionResult<CommentResponse>> Create([FromBody] CreateCommentRequest request)
+    {
+        // Use UserService to get the profile, it handles unauthorized/not found internally
+        var authorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-        if (user == null)
+        var comment = await _commentService.CreateCommentAsync(request, authorProfile);
+
+        // HTTP 201 Created with Location header pointing to the new resource
+        return CreatedAtAction(nameof(Get), new { commentId = comment.Id }, comment);
+    }
+
+    [HttpGet("{commentId}", Name = "GetCommentById")] // Ensure Name is present for CreatedAtAction
+    public async Task<CommentResponse> Get([FromRoute] string commentId)
+    {
+        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+        var comment = await _commentService.GetCommentAsync(commentId, userProfileId);
+
+        if (comment == null)
         {
-            throw new UnauthorizedException();
+            throw new CommentNotFoundException($"No comment was found with id={commentId}.");
         }
 
-        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == request.PostId);
-        var profile = await _dbContext.Profiles.FirstOrDefaultAsync(p => p.Id == user.Profile.Id);
-
-        // That should be a bad request response.
-        if (post == null || profile == null)
-        {
-            throw new PostNotFoundException($"Post with id={request.PostId} was not found");
-        }
-
-        Comment? parentComment = null;
-        if (!string.IsNullOrEmpty(request.ParentCommentId))
-        {
-            parentComment = await _dbContext.Comments
-                .FirstOrDefaultAsync(c => c.Id == request.ParentCommentId);
-            if (parentComment == null)
-            {
-                throw new CommentNotFoundException($"Parent comment with id={request.ParentCommentId} was not found");
-            }
-        }
-
-        var comment = new Comment
-        {
-            AuthorId = user.Profile.Id,
-            Author = profile,
-            Content = request.Content.Trim(),
-            ParentCommentId = request.ParentCommentId,
-            ParentComment = parentComment,
-            Post = post,
-            PostId = post.Id
-        };
-
-        await _dbContext.Comments.AddAsync(comment);
-
-        if (request.Media?.Count > 0)
-        {
-            var commentMedia = new List<CommentMedia>();
-            foreach (var media in request.Media)
-            {
-                commentMedia.Add(new CommentMedia
-                {
-                    Comment = comment,
-                    Name = comment.Content.Trim(),
-                    Type = media.Type,
-                    Key = media.Key,
-                });
-
-            }
-
-            await _dbContext.CommentMedias.AddRangeAsync(commentMedia);
-            comment.Medias = commentMedia;
-
-            var keys = commentMedia.Select(m => m.Key);
-            var grants = _dbContext.MediaGrants
-                .Where(grant => keys.Contains(grant.Key));
-
-            foreach (var grant in grants)
-            {
-                grant.IsActive = true;
-                grant.OnHold = false;
-                grant.ActivatedAt = DateTime.UtcNow;
-            }
-        }
-
-        await _dbContext.SaveChangesAsync();
-
-        await _channel.Writer.WriteAsync(new DetectInappropriateCommentMessage
-        {
-            CommentId = comment.Id,
-            Content = comment.Content,
-            AuthorId = comment.AuthorId,
-        });
-
-        await _notificationFacade.NotifyNewCommentAsync(comment);
-
-        return comment.SelectCommentResponseFromFullComment(profile.Id);
+        return comment;
     }
 
     // CONSIDER!
@@ -133,51 +76,16 @@ public class CommentsController(
     // one endpoint match a certain request? Hmmmm...
     // Ex. /api/comments?postId=aabb33cc /api/comments?userId=bbffcc11
 
-
     [Route("/api/posts/{postId}/comments")]
     [AllowAnonymous]
     [HttpGet] // api/posts/<postId>/comments
     public async Task<List<CommentResponse>> GetAllByPostId([FromRoute] string postId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-
-        var postExists = _dbContext.Posts.Any(p => p.Id == postId);
-
-        if (!postExists)
-        {
-            throw new PostNotFoundException($"Post with id={postId} was not found");
-        }
-
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile?.Id ?? string.Empty;
-
-        var comments = await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.PostId == postId)
-            .SelectCommentResponseFromFullComment(userProfileId)
-            .ToListAsync();
+        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+        var comments = await _commentService
+            .GetCommentsByPostAsync(postId, userProfileId);
 
         return comments;
-    }
-
-    [HttpGet("{commentId}")]
-    public async Task<CommentResponse> Get([FromRoute] string commentId)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
-
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile?.Id ?? string.Empty;
-
-        var comment = await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.Id == commentId)
-            .SelectCommentResponseFromFullComment(userProfileId)
-            .FirstOrDefaultAsync();
-
-        if (comment == null)
-        {
-            throw new CommentNotFoundException($"No comment was found with id={commentId}.");
-        }
-
-        return comment;
     }
 
     [Route("/api/profiles/{profileId}/[controller]")]
@@ -185,210 +93,79 @@ public class CommentsController(
     [AllowAnonymous]
     public async Task<List<CommentResponse>> GetAllByProfileId([FromRoute] string profileId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
-        var user = await _dbContext.Profiles
-            .AsNoTracking()
-            .FirstOrDefaultAsync(profile => profile.Id == profileId);
-        if (user is null) throw new UserNotFoundException($"Profile with id={profileId} was not found");
 
-        return await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.AuthorId == profileId)
-            .SelectCommentResponseFromFullComment(profileId)
-            .ToListAsync();
+        // currentMaybeUserProfileId is passed for consistency, but for "comments by profile X",
+        // the perspective for IsUpvoted/IsDownvoted is often the *requesting user*, not profileId.
+        // If profileId is meant to be the perspective, then pass profileId to SelectCommentResponseFromFullComment.
+        // Usually, it's the *current authenticated user's* perspective.
+
+        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+        var comments = await _commentService.GetCommentsByProfileAsync(profileId, userProfileId);
+
+        return comments;
     }
 
     [HttpPatch("{commentId}/upvote")]
-    public async Task<CommentResponse> Upvote(
-        [FromRoute] string commentId,
-        [FromServices] NotificationFacade _notifications)
+    public async Task<CommentResponse> Upvote([FromRoute] string commentId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(commentId);
+        var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Throws if not authorized
+        var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, isUpvoteIntent: true);
 
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile.Id ?? string.Empty;
-
-        var comment = await _dbContext.Comments
-            .Include(c => c.Author)
-            .FirstOrDefaultAsync(c => c.Id == commentId);
-
-        if (user == null || string.IsNullOrEmpty(userProfileId))
-        {
-            throw new UnauthorizedException();
-        }
-        if (comment == null)
-        {
-            throw new CommentNotFoundException($"Comment with id={commentId} was not found");
-        }
-
-        var vote = await _dbContext.CommentVotes
-            .Include(v => v.Comment)
-            .ThenInclude(c => c.Author)
-            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
-
-        if (vote == null)
-        {
-            vote = new CommentVote
-            {
-                ProfileId = userProfileId,
-                CommentId = comment.Id,
-                IsUpvote = true,
-                Comment = comment,
-                Profile = user.Profile,
-            };
-
-            await _dbContext.AddAsync(vote);
-        }
-        else
-        {
-            if (vote.IsUpvote)
-            {
-                _dbContext.CommentVotes.Remove(vote);
-            }
-            else
-            {
-                vote.IsUpvote = true;
-            }
-        }
-
-        await _dbContext.SaveChangesAsync();
-        await _notifications.NotifyCommentVotedAsync(vote);
-
-        return await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
-            .SelectCommentResponseFromFullComment(user.Profile.Id)
-            .FirstAsync();
+        return updatedComment;
     }
 
     [HttpPatch("{commentId}/downvote")]
-    public async Task<CommentResponse> Downvote(
-        [FromRoute] string commentId,
-        [FromServices] NotificationFacade _notifications)
+    public async Task<CommentResponse> Downvote([FromRoute] string commentId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(commentId);
+        var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Throws if not authorized
+        var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, isUpvoteIntent: false);
 
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile.Id ?? string.Empty;
-
-        var comment = await _dbContext.Comments
-            .Include(c => c.Author)
-            .FirstOrDefaultAsync(c => c.Id == commentId);
-
-        if (user == null || string.IsNullOrEmpty(userProfileId))
-        {
-            throw new UnauthorizedException();
-        }
-        if (comment == null)
-        {
-            throw new CommentNotFoundException($"Comment with id={commentId} was not found");
-        }
-
-        var vote = await _dbContext.CommentVotes
-            .Include(v => v.Comment)
-            .ThenInclude(c => c.Author)
-            .FirstOrDefaultAsync(v => v.CommentId == commentId && v.ProfileId == userProfileId);
-
-        if (vote == null)
-        {
-            vote = new CommentVote
-            {
-                ProfileId = userProfileId,
-                CommentId = comment.Id,
-                IsUpvote = false,
-                Comment = comment,
-            };
-
-            await _dbContext.AddAsync(vote);
-        }
-        else
-        {
-            if (vote.IsUpvote)
-            {
-                vote.IsUpvote = false;
-            }
-            else
-            {
-                _dbContext.CommentVotes.Remove(vote);
-            }
-        }
-
-        await _dbContext.SaveChangesAsync();
-        await _notifications.NotifyCommentVotedAsync(vote);
-
-        return await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.Id == comment.Id)
-            .SelectCommentResponseFromFullComment(user.Profile.Id)
-            .FirstAsync();
+        return updatedComment;
     }
 
     [HttpPatch("{commentId}")]
-    public async Task<CommentResponse> Edit(
-        [FromRoute] string commentId,
-        [FromBody] EditCommentRequest request,
-        [FromServices] Channel<DetectInappropriateCommentMessage> _channel)
+    public async Task<CommentResponse> Edit([FromRoute] string commentId, [FromBody] EditCommentRequest request)
     {
-        // Check if the request is not null
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
-        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
-
-        // Check if the user is authorized to edit the comment
-        var user = await _authHelper.GetCurrentUserAsync();
-        if (user is null)
-        {
-            throw new UnauthorizedException();
-        }
-
-        var userProfileId = user.Profile?.Id ?? string.Empty;
+        var editorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
         // Check if the comment exists and belongs to the user
-        var comment = await _dbContext.Comments
-            .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userProfileId);
+        var updatedComment = await _commentService.EditCommentAsync(commentId, request, editorProfile);
 
-        if (comment == null)
+        if (updatedComment == null)
         {
-            throw new CommentNotFoundException(
-                $"Comment with id={commentId} was not found");
+            // This could happen if the comment was deleted between fetch and update, or if edit logic returns null for no changes.
+            // The service throws CommentNotFound or ForbiddenAccess, so this path is less likely.
+            throw new CommentNotFoundException($"Error: Comment {commentId} edit process result unclear.");
         }
 
-        // Update the comment content if provided
-        if (!string.IsNullOrEmpty(request.Content))
-        {
-            comment.Content = request.Content.Trim();
-            await _dbContext.SaveChangesAsync();
-
-            await _channel.Writer.WriteAsync(new DetectInappropriateCommentMessage
-            {
-                CommentId = comment.Id,
-                Content = comment.Content,
-                AuthorId = comment.AuthorId,
-            });
-        }
-
-        // Return the updated comment
-        return comment.SelectCommentResponseFromFullComment(userProfileId);
+        return updatedComment;
     }
 
     [HttpDelete("{commentId}")]
     public async Task<IActionResult> Delete([FromRoute] string commentId)
     {
-        // Check if the id is not null or empty
-        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+        var deleterProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-        // Check if the user is authorized to delete the comment
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile.Id ?? string.Empty;
-
-        // Check if the comment exists and belongs to the user
-        var comment = await _dbContext.Comments
-            .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userProfileId);
-
-        if (comment != null)
+        try
         {
-            //builder.HasMany(c => c.Replies)
-            //    .WithOne(c => c.ParentComment)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            await _commentService.DeleteCommentAsync(commentId, deleterProfile);
+            return NoContent(); // Always 204 for DELETE success (even if resource was already gone)
+        }
+        catch (ForbiddenAccessException ex)
+        {
+            // Even for forbidden, you might return 204 to not leak info, 
+            // or 403 if you want to be explicit. Standard is often 204 for DELETE.
+            // However, if _userService.GetCurrentUserProfileOrThrowAsync() throws Unauthorized,
+            // that will result in 401 before this.
+            // A 403 here means authenticated user, but not permitted for *this specific resource*.
+            // For DELETE, many prefer to still return 204 to not reveal existence/non-existence.
+            // But if it's a clear "you can't do that" to an owned resource, 403 is also fine.
+            // Let's stick to 204 for simplicity and common DELETE idempotency interpretation.
+            Log.Warning(ex,
+                "Forbidden attempt to delete comment {CommentId} by user {UserProfileId}",
+                commentId, deleterProfile.Id);
 
-            _dbContext.Comments.Remove(comment);
-            await _dbContext.SaveChangesAsync();
+            return NoContent();
         }
 
         // BEWARE!
@@ -397,6 +174,5 @@ public class CommentsController(
         // refused the request from the beginning, else you do not return anything
         // other than no content.
         // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
-        return NoContent();
     }
 }

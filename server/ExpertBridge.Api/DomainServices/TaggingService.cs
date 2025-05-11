@@ -7,7 +7,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Services;
+namespace ExpertBridge.Api.DomainServices;
 
 /// <summary>
 ///     Provides methods to manage and associate tags with posts and user profiles.
