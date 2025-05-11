@@ -23,7 +23,7 @@ public static class HealthChecks
         where TBuilder : IHostApplicationBuilder
     {
         var npgsqlConnectionString = builder.Configuration.GetConnectionString("Postgresql")!;
-        var redisConnectionString = builder.Configuration["Redis:ConnectionString"]!;
+        var redisConnectionString = builder.Configuration.GetConnectionString("Redis")!;
         builder.Services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
             .AddNpgSql(npgsqlConnectionString, tags: ["live"])
