@@ -81,7 +81,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                         // Mark as inappropriate and mark as deleted ...
                         //await moderationService.ReportPostAsync(post.PostId, results, isNegative: true);
                         isAppropriate = false;
-                        reason = "Your comment does not follow our Community Guidelines.";
+                        reason = "Your post does not follow our Community Guidelines.";
                     }
 
                     var report = new ModerationReport

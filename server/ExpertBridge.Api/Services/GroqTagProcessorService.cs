@@ -12,7 +12,7 @@ namespace ExpertBridge.Api.Services;
 ///     The service also supports flexible and robust JSON parsing with case-insensitive
 ///     property deserialization settings.
 /// </summary>
-public class TagProcessorService
+public class GroqTagProcessorService
 {
     /// <summary>
     ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
@@ -33,7 +33,7 @@ public class TagProcessorService
     ///     with the Groq LLM API for generating text-based categorizations and processes
     ///     the results with case-insensitive JSON deserialization for robust and flexible parsing.
     /// </summary>
-    public TagProcessorService(GroqLlmTextProvider groqLlmTextProvider)
+    public GroqTagProcessorService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
         _jsonSerializerOptions = new JsonSerializerOptions

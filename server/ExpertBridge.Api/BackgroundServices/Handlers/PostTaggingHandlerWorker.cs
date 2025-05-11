@@ -3,6 +3,7 @@
 
 
 using System.Threading.Channels;
+using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
 using Serilog;
