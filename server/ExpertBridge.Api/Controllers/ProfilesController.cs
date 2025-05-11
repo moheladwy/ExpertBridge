@@ -89,7 +89,7 @@ public class ProfilesController : ControllerBase
         return response;
     }
 
-    [Route("/api/v2/{cotroller}/onboard")]
+    [Route("/api/v2/{controller}/onboard")]
     [HttpPost]
     public async Task<ProfileResponse> OnboardUserV2(
         [FromBody] OnboardUserRequestV2 request,
@@ -121,7 +121,7 @@ public class ProfilesController : ControllerBase
             .ToList();
 
         await _dbContext.UserInterests.AddRangeAsync(tagsToBeAddedToUserInterests.Select(tagId =>
-            new UserInterest { ProfileId = user.Profile.Id, TagId = tagId})
+            new UserInterest { ProfileId = user.Profile.Id, TagId = tagId })
         , cancellationToken);
 
         var newTagsToBeProcessed = request.Tags
