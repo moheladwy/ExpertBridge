@@ -91,7 +91,9 @@ public class ProfilesController : ControllerBase
 
     [Route("/api/v2/{cotroller}/onboard")]
     [HttpPost]
-    public async Task<ProfileResponse> OnboardUserV2([FromBody] OnboardUserRequestV2 request)
+    public async Task<ProfileResponse> OnboardUserV2(
+        [FromBody] OnboardUserRequestV2 request,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -104,7 +106,7 @@ public class ProfilesController : ControllerBase
             .Where(t =>
                 request.Tags.Contains(t.EnglishName) || request.Tags.Contains(t.ArabicName)
                 )
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var existingTagIds = existingTags.Select(t => t.Id).ToList();
 
@@ -112,7 +114,7 @@ public class ProfilesController : ControllerBase
             .AsNoTracking()
             .Where(ui => ui.ProfileId == user.Profile.Id && existingTagIds.Contains(ui.TagId))
             .Select(ui => ui.TagId)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         var tagsToBeAddedToUserInterests = existingTagIds
             .Where(tagId => !existingUserInterests.Contains(tagId))
@@ -120,24 +122,24 @@ public class ProfilesController : ControllerBase
 
         await _dbContext.UserInterests.AddRangeAsync(tagsToBeAddedToUserInterests.Select(tagId =>
             new UserInterest { ProfileId = user.Profile.Id, TagId = tagId})
-        );
+        , cancellationToken);
 
         var newTagsToBeProcessed = request.Tags
             .Where(t => !existingTags.Any(et => et.EnglishName == t || et.ArabicName == t))
             .ToList();
         user.IsOnboarded = true;
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         await _channelWriter.WriteAsync(new UserInterestsProsessingMessage
         {
             UserProfileId = user.Profile.Id,
             InterestsTags = newTagsToBeProcessed
-        });
+        }, cancellationToken);
 
         var response = await _dbContext.Profiles
             .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
             .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
 
         return response ?? throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
     }

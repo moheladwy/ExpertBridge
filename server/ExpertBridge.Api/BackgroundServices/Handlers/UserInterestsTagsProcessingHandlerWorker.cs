@@ -14,15 +14,19 @@ public sealed class UserInterestsTagsProcessingHandlerWorker
 {
     private readonly IServiceProvider _services;
     private readonly ILogger<UserInterestsTagsProcessingHandlerWorker> _logger;
+    private readonly ChannelWriter<UserInterestsUpdatedMessage> _userInterestsUpdateChannelWriter;
 
     public UserInterestsTagsProcessingHandlerWorker(
         IServiceProvider services,
         Channel<UserInterestsProsessingMessage> channel,
-        ILogger<UserInterestsTagsProcessingHandlerWorker> logger)
+        ILogger<UserInterestsTagsProcessingHandlerWorker> logger,
+        Channel<UserInterestsUpdatedMessage> userInterestsUpdatedChannel
+        )
         : base(nameof(UserInterestsTagsProcessingHandlerWorker), channel.Reader, logger)
     {
         _services = services;
         _logger = logger;
+        _userInterestsUpdateChannelWriter = userInterestsUpdatedChannel.Writer;
     }
 
     protected override async Task ExecuteInternalAsync(
@@ -61,6 +65,9 @@ public sealed class UserInterestsTagsProcessingHandlerWorker
                         Tag = tag
                     }).ToList(), stoppingToken);
             await dbContext.SaveChangesAsync(stoppingToken);
+
+            await _userInterestsUpdateChannelWriter.WriteAsync(new UserInterestsUpdatedMessage
+                { UserProfileId = message.UserProfileId }, stoppingToken);
         }
         catch (Exception ex)
         {
