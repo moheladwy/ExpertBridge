@@ -111,11 +111,6 @@ public class CommentsController : ControllerBase
         var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Throws if not authorized
         var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, isUpvoteIntent: true);
 
-        if (updatedComment == null)
-        {
-            throw new CommentNotFoundException();
-        }
-
         return updatedComment;
     }
 
@@ -124,11 +119,6 @@ public class CommentsController : ControllerBase
     {
         var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Throws if not authorized
         var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, isUpvoteIntent: false);
-
-        if (updatedComment == null)
-        {
-            throw new CommentNotFoundException();
-        }
 
         return updatedComment;
     }

@@ -184,7 +184,61 @@ namespace ExpertBridge.Api.DomainServices
             return comments;
         }
 
-        public async Task<CommentResponse?> VoteCommentAsync(string commentId, Profile voterProfile, bool isUpvoteIntent)
+        public async Task<CommentResponse?> EditCommentAsync(string commentId, EditCommentRequest request, Profile editorProfile)
+        {
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+            ArgumentNullException.ThrowIfNull(editorProfile, nameof(editorProfile));
+
+            var comment = await _dbContext.Comments
+                // Include author to ensure we can map to CommentResponse, or FullyPopulatedCommentQuery does it.
+                // .Include(c => c.Author) 
+                // .Include(c => c.Votes)
+                // .Include(c => c.Medias)
+                // For edit, we might only need the basic comment if not re-fetching with FullyPopulated later.
+                // Let's fetch with enough data or plan to re-fetch.
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                throw new CommentNotFoundException(
+                    $"Comment with id={commentId} was not found for editing.");
+            }
+
+            if (comment.AuthorId != editorProfile.Id)
+            {
+                // Log this attempt
+                _logger.LogWarning("User {EditorProfileId} attempted to edit comment {CommentId} owned by {AuthorId}.", editorProfile.Id, comment.Id, comment.AuthorId);
+                throw new UnauthorizedException(
+                    $"User {editorProfile.Id} is not authorized to edit comment {commentId}.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Content) && comment.Content != request.Content.Trim())
+            {
+                comment.Content = request.Content.Trim();
+
+                await _dbContext.SaveChangesAsync(); // Save only if actual changes were made
+
+                // Offload to inappropriate content detection
+                await _inappropriateCommentChannel.WriteAsync(new DetectInappropriateCommentMessage
+                {
+                    CommentId = comment.Id,
+                    Content = comment.Content,
+                    AuthorId = comment.AuthorId,
+                });
+            }
+
+            // Return the potentially updated comment, mapped to response
+            // Re-fetch with full population to ensure response is complete.
+            var updatedCommentEntity = await _dbContext.Comments
+                .FullyPopulatedCommentQuery(c => c.Id == commentId)
+                .SelectCommentResponseFromFullComment(editorProfile.Id)
+                .FirstOrDefaultAsync();
+
+            return updatedCommentEntity;
+        }
+
+        public async Task<CommentResponse> VoteCommentAsync(string commentId, Profile voterProfile, bool isUpvoteIntent)
         {
             ArgumentException.ThrowIfNullOrEmpty(commentId);
             ArgumentNullException.ThrowIfNull(voterProfile);
@@ -239,6 +293,7 @@ namespace ExpertBridge.Api.DomainServices
                 // voteToNotify.Comment is 'comment' which has Author loaded.
                 // voteToNotify.Profile will be voterProfile.
 
+                vote.Comment = comment;
                 await _notificationFacade.NotifyCommentVotedAsync(vote);
             }
 
@@ -246,64 +301,11 @@ namespace ExpertBridge.Api.DomainServices
             var updatedComment = await _dbContext.Comments
                 .FullyPopulatedCommentQuery(c => c.Id == commentId)
                 .SelectCommentResponseFromFullComment(voterProfile.Id)
-                .FirstOrDefaultAsync(); // Use FirstOrDefaultAsync as it might be null if something went wrong (though unlikely)
+                .FirstAsync(); 
 
             return updatedComment;
         }
 
-        public async Task<CommentResponse?> EditCommentAsync(string commentId, EditCommentRequest request, Profile editorProfile)
-        {
-            ArgumentNullException.ThrowIfNull(request, nameof(request));
-            ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
-            ArgumentNullException.ThrowIfNull(editorProfile, nameof(editorProfile));
-
-            var comment = await _dbContext.Comments
-                // Include author to ensure we can map to CommentResponse, or FullyPopulatedCommentQuery does it.
-                // .Include(c => c.Author) 
-                // .Include(c => c.Votes)
-                // .Include(c => c.Medias)
-                // For edit, we might only need the basic comment if not re-fetching with FullyPopulated later.
-                // Let's fetch with enough data or plan to re-fetch.
-                .FirstOrDefaultAsync(c => c.Id == commentId);
-
-            if (comment == null)
-            {
-                throw new CommentNotFoundException(
-                    $"Comment with id={commentId} was not found for editing.");
-            }
-
-            if (comment.AuthorId != editorProfile.Id)
-            {
-                // Log this attempt
-                _logger.LogWarning("User {EditorProfileId} attempted to edit comment {CommentId} owned by {AuthorId}.", editorProfile.Id, comment.Id, comment.AuthorId);
-                throw new UnauthorizedException(
-                    $"User {editorProfile.Id} is not authorized to edit comment {commentId}.");
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.Content) && comment.Content != request.Content.Trim())
-            {
-                comment.Content = request.Content.Trim();
-
-                await _dbContext.SaveChangesAsync(); // Save only if actual changes were made
-
-                // Offload to inappropriate content detection
-                await _inappropriateCommentChannel.WriteAsync(new DetectInappropriateCommentMessage
-                {
-                    CommentId = comment.Id,
-                    Content = comment.Content,
-                    AuthorId = comment.AuthorId,
-                });
-            }
-
-            // Return the potentially updated comment, mapped to response
-            // Re-fetch with full population to ensure response is complete.
-            var updatedCommentEntity = await _dbContext.Comments
-                .FullyPopulatedCommentQuery(c => c.Id == commentId)
-                .SelectCommentResponseFromFullComment(editorProfile.Id)
-                .FirstOrDefaultAsync();
-
-            return updatedCommentEntity;
-        }
 
         // TODO: CONSIDER!
         // Do we need to delete the replies on this comment? 
