@@ -34,7 +34,7 @@ public sealed class UserInterestsTagsProcessingHandlerWorker
             ArgumentNullException.ThrowIfNull(message, nameof(message));
             using var scope = _services.CreateScope();
             var tagProcessorService = scope.ServiceProvider
-                .GetRequiredService<TagProcessorService>();
+                .GetRequiredService<GroqTagProcessorService>();
 
             var results = await tagProcessorService
                 .TranslateTagsAsync(message.Interests);
