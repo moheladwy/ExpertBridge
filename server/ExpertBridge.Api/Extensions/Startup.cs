@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 
 namespace ExpertBridge.Api.Extensions;
@@ -43,31 +42,6 @@ internal static class Startup
                 }
             });
         });
-    }
-
-    /// <summary>
-    ///     Adds the default health checks to the application builder.
-    /// </summary>
-    /// <param name="builder">
-    ///     The WebApplicationBuilder to add the default health checks to.
-    /// </param>
-    /// <typeparam name="TBuilder">
-    ///     The type of the builder.
-    /// </typeparam>
-    /// <returns>
-    ///     The WebApplicationBuilder with the default health checks added.
-    /// </returns>
-    public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
-        where TBuilder : IHostApplicationBuilder
-    {
-        var npgsqlConnectionString = builder.Configuration.GetConnectionString("Postgresql")!;
-        var redisConnectionString = builder.Configuration["Redis:ConnectionString"]!;
-        builder.Services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
-            .AddNpgSql(npgsqlConnectionString, tags: ["live"])
-            .AddRedis(redisConnectionString, tags: ["live"]);
-
-        return builder;
     }
 
     /// <summary>
