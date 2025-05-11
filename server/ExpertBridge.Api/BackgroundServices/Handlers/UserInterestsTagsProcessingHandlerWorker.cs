@@ -17,9 +17,9 @@ public sealed class UserInterestsTagsProcessingHandlerWorker
 
     public UserInterestsTagsProcessingHandlerWorker(
         IServiceProvider services,
-        ChannelReader<UserInterestsProsessingMessage> channel,
+        Channel<UserInterestsProsessingMessage> channel,
         ILogger<UserInterestsTagsProcessingHandlerWorker> logger)
-        : base(nameof(UserInterestsTagsProcessingHandlerWorker), channel, logger)
+        : base(nameof(UserInterestsTagsProcessingHandlerWorker), channel.Reader, logger)
     {
         _services = services;
         _logger = logger;
@@ -37,7 +37,7 @@ public sealed class UserInterestsTagsProcessingHandlerWorker
                 .GetRequiredService<GroqTagProcessorService>();
 
             var results = await tagProcessorService
-                .TranslateTagsAsync(message.Interests);
+                .TranslateTagsAsync(message.InterestsTags);
 
             var categorizerTags = results.ToList();
             if (categorizerTags.Count == 0)

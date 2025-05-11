@@ -28,16 +28,26 @@ public sealed class TaggingService
     private readonly ChannelWriter<UserInterestsUpdatedMessage> _userInterestsChannel;
 
     /// <summary>
+    /// Represents the channel writer responsible for handling and dispatching
+    /// messages containing user interest processing data, ensuring proper
+    /// communication and task coordination within the system.
+    /// </summary>
+    private readonly ChannelWriter<UserInterestsProsessingMessage> _userInterestsProcessingChannel;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="TaggingService" /> class.
     /// </summary>
     /// <param name="dbContext">The database context used for data operations.</param>
     /// <param name="userInterestsChannel">The channel used for publishing user interest update messages.</param>
+    /// <param name="userInterestsProcessingChannel">The channel used for processing user interest messages.</param>
     public TaggingService(
         ExpertBridgeDbContext dbContext,
-        Channel<UserInterestsUpdatedMessage> userInterestsChannel)
+        Channel<UserInterestsUpdatedMessage> userInterestsChannel,
+        Channel<UserInterestsProsessingMessage> userInterestsProcessingChannel)
     {
         _dbContext = dbContext;
         _userInterestsChannel = userInterestsChannel;
+        _userInterestsProcessingChannel = userInterestsProcessingChannel.Writer;
     }
 
 
