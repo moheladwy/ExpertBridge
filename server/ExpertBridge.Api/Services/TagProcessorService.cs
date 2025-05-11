@@ -36,7 +36,11 @@ public class TagProcessorService
     public TagProcessorService(GroqLlmTextProvider groqLlmTextProvider)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
-        _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            AllowTrailingCommas = true
+        };
     }
 
     /// <summary>
