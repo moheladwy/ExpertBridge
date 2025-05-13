@@ -5,6 +5,7 @@ using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.JobStatuses;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Requests.Jobs;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +38,7 @@ namespace ExpertBridge.Api.Controllers
 
             var user = await _authHelper.GetCurrentUserAsync();
             var clientProfileId = user?.Profile?.Id ?? string.Empty;
-            
+
 
             if (string.IsNullOrEmpty(clientProfileId))
             {
@@ -46,7 +47,7 @@ namespace ExpertBridge.Api.Controllers
 
             var clientProfile = await _dbContext.Profiles
                 .Include(p => p.User)
-                .FirstOrDefaultAsync(p => p.UserId == clientProfileId);
+                .FirstOrDefaultAsync(p => p.Id == clientProfileId);
 
             if (clientProfile == null)
             {
@@ -92,11 +93,129 @@ namespace ExpertBridge.Api.Controllers
             _dbContext.Jobs.Add(newJob);
             await _dbContext.SaveChangesAsync();
 
-            
+
 
             return Ok(MapToJobResponse(newJob, clientProfile, contractorProfile));
         }
 
+        [HttpPatch("{jobId}/response")]
+        public async Task<ActionResult<JobResponse>> RespondToJobOffer(string jobId, [FromBody] RespondToJobOfferRequest request)
+        {
+            var user = await _authHelper.GetCurrentUserAsync();
+            if (user?.Profile == null){
+                return Unauthorized("User profile not found.");
+            }
+
+            var contractorProfileId = user.Profile.Id;
+
+            var job = await _dbContext.Jobs
+                .Include(j => j.Author)
+                    .ThenInclude(p => p.User)
+                .Include(j => j.Worker)
+                    .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(j => j.Id == jobId);
+
+            if (job == null)
+            {
+                throw new JobNotFoundException($"Job with Id '{jobId} is not found.'");
+            }
+
+            if (job.WorkerId != contractorProfileId)
+            {
+                return Forbid("You are not authorised to respond to this job request");
+            }
+
+            if (job.Status != JobStatusEnum.Offered)
+            {
+                return BadRequest("This job is no longer in the offered state.");
+            }
+
+            job.UpdatedAt = DateTime.UtcNow;
+
+            if (request.Accept)
+            {
+                job.Status = JobStatusEnum.Accepted;
+                job.StartedAt = DateTime.UtcNow;
+            } else {
+                job.Status = JobStatusEnum.Declined;
+            }
+
+            _dbContext.Jobs.Update(job);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(MapToJobResponse(job, job.Author, job.Worker));
+
+        }
+
+        [HttpPatch("{jobId}/status")]
+        public async Task<ActionResult<JobResponse>> UpdateJobStatus(string jobId, [FromBody] UpdateJobStatusRequest request)
+        {
+            var currentUser = await _authHelper.GetCurrentUserAsync();
+            if (currentUser?.Profile == null)
+            {
+                return Unauthorized("User profile not found.");
+            }
+
+            var userProfileId = currentUser.Profile.Id;
+
+            var job = await _dbContext.Jobs
+                .Include(j => j.Author)
+                    .ThenInclude(p => p.User)
+                .Include(j => j.Worker)
+                    .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(j => j.Id == jobId);
+
+            if (job == null) 
+            {
+                throw new JobNotFoundException($"Job with '{jobId} not found.");
+            }
+            
+            // user is either client or contractor
+            if (job.AuthorId != userProfileId && job.WorkerId != userProfileId)
+            {
+                return Forbid("You are not authorised to update the status of this job.");
+            }
+
+            // business logic
+            // only client can move from PendingClientApproval to Completed
+            // only contractor can move from accepted to inprogress when they arrives
+            // only contractor cam move from inprogress to PendingClientApproval
+            // Either can be moved to cancelled if not completed
+
+            var oldStatus = job.Status;
+            if (oldStatus == request.NewStatus)
+            {
+                return BadRequest($"Job is already in '{request.NewStatus}' status.");
+            }
+
+            var newStatus = request.NewStatus;
+            bool isValidTransition = false;
+
+            if (oldStatus==JobStatusEnum.PendingClientApproval && newStatus==JobStatusEnum.Completed && job.AuthorId==userProfileId
+                || oldStatus==JobStatusEnum.Accepted && newStatus==JobStatusEnum.InProgress && job.WorkerId==userProfileId
+                || oldStatus==JobStatusEnum.InProgress && newStatus==JobStatusEnum.PendingClientApproval && job.WorkerId==userProfileId
+                || !(oldStatus==JobStatusEnum.Completed) && newStatus==JobStatusEnum.Cancelled){
+                isValidTransition = true;
+            }
+
+            if (!isValidTransition)
+            {
+                return BadRequest($"Invalid status transition form '{oldStatus}' to '{request.NewStatus}' or you're not authorized.");
+            }
+
+            job.Status = request.NewStatus;
+            job.UpdatedAt = DateTime.UtcNow;
+
+            if (request.NewStatus == JobStatusEnum.Completed)
+            {
+                job.EndedAt = DateTime.UtcNow;
+            }
+
+            _dbContext.Jobs.Update(job);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(MapToJobResponse(job, job.Author, job.Worker));
+        }
         private static JobResponse MapToJobResponse(Job job, Profile authorProfile, Profile workerProfile)
         {
             return new JobResponse
@@ -126,6 +245,7 @@ namespace ExpertBridge.Api.Controllers
                     ProfilePictureUrl = workerProfile.ProfilePictureUrl,
                 }
             };
-        }
+        }  
     }
+
 }

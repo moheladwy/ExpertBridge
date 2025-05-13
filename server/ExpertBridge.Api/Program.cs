@@ -47,6 +47,12 @@ builder.Services.AddControllers(options =>
             Location = ResponseCacheLocation.Any,
             VaryByHeader = "Authorization",
         });
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    // You can also set options.JsonSerializerOptions.PropertyNameCaseInsensitive = true; if needed for property names,
+    // but JsonStringEnumConverter usually handles enum value casing well.
 });
 
 var app = builder.Build();

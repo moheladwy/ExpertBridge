@@ -18,6 +18,15 @@ public class UserNotFoundException : HttpNotFoundException
     }
 }
 
+public class JobNotFoundException : HttpNotFoundException
+{
+    public JobNotFoundException() { }
+    public JobNotFoundException(string message) : base(message) { }
+    public JobNotFoundException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
+
 public class ProfileNotFoundException : HttpNotFoundException
 {
     public ProfileNotFoundException() { }
