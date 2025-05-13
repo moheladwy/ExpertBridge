@@ -216,6 +216,40 @@ namespace ExpertBridge.Api.Controllers
 
             return Ok(MapToJobResponse(job, job.Author, job.Worker));
         }
+        
+        [HttpGet("{jobId}")]
+        public async Task<ActionResult<JobResponse>> GetJobById(string jobId)
+        {
+            var currentUser = await _authHelper.GetCurrentUserAsync();
+            if (currentUser?.Profile == null)
+            {
+                return Unauthorized("User profile not found.");
+            }
+
+            var userProfileId = currentUser.Profile.Id;
+
+            var job = await _dbContext.Jobs
+                .Include(j => j.Author)
+                    .ThenInclude(p => p.User)
+                .Include(j => j.Worker)
+                    .ThenInclude(p => p.User)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(j => j.Id == jobId);
+
+            if (job==null)
+            {
+                throw new JobNotFoundException("Job Id is not found");
+            }
+
+            if (job.AuthorId!=userProfileId && job.WorkerId!=userProfileId)
+            {
+                return Forbid("You are not authorized to view this job.");
+            }
+
+            return Ok(MapToJobResponse(job, job.Author, job.Worker));
+        }
+        
+        
         private static JobResponse MapToJobResponse(Job job, Profile authorProfile, Profile workerProfile)
         {
             return new JobResponse
