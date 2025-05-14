@@ -248,6 +248,36 @@ namespace ExpertBridge.Api.Controllers
 
             return Ok(MapToJobResponse(job, job.Author, job.Worker));
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<JobResponse>>> GetJobsForCurrentUser()
+        {
+            var currentUser = await _authHelper.GetCurrentUserAsync();
+            if (currentUser?.Profile == null)
+            {
+                return Unauthorized("User profile not found");
+            }
+
+            var userProfileId = currentUser.Profile.Id;
+
+            var jobs = await _dbContext.Jobs
+                .Include(j => j.Author)
+                    .ThenInclude(p => p.User)
+                .Include(j => j.Worker)
+                    .ThenInclude(p => p.User)
+                .Where(j => j.AuthorId == userProfileId || j.WorkerId == userProfileId)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (!jobs.Any())
+            {
+                return Ok(new List<JobResponse>());
+            }
+
+            var jobResponses = jobs.Select(job => MapToJobResponse(job, job.Author, job.Worker)).ToList();
+
+            return Ok(jobResponses);
+        }
         
         
         private static JobResponse MapToJobResponse(Job job, Profile authorProfile, Profile workerProfile)
