@@ -4,7 +4,7 @@
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 
-namespace ExpertBridge.Api.Services
+namespace ExpertBridge.Api.DomainServices
 {
     public class ContentModerationService
     {

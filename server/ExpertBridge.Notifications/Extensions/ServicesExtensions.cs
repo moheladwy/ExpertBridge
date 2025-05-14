@@ -19,10 +19,13 @@ namespace ExpertBridge.Notifications.Extensions
             services.AddSignalR();
 
             // Background services
-            services.AddHostedService<NotificationSenderHandlerWorker>();
+            services.AddHostedService<NotificationSendingPipelineHandlerWorker>();
+
+            // Services
+            services.AddScoped<NotificationFacade>();
 
             // IPC
-            services.AddSingleton(_ => Channel.CreateUnbounded<SendNotificationMessage>());
+            services.AddSingleton(_ => Channel.CreateUnbounded<SendNotificationsRequestMessage>());
 
             return services;
         }

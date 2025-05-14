@@ -12,7 +12,7 @@ namespace ExpertBridge.Notifications.Models
     /// flixibility in the future in case of changes to the notifications system
     /// or it being used by other systems. 
     /// </summary>
-    public class Notification
+    public class NotificationResponse
     {
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }

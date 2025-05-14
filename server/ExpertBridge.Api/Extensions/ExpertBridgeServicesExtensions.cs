@@ -55,6 +55,7 @@ namespace ExpertBridge.Api.Extensions
             builder.AddBackgroundWorkers();
 
             builder.Services.AddServices();
+            builder.Services.AddDomainServices();
 
             builder.Services.AddResiliencePipeline(ResiliencePipelines.MalformedJsonModelResponse, static builder =>
             {

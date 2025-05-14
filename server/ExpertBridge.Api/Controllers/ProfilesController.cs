@@ -3,7 +3,6 @@ using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Services;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Exceptions;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Api.DomainServices;
 
 namespace ExpertBridge.Api.Controllers;
 

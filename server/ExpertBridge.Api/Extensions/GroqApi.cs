@@ -43,7 +43,7 @@ public static class GroqApi
             .AddScoped<GroqApiChatCompletionClient>()
             .AddScoped<GroqLlmTextProvider>()
             .AddScoped<GroqPostTaggingService>()
-            .AddScoped<TagProcessorService>()
+            .AddScoped<GroqTagProcessorService>()
             .AddScoped<GroqInappropriateLanguageDetectionService>()
             ;
 

@@ -8,9 +8,8 @@ namespace ExpertBridge.Notifications.Models.IPC
 {
     public class SendNotificationMessage
     {
-        public string NotificationId { get; set; }
-        public DateTime CreatedAt { get; set; }
         public string RecipientId { get; set; } // The profile ID of the recipient
+        public string SenderId { get; set; } // The profile ID of the sender
         public string Message { get; set; }
         public bool IsRead { get; set; }
         public string? ActionUrl { get; set; }
