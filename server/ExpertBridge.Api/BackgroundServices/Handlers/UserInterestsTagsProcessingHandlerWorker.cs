@@ -43,7 +43,11 @@ public sealed class UserInterestsTagsProcessingHandlerWorker
             var results = await tagProcessorService
                 .TranslateTagsAsync(message.InterestsTags);
 
-            var categorizerTags = results.ToList();
+            if (results == null)
+                throw new RemoteServiceCallFailedException(
+                    $"Error: Tag processor service returned null result for user={message.UserProfileId}.");
+
+            var categorizerTags = results.Tags;
             if (categorizerTags.Count == 0)
                 throw new RemoteServiceCallFailedException(
                     $"Error: Tag processor service returned empty result for user={message.UserProfileId}.");

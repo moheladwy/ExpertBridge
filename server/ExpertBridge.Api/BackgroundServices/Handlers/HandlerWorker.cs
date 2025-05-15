@@ -32,7 +32,10 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 {
                     var message = await _channel.ReadAsync(stoppingToken);
 
+                    Log.Information("Worker {workerName} received message: {message}", _workerName, nameof(message));
+                    Log.Information("Start processing the message in {workerName}", _workerName);
                     await ExecuteInternalAsync(message, stoppingToken);
+                    Log.Information("Finished processing message in {workerName}", _workerName);
                 }
             }
             catch (Exception ex)
