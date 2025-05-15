@@ -2,8 +2,11 @@ namespace ExpertBridge.Core.Entities.JobStatuses;
 
 public enum JobStatusEnum
 {
-    Pending,
+    Offered,
+    Accepted,
     InProgress,
     Completed,
+    PendingClientApproval,
+    Declined,
     Cancelled
 }

@@ -73,28 +73,16 @@ public static class Generator
         return commentFaker.Generate(count);
     }
 
-    public static List<JobStatus> GenerateJobStatuses()
-    {
-        var statuses = Enum.GetValues(typeof(JobStatusEnum))
-            .Cast<JobStatusEnum>()
-            .Select(status => new JobStatus
-            {
-                Id = Guid.NewGuid().ToString(),
-                Status = status
-            })
-            .ToList();
+    
 
-        return statuses;
-    }
-
-    public static List<Job> GenerateJobs(List<Profile> profiles, List<JobStatus> statuses, int count)
+    public static List<Job> GenerateJobs(List<Profile> profiles, int count)
     {
         var jobFaker = new Faker<Job>()
             .RuleFor(j => j.Id, f => Guid.NewGuid().ToString())
             .RuleFor(j => j.Author, f => f.PickRandom(profiles))
             .RuleFor(j => j.Worker, f => f.PickRandom(profiles))
             .RuleFor(j => j.StartedAt, f => f.Date.Past(1).ToUniversalTime())
-            .RuleFor(j => j.JobStatusId, f => f.PickRandom(statuses).Id);
+            .RuleFor(j => j.Status, f => f.PickRandom<JobStatusEnum>());
 
         return jobFaker.Generate(count);
     }
@@ -103,8 +91,7 @@ public static class Generator
     {
         var users = GenerateUsers(50);
         var profiles = GenerateProfiles(users);
-        var jobStatuses = GenerateJobStatuses();
-        var jobs = GenerateJobs(profiles, jobStatuses, 50);
+        var jobs = GenerateJobs(profiles, 50);
 
         context.Users.AddRange(users);
         context.Profiles.AddRange(profiles);
