@@ -46,7 +46,7 @@ public class PostsController : ControllerBase
 
     public PostsController(
         PostService postService,
-        UserService userService, 
+        UserService userService,
         ILogger<PostsController> logger)
     {
         _postService = postService;
@@ -272,7 +272,7 @@ public class PostsController : ControllerBase
         }
         catch (ForbiddenAccessException ex)
         {
-            // Even for forbidden, you might return 204 to not leak info, 
+            // Even for forbidden, you might return 204 to not leak info,
             // or 403 if you want to be explicit. Standard is often 204 for DELETE.
             // However, if _userService.GetCurrentUserProfileOrThrowAsync() throws Unauthorized,
             // that will result in 401 before this.

@@ -1,6 +1,7 @@
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Extensions.HealthChecks;
 using ExpertBridge.Notifications;
 using ExpertBridge.Notifications.Extensions;
 using HealthChecks.UI.Client;

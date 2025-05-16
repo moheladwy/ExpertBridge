@@ -1,6 +1,11 @@
 using System.Text.Json;
+using ExpertBridge.Api.Models.GroqResponses;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.GroqLibrary.Providers;
+using Polly;
+using Polly.Registry;
+using Serilog;
 
 namespace ExpertBridge.Api.Services;
 
@@ -21,6 +26,14 @@ public class GroqTagProcessorService
     private readonly GroqLlmTextProvider _groqLlmTextProvider;
 
     /// <summary>
+    /// A pipeline instance implemented via <see cref="Polly" /> to handle resilient
+    /// execution and retry policies for operations encountering scenarios such as
+    /// malformed JSON responses. This supports maintaining robust and fault-tolerant
+    /// behavior when communicating with external APIs or processing data.
+    /// </summary>
+    private readonly ResiliencePipeline _resiliencePipeline;
+
+    /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
     ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
@@ -33,10 +46,18 @@ public class GroqTagProcessorService
     ///     with the Groq LLM API for generating text-based categorizations and processes
     ///     the results with case-insensitive JSON deserialization for robust and flexible parsing.
     /// </summary>
-    public GroqTagProcessorService(GroqLlmTextProvider groqLlmTextProvider)
+    public GroqTagProcessorService(
+        GroqLlmTextProvider groqLlmTextProvider,
+        ResiliencePipelineProvider<string> resilience)
     {
         _groqLlmTextProvider = groqLlmTextProvider;
-        _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
+        _jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            AllowOutOfOrderMetadataProperties = true,
+            AllowTrailingCommas = true
+        };
     }
 
     /// <summary>
@@ -52,17 +73,22 @@ public class GroqTagProcessorService
     ///     or when the deserialization result is null.
     /// </exception>
     /// <exception cref="JsonException">Thrown when a JSON parsing error occurs during deserialization of the response.</exception>
-    public async Task<IEnumerable<CategorizerTag>> TranslateTagsAsync(IReadOnlyCollection<string> existingTags)
+    public async Task<TranslateTagsResponse?> TranslateTagsAsync(IReadOnlyCollection<string> existingTags)
     {
         ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
         try
         {
-            var systemPrompt = GetSystemPrompt();
-            var userPrompt = GetUserPrompt(existingTags);
-            var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
-            var result = JsonSerializer.Deserialize<List<CategorizerTag>>(response, _jsonSerializerOptions)
-                         ?? throw new InvalidOperationException(
-                             "Failed to deserialize the categorizer response: null result");
+            TranslateTagsResponse result = null!;
+            await _resiliencePipeline.ExecuteAsync(async ct =>
+            {
+                var systemPrompt = GetSystemPrompt();
+                var userPrompt = GetUserPrompt(existingTags);
+                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                result = JsonSerializer.Deserialize<TranslateTagsResponse>(response, _jsonSerializerOptions)
+                             ?? throw new InvalidOperationException(
+                                 "Failed to deserialize the tag processing response: null result");
+                return ValueTask.CompletedTask;
+            });
             return result;
         }
         catch (JsonException ex)

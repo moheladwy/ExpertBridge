@@ -23,11 +23,14 @@ public static class FusionCaching
         where TBuilder : IHostApplicationBuilder
     {
         var cacheSettings = builder.Configuration.GetSection(CacheSettings.SectionName).Get<CacheSettings>()!;
-        Console.WriteLine($"Connection string for project {cacheSettings.InstanceName} is " + cacheSettings.ConnectionString);
+        var redisConnectionString = builder.Configuration.GetConnectionString("Redis")!;
         builder.Services.AddFusionCache()
             .WithDefaultEntryOptions(options =>
             {
                 options.Duration = TimeSpan.FromMinutes(cacheSettings.DefaultDurationInMinutes);
+                // Setting this flag to true will execute most of the operations in the background.
+                // Resulting in a performance boost.
+                options.AllowBackgroundDistributedCacheOperations = true;
             })
             .WithSerializer(new FusionCacheSystemTextJsonSerializer())
             .WithDistributedCache(
@@ -35,7 +38,7 @@ public static class FusionCaching
                 new RedisCache(
                     new RedisCacheOptions
                     {
-                        Configuration = cacheSettings.ConnectionString,
+                        Configuration = redisConnectionString,
                         InstanceName = cacheSettings.InstanceName
                     }
                 )

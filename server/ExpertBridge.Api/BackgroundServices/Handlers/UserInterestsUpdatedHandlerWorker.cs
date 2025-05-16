@@ -35,6 +35,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
         {
             try
             {
+                ArgumentNullException.ThrowIfNull(message, nameof(message));
                 using var scope = _services.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
                 var embeddingService = scope.ServiceProvider.GetRequiredService<IEmbeddingService>();
@@ -43,13 +44,11 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     .AsNoTracking()
                     .Include(ui => ui.Tag)
                     .Where(ui => ui.ProfileId == message.UserProfileId)
-                    .Select(ui => $"{ui.Tag.EnglishName} {ui.Tag.ArabicName} ");
+                    .Select(ui => $"[{ui.Tag.EnglishName} - {ui.Tag.ArabicName} - {ui.Tag.Description}] ");
 
                 var text = new StringBuilder();
-                foreach (var userInterest in userInterests)
-                {
-                    text.Append(userInterest);
-                }
+                foreach (var ui in userInterests)
+                    text.Append(ui);
 
                 var embedding = await embeddingService.GenerateEmbedding(text.ToString());
 
