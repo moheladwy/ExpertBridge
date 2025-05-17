@@ -17,7 +17,8 @@ using ExpertBridge.Notifications; // For NotificationFacade
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ExpertBridge.Core.Requests;
-using ExpertBridge.Api.DomainServices; // For logging
+using ExpertBridge.Api.DomainServices;
+using Pgvector.EntityFrameworkCore; // For logging
 
 namespace ExpertBridge.Api.Services
 {
@@ -151,6 +152,85 @@ namespace ExpertBridge.Api.Services
                 .FullyPopulatedPostQuery()
                 .SelectPostResponseFromFullPost(currentMaybeUserProfileId)
                 .ToListAsync();
+        }
+
+        public async Task<CursorPaginatedPostsResponse> GetRecommendedPostsAsync(
+            Profile? userProfile,
+            PostsCursorRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            //if (userProfile == null || userProfile.UserInterestEmbedding == null)
+            //{
+            //    return new PaginatedRecommendedPostsResponseDto
+            //    {
+            //        Posts = new List<PostDto>(),
+            //        HasNextPage = false
+            //    };
+            //}
+
+            var userEmbedding = userProfile?.UserInterestEmbedding ?? null;
+
+            // 2. Build the query for posts
+            var query = _dbContext.Posts
+                .AsNoTracking()
+                .AsQueryable();
+
+            // Apply cursor pagination predicate if not the first page
+            if (request.LastDistanceCursor.HasValue && request.LastIdCursor != null)
+            {
+                // Assuming lower distance is better (more similar)
+                // We want posts with:
+                // - distance < lastDistance (more similar)
+                // OR
+                // - distance == lastDistance AND Id > lastPostId (same similarity, break tie with Id, assuming newer posts have higher IDs or some consistent order)
+                // Adjust p.Id > or < lastPostIdCursor.Value based on your tie-breaking sort preference (e.g., if you also sort by CreatedAt DESC)
+                query = query.Where(p =>
+                    (p.Embedding.CosineDistance(userEmbedding) < request.LastDistanceCursor.Value) ||
+                    (
+                        p.Embedding.CosineDistance(userEmbedding) == request.LastDistanceCursor.Value &&
+                        p.Id != request.LastIdCursor // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
+                    )
+                );
+            }
+
+            // Temporary projection to include distance for ordering and cursor creation
+
+            var postsWithDistance = await query
+                .Select(p => new
+                {
+                    Post = p, // The whole post entity for now, will project to DTO later
+                    Distance = p.Embedding.CosineDistance(userEmbedding)
+                })
+                .OrderBy(x => x.Distance)      // Order by similarity (ascending distance)
+                .ThenBy(x => x.Post.Id)        // Consistent tie-breaker
+                .Take(request.PageSize + 1)            // Fetch one extra item to determine if there's a next page
+                .ToListAsync(cancellationToken);
+
+            // 3. Determine if there's a next page and prepare the results
+            bool hasNextPage = postsWithDistance.Count > request.PageSize;
+            var currentPagePosts = postsWithDistance.Take(request.PageSize).ToList();
+
+            double? nextDistance = null;
+            string? nextPostId = null;
+
+            if (hasNextPage && currentPagePosts.Count > 0)
+            {
+                var lastPostOnCurrentPage = currentPagePosts.Last();
+                nextDistance = lastPostOnCurrentPage.Distance;
+                nextPostId = lastPostOnCurrentPage.Post.Id;
+            }
+
+            // 4. Map to DTOs
+            var postDtos = currentPagePosts
+                .Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
+
+            return new CursorPaginatedPostsResponse
+            {
+                Posts = postDtos,
+                NextDistanceCursor = nextDistance,
+                NextIdCursor = nextPostId,
+                HasNextPage = hasNextPage
+            };
         }
 
         public async Task<List<PostResponse>> GetPostsByProfileIdAsync(string profileId, string? currentMaybeUserProfileId)
