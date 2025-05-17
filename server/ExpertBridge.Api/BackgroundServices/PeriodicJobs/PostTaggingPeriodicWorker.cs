@@ -3,6 +3,7 @@
 
 
 using System.Threading.Channels;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,10 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             IServiceProvider services,
             ILogger<PostTaggingPeriodicWorker> logger,
             Channel<TagPostMessage> postCreatedChannel)
-            : base(1, nameof(PostTaggingPeriodicWorker), logger)
+            : base(
+                PeriodicJobsStartDelays.PostTaggingPeriodicWorkerStartDelay,
+                nameof(PostTaggingPeriodicWorker),
+                logger)
         {
             _services = services;
             _logger = logger;

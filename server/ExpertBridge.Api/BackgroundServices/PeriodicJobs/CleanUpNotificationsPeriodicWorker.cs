@@ -1,3 +1,4 @@
+using ExpertBridge.Api.Models;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -14,7 +15,10 @@ public sealed class CleanUpNotificationsPeriodicWorker : PeriodicWorker<CleanUpN
     public CleanUpNotificationsPeriodicWorker(
     IServiceProvider services,
             ILogger<CleanUpNotificationsPeriodicWorker> logger)
-            : base(4, nameof(CleanUpNotificationsPeriodicWorker), logger)
+            : base(
+                PeriodicJobsStartDelays.CleanUpNotificationsPeriodicWorkerStartDelay,
+                nameof(CleanUpNotificationsPeriodicWorker),
+                logger)
     {
         _services = services;
         _logger = logger;

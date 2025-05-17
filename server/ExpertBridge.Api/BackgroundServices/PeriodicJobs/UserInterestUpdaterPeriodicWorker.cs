@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Threading.Channels;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,10 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             IServiceProvider services,
             Channel<UserInterestsUpdatedMessage> channel,
             ILogger<UserInterestUpdaterPeriodicWorker> logger)
-            : base(16, nameof(ContentModerationPeriodicWorker), logger)
+            : base(
+                PeriodicJobsStartDelays.UserInterestUpdaterPeriodicWorkerStartDelay,
+                nameof(ContentModerationPeriodicWorker),
+                logger)
         {
             _services = services;
             _channel = channel.Writer;

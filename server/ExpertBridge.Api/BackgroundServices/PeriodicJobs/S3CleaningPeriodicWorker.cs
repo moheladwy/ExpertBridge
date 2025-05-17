@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using ExpertBridge.Api.Models;
 using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Settings;
@@ -17,7 +18,10 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
         public S3CleaningPeriodicWorker(
             ILogger<S3CleaningPeriodicWorker> logger,
             IServiceProvider services)
-            : base(12, nameof(S3CleaningPeriodicWorker), logger)
+            : base(
+                PeriodicJobsStartDelays.S3CleaningPeriodicWorkerStartDelay,
+                nameof(S3CleaningPeriodicWorker),
+                logger)
         {
             _logger = logger;
             _services = services;
