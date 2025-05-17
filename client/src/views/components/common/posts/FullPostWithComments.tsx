@@ -35,6 +35,7 @@ import { useDeletePostMutation } from "@/features/posts/postsSlice";
 import TimeAgo from "../../custom/TimeAgo";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 import MediaCarousel from "../media/MediaCarousel";
+import PostTimeStamp from "./PostTimeStamp";
 
 interface FullPostWithCommentsProps {
   post: Post;
@@ -163,11 +164,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                             <h3 className="text-md font-semibold dark:text-white">{post.author.firstName + ' ' + post.author.lastName}</h3>
                           </Link>
                           {/* Publish Date */}
-                          <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
-                    <span>
-                      <TimeAgo timestamp={post.createdAt} />
-                    </span>
-                          </div>
+                          <PostTimeStamp createdAt={post.createdAt} lastModified={post.lastModified} />
                         </div>
                       </div>
                     </div>

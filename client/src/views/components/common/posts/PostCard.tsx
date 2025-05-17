@@ -32,6 +32,7 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import { Edit as EditIcon } from "lucide-react";
 import EditPostModal from "./EditPostModal";
 import MediaCarousel from "../media/MediaCarousel";
+import PostTimeStamp from "./PostTimeStamp";
 
 interface PostCardProps {
 	postId: string;
@@ -131,12 +132,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 										post.author.lastName}
 								</h3>
 							</Link>
-							{/* Publish Date */}
-							<div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
-								<span>
-									<TimeAgo timestamp={post.createdAt} />
-								</span>
-							</div>
+							<PostTimeStamp createdAt={post.createdAt} lastModified={post.lastModified} />
 						</div>
 
 						{/* More */}
