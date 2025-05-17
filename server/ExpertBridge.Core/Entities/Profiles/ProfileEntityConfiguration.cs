@@ -15,6 +15,14 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
             .ValueGeneratedOnAdd();
 
+        builder.Property(x => x.Email)
+            .IsRequired()
+            .HasMaxLength(UserEntityConstraints.MaxEmailLength);
+
+        builder.HasIndex(x => x.Email)
+            .HasFilter(IndexFilters.NotDeleted)
+            .IsUnique();
+
         builder.Property(x => x.JobTitle)
             .IsRequired(false)
             .HasMaxLength(ProfileEntityConstraints.JobTitleMaxLength);
