@@ -1,4 +1,5 @@
 using ExpertBridge.Core.Entities.Media;
+using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -31,6 +32,14 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
 
         builder.Property(x => x.RatingCount)
             .IsRequired();
+
+        builder.Property(x => x.Username)
+            .IsRequired(false)
+            .HasMaxLength(UserEntityConstraints.MaxUsernameLength);
+
+        builder.HasIndex(x => x.Username)
+            .HasFilter(IndexFilters.NotDeleted)
+            .IsUnique();
 
         builder.HasOne(p => p.User)
             .WithOne(u => u.Profile)
