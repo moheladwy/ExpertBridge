@@ -1,4 +1,4 @@
-namespace ExpertBridge.Api.Responses
+namespace ExpertBridge.Core.Responses
 {
     public class ProfileSummaryResponse
     {

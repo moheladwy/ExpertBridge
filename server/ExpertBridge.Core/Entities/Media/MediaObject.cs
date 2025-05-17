@@ -1,5 +1,7 @@
 
 
+using ExpertBridge.Core.Interfaces;
+
 namespace ExpertBridge.Core.Entities.Media;
 
 public abstract class MediaObject : BaseModel, ISoftDeletable

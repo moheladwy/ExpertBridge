@@ -1,4 +1,4 @@
-using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Core.Interfaces;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 

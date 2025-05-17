@@ -68,27 +68,6 @@ public class ProfilesController : ControllerBase
         return profile;
     }
 
-    [HttpPost("onboard")]
-    public async Task<ProfileResponse> OnboardUser(
-        [FromBody] OnboardUserRequest request,
-        [FromServices] TaggingService _taggingService)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var user = await _authHelper.GetCurrentUserAsync();
-
-        user.IsOnboarded = true;
-
-        await _taggingService.AddTagsToUserProfileAsync(user.Profile.Id, request.TagIds);
-
-        var response = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync();
-
-        return response;
-    }
-
     [Route("/api/v2/{controller}/onboard")]
     [HttpPost]
     public async Task<ProfileResponse> OnboardUserV2(
@@ -143,4 +122,43 @@ public class ProfilesController : ControllerBase
 
         return response ?? throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
     }
+
+    [HttpPut]
+    public async Task<ProfileResponse> UpdateProfile(
+        [FromBody] UpdateProfileRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var user = await _authHelper.GetCurrentUserAsync();
+
+        if (user is null) throw new UnauthorizedAccessException("The user is not authorized.");
+
+        var profile = user.Profile;
+
+        profile.Bio = request.Bio;
+        profile.JobTitle = request.JobTitle;
+        if (!string.IsNullOrEmpty(request.FirstName))
+            profile.FirstName = request.FirstName;
+        if (!string.IsNullOrEmpty(request.LastName))
+            profile.LastName = request.LastName;
+        if (!string.IsNullOrEmpty(request.Username))
+            profile.Username = request.Username;
+        profile.PhoneNumber = request.PhoneNumber;
+
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return await GetProfile();
+    }
+}
+
+public class UpdateProfileRequest
+{
+    public string? JobTitle { get; set; }
+    public string? Bio { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Username { get; set; }
+    public string? PhoneNumber { get; set; }
 }

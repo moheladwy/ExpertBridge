@@ -2,6 +2,7 @@ using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;
 using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Core.Entities.Comments;
 

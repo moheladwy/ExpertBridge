@@ -1,6 +1,4 @@
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Requests.Jobs;
-using ExpertBridge.Api.Responses;
 using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.JobStatuses;
 using ExpertBridge.Core.Entities.Profiles;
@@ -13,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpertBridge.Core.Responses;
 
 namespace ExpertBridge.Api.Controllers
 {
