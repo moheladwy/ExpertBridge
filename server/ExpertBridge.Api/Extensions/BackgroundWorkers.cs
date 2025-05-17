@@ -35,6 +35,7 @@ public static class BackgroundWorkers
             .AddHostedService<InappropriatePostDetectionHandlerWorker>()
             .AddHostedService<InappropriateCommentDetectionHandlerWorker>()
             .AddHostedService<UserInterestsTagsProcessingHandlerWorker>()
+            .AddHostedService<CleanUpNotificationsPeriodicWorker>()
             ;
 
         return builder;

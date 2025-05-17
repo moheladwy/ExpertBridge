@@ -1,10 +1,7 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Data.DatabaseContexts;
 using Serilog;
-using System.Threading.Channels;
 
 namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
 {
@@ -15,7 +12,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
         private readonly ILogger<TWorker> _logger;
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of the <see cref="PeriodicWorker{TWorker}"/> class.
         /// </summary>
         /// <param name="startDelay">Start delay for the implementor in hours</param>
         /// <param name="logger"></param>
