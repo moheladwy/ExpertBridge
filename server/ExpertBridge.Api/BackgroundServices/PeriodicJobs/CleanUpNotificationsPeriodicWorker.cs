@@ -10,7 +10,7 @@ public sealed class CleanUpNotificationsPeriodicWorker : PeriodicWorker<CleanUpN
 
     private readonly IServiceProvider _services;
     private readonly ILogger<CleanUpNotificationsPeriodicWorker> _logger;
-    private const int TimeIntervalForNotificationCleanupInDays = -30;
+    private const int TimeIntervalForNotificationCleanupInDays = 30;
 
     public CleanUpNotificationsPeriodicWorker(
     IServiceProvider services,
@@ -36,7 +36,7 @@ public sealed class CleanUpNotificationsPeriodicWorker : PeriodicWorker<CleanUpN
             // and avoids loading potentially thousands of notifications into memory.
             var numNotificationsDeleted = await dbContext.Notifications
                 .Where(n =>
-                    n.CreatedAt < DateTime.UtcNow.AddDays(TimeIntervalForNotificationCleanupInDays) &&
+                    n.CreatedAt < DateTime.UtcNow.AddDays(-TimeIntervalForNotificationCleanupInDays) &&
                     n.IsRead == true)
                 .ExecuteDeleteAsync(cancellationToken: stoppingToken);
 
