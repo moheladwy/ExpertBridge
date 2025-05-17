@@ -49,6 +49,18 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .HasFilter(IndexFilters.NotDeleted)
             .IsUnique();
 
+        builder.Property(x => x.PhoneNumber)
+            .IsRequired(false)
+            .HasMaxLength(UserEntityConstraints.MaxPhoneNumberLength);
+
+        builder.Property(x => x.FirstName)
+            .IsRequired()
+            .HasMaxLength(UserEntityConstraints.MaxNameLength);
+
+        builder.Property(x => x.LastName)
+            .IsRequired()
+            .HasMaxLength(UserEntityConstraints.MaxNameLength);
+
         builder.HasOne(p => p.User)
             .WithOne(u => u.Profile)
             .HasForeignKey<Profile>(p => p.UserId)
