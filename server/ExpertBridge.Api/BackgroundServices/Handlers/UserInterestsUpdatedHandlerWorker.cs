@@ -44,11 +44,13 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     .AsNoTracking()
                     .Include(ui => ui.Tag)
                     .Where(ui => ui.ProfileId == message.UserProfileId)
-                    .Select(ui => $"[{ui.Tag.EnglishName} - {ui.Tag.ArabicName} - {ui.Tag.Description}] ");
+                    .Select(ui => $"[{ui.Tag.EnglishName} {ui.Tag.ArabicName} {ui.Tag.Description}] ");
 
                 var text = new StringBuilder();
                 foreach (var ui in userInterests)
+                {
                     text.Append(ui);
+                }
 
                 var embedding = await embeddingService.GenerateEmbedding(text.ToString());
 
