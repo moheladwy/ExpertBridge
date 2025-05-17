@@ -22,7 +22,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
             ILogger<UserInterestUpdaterPeriodicWorker> logger)
             : base(
                 PeriodicJobsStartDelays.UserInterestUpdaterPeriodicWorkerStartDelay,
-                nameof(ContentModerationPeriodicWorker),
+                nameof(UserInterestUpdaterPeriodicWorker),
                 logger)
         {
             _services = services;
