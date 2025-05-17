@@ -10,7 +10,7 @@ public sealed class CleanUpNotificationsPeriodicWorker : PeriodicWorker<CleanUpN
 
     private readonly IServiceProvider _services;
     private readonly ILogger<CleanUpNotificationsPeriodicWorker> _logger;
-    private readonly int TimeIntervalForNotificationCleanupInDays;
+    private const int TimeIntervalForNotificationCleanupInDays = -30;
 
     public CleanUpNotificationsPeriodicWorker(
     IServiceProvider services,
@@ -22,7 +22,6 @@ public sealed class CleanUpNotificationsPeriodicWorker : PeriodicWorker<CleanUpN
     {
         _services = services;
         _logger = logger;
-        TimeIntervalForNotificationCleanupInDays = -30;
     }
 
     protected override async Task ExecuteInternalAsync(CancellationToken stoppingToken)
@@ -36,12 +35,14 @@ public sealed class CleanUpNotificationsPeriodicWorker : PeriodicWorker<CleanUpN
             // It executes as a single SQL DELETE statement directly on the database server (avoiding multiple round trips)
             // and avoids loading potentially thousands of notifications into memory.
             var numNotificationsDeleted = await dbContext.Notifications
-                .Where(n => n.CreatedAt < DateTime.UtcNow.AddDays(TimeIntervalForNotificationCleanupInDays))
+                .Where(n =>
+                    n.CreatedAt < DateTime.UtcNow.AddDays(TimeIntervalForNotificationCleanupInDays) &&
+                    n.IsRead == true)
                 .ExecuteDeleteAsync(cancellationToken: stoppingToken);
 
-            // _logger.LogInformation("Deleted {numNotificationsDeleted} notifications older than 30 days",
+            // _logger.LogInformation("Deleted {numNotificationsDeleted} notifications older than 30 days and read",
             //     numNotificationsDeleted);
-            Log.Information("Deleted {numNotificationsDeleted} notifications older than 30 days",
+            Log.Information("Deleted {numNotificationsDeleted} notifications older than 30 days and read",
                 numNotificationsDeleted);
         }
         catch (InvalidOperationException e)
