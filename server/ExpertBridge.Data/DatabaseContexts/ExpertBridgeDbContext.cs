@@ -23,6 +23,7 @@ using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
 using ExpertBridge.Core.Entities.Media.ProfileMedia;
 using ExpertBridge.Core.Entities.ModerationReports;
+using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Entities.ProfileExperiences;
@@ -52,7 +53,6 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<JobReview> JobReviews { get; set; }
-    public DbSet<JobStatus> JobStatuses { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostVote> PostVotes { get; set; }
@@ -75,6 +75,7 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<PostMedia> PostMedias { get; set; }
     public DbSet<MediaGrant> MediaGrants { get; set; }
     public DbSet<ModerationReport> ModerationReports { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
 
     /// <summary>
@@ -113,7 +114,6 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobReviewEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new JobStatusEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ChatMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingEntityConfiguration());
@@ -130,6 +130,7 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ProfileExperienceMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new MediaGrantEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ModerationReportEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
     }
 
     // Event handlers

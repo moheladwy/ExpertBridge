@@ -1,6 +1,6 @@
 ﻿namespace ExpertBridge.Api.Settings;
 
-public class AiSettings
+public sealed class AiSettings
 {
     public const string Section = "AI";
 

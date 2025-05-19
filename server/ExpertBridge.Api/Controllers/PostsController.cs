@@ -1,10 +1,5 @@
 using System.Security.Claims;
 using System.Threading.Channels;
-using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Queries;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
@@ -12,10 +7,20 @@ using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Queries;
+using ExpertBridge.Core.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Notifications;
+using ExpertBridge.Api.DomainServices;
+using ExpertBridge.Api.Services;
+using ExpertBridge.Core.Interfaces.Services;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -35,85 +40,18 @@ namespace ExpertBridge.Api.Controllers;
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent)]
 public class PostsController : ControllerBase
 {
-    private readonly AuthorizationHelper _authHelper;
-    private readonly ExpertBridgeDbContext _dbContext;
+    private readonly PostService _postService;
+    private readonly UserService _userService;
+    private readonly ILogger<PostsController> _logger;
 
-    public PostsController(AuthorizationHelper authHelper, ExpertBridgeDbContext dbContext)
+    public PostsController(
+        PostService postService,
+        UserService userService,
+        ILogger<PostsController> logger)
     {
-        _authHelper = authHelper;
-        _dbContext = dbContext;
-    }
-
-    /// <summary>
-    ///     Get post by id.
-    /// </summary>
-    /// <param name="postId">
-    ///     The ID of the post to get.
-    /// </param>
-    /// <returns>
-    ///     The post response.
-    /// </returns>
-    /// <exception cref="PostNotFoundException">
-    ///     Thrown when the post with the given ID does not exist.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///     Thrown when the postId is null or empty.
-    /// </exception>
-    [AllowAnonymous]
-    [HttpGet("{postId}")]
-    public async Task<PostResponse> GetById([FromRoute] string postId)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile?.Id ?? string.Empty;
-
-        var post = await _dbContext.Posts
-            .FullyPopulatedPostQuery(p => p.Id == postId)
-            .SelectPostResponseFromFullPost(userProfileId)
-            .FirstOrDefaultAsync();
-
-        return post ?? throw new PostNotFoundException($"Post with id={postId} was not found");
-    }
-
-    /// <summary>
-    ///     Get all posts.
-    /// </summary>
-    /// <returns>
-    ///     The list of post responses.
-    /// </returns>
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<List<PostResponse>> GetAll()
-    {
-        Log.Information("User from HTTP Context: {FindFirstValue}",
-            HttpContext.User.FindFirstValue(ClaimTypes.Email));
-
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile?.Id ?? string.Empty;
-
-        return await _dbContext.Posts
-            .FullyPopulatedPostQuery()
-            .SelectPostResponseFromFullPost(userProfileId)
-            .ToListAsync();
-    }
-
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("/api/profiles/{profileId}/posts")]
-    public async Task<List<PostResponse>> GetAllByProfileId([FromRoute] string profileId)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
-
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == profileId);
-        if (profile is null)
-            throw new ProfileNotFoundException($"Profile with id={profileId} was not found");
-
-        return await _dbContext.Posts
-            .FullyPopulatedPostQuery(p => p.AuthorId == profileId)
-            .SelectPostResponseFromFullPost(profileId)
-            .ToListAsync();
+        _postService = postService;
+        _userService = userService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -135,84 +73,88 @@ public class PostsController : ControllerBase
     ///     Thrown when the request is null.
     /// </exception>
     [HttpPost]
-    public async Task<PostResponse> Create(
-        [FromBody] CreatePostRequest request,
-        [FromServices] Channel<PostProcessingPipelineMessage> _channel)
+    public async Task<ActionResult<PostResponse>> Create([FromBody] CreatePostRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile?.Id ?? string.Empty;
+        // Get user profile - UserService.GetCurrentUserProfileOrThrowAsync handles unauthorized/missing profile
+        var authorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-        if (string.IsNullOrEmpty(userProfileId))
+        var postResponse = await _postService.CreatePostAsync(request, authorProfile);
+
+        // HTTP 201 Created with Location header
+        return CreatedAtAction(nameof(GetById), new { postId = postResponse.Id }, postResponse);
+    }
+
+    /// <summary>
+    ///     Get post by id.
+    /// </summary>
+    /// <param name="postId">
+    ///     The ID of the post to get.
+    /// </param>
+    /// <returns>
+    ///     The post response.
+    /// </returns>
+    /// <exception cref="PostNotFoundException">
+    ///     Thrown when the post with the given ID does not exist.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///     Thrown when the postId is null or empty.
+    /// </exception>
+    [AllowAnonymous]
+    [HttpGet("{postId}", Name = "GetPostByIdAction")] // Added Name for CreatedAtAction
+    public async Task<ActionResult<PostResponse>> GetById([FromRoute] string postId)
+    {
+        // string? userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync(); // Get this if needed for vote perspective
+        // For now, assuming your UserService provides a method like this from previous discussion:
+        var user = await _userService.GetCurrentUserPopulatedModelAsync(); // Or your specific method
+        string? userProfileId = user?.Profile?.Id;
+
+
+        var postResponse = await _postService.GetPostByIdAsync(postId, userProfileId);
+
+        if (postResponse == null)
         {
-            throw new UnauthorizedException();
+            // return post ?? throw new PostNotFoundException($"Post with id={postId} was not found");
+            return NotFound(new ProblemDetails { Title = "Not Found", Detail = $"Post with id={postId} was not found.", Status = StatusCodes.Status404NotFound });
         }
+        return postResponse;
+    }
 
-        if (string.IsNullOrEmpty(request?.Title) || string.IsNullOrEmpty(request?.Content))
-        {
-            throw new BadHttpRequestException("Title and Content are required");
-        }
+    /// <summary>
+    ///     Get all posts.
+    /// </summary>
+    /// <returns>
+    ///     The list of post responses.
+    /// </returns>
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<ActionResult<List<PostResponse>>> GetAll()
+    {
+        _logger.LogInformation("User from HTTP Context (GetAllPosts): {FindFirstValue}", HttpContext.User.FindFirstValue(ClaimTypes.Email)); // Keep Serilog if desired
 
-        var post = new Post
-        {
-            Title = request.Title.Trim(),
-            Content = request.Content.Trim(),
-            AuthorId = userProfileId
-        };
+        // var user = await _authHelper.GetCurrentUserAsync();
+        // var userProfileId = user?.Profile?.Id ?? string.Empty;
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
+        string? userProfileId = user?.Profile?.Id;
 
-        await _dbContext.Posts.AddAsync(post);
+        var posts = await _postService.GetAllPostsAsync(userProfileId);
+        return posts;
+    }
 
-        if (request.Media?.Count > 0)
-        {
-            var postMedia = new List<PostMedia>();
-            foreach (var media in request.Media)
-            {
-                postMedia.Add(new PostMedia
-                {
-                    Post = post,
-                    Name = post.Title.Trim(),
-                    Type = media.Type,
-                    Key = media.Key,
-                });
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("/api/profiles/{profileId}/posts")]
+    public async Task<ActionResult<List<PostResponse>>> GetAllByProfileId([FromRoute] string profileId)
+    {
+        // ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId)); // Service handles
 
-            }
+        // var profile = await _dbContext.Profiles... // Service handles profile existence check
 
-            await _dbContext.PostMedias.AddRangeAsync(postMedia);
-            post.Medias = postMedia;
+        // string? requestingUserProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync(); // Or however you get it
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
+        string? requestingUserProfileId = user?.Profile?.Id;
 
-            var keys = postMedia.Select(m => m.Key);
-            var grants = _dbContext.MediaGrants
-                .Where(grant => keys.Contains(grant.Key));
-
-            foreach (var grant in grants)
-            {
-                grant.IsActive = true;
-                grant.OnHold = false;
-                grant.ActivatedAt = DateTime.UtcNow;
-            }
-        }
-
-        try
-        {
-            await _dbContext.SaveChangesAsync();
-
-            await _channel.Writer.WriteAsync(new PostProcessingPipelineMessage
-            {
-               AuthorId = userProfileId,
-               Content = post.Content,
-               PostId = post.Id,
-               Title = post.Title,
-            });
-        }
-        catch (Exception ex)
-        {
-            // TODO: Remove.
-            // For debugging purposes.
-            var x = 1;
-            throw;
-        }
-
-        return post.SelectPostResponseFromFullPost(userProfileId);
+        var posts = await _postService.GetPostsByProfileIdAsync(profileId, requestingUserProfileId);
+        return posts;
     }
 
     /// <summary>
@@ -236,65 +178,13 @@ public class PostsController : ControllerBase
     ///     The post response with the updated votes count.
     /// </returns>
     [HttpPatch("{postId}/upvote")]
-    public async Task<PostResponse> Upvote([FromRoute] string postId)
+    public async Task<ActionResult<PostResponse>> Upvote([FromRoute] string postId)
     {
-        // Get the current user from the HTTP context
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile?.Id ?? string.Empty;
+        var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
 
-        // if the user is not authenticated, throw an exception
-        if (string.IsNullOrEmpty(userProfileId))
-            throw new UnauthorizedException($"Unauthorized Access from User {User}");
-
-        // Check if the postId is valid
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-
-        // Check if the post exists in the database
-        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
-        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
-
-        var vote = await _dbContext.PostVotes
-                .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
-
-        if (vote is null)
-        {
-            // If the vote does not exist, create a new one
-            var newVote = new PostVote
-            {
-                Post = post,
-                Profile = user.Profile,
-                IsUpvote = true,
-            };
-            await _dbContext.PostVotes.AddAsync(newVote);
-        }
-        else if (!vote.IsUpvote)
-        {
-            // If the vote exists but is a downvote, update it to an upvote
-            vote.IsUpvote = true;
-        }
-        else
-        {
-            // If the vote exists and is an upvote, remove it (toggle behavior)
-            _dbContext.PostVotes.Remove(vote);
-        }
-
-        // Save changes to the database
-        try
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            var x = 1;
-            throw;
-        }
-
-        return await _dbContext.Posts
-            .FullyPopulatedPostQuery(p => p.Id == postId)
-            .SelectPostResponseFromFullPost(userProfileId)
-            .FirstAsync();
+        var postResponse = await _postService.VotePostAsync(postId, voterProfile, isUpvoteIntent: true); // true for upvote
+        return postResponse;
     }
-
 
     /// <summary>
     ///     DownVote a post. If the user has already downvoted the post, it will remove the vote.
@@ -317,55 +207,12 @@ public class PostsController : ControllerBase
     ///     Thrown when the post with the given ID does not exist.
     /// </exception>
     [HttpPatch("{postId}/downvote")]
-    public async Task<PostResponse> Downvote([FromRoute] string postId)
+    public async Task<ActionResult<PostResponse>> Downvote([FromRoute] string postId)
     {
-        // Get the current user from the HTTP context
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile?.Id ?? string.Empty;
+        var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
 
-        // if the user is not authenticated, throw an exception
-        if (string.IsNullOrEmpty(userProfileId))
-            throw new UnauthorizedException($"Unauthorized Access from User {User}");
-
-        // Check if the postId is valid
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-
-        // Check if the post exists in the database
-        var post = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == postId);
-        if (post is null) throw new PostNotFoundException($"Post with id={postId} does not exist!");
-
-        var vote = await _dbContext.PostVotes
-                .FirstOrDefaultAsync(v => v.PostId == postId && v.ProfileId == userProfileId);
-
-        if (vote is null)
-        {
-            // If the vote does not exist, create a new one
-            var newVote = new PostVote
-            {
-                PostId = postId,
-                ProfileId = userProfileId,
-                IsUpvote = false,
-            };
-            await _dbContext.PostVotes.AddAsync(newVote);
-        }
-        else if (vote.IsUpvote)
-        {
-            // If the vote exists but is a upvote, update it to a downvote
-            vote.IsUpvote = false;
-        }
-        else
-        {
-            // If the vote exists and is a downvote, remove it (toggle behavior)
-            _dbContext.PostVotes.Remove(vote);
-        }
-
-        // Save changes to the database
-        await _dbContext.SaveChangesAsync();
-
-        return await _dbContext.Posts
-            .FullyPopulatedPostQuery(p => p.Id == postId)
-            .SelectPostResponseFromFullPost(userProfileId)
-            .FirstAsync();
+        var postResponse = await _postService.VotePostAsync(postId, voterProfile, isUpvoteIntent: false); // false for downvote
+        return postResponse;
     }
 
     /// <summary>
@@ -387,50 +234,15 @@ public class PostsController : ControllerBase
     ///     The updated post.
     /// </returns>
     [HttpPatch("{postId}")]
-    public async Task<PostResponse> Edit([FromRoute] string postId, [FromBody] EditPostRequest request)
+    public async Task<ActionResult<PostResponse>> Edit(
+    [FromRoute] string postId,
+    [FromBody] EditPostRequest request)
     {
-        // Check if the postId is valid
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        var editorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-        // Get the current user from the HTTP context
-        var user = await _authHelper.GetCurrentUserAsync();
-        if (user is null)
-        {
-            throw new UnauthorizedException($"Unauthorized Access from User {User}");
-        }
+        var postResponse = await _postService.EditPostAsync(postId, request, editorProfile);
 
-        // BEWARE!
-        // YOU DO NOT WANT THE USER PROFILE ID TO BE A NULLABLE STRING!.
-        var userProfileId = user.Profile.Id ?? string.Empty;
-
-        var post = await _dbContext.Posts
-            .FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
-
-        if (post is null)
-        {
-            throw new PostNotFoundException(
-                $"Post with id={postId} does not exist for user with id{user.Id}!");
-        }
-
-        // Update the post with the new values and save changes to the database.
-        if (!string.IsNullOrEmpty(request.Title))
-        {
-            post.Title = request.Title.Trim();
-        }
-
-        if (!string.IsNullOrEmpty(request.Content))
-        {
-            post.Content = request.Content.Trim();
-        }
-
-        await _dbContext.SaveChangesAsync();
-
-        // Return the updated post
-        return await _dbContext.Posts
-            .FullyPopulatedPostQuery(p => p.Id == post.Id)
-            .SelectPostResponseFromFullPost(userProfileId)
-            .FirstAsync();
+        return postResponse;
     }
 
     /// <summary>
@@ -451,28 +263,35 @@ public class PostsController : ControllerBase
     [HttpDelete("{postId}")]
     public async Task<IActionResult> Delete([FromRoute] string postId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+        var deleterProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-        var user = await _authHelper.GetCurrentUserAsync();
-        var userProfileId = user?.Profile.Id ?? string.Empty;
-
-        // Check if the post exists in the database
-        var post = await _dbContext.Posts
-            .FirstOrDefaultAsync(p => p.Id == postId && p.AuthorId == userProfileId);
-
-        // Remove the post from the database
-        if (post != null)
+        try
         {
-            _dbContext.Posts.Remove(post);
-            await _dbContext.SaveChangesAsync();
+            await _postService.DeletePostAsync(postId, deleterProfile);
+            return NoContent(); // Always 204 for DELETE success (even if resource was already gone)
         }
+        catch (ForbiddenAccessException ex)
+        {
+            // Even for forbidden, you might return 204 to not leak info,
+            // or 403 if you want to be explicit. Standard is often 204 for DELETE.
+            // However, if _userService.GetCurrentUserProfileOrThrowAsync() throws Unauthorized,
+            // that will result in 401 before this.
+            // A 403 here means authenticated user, but not permitted for *this specific resource*.
+            // For DELETE, many prefer to still return 204 to not reveal existence/non-existence.
+            // But if it's a clear "you can't do that" to an owned resource, 403 is also fine.
+            // Let's stick to 204 for simplicity and common DELETE idempotency interpretation.
+            Log.Warning(ex,
+                "Forbidden attempt to delete post {PostId} by user {UserProfileId}",
+                postId, deleterProfile.Id);
 
-        // BEWARE!
-        // In an HTTP DELETE, you always want to return 204 no content.
-        // No matter what happens. The only exception is if the auth middleware
-        // refused the request from the beginning, else you do not return anything
-        // other than no content.
-        // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
-        return NoContent();
+            return NoContent();
+        }
     }
+
+    // BEWARE!
+    // In an HTTP DELETE, you always want to return 204 no content.
+    // No matter what happens. The only exception is if the auth middleware
+    // refused the request from the beginning, else you do not return anything
+    // other than no content.
+    // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
 }

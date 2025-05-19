@@ -1,8 +1,23 @@
-using ExpertBridge.Admin.Components;
 using ExpertBridge.Data;
+using ExpertBridge.Admin.Components;
+using ExpertBridge.Extensions.Caching;
+using ExpertBridge.Extensions.CORS;
+using ExpertBridge.Extensions.HealthChecks;
+using ExpertBridge.Extensions.Logging;
+using ExpertBridge.Extensions.OpenTelemetry;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatabase(builder.Configuration);
+
+builder.Services.Configure<CacheSettings>(
+                builder.Configuration.GetSection(CacheSettings.SectionName));
+builder.AddDefaultHealthChecks();
+builder.AddCors();
+builder.AddSerilogLogging();
+builder.ConfigureOpenTelemetry();
+builder.ConfigureHttpClientDefaults();
+builder.AddFusionCache();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -17,13 +32,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors(CorsPolicyNames.AllowAll);
+
 app.UseHttpsRedirection();
-
-
 app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+app.MapDefaultEndpoints();
 
 app.Run();

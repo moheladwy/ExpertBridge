@@ -3,6 +3,7 @@
   <PropertyGroup>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>a2f91a6c-11fe-4643-adda-06b53459eea9</UserSecretsId>
+    <RootNamespace>ExpertBridge.Api</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,19 +45,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\.dockerignore">
-      <Link>.dockerignore</Link>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
+    <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj" />
     <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" />
+    <ProjectReference Include="..\ExpertBridge.Notifications\ExpertBridge.Notifications.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
 </Project>

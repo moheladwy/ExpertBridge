@@ -28,13 +28,14 @@ public static class BackgroundWorkers
             .AddHostedService<PostEmbeddingPeriodicWorker>()
             .AddHostedService<UserInterestUpdaterPeriodicWorker>()
             .AddHostedService<ContentModerationPeriodicWorker>()
-
             .AddHostedService<PostProcessingPipelineHandlerWorker>()
             .AddHostedService<PostTaggingHandlerWorker>()
             .AddHostedService<PostEmbeddingHandlerWorker>()
             .AddHostedService<UserInterestsUpdatedHandlerWorker>()
             .AddHostedService<InappropriatePostDetectionHandlerWorker>()
             .AddHostedService<InappropriateCommentDetectionHandlerWorker>()
+            .AddHostedService<UserInterestsTagsProcessingHandlerWorker>()
+            .AddHostedService<CleanUpNotificationsPeriodicWorker>()
             ;
 
         return builder;

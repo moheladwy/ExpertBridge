@@ -10,4 +10,9 @@ namespace ExpertBridge.Core.Requests
     {
         public List<string> TagIds { get; set; }
     }
+
+    public class OnboardUserRequestV2
+    {
+        public List<string> Tags { get; set; }
+    }
 }

@@ -1,5 +1,5 @@
-using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Api.Settings;
 using FirebaseAdmin.Auth;
 using Microsoft.Extensions.Options;
 

@@ -47,7 +47,7 @@ export interface PostResponse {
   content: string;
   author: Author;
   createdAt: Date;
-  lastModified?: string | null;
+  lastModified?: Date | null;
   upvotes: number;
   downvotes: number;
   isUpvoted: boolean;

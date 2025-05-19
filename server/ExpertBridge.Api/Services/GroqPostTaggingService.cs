@@ -1,5 +1,5 @@
 using System.Text.Json;
-using ExpertBridge.Api.Responses;
+using ExpertBridge.Core.Responses;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.GroqLibrary.Providers;
 using Polly;
@@ -87,7 +87,7 @@ public sealed class GroqPostTaggingService
 
                 return ValueTask.CompletedTask;
             });
-            
+
             return result;
         }
         catch (JsonException ex)

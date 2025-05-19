@@ -1,12 +1,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-#
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35818.85
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{697DB175-35B9-4313-8B5C-CDD6F6747E3A}"
 	ProjectSection(SolutionItems) = preProject
-		compose.yaml = compose.yaml
 		.editorconfig = .editorconfig
+		compose.yaml = compose.yaml
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
-		Dockerfile = Dockerfile
 		postgresql-compose.yaml = postgresql-compose.yaml
 	EndProjectSection
 EndProject
@@ -23,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.GroqLibrary", "ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj", "{8FA8F5BF-65F1-4512-8DB0-8DF738BD20D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Admin", "ExpertBridge.Admin\ExpertBridge.Admin.csproj", "{479CC770-2151-42A9-8D72-3B5653EC86C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Notifications", "ExpertBridge.Notifications\ExpertBridge.Notifications.csproj", "{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Extensions", "ExpertBridge.Extensions\ExpertBridge.Extensions.csproj", "{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,5 +63,23 @@ Global
 		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479CC770-2151-42A9-8D72-3B5653EC86C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0CB2DC-AB81-4F4F-BECF-6A2961C08FA1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A029D0C-F0AF-406D-BB4C-FD330CA354F4}
 	EndGlobalSection
 EndGlobal

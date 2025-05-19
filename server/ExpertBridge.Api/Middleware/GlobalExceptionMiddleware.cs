@@ -1,7 +1,5 @@
-
-
 using System.Diagnostics;
-using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Exceptions;
 using Serilog;
 using Serilog.Context;
 
@@ -39,6 +37,11 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
         catch (UnauthorizedException ex)
         {
             await Results.Unauthorized()
+                .ExecuteAsync(httpContext);
+        }
+        catch (ForbiddenAccessException ex)
+        {
+            await Results.Forbid()
                 .ExecuteAsync(httpContext);
         }
         catch (Exception ex)

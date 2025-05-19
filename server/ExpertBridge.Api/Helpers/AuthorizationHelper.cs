@@ -1,6 +1,4 @@
-﻿
-
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;

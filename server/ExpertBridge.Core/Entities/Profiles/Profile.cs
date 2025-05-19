@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
@@ -25,6 +26,8 @@ public partial class Profile : BaseModel, ISoftDeletable
     public string? PhoneNumber { get; set; }
     public bool IsBanned { get; set; }
     public bool IsDeleted { get; set; }
+    public ICollection<Job> AuthoredJobs { get; set; } = new List<Job>();
+    public ICollection<Job> WorkedJobs { get; set; } = new List<Job>();
     public DateTime? DeletedAt { get; set; }
 
     public Vector? UserInterestEmbedding { get; set; }

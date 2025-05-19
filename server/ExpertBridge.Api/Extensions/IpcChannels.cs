@@ -30,6 +30,7 @@ public static class IpcChannels
             .AddSingleton(_ => Channel.CreateUnbounded<DetectInappropriateCommentMessage>())
             .AddSingleton(_ => Channel.CreateUnbounded<AcknowledgePostProcessingMessage>())
             .AddSingleton(_ => Channel.CreateUnbounded<PostProcessingPipelineMessage>())
+            .AddSingleton(_ => Channel.CreateUnbounded<UserInterestsProsessingMessage>())
             ;
 
         return builder;

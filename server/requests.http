@@ -1,0 +1,25 @@
+// filepath: requests.http
+@apiBaseUrl = http://localhost:5027/api 
+
+POST {{apiBaseUrl}}/auth/login
+Content-Type: application/json
+{
+  "email": "dawop74505@deusa7.com",
+   "password": "o@P1E!3y?3*f"
+}
+@name loginRequest
+@token = loginRequest.response.body.token
+
+### Initiate Job Offer
+# @name initiateJobOffer
+POST {{apiBaseUrl}}/jobs/offer
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjU5MWYxNWRlZTg0OTUzNjZjOTgyZTA1MTMzYmNhOGYyNDg5ZWFjNzIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXhwZXJ0LWJyaWRnZSIsImF1ZCI6ImV4cGVydC1icmlkZ2UiLCJhdXRoX3RpbWUiOjE3NDY5NzMxMDgsInVzZXJfaWQiOiJqd3R1dHgzb2g1Y1BCakVmenpwUFlObWx6UXoxIiwic3ViIjoiand0dXR4M29oNWNQQmpFZnp6cFBZTm1selF6MSIsImlhdCI6MTc0Njk3MzEwOCwiZXhwIjoxNzQ2OTc2NzA4LCJlbWFpbCI6ImRhd29wNzQ1MDVAZGV1c2E3LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImRhd29wNzQ1MDVAZGV1c2E3LmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.0l9QRnX3GaR07n_ANwYPOYdlDyKbfkCNp1YX9qoC6DT1PbS_I0XzM5g0LNdNWM9nCEQPFDxoS_i3kShbSN7ylFWRYr0D2WEPtR4Z7i92V6DaypRb6EmzHJbFTTrerlF-WNf-r9wz0A0RuVZxsDWIWAZS5YoRO7YlYY5aHq9BYQ_qIXl1oim60iUGZvWBuKr8W46Nhq-PdbfVtc7sTaGwnQA425Fmxek1sEPTcfYTjNQ1UWsoWYNjSJMATlec6LK1T7KNJhrVSZ_XcnfqW8VkqpJVzHab5BKyKEzI9FYFtKzn1zWUYmszcVEbO1Tpm5JxUshNxHjIrz2HcD_vTIwsiA // Or paste your token directly: Bearer your_jwt_token_here
+Content-Type: application/json
+
+{
+    "contractorProfileId": "ecf4c5c1-f511-42cd-a991-f8c29d587973",
+    "title": "Urgent: Need a logo designed",
+    "description": "Looking for a modern logo for a new tech startup. Details will be provided upon acceptance.",
+    "proposedRate": 150.00,
+    "jobPostingId": null
+}

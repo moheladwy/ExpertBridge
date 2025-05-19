@@ -1,5 +1,3 @@
-
-
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 using ExpertBridge.Core.Entities.Media.ChatMedia;
 
