@@ -449,7 +449,7 @@ const CommentCard: React.FC<CommentItemProps> = ({ comment, currentUserId, onDel
 
   return (
       <div
-          className={`flex flex-col gap-3 p-3 border-t border-gray-300 dark:border-gray-600 ${isReply ? "ml-4 border-l-2 border-gray-300 dark:border-l-gray-600 pl-3" : ""}`}
+          className={`flex flex-col gap-3 p-3 border-t border-gray-300 dark:border-gray-600 ${isReply ? "ml-4 border-l-2 border-t-0 border-gray-300 dark:border-l-gray-600 pl-3" : ""}`}
           id={`comment-${comment.id}`}
       >
         {/* Comment Author */}

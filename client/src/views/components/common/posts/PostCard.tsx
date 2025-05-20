@@ -238,6 +238,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 					</div>
 				</Link>
 
+        {/* Media */}
 				<MediaCarousel medias={post.medias} />
 
 				{/* Post Metadata */}
