@@ -100,4 +100,11 @@ public class ForbiddenAccessException : Exception
     }
 }
 
-
+public class ProfileUserNameAlreadyExistsException : Exception
+{
+    public ProfileUserNameAlreadyExistsException() { }
+    public ProfileUserNameAlreadyExistsException(string message) : base(message) { }
+    public ProfileUserNameAlreadyExistsException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}

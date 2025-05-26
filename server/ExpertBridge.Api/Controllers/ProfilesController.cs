@@ -9,7 +9,6 @@ using ExpertBridge.Core.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 
@@ -128,28 +127,42 @@ public class ProfilesController : ControllerBase
         [FromBody] UpdateProfileRequest request,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         var user = await _authHelper.GetCurrentUserAsync();
-
         if (user is null) throw new UnauthorizedAccessException("The user is not authorized.");
 
         var profile = user.Profile;
 
-        profile.Bio = request.Bio;
-        profile.JobTitle = request.JobTitle;
+        if (!string.IsNullOrEmpty(request.Username)) {
+            if (await _dbContext.Profiles.AsNoTracking().AnyAsync(p =>
+                    p.Username == request.Username, cancellationToken))
+            {
+                throw new ProfileUserNameAlreadyExistsException($"Username '{user.Profile.Username}' already exists.");
+            }
+            if (request.Username != user.Profile.Username)
+                profile.Username = request.Username;
+        }
         if (!string.IsNullOrEmpty(request.FirstName))
             profile.FirstName = request.FirstName;
         if (!string.IsNullOrEmpty(request.LastName))
             profile.LastName = request.LastName;
-        if (!string.IsNullOrEmpty(request.Username))
-            profile.Username = request.Username;
         profile.PhoneNumber = request.PhoneNumber;
+        profile.Bio = request.Bio;
+        profile.JobTitle = request.JobTitle;
 
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return await GetProfile();
+        var profileResponse = await _dbContext.Profiles
+            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
+            .SelectProfileResponseFromProfile()
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (profileResponse == null)
+            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+
+        return profileResponse;
     }
 }
 
