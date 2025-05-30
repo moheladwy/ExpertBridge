@@ -1,4 +1,5 @@
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Interfaces;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
@@ -40,12 +41,17 @@ internal static class Firebase
     /// <param name="builder">
     ///     The WebApplicationBuilder to add the HttpClient service to.
     /// </param>
-    public static void AddHttpClientForFirebaseService(this WebApplicationBuilder builder) =>
-        builder.Services.AddHttpClient<HttpClient>((sp, httpClient) =>
+    public static WebApplicationBuilder AddHttpClientForFirebaseService(this WebApplicationBuilder builder) {
+
+        builder.Services.AddHttpClient<IFirebaseAuthService>((sp, httpClient) =>
         {
             var settings = sp.GetRequiredService<IOptions<FirebaseSettings>>().Value;
             httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
-        });
+        })
+        .AddStandardResilienceHandler();
+
+        return builder;
+    }
 
     /// <summary>
     ///     Adds the Firebase authentication service to the application builder.

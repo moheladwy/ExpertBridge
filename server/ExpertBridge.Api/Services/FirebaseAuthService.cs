@@ -70,13 +70,17 @@ public sealed class FirebaseAuthService : IFirebaseAuthService
     /// <param name="authSettings">
     ///     Configuration settings for Firebase Authentication, including token URIs and other authentication-related details.
     /// </param>
+    /// <param name="httpClient">
+    ///     The HTTP client used to communicate with Firebase Authentication endpoints.
+    /// </param>
     public FirebaseAuthService(
         IOptions<FirebaseSettings> firebaseConfig,
-        IOptions<FirebaseAuthSettings> authSettings)
+        IOptions<FirebaseAuthSettings> authSettings,
+        HttpClient httpClient)
     {
         _firebaseConfig = firebaseConfig.Value;
         _authSettings = authSettings.Value;
-        _httpClient = new HttpClient { BaseAddress = new Uri(_authSettings.TokenUri) };
+        _httpClient = httpClient;
     }
 
     /// <summary>
