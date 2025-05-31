@@ -164,5 +164,23 @@ public class ProfilesController : ControllerBase
 
         return profileResponse;
     }
+
+    [HttpGet("is-username-available/username}")]
+    public async Task<bool> IsUsernameAvailable(
+            [FromRoute] string username,
+            CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(username, nameof(username));
+
+        if (string.IsNullOrWhiteSpace(username))
+            throw new ArgumentException("Username cannot be null or whitespace.", nameof(username));
+
+        return !await _dbContext.Profiles
+            .AsNoTracking()
+            .AnyAsync(
+                    p => p.Username == username,
+                    cancellationToken
+            );
+    }
 }
 
