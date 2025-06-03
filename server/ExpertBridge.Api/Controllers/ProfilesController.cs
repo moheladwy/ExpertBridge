@@ -165,7 +165,7 @@ public class ProfilesController : ControllerBase
         return profileResponse;
     }
 
-    [HttpGet("is-username-available/username}")]
+    [HttpGet("is-username-available/{username}")]
     public async Task<bool> IsUsernameAvailable(
             [FromRoute] string username,
             CancellationToken cancellationToken)
