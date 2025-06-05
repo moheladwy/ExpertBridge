@@ -151,7 +151,6 @@ public class ProfilesController : ControllerBase
         profile.Bio = request.Bio;
         profile.JobTitle = request.JobTitle;
 
-
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         var profileResponse = await _dbContext.Profiles
@@ -165,6 +164,7 @@ public class ProfilesController : ControllerBase
         return profileResponse;
     }
 
+    [Authorize]
     [HttpGet("is-username-available/{username}")]
     public async Task<bool> IsUsernameAvailable(
             [FromRoute] string username,
@@ -172,8 +172,16 @@ public class ProfilesController : ControllerBase
     {
         ArgumentNullException.ThrowIfNull(username, nameof(username));
 
+        var user = await _authHelper.GetCurrentUserAsync();
+        if (user is null)
+            throw new UnauthorizedAccessException("The user is not authorized.");
+
         if (string.IsNullOrWhiteSpace(username))
             throw new ArgumentException("Username cannot be null or whitespace.", nameof(username));
+
+        if (user.Profile.Username == username)
+            throw new ProfileUserNameAlreadyExistsException(
+                $"Username '{username}' is already assigned to the current user.");
 
         return !await _dbContext.Profiles
             .AsNoTracking()
