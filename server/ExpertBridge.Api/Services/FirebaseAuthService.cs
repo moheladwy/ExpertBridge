@@ -1,7 +1,5 @@
 using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Interfaces;
 using FirebaseAdmin.Auth;
-using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Services;
 
@@ -11,38 +9,17 @@ namespace ExpertBridge.Api.Services;
 /// <remarks>
 ///     Contains methods for user registration, login, and token verification using Firebase Authentication.
 /// </remarks>
-public sealed class FirebaseAuthService : IFirebaseAuthService
+public class FirebaseAuthService
 {
     /// <summary>
     ///     Represents the Firebase Authentication instance used for managing user authentication operations.
     /// </summary>
     /// <remarks>
-    ///     This variable holds a default instance of Firebase Authentication and is utilized to perform operations
+    ///     This variable holds a default instance of Firebase Authentication and is used to perform operations
     ///     such as creating new users, verifying ID tokens, and handling other authentication-related tasks in the Firebase
     ///     context.
     /// </remarks>
     private readonly FirebaseAuth _auth = FirebaseAuth.DefaultInstance;
-
-    /// <summary>
-    ///     Represents the configuration settings required for Firebase Authentication operations.
-    /// </summary>
-    /// <remarks>
-    ///     This variable holds an instance of the FirebaseAuthSettings class, which includes essential
-    ///     details such as the token URI, issuer, and audience. These settings are used to configure
-    ///     and manage authentication-related functionality, including token validation and session management
-    ///     within the FirebaseAuthService.
-    /// </remarks>
-    private readonly FirebaseAuthSettings _authSettings;
-
-    /// <summary>
-    ///     Represents the configuration settings for Firebase used within the application.
-    /// </summary>
-    /// <remarks>
-    ///     This variable holds the settings required to communicate with Firebase services, such as project identifiers,
-    ///     authentication details, endpoint URIs, and certificate configurations. These values are typically
-    ///     loaded from a configuration source and are used to initialize and authenticate Firebase operations.
-    /// </remarks>
-    private readonly FirebaseSettings _firebaseConfig;
 
     /// <summary>
     ///     Represents the HTTP client instance used for sending requests to the Firebase Authentication service.
@@ -64,22 +41,11 @@ public sealed class FirebaseAuthService : IFirebaseAuthService
     ///     It provides methods to register new users, authenticate existing users with email/password credentials,
     ///     and verify Firebase ID tokens to ensure the validity of user sessions.
     /// </remarks>
-    /// <param name="firebaseConfig">
-    ///     Configuration settings for Firebase, including API keys and project details.
-    /// </param>
-    /// <param name="authSettings">
-    ///     Configuration settings for Firebase Authentication, including token URIs and other authentication-related details.
-    /// </param>
     /// <param name="httpClient">
     ///     The HTTP client used to communicate with Firebase Authentication endpoints.
     /// </param>
-    public FirebaseAuthService(
-        IOptions<FirebaseSettings> firebaseConfig,
-        IOptions<FirebaseAuthSettings> authSettings,
-        HttpClient httpClient)
+    public FirebaseAuthService(HttpClient httpClient)
     {
-        _firebaseConfig = firebaseConfig.Value;
-        _authSettings = authSettings.Value;
         _httpClient = httpClient;
     }
 

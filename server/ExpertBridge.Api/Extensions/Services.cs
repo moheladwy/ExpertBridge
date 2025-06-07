@@ -21,7 +21,7 @@ public static class Services
     public static void AddServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>()
-            .AddTransient<IFirebaseAuthService, FirebaseAuthService>()
+            // .AddTransient<FirebaseAuthService>()
             .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
             ;

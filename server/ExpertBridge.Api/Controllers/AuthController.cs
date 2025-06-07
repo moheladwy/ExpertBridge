@@ -1,4 +1,4 @@
-using ExpertBridge.Core.Interfaces;
+using ExpertBridge.Api.Services;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,11 +6,11 @@ namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController: ControllerBase
+public class AuthController : ControllerBase
 {
-    private readonly IFirebaseAuthService _authService;
+    private readonly FirebaseAuthService _authService;
 
-    public AuthController(IFirebaseAuthService authService)
+    public AuthController(FirebaseAuthService authService)
     {
         _authService = authService;
     }
