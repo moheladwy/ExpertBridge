@@ -29,7 +29,7 @@ public class ValidateUpdateProfileRequest : AbstractValidator<UpdateProfileReque
         RuleFor(x => x.Username)
             .MaximumLength(256)
             .WithMessage("Username must be at most characters long.")
-            .Matches(@"^[a-zA-Z0-9_]+$")
+            .Matches(@"^[a-zA-Z0-9_.-]+$")
             .WithMessage("Username can only contain letters, numbers, and underscores.")
             .When(x => x.Username != null);
 
