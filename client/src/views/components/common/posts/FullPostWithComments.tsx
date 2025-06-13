@@ -35,6 +35,7 @@ import { useDeletePostMutation } from "@/features/posts/postsSlice";
 import TimeAgo from "../../custom/TimeAgo";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
 import MediaCarousel from "../media/MediaCarousel";
+import PostTimeStamp from "./PostTimeStamp";
 
 interface FullPostWithCommentsProps {
   post: Post;
@@ -79,9 +80,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                     {/* Post Header */}
                     <div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-600">
                       {/* Back Icon */}
-                      <Link to={`/home`}>
+                      <div onClick={() => {navigate(-1)}} className="cursor-pointer">
                         <CircleArrowLeft className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
-                      </Link>
+                      </div>
 
                       {/* More */}
                       <DropdownMenu>
@@ -163,11 +164,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                             <h3 className="text-md font-semibold dark:text-white">{post.author.firstName + ' ' + post.author.lastName}</h3>
                           </Link>
                           {/* Publish Date */}
-                          <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
-                    <span>
-                      <TimeAgo timestamp={post.createdAt} />
-                    </span>
-                          </div>
+                          <PostTimeStamp createdAt={post.createdAt} lastModified={post.lastModified} />
                         </div>
                       </div>
                     </div>
@@ -182,6 +179,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, delet
                       <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap" dir="auto">{post.content}</p>
                     </div>
 
+                    {/* Media */}
                     <MediaCarousel medias={post.medias} />
 
                     {/* Post Voting */}

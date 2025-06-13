@@ -10,6 +10,7 @@ import {
 import { MediaObjectResponse } from "@/features/media/types";
 import { Modal } from "@mui/material";
 
+
 interface PostMediaCarouselProps {
   medias: MediaObjectResponse[];
 }
@@ -29,6 +30,9 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+
+
 
 
   return (
@@ -53,7 +57,9 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
       </Modal>
       {/* Media */}
       <div className="aspect-auto flex justify-center items-center w-full rounded-md relative">
-        <Carousel onSlideChange={(index: number) => setActiveMediaIndex(index)}>
+        <Carousel onSlideChange={(index: number) => {
+          setActiveMediaIndex(index);
+        }}>
           <CarouselContent>
             {medias.map((media, index) => (
               <CarouselItem key={index} className="cursor-pointer">
@@ -63,7 +69,6 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
                     width="100%"
                     height="100%"
                     controls
-                    style={{ pointerEvents: "none" }}
                   />
                 ) : (
                   <img

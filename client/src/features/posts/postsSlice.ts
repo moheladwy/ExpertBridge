@@ -24,6 +24,8 @@ const initialState: PostsState = postsAdapter.getInitialState();
 const postResponseTransformer = (p: PostResponse): Post => ({
 	...p,
 	createdAt: new Date(p.createdAt).toISOString(),
+	lastModified: p.lastModified ? 
+	  new Date(p.lastModified).toISOString() : null
 });
 
 const postsResponseTransformer = (response: PostResponse[]) => {
