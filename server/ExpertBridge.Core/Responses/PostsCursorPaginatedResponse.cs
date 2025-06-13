@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ExpertBridge.Core.Responses
 {
-    public class CursorPaginatedPostsResponse
+    public class PostsCursorPaginatedResponse
     {
         public List<PostResponse> Posts { get; set; }
         public string? NextIdCursor { get; set; }
-        public double? NextDistanceCursor { get; set; }
+        public double? EndCursor { get; set; }
         public bool HasNextPage { get; set; } 
     }
 }

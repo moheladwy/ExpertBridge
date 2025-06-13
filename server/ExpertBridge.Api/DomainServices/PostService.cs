@@ -154,7 +154,7 @@ namespace ExpertBridge.Api.Services
                 .ToListAsync();
         }
 
-        public async Task<CursorPaginatedPostsResponse> GetRecommendedPostsAsync(
+        public async Task<PostsCursorPaginatedResponse> GetRecommendedPostsAsync(
             Profile? userProfile,
             PostsCursorRequest request,
             CancellationToken cancellationToken = default)
@@ -176,7 +176,7 @@ namespace ExpertBridge.Api.Services
                 .AsQueryable();
 
             // Apply cursor pagination predicate if not the first page
-            if (request.LastDistanceCursor.HasValue && request.LastIdCursor != null)
+            if (request.After.HasValue && request.LastIdCursor != null)
             {
                 // Assuming lower distance is better (more similar)
                 // We want posts with:
@@ -185,10 +185,10 @@ namespace ExpertBridge.Api.Services
                 // - distance == lastDistance AND Id > lastPostId (same similarity, break tie with Id, assuming newer posts have higher IDs or some consistent order)
                 // Adjust p.Id > or < lastPostIdCursor.Value based on your tie-breaking sort preference (e.g., if you also sort by CreatedAt DESC)
                 query = query.Where(p =>
-                    (p.Embedding.CosineDistance(userEmbedding) < request.LastDistanceCursor.Value) ||
+                    (p.Embedding.CosineDistance(userEmbedding) < request.After.Value) ||
                     (
-                        p.Embedding.CosineDistance(userEmbedding) == request.LastDistanceCursor.Value &&
-                        p.Id != request.LastIdCursor // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
+                        p.Embedding.CosineDistance(userEmbedding) == request.After.Value
+                        //&& p.Id.CompareTo(request.LastIdCursor) // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
                     )
                 );
             }
@@ -224,10 +224,10 @@ namespace ExpertBridge.Api.Services
             var postDtos = currentPagePosts
                 .Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
 
-            return new CursorPaginatedPostsResponse
+            return new PostsCursorPaginatedResponse
             {
                 Posts = postDtos,
-                NextDistanceCursor = nextDistance,
+                EndCursor = nextDistance,
                 NextIdCursor = nextPostId,
                 HasNextPage = hasNextPage
             };

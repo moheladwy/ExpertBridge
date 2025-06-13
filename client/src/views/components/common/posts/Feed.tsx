@@ -1,7 +1,7 @@
 import Filters from "./Filters";
 import LoadingSkeleton from "./LoadingSkeleton";
 import PostCard from "./PostCard";
-import { selectPostIds, useGetPostsQuery } from "@/features/posts/postsSlice";
+import { useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useAppSelector } from "@/app/hooks";
 import CreatePostModal from "./CreatePostModal";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
@@ -22,38 +22,10 @@ const Feed = () => {
     console.log('feed mounting...');
   }, []);
 
-  const orderedPostIds: string[] = useAppSelector(selectPostIds);
+  // const orderedPostIds: string[] = useAppSelector(selectPostIds);
   const [, , , , appUser] = useIsUserLoggedIn();
 
   useRefetchOnLogin(refetch);
-
-  // useEffect(() => {
-  //   // Simulating fetch
-  //   setTimeout(() => {
-  //     setPosts([
-  //       {
-  //         id: 1,
-  //         author: { email: "John Doe" },
-  //         title: "How to optimize React performance?",
-  //         content: "Some preview of the post content...",
-  //         upvotes: 120,
-  //         downvotes: 5,
-  //         tags: ["React", "Performance"],
-  //       },
-  //       {
-  //         id: 2,
-  //         author: { email: "Jane Smith" },
-  //         title: "Best practices for Tailwind CSS",
-  //         content: "Tailwind CSS allows for rapid UI development...",
-  //         upvotes: 95,
-  //         downvotes: 3,
-  //         tags: ["Tailwind", "CSS"],
-  //       },
-  //     ]);
-  //     setLoading(false);
-  //   }, 2000);
-  // }, []);
-
 
   const loading = postsLoading;
 

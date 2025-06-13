@@ -7,22 +7,21 @@ export interface PostTag {
   name: string;
 }
 
-// export interface Vote {
-//   userId: string;
-//   postId: string;
-//   value: number; // 1 for upvote, -1 for downvote
-// }
+export type PostsCursorPaginatedResponse = {
+  posts: PostResponse[];
+  pageInfo: {
+    endCursor?: number;
+    hasNextPage: boolean;
+  };
+}
 
-// export interface Reply {
-//   id: string;
-//   author: Author;
-//   content: string;
-//   createdAt: string;
-//   upvotes: number;
-//   downvotes: number;
-//   isUpvoted: boolean;
-//   isDownvoted: boolean;
-// }
+export type PostsInitialPageParam = {
+  after?: number;
+  pageSize: number;
+}
+
+export type PostsQueryParamLimit = number;
+
 
 export interface Post {
   id: string;
