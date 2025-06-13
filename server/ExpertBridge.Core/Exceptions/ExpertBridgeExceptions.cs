@@ -108,3 +108,11 @@ public class ProfileUserNameAlreadyExistsException : Exception
     {
     }
 }
+
+public class ProfilePhoneNumberAlreadyExistsException : Exception
+{
+    public ProfilePhoneNumberAlreadyExistsException(){}
+    public ProfilePhoneNumberAlreadyExistsException(string? message) : base(message){}
+    public ProfilePhoneNumberAlreadyExistsException(string? message, Exception? innerException) : base(message, innerException){}
+}
+

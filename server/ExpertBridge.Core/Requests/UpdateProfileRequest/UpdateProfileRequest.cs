@@ -1,4 +1,4 @@
-namespace ExpertBridge.Core.Requests;
+namespace ExpertBridge.Core.Requests.UpdateProfileRequest;
 
 public class UpdateProfileRequest
 {
