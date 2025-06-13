@@ -2,12 +2,9 @@ import {
 	createEntityAdapter,
 	createSelector,
 	EntityState,
-	Update,
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 import { AddPostRequest, Post, PostResponse } from "./types";
-import { sub } from "date-fns";
-import { PostAddOutlined } from "@mui/icons-material";
 
 type PostsState = EntityState<Post, string>;
 const postsAdapter = createEntityAdapter<Post>({
@@ -19,6 +16,8 @@ const initialState: PostsState = postsAdapter.getInitialState();
 const postResponseTransformer = (p: PostResponse): Post => ({
 	...p,
 	createdAt: new Date(p.createdAt).toISOString(),
+	lastModified: p.lastModified ? 
+	  new Date(p.lastModified).toISOString() : null
 });
 
 const postsResponseTransformer = (response: PostResponse[]) => {

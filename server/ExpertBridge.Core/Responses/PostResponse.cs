@@ -1,8 +1,3 @@
-
-
-
-
-
 namespace ExpertBridge.Core.Responses;
 
 public record PostResponse
@@ -12,6 +7,7 @@ public record PostResponse
     public required string Content { get; set; }
     public AuthorResponse? Author { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime? LastModified { get; set; }
     public int Upvotes { get; set; }
     public int Downvotes { get; set; }
     public int Comments { get; set; }
