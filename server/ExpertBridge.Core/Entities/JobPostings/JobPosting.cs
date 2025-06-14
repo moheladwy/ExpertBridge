@@ -1,4 +1,5 @@
 using ExpertBridge.Core.Entities.Media.JobPostingMedia;
+using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Core.Entities.JobPostings;
 

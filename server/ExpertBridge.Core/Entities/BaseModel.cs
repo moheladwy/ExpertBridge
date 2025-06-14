@@ -1,5 +1,7 @@
 ﻿
 
+using ExpertBridge.Core.Interfaces;
+
 namespace ExpertBridge.Core.Entities
 {
     public abstract class BaseModel : ITimestamped

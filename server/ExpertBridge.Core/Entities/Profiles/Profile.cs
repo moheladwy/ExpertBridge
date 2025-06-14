@@ -7,6 +7,7 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Media.ProfileMedia;
 using ExpertBridge.Core.Entities.PostVotes;
+using ExpertBridge.Core.Interfaces;
 using Pgvector;
 
 namespace ExpertBridge.Core.Entities.Profiles;
@@ -26,8 +27,6 @@ public partial class Profile : BaseModel, ISoftDeletable
     public string? PhoneNumber { get; set; }
     public bool IsBanned { get; set; }
     public bool IsDeleted { get; set; }
-    public ICollection<Job> AuthoredJobs { get; set; } = new List<Job>();
-    public ICollection<Job> WorkedJobs { get; set; } = new List<Job>();
     public DateTime? DeletedAt { get; set; }
 
     public Vector? UserInterestEmbedding { get; set; }
@@ -55,4 +54,6 @@ public partial class Profile
     public ICollection<ProfileBadge> ProfileBadges { get; set; } = [];
     public ICollection<PostVote> PostVotes { get; set; } = [];
     public ICollection<CommentVote> CommentVotes { get; set; } = [];
+    public ICollection<Job> AuthoredJobs { get; set; } = [];
+    public ICollection<Job> WorkedJobs { get; set; } = [];
 }

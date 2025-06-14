@@ -11,6 +11,7 @@ export type ProfileResponse = {
 	isBanned: boolean;
 	createdAt: string; // Date is usually serialized as a string in JSON responses
 	jobTitle?: string;
+	bio?: string;
 	profilePictureUrl?: string;
 	isOnboarded: boolean;
 	commentsUpvotes: number;
@@ -23,4 +24,13 @@ export interface OnboardUserRequest {
 
 export interface OnboardUserRequestV2 {
 	tags: string[];
+}
+
+export interface UpdateProfileRequest {
+	firstName?: string;
+	lastName?: string;
+	username?: string;
+	phoneNumber?: string;
+	jobTitle?: string;
+	bio?: string;
 }

@@ -1,3 +1,4 @@
+using ExpertBridge.Core.Interfaces;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FirebaseAdmin.Messaging;
@@ -48,9 +49,9 @@ internal static class Firebase
     public static TBuilder AddHttpClientForFirebaseService<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
-        builder.Services.AddHttpClient<HttpClient>((sp, httpClient) =>
+        var settings = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>()!;
+        builder.Services.AddHttpClient<IFirebaseAuthService>(httpClient=>
         {
-            var settings = sp.GetRequiredService<IOptions<FirebaseSettings>>().Value;
             httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
         });
 
