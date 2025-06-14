@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using ExpertBridge.Core.Interfaces;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
@@ -7,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ExpertBridge.Extensions.Firebase;
@@ -50,7 +52,7 @@ internal static class Firebase
         where TBuilder : IHostApplicationBuilder
     {
         var settings = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>()!;
-        builder.Services.AddHttpClient<IFirebaseAuthService>(httpClient=>
+        builder.Services.AddHttpClient<IFirebaseAuthService>(httpClient =>
         {
             httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
         });

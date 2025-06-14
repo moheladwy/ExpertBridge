@@ -1,9 +1,11 @@
-using ExpertBridge.Core.Requests.RegisterUser;
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Services;
+using ExpertBridge.Core.Requests.RegisterUser;
 using FluentValidation;
-using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Api.Extensions;
 

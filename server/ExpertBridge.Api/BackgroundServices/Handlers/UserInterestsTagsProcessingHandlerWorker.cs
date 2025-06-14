@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using System.Threading.Channels;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Services;
@@ -56,22 +59,27 @@ public sealed class UserInterestsTagsProcessingHandlerWorker
 
             var tags = categorizerTags
                 .Select(result => new Tag
-                    {
-                        ArabicName = result.ArabicName,
-                        EnglishName = result.EnglishName,
-                        Description = result.Description
-                    }).ToList();
+                {
+                    ArabicName = result.ArabicName,
+                    EnglishName = result.EnglishName,
+                    Description = result.Description
+                }).ToList();
+
             await dbContext.Tags.AddRangeAsync(tags, stoppingToken);
+
             await dbContext.UserInterests
                 .AddRangeAsync(tags.Select(tag => new UserInterest
-                    {
-                        ProfileId = message.UserProfileId,
-                        Tag = tag
-                    }).ToList(), stoppingToken);
+                {
+                    ProfileId = message.UserProfileId,
+                    Tag = tag
+                }).ToList(), stoppingToken);
+
             await dbContext.SaveChangesAsync(stoppingToken);
 
             await _userInterestsUpdateChannelWriter.WriteAsync(new UserInterestsUpdatedMessage
-                { UserProfileId = message.UserProfileId }, stoppingToken);
+            {
+                UserProfileId = message.UserProfileId
+            }, stoppingToken);
         }
         catch (Exception ex)
         {

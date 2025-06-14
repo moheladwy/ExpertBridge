@@ -3,7 +3,6 @@
 
 using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Services;
 
 namespace ExpertBridge.Api.Extensions
 {

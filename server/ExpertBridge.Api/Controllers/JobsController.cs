@@ -1,17 +1,17 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.JobStatuses;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests.Jobs;
+using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
-using ExpertBridge.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-using ExpertBridge.Core.Responses;
 
 namespace ExpertBridge.Api.Controllers
 {
@@ -101,7 +101,8 @@ namespace ExpertBridge.Api.Controllers
         public async Task<ActionResult<JobResponse>> RespondToJobOffer(string jobId, [FromBody] RespondToJobOfferRequest request)
         {
             var user = await _authHelper.GetCurrentUserAsync();
-            if (user?.Profile == null){
+            if (user?.Profile == null)
+            {
                 return Unauthorized("User profile not found.");
             }
 
@@ -135,7 +136,9 @@ namespace ExpertBridge.Api.Controllers
             {
                 job.Status = JobStatusEnum.Accepted;
                 job.StartedAt = DateTime.UtcNow;
-            } else {
+            }
+            else
+            {
                 job.Status = JobStatusEnum.Declined;
             }
 
@@ -164,11 +167,11 @@ namespace ExpertBridge.Api.Controllers
                     .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(j => j.Id == jobId);
 
-            if (job == null) 
+            if (job == null)
             {
                 throw new JobNotFoundException($"Job with '{jobId} not found.");
             }
-            
+
             // user is either client or contractor
             if (job.AuthorId != userProfileId && job.WorkerId != userProfileId)
             {
@@ -190,10 +193,11 @@ namespace ExpertBridge.Api.Controllers
             var newStatus = request.NewStatus;
             bool isValidTransition = false;
 
-            if (oldStatus==JobStatusEnum.PendingClientApproval && newStatus==JobStatusEnum.Completed && job.AuthorId==userProfileId
-                || oldStatus==JobStatusEnum.Accepted && newStatus==JobStatusEnum.InProgress && job.WorkerId==userProfileId
-                || oldStatus==JobStatusEnum.InProgress && newStatus==JobStatusEnum.PendingClientApproval && job.WorkerId==userProfileId
-                || !(oldStatus==JobStatusEnum.Completed) && newStatus==JobStatusEnum.Cancelled){
+            if (oldStatus == JobStatusEnum.PendingClientApproval && newStatus == JobStatusEnum.Completed && job.AuthorId == userProfileId
+                || oldStatus == JobStatusEnum.Accepted && newStatus == JobStatusEnum.InProgress && job.WorkerId == userProfileId
+                || oldStatus == JobStatusEnum.InProgress && newStatus == JobStatusEnum.PendingClientApproval && job.WorkerId == userProfileId
+                || !(oldStatus == JobStatusEnum.Completed) && newStatus == JobStatusEnum.Cancelled)
+            {
                 isValidTransition = true;
             }
 
@@ -215,7 +219,7 @@ namespace ExpertBridge.Api.Controllers
 
             return Ok(MapToJobResponse(job, job.Author, job.Worker));
         }
-        
+
         [HttpGet("{jobId}")]
         public async Task<ActionResult<JobResponse>> GetJobById(string jobId)
         {
@@ -235,12 +239,12 @@ namespace ExpertBridge.Api.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(j => j.Id == jobId);
 
-            if (job==null)
+            if (job == null)
             {
                 throw new JobNotFoundException("Job Id is not found");
             }
 
-            if (job.AuthorId!=userProfileId && job.WorkerId!=userProfileId)
+            if (job.AuthorId != userProfileId && job.WorkerId != userProfileId)
             {
                 return Forbid("You are not authorized to view this job.");
             }
@@ -277,8 +281,8 @@ namespace ExpertBridge.Api.Controllers
 
             return Ok(jobResponses);
         }
-        
-        
+
+
         private static JobResponse MapToJobResponse(Job job, Profile authorProfile, Profile workerProfile)
         {
             return new JobResponse
@@ -308,7 +312,7 @@ namespace ExpertBridge.Api.Controllers
                     ProfilePictureUrl = workerProfile.ProfilePictureUrl,
                 }
             };
-        }  
+        }
     }
 
 }

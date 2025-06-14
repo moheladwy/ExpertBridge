@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class JobCategoryValidatorTests
@@ -6,7 +9,9 @@ public class JobCategoryValidatorTests
 
     private readonly JobCategory _validJobCategory = new()
     {
-        Id = Guid.NewGuid().ToString(), Name = "Job Category Name", Description = "Job Category Description"
+        Id = Guid.NewGuid().ToString(),
+        Name = "Job Category Name",
+        Description = "Job Category Description"
     };
 
     [Fact]

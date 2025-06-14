@@ -3,13 +3,12 @@
 
 using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Core.Requests;
-using ExpertBridge.Core.Requests.CreateComment;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.DomainServices
 {
-    public class MediaAttachmentService 
+    public class MediaAttachmentService
     {
         // No DbContext injected here if we pass it as a parameter,
         // which aligns better with the service being stateless regarding the UoW context.

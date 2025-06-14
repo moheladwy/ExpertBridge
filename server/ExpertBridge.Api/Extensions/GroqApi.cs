@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using System.Net.Http.Headers;
 using ExpertBridge.Api.Services;
 using ExpertBridge.GroqLibrary.Clients;
@@ -77,7 +80,7 @@ public static class GroqApi
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.ApiKey);
         })
             .AddStandardResilienceHandler();
-            ;
+        ;
 
         return builder;
     }

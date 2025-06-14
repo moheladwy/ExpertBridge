@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using ExpertBridge.GroqLibrary.Clients;
@@ -67,7 +70,7 @@ public sealed class GroqLlmTextProvider : ILlmTextProvider
         };
 
         var response = await _client.CreateChatCompletionAsync(request);
-        var result =  response?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
+        var result = response?["choices"]?[0]?["message"]?["content"]?.GetValue<string>() ?? string.Empty;
 
         var start = result.IndexOf('{', StringComparison.Ordinal);
         var end = result.LastIndexOf('}');

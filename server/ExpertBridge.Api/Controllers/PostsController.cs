@@ -1,13 +1,16 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Api.DomainServices;
+using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Responses;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Core.Requests;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -130,7 +133,7 @@ public class PostsController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<PostsCursorPaginatedResponse>> GetCursorPaginated(
-        [FromQuery] PostsCursorRequest request)  
+        [FromQuery] PostsCursorRequest request)
     {
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
         var posts = await _postService.GetRecommendedPostsAsync(user?.Profile, request);

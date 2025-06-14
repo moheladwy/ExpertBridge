@@ -3,8 +3,8 @@
 
 using System.Threading.Channels;
 using ExpertBridge.Api.Models;
-using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

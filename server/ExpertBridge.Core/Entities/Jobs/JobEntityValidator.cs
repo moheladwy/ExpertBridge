@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Jobs;
@@ -10,9 +13,9 @@ public class JobEntityValidator : AbstractValidator<Job>
             .NotNull().WithMessage("Id is required")
             .NotEmpty().WithMessage("Id is required")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
-         RuleFor(x => x.Title) 
-            .NotEmpty().WithMessage("Title is required.")
-            .MaximumLength(GlobalEntitiesConstraints.MaxTitleLength).WithMessage($"Title must be less than {GlobalEntitiesConstraints.MaxTitleLength} characters.");
+        RuleFor(x => x.Title)
+           .NotEmpty().WithMessage("Title is required.")
+           .MaximumLength(GlobalEntitiesConstraints.MaxTitleLength).WithMessage($"Title must be less than {GlobalEntitiesConstraints.MaxTitleLength} characters.");
 
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Description is required.")
@@ -39,12 +42,12 @@ public class JobEntityValidator : AbstractValidator<Job>
 
         RuleFor(x => x.CreatedAt)
             .NotEmpty().WithMessage("CreatedAt is required.");
-        
+
         // market decide i guess
         // RuleFor(x => x.ActualCost)
         //     .GreaterThanOrEqualTo(JobEntityConstraints.MinActualCost)
         //     .WithMessage($"ActualCost must be greater than or equal to {JobEntityConstraints.MinActualCost}");
-        
+
         // not required anymore
         // RuleFor(x => x.StartedAt)
         //     .NotNull().WithMessage("StartedAt is required")
@@ -62,9 +65,9 @@ public class JobEntityValidator : AbstractValidator<Job>
             .GreaterThan(x => x.StartedAt).WithMessage("EndedAt must be greater than StartedAt")
             .When(x => x.EndedAt.HasValue);
 
-        
 
-        
-        
+
+
+
     }
 }

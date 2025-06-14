@@ -1,15 +1,18 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.Core.Entities.Jobs;
 
 public class Job
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string Title {get; set; }
-    public string Description {get; set;}
+    public string Title { get; set; }
+    public string Description { get; set; }
     public double ActualCost { get; set; }
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
     public JobStatuses.JobStatusEnum Status { get; set; }
-    public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
 
 

@@ -1,4 +1,7 @@
-﻿using Bogus;
+﻿// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
+using Bogus;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.JobStatuses;
@@ -73,7 +76,7 @@ public static class Generator
         return commentFaker.Generate(count);
     }
 
-    
+
 
     public static List<Job> GenerateJobs(List<Profile> profiles, int count)
     {

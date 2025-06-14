@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class ChatValidatorTests
@@ -6,7 +9,9 @@ public class ChatValidatorTests
 
     private readonly Chat _validChat = new()
     {
-        Id = Guid.NewGuid().ToString(), CreatedAt = DateTime.UtcNow.AddDays(-1), EndedAt = DateTime.MaxValue
+        Id = Guid.NewGuid().ToString(),
+        CreatedAt = DateTime.UtcNow.AddDays(-1),
+        EndedAt = DateTime.MaxValue
     };
 
     [Fact]
