@@ -28,7 +28,7 @@ public sealed class GroqLlmTextProvider : ILlmTextProvider
     public GroqLlmTextProvider(GroqApiChatCompletionClient groqApiChatCompletionClient)
     {
         _client = groqApiChatCompletionClient;
-        _model = GroqTextModels.LLAMA3_70B_8192;
+        _model = GroqTextModels.LLAMA_3_3_70B_VERSATILE;
     }
 
     /// <summary>
