@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.Core.Exceptions;
 
 public abstract class HttpNotFoundException : Exception
@@ -111,8 +114,8 @@ public class ProfileUserNameAlreadyExistsException : Exception
 
 public class ProfilePhoneNumberAlreadyExistsException : Exception
 {
-    public ProfilePhoneNumberAlreadyExistsException(){}
-    public ProfilePhoneNumberAlreadyExistsException(string? message) : base(message){}
-    public ProfilePhoneNumberAlreadyExistsException(string? message, Exception? innerException) : base(message, innerException){}
+    public ProfilePhoneNumberAlreadyExistsException() { }
+    public ProfilePhoneNumberAlreadyExistsException(string? message) : base(message) { }
+    public ProfilePhoneNumberAlreadyExistsException(string? message, Exception? innerException) : base(message, innerException) { }
 }
 

@@ -1,6 +1,7 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using System.Threading.Channels;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
@@ -15,8 +16,6 @@ using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using System.Threading.Channels;
 
 namespace ExpertBridge.Api.DomainServices
 {
@@ -264,9 +263,9 @@ namespace ExpertBridge.Api.DomainServices
                 vote = new CommentVote
                 {
                     ProfileId = voterProfile.Id,
-                    Profile = voterProfile, 
+                    Profile = voterProfile,
                     CommentId = comment.Id,
-                    Comment = comment,   
+                    Comment = comment,
                     IsUpvote = isUpvoteIntent,
                 };
 
@@ -287,7 +286,7 @@ namespace ExpertBridge.Api.DomainServices
 
             await _dbContext.SaveChangesAsync();
 
-            if (vote != null) 
+            if (vote != null)
             {
                 // Ensure voteToNotify.Comment and voteToNotify.Profile (voterProfile) are loaded for the facade
                 // voteToNotify.Comment is 'comment' which has Author loaded.
@@ -301,7 +300,7 @@ namespace ExpertBridge.Api.DomainServices
             var updatedComment = await _dbContext.Comments
                 .FullyPopulatedCommentQuery(c => c.Id == commentId)
                 .SelectCommentResponseFromFullComment(voterProfile.Id)
-                .FirstAsync(); 
+                .FirstAsync();
 
             return updatedComment;
         }

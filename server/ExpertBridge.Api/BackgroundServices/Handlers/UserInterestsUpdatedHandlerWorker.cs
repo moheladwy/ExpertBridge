@@ -4,10 +4,10 @@
 
 using System.Text;
 using System.Threading.Channels;
-using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class BadgeValidatorTests
@@ -6,7 +9,9 @@ public class BadgeValidatorTests
 
     private readonly Badge _validBadge = new()
     {
-        Id = Guid.NewGuid().ToString(), Name = "Badge Name", Description = "Badge Description"
+        Id = Guid.NewGuid().ToString(),
+        Name = "Badge Name",
+        Description = "Badge Description"
     };
 
     [Fact]

@@ -1,5 +1,7 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using System.Linq.Expressions;
-using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Areas;
 using ExpertBridge.Core.Entities.Badges;
 using ExpertBridge.Core.Entities.Chats;
@@ -9,7 +11,6 @@ using ExpertBridge.Core.Entities.JobCategories;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobReviews;
 using ExpertBridge.Core.Entities.Jobs;
-using ExpertBridge.Core.Entities.JobStatuses;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
@@ -34,7 +35,6 @@ using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace ExpertBridge.Data.DatabaseContexts;
 

@@ -6,7 +6,6 @@ using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.DomainServices
 {

@@ -1,10 +1,15 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class TagValidatorTests
 {
     private readonly Tag _tag = new()
     {
-        Id = Guid.NewGuid().ToString(), EnglishName = "Test Tag", Description = "Test Description"
+        Id = Guid.NewGuid().ToString(),
+        EnglishName = "Test Tag",
+        Description = "Test Description"
     };
 
     private readonly TagEntityValidator _tagValidator = new();

@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using ExpertBridge.Core.Entities.JobReviews;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -32,11 +35,11 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
         builder.Property(x => x.EndedAt)
             .IsRequired(false);
 
-        
+
 
         builder.Property(j => j.Status)
             .IsRequired()
-            .HasConversion<string>() 
+            .HasConversion<string>()
             .HasMaxLength(GlobalEntitiesConstraints.MaxEnumsLength);
 
         builder.Property(x => x.CreatedAt)
@@ -51,7 +54,7 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .HasForeignKey(j => j.AuthorId)
             .IsRequired();
 
-        
+
 
         // Worker Profile (One-to-Many)
         builder.HasOne(j => j.Worker)

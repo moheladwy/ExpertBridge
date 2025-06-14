@@ -1,5 +1,5 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
 
 
 using System.Threading.Channels;
@@ -32,7 +32,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
         protected override async Task ExecuteInternalAsync(
             TagPostMessage post,
             CancellationToken stoppingToken)
-        {            
+        {
             try
             {
                 using var scope = _services.CreateScope();
@@ -69,7 +69,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     "An error occurred while processing post with id={post.PostId}.",
                     post.PostId);
             }
-               
+
         }
     }
 }

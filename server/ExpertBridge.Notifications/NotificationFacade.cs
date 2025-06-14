@@ -8,7 +8,6 @@ using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
-using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications.Models.IPC;
 
 namespace ExpertBridge.Notifications

@@ -1,6 +1,7 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using System.Text;
 using System.Threading.Channels;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities.Media.PostMedia;
@@ -16,15 +17,13 @@ using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using Microsoft.EntityFrameworkCore;
-using Pgvector.EntityFrameworkCore;
-
 // For logging
 // Assuming PostQueries exist here
 // For PostProcessingPipelineMessage
 // For NotificationFacade
 
 using Pgvector;
-using System.Text;
+using Pgvector.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.DomainServices
 {
@@ -210,7 +209,7 @@ namespace ExpertBridge.Api.DomainServices
                     (p.Embedding.CosineDistance(userEmbedding) < request.After.Value) ||
                     (
                         p.Embedding.CosineDistance(userEmbedding) == request.After.Value
-                        //&& p.Id.CompareTo(request.LastIdCursor) // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
+                    //&& p.Id.CompareTo(request.LastIdCursor) // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
                     )
                 );
             }
@@ -222,7 +221,7 @@ namespace ExpertBridge.Api.DomainServices
                 .Select(p => new
                 {
                     PostId = p.Id, // The whole post entity for now, will project to DTO later
-                    Distance = p.Embedding.CosineDistance(userEmbedding) 
+                    Distance = p.Embedding.CosineDistance(userEmbedding)
                 })
                 .OrderBy(x => x.Distance)      // Order by similarity (ascending distance)
                 .ThenBy(x => x.PostId)        // Consistent tie-breaker
@@ -250,7 +249,7 @@ namespace ExpertBridge.Api.DomainServices
                 .SelectPostResponseFromFullPost(userProfile?.Id)
                 .ToListAsync(cancellationToken);
 
-                //.Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
+            //.Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
 
             return new PostsCursorPaginatedResponse
             {
@@ -416,10 +415,10 @@ namespace ExpertBridge.Api.DomainServices
             // Save changes for the vote first
             await _dbContext.SaveChangesAsync();
 
-            if (vote != null) 
+            if (vote != null)
             {
                 vote.Post = post; // Just to make sure whatever conditional path we take, the rich post is always attached to the vote for notifications purposes.
-                await _notificationFacade.NotifyPostVotedAsync(vote); 
+                await _notificationFacade.NotifyPostVotedAsync(vote);
             }
 
             // No second SaveChanges needed if NotifyPostVotedAsync only writes to channel

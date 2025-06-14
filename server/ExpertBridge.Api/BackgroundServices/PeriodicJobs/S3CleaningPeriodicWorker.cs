@@ -1,9 +1,12 @@
-﻿using Amazon.S3;
+﻿// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
+using Amazon.S3;
 using Amazon.S3.Model;
 using ExpertBridge.Api.Models;
+using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
-using ExpertBridge.Api.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;

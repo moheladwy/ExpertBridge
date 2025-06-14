@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 namespace ExpertBridge.UnitTests.ValidationTests.Entities;
 
 public class SkillValidatorTests
@@ -6,7 +9,9 @@ public class SkillValidatorTests
 
     private readonly Skill _validSkill = new()
     {
-        Id = Guid.NewGuid().ToString(), Name = "Test Skill", Description = "Test Description"
+        Id = Guid.NewGuid().ToString(),
+        Name = "Test Skill",
+        Description = "Test Description"
     };
 
     [Fact]

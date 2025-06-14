@@ -1,3 +1,6 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -27,7 +30,7 @@ public static class HealthChecks
         builder.Services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
             .AddNpgSql(npgsqlConnectionString, tags: ["live"])
-            .AddRedis(redisConnectionString, "Redis",  tags: ["live"], timeout: TimeSpan.FromSeconds(30));
+            .AddRedis(redisConnectionString, "Redis", tags: ["live"], timeout: TimeSpan.FromSeconds(30));
 
         return builder;
     }
@@ -35,10 +38,10 @@ public static class HealthChecks
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
         app.MapHealthChecks("/health", new HealthCheckOptions
-            { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+        { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
         // Only health checks tagged with the "live" tag must pass for the app to be considered alive
         app.MapHealthChecks("/alive", new HealthCheckOptions
-            { Predicate = r => r.Tags.Contains("live") });
+        { Predicate = r => r.Tags.Contains("live") });
 
         return app;
     }

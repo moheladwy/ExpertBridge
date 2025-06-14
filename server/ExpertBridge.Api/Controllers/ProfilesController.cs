@@ -1,18 +1,21 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
 using System.Threading.Channels;
+using ExpertBridge.Api.Helpers;
+using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
+using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Requests.UpdateProfileRequest;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
-using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Exceptions;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
-using FluentValidation;
-using ExpertBridge.Core.Requests.UpdateProfileRequest;
 
 namespace ExpertBridge.Api.Controllers;
 

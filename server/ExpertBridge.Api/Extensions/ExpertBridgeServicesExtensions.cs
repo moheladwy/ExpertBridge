@@ -2,9 +2,9 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using ExpertBridge.Data;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Api.Settings.Serilog;
+using ExpertBridge.Data;
 using ExpertBridge.Extensions.Caching;
 using ExpertBridge.GroqLibrary.Settings;
 using Polly;

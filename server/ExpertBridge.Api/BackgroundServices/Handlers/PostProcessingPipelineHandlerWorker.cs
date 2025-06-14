@@ -40,7 +40,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
         protected override async Task ExecuteInternalAsync(
             PostProcessingPipelineMessage post,
             CancellationToken stoppingToken)
-        {            
+        {
             try
             {
                 // Here we are providing coordination between inappropriate language
@@ -85,7 +85,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     "Pipeline: An error occurred while processing post with id={post.PostId}.",
                     post.PostId);
             }
-                
+
         }
     }
 }
