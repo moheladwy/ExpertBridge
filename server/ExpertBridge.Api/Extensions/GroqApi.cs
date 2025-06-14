@@ -48,7 +48,7 @@ public static class GroqApi
             ;
 
         // Adding an HttpClient to a service should take place after registering this
-        // service with the DI frist.
+        // service with the DI first.
         builder.AddGroqHttpClient();
         return builder;
     }

@@ -9,9 +9,10 @@ using ExpertBridge.Core.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
+using FluentValidation;
+using ExpertBridge.Core.Requests.UpdateProfileRequest;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -23,15 +24,18 @@ public class ProfilesController : ControllerBase
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly AuthorizationHelper _authHelper;
     private readonly ChannelWriter<UserInterestsProsessingMessage> _channelWriter;
+    private readonly IValidator<UpdateProfileRequest> _updateProfileRequestValidator;
 
     public ProfilesController(
         ExpertBridgeDbContext dbContext,
         AuthorizationHelper authHelper,
-        Channel<UserInterestsProsessingMessage> channel)
+        Channel<UserInterestsProsessingMessage> channel,
+        IValidator<UpdateProfileRequest> updateProfileRequestValidator)
     {
         _dbContext = dbContext;
         _authHelper = authHelper;
         _channelWriter = channel.Writer;
+        _updateProfileRequestValidator = updateProfileRequestValidator;
     }
 
     [AllowAnonymous]
@@ -68,28 +72,7 @@ public class ProfilesController : ControllerBase
         return profile;
     }
 
-    [HttpPost("onboard")]
-    public async Task<ProfileResponse> OnboardUser(
-        [FromBody] OnboardUserRequest request,
-        [FromServices] TaggingService _taggingService)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-
-        var user = await _authHelper.GetCurrentUserAsync();
-
-        user.IsOnboarded = true;
-
-        await _taggingService.AddTagsToUserProfileAsync(user.Profile.Id, request.TagIds);
-
-        var response = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync();
-
-        return response;
-    }
-
-    [Route("/api/v2/{controller}/onboard")]
+    [Route("/api/v2/Profiles/onboard")]
     [HttpPost]
     public async Task<ProfileResponse> OnboardUserV2(
         [FromBody] OnboardUserRequestV2 request,
@@ -98,7 +81,6 @@ public class ProfilesController : ControllerBase
         ArgumentNullException.ThrowIfNull(request);
 
         var user = await _authHelper.GetCurrentUserAsync();
-
         if (user is null) throw new UnauthorizedAccessException("The user is not authorized.");
 
         var existingTags = await _dbContext.Tags
@@ -142,5 +124,98 @@ public class ProfilesController : ControllerBase
             .FirstOrDefaultAsync(cancellationToken);
 
         return response ?? throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+    }
+
+    [Authorize]
+    [HttpPut]
+    public async Task<ProfileResponse> UpdateProfile(
+        [FromBody] UpdateProfileRequest request,
+        CancellationToken cancellationToken)
+    {
+        var user = await _authHelper.GetCurrentUserAsync();
+        if (user is null)
+            throw new UnauthorizedAccessException("The user is not authorized.");
+
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+        // Validate the request using the validator from FluentValidation.
+        var validationResult = await _updateProfileRequestValidator
+            .ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult.Errors);
+
+        var profile = user.Profile;
+
+        if (!string.IsNullOrEmpty(request.Username) &&
+                request.Username != user.Profile.Username)
+        {
+            var isUsernameExisting = await _dbContext.Profiles
+                .AsNoTracking()
+                .AnyAsync(p => p.Username == request.Username,
+                        cancellationToken);
+            if (isUsernameExisting)
+                throw new ProfileUserNameAlreadyExistsException(
+                        $"Username '{user.Profile.Username}' already exists.");
+            profile.Username = request.Username;
+        }
+        if (!string.IsNullOrEmpty(request.PhoneNumber) &&
+                request.PhoneNumber != user.Profile.PhoneNumber)
+        {
+            var isPhoneNumberExisting = await _dbContext.Profiles
+                .AsNoTracking()
+                .AnyAsync(
+                        p => p.PhoneNumber == request.PhoneNumber,
+                        cancellationToken);
+            if (isPhoneNumberExisting)
+                throw new ProfilePhoneNumberAlreadyExistsException(
+                        $"Phone number '{request.PhoneNumber}' already exists.");
+            profile.PhoneNumber = request.PhoneNumber;
+        }
+        if (!string.IsNullOrEmpty(request.FirstName) && request.FirstName != user.Profile.FirstName)
+            profile.FirstName = request.FirstName;
+        if (!string.IsNullOrEmpty(request.LastName) && request.LastName != user.Profile.LastName)
+            profile.LastName = request.LastName;
+        if (!string.IsNullOrEmpty(request.Bio) && request.Bio != user.Profile.Bio)
+            profile.Bio = request.Bio;
+        if (!string.IsNullOrEmpty(request.JobTitle) && request.JobTitle != user.Profile.JobTitle)
+            profile.JobTitle = request.JobTitle;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var profileResponse = await _dbContext.Profiles
+            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
+            .SelectProfileResponseFromProfile()
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (profileResponse == null)
+            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+
+        return profileResponse;
+    }
+
+    [Authorize]
+    [HttpGet("is-username-available/{username}")]
+    public async Task<bool> IsUsernameAvailable(
+            [FromRoute] string username,
+            CancellationToken cancellationToken = default)
+    {
+        var user = await _authHelper.GetCurrentUserAsync();
+        if (user is null)
+            throw new UnauthorizedAccessException("The user is not authorized.");
+
+        ArgumentException.ThrowIfNullOrEmpty(username, nameof(username));
+        ArgumentException.ThrowIfNullOrWhiteSpace(username, nameof(username));
+
+        // Check if the username is the same as the current user's username
+        // if so, return false since it's already taken by the current user.
+        if (user.Profile.Username == username)
+            return false;
+
+        return !await _dbContext.Profiles
+            .AsNoTracking()
+            .AnyAsync(
+                    p => p.Username == username,
+                    cancellationToken
+            );
     }
 }

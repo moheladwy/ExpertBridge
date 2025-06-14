@@ -31,6 +31,7 @@ using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Skills;
 using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Core.Entities.Users;
+using ExpertBridge.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Npgsql.EntityFrameworkCore.PostgreSQL;

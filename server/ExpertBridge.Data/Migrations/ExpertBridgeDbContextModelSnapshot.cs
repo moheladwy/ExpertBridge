@@ -1097,10 +1097,13 @@ namespace ExpertBridge.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("IsBanned")
                         .HasColumnType("boolean");
@@ -1116,10 +1119,13 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasMaxLength(2048)
@@ -1139,12 +1145,21 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("vector(1024)");
 
                     b.Property<string>("Username")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("(\"IsDeleted\") = false");
+
                     b.HasIndex("UserId")
                         .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.ToTable("Profiles");
                 });

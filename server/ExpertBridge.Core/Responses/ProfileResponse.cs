@@ -17,6 +17,7 @@ namespace ExpertBridge.Core.Responses
         public bool IsBanned { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? JobTitle { get; set; }
+        public string? Bio { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public bool IsOnboarded { get; set; }
         public int CommentsUpvotes { get; set; }

@@ -1,5 +1,6 @@
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 using ExpertBridge.Core.Entities.Media.ChatMedia;
+using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Core.Entities.Chats;
 

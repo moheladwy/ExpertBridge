@@ -2,6 +2,7 @@
 
 using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Core.Entities.Users;
 

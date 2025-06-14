@@ -1,6 +1,6 @@
 using FirebaseAdmin.Auth;
 
-namespace ExpertBridge.Core.Interfaces.Services;
+namespace ExpertBridge.Core.Interfaces;
 
 public interface IFirebaseAuthService
 {

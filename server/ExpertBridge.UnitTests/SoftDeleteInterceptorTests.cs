@@ -1,4 +1,6 @@
-﻿namespace ExpertBridge.UnitTests;
+﻿using ExpertBridge.Core.Interfaces;
+
+namespace ExpertBridge.UnitTests;
 
 public class SoftDeleteInterceptorTests
 {

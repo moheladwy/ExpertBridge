@@ -39,6 +39,7 @@ namespace ExpertBridge.Core.Queries
                     LastName = p.LastName,
                     IsBanned = p.IsBanned,
                     JobTitle = p.JobTitle,
+                    Bio = p.Bio,
                     PhoneNumber = p.PhoneNumber,
                     ProfilePictureUrl = p.ProfilePictureUrl,
                     Rating = p.Rating,

@@ -1,6 +1,7 @@
+import { API_URL } from "@/lib/api/endpoints";
 import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn } from "../auth/authSlice";
-import { OnboardUserRequest, OnboardUserRequestV2, ProfileResponse } from "./types";
+import { OnboardUserRequest, OnboardUserRequestV2, ProfileResponse, UpdateProfileRequest } from "./types";
 
 export const profilesApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
@@ -82,6 +83,37 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 			},
 		}),
 		
+		isUsernameAvailable: builder.mutation<boolean, string>({
+			query: (username) => ({
+				url: `/profiles/is-username-available/${username}`,
+				method: 'GET',
+			}),
+		}),
+
+		updateProfile: builder.mutation<ProfileResponse, UpdateProfileRequest>({
+			query: (request) => ({
+				url: `/profiles`,
+				method: 'PUT',
+				body: request
+			}),
+			onQueryStarted: async (request, lifecycleApi) => {
+				const patchResult = lifecycleApi.dispatch(
+					profilesApiSlice.util.updateQueryData(
+						'getCurrentUserProfile',
+						undefined,
+						(draft: ProfileResponse) => {
+							Object.assign(draft, request);
+						}
+					),
+				);
+
+				try {
+					await lifecycleApi.queryFulfilled;
+				} catch {
+					patchResult.undo();
+				}
+			},
+		}),
 	}),
 });
 
@@ -89,5 +121,7 @@ export const {
 	useGetCurrentUserProfileQuery,
 	useGetProfileByIdQuery,
 	useOnboardUserMutation,
-	useOnboardUserV2Mutation
+	useOnboardUserV2Mutation,
+	useIsUsernameAvailableMutation,
+	useUpdateProfileMutation
 } = profilesApiSlice;

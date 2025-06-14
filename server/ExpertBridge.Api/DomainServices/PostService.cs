@@ -2,25 +2,33 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Threading.Channels;
+using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Queries; // Assuming PostQueries exist here
+using ExpertBridge.Core.Queries;
+using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
-using ExpertBridge.Api.Models.IPC; // For PostProcessingPipelineMessage
-using ExpertBridge.Notifications; // For NotificationFacade
+using ExpertBridge.Notifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Api.DomainServices;
-using Pgvector.EntityFrameworkCore; // For logging
+using Pgvector.EntityFrameworkCore; 
 
-namespace ExpertBridge.Api.Services
+// For logging
+// Assuming PostQueries exist here
+// For PostProcessingPipelineMessage
+// For NotificationFacade
+
+// For logging
+
+namespace ExpertBridge.Api.DomainServices
 {
     public class PostService
     {
