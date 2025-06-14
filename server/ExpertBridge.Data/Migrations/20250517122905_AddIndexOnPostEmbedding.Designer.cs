@@ -3,18 +3,21 @@ using System;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
 
 #nullable disable
 
-namespace ExpertBridge.Data.Migrations
+namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    partial class ExpertBridgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250517122905_AddIndexOnPostEmbedding")]
+    partial class AddIndexOnPostEmbedding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1097,13 +1100,10 @@ namespace ExpertBridge.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsBanned")
                         .HasColumnType("boolean");
@@ -1119,13 +1119,10 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasMaxLength(2048)
@@ -1145,21 +1142,12 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("vector(1024)");
 
                     b.Property<string>("Username")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("(\"IsDeleted\") = false");
-
                     b.HasIndex("UserId")
                         .IsUnique();
-
-                    b.HasIndex("Username")
-                        .IsUnique()
-                        .HasFilter("(\"IsDeleted\") = false");
 
                     b.ToTable("Profiles");
                 });

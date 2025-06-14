@@ -56,31 +56,31 @@ internal static class Startup
     /// <returns>
     ///     The application builder with CORS service configured.
     /// </returns>
-    public static TBuilder AddCors<TBuilder>(this TBuilder builder)
-        where TBuilder : IHostApplicationBuilder
-    {
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("AllowAll", policy =>
-            {
-                policy.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            });
+    //public static TBuilder AddCors<TBuilder>(this TBuilder builder)
+    //    where TBuilder : IHostApplicationBuilder
+    //{
+    //    builder.Services.AddCors(options =>
+    //    {
+    //        options.AddPolicy("AllowAll", policy =>
+    //        {
+    //            policy.AllowAnyOrigin()
+    //                .AllowAnyMethod()
+    //                .AllowAnyHeader();
+    //        });
 
-            options.AddPolicy("SignalRClients", policy =>
-            {
-                policy.WithOrigins(
-                    "http://localhost:5173",
-                    "http://localhost:5174",
-                    "https://expert-bridge.netlify.app"
-                    )
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
-            });
-        });
+    //        options.AddPolicy("SignalRClients", policy =>
+    //        {
+    //            policy.WithOrigins(
+    //                "http://localhost:5173",
+    //                "http://localhost:5174",
+    //                "https://expert-bridge.netlify.app"
+    //                )
+    //                .AllowAnyMethod()
+    //                .AllowAnyHeader()
+    //                .AllowCredentials();
+    //        });
+    //    });
 
-        return builder;
-    }
+    //    return builder;
+    //}
 }

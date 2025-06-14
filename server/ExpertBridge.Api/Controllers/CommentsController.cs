@@ -98,9 +98,10 @@ public class CommentsController : ControllerBase
         // the perspective for IsUpvoted/IsDownvoted is often the *requesting user*, not profileId.
         // If profileId is meant to be the perspective, then pass profileId to SelectCommentResponseFromFullComment.
         // Usually, it's the *current authenticated user's* perspective.
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
+        string? requestingUserProfileId = user?.Profile?.Id;
 
-        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
-        var comments = await _commentService.GetCommentsByProfileAsync(profileId, userProfileId);
+        var comments = await _commentService.GetCommentsByProfileAsync(profileId, requestingUserProfileId);
 
         return comments;
     }

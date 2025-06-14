@@ -52,5 +52,13 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(p => p.Embedding)
             .HasColumnType(ColumnTypes.Vector1024)
             .IsRequired(false);
+
+        builder
+            .HasIndex(p => p.Embedding)
+            .HasMethod("hnsw")
+            .HasOperators("vector_cosine_ops")
+            //.HasStorageParameter("m", 32) // Example, tune this
+            //.HasStorageParameter("ef_construction", 120) // Example, tune this
+            ;
     }
 }
