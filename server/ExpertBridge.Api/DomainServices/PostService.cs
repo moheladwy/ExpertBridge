@@ -16,20 +16,15 @@ using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using ExpertBridge.Core.Requests;
-using ExpertBridge.Api.DomainServices;
-using Pgvector.EntityFrameworkCore; 
+using Pgvector.EntityFrameworkCore;
 
 // For logging
 // Assuming PostQueries exist here
 // For PostProcessingPipelineMessage
 // For NotificationFacade
 
-using Pgvector.EntityFrameworkCore;
 using Pgvector;
-using ExpertBridge.Core.EntityConfiguration;
-using System.Text; 
+using System.Text;
 
 namespace ExpertBridge.Api.DomainServices
 {

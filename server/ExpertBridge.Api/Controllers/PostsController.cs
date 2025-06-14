@@ -1,26 +1,12 @@
-using System.Security.Claims;
-using System.Threading.Channels;
-using ExpertBridge.Core.Entities.Media.PostMedia;
-using ExpertBridge.Core.Entities.Posts;
-using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Responses;
-using ExpertBridge.Data.DatabaseContexts;
-using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
-using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Notifications;
 using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Api.Services;
-using ExpertBridge.Core.Interfaces.Services;
 using ExpertBridge.Core.Requests;
 
 namespace ExpertBridge.Api.Controllers;
