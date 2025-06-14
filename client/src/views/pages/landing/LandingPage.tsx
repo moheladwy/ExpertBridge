@@ -33,8 +33,7 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* Second Section */}
-      <div className='h-4/5 p-20'>
+{/*       <div className='h-4/5 p-20'>
         <div className="flex max-lg:flex-col justify-center items-center mx-28 gap-20 max-md:gap-10 max-sm:gap-2 max-md:mx-2">
           <div className="flex flex-col items-start gap-3 text-main-blue max-w-xl">
             <div className="text-6xl font-semibold max-md:text-5xl">Main Features</div>
@@ -42,18 +41,19 @@ function LandingPage() {
           </div>
 
           <div className="grid max-md:grid-cols-1 grid-cols-2 gap-10 max-md:gap-2 px-10 max-md:px-0 py-10">
-            {/* Feature 1 */}
+           
             <Feature icon={icon} title='Lorem' body='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'></Feature>
-            {/* Feature 2 */}
+            
             <Feature icon={icon} title='Lorem' body='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'></Feature>
-            {/* Feature 3 */}
+            
             <Feature icon={icon} title='Lorem' body='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'></Feature>
-            {/* Feature 4 */}
+           
             <Feature icon={icon} title='Lorem' body='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'></Feature>
           </div>
 
         </div>
-      </div>
+      </div> 
+*/}
 
       {/* Third Section */}
       <div className='p-20 bg-main-blue'>
