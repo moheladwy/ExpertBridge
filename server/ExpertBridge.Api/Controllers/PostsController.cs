@@ -20,7 +20,6 @@ using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Notifications;
 using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Services;
-using ExpertBridge.Core.Interfaces.Services;
 
 namespace ExpertBridge.Api.Controllers;
 

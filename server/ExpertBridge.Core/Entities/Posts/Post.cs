@@ -7,6 +7,7 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Interfaces;
 using Pgvector;
 
 namespace ExpertBridge.Core.Entities.Posts;

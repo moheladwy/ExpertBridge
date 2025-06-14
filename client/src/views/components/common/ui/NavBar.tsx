@@ -206,7 +206,7 @@ const NavBar = () => {
 										)}
 									</div>
 								</DropdownMenuTrigger>
-								<DropdownMenuContent>
+								<DropdownMenuContent className="dark:bg-gray-800">
 									<DropdownMenuLabel>
 										My Account
 									</DropdownMenuLabel>
@@ -228,7 +228,7 @@ const NavBar = () => {
 					<>
 						<button
 							onClick={() => navigate("/login")}
-							className="text-white border-2 rounded-full px-6 py-2 mr-4 hover:text-main-blue hover:bg-white hover:font-bold max-sm:text-xs max-sm:px-3"
+							className="text-white border-2 rounded-full px-6 py-2 mr-4 hover:text-main-blue hover:bg-white hover:font-bold max-sm:text-xs max-sm:px-3 dark:bg-gray-800"
 						>
 							Login
 						</button>

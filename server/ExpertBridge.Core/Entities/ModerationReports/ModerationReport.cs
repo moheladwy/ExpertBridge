@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Core.Entities.ModerationReports
 {

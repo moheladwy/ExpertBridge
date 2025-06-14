@@ -14,12 +14,15 @@ import {useGetCommentsByUserIdQuery} from "@/features/comments/commentsSlice";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
 import ProfileCommentCard from "@/views/components/common/comments/ProfileCommentCard";
+import { Dialog, DialogContent, DialogOverlay, DialogPortal } from "@/views/components/custom/dialog";
+import UpdateProfile from "@/views/components/common/profile/UpdateProfile";
 
 
 const MyProfilePage = () => {
 	const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
 	const { data: profile, isLoading, error } = useGetCurrentUserProfileQuery();
 	const [activeTab, setActiveTab] = useState("questions");
+	const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
 	// Get all posts
 	const { data: postsData } = useGetPostsQuery();
@@ -61,7 +64,7 @@ const MyProfilePage = () => {
 	const fullName = `${profile?.firstName || ""} ${profile?.lastName || ""}`;
 	const jobTitle = profile?.jobTitle || "Expert";
 	const location = "Giza, Egypt"; // This would come from profile data if available
-	const bio = "No bio available";
+	const bio = profile?.bio || "No bio available";
 
 	// User statistics
 	const stats = {
@@ -75,6 +78,14 @@ const MyProfilePage = () => {
 	const getPostTitleById = (postId: string) => {
 		const post = allPosts.find(p => p.id === postId);
 		return post ? post.title : "Unknown Post";
+	};
+	
+	const handleEditProfile = () => {
+		setIsEditProfileOpen(true);
+	};
+
+	const handleCloseEditProfile = () => {
+		setIsEditProfileOpen(false);
 	};
 
 	return (
@@ -126,7 +137,12 @@ const MyProfilePage = () => {
 								{isLoading ? (
 									<Skeleton className="h-9 w-24"/>
 								) : (
-									<Button variant="outline" size="sm" className="gap-2">
+									<Button 
+  									variant="outline" 
+  									size="sm" 
+  									className="gap-2 dark:bg-gray-800 dark:text-white dark:border-gray-800"
+ 										onClick={handleEditProfile}
+									>
 										<Pencil size={16}/>
 										<span>Edit</span>
 									</Button>
@@ -300,6 +316,16 @@ const MyProfilePage = () => {
 					</div>
 				</div>
 			</div>
+			
+			{/* Edit Profile Dialog */}
+			<Dialog open={isEditProfileOpen} onOpenChange={setIsEditProfileOpen}>
+				<DialogPortal>
+					<DialogOverlay className="bg-black/50" />
+					<DialogContent className="sm:max-w-[600px] p-0">
+						<UpdateProfile onClose={handleCloseEditProfile} />
+					</DialogContent>
+				</DialogPortal>
+			</Dialog>
 		</>
 	);
 };

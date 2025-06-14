@@ -1,4 +1,4 @@
-namespace ExpertBridge.Core.Entities;
+namespace ExpertBridge.Core.Interfaces;
 
 public interface ISoftDeletable
 {

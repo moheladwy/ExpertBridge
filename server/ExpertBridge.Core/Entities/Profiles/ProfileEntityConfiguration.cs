@@ -1,4 +1,5 @@
 using ExpertBridge.Core.Entities.Media;
+using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -13,6 +14,14 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
         builder.Property(x => x.Id)
             .HasMaxLength(GlobalEntitiesConstraints.MaxIdLength)
             .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.Email)
+            .IsRequired()
+            .HasMaxLength(UserEntityConstraints.MaxEmailLength);
+
+        builder.HasIndex(x => x.Email)
+            .HasFilter(IndexFilters.NotDeleted)
+            .IsUnique();
 
         builder.Property(x => x.JobTitle)
             .IsRequired(false)
@@ -31,6 +40,26 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
 
         builder.Property(x => x.RatingCount)
             .IsRequired();
+
+        builder.Property(x => x.Username)
+            .IsRequired(false)
+            .HasMaxLength(UserEntityConstraints.MaxUsernameLength);
+
+        builder.HasIndex(x => x.Username)
+            .HasFilter(IndexFilters.NotDeleted)
+            .IsUnique();
+
+        builder.Property(x => x.PhoneNumber)
+            .IsRequired(false)
+            .HasMaxLength(UserEntityConstraints.MaxPhoneNumberLength);
+
+        builder.Property(x => x.FirstName)
+            .IsRequired()
+            .HasMaxLength(UserEntityConstraints.MaxNameLength);
+
+        builder.Property(x => x.LastName)
+            .IsRequired()
+            .HasMaxLength(UserEntityConstraints.MaxNameLength);
 
         builder.HasOne(p => p.User)
             .WithOne(u => u.Profile)

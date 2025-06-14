@@ -1,6 +1,7 @@
 ﻿
 
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 

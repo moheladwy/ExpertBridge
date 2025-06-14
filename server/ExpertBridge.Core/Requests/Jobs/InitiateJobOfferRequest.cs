@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using ExpertBridge.Core.Entities;
 
-namespace ExpertBridge.Api.Requests.Jobs
+namespace ExpertBridge.Core.Requests.Jobs
 {
     public class InitiateJobOfferRequest
     {
