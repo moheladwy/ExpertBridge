@@ -33,17 +33,20 @@ import { Edit as EditIcon } from "lucide-react";
 import EditPostModal from "./EditPostModal";
 import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
+import { Post } from "@/features/posts/types";
 
 interface PostCardProps {
-	postId: string;
+	post: Post;
 	currUserId?: string | null;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
-	const memoizedPostId = useMemo(() => postId, [postId]);
-	const post = useAppSelector((state) =>
-		selectPostById(state, memoizedPostId)
-	);
+const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
+	// const memoizedPostId = useMemo(() => postId, [postId]);
+	// const post = useAppSelector((state) =>
+	// 	selectPostById(state, memoizedPostId)
+	// );
+	
+	const memoizedPost = useMemo(() => post, [post]);
 
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 
@@ -62,12 +65,12 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 		}
 	}, [deleteResult.isSuccess, deleteResult.isError, deleteResult.error]);
 
-	if (!post) return null;
+	if (!memoizedPost) return null;
 
-	const totalCommentsNumber = post.comments;
+	const totalCommentsNumber = memoizedPost.comments;
 
 	const handleCopyLink = () => {
-		const postUrl = `${window.location.origin}/feed/${post.id}`;
+		const postUrl = `${window.location.origin}/feed/${memoizedPost.id}`;
 		navigator.clipboard
 			.writeText(postUrl)
 			.then(() => {
@@ -79,7 +82,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 	};
 
 	const handleDeletePost = async () => {
-		await deletePost(post.id);
+		await deletePost(memoizedPost.id);
 	};
 
 	// let media;
@@ -105,10 +108,10 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 			<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
 				{/* Author Info */}
 				<div className="flex items-center space-x-3">
-					<Link to={`/profile/${post.author.id}`}>
-						{post.author.profilePictureUrl ? (
+					<Link to={`/profile/${memoizedPost.author.id}`}>
+						{memoizedPost.author.profilePictureUrl ? (
 							<img
-								src={post.author.profilePictureUrl}
+								src={memoizedPost.author.profilePictureUrl}
 								width={40}
 								height={40}
 								className="rounded-full"
@@ -124,15 +127,15 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 					</Link>
 					<div className="flex w-full justify-between">
 						<div>
-							<Link to={`/profile/${post.author.id}`}>
+							<Link to={`/profile/${memoizedPost.author.id}`}>
 								{/* Name */}
 								<h3 className="text-md font-semibold text-gray-800 dark:text-gray-100">
-									{post.author.firstName +
+									{memoizedPost.author.firstName +
 										" " +
-										post.author.lastName}
+										memoizedPost.author.lastName}
 								</h3>
 							</Link>
-							<PostTimeStamp createdAt={post.createdAt} lastModified={post.lastModified} />
+							<PostTimeStamp createdAt={memoizedPost.createdAt} lastModified={memoizedPost.lastModified} />
 						</div>
 
 						{/* More */}
@@ -150,7 +153,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 										<h6>Copy link</h6>
 									</div>
 								</DropdownMenuItem>
-								{post.author.id === currentUserId && (
+								{memoizedPost.author.id === currentUserId && (
 									<>
 										{/* Edit */}
 										<DropdownMenuItem>
@@ -217,13 +220,13 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				</div>
 
 				{/* Post Title */}
-				<Link to={`/feed/${post.id}`}>
+				<Link to={`/feed/${memoizedPost.id}`}>
 					<div className="break-words">
 						<h2
 							className="text-lg font-bold text-gray-700 dark:text-gray-100 whitespace-pre-wrap"
 							dir="auto"
 						>
-							{post.title}
+							{memoizedPost.title}
 						</h2>
 					</div>
 
@@ -233,19 +236,19 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 							className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap"
 							dir="auto"
 						>
-							{post.content}
+							{memoizedPost.content}
 						</p>
 					</div>
 				</Link>
 
         {/* Media */}
-				<MediaCarousel medias={post.medias} />
+				<MediaCarousel medias={memoizedPost.medias} />
 
 				{/* Post Metadata */}
 				{/* Tags */}
-				{post.postTags?.length > 0 && (
+				{memoizedPost.postTags?.length > 0 && (
 					<div className="flex space-x-2">
-						{post.postTags.map((tag: any, index: number) => (
+						{memoizedPost.postTags.map((tag: any, index: number) => (
 							<span
 								key={index}
 								className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full"
@@ -260,10 +263,10 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				<div className="flex justify-between items-center">
 					<div className="flex gap-2 items-center">
 						{/* Votes */}
-						<PostVoteButtons post={post} />
+						<PostVoteButtons post={memoizedPost} />
 
 						{/* Comments */}
-						<Link to={`/feed/${post.id}`}>
+						<Link to={`/feed/${memoizedPost.id}`}>
 							<div className="flex items-center gap-2 rounded-full p-1 px-2 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer">
 								<MessageCircle className="text-gray-500 dark:text-gray-400" />
 								<div className="text-gray-500 dark:text-gray-400 text-md font-bold">
@@ -275,7 +278,7 @@ const PostCard: React.FC<PostCardProps> = ({ postId, currUserId }) => {
 				</div>
 			</div>
 			<EditPostModal
-				post={post}
+				post={memoizedPost}
 				isOpen={isEditModalOpen}
 				onClose={() => setIsEditModalOpen(false)}
 			/>

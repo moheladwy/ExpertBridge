@@ -8,7 +8,7 @@ export interface PostTag {
 }
 
 export type PostsCursorPaginatedResponse = {
-  posts: PostResponse[];
+  posts: Post[];
   pageInfo: {
     endCursor?: number;
     hasNextPage: boolean;

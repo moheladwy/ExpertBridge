@@ -8,7 +8,6 @@ import { apiSlice } from '../api/apiSlice';
 import { AddPostRequest, Post, PostResponse, PostsCursorPaginatedResponse, PostsInitialPageParam, PostsQueryParamLimit } from './types';
 import { sub } from 'date-fns';
 import { PostAddOutlined } from '@mui/icons-material';
-import { URLSearchParams } from 'url';
 import { RootState } from '@/app/store';
 import { useAppSelector } from '@/app/hooks';
 import { useUpdateCommentMutation } from '../comments/commentsSlice';
@@ -35,11 +34,13 @@ const postsResponseTransformer = (response: PostResponse[]) => {
 	return postsAdapter.setAll(initialState, posts);
 };
 
+// TODO: Needs optimization
 const transformPagesToFlatPosts = (pages: PostsCursorPaginatedResponse[] | undefined) => {
 	let allPosts: Post[] = [];
 
 	pages?.forEach(page => {
-		allPosts = allPosts.concat(page.posts.map(postResponseTransformer));
+		// allPosts = allPosts.concat(page.posts.map(postResponseTransformer));
+		allPosts = allPosts.concat(page.posts);
 	});
 
 	return allPosts;
@@ -70,7 +71,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 					lastPageParam,
 					allPageParams
 				) => {
-					if (!lastPage.pageInfo.hasNextPage) {
+					if (!lastPage.pageInfo?.hasNextPage) {
 						return undefined;
 					}
 
@@ -82,7 +83,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			},
 		}),
 
-		// (deprecated)
+		// (DEPRECATED)
 		getPosts: builder.query<PostsState, void>({
 			query: () => '/posts',
 			transformResponse: postsResponseTransformer,
@@ -112,6 +113,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			onQueryStarted: async (request, lifecycleApi) => {
 				try {
 					const { data: createdPost } = await lifecycleApi.queryFulfilled;
+
 					const getPostsPatchResult = lifecycleApi.dispatch(
 						postsApiSlice.util.updateQueryData(
 							'getPostsCursor',
@@ -120,6 +122,8 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 								// const posts = Object.values(draft.entities).concat(createdPost);
 								// postsAdapter.setAll(draft, posts);
 								// postsAdapter.addOne(draft, createdPost);
+
+								draft.pages[0].posts.push(createdPost);
 							}
 						),
 					);
@@ -380,6 +384,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 export const {
 	useGetPostQuery,
 	useGetPostsQuery,
+	useGetPostsCursorInfiniteQuery,
 	useCreatePostMutation,
 	useUpvotePostMutation,
 	useDownvotePostMutation,
