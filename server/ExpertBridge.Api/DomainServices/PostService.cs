@@ -18,7 +18,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Api.DomainServices;
-using Pgvector.EntityFrameworkCore; // For logging
+using Pgvector.EntityFrameworkCore;
+using Pgvector;
+using ExpertBridge.Core.EntityConfiguration;
+using System.Text; // For logging
 
 namespace ExpertBridge.Api.Services
 {
@@ -168,7 +171,23 @@ namespace ExpertBridge.Api.Services
             //    };
             //}
 
-            var userEmbedding = userProfile?.UserInterestEmbedding ?? null;
+
+            var userEmbedding = userProfile?.UserInterestEmbedding;
+
+            if (userEmbedding == null)
+            {
+                var rand = new Random();
+                var sb = new StringBuilder();
+                sb.Append("0.1");
+
+                for (int i = 0; i < 1023; i++)
+                {
+                    double value = rand.NextDouble(); // gives value between 0.0 and 1.0
+                    sb.Append($",{value.ToString("0.#")}"); // optional: format to reduce decimal noise
+                }
+
+                userEmbedding = new Vector(sb.ToString());
+            }
 
             // 2. Build the query for posts
             var query = _dbContext.Posts
@@ -196,13 +215,14 @@ namespace ExpertBridge.Api.Services
             // Temporary projection to include distance for ordering and cursor creation
 
             var postsWithDistance = await query
+                .Where(p => p.Embedding != null)
                 .Select(p => new
                 {
-                    Post = p, // The whole post entity for now, will project to DTO later
-                    Distance = p.Embedding.CosineDistance(userEmbedding)
+                    PostId = p.Id, // The whole post entity for now, will project to DTO later
+                    Distance = p.Embedding.CosineDistance(userEmbedding) 
                 })
                 .OrderBy(x => x.Distance)      // Order by similarity (ascending distance)
-                .ThenBy(x => x.Post.Id)        // Consistent tie-breaker
+                .ThenBy(x => x.PostId)        // Consistent tie-breaker
                 .Take(request.PageSize + 1)            // Fetch one extra item to determine if there's a next page
                 .ToListAsync(cancellationToken);
 
@@ -217,19 +237,27 @@ namespace ExpertBridge.Api.Services
             {
                 var lastPostOnCurrentPage = currentPagePosts.Last();
                 nextDistance = lastPostOnCurrentPage.Distance;
-                nextPostId = lastPostOnCurrentPage.Post.Id;
+                nextPostId = lastPostOnCurrentPage.PostId;
             }
 
             // 4. Map to DTOs
-            var postDtos = currentPagePosts
-                .Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
+            var currentPagePostIds = currentPagePosts.Select(p => p.PostId);
+            var postDtos = await _dbContext.Posts
+                .FullyPopulatedPostQuery(p => currentPagePostIds.Contains(p.Id))
+                .SelectPostResponseFromFullPost(userProfile?.Id)
+                .ToListAsync(cancellationToken);
+
+                //.Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
 
             return new PostsCursorPaginatedResponse
             {
                 Posts = postDtos,
-                EndCursor = nextDistance,
-                NextIdCursor = nextPostId,
-                HasNextPage = hasNextPage
+                PageInfo = new PageInfoResponse
+                {
+                    EndCursor = nextDistance,
+                    NextIdCursor = nextPostId,
+                    HasNextPage = hasNextPage
+                }
             };
         }
 

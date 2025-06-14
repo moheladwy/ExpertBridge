@@ -1,6 +1,7 @@
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Extensions.CORS;
 using ExpertBridge.Extensions.HealthChecks;
 using ExpertBridge.Notifications;
 using ExpertBridge.Notifications.Extensions;
@@ -19,7 +20,12 @@ builder.AddDefaultHealthChecks();
 builder.Services.AddServiceDiscovery();
 builder.Services.ConfigureHttpClientDefaults(http =>
 {
-    http.AddStandardResilienceHandler();
+    http.AddStandardResilienceHandler(options =>
+    {
+        options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(120);
+        options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(60);
+        options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(120);
+    });
     http.AddServiceDiscovery();
 });
 
@@ -77,7 +83,7 @@ if (app.Environment.IsProduction())
 app.UseRouting();
 app.UseRateLimiter();
 // app.UseRequestLocalization();
-app.UseCors("SignalRClients");
+app.UseCors(CorsPolicyNames.SignalRClients);
 
 app.UseAuthentication();
 app.UseAuthorization();

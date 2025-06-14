@@ -21,6 +21,7 @@ using ExpertBridge.Notifications;
 using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Services;
 using ExpertBridge.Core.Interfaces.Services;
+using ExpertBridge.Core.Requests;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -125,18 +126,29 @@ public class PostsController : ControllerBase
     /// <returns>
     ///     The list of post responses.
     /// </returns>
+    //[AllowAnonymous]
+    //[HttpGet]
+    //public async Task<ActionResult<List<PostResponse>>> GetAll()
+    //{
+    //    _logger.LogInformation("User from HTTP Context (GetAllPosts): {FindFirstValue}", HttpContext.User.FindFirstValue(ClaimTypes.Email)); // Keep Serilog if desired
+
+    //    // var user = await _authHelper.GetCurrentUserAsync();
+    //    // var userProfileId = user?.Profile?.Id ?? string.Empty;
+    //    var user = await _userService.GetCurrentUserPopulatedModelAsync();
+    //    string? userProfileId = user?.Profile?.Id;
+
+    //    var posts = await _postService.GetAllPostsAsync(userProfileId);
+    //    return posts;
+    //}
+
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<List<PostResponse>>> GetAll()
+    public async Task<ActionResult<PostsCursorPaginatedResponse>> GetCursorPaginated(
+        [FromQuery] PostsCursorRequest request)  
     {
-        _logger.LogInformation("User from HTTP Context (GetAllPosts): {FindFirstValue}", HttpContext.User.FindFirstValue(ClaimTypes.Email)); // Keep Serilog if desired
-
-        // var user = await _authHelper.GetCurrentUserAsync();
-        // var userProfileId = user?.Profile?.Id ?? string.Empty;
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
-        string? userProfileId = user?.Profile?.Id;
+        var posts = await _postService.GetRecommendedPostsAsync(user?.Profile, request);
 
-        var posts = await _postService.GetAllPostsAsync(userProfileId);
         return posts;
     }
 
