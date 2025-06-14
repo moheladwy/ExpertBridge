@@ -197,7 +197,7 @@ namespace ExpertBridge.Api.DomainServices
                 .AsQueryable();
 
             // Apply cursor pagination predicate if not the first page
-            if (request.After.HasValue && request.LastIdCursor != null)
+            if (request.After.HasValue)
             {
                 // Assuming lower distance is better (more similar)
                 // We want posts with:
