@@ -13,6 +13,8 @@ namespace ExpertBridge.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
+    
+    // TODO REMOVE PROFILE ID FROM AREA
     public class JobPostingsController : ControllerBase
     {
         private readonly ExpertBridgeDbContext _dbContext;
