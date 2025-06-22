@@ -13,8 +13,12 @@ namespace ExpertBridge.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    
-    // TODO REMOVE PROFILE ID FROM AREA
+
+    // CURRENT PROGRESS:
+    // TODO REMOVE PROFILE ID FROM AREA Entity (meaningless)
+    // CHANGE CoverLetter DTO in apply endpoint to be several variables (price, etc)
+    // Q: Should job postings be just like announcements with no up/downvotes or should it be like a post
+    // Currently its like an announcement/posting, can extend later if needed/time permits
     public class JobPostingsController : ControllerBase
     {
         private readonly ExpertBridgeDbContext _dbContext;
