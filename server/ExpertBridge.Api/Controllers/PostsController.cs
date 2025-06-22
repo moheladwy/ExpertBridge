@@ -1,6 +1,3 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Settings;
 using ExpertBridge.Core.Exceptions;
@@ -17,12 +14,6 @@ namespace ExpertBridge.Api.Controllers;
 /// <summary>
 ///     Controller for posts management.
 /// </summary>
-/// <param name="_dbContext">
-///     The database context.
-/// </param>
-/// <param name="_authHelper">
-///     The authorization helper.
-/// </param>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
