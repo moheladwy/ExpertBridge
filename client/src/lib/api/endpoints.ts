@@ -3,6 +3,7 @@ export const HEALTH_CHECK_URL = `${BASE_URL}/health`;
 export const API_URL = `${BASE_URL}/api`;
 export const USER_URL = `${API_URL}/User`;
 export const MEDIA_URL = `${API_URL}/Media`;
+export const SEARCH_URL = `${API_URL}/Search`;
 
 export const USER_ENDPOINTS = {
   GET_USER_BY_FIREBASE_ID: `${USER_URL}/get`,
@@ -16,3 +17,8 @@ export const MEDIA_ENDPOINTS = {
   UPLOAD_MEDIA: `${MEDIA_URL}/upload`,
   DELETE_MEDIA_BY_KEY: `${MEDIA_URL}/delete`,
 }
+
+export const SEARCH_ENDPOINTS = {
+  SEARCH_USERS: `${SEARCH_URL}/users`,
+	SEARCH_POSTS: `${SEARCH_URL}/posts`,
+};

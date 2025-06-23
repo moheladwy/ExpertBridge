@@ -31,6 +31,7 @@ import {
 import PostFromUrlPage from "./views/pages/posts/PostFromUrlPage.tsx";
 import UserProfilePage from "./views/pages/profile/UserProfilePage.tsx";
 import Notifications from "./views/pages/notifications/Notifications.tsx";
+import SearchPosts from "./views/pages/search/SearchPosts.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -75,9 +76,11 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "profile/:userId",
-				element: (
-					<UserProfilePage />
-				),
+				element: <UserProfilePage />,
+			},
+			{
+				path: "search",
+				element: <SearchPosts />,
 			},
 			{
 				path: "notifications",

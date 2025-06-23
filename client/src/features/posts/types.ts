@@ -35,6 +35,7 @@ export interface Post {
   isUpvoted: boolean;
   isDownvoted: boolean;
   medias: MediaObjectResponse[]; // Adjust later if media structure is known
+  relevanceScore?: number;
   comments: number;
   postTags: PostTag[];
 }
@@ -52,6 +53,7 @@ export interface PostResponse {
   isUpvoted: boolean;
   isDownvoted: boolean;
   medias: MediaObjectResponse[]; // Adjust later if media structure is known
+  relevanceScore?: number;
   comments: number;
   postTags: PostTag[];
 }

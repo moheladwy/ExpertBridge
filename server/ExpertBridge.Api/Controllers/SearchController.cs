@@ -36,7 +36,7 @@ public class SearchController : ControllerBase
         _dbContext = dbContext;
         _embeddingService = embeddingService;
         _cache = cache;
-        _cosineDistanceThreshold = 0.65f;
+        _cosineDistanceThreshold = 1.0f;
         _defaultLimit = 10;
     }
 
@@ -49,45 +49,33 @@ public class SearchController : ControllerBase
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         ArgumentException.ThrowIfNullOrEmpty(request.query, nameof(request.query));
 
+        var queryEmbeddings = await _embeddingService.GenerateEmbedding(request.query);
 
-        var cacheKey = $"Search-Posts-{request.query.ToLower(CultureInfo.CurrentCulture).Trim()}";
-        var posts = await _cache.GetOrCreateAsync<List<PostResponse>>(cacheKey,
-            async _ =>
+        return await _dbContext.Posts
+            .AsNoTracking()
+            .Where(p => p.Embedding != null && p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold)
+            .OrderBy(p => p.Embedding.CosineDistance(queryEmbeddings))
+            .Take(request.limit ?? _defaultLimit)
+            .Select(p => new PostResponse
             {
-                // Generate embeddings for the query if not already cached.
-                var queryEmbeddings = await _embeddingService.GenerateEmbedding(request.query);
-                return await _dbContext.Posts
-                    .AsNoTracking()
-                    .IgnoreQueryFilters()
-                    .Where(p => p.Embedding != null && p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold)
-                    .OrderBy(p => p.Embedding.CosineDistance(queryEmbeddings))
-                    .ThenByDescending(p => p.Id)
-                    .Take(request.limit ?? _defaultLimit)
-                    .Select(p => new PostResponse
-                    {
-                        Id = p.Id,
-                        Title = p.Title,
-                        Content = p.Content,
-                        Author = p.Author.SelectAuthorResponseFromProfile(),
-                        CreatedAt = p.CreatedAt.Value,
-                        LastModified = p.LastModified,
-                        Upvotes = p.Votes.Count(v => v.IsUpvote),
-                        Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                        Comments = p.Comments.Count,
-                        RelevanceScore = 1.0 - p.Embedding.CosineDistance(queryEmbeddings),
-                        Medias = p.Medias.Select(m => new MediaObjectResponse
-                        {
-                            Id = m.Id,
-                            Name = m.Name,
-                            Type = m.Type,
-                            Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
-                        }).ToList()
-                    })
-                    .ToListAsync(cancellationToken);
-            },
-            tags: ["search", "posts", $"{request.query}"],
-            cancellationToken: cancellationToken);
-
-        return posts;
+                Id = p.Id,
+                Title = p.Title,
+                Content = p.Content,
+                Author = p.Author.SelectAuthorResponseFromProfile(),
+                CreatedAt = p.CreatedAt.Value,
+                LastModified = p.LastModified,
+                Upvotes = p.Votes.Count(v => v.IsUpvote),
+                Downvotes = p.Votes.Count(v => !v.IsUpvote),
+                Comments = p.Comments.Count,
+                RelevanceScore = p.Embedding.CosineDistance(queryEmbeddings),
+                Medias = p.Medias.Select(m => new MediaObjectResponse
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Type = m.Type,
+                    Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
+                }).ToList()
+            })
+            .ToListAsync(cancellationToken);
     }
 }

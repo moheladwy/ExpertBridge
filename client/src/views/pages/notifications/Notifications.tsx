@@ -1,7 +1,6 @@
 import { useGetNotificationsQuery, useReadNotificationsMutation } from "@/features/notifications/notificationsSlice";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { NotificationCard } from "@/views/components/common/notifications/NotificationCard";
-import { formatDistanceToNow } from "date-fns";
 import { useEffect } from "react";
 
 function Notifications() {
