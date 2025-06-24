@@ -9,5 +9,7 @@ public class SearchUserResponse
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? ProfilePictureUrl { get; set; }
+    public string? JobTitle { get; set; }
+    public string? Bio { get; set; }
     public double Rank { get; set; }
 }

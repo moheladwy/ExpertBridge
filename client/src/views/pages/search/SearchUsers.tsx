@@ -1,11 +1,10 @@
 import { useSearchParams } from "react-router-dom";
-import { useSearchPostsQuery } from "@/features/search/searchSlice";
+import { useSearchUsersQuery } from "@/features/search/searchSlice";
 import { Skeleton } from "@mui/material";
-import PostCard from "@/views/components/common/posts/PostCard";
-import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import SearchUserCard from "@/views/components/custom/SearchUserCard";
 import { useCallback } from "react";
 
-const SearchPosts = () => {
+const SearchUsers = () => {
 	const [searchParams] = useSearchParams();
 	const searchQuery = searchParams.get("query") || "";
 
@@ -14,10 +13,7 @@ const SearchPosts = () => {
 		isLoading,
 		isError,
 		error,
-	} = useSearchPostsQuery(searchQuery, { skip: !searchQuery });
-
-	const [isLoggedIn, loginLoading, loginError, authUser, userProfile] =
-		useIsUserLoggedIn();
+	} = useSearchUsersQuery(searchQuery, { skip: !searchQuery });
 
 	// Render loading skeletons
 	const renderSkeletons = () => {
@@ -45,32 +41,37 @@ const SearchPosts = () => {
 			);
 		}
 
-		const posts = searchResults
-			? Object.values(searchResults.entities)
-			: [];
+		const users = searchResults ? Object.values(searchResults) : [];
 
-		if (posts.length === 0 && searchQuery) {
+		if (users.length === 0 && searchQuery) {
 			return (
 				<div className="p-6 text-center bg-white dark:bg-gray-800 rounded-lg shadow">
 					<h3 className="text-lg font-medium">No results found</h3>
 					<p className="mt-2 text-gray-600 dark:text-gray-300">
-						We couldn't find any posts matching: "{searchQuery}"
+						We couldn't find any users matching: "{searchQuery}"
 					</p>
 				</div>
 			);
 		}
 
-		return posts.map((post) => (
-			<PostCard key={post.id} post={post} currUserId={userProfile?.id} />
+		// Sort users by Rank in descending order (higher rank first)
+		const sortedUsers = [...users].sort((a, b) => b.rank - a.rank);
+		console.log(sortedUsers);
+
+		return sortedUsers.map((user) => (
+			<SearchUserCard
+				key={user.id}
+				id={user.id}
+				email={user.email}
+				rank={user.rank}
+				firstName={user.firstName}
+				lastName={user.lastName}
+				profilePictureUrl={user.profilePictureUrl}
+				jobTitle={user.jobTitle}
+				bio={user.bio}
+			/>
 		));
-	}, [
-		error,
-		isError,
-		isLoading,
-		searchQuery,
-		searchResults,
-		userProfile?.id,
-	]);
+	}, [error, isError, isLoading, searchQuery, searchResults]);
 
 	return (
 		<div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -84,4 +85,4 @@ const SearchPosts = () => {
 	);
 };
 
-export default SearchPosts;
+export default SearchUsers;

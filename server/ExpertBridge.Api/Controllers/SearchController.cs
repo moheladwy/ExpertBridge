@@ -1,3 +1,4 @@
+using System.Globalization;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
@@ -5,7 +6,6 @@ using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Hybrid;
 using Pgvector.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,29 +18,25 @@ namespace ExpertBridge.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[AllowAnonymous]
 public class SearchController : ControllerBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly IEmbeddingService _embeddingService;
-    private readonly HybridCache _cache;
     private readonly int _defaultLimit;
     private readonly float _cosineDistanceThreshold;
 
     public SearchController(
             ExpertBridgeDbContext dbContext,
-            IEmbeddingService embeddingService,
-            HybridCache cache)
+            IEmbeddingService embeddingService)
     {
         _dbContext = dbContext;
         _embeddingService = embeddingService;
-        _cache = cache;
         _cosineDistanceThreshold = 1.0f;
-        _defaultLimit = 10;
+        _defaultLimit = 25;
     }
 
     [HttpGet("posts")]
-    [AllowAnonymous]
     public async Task<List<PostResponse>> SearchPosts(
             [FromQuery] SearchPostRequest request,
             CancellationToken cancellationToken = default)
@@ -79,7 +75,6 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet("users")]
-    [AllowAnonymous]
     public async Task<List<SearchUserResponse>> SearchUsers(
             [FromQuery] SearchUserRequest request,
             CancellationToken cancellationToken = default)
@@ -87,14 +82,14 @@ public class SearchController : ControllerBase
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         ArgumentException.ThrowIfNullOrEmpty(request.query, nameof(request.query));
 
-        var normalizedQuery = request.query.ToLower().Trim();
+        var normalizedQuery = request.query.ToLower(CultureInfo.CurrentCulture).Trim();
 
         var users = await _dbContext.Profiles
             .AsNoTracking()
             .Where(p =>
                     EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
                     .Matches(EF.Functions.PhraseToTsQuery("english", request.query)) ||
-                    p.Email.Contains(normalizedQuery)||
+                    p.Email.Contains(normalizedQuery) ||
                     (p.Username != null && p.Username.Contains(normalizedQuery)))
             .Take(request.limit ?? _defaultLimit)
             .Select(p => new SearchUserResponse
@@ -106,6 +101,8 @@ public class SearchController : ControllerBase
                         FirstName = p.FirstName,
                         LastName = p.LastName,
                         ProfilePictureUrl = p.ProfilePictureUrl,
+                        JobTitle = p.JobTitle,
+                        Bio = p.Bio,
                         Rank = EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
                         .Rank(EF.Functions.PhraseToTsQuery("english", normalizedQuery))
                     })

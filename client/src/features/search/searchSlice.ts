@@ -1,12 +1,11 @@
-import {
-	createEntityAdapter,
-	EntityState,
-} from "@reduxjs/toolkit";
+import { createEntityAdapter, EntityState } from "@reduxjs/toolkit";
 import { Post, PostResponse } from "@/features/posts/types";
 import { apiSlice } from "../api/apiSlice";
 import { SEARCH_ENDPOINTS } from "@/lib/api/endpoints";
+import { SearchUsersResponse } from "./types";
 
 type SearchPostsState = EntityState<Post, string>;
+
 const postsAdapter = createEntityAdapter<Post>({
 	sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
@@ -40,15 +39,17 @@ export const searchApiSlice = apiSlice.injectEndpoints({
 				},
 			}),
 			transformResponse: postsResponseTransformer,
-			providesTags: (result = initialState, error, arg) => [
-				"Post",
-				{ type: "Post", id: "LIST" },
-				...result.ids.map(
-					(id) => ({ type: "Post", id: id.toString() }) as const
-				),
-      ],
+		}),
+		searchUsers: builder.query<SearchUsersResponse[], string>({
+			query: (searchTerm) => ({
+				url: SEARCH_ENDPOINTS.SEARCH_USERS,
+				params: {
+					query: searchTerm,
+					limit: searchLimit,
+				},
+			}),
 		}),
 	}),
 });
 
-export const { useSearchPostsQuery } = searchApiSlice;
+export const { useSearchPostsQuery, useSearchUsersQuery } = searchApiSlice;
