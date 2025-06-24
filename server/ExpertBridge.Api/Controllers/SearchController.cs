@@ -46,18 +46,18 @@ public class SearchController : ControllerBase
             CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        ArgumentException.ThrowIfNullOrEmpty(request.query, nameof(request.query));
+        ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
 
         var currentUserProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
         var notNullOrEmptyCurrentUserProfileId = !string.IsNullOrEmpty(currentUserProfileId);
 
-        var queryEmbeddings = await _embeddingService.GenerateEmbedding(request.query);
+        var queryEmbeddings = await _embeddingService.GenerateEmbedding(request.Query);
 
         var posts = await _dbContext.Posts
             .AsNoTracking()
             .Where(p => p.Embedding != null && p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold)
             .OrderBy(p => p.Embedding.CosineDistance(queryEmbeddings))
-            .Take(request.limit ?? _defaultLimit)
+            .Take(request.Limit ?? _defaultLimit)
             .Select(p => new PostResponse
             {
                 Id = p.Id,
@@ -90,18 +90,18 @@ public class SearchController : ControllerBase
             CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        ArgumentException.ThrowIfNullOrEmpty(request.query, nameof(request.query));
+        ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
 
-        var normalizedQuery = request.query.ToLower(CultureInfo.CurrentCulture).Trim();
+        var normalizedQuery = request.Query.ToLower(CultureInfo.CurrentCulture).Trim();
 
         var users = await _dbContext.Profiles
             .AsNoTracking()
             .Where(p =>
                     EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
-                    .Matches(EF.Functions.PhraseToTsQuery("english", request.query)) ||
+                    .Matches(EF.Functions.PhraseToTsQuery("english", request.Query)) ||
                     p.Email.Contains(normalizedQuery) ||
                     (p.Username != null && p.Username.Contains(normalizedQuery)))
-            .Take(request.limit ?? _defaultLimit)
+            .Take(request.Limit ?? _defaultLimit)
             .Select(p => new SearchUserResponse
                     {
                         Id = p.Id,

@@ -2,6 +2,6 @@ namespace ExpertBridge.Core.Requests;
 
 public class SearchUserRequest
 {
-    public required string query { get; set; }
-    public int? limit { get; set; }
+    public required string Query { get; set; }
+    public int? Limit { get; set; }
 }

@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useSearchUsersQuery } from "@/features/search/searchSlice";
 import { Skeleton } from "@mui/material";
-import SearchUserCard from "@/views/components/custom/SearchUserCard";
+import SearchUserCard from "@/views/components/common/search/SearchUserCard";
 import { useCallback } from "react";
 
 const SearchUsers = () => {
