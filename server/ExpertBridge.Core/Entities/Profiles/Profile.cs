@@ -25,8 +25,8 @@ public partial class Profile : BaseModel, ISoftDeletable
     public int RatingCount { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-    public string Email { get; set; }
-    public string? Username { get; set; }
+    public required string Email { get; set; }
+    public required string Username { get; set; }
     public string? PhoneNumber { get; set; }
     public bool IsBanned { get; set; }
     public bool IsDeleted { get; set; }
