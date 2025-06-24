@@ -82,8 +82,9 @@ const UserProfilePage = () => {
 
 	const fullName = `${profile?.firstName || ""} ${profile?.lastName || ""}`;
 	const jobTitle = profile?.jobTitle || "Expert";
+	const username = profile?.username;
 	const location = "Giza, Egypt"; // This would come from profile data if available
-	const bio = profile?.bio;
+	const bio = profile?.bio || "No bio availabe";
 
 	// Placeholder stats - these would come from API calls
 	const stats = {
@@ -180,10 +181,13 @@ const UserProfilePage = () => {
 										</div>
 
 										<div className="flex items-center text-gray-500 dark:text-gray-400 mt-2">
-											<span className="mr-4">
-												{location}
+											<span className="mr-1">
+												@{username}
 											</span>
-											<span>{jobTitle}</span>
+											-
+											<span className="ml-1">
+												{jobTitle}
+											</span>
 										</div>
 
 										<div className="mt-4 whitespace-pre-line text-gray-700 dark:text-gray-300">

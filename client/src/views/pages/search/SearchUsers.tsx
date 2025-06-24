@@ -69,6 +69,7 @@ const SearchUsers = () => {
 				profilePictureUrl={user.profilePictureUrl}
 				jobTitle={user.jobTitle}
 				bio={user.bio}
+				username={user.username}
 			/>
 		));
 	}, [error, isError, isLoading, searchQuery, searchResults]);

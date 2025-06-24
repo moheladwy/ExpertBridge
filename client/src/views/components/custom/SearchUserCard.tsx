@@ -50,7 +50,7 @@ export default function SearchUserCard({
 								@{username}
 							</span>
 						)}
-
+						-
 						<span className="text-gray-600 dark:text-gray-300 font-medium">
 							{jobTitle ? jobTitle : "No Job Title"}
 						</span>
