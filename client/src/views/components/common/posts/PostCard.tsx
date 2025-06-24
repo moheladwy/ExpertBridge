@@ -45,7 +45,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 	// const post = useAppSelector((state) =>
 	// 	selectPostById(state, memoizedPostId)
 	// );
-	
+
 	const memoizedPost = useMemo(() => post, [post]);
 
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
@@ -129,13 +129,16 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 						<div>
 							<Link to={`/profile/${memoizedPost.author.id}`}>
 								{/* Name */}
-								<h3 className="text-md font-semibold text-gray-800 dark:text-gray-100">
+								<span className="text-md font-semibold text-gray-800 dark:text-gray-100 block">
 									{memoizedPost.author.firstName +
 										" " +
 										memoizedPost.author.lastName}
-								</h3>
+								</span>
 							</Link>
-							<PostTimeStamp createdAt={memoizedPost.createdAt} lastModified={memoizedPost.lastModified} />
+							<PostTimeStamp
+								createdAt={memoizedPost.createdAt}
+								lastModified={memoizedPost.lastModified}
+							/>
 						</div>
 
 						{/* More */}
@@ -241,21 +244,23 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 					</div>
 				</Link>
 
-        {/* Media */}
+				{/* Media */}
 				<MediaCarousel medias={memoizedPost.medias} />
 
 				{/* Post Metadata */}
 				{/* Tags */}
 				{memoizedPost.postTags?.length > 0 && (
 					<div className="flex space-x-2">
-						{memoizedPost.postTags.map((tag: any, index: number) => (
-							<span
-								key={index}
-								className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full"
-							>
-								{tag.name}
-							</span>
-						))}
+						{memoizedPost.postTags.map(
+							(tag: any, index: number) => (
+								<span
+									key={index}
+									className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full"
+								>
+									{tag.name}
+								</span>
+							)
+						)}
 					</div>
 				)}
 

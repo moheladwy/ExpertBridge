@@ -77,9 +77,11 @@ const Feed = ({ startingPost = { id: null } }) => {
         <Filters />
       </div>
       {isLoading ? (
-        <p>Loading...</p>
+        <LoadingSkeleton count={7} />
       ) : isError ? (
-        <span>Error: {error.message}</span>
+				<div className="flex justify-center text-red-500">
+            Error: {error.message}
+          </div>
       ) : null}
 
       {isLoading ? (

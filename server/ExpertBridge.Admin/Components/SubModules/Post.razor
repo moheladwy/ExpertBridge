@@ -13,7 +13,7 @@
                 else
                 {
                     <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                        @(PostResponse.Author != null ? PostResponse.Author.FirstName[0].ToString().ToUpper() : "?")
+                        @(PostResponse.Author != null ? PostResponse.Author.FirstName.ToUpper() : "?")
                     </div>
                 }
                 <div>
@@ -37,7 +37,7 @@
                     }
                 </div>
                 <span class="ml-auto text-sm text-gray-500">
-                    @PostResponse.CreatedAt.ToString("MMM dd, yyyy • h:mm tt")
+                    @PostResponse.CreatedAt.Value.ToString("MMM dd, yyyy • h:mm tt")
                 </span>
             </div>
 
