@@ -42,7 +42,7 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .IsRequired();
 
         builder.Property(x => x.Username)
-            .IsRequired(false)
+            .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxUsernameLength);
 
         builder.HasIndex(x => x.Username)

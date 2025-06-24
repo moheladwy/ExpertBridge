@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Threading.Channels;
+using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Settings;
@@ -26,6 +27,7 @@ public class ProfilesController : ControllerBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly AuthorizationHelper _authHelper;
+    private readonly UserService _userService;
     private readonly ChannelWriter<UserInterestsProsessingMessage> _channelWriter;
     private readonly IValidator<UpdateProfileRequest> _updateProfileRequestValidator;
 
@@ -33,12 +35,14 @@ public class ProfilesController : ControllerBase
         ExpertBridgeDbContext dbContext,
         AuthorizationHelper authHelper,
         Channel<UserInterestsProsessingMessage> channel,
-        IValidator<UpdateProfileRequest> updateProfileRequestValidator)
+        IValidator<UpdateProfileRequest> updateProfileRequestValidator,
+        UserService userService)
     {
         _dbContext = dbContext;
         _authHelper = authHelper;
         _channelWriter = channel.Writer;
         _updateProfileRequestValidator = updateProfileRequestValidator;
+        _userService = userService;
     }
 
     [AllowAnonymous]
@@ -135,7 +139,7 @@ public class ProfilesController : ControllerBase
         [FromBody] UpdateProfileRequest request,
         CancellationToken cancellationToken)
     {
-        var user = await _authHelper.GetCurrentUserAsync();
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
         if (user is null)
             throw new UnauthorizedAccessException("The user is not authorized.");
 
@@ -152,13 +156,12 @@ public class ProfilesController : ControllerBase
         if (!string.IsNullOrEmpty(request.Username) &&
                 request.Username != user.Profile.Username)
         {
-            var isUsernameExisting = await _dbContext.Profiles
+            var isUsernameExists = await _dbContext.Profiles
                 .AsNoTracking()
-                .AnyAsync(p => p.Username == request.Username,
+                .AnyAsync(p => p.Username == request.Username && p.Username != user.Profile.Username,
                         cancellationToken);
-            if (isUsernameExisting)
-                throw new ProfileUserNameAlreadyExistsException(
-                        $"Username '{user.Profile.Username}' already exists.");
+            if (isUsernameExists)
+                throw new ProfileUserNameAlreadyExistsException($"Username '{user.Profile.Username}' already exists.");
             profile.Username = request.Username;
         }
         if (!string.IsNullOrEmpty(request.PhoneNumber) &&
@@ -166,8 +169,8 @@ public class ProfilesController : ControllerBase
         {
             var isPhoneNumberExisting = await _dbContext.Profiles
                 .AsNoTracking()
-                .AnyAsync(
-                        p => p.PhoneNumber == request.PhoneNumber,
+                .AnyAsync(p =>
+                        p.PhoneNumber == request.PhoneNumber && p.PhoneNumber != user.Profile.PhoneNumber,
                         cancellationToken);
             if (isPhoneNumberExisting)
                 throw new ProfilePhoneNumberAlreadyExistsException(

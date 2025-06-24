@@ -9,13 +9,17 @@ public class ProfileValidatorTests
 
     private readonly Profile _validProfile = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        UserId = Guid.NewGuid().ToString(),
+        Id = Guid.NewGuid()
+            .ToString(),
+        UserId = Guid.NewGuid()
+            .ToString(),
         JobTitle = "Software Engineer",
         Bio = "I am a software engineer",
         ProfilePictureUrl = "https://example.com/profile.jpg",
         Rating = 5,
-        RatingCount = 10
+        RatingCount = 10,
+        Email = "software.engineer@gmail.com",
+        Username = "software_engineer"
     };
 
     [Fact]

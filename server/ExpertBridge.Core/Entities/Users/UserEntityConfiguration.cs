@@ -33,7 +33,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .IsUnique();
 
         builder.Property(x => x.Username)
-            .IsRequired(false)
+            .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxUsernameLength);
 
         builder.HasIndex(x => x.Username)
