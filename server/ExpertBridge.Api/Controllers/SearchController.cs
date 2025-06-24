@@ -1,4 +1,5 @@
 using System.Globalization;
+using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
@@ -23,15 +24,18 @@ public class SearchController : ControllerBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly IEmbeddingService _embeddingService;
+    private readonly UserService _userService;
     private readonly int _defaultLimit;
     private readonly float _cosineDistanceThreshold;
 
     public SearchController(
             ExpertBridgeDbContext dbContext,
-            IEmbeddingService embeddingService)
+            IEmbeddingService embeddingService,
+            UserService userService)
     {
         _dbContext = dbContext;
         _embeddingService = embeddingService;
+        _userService = userService;
         _cosineDistanceThreshold = 1.0f;
         _defaultLimit = 25;
     }
@@ -44,9 +48,12 @@ public class SearchController : ControllerBase
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         ArgumentException.ThrowIfNullOrEmpty(request.query, nameof(request.query));
 
+        var currentUserProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+        var notNullOrEmptyCurrentUserProfileId = !string.IsNullOrEmpty(currentUserProfileId);
+
         var queryEmbeddings = await _embeddingService.GenerateEmbedding(request.query);
 
-        return await _dbContext.Posts
+        var posts = await _dbContext.Posts
             .AsNoTracking()
             .Where(p => p.Embedding != null && p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold)
             .OrderBy(p => p.Embedding.CosineDistance(queryEmbeddings))
@@ -61,6 +68,8 @@ public class SearchController : ControllerBase
                 LastModified = p.LastModified,
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),
+                IsUpvoted = notNullOrEmptyCurrentUserProfileId && p.Votes.Any(v => v.IsUpvote && v.ProfileId == currentUserProfileId),
+                IsDownvoted = notNullOrEmptyCurrentUserProfileId && p.Votes.Any(v => !v.IsUpvote && v.ProfileId == currentUserProfileId),
                 Comments = p.Comments.Count,
                 RelevanceScore = p.Embedding.CosineDistance(queryEmbeddings),
                 Medias = p.Medias.Select(m => new MediaObjectResponse
@@ -72,6 +81,7 @@ public class SearchController : ControllerBase
                 }).ToList()
             })
             .ToListAsync(cancellationToken);
+        return posts;
     }
 
     [HttpGet("users")]
