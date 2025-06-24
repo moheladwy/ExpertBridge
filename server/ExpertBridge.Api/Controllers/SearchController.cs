@@ -1,4 +1,3 @@
-using System.Globalization;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
@@ -77,5 +76,41 @@ public class SearchController : ControllerBase
                 }).ToList()
             })
             .ToListAsync(cancellationToken);
+    }
+
+    [HttpGet("users")]
+    [AllowAnonymous]
+    public async Task<List<SearchUserResponse>> SearchUsers(
+            [FromQuery] SearchUserRequest request,
+            CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentException.ThrowIfNullOrEmpty(request.query, nameof(request.query));
+
+        var normalizedQuery = request.query.ToLower().Trim();
+
+        var users = await _dbContext.Profiles
+            .AsNoTracking()
+            .Where(p =>
+                    EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
+                    .Matches(EF.Functions.PhraseToTsQuery("english", request.query)) ||
+                    p.Email.Contains(normalizedQuery)||
+                    (p.Username != null && p.Username.Contains(normalizedQuery)))
+            .Take(request.limit ?? _defaultLimit)
+            .Select(p => new SearchUserResponse
+                    {
+                        Id = p.Id,
+                        Email = p.Email,
+                        Username = p.Username,
+                        PhoneNumber = p.PhoneNumber,
+                        FirstName = p.FirstName,
+                        LastName = p.LastName,
+                        ProfilePictureUrl = p.ProfilePictureUrl,
+                        Rank = EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
+                        .Rank(EF.Functions.PhraseToTsQuery("english", normalizedQuery))
+                    })
+            .OrderByDescending(p => p.Rank)
+            .ToListAsync(cancellationToken);
+        return users;
     }
 }
