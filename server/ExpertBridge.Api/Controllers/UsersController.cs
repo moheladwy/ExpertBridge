@@ -37,28 +37,12 @@ public sealed class UsersController(
     {
         ArgumentException.ThrowIfNullOrEmpty(email);
 
-        //_dbContext.Users.Add(new User
-        //{
-        //    ProviderId = "asdf",
-        //    FirstName = "Hello",
-        //    LastName = "Delme",
-        //    Email = "y.m.elkilany@gmail.com",
-        //    Username = "y.m.elkilany@gmail.com",
-        //    PhoneNumber = "01013647953",
-        //    IsBanned = false,
-        //    IsDeleted = false,
-        //    IsEmailVerified = true,
-        //    IsOnBoarded = false,
-        //});
-
-        //_dbContext.SaveChanges();
-
         var user = await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Email == email)
+                       .AsNoTracking()
+                       .SingleOrDefaultAsync(u => u.Email == email)
             ?? throw new UserNotFoundException("User not found");
 
         return new UserResponse(user);
-        //return await userService.GetUserByEmailAsync(email);
     }
 
     [HttpPost("register")]
@@ -86,12 +70,14 @@ public sealed class UsersController(
 
         if (user == null)
         {
+            var username = $"{request.Email.Split("@")[0]}_{Guid.NewGuid()}";
             user = new User
             {
                 ProviderId = request.ProviderId,
                 IsEmailVerified = request.IsEmailVerified,
                 Email = request.Email,
                 FirstName = request.FirstName,
+                Username = username,
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber
             };
@@ -106,6 +92,7 @@ public sealed class UsersController(
                 IsBanned = user.IsBanned,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Username = username,
                 PhoneNumber = user.PhoneNumber,
                 ProfilePictureUrl = request.ProfilePictureUrl
             });
