@@ -7,6 +7,7 @@ using ExpertBridge.Core.Entities.Badges;
 using ExpertBridge.Core.Entities.Chats;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.JobApplication;
 using ExpertBridge.Core.Entities.JobCategories;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobReviews;
@@ -62,6 +63,7 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<Badge> Badges { get; set; }
     public DbSet<JobCategory> JobCategories { get; set; }
     public DbSet<JobPosting> JobPostings { get; set; }
+    public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<ProfileBadge> ProfileBadges { get; set; }
     public DbSet<UserInterest> UserInterests { get; set; }
     public DbSet<ProfileSkill> ProfileSkills { get; set; }

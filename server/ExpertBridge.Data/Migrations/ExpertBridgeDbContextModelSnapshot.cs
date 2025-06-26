@@ -192,6 +192,33 @@ namespace ExpertBridge.Data.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("ExpertBridge.Core.Entities.JobApplication.JobApplication", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("AppliedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ContractorProfileId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("CoverLetter")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JobPostingId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractorProfileId");
+
+                    b.ToTable("JobApplications");
+                });
+
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobCategories.JobCategory", b =>
                 {
                     b.Property<string>("Id")
@@ -1361,6 +1388,17 @@ namespace ExpertBridge.Data.Migrations
                     b.Navigation("ParentComment");
 
                     b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Core.Entities.JobApplication.JobApplication", b =>
+                {
+                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "ContractorProfile")
+                        .WithMany()
+                        .HasForeignKey("ContractorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ContractorProfile");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobPostings.JobPosting", b =>
