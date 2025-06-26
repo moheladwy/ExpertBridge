@@ -1,0 +1,55 @@
+@startuml
+!theme plain
+title Job Lifecycle (Part 2a): Job Progression
+
+actor "Worker"
+participant "API Layer (JobsController)" as Api
+database "Database" as DB
+
+note over Worker
+  This diagram continues after the worker
+  has accepted the job offer. The job is
+  currently in the 'Accepted' state.
+end note
+
+group Work Starts
+    Worker -> Api: PATCH /api/jobs/{id}/status\n(UpdateJobStatusRequest: NewStatus=InProgress)
+    activate Api
+    Api -> DB: Get Job by Id (Status: Accepted)
+    activate DB
+    DB --> Api: Job
+    deactivate DB
+    Api -> Api: Validate transition (Accepted -> InProgress by Worker)
+    Api -> DB: Update Job Status to 'InProgress'
+    activate DB
+    DB --> Api: Updated Job
+    deactivate DB
+    Api --> Worker: 200 OK (JobResponse)
+    deactivate Api
+end
+
+... Some time later ...
+
+group Work is Finished
+    Worker -> Api: PATCH /api/jobs/{id}/status\n(UpdateJobStatusRequest: NewStatus=PendingClientApproval)
+    activate Api
+    Api -> DB: Get Job by Id (Status: InProgress)
+    activate DB
+    DB --> Api: Job
+    deactivate DB
+    Api -> Api: Validate transition (InProgress -> PendingClientApproval by Worker)
+    Api -> DB: Update Job Status to 'PendingClientApproval'
+    activate DB
+    DB --> Api: Updated Job
+    deactivate DB
+    Api --> Worker: 200 OK (JobResponse)
+    deactivate Api
+end
+
+note right of Worker
+  The job is now awaiting the client's
+  approval. The process continues in
+  the next diagram.
+end note
+
+@enduml

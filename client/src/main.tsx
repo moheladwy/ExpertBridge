@@ -11,7 +11,6 @@ import SignUpPage from "./views/pages/auth/SignUpPage.tsx";
 import LoginPage from "./views/pages/auth/LoginPage.tsx";
 import App from "./App.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
-import PublicRoute from "./routes/PublicRoute.tsx";
 import HomePage from "./views/pages/feed/HomePage.tsx";
 import Interests from "./views/pages/onboarding/Interests.tsx";
 import PostFromFeedPage from "./views/pages/posts/PostFromFeedPage.tsx";
@@ -31,6 +30,8 @@ import {
 import PostFromUrlPage from "./views/pages/posts/PostFromUrlPage.tsx";
 import UserProfilePage from "./views/pages/profile/UserProfilePage.tsx";
 import Notifications from "./views/pages/notifications/Notifications.tsx";
+import SearchPosts from "./views/pages/search/SearchPosts.tsx";
+import SearchUsers from "./views/pages/search/SearchUsers.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -75,9 +76,15 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "profile/:userId",
-				element: (
-					<UserProfilePage />
-				),
+				element: <UserProfilePage />,
+			},
+			{
+				path: "search/p",
+				element: <SearchPosts />,
+			},
+			{
+				path: "search/u",
+				element: <SearchUsers />,
 			},
 			{
 				path: "notifications",

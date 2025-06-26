@@ -1,0 +1,19 @@
+erDiagram
+    PROFILE {
+        string Id PK
+        string Username
+    }
+
+    CHAT {
+        string Id PK
+    }
+
+    NOTIFICATION {
+        string Id PK
+        string RecipientId FK
+        string Message
+        bool IsRead
+    }
+
+    PROFILE ||--|{ NOTIFICATION : "receives"
+    CHAT }|--|{ PROFILE : "participates_in (ChatParticipant)"

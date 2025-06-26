@@ -1,0 +1,63 @@
+graph TD
+    subgraph "Clients"
+        direction LR
+        UserApp["User-Facing Client App <br> (Web/Mobile)"]
+        AdminUI["Admin Dashboard <br> (ExpertBridge.Admin)"]
+    end
+
+    subgraph "Backend System (ExpertBridge)"
+        direction TB
+        subgraph "Presentation Layer"
+            Api["Web API <br> (ExpertBridge.Api)"]
+            AdminBackend["Admin Panel Backend <br> (ExpertBridge.Admin)"]
+        end
+
+        subgraph "Business & Domain Logic"
+            AppLayer["Application Layer <br> (ExpertBridge.Application)"]
+            CoreLayer["Core Domain Layer <br> (ExpertBridge.Core)"]
+        end
+
+        subgraph "Infrastructure Layer"
+            DataLayer["Data Access <br> (ExpertBridge.Data)"]
+            GroqLib["AI Integration <br> (ExpertBridge.GroqLibrary)"]
+            NotificationsLib["Notifications <br> (ExpertBridge.Notifications)"]
+            ExtensionsLib["Shared Extensions <br> (ExpertBridge.Extensions)"]
+        end
+
+        Api --> AppLayer
+        AdminBackend --> AppLayer
+        AppLayer --> CoreLayer
+        AppLayer --> DataLayer
+        AppLayer --> GroqLib
+        AppLayer --> NotificationsLib
+        Api -- "uses" --> ExtensionsLib
+        AdminBackend -- "uses" --> ExtensionsLib
+    end
+
+    subgraph "External Services & Datastores"
+        direction LR
+        PostgresDB["PostgreSQL Database <br> (with pgvector)"]
+        GroqAPI["Groq AI Service"]
+        NotificationService["Push Notification Service"]
+    end
+
+    %% Connections
+    UserApp --> Api
+    AdminUI --> AdminBackend
+
+    DataLayer --> PostgresDB
+    GroqLib --> GroqAPI
+    NotificationsLib --> NotificationService
+
+    %% Styling
+    classDef client fill:#e0f2fe,stroke:#38bdf8,stroke-width:2px
+    classDef presentation fill:#dcfce7,stroke:#4ade80,stroke-width:2px
+    classDef logic fill:#fefce8,stroke:#facc15,stroke-width:2px
+    classDef infrastructure fill:#f3e8ff,stroke:#c084fc,stroke-width:2px
+    classDef external fill:#fee2e2,stroke:#f87171,stroke-width:2px
+
+    class UserApp,AdminUI client
+    class Api,AdminBackend presentation
+    class AppLayer,CoreLayer logic
+    class DataLayer,GroqLib,NotificationsLib,ExtensionsLib infrastructure
+    class PostgresDB,GroqAPI,NotificationService external

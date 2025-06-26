@@ -1,6 +1,3 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using ExpertBridge.Core.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -34,7 +31,7 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
 
         builder.Property(x => x.LastModified)
             .IsRequired(false)
-            .ValueGeneratedOnAdd();
+            .ValueGeneratedOnAddOrUpdate();
 
         builder.Property(x => x.IsDeleted)
             .IsRequired();
@@ -58,7 +55,7 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
 
         builder
             .HasIndex(p => p.Embedding)
-            .HasMethod("hnsw")
+            .HasMethod(IndexMethods.Hnsw)
             .HasOperators("vector_cosine_ops")
             //.HasStorageParameter("m", 32) // Example, tune this
             //.HasStorageParameter("ef_construction", 120) // Example, tune this

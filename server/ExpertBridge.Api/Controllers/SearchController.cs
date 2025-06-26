@@ -1,47 +1,123 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
+using System.Globalization;
+using ExpertBridge.Api.DomainServices;
+using ExpertBridge.Api.EmbeddingService;
+using ExpertBridge.Core.Queries;
+using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ExpertBridge.Api.Controllers;
 
+/// <summary>
+///     Handles search-related operations for the application. This controller is responsible for providing
+///     endpoints related to retrieving posts based on specific search queries while utilizing embedded
+///     data services and caching mechanisms.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[AllowAnonymous]
 public class SearchController : ControllerBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
+    private readonly IEmbeddingService _embeddingService;
+    private readonly UserService _userService;
+    private readonly int _defaultLimit;
+    private readonly float _cosineDistanceThreshold;
 
-    public SearchController(ExpertBridgeDbContext dbContext)
+    public SearchController(
+            ExpertBridgeDbContext dbContext,
+            IEmbeddingService embeddingService,
+            UserService userService)
     {
         _dbContext = dbContext;
+        _embeddingService = embeddingService;
+        _userService = userService;
+        _cosineDistanceThreshold = 1.0f;
+        _defaultLimit = 25;
     }
 
     [HttpGet("posts")]
-    [AllowAnonymous]
     public async Task<List<PostResponse>> SearchPosts(
-            [FromQuery] string query,
-            [FromQuery] int? limit = null,
+            [FromQuery] SearchPostRequest request,
             CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(query, nameof(query));
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
+
+        var currentUserProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+        var notNullOrEmptyCurrentUserProfileId = !string.IsNullOrEmpty(currentUserProfileId);
+
+        var queryEmbeddings = await _embeddingService.GenerateEmbedding(request.Query);
+
         var posts = await _dbContext.Posts
             .AsNoTracking()
-            .Where(p => p.Embedding != null)
-            .OrderBy(p => p.Embedding.CosineDistance(query))
-            .Take(limit ?? 10)
+            .Where(p => p.Embedding != null && p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold)
+            .OrderBy(p => p.Embedding.CosineDistance(queryEmbeddings))
+            .Take(request.Limit ?? _defaultLimit)
             .Select(p => new PostResponse
             {
                 Id = p.Id,
                 Title = p.Title,
                 Content = p.Content,
+                Author = p.Author.SelectAuthorResponseFromProfile(),
+                CreatedAt = p.CreatedAt.Value,
+                LastModified = p.LastModified,
+                Upvotes = p.Votes.Count(v => v.IsUpvote),
+                Downvotes = p.Votes.Count(v => !v.IsUpvote),
+                IsUpvoted = notNullOrEmptyCurrentUserProfileId && p.Votes.Any(v => v.IsUpvote && v.ProfileId == currentUserProfileId),
+                IsDownvoted = notNullOrEmptyCurrentUserProfileId && p.Votes.Any(v => !v.IsUpvote && v.ProfileId == currentUserProfileId),
+                Comments = p.Comments.Count,
+                RelevanceScore = p.Embedding.CosineDistance(queryEmbeddings),
+                Medias = p.Medias.Select(m => new MediaObjectResponse
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Type = m.Type,
+                    Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
+                }).ToList()
             })
             .ToListAsync(cancellationToken);
-        return posts ?? [];
+        return posts;
+    }
+
+    [HttpGet("users")]
+    public async Task<List<SearchUserResponse>> SearchUsers(
+            [FromQuery] SearchUserRequest request,
+            CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
+
+        var normalizedQuery = request.Query.ToLower(CultureInfo.CurrentCulture).Trim();
+
+        var users = await _dbContext.Profiles
+            .AsNoTracking()
+            .Where(p =>
+                    EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
+                    .Matches(EF.Functions.PhraseToTsQuery("english", request.Query)) ||
+                    p.Email.Contains(normalizedQuery) ||
+                    (p.Username != null && p.Username.Contains(normalizedQuery)))
+            .Take(request.Limit ?? _defaultLimit)
+            .Select(p => new SearchUserResponse
+                    {
+                        Id = p.Id,
+                        Email = p.Email,
+                        Username = p.Username,
+                        PhoneNumber = p.PhoneNumber,
+                        FirstName = p.FirstName,
+                        LastName = p.LastName,
+                        ProfilePictureUrl = p.ProfilePictureUrl,
+                        JobTitle = p.JobTitle,
+                        Bio = p.Bio,
+                        Rank = EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
+                        .Rank(EF.Functions.PhraseToTsQuery("english", normalizedQuery))
+                    })
+            .OrderByDescending(p => p.Rank)
+            .ToListAsync(cancellationToken);
+        return users;
     }
 }

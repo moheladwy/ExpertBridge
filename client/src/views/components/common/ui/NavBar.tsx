@@ -18,9 +18,10 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
+	CommandSeparator,
 } from "@/views/components/custom/command";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
-import { Bell, Search } from "lucide-react";
+import { Bell, FileQuestion, Search, User } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
@@ -38,10 +39,13 @@ const NavBar = () => {
 	const [isLoggedIn, loginLoading, loginError, authUser, userProfile] =
 		useIsUserLoggedIn();
 
-	const { data: notifications } = useGetNotificationsQuery(userProfile?.id ?? '');
+	const { data: notifications } = useGetNotificationsQuery(
+		userProfile?.id ?? ""
+	);
 
 	// TODO: Refactor to the same model as the one used by RTK Query standard.
-	const hasNewNotifications = (notifications?.filter(n => n.isRead === false).length) ?? 0 > 0;
+	const hasNewNotifications =
+		notifications?.filter((n) => n.isRead === false).length ?? 0 > 0;
 
 	useEffect(() => {
 		if (userProfile) {
@@ -61,22 +65,31 @@ const NavBar = () => {
 
 	const [open, setOpen] = useState(false);
 	const [searchInput, setSearchInput] = useState("");
+	const [searchType, setSearchType] = useState<"posts" | "users">("posts");
 
 	const handelSearch = () => {
 		setOpen((open) => !open);
-		// console.log(open);
 	};
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchInput(event.target.value);
 	};
 
+	const handleSearch = () => {
+		if (searchInput.trim()) {
+			setOpen(false);
+			const searchPath =
+				searchType === "posts" ? "/search/p" : "/search/u";
+			navigate(
+				`${searchPath}?query=${encodeURIComponent(searchInput.trim())}`
+			);
+		}
+	};
+
 	const handleLogoClick = useCallback(() => {
 		if (isLoggedIn) navigate("/home");
 		else navigate("/");
 	}, [isLoggedIn, navigate]);
-
-	// console.log(userProfile);
 
 	return (
 		<div className="flex items-center w-full bg-main-blue h-16 drop-shadow-md">
@@ -131,13 +144,13 @@ const NavBar = () => {
 						<div className="flex justify-center items-center gap-5">
 							{/* Search bar */}
 							<Button
-								className="bg-gray-100 text-gray-500 px-9 hover:bg-gray-200 hover:text-main-blue max-md:p-2 
-              max-md:bg-main-blue max-md:text-white max-md:hover:bg-main-blue max-md:hover:text-white"
+								className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 px-9 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue max-md:p-2 
+                                max-md:bg-main-blue max-md:text-white max-md:hover:bg-main-blue max-md:hover:text-white"
 								onClick={handelSearch}
 							>
 								<Search />{" "}
-								<div className="max-md:hidden">
-									Search in the questions
+								<div className="max-md:hidden ml-2">
+									Search about questions or users
 								</div>
 							</Button>
 
@@ -147,23 +160,92 @@ const NavBar = () => {
 									Search
 								</DialogTitle>
 								<DialogDescription className="sr-only">
-									Search about questions
+									Search about questions / users
 								</DialogDescription>
 
-								<CommandInput
-									placeholder="Type a question to search..."
-									onChangeCapture={handleChange}
-								/>
-								<CommandList>
-									<CommandEmpty>
-										No results found.
-									</CommandEmpty>
+								<div className="flex h-full w-full items-baseline border-b px-1 dark:bg-gray-800">
+									<DropdownMenu>
+										<DropdownMenuTrigger
+											asChild
+											className="dark:bg-gray-700"
+										>
+											<Button
+												variant="outline"
+												size="sm"
+												className="ml-1 dark:bg-gray-700"
+											>
+												{searchType === "posts" ? (
+													<>
+														<FileQuestion className="h-4 w-4 mr-2" />{" "}
+														Questions
+													</>
+												) : (
+													<>
+														<User className="h-4 w-4 mr-2" />{" "}
+														Users
+													</>
+												)}
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end">
+											<DropdownMenuItem
+												onClick={() =>
+													setSearchType("posts")
+												}
+												className={
+													searchType === "posts"
+														? "bg-blue-50 dark:bg-blue-900"
+														: ""
+												}
+											>
+												<FileQuestion className="h-4 w-4 mr-2" />
+												Search Questions
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={() =>
+													setSearchType("users")
+												}
+												className={
+													searchType === "users"
+														? "bg-blue-50 dark:bg-blue-900"
+														: ""
+												}
+											>
+												<User className="h-4 w-4 mr-2" />
+												Search Users
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+									<CommandInput
+										placeholder={`Search ${searchType === "posts" ? "questions" : "users"}...`}
+										onChangeCapture={handleChange}
+										onKeyDown={(e) => {
+											if (
+												e.key === "Enter" &&
+												searchInput.trim()
+											) {
+												handleSearch();
+											}
+										}}
+									/>
+								</div>
+
+								{/* <CommandList>
+									<CommandSeparator />
+
 									<CommandGroup heading="Suggestions">
-										<CommandItem>
+										<CommandItem
+											onSelect={() => {
+												setOpen(false);
+												navigate(
+													`/search/p?query=how to fix my car?`
+												);
+											}}
+										>
 											<span>how to fix my car?</span>
 										</CommandItem>
 									</CommandGroup>
-								</CommandList>
+								</CommandList> */}
 							</CommandDialog>
 
 							<Link
@@ -172,13 +254,11 @@ const NavBar = () => {
 							>
 								<Bell className="w-6 h-6" />
 								{/* Optional: Red dot for unread indicator */}
-								{
-									hasNewNotifications
-										? <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-										: null
-								}
+								{hasNewNotifications ? (
+									<span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+								) : null}
 							</Link>
-							
+
 							<ModeToggle />
 
 							{/* Profile Pic */}

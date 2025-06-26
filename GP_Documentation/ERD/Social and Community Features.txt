@@ -1,0 +1,51 @@
+erDiagram
+    PROFILE {
+        string Id PK
+        string Username
+    }
+
+    POST {
+        string Id PK
+        string AuthorId FK
+        string Title
+        string Description
+    }
+
+    COMMENT {
+        string Id PK
+        string AuthorId FK
+        string PostId FK
+        string ParentCommentId FK
+        string Content
+    }
+    
+    POST_VOTE {
+        string Id PK
+        string ProfileId FK
+        string PostId FK
+        bool IsUpvote
+    }
+
+    COMMENT_VOTE {
+        string Id PK
+        string ProfileId FK
+        string CommentId FK
+        bool IsUpvote
+    }
+
+    TAG {
+        string Id PK
+        string Name
+    }
+
+    PROFILE ||--|{ POST : "authors"
+    PROFILE ||--|{ COMMENT : "authors"
+    PROFILE ||--|{ POST_VOTE : "casts"
+    PROFILE ||--|{ COMMENT_VOTE : "casts"
+
+    POST ||--|{ COMMENT : "has"
+    POST ||--|{ POST_VOTE : "receives"
+    POST }|--|{ TAG : "has (PostTag)"
+    
+    COMMENT ||--|{ COMMENT_VOTE : "receives"
+    COMMENT }o--|| COMMENT : "replies_to"

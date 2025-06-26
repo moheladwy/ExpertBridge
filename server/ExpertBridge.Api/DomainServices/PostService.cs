@@ -325,7 +325,7 @@ namespace ExpertBridge.Api.DomainServices
                 .Select(x =>
                 {
                     var postResponse = x.Post;
-                    postResponse.Distance = x.Distance;
+                    postResponse.RelevanceScore = x.Distance;
                     return postResponse;
                 }).ToList(),
                 PageInfo = new PageInfoResponse

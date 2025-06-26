@@ -1,0 +1,49 @@
+@startuml
+!theme plain
+title Job Lifecycle (Part 1): Offer and Response
+
+actor "Client"
+actor "Worker"
+participant "API Layer (JobsController)" as Api
+database "Database" as DB
+
+group Client Initiates Job Offer
+    Client -> Api: POST /api/jobs/offer\n(InitiateJobOfferRequest)
+    activate Api
+    Api -> DB: Get Client and Worker Profiles
+    activate DB
+    DB --> Api: Profiles
+    deactivate DB
+    Api -> Api: Validate request (e.g., not offering to self)
+    Api -> DB: Create Job entity (Status: Offered)
+    activate DB
+    DB --> Api: New Job
+    deactivate DB
+    Api -> Client: 201 Created (JobResponse)
+    deactivate Api
+end
+
+... Some time later ...
+
+group Worker Responds to Offer
+    Worker -> Api: PATCH /api/jobs/{id}/response\n(RespondToJobOfferRequest: Accept=true)
+    activate Api
+    Api -> DB: Get Job by Id
+    activate DB
+    DB --> Api: Job (Status: Offered)
+    deactivate DB
+    Api -> Api: Validate request (is worker, status is Offered)
+    Api -> DB: Update Job (Status: Accepted, StartedAt: now)
+    activate DB
+    DB --> Api: Updated Job
+    deactivate DB
+    Api --> Worker: 200 OK (JobResponse)
+    deactivate Api
+end
+
+note right of Worker
+  The job is now in the 'Accepted' state.
+  The process continues in the next diagram.
+end note
+
+@enduml

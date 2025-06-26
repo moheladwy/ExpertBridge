@@ -1,0 +1,44 @@
+@startuml
+!theme plain
+title Job Lifecycle (Part 2b): Client Completion and Review
+
+actor "Client"
+participant "API Layer (JobsController)" as Api
+database "Database" as DB
+
+note over Client
+  This diagram continues after the worker
+  has marked the job as finished. The job is
+  currently in the 'PendingClientApproval' state.
+end note
+
+group Client Approves Work
+    Client -> Api: PATCH /api/jobs/{id}/status\n(UpdateJobStatusRequest: NewStatus=Completed)
+    activate Api
+    Api -> DB: Get Job by Id (Status: PendingClientApproval)
+    activate DB
+    DB --> Api: Job
+    deactivate DB
+    Api -> Api: Validate transition (PendingClientApproval -> Completed by Client)
+    Api -> DB: Update Job (Status: Completed, EndedAt: now)
+    activate DB
+    DB --> Api: Updated Job
+    deactivate DB
+    Api --> Client: 200 OK (JobResponse)
+    deactivate Api
+end
+
+... Some time later ...
+
+group Client Leaves Review
+    Client -> Api: POST /api/job-reviews\n(CreateJobReviewRequest)
+    activate Api
+    Api -> DB: Create JobReview entity
+    activate DB
+    DB --> Api: JobReview
+    deactivate DB
+    Api -> Client: 201 Created (JobReviewDto)
+    deactivate Api
+end
+
+@enduml

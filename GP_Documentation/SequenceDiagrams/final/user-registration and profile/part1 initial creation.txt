@@ -1,0 +1,42 @@
+@startuml
+!theme plain
+title Profile Lifecycle (Part 1): Initial Creation
+
+actor User
+participant "Client App" as ClientApp
+participant "External Auth Service" as AuthService
+participant "API Layer (Auth)" as Api
+participant "Application/Service Layer" as App
+database "Database" as DB
+
+group User Registration & Profile Creation
+    User -> ClientApp: Initiates Sign Up (email, password, name)
+    ClientApp -> AuthService: Register user
+    AuthService --> ClientApp: Returns auth credentials (UID, token)
+
+    ClientApp -> Api: POST /api/auth/register\n(token, user details)
+    activate Api
+    Api -> App: RegisterUser(dto)
+    activate App
+    App -> DB: Create User entity (with ProviderId from token)
+    activate DB
+    DB --> App: New User
+    deactivate DB
+    
+    note right of App
+      A new Profile is created and
+      linked to the User entity.
+    end note
+
+    App -> DB: Create Profile entity (linked by UserId)
+    activate DB
+    DB --> App: New Profile
+    deactivate DB
+    App --> Api: UserDto / ProfileDto
+    deactivate App
+    Api --> ClientApp: 201 Created
+    deactivate Api
+    ClientApp --> User: Registration successful
+end
+
+@enduml

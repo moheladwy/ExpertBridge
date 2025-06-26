@@ -995,7 +995,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAdd()
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Title")
@@ -1145,6 +1145,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("vector(1024)");
 
                     b.Property<string>("Username")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -1160,6 +1161,11 @@ namespace ExpertBridge.Data.Migrations
                     b.HasIndex("Username")
                         .IsUnique()
                         .HasFilter("(\"IsDeleted\") = false");
+
+                    b.HasIndex("FirstName", "LastName")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FirstName", "LastName"), "GIN");
 
                     b.ToTable("Profiles");
                 });
@@ -1280,6 +1286,7 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Username")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 

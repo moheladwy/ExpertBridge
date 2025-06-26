@@ -1,0 +1,64 @@
+@startuml
+!theme plain
+title Job Posting and Hiring Sequence Diagram
+
+actor "User (Client)" as Client
+participant "API Layer" as Api
+participant "Application Layer" as App
+database "Database" as DB
+
+group Create Job Posting
+    Client -> Api: POST /api/jobpostings\n(CreateJobPostingDto)
+    activate Api
+    Api -> App: CreateJobPosting(dto)
+    activate App
+    App -> DB: Create JobPosting entity
+    activate DB
+    DB --> App: JobPosting
+    deactivate DB
+    App --> Api: JobPostingDto
+    deactivate App
+    Api --> Client: 201 Created\n(JobPostingDto)
+    deactivate Api
+end
+
+... Some time later ...
+
+actor "User (Worker)" as Worker
+
+group Worker Applies and Starts Job
+    Worker -> Api: POST /api/jobs\n(CreateJobDto)
+    activate Api
+    Api -> App: CreateJob(dto)
+    activate App
+    App -> DB: Create Job entity\n(status: Pending)
+    activate DB
+    DB --> App: Job
+    deactivate DB
+    App -> Api: JobDto
+    deactivate App
+    Api --> Worker: 200 OK\n(JobDto)
+    deactivate Api
+end
+
+group Client Accepts Worker
+    Client -> Api: PUT /api/jobs/{id}/accept
+    activate Api
+    Api -> App: AcceptJob(jobId)
+    activate App
+    App -> DB: Update Job status to 'InProgress'
+    activate DB
+    DB --> App: Updated Job
+    deactivate DB
+    App -> App: TriggerNotification(workerId, message)
+    App -> DB: Create Notification entity
+    activate DB
+    DB --> App:
+    deactivate DB
+    App --> Api: Updated JobDto
+    deactivate App
+    Api --> Client: 200 OK\n(Updated JobDto)
+    deactivate Api
+end
+
+@enduml

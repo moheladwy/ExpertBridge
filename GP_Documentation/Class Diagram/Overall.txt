@@ -1,0 +1,222 @@
+@startuml
+
+' Base classes and interfaces
+abstract class BaseModel {
+    +Id: string
+    +CreatedAt: DateTime?
+    +LastModified: DateTime?
+}
+interface ISoftDeletable {
+    +IsDeleted: bool
+    +DeletedAt: DateTime?
+}
+
+' User and Profile
+class User {
+    +ProviderId: string
+    +FirstName: string
+    +LastName: string
+    +Email: string
+    +Username: string
+    +PhoneNumber: string
+    +IsBanned: bool
+    +IsEmailVerified: bool
+    +IsOnboarded: bool
+    +IsDeleted: bool
+    +DeletedAt: DateTime?
+}
+User -- "1" Profile : Profile
+
+class Profile {
+    +UserId: string
+    +JobTitle: string
+    +Bio: string
+    +ProfilePictureUrl: string
+    +Rating: double
+    +RatingCount: int
+    +FirstName: string
+    +LastName: string
+    +Email: string
+    +Username: string
+    +PhoneNumber: string
+    +IsBanned: bool
+    +IsDeleted: bool
+    +DeletedAt: DateTime?
+    +UserInterestEmbedding: Vector
+}
+
+Profile "1" -- "0..*" Area : Areas
+Profile "1" -- "0..*" ProfileExperience : Experiences
+Profile "1" -- "0..*" ProfileMedia : Medias
+Profile "1" -- "0..*" Post : Posts
+Profile "1" -- "0..*" Comment : Comments
+Profile "1" -- "0..*" JobPosting : JobPostings
+Profile "1" -- "0..*" Job : JobsAsAuthor
+Profile "1" -- "0..*" Job : JobsAsWorker
+Profile "1" -- "0..*" ProfileSkill : ProfileSkills
+Profile "1" -- "0..*" UserInterest : ProfileTags
+Profile "1" -- "0..*" ProfileBadge : ProfileBadges
+Profile "1" -- "0..*" PostVote : PostVotes
+Profile "1" -- "0..*" CommentVote : CommentVotes
+
+' Posts and Comments
+class Post {
+    +AuthorId: string
+    +Title: string
+    +Content: string
+    +CreatedAt: DateTime
+    +LastModified: DateTime?
+    +IsDeleted: bool
+    +Embedding: Vector
+}
+
+Post "1" -- "0..*" Comment : Comments
+Post "1" -- "0..*" PostMedia : Medias
+Post "1" -- "0..*" PostTag : PostTags
+Post "1" -- "0..*" PostVote : Votes
+
+class Comment {
+    +AuthorId: string
+    +PostId: string
+    +Content: string
+    +CreatedAt: DateTime
+    +LastModified: DateTime?
+    +IsDeleted: bool
+    +ParentCommentId: string
+}
+
+Comment "1" -- "0..*" Comment : Replies
+Comment "1" -- "0..*" CommentMedia : Medias
+Comment "1" -- "0..*" CommentVote : Votes
+
+' Jobs and JobPostings
+class JobPosting {
+    +AuthorId: string
+    +AreaId: string
+    +CategoryId: string
+    +Title: string
+    +Description: string
+    +Cost: double
+    +CreatedAt: DateTime
+    +IsDeleted: bool
+}
+
+JobPosting "1" -- "1" Job : Job
+JobPosting "1" -- "0..*" JobPostingMedia : Medias
+
+class Job {
+    +AuthorId: string
+    +WorkerId: string
+    +JobPostingId: string
+    +Status: string
+    +ActualCost: double
+    +StartedAt: DateTime?
+    +EndedAt: DateTime?
+}
+
+Job "1" -- "1" JobReview : Review
+
+class JobReview {
+    +JobId: string
+    +CustomerId: string
+    +WorkerId: string
+    +Content: string
+    +Rating: int
+    +CreatedAt: DateTime
+    +IsDeleted: bool
+}
+
+' Tags, Skills, Badges
+class Tag {
+    +Id: string
+    +EnglishName: string
+    +ArabicName: string
+    +Description: string
+}
+
+class Skill {
+    +Id: string
+    +Name: string
+    +Description: string
+}
+
+class Badge {
+    +Id: string
+    +Name: string
+    +Description: string
+}
+
+' Many-to-many relationships
+class ProfileSkill {
+    +ProfileId: string
+    +SkillId: string
+}
+ProfileSkill o-- Profile
+ProfileSkill o-- Skill
+
+class ProfileBadge {
+    +ProfileId: string
+    +BadgeId: string
+}
+ProfileBadge o-- Profile
+ProfileBadge o-- Badge
+
+class UserInterest {
+    +ProfileId: string
+    +TagId: string
+}
+UserInterest o-- Profile
+UserInterest o-- Tag
+
+class PostTag {
+    +PostId: string
+    +TagId: string
+}
+PostTag o-- Post
+PostTag o-- Tag
+
+' Media
+class ProfileMedia {
+    +ProfileId: string
+    +Key: string
+    +Type: string
+    +Name: string
+}
+class PostMedia {
+    +PostId: string
+    +Key: string
+    +Type: string
+    +Name: string
+}
+class CommentMedia {
+    +CommentId: string
+    +Key: string
+    +Type: string
+    +Name: string
+}
+class JobPostingMedia {
+    +JobPostingId: string
+    +Key: string
+    +Type: string
+    +Name: string
+}
+class ProfileExperienceMedia {
+    +ProfileExperienceId: string
+    +Key: string
+    +Type: string
+    +Name: string
+}
+
+' Votes
+class PostVote {
+    +PostId: string
+    +ProfileId: string
+    +IsUpvote: bool
+}
+class CommentVote {
+    +CommentId: string
+    +ProfileId: string
+    +IsUpvote: bool
+}
+
+@enduml

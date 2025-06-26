@@ -1,6 +1,3 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.EntityConfiguration;
@@ -45,7 +42,7 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
             .IsRequired();
 
         builder.Property(x => x.Username)
-            .IsRequired(false)
+            .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxUsernameLength);
 
         builder.HasIndex(x => x.Username)
@@ -63,6 +60,10 @@ public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
         builder.Property(x => x.LastName)
             .IsRequired()
             .HasMaxLength(UserEntityConstraints.MaxNameLength);
+
+        builder.HasIndex(p => new { p.FirstName, p.LastName })
+            .HasMethod(IndexMethods.Gin)
+            .IsTsVectorExpressionIndex("english");
 
         builder.HasOne(p => p.User)
             .WithOne(u => u.Profile)

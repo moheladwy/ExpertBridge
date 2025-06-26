@@ -1,0 +1,170 @@
+@startuml
+class Profile {
+  +UserId: string
+  +FirstName: string
+  +LastName: string
+  +Username: string
+}
+
+class Post {
+  +AuthorId: string
+  +Title: string
+  +Content: string
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+  +Embedding: Vector
+}
+class Comment {
+  +AuthorId: string
+  +PostId: string
+  +Content: string
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+  +ParentCommentId: string
+}
+
+Profile "1" -- "0..*" Post : Posts
+Profile "1" -- "0..*" Comment : Comments
+
+Post "1" -- "0..*" Comment : Comments
+Post "1" -- "0..*" PostMedia : Media
+Post "1" -- "0..*" PostTag : Tags
+Post "1" -- "0..*" PostVote : Votes
+
+Comment "1" -- "0..*" Comment : Replies
+Comment "1" -- "0..*" CommentMedia : Media
+Comment "1" -- "0..*" CommentVote : Votes
+
+class PostMedia {
+  +PostId: string
+  +Key: string
+  +Type: string
+  +Name: string
+}
+class CommentMedia {
+  +CommentId: string
+  +Key: string
+  +Type: string
+  +Name: string
+}
+class PostTag {
+  +PostId: string
+  +TagId: string
+}
+class PostVote {
+  +PostId: string
+  +ProfileId: string
+  +IsUpvote: bool
+}
+class CommentVote {
+  +CommentId: string
+  +ProfileId: string
+  +IsUpvote: bool
+}
+PostTag o-- Tag
+@enduml
+
+
+
+=========
+
+
+@startuml
+
+
+
+' Entities
+class User {
+  +Id: string
+  +Username: string
+  +Email: string
+}
+
+class Profile {
+  +Id: string
+  +UserId: string
+  +FirstName: string
+  +LastName: string
+  +JobTitle: string
+  +ProfilePictureUrl: string
+}
+
+abstract class MediaObject {
+  +Id: string
+  +Key: string
+  +Type: string
+  +Name: string
+}
+
+class PostMedia extends MediaObject {
+  +PostId: string
+}
+
+class CommentMedia extends MediaObject {
+  +CommentId: string
+}
+
+class Post {
+  +Id: string
+  +AuthorId: string
+  +Title: string
+  +Content: string
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+  +Embedding: Vector
+}
+
+class Comment {
+  +Id: string
+  +AuthorId: string
+  +PostId: string
+  +Content: string
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+  +ParentCommentId: string
+}
+
+class Tag {
+  +Id: string
+  +EnglishName: string
+  +Description: string
+}
+
+' Many-to-Many Relationship Tables
+class PostTag {
+  +PostId: string
+  +TagId: string
+}
+
+class PostVote {
+  +Id: string
+  +ProfileId: string
+  +PostId: string
+  +IsUpvote: bool
+}
+
+class CommentVote {
+  +Id: string
+  +ProfileId: string
+  +CommentId: string
+  +IsUpvote: bool
+}
+
+' Relationships
+User "1" -- "1" Profile : has
+
+Profile "1" -- "0..*" Post : authors >
+Profile "1" -- "0..*" Comment : authors >
+
+Post "1" -- "0..*" Comment : has >
+Post "1" -- "0..*" PostMedia : has >
+
+Comment "1" -- "0..*" Comment : replies to >
+Comment "1" -- "0..*" CommentMedia : has >
+
+' Many-to-Many Associations
+(Post, Tag) .. PostTag
+(Post, Profile) .. PostVote
+(Comment, Profile) .. CommentVote
+
+@enduml

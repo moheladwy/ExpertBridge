@@ -1,0 +1,55 @@
+@startuml
+title Supporting Systems Diagram
+
+package "Systems" {
+    class Profile
+    class Post
+    class Comment
+    class JobPosting
+
+    class Chat {
+        +Id: string
+    }
+
+    (Chat, Profile) .. ChatParticipant
+    class ChatParticipant {
+        +ChatId: string
+        +ProfileId: string
+    }
+
+    abstract class Media {
+        +Id: string
+        +Name: string
+        +Key: string
+    }
+    Profile "1" -- "0..*" ProfileMedia
+    Post "1" -- "0..*" PostMedia
+    Comment "1" -- "0..*" CommentMedia
+    JobPosting "1" -- "0..*" JobPostingMedia
+    Chat "1" -- "0..*" ChatMedia
+
+    class ProfileMedia extends Media
+    class PostMedia extends Media
+    class CommentMedia extends Media
+    class JobPostingMedia extends Media
+    class ChatMedia extends Media
+
+    class Notification {
+        +Id: string
+        +Message: string
+        +IsRead: bool
+        +Recipient: Profile
+    }
+
+    class ModerationReport {
+        +Id: string
+        +Reason: string
+        +ContentId: string
+        +IsResolved: bool
+        +Author: Profile
+    }
+
+    Profile "1" -- "0..*" Notification : receives
+    Profile "1" -- "0..*" ModerationReport : authors
+}
+@enduml
