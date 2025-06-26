@@ -1,0 +1,47 @@
+erDiagram
+    PROFILE {
+        string Id PK
+        string Username
+    }
+
+    JOB_POSTING {
+        string Id PK
+        string AuthorId FK
+        string CategoryId FK
+        string Title
+        string Description
+        float Cost
+    }
+
+    JOB {
+        string Id PK
+        string AuthorId FK
+        string WorkerId FK
+        string JobPostingId FK
+        string Status
+    }
+
+    JOB_REVIEW {
+        string Id PK
+        string JobId FK
+        string CustomerId FK
+        string WorkerId FK
+        string Content
+        int Rating
+    }
+
+    JOB_CATEGORY {
+        string Id PK
+        string Name
+    }
+
+    PROFILE ||--|{ JOB_POSTING : "authors"
+    PROFILE ||--|{ JOB : "is_author_of"
+    PROFILE ||--|{ JOB : "is_worker_on"
+
+    JOB_CATEGORY ||--|{ JOB_POSTING : "categorizes"
+    JOB_POSTING ||--o| JOB : "results_in"
+    JOB ||--o| JOB_REVIEW : "is_reviewed_by"
+
+    JOB_REVIEW }o--|| PROFILE : "written_by_customer"
+    JOB_REVIEW }o--|| PROFILE : "for_worker"

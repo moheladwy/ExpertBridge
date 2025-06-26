@@ -1,0 +1,59 @@
+@startuml
+!theme plain
+title User Registration and Login Sequence
+
+actor User
+participant "Client App" as ClientApp
+participant "External Auth (e.g., Firebase)" as AuthService
+participant "API Layer" as Api
+participant "Application Layer" as App
+database "Database" as DB
+
+group User Registration
+    User -> ClientApp: Initiates Sign Up
+    ClientApp -> AuthService: Request Sign Up (email, password)
+    AuthService --> ClientApp: Returns User Info (UID, token, email, etc.)
+    
+    ClientApp -> Api: POST /api/auth/register\n(RegisterUserRequest)
+    activate Api
+    Api -> App: RegisterUser(dto)
+    activate App
+    App -> DB: Create User entity
+    activate DB
+    DB --> App: User
+    deactivate DB
+    App -> DB: Create Profile entity
+    activate DB
+    DB --> App: Profile
+    deactivate DB
+    App --> Api: UserDto
+    deactivate App
+    Api --> ClientApp: 201 Created (UserDto)
+    deactivate Api
+    ClientApp --> User: Registration Successful
+end
+
+... Some time later ...
+
+group Authenticated API Call (Login Flow)
+    User -> ClientApp: Initiates Login
+    ClientApp -> AuthService: Request Sign In (email, password)
+    AuthService --> ClientApp: Returns JWT
+    
+    ClientApp -> Api: GET /api/jobs\nHeader: Authorization: Bearer <JWT>
+    activate Api
+    Api -> Api: Auth Middleware validates JWT
+    Api -> App: GetJobsForCurrentUser()
+    activate App
+    App -> DB: Query for jobs where user is author or worker
+    activate DB
+    DB --> App: List<Job>
+    deactivate DB
+    App --> Api: List<JobDto>
+    deactivate App
+    Api --> ClientApp: 200 OK (List<JobDto>)
+    deactivate Api
+    ClientApp --> User: Displays user's jobs
+end
+
+@enduml

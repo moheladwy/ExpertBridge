@@ -1,0 +1,49 @@
+@startuml
+!theme plain
+title Profile Lifecycle (Part 2): Onboarding
+
+actor User
+participant "Client App" as ClientApp
+participant "API Layer (ProfilesController)" as Api
+database "Database" as DB
+queue "Background Processor" as Queue
+
+note over User, ClientApp
+  This follows the initial registration.
+  The user is now authenticated.
+end note
+
+group User Onboarding
+    User -> ClientApp: Fills out profile details (bio, interests, etc.)
+    ClientApp -> Api: POST /api/v2/Profiles/onboard\n(OnboardUserRequestV2)
+    activate Api
+    Api -> Api: Get current user from auth context
+    Api -> DB: Update Profile entity (bio, job title, etc.)
+    activate DB
+    DB --> Api
+    deactivate DB
+    Api -> DB: Add UserInterests (for existing tags)
+    activate DB
+    DB --> Api
+    deactivate DB
+    Api -> DB: Update User.IsOnboarded = true
+    activate DB
+    DB --> Api
+    deactivate DB
+
+    note right of Api
+      New tags are sent for
+      background processing.
+    end note
+    Api -> Queue: WriteAsync(UserInterestsProsessingMessage)
+
+    Api -> DB: Re-query for updated profile
+    activate DB
+    DB --> Api: Fully populated ProfileResponse
+    deactivate DB
+    Api --> ClientApp: 200 OK (ProfileResponse)
+    deactivate Api
+    ClientApp --> User: Displays completed profile
+end
+
+@enduml

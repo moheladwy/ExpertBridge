@@ -1,0 +1,67 @@
+@startuml
+!theme plain
+title Social Post and Commenting Sequence Diagram
+
+actor "User" as User
+participant "API Layer" as Api
+participant "Application Layer" as App
+participant "Moderation Service" as ModSvc
+database "Database" as DB
+
+group Create Post
+    User -> Api: POST /api/posts\n(CreatePostDto)
+    activate Api
+    Api -> App: CreatePost(dto)
+    activate App
+    App -> ModSvc: AnalyzeContent(dto.Content)
+    activate ModSvc
+    ModSvc --> App: AnalysisResult
+    deactivate ModSvc
+    alt AnalysisResult is negative
+        App -> DB: Create ModerationReport
+        activate DB
+        DB --> App: 
+        deactivate DB
+        App --> Api: Exception (Content violation)
+        Api --> User: 400 Bad Request
+    else AnalysisResult is positive
+        App -> DB: Create Post entity
+        activate DB
+        DB --> App: Post
+        deactivate DB
+        App --> Api: PostDto
+        Api --> User: 201 Created\n(PostDto)
+    end
+    deactivate App
+    deactivate Api
+end
+
+... Some time later ...
+
+group Add Comment
+    User -> Api: POST /api/posts/{id}/comments\n(CreateCommentDto)
+    activate Api
+    Api -> App: CreateComment(postId, dto)
+    activate App
+    App -> ModSvc: AnalyzeContent(dto.Content)
+    activate ModSvc
+    ModSvc --> App: AnalysisResult
+    deactivate ModSvc
+    alt AnalysisResult is negative
+        App -> DB: Create ModerationReport
+        activate DB
+        DB --> App:
+        deactivate DB
+        App --> Api: Exception (Content violation)
+        Api --> User: 400 Bad Request
+    else AnalysisResult is positive
+        App -> DB: Create Comment entity
+        activate DB
+        DB --> App: Comment
+        deactivate DB
+        App --> Api: CommentDto
+        Api --> User: 201 Created\n(CommentDto)
+    end
+    deactivate App
+    deactivate Api
+end

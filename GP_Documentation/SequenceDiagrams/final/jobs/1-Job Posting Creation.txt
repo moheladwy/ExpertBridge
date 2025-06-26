@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+title Job Posting Creation
+
+actor "User (Client)" as Client
+participant "API Layer (JobPostingsController)" as Api
+database "Database" as DB
+
+Client -> Api: POST /api/jobpostings\n(CreateJobPostingRequest)
+activate Api
+Api -> Api: Validate request data
+Api -> DB: Create JobPosting entity
+activate DB
+DB --> Api: JobPosting
+deactivate DB
+Api --> Client: 201 Created (JobPostingResponse)
+deactivate Api
+
+note right of Client
+  The created JobPosting's ID can
+  now be used to initiate a direct
+  job offer for that specific posting.
+end note
+@enduml
