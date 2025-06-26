@@ -18,6 +18,7 @@ export type PostsCursorPaginatedResponse = {
 export type PostsInitialPageParam = {
   after?: number;
   pageSize: number;
+  page: number;
 }
 
 export type PostsQueryParamLimit = number;

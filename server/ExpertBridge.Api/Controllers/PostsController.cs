@@ -132,11 +132,14 @@ public class PostsController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
+    [ResponseCache(NoStore = true)]
     public async Task<ActionResult<PostsCursorPaginatedResponse>> GetCursorPaginated(
         [FromQuery] PostsCursorRequest request)
     {
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
-        var posts = await _postService.GetRecommendedPostsAsync(user?.Profile, request);
+        //var posts = await _postService.GetRecommendedPostsAsync(user?.Profile, request);
+
+        var posts = await _postService.GetRecommendedPostsOffsetPageAsync(user?.Profile, request);
 
         return posts;
     }

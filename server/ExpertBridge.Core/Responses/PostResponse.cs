@@ -16,5 +16,6 @@ public record PostResponse
     public int Comments { get; set; }
     public bool IsUpvoted { get; set; }
     public bool IsDownvoted { get; set; }
+    public double? Distance { get; set; } // For search results, if applicable
     public List<MediaObjectResponse>? Medias { get; set; }
 }

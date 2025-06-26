@@ -38,6 +38,7 @@
     <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.3.0" />
     <PackageVersion Include="Testcontainers.Redis" Version="4.3.0" />
+    <PackageVersion Include="Z.EntityFramework.Extensions.EFCore" Version="9.103.9.1" />
     <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.2.0" />
     <PackageVersion Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.2.0" />
   </ItemGroup>

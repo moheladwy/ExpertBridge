@@ -19,6 +19,7 @@ public class FakerController(
     [AllowAnonymous]
     public IActionResult Index()
     {
+        return NoContent();
         Generator.SeedDatabase(_dbContext);
 
         return Ok();

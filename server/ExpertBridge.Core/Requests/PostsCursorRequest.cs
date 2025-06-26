@@ -5,7 +5,8 @@ namespace ExpertBridge.Core.Requests
 {
     public class PostsCursorRequest
     {
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; }
+        public int Page { get; set; }
         public double? After { get; set; }
         public string? LastIdCursor { get; set; }
     }
