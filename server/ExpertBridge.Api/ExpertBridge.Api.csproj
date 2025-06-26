@@ -42,6 +42,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="AWSSDK.S3" />
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" />
   </ItemGroup>
 
   <ItemGroup>

@@ -206,11 +206,12 @@ namespace ExpertBridge.Api.DomainServices
                 // - distance == lastDistance AND Id > lastPostId (same similarity, break tie with Id, assuming newer posts have higher IDs or some consistent order)
                 // Adjust p.Id > or < lastPostIdCursor.Value based on your tie-breaking sort preference (e.g., if you also sort by CreatedAt DESC)
                 query = query.Where(p =>
-                    (p.Embedding.CosineDistance(userEmbedding) < request.After.Value) ||
-                    (
-                        p.Embedding.CosineDistance(userEmbedding) == request.After.Value
-                    //&& p.Id.CompareTo(request.LastIdCursor) // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
-                    )
+                    (p.Embedding.CosineDistance(userEmbedding) > request.After.Value)
+                    //||
+                    //(
+                    //    p.Embedding.CosineDistance(userEmbedding) == request.After.Value
+                    ////&& p.Id.CompareTo(request.LastIdCursor) // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
+                    //)
                 );
             }
 
@@ -258,6 +259,77 @@ namespace ExpertBridge.Api.DomainServices
                 {
                     EndCursor = nextDistance,
                     NextIdCursor = nextPostId,
+                    HasNextPage = hasNextPage
+                }
+            };
+        }
+
+        public async Task<PostsCursorPaginatedResponse> GetRecommendedPostsOffsetPageAsync(
+            Profile? userProfile,
+            PostsCursorRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var userEmbedding = userProfile?.UserInterestEmbedding;
+            var userProfileId = userProfile?.Id;
+
+            if (userEmbedding == null)
+            {
+                var rand = new Random();
+                var sb = new StringBuilder();
+                sb.Append("0.1");
+
+                for (int i = 0; i < 1023; i++)
+                {
+                    double value = rand.NextDouble(); // gives value between 0.0 and 1.0
+                    sb.Append($",{value.ToString("0.#")}"); // optional: format to reduce decimal noise
+                }
+
+                userEmbedding = new Vector(sb.ToString());
+            }
+
+            // 2. Build the query for posts
+            var query = _dbContext.Posts
+                .AsNoTracking()
+                .FullyPopulatedPostQuery()
+                .AsQueryable()
+                ;
+
+            var postsWithDistance = await query
+                .Where(p => p.Embedding != null)
+                .Select(p => new
+                {
+                    Post = p.SelectPostResponseFromFullPost(userProfileId), // The whole post entity for now, will project to DTO later
+                    Distance = p.Embedding.CosineDistance(userEmbedding)
+                })
+                .OrderBy(x => x.Distance)      // Order by similarity (ascending distance)
+                .Skip((request.Page - 1) * request.PageSize)
+                .Take(request.PageSize + 1)            // Fetch one extra item to determine if there's a next page
+                .ToListAsync(cancellationToken);
+
+            // 3. Determine if there's a next page and prepare the results
+            bool hasNextPage = postsWithDistance.Count > request.PageSize;
+
+            // 4. Map to DTOs
+            //var currentPagePostIds = currentPagePosts.Select(p => p.PostId);
+            //var postDtos = await _dbContext.Posts
+            //    .FullyPopulatedPostQuery(p => currentPagePostIds.Contains(p.Id))
+            //    .SelectPostResponseFromFullPost(userProfile?.Id)
+            //    .ToListAsync(cancellationToken);
+
+            //.Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
+
+            return new PostsCursorPaginatedResponse
+            {
+                Posts = postsWithDistance
+                .Take(request.PageSize)
+                .Select(x =>
+                {
+                    var postResponse = x.Post;
+                    postResponse.RelevanceScore = x.Distance;
+                    return postResponse;
+                }).ToList(),
+                PageInfo = new PageInfoResponse
+                {
                     HasNextPage = hasNextPage
                 }
             };

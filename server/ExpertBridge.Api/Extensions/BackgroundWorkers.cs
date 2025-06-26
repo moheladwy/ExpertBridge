@@ -3,6 +3,7 @@
 
 using ExpertBridge.Api.BackgroundServices.Handlers;
 using ExpertBridge.Api.BackgroundServices.PeriodicJobs;
+using ExpertBridge.Api.DataGenerator;
 
 namespace ExpertBridge.Api.Extensions;
 

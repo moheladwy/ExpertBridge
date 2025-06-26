@@ -23,8 +23,8 @@ const initialState: PostsState = postsAdapter.getInitialState();
 const postResponseTransformer = (p: PostResponse): Post => ({
 	...p,
 	createdAt: new Date(p.createdAt).toISOString(),
-	lastModified: p.lastModified ? 
-	  new Date(p.lastModified).toISOString() : null
+	lastModified: p.lastModified ?
+		new Date(p.lastModified).toISOString() : null
 });
 
 const postsResponseTransformer = (response: PostResponse[]) => {
@@ -53,9 +53,10 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			undefined, // query arg
 			PostsInitialPageParam
 		>({
-			query: ({ pageParam: { pageSize, after } }) => {
+			query: ({ pageParam: { pageSize, after, page } }) => {
 				const params = new URLSearchParams();
 				params.append('pageSize', String(pageSize));
+				params.append('page', String(page))
 
 				if (after != null) {
 					params.append('after', String(after))
@@ -64,7 +65,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 				return `/posts?${params.toString()}`;
 			},
 			infiniteQueryOptions: {
-				initialPageParam: { pageSize: 10 },
+				initialPageParam: { pageSize: 10, page: 1 },
 				getNextPageParam: (
 					lastPage,
 					allPages,
@@ -78,6 +79,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 					return {
 						after: lastPage.pageInfo.endCursor,
 						pageSize: lastPageParam.pageSize,
+						page: lastPageParam.page + 1
 					};
 				},
 			},

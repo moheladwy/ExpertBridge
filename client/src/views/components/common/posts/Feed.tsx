@@ -30,6 +30,7 @@ const Feed = ({ startingPost = { id: null } }) => {
       {
         initialPageParam: {
           pageSize: limit,
+          page: 1
         },
       },
     );
