@@ -1,0 +1,24 @@
+erDiagram
+    PROFILE {
+        string Id PK
+        string Username
+    }
+
+    TAG {
+        string Id PK
+        string Name
+    }
+
+    SKILL {
+        string Id PK
+        string Name
+    }
+
+    BADGE {
+        string Id PK
+        string Name
+    }
+
+    PROFILE }|--|{ SKILL : "has (ProfileSkill)"
+    PROFILE }|--|{ BADGE : "has (ProfileBadge)"
+    PROFILE }|--|{ TAG : "interested_in (UserInterest)"

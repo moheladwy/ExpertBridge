@@ -1,0 +1,140 @@
+erDiagram
+
+    USER {
+        string Id PK
+        string ProviderId
+        string Email
+        string Username
+    }
+
+    PROFILE {
+        string Id PK
+        string UserId FK
+        string JobTitle
+        string Bio
+        string Email
+        double Rating
+    }
+
+    POST {
+        string Id PK
+        string AuthorId FK
+        string Title
+        string Description
+    }
+
+    COMMENT {
+        string Id PK
+        string AuthorId FK
+        string PostId FK
+        string ParentCommentId FK
+        string Content
+    }
+    
+    POST_VOTE {
+        string Id PK
+        string ProfileId FK
+        string PostId FK
+        bool IsUpvote
+    }
+
+    COMMENT_VOTE {
+        string Id PK
+        string ProfileId FK
+        string CommentId FK
+        bool IsUpvote
+    }
+
+    JOB_POSTING {
+        string Id PK
+        string AuthorId FK
+        string CategoryId FK
+        string Title
+        string Description
+        float Cost
+    }
+
+    JOB {
+        string Id PK
+        string AuthorId FK
+        string WorkerId FK
+        string JobPostingId FK
+        string Status
+    }
+
+    JOB_REVIEW {
+        string Id PK
+        string JobId FK
+        string CustomerId FK
+        string WorkerId FK
+        string Content
+        int Rating
+    }
+
+    JOB_CATEGORY {
+        string Id PK
+        string Name
+    }
+
+    PROFILE_EXPERIENCE {
+        string Id PK
+        string ProfileId FK
+        string Title
+        string Company
+    }
+
+    TAG {
+        string Id PK
+        string Name
+    }
+
+    SKILL {
+        string Id PK
+        string Name
+    }
+
+    BADGE {
+        string Id PK
+        string Name
+    }
+
+    CHAT {
+        string Id PK
+    }
+
+    NOTIFICATION {
+        string Id PK
+        string RecipientId FK
+        string Message
+        bool IsRead
+    }
+
+    USER ||--o| PROFILE : "has"
+    
+    PROFILE ||--|{ POST : "authors"
+    PROFILE ||--|{ COMMENT : "authors"
+    PROFILE ||--|{ JOB_POSTING : "authors"
+    PROFILE ||--|{ JOB : "is_author_of"
+    PROFILE ||--|{ JOB : "is_worker_on"
+    PROFILE ||--|{ PROFILE_EXPERIENCE : "has"
+    PROFILE ||--|{ NOTIFICATION : "receives"
+    PROFILE ||--|{ POST_VOTE : "casts"
+    PROFILE ||--|{ COMMENT_VOTE : "casts"
+
+    POST ||--|{ COMMENT : "has"
+    POST ||--|{ POST_VOTE : "receives"
+    COMMENT ||--|{ COMMENT_VOTE : "receives"
+    COMMENT }o--|| COMMENT : "replies_to"
+
+    JOB_CATEGORY ||--|{ JOB_POSTING : "categorizes"
+    JOB_POSTING ||--o| JOB : "results_in"
+    JOB ||--o| JOB_REVIEW : "is_reviewed_by"
+
+    JOB_REVIEW }o--|| PROFILE : "written_by_customer"
+    JOB_REVIEW }o--|| PROFILE : "for_worker"
+
+    POST }|--|{ TAG : "has (PostTag)"
+    PROFILE }|--|{ SKILL : "has (ProfileSkill)"
+    PROFILE }|--|{ BADGE : "has (ProfileBadge)"
+    PROFILE }|--|{ TAG : "interested_in (UserInterest)"
+    CHAT }|--|{ PROFILE : "participates_in (ChatParticipant)"

@@ -1,0 +1,39 @@
+@startuml
+!theme plain
+title User Registration and Profile Creation
+
+actor "New User" as User
+participant "API Layer" as Api
+participant "Application Layer" as App
+participant "Embedding Service" as EmbeddingSvc
+database "Database" as DB
+
+group User Registration
+    User -> Api: POST /api/auth/register\n(RegistrationDto)
+    activate Api
+    Api -> App: RegisterUser(dto)
+    activate App
+    App -> DB: Create User entity
+    activate DB
+    DB --> App: User
+    deactivate DB
+    App -> DB: Create Profile entity for User
+    activate DB
+    DB --> App: Profile
+    deactivate DB
+    App -> App: Collect initial data for embedding\n(e.g., from registration info)
+    App -> EmbeddingSvc: GenerateEmbedding(initialData)
+    activate EmbeddingSvc
+    EmbeddingSvc --> App: Vector embedding
+    deactivate EmbeddingSvc
+    App -> DB: Update Profile with UserInterestEmbedding
+    activate DB
+    DB --> App: Updated Profile
+    deactivate DB
+    App --> Api: UserDto
+    deactivate App
+    Api --> User: 201 Created\n(UserDto)
+    deactivate Api
+end
+
+@enduml

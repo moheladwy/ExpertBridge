@@ -1,0 +1,78 @@
+@startuml
+!theme plain
+title Job Completion, Payment, and Review Sequence
+
+actor "Worker"
+actor "Client"
+participant "API Layer" as Api
+participant "Application Layer" as App
+participant "Payment Service" as PaymentSvc
+database "Database" as DB
+
+group Job Completion
+    Worker -> Api: PATCH /api/jobs/{id}/status\n{ "newStatus": "InProgress" }
+    activate Api
+    Api -> App: UpdateJobStatus(jobId, InProgress)
+    activate App
+    App -> DB: Update Job status to 'InProgress'
+    activate DB
+    DB --> App: Updated Job
+    deactivate DB
+    App --> Api: JobResponse
+    deactivate App
+    Api --> Worker: 200 OK (JobResponse)
+    deactivate Api
+
+    ... Work is done ...
+
+    Worker -> Api: PATCH /api/jobs/{id}/status\n{ "newStatus": "PendingClientApproval" }
+    activate Api
+    Api -> App: UpdateJobStatus(jobId, PendingClientApproval)
+    activate App
+    App -> DB: Update Job status to 'PendingClientApproval'
+    activate DB
+    DB --> App: Updated Job
+    deactivate DB
+    App --> Api: JobResponse
+    deactivate App
+    Api --> Worker: 200 OK (JobResponse)
+    deactivate Api
+
+    Client -> Api: PATCH /api/jobs/{id}/status\n{ "newStatus": "Completed" }
+    activate Api
+    Api -> App: UpdateJobStatus(jobId, Completed)
+    activate App
+    App -> DB: Update Job status to 'Completed',\nset EndedAt
+    activate DB
+    DB --> App: Completed Job
+    deactivate DB
+    
+    note right of App: Trigger payment and review process
+    
+    App -> PaymentSvc: ProcessPayment(jobId, amount)
+    activate PaymentSvc
+    PaymentSvc --> App: Payment Success
+    deactivate PaymentSvc
+    
+    App --> Api: JobResponse
+    deactivate App
+    Api --> Client: 200 OK (JobResponse)
+    deactivate Api
+end
+
+group Client Leaves Review
+    Client -> Api: POST /api/job-reviews\n(CreateJobReviewRequest)
+    activate Api
+    Api -> App: CreateJobReview(dto)
+    activate App
+    App -> DB: Create JobReview entity
+    activate DB
+    DB --> App: JobReview
+    deactivate DB
+    App --> Api: JobReviewDto
+    deactivate App
+    Api --> Client: 201 Created (JobReviewDto)
+    deactivate Api
+end
+
+@enduml

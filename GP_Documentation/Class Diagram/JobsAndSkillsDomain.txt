@@ -1,0 +1,126 @@
+@startuml
+class Profile {
+  +UserId: string
+  +FirstName: string
+  +LastName: string
+  +Username: string
+}
+
+class JobPosting {
+  +AuthorId: string
+  +AreaId: string
+  +CategoryId: string
+  +Title: string
+  +Description: string
+  +Cost: double
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+}
+class Job {
+  +AuthorId: string
+  +WorkerId: string
+  +JobPostingId: string
+  +Status: string
+  +ActualCost: double
+  +StartedAt: DateTime?
+  +EndedAt: DateTime?
+}
+class JobReview {
+  +JobId: string
+  +CustomerId: string
+  +WorkerId: string
+  +Content: string
+  +Rating: int
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+}
+
+Profile "1" -- "0..*" JobPosting : JobPostings
+Profile "1" -- "0..*" Job : JobsAsAuthor
+Profile "1" -- "0..*" Job : JobsAsWorker
+
+JobPosting "1" -- "1" Job : Job
+Job "1" -- "1" JobReview : Review
+JobPosting "1" -- "0..*" JobPostingMedia : Media
+
+class JobPostingMedia {
+  +JobPostingId: string
+  +Key: string
+  +Type: string
+  +Name: string
+}
+@enduml
+
+
+
+
+
+==================
+@startuml
+class Profile {
+  +UserId: string
+  +FirstName: string
+  +LastName: string
+  +Username: string
+}
+
+class JobPosting {
+  +AuthorId: string
+  +AreaId: string
+  +CategoryId: string
+  +Title: string
+  +Description: string
+  +Cost: double
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+}
+class Job {
+  +AuthorId: string
+  +WorkerId: string
+  +JobPostingId: string
+  +Status: string
+  +ActualCost: double
+  +StartedAt: DateTime?
+  +EndedAt: DateTime?
+}
+class JobReview {
+  +JobId: string
+  +CustomerId: string
+  +WorkerId: string
+  +Content: string
+  +Rating: int
+  +CreatedAt: DateTime
+  +IsDeleted: bool
+}
+
+class JobPostingMedia {
+  +JobPostingId: string
+  +Key: string
+  +Type: string
+  +Name: string
+}
+
+class Area {
+  +Governorate: string
+  +Region: string
+}
+
+class JobCategory {
+  +Name: string
+  +Description: string
+}
+
+
+Profile "1" -- "0..*" JobPosting : JobPostings
+Profile "1" -- "0..*" Job : JobsAsAuthor
+Profile "1" -- "0..*" Job : JobsAsWorker
+
+JobPosting "1" -- "1" Job : Job
+Job "1" -- "1" JobReview : Review
+JobPosting "1" -- "0..*" JobPostingMedia : Media
+
+' Added based on request
+Area "1" -- "0..*" JobPosting : JobPostings
+JobCategory "1" -- "0..*" JobPosting : JobPostings
+
+@enduml

@@ -1,0 +1,226 @@
+@startuml
+abstract class BaseModel {
+  +Id: string
+  +CreatedAt: DateTime?
+  +LastModified: DateTime?
+}
+interface ISoftDeletable {
+  +IsDeleted: bool
+  +DeletedAt: DateTime?
+}
+
+class User {
+  +ProviderId: string
+  +FirstName: string
+  +LastName: string
+  +Email: string
+  +Username: string
+  +PhoneNumber: string
+  +IsBanned: bool
+  +IsEmailVerified: bool
+  +IsOnboarded: bool
+  +IsDeleted: bool
+  +DeletedAt: DateTime?
+}
+
+class Profile {
+  +UserId: string
+  +JobTitle: string
+  +Bio: string
+  +ProfilePictureUrl: string
+  +Rating: double
+  +RatingCount: int
+  +FirstName: string
+  +LastName: string
+  +Email: string
+  +Username: string
+  +PhoneNumber: string
+  +IsBanned: bool
+  +IsDeleted: bool
+  +DeletedAt: DateTime?
+  +UserInterestEmbedding: Vector
+}
+
+User -- "1" Profile : Profile
+
+Profile "1" -- "0..*" ProfileSkill : Skills
+Profile "1" -- "0..*" ProfileBadge : Badges
+Profile "1" -- "0..*" UserInterest : Interests
+Profile "1" -- "0..*" ProfileMedia : Media
+
+class ProfileSkill {
+  +ProfileId: string
+  +SkillId: string
+}
+class ProfileBadge {
+  +ProfileId: string
+  +BadgeId: string
+}
+class UserInterest {
+  +ProfileId: string
+  +TagId: string
+}
+class ProfileMedia {
+  +ProfileId: string
+  +Key: string
+  +Type: string
+  +Name: string
+}
+
+ProfileSkill o-- Skill
+ProfileBadge o-- Badge
+UserInterest o-- Tag
+
+class Skill {
+  +Id: string
+  +Name: string
+  +Description: string
+}
+class Badge {
+  +Id: string
+  +Name: string
+  +Description: string
+}
+class Tag {
+  +Id: string
+  +EnglishName: string
+  +ArabicName: string
+  +Description: string
+}
+@enduml
+
+
+====================
+
+@startuml
+abstract class BaseModel {
+  +Id: string
+  +CreatedAt: DateTime?
+  +LastModified: DateTime?
+}
+interface ISoftDeletable {
+  +IsDeleted: bool
+  +DeletedAt: DateTime?
+}
+
+BaseModel <|-- User
+ISoftDeletable <|.. User
+class User {
+  +ProviderId: string
+  +FirstName: string
+  +LastName: string
+  +Email: string
+  +Username: string
+  +PhoneNumber: string
+  +IsBanned: bool
+  +IsEmailVerified: bool
+  +IsOnboarded: bool
+  +IsDeleted: bool
+  +DeletedAt: DateTime?
+}
+
+BaseModel <|-- Profile
+ISoftDeletable <|.. Profile
+class Profile {
+  +UserId: string
+  +JobTitle: string
+  +Bio: string
+  +ProfilePictureUrl: string
+  +Rating: double
+  +RatingCount: int
+  +FirstName: string
+  +LastName: string
+  +Email: string
+  +Username: string
+  +PhoneNumber: string
+  +IsBanned: bool
+  +IsDeleted: bool
+  +DeletedAt: DateTime?
+  +UserInterestEmbedding: Vector
+}
+
+User "1" -- "1" Profile : Profile
+
+Profile "1" -- "0..*" ProfileSkill : Skills
+Profile "1" -- "0..*" ProfileBadge : Badges
+Profile "1" -- "0..*" UserInterest : Interests
+Profile "1" -- "0..*" ProfileMedia : Media
+Profile "1" -- "0..*" Area : Areas
+Profile "1" -- "0..*" ProfileExperience : Experiences
+
+class ProfileSkill {
+  +ProfileId: string
+  +SkillId: string
+}
+class ProfileBadge {
+  +ProfileId: string
+  +BadgeId: string
+}
+class UserInterest {
+  +ProfileId: string
+  +TagId: string
+}
+
+BaseModel <|-- ProfileMedia
+ISoftDeletable <|.. ProfileMedia
+class ProfileMedia {
+  +ProfileId: string
+  +Key: string
+  +Type: string
+  +Name: string
+}
+
+ProfileSkill o-- Skill
+ProfileBadge o-- Badge
+UserInterest o-- Tag
+
+class Skill {
+  +Id: string
+  +Name: string
+  +Description: string
+}
+class Badge {
+  +Id: string
+  +Name: string
+  +Description: string
+}
+BaseModel <|-- Tag
+class Tag {
+  +EnglishName: string
+  +ArabicName: string
+  +Description: string
+}
+
+' Added Area based on request
+class Area {
+  +Id: string
+  +ProfileId: string
+  +Governorate: string 'enum
+  +Region: string
+}
+
+' Added ProfileExperience based on request
+BaseModel <|-- ProfileExperience
+ISoftDeletable <|.. ProfileExperience
+class ProfileExperience {
+    +ProfileId: string
+    +Title: string
+    +Description: string
+    +Company: string
+    +Location: string
+    +StartDate: DateTime
+    +EndDate: DateTime?
+}
+
+ProfileExperience "1" -- "0..*" ProfileExperienceMedia : Medias
+
+BaseModel <|-- ProfileExperienceMedia
+ISoftDeletable <|.. ProfileExperienceMedia
+class ProfileExperienceMedia {
+    +ProfileExperienceId: string
+    +Key: string
+    +Type: string
+    +Name: string
+}
+
+@enduml
