@@ -12,6 +12,7 @@ export type PostsCursorPaginatedResponse = {
   pageInfo: {
     endCursor?: number;
     hasNextPage: boolean;
+    embedding?: string;
   };
 }
 
@@ -19,6 +20,7 @@ export type PostsInitialPageParam = {
   after?: number;
   pageSize: number;
   page: number;
+  embedding?: string;
 }
 
 export type PostsQueryParamLimit = number;

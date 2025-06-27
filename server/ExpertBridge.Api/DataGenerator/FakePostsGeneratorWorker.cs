@@ -3,6 +3,7 @@
 
 
 using ExpertBridge.Data.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace ExpertBridge.Api.DataGenerator
@@ -23,21 +24,39 @@ namespace ExpertBridge.Api.DataGenerator
             {
                 try
                 {
-                    var posts = Generator.GeneratePosts("e2e8eb61-2261-4e49-8aac-df336aff7991", 100000);
-
-                    using var scope = _services.CreateScope();
-                    var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
-
-                    //await dbContext.Posts.AddRangeAsync(posts, stoppingToken);
-                    //await dbContext.SaveChangesAsync(stoppingToken);
-
-                    await dbContext.BulkInsertAsync(posts);
+                    //await GeneratePosts(stoppingToken);
+                    //await UpdateCreatedAt(stoppingToken);
                 }
                 catch (NotSupportedException ex)
                 {
                     Log.Error(ex, "Error occurred while generating fake posts.");
                 }
             }
+        }
+
+        private async Task UpdateCreatedAt(CancellationToken stoppingToken)
+        {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
+
+            await dbContext.Posts
+                .Where(p => p.CreatedAt == null)
+                .Take(100)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(p => p.CreatedAt, DateTime.UtcNow)
+                , stoppingToken);
+        }
+
+        private async Task GeneratePosts(CancellationToken stoppingToken)
+        {
+            var posts = Generator.GeneratePosts("e2e8eb61-2261-4e49-8aac-df336aff7991", 100000);
+
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
+
+            //await dbContext.Posts.AddRangeAsync(posts, stoppingToken);
+            //await dbContext.SaveChangesAsync(stoppingToken);
+
+            await dbContext.BulkInsertAsync(posts);
         }
     }
 }

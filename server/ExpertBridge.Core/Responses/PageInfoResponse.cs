@@ -8,5 +8,6 @@ namespace ExpertBridge.Core.Responses
         public string? NextIdCursor { get; set; }
         public double? EndCursor { get; set; }
         public bool HasNextPage { get; set; }
+        public string? Embedding { get; set; }
     }
 }

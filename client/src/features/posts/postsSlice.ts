@@ -53,16 +53,25 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			undefined, // query arg
 			PostsInitialPageParam
 		>({
-			query: ({ pageParam: { pageSize, after, page } }) => {
-				const params = new URLSearchParams();
-				params.append('pageSize', String(pageSize));
-				params.append('page', String(page))
+			query: ({ pageParam/*: { pageSize, after, page, embedding }*/ }) => {
+				// const params = new URLSearchParams();
+				// params.append('pageSize', String(pageSize));
+				// params.append('page', String(page));
 
-				if (after != null) {
-					params.append('after', String(after))
+				// if (after != null) {
+				// 	params.append('after', String(after))
+				// }
+
+				// if (embedding != null) {
+				// 	params.append('embedding', String(embedding));
+				// }
+
+				return {
+					// url: `/posts?${params.toString()}`,
+					url: '/posts/feed',
+					method: 'POST',
+					body: pageParam,
 				}
-
-				return `/posts?${params.toString()}`;
 			},
 			infiniteQueryOptions: {
 				initialPageParam: { pageSize: 10, page: 1 },
@@ -76,10 +85,13 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 						return undefined;
 					}
 
+					console.log(lastPageParam);
+
 					return {
 						after: lastPage.pageInfo.endCursor,
 						pageSize: lastPageParam.pageSize,
-						page: lastPageParam.page + 1
+						page: lastPageParam.page + 1,
+						embedding: lastPage.pageInfo.embedding
 					};
 				},
 			},

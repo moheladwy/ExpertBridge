@@ -9,5 +9,6 @@ namespace ExpertBridge.Core.Requests
         public int Page { get; set; }
         public double? After { get; set; }
         public string? LastIdCursor { get; set; }
+        public string? Embedding { get; set; }
     }
 }

@@ -3,6 +3,7 @@
 
 using System.Text;
 using System.Threading.Channels;
+using ExpertBridge.Api.DataGenerator;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
@@ -178,17 +179,14 @@ namespace ExpertBridge.Api.DomainServices
 
             if (userEmbedding == null)
             {
-                var rand = new Random();
-                var sb = new StringBuilder();
-                sb.Append("0.1");
-
-                for (int i = 0; i < 1023; i++)
+                if (request.Embedding != null)
                 {
-                    double value = rand.NextDouble(); // gives value between 0.0 and 1.0
-                    sb.Append($",{value.ToString("0.#")}"); // optional: format to reduce decimal noise
+                    userEmbedding = new Vector(request.Embedding);
                 }
-
-                userEmbedding = new Vector(sb.ToString());
+                else
+                {
+                    userEmbedding = Generator.GenerateRandomVector(1024);
+                }
             }
 
             // 2. Build the query for posts
@@ -271,20 +269,19 @@ namespace ExpertBridge.Api.DomainServices
         {
             var userEmbedding = userProfile?.UserInterestEmbedding;
             var userProfileId = userProfile?.Id;
+            string? randomEmbedding = null; 
 
             if (userEmbedding == null)
             {
-                var rand = new Random();
-                var sb = new StringBuilder();
-                sb.Append("0.1");
-
-                for (int i = 0; i < 1023; i++)
+                if (request.Embedding != null)
                 {
-                    double value = rand.NextDouble(); // gives value between 0.0 and 1.0
-                    sb.Append($",{value.ToString("0.#")}"); // optional: format to reduce decimal noise
+                    userEmbedding = new Vector(request.Embedding);
                 }
-
-                userEmbedding = new Vector(sb.ToString());
+                else
+                {
+                    userEmbedding = Generator.GenerateRandomVector(1024);
+                    randomEmbedding = userEmbedding.ToString(); // Store the random embedding as a string for response
+                }
             }
 
             // 2. Build the query for posts
@@ -309,15 +306,6 @@ namespace ExpertBridge.Api.DomainServices
             // 3. Determine if there's a next page and prepare the results
             bool hasNextPage = postsWithDistance.Count > request.PageSize;
 
-            // 4. Map to DTOs
-            //var currentPagePostIds = currentPagePosts.Select(p => p.PostId);
-            //var postDtos = await _dbContext.Posts
-            //    .FullyPopulatedPostQuery(p => currentPagePostIds.Contains(p.Id))
-            //    .SelectPostResponseFromFullPost(userProfile?.Id)
-            //    .ToListAsync(cancellationToken);
-
-            //.Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
-
             return new PostsCursorPaginatedResponse
             {
                 Posts = postsWithDistance
@@ -330,7 +318,8 @@ namespace ExpertBridge.Api.DomainServices
                 }).ToList(),
                 PageInfo = new PageInfoResponse
                 {
-                    HasNextPage = hasNextPage
+                    HasNextPage = hasNextPage,
+                    Embedding = randomEmbedding ?? request.Embedding
                 }
             };
         }
