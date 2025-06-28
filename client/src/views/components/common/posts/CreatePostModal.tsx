@@ -155,7 +155,8 @@ const CreatePostModal: React.FC = () => {
 								width={45}
 								height={45}
 								className="rounded-full"
-							 	alt="Profile Picture"/>
+								alt="Profile Picture"
+							/>
 						) : (
 							<img
 								src={defaultProfile}
@@ -222,8 +223,14 @@ const CreatePostModal: React.FC = () => {
 								/>
 							)}
 						</div>
-						<Typography variant="subtitle1" className="font-medium dark:text-white">
+						<Typography
+							variant="subtitle1"
+							className="font-medium dark:text-white"
+						>
 							{authUser?.displayName || "User"}
+							<span className="text-gray-500 dark:text-gray-400 block text-sm">
+								{` @${userProfile?.username || "username"}`}
+							</span>
 						</Typography>
 					</Box>
 
@@ -248,7 +255,7 @@ const CreatePostModal: React.FC = () => {
 								helperText={titleError || ""}
 								className="dark:bg-gray-700 dark:rounded"
 								InputLabelProps={{
-									className: "dark:text-gray-300"
+									className: "dark:text-gray-300",
 								}}
 							/>
 							{!titleError && (
@@ -260,7 +267,11 @@ const CreatePostModal: React.FC = () => {
 												? "error"
 												: "green"
 										}
-										className={titleCharsLeft < 1 ? "text-red-500" : "text-green-500 dark:text-green-400"}
+										className={
+											titleCharsLeft < 1
+												? "text-red-500"
+												: "text-green-500 dark:text-green-400"
+										}
 									>
 										{titleCharsLeft} characters left
 									</Typography>
@@ -290,7 +301,7 @@ const CreatePostModal: React.FC = () => {
 								helperText={bodyError || ""}
 								className="dark:bg-gray-700 dark:rounded"
 								InputLabelProps={{
-									className: "dark:text-gray-300"
+									className: "dark:text-gray-300",
 								}}
 							/>
 							{!bodyError && (
@@ -302,7 +313,11 @@ const CreatePostModal: React.FC = () => {
 												? "error"
 												: "green"
 										}
-										className={bodyCharsLeft < 1 ? "text-red-500" : "text-green-500 dark:text-green-400"}
+										className={
+											bodyCharsLeft < 1
+												? "text-red-500"
+												: "text-green-500 dark:text-green-400"
+										}
 									>
 										{bodyCharsLeft} characters left
 									</Typography>
@@ -314,7 +329,10 @@ const CreatePostModal: React.FC = () => {
 						<div className="w-full">
 							<Box className="border border-gray-300 dark:border-gray-600 rounded p-3 mt-2">
 								<Box className="flex items-center justify-between">
-									<Typography variant="body2" className="dark:text-gray-200">
+									<Typography
+										variant="body2"
+										className="dark:text-gray-200"
+									>
 										Add to your question
 									</Typography>
 									<Typography
@@ -406,7 +424,6 @@ const CreatePostModal: React.FC = () => {
 				</div>
 			</Modal>
 		</>
-
 	);
 };
 
