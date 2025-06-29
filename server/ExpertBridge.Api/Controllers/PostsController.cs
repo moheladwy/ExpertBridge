@@ -11,6 +11,9 @@ using Serilog;
 
 namespace ExpertBridge.Api.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
+[Authorize] // Ensure user is authenticated for all actions except GetById and GetSimilarPosts
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent)]
 public class PostsController : ControllerBase
 {

@@ -177,7 +177,7 @@ namespace ExpertBridge.Api.DomainServices
                     var similarPostsQuery = await _dbContext.Posts
                         .AsNoTracking()
                         .Where(p => p.Id != postId && p.Embedding != null)
-                        .OrderBy(p => p.CosineDistance(currentPostEmbeddings))
+                        .OrderBy(p => p.Embedding.CosineDistance(currentPostEmbeddings))
                         .Take(limit ?? 5) // Limit to the specified number of similar posts or default to 5
                         .Include(p => p.Author) // Include author for response mapping
                         .Select(p => new SimilarPostsResponse

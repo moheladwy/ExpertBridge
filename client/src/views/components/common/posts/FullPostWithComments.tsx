@@ -76,7 +76,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 			<div className="w-full flex justify-center">
 				<div className="w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
 					{post ? (
-						<>
+						<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
 							<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
 								{/* Post Header */}
 								<div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-600">
@@ -238,7 +238,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 								<CommentsSection postId={post.id} />
 							</div>
 							<SimilarPosts currentPostId={post.id} />
-						</>
+						</div>
 					) : (
 						<p className="dark:text-white">Post not found.</p>
 					)}
