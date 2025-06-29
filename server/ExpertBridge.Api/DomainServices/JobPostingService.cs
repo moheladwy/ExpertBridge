@@ -57,7 +57,6 @@ namespace ExpertBridge.Api.DomainServices
                 Content = request.Content.Trim(),
                 AuthorId = authorProfile.Id,
                 Author = authorProfile, // For navigation, if needed before save by other logic
-                CreatedAt = DateTime.UtcNow
             };
 
             await _dbContext.JobPostings.AddAsync(posting);
