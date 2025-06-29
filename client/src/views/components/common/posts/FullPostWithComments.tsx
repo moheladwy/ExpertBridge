@@ -112,7 +112,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
                           </div>
                         </DropdownMenuItem>
 
-                        {userProfile?.id == post.author.id ? (
+                        {userProfile?.id === post.author.id ? (
                           <DropdownMenuItem>
                             <div
                               className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
