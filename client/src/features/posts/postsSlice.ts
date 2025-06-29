@@ -2,20 +2,22 @@ import {
 	createEntityAdapter,
 	createSelector,
 	EntityState,
-	Update,
-} from '@reduxjs/toolkit';
-import { apiSlice } from '../api/apiSlice';
-import { AddPostRequest, Post, PostResponse, PostsCursorPaginatedResponse, PostsInitialPageParam, PostsQueryParamLimit } from './types';
-import { sub } from 'date-fns';
-import { PostAddOutlined } from '@mui/icons-material';
-import { RootState } from '@/app/store';
-import { useAppSelector } from '@/app/hooks';
-import { useUpdateCommentMutation } from '../comments/commentsSlice';
+} from "@reduxjs/toolkit";
+import { apiSlice } from "../api/apiSlice";
+import {
+	AddPostRequest,
+	Post,
+	PostResponse,
+	PostsCursorPaginatedResponse,
+	PostsInitialPageParam,
+	SimilarPostsResponse,
+} from "./types";
+import { RootState } from "@/app/store";
+import { useAppSelector } from "@/app/hooks";
 
 type PostsState = EntityState<Post, string>;
 const postsAdapter = createEntityAdapter<Post>({
-	sortComparer: (a, b) =>
-		b.createdAt.localeCompare(a.createdAt),
+	sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
 const initialState: PostsState = postsAdapter.getInitialState();
@@ -23,8 +25,9 @@ const initialState: PostsState = postsAdapter.getInitialState();
 const postResponseTransformer = (p: PostResponse): Post => ({
 	...p,
 	createdAt: new Date(p.createdAt).toISOString(),
-	lastModified: p.lastModified ?
-		new Date(p.lastModified).toISOString() : null
+	lastModified: p.lastModified
+		? new Date(p.lastModified).toISOString()
+		: null,
 });
 
 const postsResponseTransformer = (response: PostResponse[]) => {
@@ -35,16 +38,18 @@ const postsResponseTransformer = (response: PostResponse[]) => {
 };
 
 // TODO: Needs optimization
-const transformPagesToFlatPosts = (pages: PostsCursorPaginatedResponse[] | undefined) => {
+const transformPagesToFlatPosts = (
+	pages: PostsCursorPaginatedResponse[] | undefined
+) => {
 	let allPosts: Post[] = [];
 
-	pages?.forEach(page => {
+	pages?.forEach((page) => {
 		// allPosts = allPosts.concat(page.posts.map(postResponseTransformer));
 		allPosts = allPosts.concat(page.posts);
 	});
 
 	return allPosts;
-}
+};
 
 export const postsApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
@@ -55,11 +60,11 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 		>({
 			query: ({ pageParam: { pageSize, after, page } }) => {
 				const params = new URLSearchParams();
-				params.append('pageSize', String(pageSize));
-				params.append('page', String(page))
+				params.append("pageSize", String(pageSize));
+				params.append("page", String(page));
 
 				if (after != null) {
-					params.append('after', String(after))
+					params.append("after", String(after));
 				}
 
 				return `/posts?${params.toString()}`;
@@ -79,7 +84,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 					return {
 						after: lastPage.pageInfo.endCursor,
 						pageSize: lastPageParam.pageSize,
-						page: lastPageParam.page + 1
+						page: lastPageParam.page + 1,
 					};
 				},
 			},
@@ -87,38 +92,46 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 		// (DEPRECATED)
 		getPosts: builder.query<PostsState, void>({
-			query: () => '/posts',
+			query: () => "/posts",
 			transformResponse: postsResponseTransformer,
 			providesTags: (result = initialState, error, arg) => [
-				'Post',
-				{ type: 'Post', id: 'LIST' },
+				"Post",
+				{ type: "Post", id: "LIST" },
 				...result.ids.map(
-					(id) => ({ type: 'Post', id: id.toString() }) as const
+					(id) => ({ type: "Post", id: id.toString() }) as const
 				),
 			],
 		}),
 
 		getPost: builder.query<Post, string>({
 			query: (postId) => `/posts/${postId}`,
-			providesTags: (result, error, arg) => [{ type: 'Post', id: arg }],
+			providesTags: (result, error, arg) => [{ type: "Post", id: arg }],
 			transformResponse: postResponseTransformer,
+		}),
+
+		getSimilarPosts: builder.query<SimilarPostsResponse[], string>({
+			query: (postId) => `/posts/similar/${postId}?limit=5`,
+			providesTags: (result, error, arg) => [
+				{ type: "SimilarPosts", id: arg },
+			],
 		}),
 
 		createPost: builder.mutation<Post, AddPostRequest>({
 			query: (initialPost) => ({
-				url: '/posts',
-				method: 'POST',
+				url: "/posts",
+				method: "POST",
 				body: initialPost,
 			}),
 			// invalidatesTags: [{ type: 'Post', id: 'LIST' }],
 			transformResponse: postResponseTransformer,
 			onQueryStarted: async (request, lifecycleApi) => {
 				try {
-					const { data: createdPost } = await lifecycleApi.queryFulfilled;
+					const { data: createdPost } =
+						await lifecycleApi.queryFulfilled;
 
 					const getPostsPatchResult = lifecycleApi.dispatch(
 						postsApiSlice.util.updateQueryData(
-							'getPostsCursor',
+							"getPostsCursor",
 							undefined,
 							(draft) => {
 								// const posts = Object.values(draft.entities).concat(createdPost);
@@ -127,26 +140,26 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 								draft.pages[0].posts.push(createdPost);
 							}
-						),
+						)
 					);
 
 					const getPostPatchResult = lifecycleApi.dispatch(
 						postsApiSlice.util.upsertQueryData(
-							'getPost',
+							"getPost",
 							createdPost.id,
-							createdPost,
-						),
+							createdPost
+						)
 					);
 				} catch {
-					console.error('Post creation failed');
+					console.error("Post creation failed");
 				}
-			}
+			},
 		}),
 
 		upvotePost: builder.mutation<Post, Post>({
 			query: (post) => ({
 				url: `/posts/${post.id}/upvote`,
-				method: 'PATCH',
+				method: "PATCH",
 			}),
 			transformResponse: postResponseTransformer,
 			onQueryStarted: async (post, lifecycleApi) => {
@@ -173,13 +186,17 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 				const getPostsPatchResult = lifecycleApi.dispatch(
 					postsApiSlice.util.updateQueryData(
-						'getPostsCursor',
+						"getPostsCursor",
 						undefined,
 						(draft) => {
 							// The `draft` is Immer-wrapped and can be 'mutated' like in createSlice
 							// const updateCandidate = draft.entities[post.id];
-							const posts = transformPagesToFlatPosts(draft.pages);
-							const updateCandidate = posts.find(p => p.id === post.id);
+							const posts = transformPagesToFlatPosts(
+								draft.pages
+							);
+							const updateCandidate = posts.find(
+								(p) => p.id === post.id
+							);
 
 							if (updateCandidate) {
 								updateCandidate.upvotes = upvotes;
@@ -193,7 +210,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 				const getPostPatchResult = lifecycleApi.dispatch(
 					postsApiSlice.util.updateQueryData(
-						'getPost',
+						"getPost",
 						post.id,
 						(draft) => {
 							// The `draft` is Immer-wrapped and can be 'mutated' like in createSlice
@@ -219,7 +236,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 		downvotePost: builder.mutation<Post, Post>({
 			query: (post) => ({
 				url: `/posts/${post.id}/downvote`,
-				method: 'PATCH',
+				method: "PATCH",
 			}),
 			transformResponse: postResponseTransformer,
 			onQueryStarted: async (post, lifecycleApi) => {
@@ -246,12 +263,16 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 				const getPostsPatchResult = lifecycleApi.dispatch(
 					postsApiSlice.util.updateQueryData(
-						'getPostsCursor',
+						"getPostsCursor",
 						undefined,
 						(draft) => {
 							// The `draft` is Immer-wrapped and can be 'mutated' like in createSlice
-							const posts = transformPagesToFlatPosts(draft.pages);
-							const updateCandidate = posts.find(p => p.id === post.id);
+							const posts = transformPagesToFlatPosts(
+								draft.pages
+							);
+							const updateCandidate = posts.find(
+								(p) => p.id === post.id
+							);
 
 							if (updateCandidate) {
 								updateCandidate.upvotes = upvotes;
@@ -265,7 +286,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 				const getPostPatchResult = lifecycleApi.dispatch(
 					postsApiSlice.util.updateQueryData(
-						'getPost',
+						"getPost",
 						post.id,
 						(draft) => {
 							// The `draft` is Immer-wrapped and can be 'mutated' like in createSlice
@@ -288,10 +309,13 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			},
 		}),
 
-		updatePost: builder.mutation<Post, { postId: string; title?: string; content?: string }>({
+		updatePost: builder.mutation<
+			Post,
+			{ postId: string; title?: string; content?: string }
+		>({
 			query: ({ postId, ...updateData }) => ({
 				url: `/posts/${postId}`,
-				method: 'PATCH',
+				method: "PATCH",
 				body: updateData,
 			}),
 			// transformResponse: postResponseTransformer,
@@ -302,31 +326,36 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			onQueryStarted: async (request, lifecycleApi) => {
 				const getPostsPatchResult = lifecycleApi.dispatch(
 					postsApiSlice.util.updateQueryData(
-						'getPostsCursor',
+						"getPostsCursor",
 						undefined,
 						(draft) => {
 							// const updateCandidate = draft.entities[request.postId];
-							const updateCandidate = useAppSelector(state => selectPostById(state, request.postId));
+							const updateCandidate = useAppSelector((state) =>
+								selectPostById(state, request.postId)
+							);
 							if (updateCandidate) {
-								updateCandidate.title = request.title ?? updateCandidate.title;
-								updateCandidate.content = request.content ?? updateCandidate.content;
+								updateCandidate.title =
+									request.title ?? updateCandidate.title;
+								updateCandidate.content =
+									request.content ?? updateCandidate.content;
 							}
 						}
-					),
+					)
 				);
 
 				const getPostPatchResult = lifecycleApi.dispatch(
 					postsApiSlice.util.updateQueryData(
-						'getPost',
+						"getPost",
 						request.postId,
 						(draft) => {
 							// The `draft` is Immer-wrapped and can be 'mutated' like in createSlice
 							if (draft) {
 								draft.title = request.title ?? draft.title;
-								draft.content = request.content ?? draft.content;
+								draft.content =
+									request.content ?? draft.content;
 							}
 						}
-					),
+					)
 				);
 
 				try {
@@ -341,7 +370,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 		deletePost: builder.mutation<void, string>({
 			query: (postId) => ({
 				url: `/posts/${postId}`,
-				method: 'DELETE',
+				method: "DELETE",
 			}),
 			// invalidatesTags: (result, extra, arg) => [
 			// 	{ type: 'Post', id: 'LIST' },
@@ -353,30 +382,36 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 					const getPostsPatchResult = lifecycleApi.dispatch(
 						postsApiSlice.util.updateQueryData(
-							'getPostsCursor',
+							"getPostsCursor",
 							undefined,
 							(draft) => {
 								// postsAdapter.removeOne(draft, postId);
-								const page = draft.pages.find(p => p.posts.findIndex(post => post.id === postId) !== -1);
+								const page = draft.pages.find(
+									(p) =>
+										p.posts.findIndex(
+											(post) => post.id === postId
+										) !== -1
+								);
 								if (!page) return;
 
-								page.posts = page.posts.filter(post => post.id !== postId);
-							},
-						),
+								page.posts = page.posts.filter(
+									(post) => post.id !== postId
+								);
+							}
+						)
 					);
 
 					const getPostPatchResult = lifecycleApi.dispatch(
 						postsApiSlice.util.updateQueryData(
-							'getPost',
+							"getPost",
 							postId,
 							(draft) => {
 								Object.assign(draft, null);
 							}
-						),
+						)
 					);
-
 				} catch {
-					console.error('error while deleting post');
+					console.error("error while deleting post");
 				}
 			},
 		}),
@@ -385,6 +420,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 
 export const {
 	useGetPostQuery,
+	useGetSimilarPostsQuery,
 	useGetPostsQuery,
 	useGetPostsCursorInfiniteQuery,
 	useCreatePostMutation,
@@ -413,22 +449,21 @@ export const {
 // the query result object for a query with those parameters.
 // To generate a selector for a specific query argument, call `select(theQueryArg)`.
 // In this case, the 'Posts' query has no params, so we don't pass anything to select()
-export const selectPostsResult = postsApiSlice.endpoints.getPostsCursor.select(undefined);
+export const selectPostsResult =
+	postsApiSlice.endpoints.getPostsCursor.select(undefined);
 
 const selectPostsData = createSelector(
 	selectPostsResult,
 	// Fall back to the empty entity state if no response yet.
-	result => result.data?.pages.flat() ?? []
+	(result) => result.data?.pages.flat() ?? []
 );
 
-export const selectAllPosts = createSelector(
-	selectPostsResult,
-	postsResult => transformPagesToFlatPosts(postsResult?.data?.pages),
+export const selectAllPosts = createSelector(selectPostsResult, (postsResult) =>
+	transformPagesToFlatPosts(postsResult?.data?.pages)
 );
 
 export const selectPostById = createSelector(
 	selectAllPosts,
 	(state: RootState, postId: string) => postId,
-	(posts, postId) => posts.find(post => post.id === postId),
+	(posts, postId) => posts.find((post) => post.id === postId)
 );
-

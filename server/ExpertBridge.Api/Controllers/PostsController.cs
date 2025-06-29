@@ -11,13 +11,9 @@ using Serilog;
 
 namespace ExpertBridge.Api.Controllers;
 
-/// <summary>
-///     Controller for posts management.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
-
+[Authorize] // Ensure user is authenticated for all actions except GetById and GetSimilarPosts
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent)]
 public class PostsController : ControllerBase
 {
@@ -98,6 +94,32 @@ public class PostsController : ControllerBase
             return NotFound(new ProblemDetails { Title = "Not Found", Detail = $"Post with id={postId} was not found.", Status = StatusCodes.Status404NotFound });
         }
         return postResponse;
+    }
+
+    /// <summary>
+    /// Retrieves a list of posts that are similar to the specified post.
+    /// </summary>
+    /// <param name="postId">The unique identifier of the post to find similar posts for.</param>
+    /// <param name="limit">The maximum number of similar posts to return. Defaults to 5 if not specified.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A list of similar posts as <see cref="SimilarPostsResponse"/> objects.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="postId"/> is null or empty.</exception>
+    /// <remarks>This endpoint allows anonymous access.</remarks>
+    [AllowAnonymous]
+    [HttpGet("similar/{postId}")]
+    public async Task<List<SimilarPostsResponse>> GetSimilarPosts(
+            [FromRoute] string postId,
+            [FromQuery] int? limit = 5,
+            CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId)); // Service handles
+
+        var similarPosts = await _postService.GetSimilarPostsAsync(
+                postId,
+                limit ?? 5, // Default to 5 if not provided
+                cancellationToken);
+
+        return similarPosts;
     }
 
     /// <summary>
