@@ -60,7 +60,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 var taggingService = scope.ServiceProvider.GetRequiredService<TaggingService>();
 
                 // Atomic Operation.
-                await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, tags, stoppingToken);
+                await taggingService.AddRawTagsToPostAsync(post.PostId, post.AuthorId, post.IsJobPosting, tags, stoppingToken);
             }
             catch (Exception ex)
             {

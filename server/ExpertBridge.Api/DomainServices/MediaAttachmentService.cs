@@ -53,5 +53,16 @@ namespace ExpertBridge.Api.DomainServices
             }
             return mediaEntities;
         }
+
+        public string SanitizeMediaName(string contentHint, int maxLength = 50) // Shared helper
+        {
+            if (string.IsNullOrWhiteSpace(contentHint)) return "UntitledMedia";
+            var name = contentHint.Trim();
+            if (name.Length > maxLength)
+            {
+                name = name.Substring(0, maxLength);
+            }
+            return name;
+        }
     }
 }

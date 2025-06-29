@@ -71,7 +71,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 					url: '/posts/feed',
 					method: 'POST',
 					body: pageParam,
-				}
+				};
 			},
 			infiniteQueryOptions: {
 				initialPageParam: { pageSize: 10, page: 1 },

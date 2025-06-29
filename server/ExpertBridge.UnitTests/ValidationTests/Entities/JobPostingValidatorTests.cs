@@ -178,7 +178,7 @@ public class JobPostingValidatorTests
     {
         // Arrange
         var jobPostingWithNegativeCost = _validJobPosting;
-        jobPostingWithNegativeCost.Cost = JobPostingEntityConstraints.MinCost - 1;
+        jobPostingWithNegativeCost.Cost = JobPostingEntityConstraints.MinBudget - 1;
 
         // Act
         var resultOfNegativeCost = _jobPostingEntityValidator.TestValidate(jobPostingWithNegativeCost);

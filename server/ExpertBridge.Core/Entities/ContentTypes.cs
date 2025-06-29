@@ -7,6 +7,7 @@ namespace ExpertBridge.Core.Entities
     {
         Post,
         Comment,
+        JobPosting,
         Profile,
         Message,
         Video,

@@ -5,6 +5,7 @@
 using System.Threading.Channels;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
@@ -43,14 +44,27 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                 }
 
                 var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
-                var existingPost = await dbContext.Posts
-                    .FirstOrDefaultAsync(p => p.Id == post.PostId, stoppingToken);
 
-                if (existingPost is not null)
+                IRecommendableContent? existingPost = null;
+
+                if (post.IsJobPosting)
                 {
-                    existingPost.Embedding = embedding;
-                    await dbContext.SaveChangesAsync(stoppingToken);
+                    existingPost = await dbContext.JobPostings
+                        .FirstOrDefaultAsync(p => p.Id == post.PostId, stoppingToken);
                 }
+                else
+                {
+                    existingPost = await dbContext.Posts
+                        .FirstOrDefaultAsync(p => p.Id == post.PostId, stoppingToken);
+                }
+
+                if (existingPost is null)
+                {
+                    return;
+                }
+
+                existingPost.Embedding = embedding;
+                await dbContext.SaveChangesAsync(stoppingToken);
             }
             catch (Exception ex)
             {

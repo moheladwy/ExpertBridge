@@ -54,7 +54,24 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                         PostId = p.Id,
                         AuthorId = p.AuthorId,
                         Content = p.Content,
-                        Title = p.Title
+                        Title = p.Title,
+                        IsJobPosting = false,
+                    })
+                    .ForEachAsync(async post =>
+                        await _postProcessingPipelineChannel.WriteAsync(post, stoppingToken),
+                        stoppingToken
+                    );
+
+                await dbContext.JobPostings
+                    .AsNoTracking()
+                    .Where(p => !p.IsProcessed)
+                    .Select(p => new PostProcessingPipelineMessage
+                    {
+                        PostId = p.Id,
+                        AuthorId = p.AuthorId,
+                        Content = p.Content,
+                        Title = p.Title,
+                        IsJobPosting = true,
                     })
                     .ForEachAsync(async post =>
                         await _postProcessingPipelineChannel.WriteAsync(post, stoppingToken),

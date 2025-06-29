@@ -1,6 +1,6 @@
 using System;
 using ExpertBridge.Core.Entities.Profiles;
-namespace ExpertBridge.Core.Entities.JobApplication;
+namespace ExpertBridge.Core.Entities.JobApplications;
 
 public class JobApplication
 {

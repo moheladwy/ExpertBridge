@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Threading.Channels;
+using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.ModerationReports;
@@ -120,7 +121,7 @@ namespace ExpertBridge.Notifications
             });
         }
 
-        public async Task NotifyPostDeletedAsync(Post post, ModerationReport report)
+        public async Task NotifyPostDeletedAsync(IRecommendableContent post, ModerationReport report)
         {
             await NotifyInternalAsync(new Notification
             {

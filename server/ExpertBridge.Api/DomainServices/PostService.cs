@@ -34,7 +34,7 @@ namespace ExpertBridge.Api.DomainServices
         private readonly UserService _userService; // Or your specific UserService implementation
         private readonly MediaAttachmentService _mediaService;
         private readonly NotificationFacade _notificationFacade;
-        private readonly Channel<PostProcessingPipelineMessage> _postProcessingChannel;
+        private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingChannel;
         private readonly ILogger<PostService> _logger;
 
         public PostService(
@@ -49,7 +49,7 @@ namespace ExpertBridge.Api.DomainServices
             _userService = userService;
             _mediaService = mediaService;
             _notificationFacade = notificationFacade;
-            _postProcessingChannel = postProcessingChannel;
+            _postProcessingChannel = postProcessingChannel.Writer;
             _logger = logger;
         }
 
@@ -79,7 +79,7 @@ namespace ExpertBridge.Api.DomainServices
                 PostMedia createPostMediaFunc(MediaObjectRequest mediaReq, Post parentPost) => new PostMedia
                 {
                     Post = parentPost,
-                    Name = SanitizeMediaName(parentPost.Title), // Helper from CommentService or shared
+                    Name = _mediaService.SanitizeMediaName(parentPost.Title), // Helper from CommentService or shared
                     Type = mediaReq.Type,
                     Key = mediaReq.Key,
                 };
@@ -99,12 +99,13 @@ namespace ExpertBridge.Api.DomainServices
             await _dbContext.SaveChangesAsync();
 
             // Send to post processing pipeline
-            await _postProcessingChannel.Writer.WriteAsync(new PostProcessingPipelineMessage
+            await _postProcessingChannel.WriteAsync(new PostProcessingPipelineMessage
             {
                 AuthorId = post.AuthorId, // Use post.AuthorId from the saved entity
                 Content = post.Content,
                 PostId = post.Id,       // Use post.Id from the saved entity
                 Title = post.Title,
+                IsJobPosting = false,
             });
 
             // No notifications for new post creation in the original controller, but if you had them:
@@ -126,17 +127,6 @@ namespace ExpertBridge.Api.DomainServices
             //}
 
             return post.SelectPostResponseFromFullPost(authorProfile.Id);
-        }
-
-        private string SanitizeMediaName(string contentHint, int maxLength = 50) // Shared helper
-        {
-            if (string.IsNullOrWhiteSpace(contentHint)) return "UntitledMedia";
-            var name = contentHint.Trim();
-            if (name.Length > maxLength)
-            {
-                name = name.Substring(0, maxLength);
-            }
-            return name;
         }
 
         // Implement other IPostService methods...
@@ -380,12 +370,13 @@ namespace ExpertBridge.Api.DomainServices
                 // Send to post processing pipeline if content changed
                 if (!string.IsNullOrWhiteSpace(request.Content)) // Only if content changed, title change might not need this pipeline
                 {
-                    await _postProcessingChannel.Writer.WriteAsync(new PostProcessingPipelineMessage
+                    await _postProcessingChannel.WriteAsync(new PostProcessingPipelineMessage
                     {
                         AuthorId = post.AuthorId,
                         Content = post.Content,
                         PostId = post.Id,
                         Title = post.Title, // Send current title
+                        IsJobPosting = false, 
                     });
                 }
             }
