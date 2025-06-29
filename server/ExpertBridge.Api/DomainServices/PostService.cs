@@ -404,9 +404,7 @@ namespace ExpertBridge.Api.DomainServices
             ArgumentException.ThrowIfNullOrEmpty(postId);
             ArgumentNullException.ThrowIfNull(editorProfile);
 
-            var post = await _dbContext.Posts
-                .FirstOrDefaultAsync(p => p.Id == postId);
-
+            var post = await _dbContext.Posts.FindAsync(postId);
             if (post == null)
             {
                 throw new PostNotFoundException($"Post with id={postId} was not found for editing.");
@@ -433,6 +431,7 @@ namespace ExpertBridge.Api.DomainServices
 
             if (changed)
             {
+                post.UpdatedAt = DateTime.UtcNow; // Update the last modified time
                 await _dbContext.SaveChangesAsync();
 
                 // Send to post processing pipeline if content changed

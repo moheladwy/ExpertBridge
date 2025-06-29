@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Post } from "@/features/posts/types";
 import CommentsSection from "../comments/CommentsSection";
@@ -31,6 +31,7 @@ import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
 import { useGetSimilarPostsQuery } from "@/features/posts/postsSlice";
 import SimilarPosts from "./SimilarPosts";
+import EditPostModal from "./EditPostModal";
 
 interface FullPostWithCommentsProps {
   post: Post;
@@ -42,6 +43,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
   deletePost,
 }) => {
   const [, , , , userProfile] = useIsUserLoggedIn();
+  const memoizedPost = useMemo(() => post, [post]);
 
   const {
     data: similarPosts,
@@ -51,6 +53,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 
   // confirm delete dialog
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleCopyLink = () => {
@@ -98,6 +101,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
                         <Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
+                        {/* Copy */}
                         <DropdownMenuItem>
                           <div
                             className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
@@ -107,6 +111,18 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
                             <h6>Copy link</h6>
                           </div>
                         </DropdownMenuItem>
+
+                        {userProfile?.id == post.author.id ? (
+                          <DropdownMenuItem>
+                            <div
+                              className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+                              onClick={() => setIsEditModalOpen(true)}
+                            >
+                              <Link2 className="w-5" />
+                              <h6>Edit post</h6>
+                            </div>
+                          </DropdownMenuItem>
+                        ) : null}
 
                         {/* Delete */}
                         {post.author.id === userProfile?.id && (
@@ -219,6 +235,13 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
                   {/* Comments */}
                   <CommentsSection postId={post.id} />
                 </div>
+                {userProfile?.id == post.author.id ? (
+                  <EditPostModal
+                    post={memoizedPost}
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                  />
+                ) : null}
               </div>
             ) : (
               <p className="dark:text-white">Post not found.</p>

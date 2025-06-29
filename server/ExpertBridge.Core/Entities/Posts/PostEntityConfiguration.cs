@@ -33,6 +33,9 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired(false)
             .ValueGeneratedOnAddOrUpdate();
 
+        builder.Property(x => x.UpdatedAt)
+            .IsRequired(false);
+
         builder.Property(x => x.IsDeleted)
             .IsRequired();
 
