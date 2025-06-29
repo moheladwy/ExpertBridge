@@ -1,7 +1,4 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using System.Text;
+﻿using System.Text;
 using System.Threading.Channels;
 using ExpertBridge.Api.DataGenerator;
 using ExpertBridge.Api.Models.IPC;
@@ -18,11 +15,12 @@ using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
+
 // For logging
 // Assuming PostQueries exist here
 // For PostProcessingPipelineMessage
 // For NotificationFacade
-
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
 
@@ -36,6 +34,7 @@ namespace ExpertBridge.Api.DomainServices
         private readonly NotificationFacade _notificationFacade;
         private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingChannel;
         private readonly ILogger<PostService> _logger;
+        private readonly HybridCache _cache; // Assuming you have a caching layer
 
         public PostService(
             ExpertBridgeDbContext dbContext,
@@ -43,7 +42,8 @@ namespace ExpertBridge.Api.DomainServices
             MediaAttachmentService mediaService,
             NotificationFacade notificationFacade,
             Channel<PostProcessingPipelineMessage> postProcessingChannel,
-            ILogger<PostService> logger)
+            ILogger<PostService> logger,
+            HybridCache cache)
         {
             _dbContext = dbContext;
             _userService = userService;
@@ -51,6 +51,7 @@ namespace ExpertBridge.Api.DomainServices
             _notificationFacade = notificationFacade;
             _postProcessingChannel = postProcessingChannel.Writer;
             _logger = logger;
+            _cache = cache;
         }
 
         public async Task<PostResponse> CreatePostAsync(CreatePostRequest request, Profile authorProfile)
@@ -140,6 +141,52 @@ namespace ExpertBridge.Api.DomainServices
                 .FirstOrDefaultAsync();
 
             return postEntity; // Null if not found, controller handles 404
+        }
+
+        public async Task<List<SimilarPostsResponse>> GetSimilarPostsAsync(
+                string postId,
+                int? limit = 5,
+                CancellationToken cancellationToken = default)
+        {
+            var cacheKey = $"SimilarPosts_{postId}_{limit}";
+
+            var similarPosts = await _cache.GetOrCreateAsync<List<SimilarPostsResponse>>(
+                cacheKey,
+                async (entry) =>
+                {
+                    var currentPostEmbeddings = await _dbContext.Posts
+                        .Where(p => p.Id == postId && p.Embedding != null)
+                        .Select(p => p.Embedding)
+                        .FirstOrDefaultAsync(entry);
+
+                    if (currentPostEmbeddings == null)
+                    {
+                        _logger.LogWarning("No embeddings found for post {PostId} when fetching similar posts.", postId);
+                        return []; // Return empty list if no embeddings found
+                    }
+
+                    var similarPostsQuery = await _dbContext.Posts
+                        .AsNoTracking()
+                        .Where(p => p.Id != postId && p.Embedding != null)
+                        .OrderBy(p => p.Embedding.CosineDistance(currentPostEmbeddings))
+                        .Take(limit ?? 5) // Limit to the specified number of similar posts or default to 5
+                        .Include(p => p.Author) // Include author for response mapping
+                        .Select(p => new SimilarPostsResponse
+                        {
+                            PostId = p.Id,
+                            Title = p.Title,
+                            Content = p.Content,
+                            AuthorName = $"{p.Author.FirstName} {p.Author.LastName}",
+                            CreatedAt = p.CreatedAt,
+                            SimilarityScore = p.Embedding.CosineDistance(currentPostEmbeddings)
+                        })
+                        .ToListAsync(entry);
+
+                    return similarPostsQuery;
+                },
+                cancellationToken: cancellationToken);
+
+            return similarPosts;
         }
 
         public async Task<List<PostResponse>> GetAllPostsAsync(string? currentMaybeUserProfileId)
@@ -336,9 +383,7 @@ namespace ExpertBridge.Api.DomainServices
             ArgumentException.ThrowIfNullOrEmpty(postId);
             ArgumentNullException.ThrowIfNull(editorProfile);
 
-            var post = await _dbContext.Posts
-                .FirstOrDefaultAsync(p => p.Id == postId);
-
+            var post = await _dbContext.Posts.FindAsync(postId);
             if (post == null)
             {
                 throw new PostNotFoundException($"Post with id={postId} was not found for editing.");
@@ -365,6 +410,7 @@ namespace ExpertBridge.Api.DomainServices
 
             if (changed)
             {
+                post.UpdatedAt = DateTime.UtcNow; // Update the last modified time
                 await _dbContext.SaveChangesAsync();
 
                 // Send to post processing pipeline if content changed

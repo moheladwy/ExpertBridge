@@ -26,21 +26,21 @@ const baseQueryWithRetry = retry(
 		// bail out of re-tries immediately if unauthorized,
 		// because we know successive re-retries would be redundant
 		if (
-			result.error?.status === 404
-			|| result.error?.status === 400
-			|| result.error?.status === 401
-			|| result.error?.status === 429 // too many requests
-			|| result.error?.status === 500
+			result.error?.status === 404 ||
+			result.error?.status === 400 ||
+			result.error?.status === 401 ||
+			result.error?.status === 429 || // too many requests
+			result.error?.status === 500
 		) {
-			retry.fail(result.error, result.meta)
+			retry.fail(result.error, result.meta);
 		}
 
-		return result
+		return result;
 	},
 	{
 		maxRetries: 4,
-	},
-)
+	}
+);
 
 export const apiSlice = createApi({
 	reducerPath: "api",
@@ -53,6 +53,7 @@ export const apiSlice = createApi({
 		"Comment",
 		"Profile",
 		"Tag",
+		"SimilarPosts",
 	],
 
 	keepUnusedDataFor: 600,

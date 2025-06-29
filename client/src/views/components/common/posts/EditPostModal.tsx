@@ -5,17 +5,34 @@ import { Post } from "@/features/posts/types";
 import { Button } from "@/views/components/ui/button";
 import { Input } from "@/views/components/ui/input";
 import { Textarea } from "@/views/components/ui/textarea";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/views/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/views/components/ui/card";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
+import { Separator } from "@/views/components/ui/separator";
+import { Box, Typography, TextField, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+// Character limits
+const TITLE_MAX_LENGTH = 256;
+const BODY_MAX_LENGTH = 5000;
 
 const editPostSchema = z.object({
-  title: z.string()
+  title: z
+    .string()
     .min(3, "Title must be at least 3 characters")
-    .max(256, "Title must be less than 256 characters"),
-  content: z.string()
+    .max(TITLE_MAX_LENGTH, "Title must be less than 256 characters"),
+  content: z
+    .string()
     .min(3, "Content must be at least 3 characters")
-    .max(5000, "Content must be less than 5000 characters"),
+    .max(BODY_MAX_LENGTH, "Content must be less than 5000 characters"),
 });
 
 type EditPostFormData = z.infer<typeof editPostSchema>;
@@ -26,7 +43,11 @@ interface EditPostModalProps {
   onClose: () => void;
 }
 
-const EditPostModal: React.FC<EditPostModalProps> = ({ post, isOpen, onClose }) => {
+const EditPostModal: React.FC<EditPostModalProps> = ({
+  post,
+  isOpen,
+  onClose,
+}) => {
   const [formData, setFormData] = useState<EditPostFormData>({
     title: post.title,
     content: post.content || "",
@@ -45,7 +66,8 @@ const EditPostModal: React.FC<EditPostModalProps> = ({ post, isOpen, onClose }) 
       if (error instanceof z.ZodError) {
         const newErrors: { [key: string]: string } = {};
         error.errors.forEach((err) => {
-          if (err.path.length > 0) { // Check path length
+          if (err.path.length > 0) {
+            // Check path length
             newErrors[err.path[0]] = err.message;
           }
         });
@@ -58,14 +80,23 @@ const EditPostModal: React.FC<EditPostModalProps> = ({ post, isOpen, onClose }) 
   // Re-validate whenever formData changes
   useEffect(() => {
     validate();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData]); // Dependency array ensures validation runs when formData updates
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    // No need to call validate() here anymore, useEffect handles it
+  // Handle title input with character limit
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (newValue.length <= TITLE_MAX_LENGTH) {
+      setFormData({ ...formData, title: newValue });
+    }
+  };
+
+  // Handle content input with character limit
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    if (newValue.length <= BODY_MAX_LENGTH) {
+      setFormData({ ...formData, content: newValue });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,72 +120,151 @@ const EditPostModal: React.FC<EditPostModalProps> = ({ post, isOpen, onClose }) 
     }
   };
 
+  const [isLoggedIn, , , authUser, userProfile] = useIsUserLoggedIn();
+
+  const titleCharsLeft = TITLE_MAX_LENGTH - formData.title.length;
+  const bodyCharsLeft = BODY_MAX_LENGTH - formData.content.length;
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
       {/* Added backdrop-blur-sm for better background effect */}
-      <Card className="w-full max-w-lg mx-auto"> {/* Increased max-width slightly */}
+      <Card className="w-full max-w-lg mx-auto dark:bg-gray-800 dark:text-white relative">
+        {/* Close Button */}
+        <div className="absolute top-3 right-3 z-10">
+          <IconButton onClick={onClose}>
+            <CloseIcon className="dark:text-gray-300" />
+          </IconButton>
+        </div>
+
         <CardHeader>
           {/* Centered, larger, and bold title */}
-          <CardTitle className="text-center text-2xl font-bold">
+          <CardTitle className="text-center text-2xl font-bold dark:text-white">
             Edit Post
           </CardTitle>
+          <Separator className="dark:bg-gray-600 mt-2" />
+
+          {/* User Profile Info */}
+          <Box className="flex items-center mb-2 mt-2">
+            <div className="mr-2">
+              {userProfile?.profilePictureUrl ? (
+                <img
+                  src={userProfile.profilePictureUrl}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                  alt="Profile"
+                />
+              ) : (
+                <img
+                  src={defaultProfile}
+                  alt="Profile Picture"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              )}
+            </div>
+            <Typography
+              variant="subtitle1"
+              className="font-medium dark:text-white"
+            >
+              {authUser?.displayName || "User"}
+              <span className="text-gray-500 dark:text-gray-400 block text-sm">
+                {` @${userProfile?.username || "username"}`}
+              </span>
+            </Typography>
+          </Box>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="title" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Title
-              </label>
-              <Input
-                id="title"
-                name="title"
+              <TextField
+                fullWidth
+                required
+                label="Title"
+                variant="outlined"
                 value={formData.title}
-                onChange={handleChange}
+                onChange={handleTitleChange}
+                error={!!errors.title}
+                helperText={errors.title || ""}
                 disabled={isLoading}
-                className={errors.title ? "border-red-500 focus-visible:ring-red-500" : ""} // Added focus style for error
-                aria-invalid={!!errors.title} // Accessibility improvement
-                aria-describedby={errors.title ? "title-error" : undefined} // Accessibility improvement
-                dir="auto"
+                slotProps={{
+                  htmlInput: {
+                    maxLength: TITLE_MAX_LENGTH,
+                    dir: "auto",
+                    className: "text-lg dark:text-white",
+                  },
+                }}
+                className="dark:bg-gray-700 dark:rounded"
+                InputLabelProps={{
+                  className: "dark:text-gray-300",
+                }}
               />
-              {errors.title && (
-                <p id="title-error" dir="auto" className="text-red-500 text-sm">{errors.title}</p> // Added id for aria-describedby
+              {!errors.title && (
+                <div className="flex justify-end mt-1">
+                  <Typography
+                    variant="caption"
+                    color={titleCharsLeft < 1 ? "error" : "green"}
+                    className={
+                      titleCharsLeft < 1
+                        ? "text-red-500"
+                        : "text-green-500 dark:text-green-400"
+                    }
+                  >
+                    {titleCharsLeft} characters left
+                  </Typography>
+                </div>
               )}
             </div>
             <div className="space-y-2">
-              <label htmlFor="content" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Content
-              </label>
-              <Textarea
-                id="content"
-                name="content"
+              <TextField
+                fullWidth
+                required
+                label="Describe Your problem"
+                variant="outlined"
+                multiline
+                rows={7}
                 value={formData.content}
-                onChange={handleChange}
+                onChange={handleContentChange}
+                error={!!errors.content}
+                helperText={errors.content || ""}
                 disabled={isLoading}
-                rows={6} // Slightly increased rows
-                className={errors.content ? "border-red-500 focus-visible:ring-red-500" : ""} // Added focus style for error
-                aria-invalid={!!errors.content} // Accessibility improvement
-                aria-describedby={errors.content ? "content-error" : undefined} // Accessibility improvement
-                dir="auto"
+                slotProps={{
+                  htmlInput: {
+                    maxLength: BODY_MAX_LENGTH,
+                    dir: "auto",
+                    className: "text-md dark:text-white",
+                  },
+                }}
+                className="dark:bg-gray-700 dark:rounded"
+                InputLabelProps={{
+                  className: "dark:text-gray-300",
+                }}
               />
-              {errors.content && (
-                <p id="content-error" className="text-red-500 text-sm">{errors.content}</p> // Added id for aria-describedby
+              {!errors.content && (
+                <div className="flex justify-end mt-1">
+                  <Typography
+                    variant="caption"
+                    color={bodyCharsLeft < 1 ? "error" : "green"}
+                    className={
+                      bodyCharsLeft < 1
+                        ? "text-red-500"
+                        : "text-green-500 dark:text-green-400"
+                    }
+                  >
+                    {bodyCharsLeft} characters left
+                  </Typography>
+                </div>
               )}
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end space-x-3"> {/* Increased space */}
-            <Button
-              type="button"
-              variant="destructive" // Changed variant to destructive for red styling
-              onClick={onClose}
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
+          <CardFooter className="flex justify-center dark:bg-gray-800">
             <Button
               type="submit"
-              disabled={isLoading || Object.keys(errors).length > 0} // Disability logic remains the same, but `errors` state is now reactive
+              disabled={isLoading || Object.keys(errors).length > 0}
+              className="w-full py-6 dark:bg-blue-700 dark:hover:bg-blue-800 dark:text-white bg-[#162955] hover:bg-[#0e1c3b]"
             >
               {isLoading ? (
                 <>

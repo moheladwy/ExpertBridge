@@ -1,22 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Post } from "@/features/posts/types";
 import CommentsSection from "../comments/CommentsSection";
 import PostVoteButtons from "./PostVoteButtons";
-import ReactPlayer from "react-player";
-import { Modal } from "@mui/material";
-import { CircleArrowLeft } from 'lucide-react';
-import { Ellipsis } from 'lucide-react';
-import { Link2 } from 'lucide-react';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { CircleArrowLeft } from "lucide-react";
+import { Ellipsis } from "lucide-react";
+import { Link2 } from "lucide-react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/views/components/custom/dropdown-menu"
+} from "@/views/components/custom/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,176 +22,241 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/views/components/ui/alert-dialog"
+} from "@/views/components/ui/alert-dialog";
 
 import toast from "react-hot-toast";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
-import { useDeletePostMutation } from "@/features/posts/postsSlice";
-import TimeAgo from "../../custom/TimeAgo";
-import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg"
+import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
+import { useGetSimilarPostsQuery } from "@/features/posts/postsSlice";
+import SimilarPosts from "./SimilarPosts";
+import EditPostModal from "./EditPostModal";
 
 interface FullPostWithCommentsProps {
   post: Post;
   deletePost: (...args: any) => any;
 }
 
-const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({ post, deletePost }) => {
+const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
+  post,
+  deletePost,
+}) => {
   const [, , , , userProfile] = useIsUserLoggedIn();
+  const memoizedPost = useMemo(() => post, [post]);
 
-  // conferm delete dialog
+  const {
+    data: similarPosts,
+    error: similarPostsError,
+    isLoading: similarPostsLoading,
+  } = useGetSimilarPostsQuery(post.id, { skip: !post.id });
+
+  // confirm delete dialog
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleCopyLink = () => {
     const postUrl = `${window.location.origin}/feed/${post?.id}`;
-    navigator.clipboard.writeText(postUrl)
+    navigator.clipboard
+      .writeText(postUrl)
       .then(() => {
         toast.success("Link copied successfully");
       })
       .catch((err) => {
         toast.error("Failed to copy link");
+        console.error("Failed to copy link: ", err);
       });
-  }
+  };
 
   const handleDeletePost = async () => {
     deletePost(post.id);
     navigate("/home");
-  }
-
-
-  // if (!post) return <p>Post not found.</p>;
-
-  // console.log(post.isUpvoted);
+  };
 
   return (
-      <>
-        <div className="w-full flex justify-center">
-          <div className="w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
+    <>
+      <div className="w-full flex justify-center">
+        <div className="w-5/6 mx-auto py-4 flex gap-3 max-lg:flex-col max-sm:w-full">
+          {/* Main Post Content - Left Side */}
+          <div className="w-5/6 max-lg:w-full">
             {post ? (
-              <>
+              <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                    {/* Post Header */}
-                    <div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-600">
-                      {/* Back Icon */}
-                      <div onClick={() => {navigate(-1)}} className="cursor-pointer">
-                        <CircleArrowLeft className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
-                      </div>
+                  {/* Post Header */}
+                  <div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-600">
+                    {/* Back Icon */}
+                    <div
+                      onClick={() => {
+                        navigate(-1);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <CircleArrowLeft className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
+                    </div>
 
-                      {/* More */}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
+                    {/* More */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {/* Copy */}
+                        <DropdownMenuItem>
+                          <div
+                            className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+                            onClick={handleCopyLink}
+                          >
+                            <Link2 className="w-5" />
+                            <h6>Copy link</h6>
+                          </div>
+                        </DropdownMenuItem>
+
+                        {userProfile?.id === post.author.id ? (
                           <DropdownMenuItem>
-                            <div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer" onClick={handleCopyLink}>
+                            <div
+                              className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+                              onClick={() => setIsEditModalOpen(true)}
+                            >
                               <Link2 className="w-5" />
-                              <h6>Copy link</h6>
+                              <h6>Edit post</h6>
                             </div>
                           </DropdownMenuItem>
+                        ) : null}
 
-                          {/* Delete */}
-                          {post.author.id === userProfile?.id && (
-                              <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
-                                <div
-                                    className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
-                                >
-                                  <DeleteIcon className="w-5 text-red-700" />
-                                  <h6 className="text-red-700">
-                                    Delete post
-                                  </h6>
-                                </div>
-                              </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                        {/* Delete */}
+                        {post.author.id === userProfile?.id && (
+                          <DropdownMenuItem
+                            onClick={() => setShowDeleteDialog(true)}
+                          >
+                            <div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
+                              <DeleteIcon className="w-5 text-red-700" />
+                              <h6 className="text-red-700">Delete post</h6>
+                            </div>
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
-                      {/* Delete confermation dialog */}
-                      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete your question.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={() => {
-                                  handleDeletePost();
-                                  setShowDeleteDialog(false);
-                                }}
-                                className="bg-red-700 hover:bg-red-900">
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
+                    {/* Delete confermation dialog */}
+                    <AlertDialog
+                      open={showDeleteDialog}
+                      onOpenChange={setShowDeleteDialog}
+                    >
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your question.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => {
+                              handleDeletePost();
+                              setShowDeleteDialog(false);
+                            }}
+                            className="bg-red-700 hover:bg-red-900"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
 
-                    {/* Post */}
-                    <div className="flex flex-col justify-center gap-3">
-                      {/* Author Info */}
-                      <div className="flex items-center space-x-3">
+                  {/* Post */}
+                  <div className="flex flex-col justify-center gap-3">
+                    {/* Author Info */}
+                    <div className="flex items-center space-x-3">
+                      <Link to={`/profile/${post.author.id}`}>
+                        {post.author.profilePictureUrl ? (
+                          <img
+                            src={post.author.profilePictureUrl}
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        ) : (
+                          <img
+                            src={defaultProfile}
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        )}
+                      </Link>
+                      <div>
+                        {/* Name */}
                         <Link to={`/profile/${post.author.id}`}>
-                          {
-                            post.author.profilePictureUrl ?
-                                <img
-                                    src={post.author.profilePictureUrl}
-                                    width={40}
-                                    height={40}
-                                    className="rounded-full"
-                                />
-                                : <img
-                                    src={defaultProfile}
-                                    width={40}
-                                    height={40}
-                                    className="rounded-full"
-                                />
-                          }
+                          <h3 className="text-md font-semibold dark:text-white">
+                            {post.author.firstName + " " + post.author.lastName}
+                          </h3>
                         </Link>
-                        <div>
-                          {/* Name */}
-                          <Link to={`/profile/${post.author.id}`}>
-                            <h3 className="text-md font-semibold dark:text-white">{post.author.firstName + ' ' + post.author.lastName}</h3>
-                          </Link>
-                          {/* Publish Date */}
-                          <PostTimeStamp createdAt={post.createdAt} lastModified={post.lastModified} />
-                        </div>
+                        {/* Publish Date */}
+                        <PostTimeStamp
+                          createdAt={post.createdAt}
+                          lastModified={post.lastModified}
+                        />
                       </div>
                     </div>
-
-                    {/* Post Header */}
-                    <div className="break-words">
-                      <h2 className="text-lg font-bold text-gray-700 dark:text-gray-200 whitespace-pre-wrap" dir="auto">{post.title}</h2>
-                    </div>
-
-                    {/* Post Content */}
-                    <div className="break-words">
-                      <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap" dir="auto">{post.content}</p>
-                    </div>
-
-                    {/* Media */}
-                    <MediaCarousel medias={post.medias} />
-
-                    {/* Post Voting */}
-                    <PostVoteButtons post={post} />
-
-                    {/* Comments */}
-                    <CommentsSection postId={post.id} />
                   </div>
-              </>
-            )
-            :
+
+                  {/* Post Header */}
+                  <div className="break-words">
+                    <h2
+                      className="text-lg font-bold text-gray-700 dark:text-gray-200 whitespace-pre-wrap"
+                      dir="auto"
+                    >
+                      {post.title}
+                    </h2>
+                  </div>
+
+                  {/* Post Content */}
+                  <div className="break-words">
+                    <p
+                      className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap"
+                      dir="auto"
+                    >
+                      {post.content}
+                    </p>
+                  </div>
+
+                  {/* Media */}
+                  <MediaCarousel medias={post.medias} />
+
+                  {/* Post Voting */}
+                  <PostVoteButtons post={post} />
+
+                  {/* Comments */}
+                  <CommentsSection postId={post.id} />
+                </div>
+                {userProfile?.id == post.author.id ? (
+                  <EditPostModal
+                    post={memoizedPost}
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                  />
+                ) : null}
+              </div>
+            ) : (
               <p className="dark:text-white">Post not found.</p>
-            }
+            )}
           </div>
+
+          {/* Similar Posts - Right Side */}
+          {post && (
+            <div className="w-1/6 max-lg:w-full">
+              <SimilarPosts currentPostId={post.id} />
+            </div>
+          )}
         </div>
-      </>
+      </div>
+    </>
   );
 };
 

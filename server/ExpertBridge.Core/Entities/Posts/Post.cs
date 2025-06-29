@@ -24,6 +24,10 @@ public class Post : BaseModel, ISoftDeletable, IRecommendableContent
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }    
 
+    // this is the date when the author updated the post last time.
+    // it is different from LastModified, which is set by the system.
+    public DateTime? UpdatedAt { get; set; }
+
     // [Column(TypeName = "vector(1024)")]
     public Vector? Embedding { get; set; }
 
