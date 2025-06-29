@@ -24,8 +24,8 @@ public class Post : BaseModel, ISoftDeletable
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
 
-    // this is the date when the post was updated last time by the author
-    // it is different from LastModified which is set by the system
+    // this is the date when the author updated the post last time.
+    // it is different from LastModified, which is set by the system.
     public DateTime? UpdatedAt { get; set; }
 
     // [Column(TypeName = "vector(1024)")]
