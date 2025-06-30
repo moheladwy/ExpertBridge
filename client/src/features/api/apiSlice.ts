@@ -54,6 +54,8 @@ export const apiSlice = createApi({
 		"Profile",
 		"Tag",
 		"SimilarPosts",
+		"SimilarJobs",
+		"JobPosting",
 	],
 
 	keepUnusedDataFor: 600,

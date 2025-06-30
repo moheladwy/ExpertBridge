@@ -3,18 +3,21 @@ using System;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
 
 #nullable disable
 
-namespace ExpertBridge.Data.Migrations
+namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    partial class ExpertBridgeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630141223_ModifyCommentEntityAddJobPostingId")]
+    partial class ModifyCommentEntityAddJobPostingId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

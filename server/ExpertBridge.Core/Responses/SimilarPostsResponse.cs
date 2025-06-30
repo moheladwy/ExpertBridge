@@ -8,5 +8,5 @@ public class SimilarPostsResponse
     public string Content { get; set; }
     public string AuthorName { get; set; }
     public DateTime? CreatedAt { get; set; }
-    public double SimilarityScore { get; set; }
+    public double RelevanceScore { get; set; }
 }

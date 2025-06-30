@@ -79,6 +79,7 @@ const Feed = ({ startingPost = { id: null } }) => {
   return (
     <div className="flex flex-col w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full dark:bg-gray-900 dark:text-white">
       <CreatePostModal />
+      
       <div className="flex justify-center">
         <ToggleButtonGroup
           color="primary"

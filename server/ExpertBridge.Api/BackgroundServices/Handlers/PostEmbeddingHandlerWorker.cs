@@ -2,13 +2,17 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 
+using System.Composition;
 using System.Threading.Channels;
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Notifications;
 using Microsoft.EntityFrameworkCore;
+using Pgvector.EntityFrameworkCore;
 using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers
@@ -65,6 +69,21 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
 
                 existingPost.Embedding = embedding;
                 await dbContext.SaveChangesAsync(stoppingToken);
+
+                if (post.IsJobPosting)
+                {
+                    // CONSIDER! Not the most effecient query due to the duplicate calculation of CosineDistance.
+                    // But should not be that heavy on the database considering the relatively small number of users
+                    // compared to the number of posts.
+
+                    var candidates = await dbContext.Profiles
+                        .Where(p => p.UserInterestEmbedding != null && embedding.CosineDistance(p.UserInterestEmbedding) < 1.0)
+                        .OrderBy(p => embedding.CosineDistance(p.UserInterestEmbedding))
+                        .ToListAsync(stoppingToken);
+
+                    var notifications = scope.ServiceProvider.GetRequiredService<NotificationFacade>();
+                    await notifications.NotifyJobMatchAsync((JobPosting)existingPost!, candidates);
+                }
             }
             catch (Exception ex)
             {

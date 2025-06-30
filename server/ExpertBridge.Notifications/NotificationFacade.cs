@@ -5,10 +5,13 @@ using System.Threading.Channels;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
+using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Notifications.Models.IPC;
 
 namespace ExpertBridge.Notifications
@@ -38,9 +41,9 @@ namespace ExpertBridge.Notifications
             {
                 await NotifyInternalAsync(new Notification
                 {
-                    RecipientId = comment.Post.AuthorId,
+                    RecipientId = comment.Post?.AuthorId ?? comment.JobPosting?.AuthorId,
                     Message = $"{comment.Author.FirstName} commented on your post: {comment.Content}",
-                    ActionUrl = $"/posts/{comment.PostId}/#comment-{comment.Id}",
+                    ActionUrl = $"/{(comment.PostId != null ? "posts" : "jobPostings")}/{comment.PostId ?? comment.JobPostingId}/#comment-{comment.Id}",
                     IconUrl = comment.Author.ProfilePictureUrl,
                     IconActionUrl = $"/profiles/{comment.AuthorId}",
                     SenderId = comment.AuthorId,
@@ -55,9 +58,9 @@ namespace ExpertBridge.Notifications
                 // Notify post owner
                 new Notification
                 {
-                    RecipientId = comment.Post.AuthorId,
+                    RecipientId = comment.Post?.AuthorId ?? comment.JobPosting?.AuthorId,
                     Message = $"{comment.Author.FirstName} replied to a comment on your post: {comment.Content}",
-                    ActionUrl = $"/posts/{comment.PostId}/#comment-{comment.Id}",
+                    ActionUrl = $"/{(comment.PostId != null ? "posts" : "jobPostings")}/{comment.PostId ?? comment.JobPostingId}/#comment-{comment.Id}",
                     IconUrl = comment.Author.ProfilePictureUrl,
                     IconActionUrl = $"/profiles/{comment.AuthorId}",
                     SenderId = comment.AuthorId,
@@ -70,8 +73,8 @@ namespace ExpertBridge.Notifications
                 notifications.Add(new Notification
                 {
                     RecipientId = comment.ParentComment.AuthorId,
-                    Message = $"{comment.Author.FirstName} replied to you comment: {comment.Content}",
-                    ActionUrl = $"/posts/{comment.PostId}/#comment-{comment.Id}",
+                    Message = $"{comment.Author.FirstName} replied to your comment: {comment.Content}",
+                    ActionUrl = $"/{(comment.PostId != null ? "posts" : "jobPostings")}/{comment.PostId ?? comment.JobPostingId}/#comment-{comment.Id}",
                     IconUrl = comment.Author.ProfilePictureUrl,
                     IconActionUrl = $"/profiles/{comment.AuthorId}",
                     SenderId = comment.AuthorId,
@@ -89,7 +92,7 @@ namespace ExpertBridge.Notifications
             {
                 RecipientId = vote.Comment.AuthorId,
                 Message = $"Your comment \"{vote.Comment.Content}\" recieved a new vote",
-                ActionUrl = $"/posts/{vote.Comment.PostId}/#comment-{vote.Comment.Id}",
+                ActionUrl = $"{(vote.Comment.PostId != null ? "posts" : "jobPostings")}/{vote.Comment.PostId ?? vote.Comment.JobPostingId}/#comment-{vote.Comment.Id}",
                 IconUrl = vote.Comment.Author.ProfilePictureUrl,
                 IconActionUrl = $"/profile",
                 SenderId = vote.ProfileId,
@@ -106,6 +109,21 @@ namespace ExpertBridge.Notifications
                 Message = $"Your post \"{vote.Post.Title}\" recieved a new vote",
                 ActionUrl = $"/posts/{vote.Post.Id}",
                 IconUrl = vote.Post.Author.ProfilePictureUrl,
+                IconActionUrl = $"/profile",
+                SenderId = vote.ProfileId,
+            });
+        }
+
+        public async Task NotifyJobPostingVotedAsync(JobPostingVote vote)
+        {
+            ArgumentNullException.ThrowIfNull(vote);
+
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = vote.JobPosting.AuthorId,
+                Message = $"Your job \"{vote.JobPosting.Title}\" recieved a new vote",
+                ActionUrl = $"/job/{vote.JobPosting.Id}",
+                IconUrl = vote.JobPosting.Author.ProfilePictureUrl,
                 IconActionUrl = $"/profile",
                 SenderId = vote.ProfileId,
             });
@@ -129,6 +147,21 @@ namespace ExpertBridge.Notifications
                 Message = $"Your post was removed: {report.Reason}.\nPost: {post.Title}",
                 ActionUrl = $"/profile",
             });
+        }
+
+        public async Task NotifyJobMatchAsync(JobPosting jobPosting, List<Profile> candidates)
+        {
+            var notifications = candidates
+                .Where(p => p.Id != jobPosting.AuthorId)
+                .Select(candidate => new Notification
+                {
+                    RecipientId = candidate.Id,
+                    Message = $"Check this new job which matches your profile: {jobPosting.Title}",
+                    ActionUrl = $"/job/{jobPosting.Id}",
+                })
+                .ToList();
+
+            await NotifyInternalAsync(notifications);
         }
 
         private async Task NotifyInternalAsync(params List<Notification> notifications)

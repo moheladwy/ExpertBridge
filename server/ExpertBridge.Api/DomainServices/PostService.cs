@@ -178,7 +178,7 @@ namespace ExpertBridge.Api.DomainServices
                             Content = p.Content,
                             AuthorName = $"{p.Author.FirstName} {p.Author.LastName}",
                             CreatedAt = p.CreatedAt,
-                            SimilarityScore = p.Embedding.CosineDistance(currentPostEmbeddings)
+                            RelevanceScore = p.Embedding.CosineDistance(currentPostEmbeddings)
                         })
                         .ToListAsync(entry);
 

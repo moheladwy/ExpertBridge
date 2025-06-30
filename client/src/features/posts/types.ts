@@ -65,7 +65,7 @@ export interface SimilarPostsResponse {
 	content: string;
 	authorName: string;
 	createdAt?: Date;
-	similarityScore: number;
+	relevanceScore: number;
 }
 
 export interface AddPostRequest extends Pick<Post, "content" | "title"> {

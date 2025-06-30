@@ -122,7 +122,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 		}),
 
 		getSimilarPosts: builder.query<SimilarPostsResponse[], string>({
-			query: (postId) => `/posts/similar/${postId}?limit=5`,
+			query: (postId) => `/posts/${postId}/similar?limit=5`,
 			providesTags: (result, error, arg) => [
 				{ type: "SimilarPosts", id: arg },
 			],

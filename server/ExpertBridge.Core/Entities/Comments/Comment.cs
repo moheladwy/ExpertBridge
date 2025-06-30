@@ -20,6 +20,7 @@ public class Comment : BaseModel, ISoftDeletable
     public bool IsProcessed { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     // Navigation property
     public Profile Author { get; set; }

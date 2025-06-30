@@ -49,10 +49,14 @@ namespace ExpertBridge.Api.DomainServices
             var post = await _dbContext.Posts
                 .FirstOrDefaultAsync(p => p.Id == request.PostId);
 
-            if (post == null)
+            var jobPosting = await _dbContext.JobPostings
+                .FirstOrDefaultAsync(p => p.Id == request.JobPostingId);
+
+            if (post == null && jobPosting == null)
             {
                 // Consider throwing a more specific BadHttpRequestException or similar if PostId is invalid
-                throw new PostNotFoundException($"Post with id={request.PostId} was not found for comment creation.");
+                throw new PostNotFoundException(
+                    $"Post/JobPosting with id=({request.PostId})/({request.JobPostingId}) was not found for comment creation.");
             }
 
             Comment? parentComment = null;
@@ -74,7 +78,9 @@ namespace ExpertBridge.Api.DomainServices
                 ParentCommentId = request.ParentCommentId, // Can be null
                 ParentComment = parentComment, // Can be null
                 Post = post,
-                PostId = post.Id,
+                PostId = request.PostId,
+                JobPosting = jobPosting,
+                JobPostingId = request.JobPostingId,
             };
 
             await _dbContext.Comments.AddAsync(comment);
@@ -84,7 +90,7 @@ namespace ExpertBridge.Api.DomainServices
                 CommentMedia createCommentMediaFunc(MediaObjectRequest mediaReq, Comment c) => new CommentMedia
                 {
                     Comment = c,
-                    Name = SanitizeMediaName(c.Content), // Use a helper for safety
+                    Name = _mediaService.SanitizeMediaName(c.Content), // Use a helper for safety
                     Type = mediaReq.Type,
                     Key = mediaReq.Key,
                 };
@@ -154,6 +160,25 @@ namespace ExpertBridge.Api.DomainServices
 
             var commentEntities = await _dbContext.Comments
                 .FullyPopulatedCommentQuery(c => c.PostId == postId)
+                .SelectCommentResponseFromFullComment(userProfileId)
+                .ToListAsync();
+
+            return commentEntities;
+        }
+
+        public async Task<List<CommentResponse>> GetCommentsByJobAsync(string jobPostingId, string? userProfileId)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(jobPostingId, nameof(jobPostingId));
+
+            // Check if post exists - this is good practice to ensure valid foreign key
+            var jobExists = await _dbContext.JobPostings.AnyAsync(p => p.Id == jobPostingId);
+            if (!jobExists)
+            {
+                throw new PostNotFoundException($"JobPosting with id={jobPostingId} was not found for retrieving comments.");
+            }
+
+            var commentEntities = await _dbContext.Comments
+                .FullyPopulatedCommentQuery(c => c.JobPostingId == jobPostingId)
                 .SelectCommentResponseFromFullComment(userProfileId)
                 .ToListAsync();
 
@@ -341,18 +366,6 @@ namespace ExpertBridge.Api.DomainServices
             await _dbContext.SaveChangesAsync();
 
             return true;
-        }
-
-        private string SanitizeMediaName(string contentHint, int maxLength = 50)
-        {
-            if (string.IsNullOrWhiteSpace(contentHint)) return "Untitled";
-            var name = contentHint.Trim();
-            if (name.Length > maxLength)
-            {
-                name = name.Substring(0, maxLength);
-            }
-            // Further sanitization (e.g., remove invalid characters for filenames) if needed
-            return name;
         }
     }
 }

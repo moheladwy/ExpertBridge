@@ -106,7 +106,7 @@ public class PostsController : ControllerBase
     /// <exception cref="ArgumentException">Thrown when <paramref name="postId"/> is null or empty.</exception>
     /// <remarks>This endpoint allows anonymous access.</remarks>
     [AllowAnonymous]
-    [HttpGet("similar/{postId}")]
+    [HttpGet("{postId}/similar")]
     public async Task<List<SimilarPostsResponse>> GetSimilarPosts(
             [FromRoute] string postId,
             [FromQuery] int? limit = 5,

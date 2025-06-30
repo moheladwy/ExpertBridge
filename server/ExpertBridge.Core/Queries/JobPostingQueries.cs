@@ -1,0 +1,74 @@
+﻿// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core.Responses;
+using Microsoft.EntityFrameworkCore;
+
+namespace ExpertBridge.Core.Queries
+{
+    public static class JobPostingQueries
+    {
+        public static IQueryable<JobPosting> FullyPopulatedJobPostingQuery(this IQueryable<JobPosting> query)
+        {
+            return query
+                .AsNoTracking()
+                .Include(p => p.Author)
+                .Include(p => p.Votes)
+                .Include(p => p.Medias)
+                .Include(p => p.Comments)
+                //.ThenInclude(c => c.Author)
+                //.Include(p => p.Comments)
+                //.ThenInclude(c => c.Replies)
+                //.ThenInclude(c => c.Author)
+                ;
+        }
+
+        public static IQueryable<JobPosting> FullyPopulatedJobPostingQuery(this IQueryable<JobPosting> query,
+            Expression<Func<JobPosting, bool>> predicate)
+        {
+            return query
+                .FullyPopulatedJobPostingQuery()
+                .Where(predicate);
+        }
+
+        public static IQueryable<JobPostingResponse> SelectJopPostingResponseFromFullJobPosting(
+            this IQueryable<JobPosting> query,
+            string? userProfileId)
+        {
+            return query
+                .Select(p => SelectJopPostingResponseFromFullJobPosting(p, userProfileId));
+        }
+
+        public static JobPostingResponse SelectJopPostingResponseFromFullJobPosting(
+            this JobPosting p,
+            string? userProfileId)
+        {
+            return new JobPostingResponse
+            {
+                IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
+                IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
+
+                Title = p.Title,
+                Content = p.Content,
+                Area = p.Area,
+                Budget = p.Budget,
+                Author = p.Author.SelectAuthorResponseFromProfile(),
+                CreatedAt = p.CreatedAt.Value,
+                LastModified = p.UpdatedAt,
+                Id = p.Id,
+                Upvotes = p.Votes.Count(v => v.IsUpvote),
+                Downvotes = p.Votes.Count(v => !v.IsUpvote),
+                Comments = p.Comments.Count,
+                Medias = p.Medias.AsQueryable().SelectMediaObjectResponse().ToList(),
+            };
+        }
+    }
+}
