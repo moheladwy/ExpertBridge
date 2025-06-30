@@ -12,6 +12,8 @@ public class JobPostingValidatorTests
         Id = Guid.NewGuid().ToString(),
         AuthorId = Guid.NewGuid().ToString(),
         Title = "Job Posting Title",
+        Area = "Area Name",
+        Content = "Job Posting Content",
     };
 
     [Fact]

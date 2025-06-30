@@ -40,9 +40,9 @@ public class JobPostingEntityValidator : AbstractValidator<JobPosting>
             .MaximumLength(JobPostingEntityConstraints.MaxTitleLength).WithMessage($"Title must be less than {JobPostingEntityConstraints.MaxTitleLength} characters");
 
         RuleFor(x => x.Content)
-            .NotNull().WithMessage("Description is required")
-            .NotEmpty().WithMessage("Description is required")
-            .MaximumLength(JobPostingEntityConstraints.MaxContentLength).WithMessage($"Description must be less than {JobPostingEntityConstraints.MaxContentLength} characters");
+            .NotNull().WithMessage("Content is required")
+            .NotEmpty().WithMessage("Content is required")
+            .MaximumLength(JobPostingEntityConstraints.MaxContentLength).WithMessage($"Content must be less than {JobPostingEntityConstraints.MaxContentLength} characters");
 
         RuleFor(x => x.Budget)
             .NotNull().WithMessage("Budget is required")
