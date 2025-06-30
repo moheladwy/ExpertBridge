@@ -20,6 +20,7 @@ import { selectAllPosts, useGetPostsQuery } from "@/features/posts/postsSlice";
 import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
 import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
 import ProfileCommentCard from "@/views/components/common/comments/ProfileCommentCard";
+import { Comment } from "@/features/comments/types";
 
 const UserProfilePage = () => {
 	const { userId } = useParams<{ userId: string }>();
@@ -329,12 +330,12 @@ const UserProfilePage = () => {
 									className="space-y-4"
 								>
 									{userComments && userComments.length > 0 ? (
-										userComments.map((comment) => (
+										userComments.map((comment: Comment) => (
 											<ProfileCommentCard
 												key={comment.id}
 												comment={comment}
 												postTitle={getPostTitleById(
-													comment.postId
+													comment.postId!
 												)}
 											/>
 										))
