@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Channels;
+using ExpertBridge.Api.DataGenerator;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
@@ -31,7 +32,7 @@ namespace ExpertBridge.Api.DomainServices
         private readonly UserService _userService; // Or your specific UserService implementation
         private readonly MediaAttachmentService _mediaService;
         private readonly NotificationFacade _notificationFacade;
-        private readonly Channel<PostProcessingPipelineMessage> _postProcessingChannel;
+        private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingChannel;
         private readonly ILogger<PostService> _logger;
         private readonly HybridCache _cache; // Assuming you have a caching layer
 
@@ -48,7 +49,7 @@ namespace ExpertBridge.Api.DomainServices
             _userService = userService;
             _mediaService = mediaService;
             _notificationFacade = notificationFacade;
-            _postProcessingChannel = postProcessingChannel;
+            _postProcessingChannel = postProcessingChannel.Writer;
             _logger = logger;
             _cache = cache;
         }
@@ -79,7 +80,7 @@ namespace ExpertBridge.Api.DomainServices
                 PostMedia createPostMediaFunc(MediaObjectRequest mediaReq, Post parentPost) => new PostMedia
                 {
                     Post = parentPost,
-                    Name = SanitizeMediaName(parentPost.Title), // Helper from CommentService or shared
+                    Name = _mediaService.SanitizeMediaName(parentPost.Title), // Helper from CommentService or shared
                     Type = mediaReq.Type,
                     Key = mediaReq.Key,
                 };
@@ -99,12 +100,13 @@ namespace ExpertBridge.Api.DomainServices
             await _dbContext.SaveChangesAsync();
 
             // Send to post processing pipeline
-            await _postProcessingChannel.Writer.WriteAsync(new PostProcessingPipelineMessage
+            await _postProcessingChannel.WriteAsync(new PostProcessingPipelineMessage
             {
                 AuthorId = post.AuthorId, // Use post.AuthorId from the saved entity
                 Content = post.Content,
                 PostId = post.Id,       // Use post.Id from the saved entity
                 Title = post.Title,
+                IsJobPosting = false,
             });
 
             // No notifications for new post creation in the original controller, but if you had them:
@@ -126,17 +128,6 @@ namespace ExpertBridge.Api.DomainServices
             //}
 
             return post.SelectPostResponseFromFullPost(authorProfile.Id);
-        }
-
-        private string SanitizeMediaName(string contentHint, int maxLength = 50) // Shared helper
-        {
-            if (string.IsNullOrWhiteSpace(contentHint)) return "UntitledMedia";
-            var name = contentHint.Trim();
-            if (name.Length > maxLength)
-            {
-                name = name.Substring(0, maxLength);
-            }
-            return name;
         }
 
         // Implement other IPostService methods...
@@ -187,7 +178,7 @@ namespace ExpertBridge.Api.DomainServices
                             Content = p.Content,
                             AuthorName = $"{p.Author.FirstName} {p.Author.LastName}",
                             CreatedAt = p.CreatedAt,
-                            SimilarityScore = p.Embedding.CosineDistance(currentPostEmbeddings)
+                            RelevanceScore = p.Embedding.CosineDistance(currentPostEmbeddings)
                         })
                         .ToListAsync(entry);
 
@@ -225,17 +216,14 @@ namespace ExpertBridge.Api.DomainServices
 
             if (userEmbedding == null)
             {
-                var rand = new Random();
-                var sb = new StringBuilder();
-                sb.Append("0.1");
-
-                for (int i = 0; i < 1023; i++)
+                if (request.Embedding != null)
                 {
-                    double value = rand.NextDouble(); // gives value between 0.0 and 1.0
-                    sb.Append($",{value.ToString("0.#")}"); // optional: format to reduce decimal noise
+                    userEmbedding = new Vector(request.Embedding);
                 }
-
-                userEmbedding = new Vector(sb.ToString());
+                else
+                {
+                    userEmbedding = Generator.GenerateRandomVector(1024);
+                }
             }
 
             // 2. Build the query for posts
@@ -318,20 +306,19 @@ namespace ExpertBridge.Api.DomainServices
         {
             var userEmbedding = userProfile?.UserInterestEmbedding;
             var userProfileId = userProfile?.Id;
+            string? randomEmbedding = null; 
 
             if (userEmbedding == null)
             {
-                var rand = new Random();
-                var sb = new StringBuilder();
-                sb.Append("0.1");
-
-                for (int i = 0; i < 1023; i++)
+                if (request.Embedding != null)
                 {
-                    double value = rand.NextDouble(); // gives value between 0.0 and 1.0
-                    sb.Append($",{value.ToString("0.#")}"); // optional: format to reduce decimal noise
+                    userEmbedding = new Vector(request.Embedding);
                 }
-
-                userEmbedding = new Vector(sb.ToString());
+                else
+                {
+                    userEmbedding = Generator.GenerateRandomVector(1024);
+                    randomEmbedding = userEmbedding.ToString(); // Store the random embedding as a string for response
+                }
             }
 
             // 2. Build the query for posts
@@ -356,15 +343,6 @@ namespace ExpertBridge.Api.DomainServices
             // 3. Determine if there's a next page and prepare the results
             bool hasNextPage = postsWithDistance.Count > request.PageSize;
 
-            // 4. Map to DTOs
-            //var currentPagePostIds = currentPagePosts.Select(p => p.PostId);
-            //var postDtos = await _dbContext.Posts
-            //    .FullyPopulatedPostQuery(p => currentPagePostIds.Contains(p.Id))
-            //    .SelectPostResponseFromFullPost(userProfile?.Id)
-            //    .ToListAsync(cancellationToken);
-
-            //.Select(pd => pd.Post.SelectPostResponseFromFullPost(userProfile?.Id)).ToList();
-
             return new PostsCursorPaginatedResponse
             {
                 Posts = postsWithDistance
@@ -377,7 +355,8 @@ namespace ExpertBridge.Api.DomainServices
                 }).ToList(),
                 PageInfo = new PageInfoResponse
                 {
-                    HasNextPage = hasNextPage
+                    HasNextPage = hasNextPage,
+                    Embedding = randomEmbedding ?? request.Embedding
                 }
             };
         }
@@ -437,12 +416,13 @@ namespace ExpertBridge.Api.DomainServices
                 // Send to post processing pipeline if content changed
                 if (!string.IsNullOrWhiteSpace(request.Content)) // Only if content changed, title change might not need this pipeline
                 {
-                    await _postProcessingChannel.Writer.WriteAsync(new PostProcessingPipelineMessage
+                    await _postProcessingChannel.WriteAsync(new PostProcessingPipelineMessage
                     {
                         AuthorId = post.AuthorId,
                         Content = post.Content,
                         PostId = post.Id,
                         Title = post.Title, // Send current title
+                        IsJobPosting = false, 
                     });
                 }
             }

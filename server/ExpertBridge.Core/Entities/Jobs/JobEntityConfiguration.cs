@@ -62,12 +62,6 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .HasForeignKey(j => j.WorkerId)
             .IsRequired();
 
-        // JobPosting relationship (One-to-One)
-        builder.HasOne(j => j.JobPosting)
-            .WithOne(jp => jp.Job)
-            .HasForeignKey<Job>(j => j.JobPostingId)
-            .IsRequired(false);
-
         // JobReview (One-to-One)
         builder.HasOne(j => j.Review)
             .WithOne(r => r.Job)

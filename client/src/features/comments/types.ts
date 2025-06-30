@@ -5,10 +5,12 @@ export interface Comment {
   id: string;
   author: Author;
   authorId: string;
-  postId: string;
+  postId?: string;
+  jobPostingId?: string;
   parentCommentId?: string | null;
   content: string;
   createdAt: string;
+  lastModified?: string;
   upvotes: number;
   downvotes: number;
   isUpvoted: boolean;
@@ -21,10 +23,12 @@ export interface CommentResponse {
   id: string;
   author: Author;
   authorId: string;
-  postId: string;
+  postId?: string;
+  jobPostingId?: string;
   parentCommentId?: string | null;
   content: string;
   createdAt: Date;
+  lastModified?: Date;
   upvotes: number;
   downvotes: number;
   isUpvoted: boolean;
@@ -35,20 +39,23 @@ export interface CommentResponse {
 
 export interface AddCommentRequest {
   content: string;
-  postId: string;
+  postId?: string;
+  jobPostingId?: string;
   parentCommentId?: string | null;
   media?: PresignedUrl[];
 }
 
 export interface AddReplyRequest {
   content: string;
-  postId: string;
+  postId?: string;
+  jobPostingId?: string;
   parentCommentId: string;
 }
 
 export interface DeleteCommentRequest {
   commentId: string;
-  postId: string;
+  postId?: string;
+  jobPostingId?: string;
   authorId: string;
   parentCommentId?: string | null;
 }
@@ -58,5 +65,6 @@ export interface UpdateCommentRequest {
   content: string;
   authorId: string;
   parentCommentId?: string | null;
-  postId: string;
+  postId?: string;
+  jobPostingId?: string;
 }

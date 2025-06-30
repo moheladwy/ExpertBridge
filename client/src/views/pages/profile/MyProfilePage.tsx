@@ -26,6 +26,7 @@ import {
 	DialogPortal,
 } from "@/views/components/custom/dialog";
 import UpdateProfile from "@/views/components/common/profile/UpdateProfile";
+import { Comment } from "@/features/comments/types";
 
 const MyProfilePage = () => {
 	const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
@@ -335,12 +336,12 @@ const MyProfilePage = () => {
 									className="space-y-4"
 								>
 									{userComments && userComments.length > 0 ? (
-										userComments.map((comment) => (
+										userComments.map((comment: Comment) => (
 											<ProfileCommentCard
 												key={comment.id}
 												comment={comment}
 												postTitle={getPostTitleById(
-													comment.postId
+													comment.postId!
 												)}
 											/>
 										))

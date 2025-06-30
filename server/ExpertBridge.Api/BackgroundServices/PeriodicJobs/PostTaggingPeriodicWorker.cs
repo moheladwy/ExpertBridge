@@ -15,12 +15,12 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
     {
         private readonly IServiceProvider _services;
         private readonly ILogger<PostTaggingPeriodicWorker> _logger;
-        private readonly ChannelWriter<TagPostMessage> _postCreatedChannel;
+        private readonly ChannelWriter<TagPostMessage> _tagPostChannel;
 
         public PostTaggingPeriodicWorker(
             IServiceProvider services,
             ILogger<PostTaggingPeriodicWorker> logger,
-            Channel<TagPostMessage> postCreatedChannel)
+            Channel<TagPostMessage> tagPostChannel)
             : base(
                 PeriodicJobsStartDelays.PostTaggingPeriodicWorkerStartDelay,
                 nameof(PostTaggingPeriodicWorker),
@@ -28,7 +28,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
         {
             _services = services;
             _logger = logger;
-            _postCreatedChannel = postCreatedChannel.Writer;
+            _tagPostChannel = tagPostChannel.Writer;
         }
 
         protected override async Task ExecuteInternalAsync(CancellationToken stoppingToken)
@@ -38,34 +38,41 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 using var scope = _services.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
 
-                var unTaggedPosts = await dbContext.Posts
-                    .AsNoTracking()
-                    .Where(p => p.IsDeleted == false && !p.IsTagged && p.IsProcessed)
-                    .Select(p => new
-                    {
-                        p.Id,
-                        p.AuthorId,
-                        p.Content,
-                        p.Title
-                    })
-                    .ToListAsync(stoppingToken);
-
                 // That might look like a weird design decision.
                 // But look, the GROQ API we are using is limited, and thus
                 // we need to make sure that we are not sending too many requests
                 // The queing nature of the PostCreatedWorker allows us to send the requests
                 // one by one ensuring that we are not exceeding the rate limit.
 
-                foreach (var post in unTaggedPosts)
-                {
-                    await _postCreatedChannel.WriteAsync(new TagPostMessage
+                await dbContext.Posts
+                    .AsNoTracking()
+                    .Where(p => p.Embedding == null && p.IsProcessed)
+                    .Select(p => new TagPostMessage
                     {
-                        AuthorId = post.AuthorId,
-                        Content = post.Content,
-                        PostId = post.Id,
-                        Title = post.Title
-                    }, stoppingToken);
-                }
+                        PostId = p.Id,
+                        Content = p.Content,
+                        Title = p.Title,
+                        IsJobPosting = false,
+                    })
+                    .ForEachAsync(async post =>
+                        await _tagPostChannel.WriteAsync(post, stoppingToken),
+                        stoppingToken
+                    );
+
+                await dbContext.JobPostings
+                    .AsNoTracking()
+                    .Where(p => p.Embedding == null && p.IsProcessed)
+                    .Select(p => new TagPostMessage
+                    {
+                        PostId = p.Id,
+                        Content = p.Content,
+                        Title = p.Title,
+                        IsJobPosting = true,
+                    })
+                    .ForEachAsync(async post =>
+                        await _tagPostChannel.WriteAsync(post, stoppingToken),
+                        stoppingToken
+                    );
             }
             catch (Exception ex)
             {

@@ -60,8 +60,8 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
             .HasIndex(p => p.Embedding)
             .HasMethod(IndexMethods.Hnsw)
             .HasOperators("vector_cosine_ops")
-            //.HasStorageParameter("m", 32) // Example, tune this
-            //.HasStorageParameter("ef_construction", 120) // Example, tune this
+            .HasStorageParameter("m", 64) // Example, tune this
+            .HasStorageParameter("ef_construction", 128) // Example, tune this
             ;
     }
 }

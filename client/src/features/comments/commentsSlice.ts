@@ -7,6 +7,7 @@ import { request } from "http";
 const commentResponseTransformer = (c: CommentResponse): Comment => ({
   ...c,
   createdAt: new Date(c.createdAt).toISOString(),
+  lastModified: c.lastModified ? new Date(c.lastModified).toISOString() : undefined,
   replies: c.replies?.map(r => ({
     ...r,
     createdAt: new Date(r.createdAt).toISOString(),
@@ -17,11 +18,6 @@ const commentsResponseTransformer = (response: CommentResponse[]) => {
   return response.map(commentResponseTransformer);
 };
 
-// type CommentsState = EntityState<Comment, string>;
-// const commentsAdapter = createEntityAdapter<Comment>({
-//   sortComparer: (a, b) => a.createdAt.localeCompare(b.createdAt),
-// });
-// const initialState: CommentsState = commentsAdapter.getInitialState();
 
 export const commentsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -33,6 +29,15 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
       ],
 
+    }),
+
+    getCommentsByJobPostingId: builder.query<Comment[], string>({
+      query: (jobPostingId) => `/jobPostings/${jobPostingId}/comments`,
+      transformResponse: commentsResponseTransformer,
+      providesTags: (result = [], error, arg) => [
+        { type: 'Comment', id: `LIST-JOB/${arg}` } as const,
+        ...result.map(({ id }) => ({ type: 'Comment', id }) as const),
+      ],
     }),
 
     getCommentsByUserId: builder.query<Comment[], string>({
@@ -67,17 +72,30 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         try {
           const { data: createdComment } = await lifecycleApi.queryFulfilled;
           const getCommentsByPostPatchResult = lifecycleApi.dispatch(
-            commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId, (draft) => {
+            commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId!, (draft) => {
+              if (!createdComment.postId) return;
+
               Object.assign(draft, draft.concat(createdComment));
               console.log(draft);
             }),
           );
+
+          const getCommentsByJobPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData('getCommentsByJobPostingId', request.jobPostingId!, (draft) => {
+              if (!createdComment.jobPostingId) return;
+
+              Object.assign(draft, draft.concat(createdComment));
+              console.log(draft);
+            }),
+          );
+
           const getCommentsByUserPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.updateQueryData('getCommentsByUserId', createdComment.authorId, (draft) => {
               Object.assign(draft, draft.concat(createdComment));
               console.log(draft);
             }),
           );
+
           const getCommentPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.upsertQueryData('getComment', createdComment.id, createdComment),
           );
@@ -95,22 +113,24 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         body: initialComment,
       }),
       transformResponse: commentResponseTransformer,
-      // invalidatesTags: (result, error, arg) => [
-      //   { type: 'Comment', id: `LIST/${arg.postId}` },
-      //   { type: 'Comment', id: arg.parentCommentId },
-      // ],
-
-      // No need to invalidate this anymore 
-      // because the profile page does not show replies.
-
-      // invalidatesTags: (result, error, arg) => [
-      //   { type: 'Comment', id: `LIST/${result?.authorId}` }
-      // ],
       onQueryStarted: async (request, lifecycleApi) => {
         try {
           const { data: createdReply } = await lifecycleApi.queryFulfilled;
           const getCommentsByPostPatchResult = lifecycleApi.dispatch(
-            commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId, (draft) => {
+            commentsApiSlice.util.updateQueryData('getCommentsByPostId', request.postId!, (draft) => {
+              if (!createdReply.postId) return;
+
+              const parent = draft.find(c => c.id === request.parentCommentId);
+              if (parent) {
+                Object.assign(parent, { ...parent, replies: (parent.replies || []).concat(createdReply) });
+              }
+            }),
+          );
+
+          const getCommentsByJobPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData('getCommentsByJobPostingId', request.jobPostingId!, (draft) => {
+              if (!createdReply.jobPostingId) return;
+
               const parent = draft.find(c => c.id === request.parentCommentId);
               if (parent) {
                 Object.assign(parent, { ...parent, replies: (parent.replies || []).concat(createdReply) });
@@ -159,7 +179,24 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         }
 
         const getCommentsByPostPatchResult = lifecycleApi.dispatch(
-          commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId, (draft) => {
+          commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId!, (draft) => {
+            if (!comment.postId) return;
+
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.find(c => c.id === comment.id);
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        const getCommentsByJobPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getCommentsByJobPostingId', comment.jobPostingId!, (draft) => {
+            if (!comment.jobPostingId) return;
+
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
             const updateCandidate = draft.find(c => c.id === comment.id);
             if (updateCandidate) {
@@ -235,7 +272,24 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         }
 
         const getCommentsByPostPatchResult = lifecycleApi.dispatch(
-          commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId, (draft) => {
+          commentsApiSlice.util.updateQueryData('getCommentsByPostId', comment.postId!, (draft) => {
+            if (!comment.postId) return;
+
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const updateCandidate = draft.find(c => c.id === comment.id);
+            if (updateCandidate) {
+              updateCandidate.upvotes = upvotes;
+              updateCandidate.downvotes = downvotes;
+              updateCandidate.isUpvoted = isUpvoted;
+              updateCandidate.isDownvoted = isDownvoted;
+            }
+          }),
+        );
+
+        const getCommentsByJobPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData('getCommentsByJobPostingId', comment.jobPostingId!, (draft) => {
+            if (!comment.jobPostingId) return;
+
             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
             const updateCandidate = draft.find(c => c.id === comment.id);
             if (updateCandidate) {
@@ -292,8 +346,25 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
         const getByPostPatchResult = lifecycleApi.dispatch(
           commentsApiSlice.util.updateQueryData(
             "getCommentsByPostId",
-            request.postId,
+            request.postId!,
             (draft) => {
+              if (!request.postId) return;
+
+              const updateCandidate = draft.find(c => c.id === request.commentId)
+              if (updateCandidate) {
+                updateCandidate.content = request.content ?? updateCandidate.content;
+              }
+            }
+          ),
+        );
+
+        const getByJobPatchResult = lifecycleApi.dispatch(
+          commentsApiSlice.util.updateQueryData(
+            "getCommentsByJobPostingId",
+            request.jobPostingId!,
+            (draft) => {
+              if (!request.jobPostingId) return;
+
               const updateCandidate = draft.find(c => c.id === request.commentId)
               if (updateCandidate) {
                 updateCandidate.content = request.content ?? updateCandidate.content;
@@ -332,8 +403,27 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
           const getCommentsByPostPatchResult2 = lifecycleApi.dispatch(
             commentsApiSlice.util.updateQueryData(
               'getCommentsByPostId',
-              request.postId,
+              request.postId!,
               (draft) => {
+                if (!request.postId) return;
+
+                const parent = draft.find(c => c.id === request.parentCommentId);
+                if (parent?.replies) {
+                  const reply = parent.replies.find(r => r.id === request.commentId);
+                  if (reply) {
+                    reply.content = request.content ?? reply.content;
+                  }
+                }
+              }),
+          );
+
+          const getCommentsByJobPatchResult2 = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData(
+              'getCommentsByJobPostingId',
+              request.jobPostingId!,
+              (draft) => {
+                if (!request.jobPostingId) return;
+
                 const parent = draft.find(c => c.id === request.parentCommentId);
                 if (parent?.replies) {
                   const reply = parent.replies.find(r => r.id === request.commentId);
@@ -392,8 +482,22 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
           const getCommentsByPostPatchResult = lifecycleApi.dispatch(
             commentsApiSlice.util.updateQueryData(
               "getCommentsByPostId",
-              request.postId,
+              request.postId!,
               (draft) => {
+                if (!request.postId) return;
+
+                Object.assign(draft, draft.filter(c => c.id !== request.commentId));
+              },
+            ),
+          );
+
+          const getCommentsByJobPatchResult = lifecycleApi.dispatch(
+            commentsApiSlice.util.updateQueryData(
+              "getCommentsByJobPostingId",
+              request.jobPostingId!,
+              (draft) => {
+                if (!request.jobPostingId) return;
+
                 Object.assign(draft, draft.filter(c => c.id !== request.commentId));
               },
             ),
@@ -414,8 +518,27 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
             const getCommentsByPostPatchResult = lifecycleApi.dispatch(
               commentsApiSlice.util.updateQueryData(
                 'getCommentsByPostId',
-                request.postId,
+                request.postId!,
                 (draft) => {
+                  if (!request.postId) return;
+
+                  const parent = draft.find(c => c.id === request.parentCommentId);
+                  if (parent) {
+                    Object.assign(parent, {
+                      ...parent,
+                      replies: (parent.replies || []).filter(r => r.id !== request.commentId)
+                    });
+                  }
+                }),
+            );
+
+            const getCommentsByJobPatchResult = lifecycleApi.dispatch(
+              commentsApiSlice.util.updateQueryData(
+                'getCommentsByJobPostingId',
+                request.jobPostingId!,
+                (draft) => {
+                  if (!request.jobPostingId) return;
+
                   const parent = draft.find(c => c.id === request.parentCommentId);
                   if (parent) {
                     Object.assign(parent, {
@@ -450,6 +573,7 @@ export const commentsApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetCommentQuery,
   useGetCommentsByPostIdQuery,
+  useGetCommentsByJobPostingIdQuery,
   useGetCommentsByUserIdQuery,
   useCreateCommentMutation,
   useCreateReplyMutation,
@@ -458,20 +582,4 @@ export const {
   useDeleteCommentMutation,
   useUpdateCommentMutation,
 } = commentsApiSlice;
-
-
-// returns the query result object (does not initiate a request)
-// export const selectCommentsResult = commentsApiSlice.endpoints.getCommentsByPostId.select();
-
-// // Creates memoized selector
-// const selectCommentsData = createSelector(
-//   selectCommentsResult,
-//   commentsResult => commentsResult.data ?? initialState,
-// );
-
-// export const {
-//   selectAll: selectAllComments,
-//   selectById: selectCommentById,
-//   selectIds: selectCommentIds,
-// } = commentsAdapter.getSelectors(selectCommentsData);
 

@@ -13,8 +13,8 @@ using Pgvector;
 namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
 {
     [DbContext(typeof(ExpertBridgeDbContext))]
-    [Migration("20250624180354_MakeUsernameNotNullInDb")]
-    partial class MakeUsernameNotNullInDb
+    [Migration("20250621010523_AddJobPostingAndApplicationsV1")]
+    partial class AddJobPostingAndApplicationsV1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,6 +193,33 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Core.Entities.JobApplication.JobApplication", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("AppliedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ContractorProfileId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("CoverLetter")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JobPostingId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractorProfileId");
+
+                    b.ToTable("JobApplications");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobCategories.JobCategory", b =>
@@ -998,7 +1025,7 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModified")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Title")
@@ -1148,7 +1175,6 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                         .HasColumnType("vector(1024)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -1164,11 +1190,6 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.HasIndex("Username")
                         .IsUnique()
                         .HasFilter("(\"IsDeleted\") = false");
-
-                    b.HasIndex("FirstName", "LastName")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
-
-                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FirstName", "LastName"), "GIN");
 
                     b.ToTable("Profiles");
                 });
@@ -1289,7 +1310,6 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -1364,6 +1384,17 @@ namespace ExpertBridge.Api.ExpertBridge.Api.Data.Migrations
                     b.Navigation("ParentComment");
 
                     b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Core.Entities.JobApplication.JobApplication", b =>
+                {
+                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "ContractorProfile")
+                        .WithMany()
+                        .HasForeignKey("ContractorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ContractorProfile");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobPostings.JobPosting", b =>

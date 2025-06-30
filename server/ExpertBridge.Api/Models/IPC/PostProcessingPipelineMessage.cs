@@ -13,5 +13,6 @@ namespace ExpertBridge.Api.Models.IPC
         public string AuthorId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public required bool IsJobPosting { get; set; }
     }
 }

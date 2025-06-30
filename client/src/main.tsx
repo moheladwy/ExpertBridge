@@ -32,6 +32,9 @@ import UserProfilePage from "./views/pages/profile/UserProfilePage.tsx";
 import Notifications from "./views/pages/notifications/Notifications.tsx";
 import SearchPosts from "./views/pages/search/SearchPosts.tsx";
 import SearchUsers from "./views/pages/search/SearchUsers.tsx";
+import JobPostingsFeed from "./views/components/common/jobPostings/JobPostingsFeed.tsx";
+import JobPostingFromFeedPage from "./views/pages/jobPostings/JobPostingFromFeedPage.tsx";
+import JobPostingFromUrlPage from "./views/pages/jobPostings/JobPostingFromUrlPage.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -64,6 +67,24 @@ const router = createBrowserRouter([
 					// <ProtectedRoute>
 					<PostFromFeedPage />
 					// </ProtectedRoute>
+				),
+			},
+			{
+				path: "jobs",
+				element: (
+					<JobPostingsFeed />
+				),
+			},
+			{
+				path: "jobs/:jobPostingId",
+				element: (
+					<JobPostingFromFeedPage />
+				),
+			},
+			{
+				path: "job/:jobPostingId",
+				element: (
+					<JobPostingFromUrlPage />
 				),
 			},
 			{

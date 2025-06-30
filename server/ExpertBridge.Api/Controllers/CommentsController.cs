@@ -78,6 +78,18 @@ public class CommentsController : ControllerBase
         return comments;
     }
 
+    [Route("/api/jobPostings/{jobPostingId}/comments")]
+    [AllowAnonymous]
+    [HttpGet] // api/jobPostings/<jobPostingId>/comments
+    public async Task<List<CommentResponse>> GetAllByJobPostingId([FromRoute] string jobPostingId)
+    {
+        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+        var comments = await _commentService
+            .GetCommentsByJobAsync(jobPostingId, userProfileId);
+
+        return comments;
+    }
+
     [Route("/api/profiles/{profileId}/[controller]")]
     [HttpGet]
     [AllowAnonymous]

@@ -54,7 +54,11 @@ public static class Generator
     }
 
     private static readonly Random random = new Random();
-    private static Vector GenerateRandomVector(int dimensions)
+    public static Vector GenerateRandomVector(int dimensions)
+    {
+        return new Vector(GenerateRandomVectorArray(dimensions));
+    }
+    public static float[] GenerateRandomVectorArray(int dimensions)
     {
         var values = new float[dimensions];
         for (var i = 0; i < dimensions; i++)
@@ -62,7 +66,7 @@ public static class Generator
             values[i] = (float)(random.NextDouble() * 2 - 1);
         }
 
-        return new Vector(values);
+        return values;
     }
 
     public static List<Post> GeneratePosts(List<Profile> profiles, int count)

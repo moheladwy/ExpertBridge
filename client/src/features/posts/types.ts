@@ -8,18 +8,20 @@ export interface PostTag {
 }
 
 export type PostsCursorPaginatedResponse = {
-	posts: Post[];
-	pageInfo: {
-		endCursor?: number;
-		hasNextPage: boolean;
-	};
-};
+  posts: Post[];
+  pageInfo: {
+    endCursor?: number;
+    hasNextPage: boolean;
+    embedding?: string;
+  };
+}
 
 export type PostsInitialPageParam = {
-	after?: number;
-	pageSize: number;
-	page: number;
-};
+  after?: number;
+  pageSize: number;
+  page: number;
+  embedding?: string;
+}
 
 export type PostsQueryParamLimit = number;
 
@@ -63,7 +65,7 @@ export interface SimilarPostsResponse {
 	content: string;
 	authorName: string;
 	createdAt?: Date;
-	similarityScore: number;
+	relevanceScore: number;
 }
 
 export interface AddPostRequest extends Pick<Post, "content" | "title"> {

@@ -52,7 +52,8 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     PostId = post.PostId,
                     AuthorId = post.AuthorId,
                     Content = post.Content,
-                    Title = post.Title
+                    Title = post.Title,
+                    IsJobPosting = post.IsJobPosting,
                 }, stoppingToken);
 
                 await _acknowledgeChannel.WaitToReadAsync(stoppingToken);
@@ -68,7 +69,8 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     PostId = post.PostId,
                     AuthorId = post.AuthorId,
                     Content = post.Content,
-                    Title = post.Title
+                    Title = post.Title,
+                    IsJobPosting = post.IsJobPosting,
                 }, stoppingToken);
 
                 await _embedPostChannel.WriteAsync(new EmbedPostMessage
@@ -76,6 +78,7 @@ namespace ExpertBridge.Api.BackgroundServices.Handlers
                     PostId = post.PostId,
                     Content = post.Content,
                     Title = post.Title,
+                    IsJobPosting = post.IsJobPosting
                 }, stoppingToken);
             }
             catch (Exception ex)

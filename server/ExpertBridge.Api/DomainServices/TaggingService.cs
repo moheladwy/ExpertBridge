@@ -1,8 +1,11 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using System.Threading;
 using System.Threading.Channels;
 using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Core.Entities;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Tags;
@@ -65,12 +68,44 @@ public sealed class TaggingService
     public async Task AddRawTagsToPostAsync(
         string postId,
         string authorId,
+        bool isJobPosting,
         PostCategorizerResponse tags,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(postId);
         ArgumentNullException.ThrowIfNull(tags);
 
+        // This call commits changes to database (calls SaveChanges)
+        var tagsToAdd = await CreateTagsInDatabaseAsync(tags, cancellationToken);
+
+        IRecommendableContent post;
+
+        if (isJobPosting)
+        {
+            post = await _dbContext.JobPostings.FirstAsync(p => p.Id == postId, cancellationToken);
+            await AddTagsToJobPostingInternalAsync(post.Id, tagsToAdd.Select(t => t.Id), cancellationToken);
+        }
+        else
+        {
+            post = await _dbContext.Posts.FirstAsync(p => p.Id == postId, cancellationToken);
+            await AddTagsToPostInternalAsync(post.Id, tagsToAdd.Select(t => t.Id), cancellationToken);
+        }
+
+        await AddTagsToUserProfileInternalAsync(authorId, tagsToAdd.Select(t => t.Id), cancellationToken);
+
+        post.Language = tags.Language;
+        post.IsTagged = true;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        await _userInterestsChannel.WriteAsync(new UserInterestsUpdatedMessage { UserProfileId = authorId },
+            cancellationToken);
+    }
+
+    private async Task<IEnumerable<Tag?>> CreateTagsInDatabaseAsync(
+        PostCategorizerResponse tags,
+        CancellationToken cancellationToken)
+    {
         var tagList = tags.Tags.ToList();
 
         var englishNames = tagList.Select(t => t.EnglishName).ToList();
@@ -96,25 +131,15 @@ public sealed class TaggingService
         await _dbContext.AddRangeAsync(newTags, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken); // Save new tags to generate their IDs
 
-        var post = await _dbContext.Posts.FirstAsync(p => p.Id == postId, cancellationToken);
-
         var tagsToAdd = newTags.Concat(existingTags);
-
-        await AddTagsToPostInternalAsync(post.Id, tagsToAdd.Select(t => t.Id), cancellationToken);
-        await AddTagsToUserProfileInternalAsync(authorId, tagsToAdd.Select(t => t.Id), cancellationToken);
-
-        post.Language = tags.Language;
-        post.IsTagged = true;
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        await _userInterestsChannel.WriteAsync(new UserInterestsUpdatedMessage { UserProfileId = authorId },
-            cancellationToken);
+        return tagsToAdd;
     }
 
 
     /// <summary>
     ///     Associates a collection of tag IDs with a specific post by creating PostTag relationships in the database.
+    ///     changes to the database, as it is intended to be part of a larger unit of work.
+    ///     So it should not be called outside directly.
     /// </summary>
     /// <param name="postId">The identifier of the post to which the tags will be added.</param>
     /// <param name="tagIds">A collection of tag IDs that need to be associated with the post.</param>
@@ -138,6 +163,35 @@ public sealed class TaggingService
             .Select(tagId => new PostTag { PostId = postId, TagId = tagId });
 
         await _dbContext.PostTags.AddRangeAsync(newPostTags, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Associates a collection of tag IDs with a specific JobPosting by creating JobPostingTag relationships in the database.
+    ///     changes to the database, as it is intended to be part of a larger unit of work.
+    ///     So it should not be called outside directly.
+    /// </summary>
+    /// <param name="postingId">The identifier of the post to which the tags will be added.</param>
+    /// <param name="tagIds">A collection of tag IDs that need to be associated with the post.</param>
+    /// <param name="cancellationToken">
+    ///     A token to observe while waiting for the task to complete, enabling cancellation of the
+    ///     operation.
+    /// </param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    private async Task AddTagsToJobPostingInternalAsync(
+        string postingId,
+        IEnumerable<string> tagIds,
+        CancellationToken cancellationToken = default)
+    {
+        var existingTagIds = await _dbContext.JobPostingTags
+            .Where(pt => pt.JobPostingId == postingId && tagIds.Contains(pt.TagId))
+            .Select(pt => pt.TagId)
+            .ToListAsync(cancellationToken);
+
+        var newPostTags = tagIds
+            .Where(tagId => !existingTagIds.Contains(tagId))
+            .Select(tagId => new JobPostingTag { JobPostingId = postingId, TagId = tagId });
+
+        await _dbContext.JobPostingTags.AddRangeAsync(newPostTags, cancellationToken);
     }
 
     /// <summary>

@@ -34,6 +34,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@reduxjs/toolkit": "^2.5.1",
     "@vidstack/react": "^1.12.13",
+    "@heroicons/react": "^2.0.18",
     "axios": "^1.8.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -1,0 +1,296 @@
+using ExpertBridge.Api.DomainServices;
+using ExpertBridge.Api.Helpers;
+using ExpertBridge.Core.Entities.JobApplications;
+using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Requests.EditPost;
+using ExpertBridge.Core.Requests.JobPostings;
+using ExpertBridge.Core.Responses;
+using ExpertBridge.Data.DatabaseContexts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+
+namespace ExpertBridge.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+
+    // CURRENT PROGRESS:
+    // TODO REMOVE PROFILE ID FROM AREA Entity (meaningless)
+    // CHANGE CoverLetter DTO in apply endpoint to be several variables (price, etc)
+    // Q: Should job postings be just like announcements with no up/downvotes or should it be like a post
+    // Currently its like an announcement/posting, can extend later if needed/time permits
+    public class JobPostingsController : ControllerBase
+    {
+        private readonly JobPostingService _jobPostingService;
+        private readonly UserService _userService;
+        private readonly ILogger<JobPostingsController> _logger;
+
+        public JobPostingsController(
+            JobPostingService jobPostingService,
+            UserService userService,
+            ILogger<JobPostingsController> logger)
+        {
+            _jobPostingService = jobPostingService;
+            _userService = userService;
+            _logger = logger;
+        }
+
+        // POST /api/JobPostings
+        [HttpPost]
+        public async Task<ActionResult<JobPostingResponse>> CreateJobPosting(
+            [FromBody] CreateJobPostingRequest request)
+        {
+            var authorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
+
+            var response = await _jobPostingService.CreateAsync(request, authorProfile);
+
+            return CreatedAtAction(nameof(GetById), new { postingId = response.Id }, response);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{postingId}", Name = "GetJobPostingByIdAction")] // Added Name for CreatedAtAction
+        public async Task<ActionResult<JobPostingResponse>> GetById([FromRoute] string postingId)
+        {
+            // string? userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync(); // Get this if needed for vote perspective
+            // For now, assuming your UserService provides a method like this from previous discussion:
+            var user = await _userService.GetCurrentUserPopulatedModelAsync(); // Or your specific method
+            string? userProfileId = user?.Profile?.Id;
+
+
+            var response = await _jobPostingService.GetJobPostingByIdAsync(postingId, userProfileId);
+
+            if (response == null)
+            {
+                // return post ?? throw new PostNotFoundException($"Post with id={postId} was not found");
+                return NotFound(new ProblemDetails { Title = "Not Found", Detail = $"Post with id={postingId} was not found.", Status = StatusCodes.Status404NotFound });
+            }
+
+            return response;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{postingId}/similar")]
+        public async Task<List<SimilarJobsResponse>> GetSimilarJobs(
+            [FromRoute] string postingId,
+            [FromQuery] int? limit = 5,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(postingId, nameof(postingId)); // Service handles
+
+            var similarJobs = await _jobPostingService.GetSimilarJobsAsync(
+                    postingId,
+                    limit ?? 5, // Default to 5 if not provided
+                    cancellationToken);
+
+            return similarJobs;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("feed")]
+        [ResponseCache(NoStore = true)]
+        public async Task<ActionResult<JobPostingsPaginatedResponse>> GetOffsetPaginated(
+            [FromBody] JobPostingsPaginationRequest request)
+        {
+            var user = await _userService.GetCurrentUserPopulatedModelAsync();
+            var jobs = await _jobPostingService.GetRecommendedJobsOffsetPageAsync(user?.Profile, request);
+
+            return jobs;
+        }
+
+        [HttpPatch("{postingId}")]
+        public async Task<ActionResult<JobPostingResponse>> Edit(
+        [FromRoute] string postingId,
+        [FromBody] EditJobPostingRequest request)
+        {
+            var editorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
+
+            var postResponse = await _jobPostingService.EditJopPostingAsync(postingId, request, editorProfile);
+
+            return postResponse;
+        }
+
+        [HttpPatch("{postingId}/upvote")]
+        public async Task<ActionResult<JobPostingResponse>> Upvote([FromRoute] string postingId)
+        {
+            var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
+
+            var postResponse = await _jobPostingService
+                .VoteJobPostingAsync(postingId, voterProfile, isUpvoteIntent: true); // true for upvote
+
+            return postResponse;
+        }
+
+        [HttpPatch("{postingId}/downvote")]
+        public async Task<ActionResult<JobPostingResponse>> Downvote([FromRoute] string postingId)
+        {
+            var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
+
+            var postResponse = await _jobPostingService
+                .VoteJobPostingAsync(postingId, voterProfile, isUpvoteIntent: false); // false for downvote
+
+            return postResponse;
+        }
+
+        [HttpDelete("{postingId}")]
+        public async Task<IActionResult> Delete([FromRoute] string postingId)
+        {
+            var deleterProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
+
+            try
+            {
+                await _jobPostingService.DeleteJobPostingAsync(postingId, deleterProfile);
+                return NoContent(); // Always 204 for DELETE success (even if resource was already gone)
+            }
+            catch (ForbiddenAccessException ex)
+            {
+                // Even for forbidden, you might return 204 to not leak info,
+                // or 403 if you want to be explicit. Standard is often 204 for DELETE.
+                // However, if _userService.GetCurrentUserProfileOrThrowAsync() throws Unauthorized,
+                // that will result in 401 before this.
+                // A 403 here means authenticated user, but not permitted for *this specific resource*.
+                // For DELETE, many prefer to still return 204 to not reveal existence/non-existence.
+                // But if it's a clear "you can't do that" to an owned resource, 403 is also fine.
+                // Let's stick to 204 for simplicity and common DELETE idempotency interpretation.
+                Log.Warning(ex,
+                    "Forbidden attempt to delete post {PostId} by user {UserProfileId}",
+                    postingId, deleterProfile.Id);
+
+                return NoContent();
+            }
+        }
+
+        // BEWARE!
+        // In an HTTP DELETE, you always want to return 204 no content.
+        // No matter what happens. The only exception is if the auth middleware
+        // refused the request from the beginning, else you do not return anything
+        // other than no content.
+        // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
+
+
+        //[HttpPost("{jobPostingId}/apply")]
+        //public async Task<IActionResult> ApplyToJobPosting(string jobPostingId, [FromBody] ApplyToJobPostingRequest request)
+        //{
+        //    //var user = await _authHelper.GetCurrentUserAsync();
+        //    //var contractorProfileId = user?.Profile?.Id;
+        //    //if (contractorProfileId == null)
+        //    //    return Unauthorized("User profile not found.");
+
+        //    //var jobPosting = await _dbContext.JobPostings.FindAsync(jobPostingId);
+        //    //if (jobPosting == null)
+        //    //    return NotFound("Job posting not found.");
+
+        //    //var alreadyApplied = await _dbContext.JobApplications
+        //    //    .AnyAsync(a => a.JobPostingId == jobPostingId && a.ContractorProfileId == contractorProfileId);
+        //    //if (alreadyApplied)
+        //    //    return BadRequest("You have already applied to this job posting.");
+
+        //    //var application = new JobApplication
+        //    //{
+        //    //    JobPostingId = jobPostingId,
+        //    //    ContractorProfileId = contractorProfileId,
+        //    //    CoverLetter = request.CoverLetter
+        //    //};
+
+        //    //_dbContext.JobApplications.Add(application);
+        //    //await _dbContext.SaveChangesAsync();
+
+        //    return Ok();
+        //}
+
+        //[HttpGet("{jobPostingId}/applicants")]
+        //public async Task<IActionResult> GetApplicants(string jobPostingId)
+        //{
+        //    //var user = await _authHelper.GetCurrentUserAsync();
+        //    //var clientProfileId = user?.Profile?.Id;
+        //    //if (clientProfileId == null)
+        //    //    return Unauthorized("User profile not found.");
+
+        //    //var jobPosting = await _dbContext.JobPostings
+        //    //    .AsNoTracking()
+        //    //    .FirstOrDefaultAsync(jp => jp.Id == jobPostingId && jp.AuthorId == clientProfileId);
+
+        //    //if (jobPosting == null)
+        //    //    return NotFound("Job posting not found or you are not the author.");
+
+        //    //var applicants = await _dbContext.JobApplications
+        //    //    .Where(a => a.JobPostingId == jobPostingId)
+        //    //    .Include(a => a.ContractorProfile)
+        //    //        .ThenInclude(p => p.User)
+        //    //    .Select(a => new
+        //    //    {
+        //    //        a.Id,
+        //    //        a.ContractorProfileId,
+        //    //        a.CoverLetter,
+        //    //        a.AppliedAt,
+        //    //        Contractor = new
+        //    //        {
+        //    //            a.ContractorProfile.Id,
+        //    //            a.ContractorProfile.User.FirstName,
+        //    //            a.ContractorProfile.User.LastName,
+        //    //            a.ContractorProfile.ProfilePictureUrl
+        //    //        }
+        //    //    })
+        //    //    .ToListAsync();
+
+        //    return Ok();
+        //}
+
+
+        //// GET /api/JobPostings
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public async Task<ActionResult<IEnumerable<JobPostingResponse>>> GetAllJobPostings(
+        //    [FromServices] ExpertBridgeDbContext db)
+        //{
+        //    var user = db.Users.Include(u => u.Profile).First();
+            
+        //    await _jobPostingService.CreateAsync(new CreateJobPostingRequest
+        //    {
+        //        Area = "",
+        //        Budget = 0,
+        //        Content = "Fuck you little nigga!",
+        //        Title = "Hello world",
+        //    }, user.Profile);
+
+        //    return Ok(new JobPostingResponse
+        //    {
+        //        Title = "",
+        //        Content = "",
+        //    });
+
+        //    //var jobPostings = await _dbContext.JobPostings
+        //    //    .Include(jp => jp.Author)
+        //    //        .ThenInclude(p => p.User)
+        //    //    .AsNoTracking()
+        //    //    .ToListAsync();
+
+        //    //var responses = jobPostings.Select(jp => new JobPostingResponse
+        //    //{
+        //    //    Id = jp.Id,
+        //    //    Title = jp.Title,
+        //    //    Description = jp.Description,
+        //    //    AreaId = jp.AreaId,
+        //    //    CategoryId = jp.CategoryId,
+        //    //    Cost = jp.Cost,
+        //    //    CreatedAt = jp.CreatedAt ?? DateTime.MinValue,
+        //    //    UpdatedAt = jp.UpdatedAt ?? DateTime.MinValue,
+        //    //    AuthorProfile = jp.Author != null ? new ProfileSummaryResponse
+        //    //    {
+        //    //        ProfileId = jp.Author.Id,
+        //    //        FirstName = jp.Author.User?.FirstName,
+        //    //        LastName = jp.Author.User?.LastName,
+        //    //        ProfilePictureUrl = jp.Author.ProfilePictureUrl
+        //    //    } : null
+        //    //}).ToList();
+
+        //    //return Ok(responses);
+        //}
+    }
+
+
+}

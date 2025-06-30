@@ -58,16 +58,25 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			undefined, // query arg
 			PostsInitialPageParam
 		>({
-			query: ({ pageParam: { pageSize, after, page } }) => {
-				const params = new URLSearchParams();
-				params.append("pageSize", String(pageSize));
-				params.append("page", String(page));
+			query: ({ pageParam/*: { pageSize, after, page, embedding }*/ }) => {
+				// const params = new URLSearchParams();
+				// params.append('pageSize', String(pageSize));
+				// params.append('page', String(page));
 
-				if (after != null) {
-					params.append("after", String(after));
-				}
+				// if (after != null) {
+				// 	params.append('after', String(after))
+				// }
 
-				return `/posts?${params.toString()}`;
+				// if (embedding != null) {
+				// 	params.append('embedding', String(embedding));
+				// }
+
+				return {
+					// url: `/posts?${params.toString()}`,
+					url: '/posts/feed',
+					method: 'POST',
+					body: pageParam,
+				};
 			},
 			infiniteQueryOptions: {
 				initialPageParam: { pageSize: 10, page: 1 },
@@ -81,10 +90,13 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 						return undefined;
 					}
 
+					console.log(lastPageParam);
+
 					return {
 						after: lastPage.pageInfo.endCursor,
 						pageSize: lastPageParam.pageSize,
 						page: lastPageParam.page + 1,
+						embedding: lastPage.pageInfo.embedding
 					};
 				},
 			},
@@ -110,7 +122,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 		}),
 
 		getSimilarPosts: builder.query<SimilarPostsResponse[], string>({
-			query: (postId) => `/posts/similar/${postId}?limit=5`,
+			query: (postId) => `/posts/${postId}/similar?limit=5`,
 			providesTags: (result, error, arg) => [
 				{ type: "SimilarPosts", id: arg },
 			],

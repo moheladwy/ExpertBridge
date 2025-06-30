@@ -106,7 +106,7 @@ public class PostsController : ControllerBase
     /// <exception cref="ArgumentException">Thrown when <paramref name="postId"/> is null or empty.</exception>
     /// <remarks>This endpoint allows anonymous access.</remarks>
     [AllowAnonymous]
-    [HttpGet("similar/{postId}")]
+    [HttpGet("{postId}/similar")]
     public async Task<List<SimilarPostsResponse>> GetSimilarPosts(
             [FromRoute] string postId,
             [FromQuery] int? limit = 5,
@@ -144,10 +144,10 @@ public class PostsController : ControllerBase
     //}
 
     [AllowAnonymous]
-    [HttpGet]
+    [HttpPost("feed")]
     [ResponseCache(NoStore = true)]
     public async Task<ActionResult<PostsCursorPaginatedResponse>> GetCursorPaginated(
-        [FromQuery] PostsCursorRequest request)
+        [FromBody] PostsCursorRequest request)
     {
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
         //var posts = await _postService.GetRecommendedPostsAsync(user?.Profile, request);

@@ -7,11 +7,14 @@ using ExpertBridge.Core.Entities.Badges;
 using ExpertBridge.Core.Entities.Chats;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobCategories;
 using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.JobReviews;
 using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
@@ -58,10 +61,13 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostVote> PostVotes { get; set; }
     public DbSet<CommentVote> CommentVotes { get; set; }
+    public DbSet<JobPosting> JobPostings { get; set; }
+    public DbSet<JobPostingTag> JobPostingTags { get; set; }
+    public DbSet<JobPostingVote> JobPostingVotes { get; set; }
     public DbSet<Area> Areas { get; set; }
     public DbSet<Badge> Badges { get; set; }
     public DbSet<JobCategory> JobCategories { get; set; }
-    public DbSet<JobPosting> JobPostings { get; set; }
+    public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<ProfileBadge> ProfileBadges { get; set; }
     public DbSet<UserInterest> UserInterests { get; set; }
     public DbSet<ProfileSkill> ProfileSkills { get; set; }
@@ -132,6 +138,8 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new MediaGrantEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ModerationReportEntityConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new JobPostingTagEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new JobPostingVoteEntityConfiguration());
     }
 
     // Event handlers

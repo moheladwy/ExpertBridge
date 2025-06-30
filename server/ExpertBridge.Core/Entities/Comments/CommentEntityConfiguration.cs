@@ -42,7 +42,13 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
         builder.HasOne(c => c.Post)
             .WithMany(p => p.Comments)
             .HasForeignKey(c => c.PostId)
-            .IsRequired();
+            .IsRequired(false);
+
+        // Configure one-to-many relationship with JobPosting
+        builder.HasOne(c => c.JobPosting)
+            .WithMany(p => p.Comments)
+            .HasForeignKey(c => c.JobPostingId)
+            .IsRequired(false);
 
         // Configure one-to-many relationship with Comment (Parent comment)
         builder.HasOne(c => c.ParentComment)

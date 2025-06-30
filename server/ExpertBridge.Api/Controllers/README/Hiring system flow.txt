@@ -1,0 +1,20 @@
+Hiring System Flow
+
+#Scenario 1: Direct Hire from Contractor Profile
+Description:
+The client hires a contractor directly from their profile by clicking the "Hire Me" button.
+Event Flow:
+1. The client clicks the "Hire Me" button on the contractor’s profile.
+2. A job object (also referred to as a contract) is created.
+3. Relevant statuses and other job-related data are updated as the contract progresses through completion.
+
+#Scenario 2: Hire via Job Posting
+Description:
+The client posts a job, and contractors apply. The client then selects and hires a contractor from the list of applicants.
+Event Flow:
+1. The client creates a job posting.
+2. Contractors submit applications for the job.
+3. The client reviews applicants under a dedicated tab.
+4. The client selects a contractor to hire.
+5. The client clicks the "Hire Me" button next to the selected contractor’s name.
+6. From this point, the same event flow from Scenario 1 applies.
