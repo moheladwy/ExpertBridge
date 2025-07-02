@@ -167,7 +167,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
         </div>
 
         {/* Main Jobs Feed Content */}
-        <div className="flex-1 max-w-5xl mx-auto space-y-6">
+        <div className="flex-1 max-w-7xl mx-auto space-y-6">
           {/* Create Job Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
             <CreateJobModal />
@@ -309,7 +309,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
         </div>
 
         {/* Right Sidebar - Suggested Questions */}
-        <div className="w-90 max-xl:w-72 max-lg:hidden">
+        <div className="w-80 max-xl:w-72 max-lg:hidden">
           <div className="sticky top-24">
             <SuggestedQuestions />
           </div>
