@@ -40,8 +40,8 @@ namespace ExpertBridge.Api.DomainServices
 
             var suggested = await query
                 .Where(p => p.UserInterestEmbedding != null)
-                .OrderBy(p => p.UserInterestEmbedding.CosineDistance(userEmbedding))
                 .Take(limit)
+                .OrderBy(p => p.UserInterestEmbedding.CosineDistance(userEmbedding))
                 .SelectProfileResponseFromProfile()
                 .ToListAsync();
 
@@ -64,6 +64,7 @@ namespace ExpertBridge.Api.DomainServices
                 //.OrderByDescending(p =>
                 //    p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
                 //    - p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)))
+                .Take(limit)
                 .SelectProfileResponseFromProfile()
                 .OrderByDescending(p => p.Reputation)
                 .ToListAsync();
