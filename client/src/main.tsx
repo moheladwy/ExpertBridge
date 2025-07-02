@@ -35,6 +35,7 @@ import SearchUsers from "./views/pages/search/SearchUsers.tsx";
 import JobPostingsFeed from "./views/components/common/jobPostings/JobPostingsFeed.tsx";
 import JobPostingFromFeedPage from "./views/pages/jobPostings/JobPostingFromFeedPage.tsx";
 import JobPostingFromUrlPage from "./views/pages/jobPostings/JobPostingFromUrlPage.tsx";
+import PrivacyPolicy from "./views/pages/landing/PrivacyPolicy.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -114,6 +115,10 @@ const router = createBrowserRouter([
 						<Notifications />
 					</ProtectedRoute>
 				),
+			},
+			{
+				path: "privacy-policy",
+				element: <PrivacyPolicy />
 			},
 		],
 	},
