@@ -1,4 +1,4 @@
-import { useGetTopReputationProfilesQuery } from "@/features/profiles/profilesSlice";
+import { useGetSuggestedExpertsQuery } from "@/features/profiles/profilesSlice";
 import Avatar from "@mui/material/Avatar";
 import { Skeleton } from "@mui/material";
 import { ProfileResponse } from "@/features/profiles/types";
@@ -8,7 +8,7 @@ import { Trophy, Crown, Medal } from "lucide-react";
 import { Link } from "react-router";
 
 const TopReputationUsers = ({ limit = 5 }) => {
-  const { data, isLoading, isError, error, refetch } = useGetTopReputationProfilesQuery(limit);
+  const { data, isLoading, isError, error, refetch } = useGetSuggestedExpertsQuery(limit);
 
   useRefetchOnLogin(refetch);
 
@@ -93,10 +93,6 @@ const TopReputationUsers = ({ limit = 5 }) => {
                 )}
 
                 <div className="relative flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${getRankBadge(index)} shadow-md`}>
-                    {index + 1}
-                  </div>
-
                   <div className="relative">
                     <Avatar
                       src={user.profilePictureUrl}
