@@ -24,6 +24,7 @@ namespace ExpertBridge.Api.DomainServices
         private readonly ExpertBridgeDbContext _dbContext;
         private readonly MediaAttachmentService _mediaService;
         private readonly NotificationFacade _notificationFacade;
+        private readonly TaggingService _taggingService;
         private readonly ILogger<CommentService> _logger;
         private readonly ChannelWriter<DetectInappropriateCommentMessage> _inappropriateCommentChannel;
 
@@ -31,25 +32,33 @@ namespace ExpertBridge.Api.DomainServices
             ExpertBridgeDbContext dbContext,
             MediaAttachmentService mediaService,
             NotificationFacade notificationFacade,
+            TaggingService taggingService,
             Channel<DetectInappropriateCommentMessage> inappropriateCommentChannel,
             ILogger<CommentService> logger)
         {
             _dbContext = dbContext;
             _mediaService = mediaService;
             _notificationFacade = notificationFacade;
+            _taggingService = taggingService;
             _logger = logger;
             _inappropriateCommentChannel = inappropriateCommentChannel.Writer;
         }
 
-        public async Task<CommentResponse> CreateCommentAsync(CreateCommentRequest request, Profile authorProfile)
+        public async Task<CommentResponse> CreateCommentAsync(
+            CreateCommentRequest request,
+            Profile authorProfile)
         {
             ArgumentNullException.ThrowIfNull(request);
             ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
 
             var post = await _dbContext.Posts
+                .Include(p => p.PostTags)
+                .ThenInclude(pt => pt.Tag) // Include tags for tagging service
                 .FirstOrDefaultAsync(p => p.Id == request.PostId);
 
             var jobPosting = await _dbContext.JobPostings
+                .Include(p => p.JobPostingTags)
+                .ThenInclude(pt => pt.Tag)
                 .FirstOrDefaultAsync(p => p.Id == request.JobPostingId);
 
             if (post == null && jobPosting == null)
@@ -104,6 +113,21 @@ namespace ExpertBridge.Api.DomainServices
             }
 
             await _dbContext.SaveChangesAsync(); // Single save point for comment, media, grants, notifications
+
+            if (post != null)
+            {
+                await _taggingService.AddTagsToUserProfileAsync(
+                    authorProfile.Id,
+                    post.PostTags.Select(pt => pt.Tag)
+                );
+            }
+            else if (jobPosting != null)
+            {
+                await _taggingService.AddTagsToUserProfileAsync(
+                    authorProfile.Id,
+                    jobPosting.JobPostingTags.Select(pt => pt.Tag)
+                );
+            }
 
             // Post-save actions
             await _inappropriateCommentChannel.WriteAsync(new DetectInappropriateCommentMessage

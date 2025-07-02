@@ -30,6 +30,7 @@ namespace ExpertBridge.Api.DomainServices
     {
         private readonly ExpertBridgeDbContext _dbContext;
         private readonly MediaAttachmentService _mediaService;
+        private readonly TaggingService _taggingService;
         private readonly NotificationFacade _notificationFacade;
         private readonly HybridCache _cache;
         private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingChannel;
@@ -38,6 +39,7 @@ namespace ExpertBridge.Api.DomainServices
         public JobPostingService(
             ExpertBridgeDbContext dbContext,
             MediaAttachmentService mediaService,
+            TaggingService taggingService,
             NotificationFacade notificationFacade,
             Channel<PostProcessingPipelineMessage> postProcessingChannel,
             HybridCache cache,
@@ -45,6 +47,7 @@ namespace ExpertBridge.Api.DomainServices
         {
             _dbContext = dbContext;
             _mediaService = mediaService;
+            _taggingService = taggingService;
             _notificationFacade = notificationFacade;
             _cache = cache;
             _postProcessingChannel = postProcessingChannel.Writer;
@@ -396,6 +399,8 @@ namespace ExpertBridge.Api.DomainServices
 
             var jobPosting = await _dbContext.JobPostings
                 .Include(p => p.Author) // For notification to post author
+                .Include(p => p.JobPostingTags) // Include tags for tagging service
+                .ThenInclude(pt => pt.Tag)
                 .FirstOrDefaultAsync(p => p.Id == postingId);
 
             if (jobPosting == null)
@@ -420,6 +425,10 @@ namespace ExpertBridge.Api.DomainServices
                 };
 
                 await _dbContext.JobPostingVotes.AddAsync(vote);
+                await _taggingService.AddTagsToUserProfileAsync(
+                    voterProfile.Id,
+                    jobPosting.JobPostingTags.Select(pt => pt.Tag)
+                );
             }
             else
             {

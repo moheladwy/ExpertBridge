@@ -14,6 +14,7 @@ using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 
@@ -31,6 +32,7 @@ namespace ExpertBridge.Api.DomainServices
         private readonly ExpertBridgeDbContext _dbContext;
         private readonly UserService _userService; // Or your specific UserService implementation
         private readonly MediaAttachmentService _mediaService;
+        private readonly TaggingService _taggingService;
         private readonly NotificationFacade _notificationFacade;
         private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingChannel;
         private readonly ILogger<PostService> _logger;
@@ -40,6 +42,7 @@ namespace ExpertBridge.Api.DomainServices
             ExpertBridgeDbContext dbContext,
             UserService userService, // Or your UserService
             MediaAttachmentService mediaService,
+            TaggingService taggingService,
             NotificationFacade notificationFacade,
             Channel<PostProcessingPipelineMessage> postProcessingChannel,
             ILogger<PostService> logger,
@@ -48,6 +51,7 @@ namespace ExpertBridge.Api.DomainServices
             _dbContext = dbContext;
             _userService = userService;
             _mediaService = mediaService;
+            _taggingService = taggingService;
             _notificationFacade = notificationFacade;
             _postProcessingChannel = postProcessingChannel.Writer;
             _logger = logger;
@@ -510,13 +514,17 @@ namespace ExpertBridge.Api.DomainServices
             return true;
         }
 
-        public async Task<PostResponse> VotePostAsync(string postId, Profile voterProfile, bool isUpvoteIntent)
+        public async Task<PostResponse> VotePostAsync(
+            string postId, Profile voterProfile,
+            bool isUpvoteIntent)
         {
             ArgumentException.ThrowIfNullOrEmpty(postId);
             ArgumentNullException.ThrowIfNull(voterProfile);
 
             var post = await _dbContext.Posts
                 .Include(p => p.Author) // For notification to post author
+                .Include(p => p.PostTags)
+                .ThenInclude(t => t.Tag)
                 .FirstOrDefaultAsync(p => p.Id == postId);
 
             if (post == null)
@@ -541,6 +549,10 @@ namespace ExpertBridge.Api.DomainServices
                 };
 
                 await _dbContext.PostVotes.AddAsync(vote);
+                await _taggingService.AddTagsToUserProfileAsync(
+                    voterProfile.Id,
+                    post.PostTags.Select(pt => pt.Tag)
+                );
             }
             else
             {
