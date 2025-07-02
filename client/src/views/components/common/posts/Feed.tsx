@@ -26,15 +26,12 @@ const Feed = ({ startingPost = { id: null } }) => {
     fetchNextPage,
     isFetchingNextPage,
     refetch,
-  } = useGetPostsCursorInfiniteQuery(
-    undefined,
-    {
-      initialPageParam: {
-        pageSize: limit,
-        page: 1,
-      },
+  } = useGetPostsCursorInfiniteQuery(undefined, {
+    initialPageParam: {
+      pageSize: limit,
+      page: 1,
     },
-  );
+  });
 
   const [filter, setFilter] = useState("Recommended");
 
@@ -68,27 +65,32 @@ const Feed = ({ startingPost = { id: null } }) => {
 
   const getFilterIcon = (filterName: string) => {
     switch (filterName) {
-      case "Recommended": return <Sparkles className="w-4 h-4" />;
-      case "Recent": return <Clock className="w-4 h-4" />;
-      case "Most Upvoted": return <ThumbsUp className="w-4 h-4" />;
-      case "Trending": return <TrendingUp className="w-4 h-4" />;
-      default: return null;
+      case "Recommended":
+        return <Sparkles className="w-4 h-4" />;
+      case "Recent":
+        return <Clock className="w-4 h-4" />;
+      case "Most Upvoted":
+        return <ThumbsUp className="w-4 h-4" />;
+      case "Trending":
+        return <TrendingUp className="w-4 h-4" />;
+      default:
+        return null;
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex gap-8 max-w-7xl mx-auto p-6">
+      <div className="flex gap-8 max-w-9xl mx-auto p-6">
         {/* Left Sidebar - Users */}
-        <div className="w-80 max-xl:w-72 max-lg:hidden">
-          <div className="sticky top-24 space-y-6">
+        <div className="w-90 max-xl:w-72 max-lg:hidden">
+          <div className="space-y-6">
             <SuggestedExperts />
             <TopReputationUsers />
           </div>
         </div>
 
         {/* Main Feed Content */}
-        <div className="flex-1 max-w-2xl mx-auto space-y-6">
+        <div className="flex-1 max-w-4xl mx-auto space-y-6">
           {/* Create Post Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
             <CreatePostModal />
@@ -96,28 +98,26 @@ const Feed = ({ startingPost = { id: null } }) => {
 
           {/* Filter Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Your Feed
-              </h2>
-              
-              <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
-                {["Recommended", "Recent", "Most Upvoted", "Trending"].map((filterOption) => (
+            {/* <div className="flex flex-col sm:flex-row items-center justify-between gap-4"> */}
+            <div className="flex justify-between items-center gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
+              {["Recommended", "Recent", "Most Upvoted", "Trending"].map(
+                (filterOption) => (
                   <button
                     key={filterOption}
                     onClick={() => setFilter(filterOption)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                       filter === filterOption
-                        ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-md'
-                        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/50 dark:hover:bg-gray-600/50'
+                        ? "text-blue-600 dark:text-blue-400"
+                        : "hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/50 dark:hover:bg-gray-600/50"
                     }`}
                   >
                     {getFilterIcon(filterOption)}
                     <span className="hidden sm:inline">{filterOption}</span>
                   </button>
-                ))}
-              </div>
+                ),
+              )}
             </div>
+            {/* </div> */}
           </div>
 
           {/* Posts Section */}
@@ -143,19 +143,34 @@ const Feed = ({ startingPost = { id: null } }) => {
                 {data?.pages.map((page: PostsCursorPaginatedResponse) => {
                   const filteredPosts = [...page.posts];
                   if (filter === "Recent") {
-                    filteredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                    filteredPosts.sort(
+                      (a, b) =>
+                        new Date(b.createdAt).getTime() -
+                        new Date(a.createdAt).getTime(),
+                    );
                   } else if (filter === "Most Upvoted") {
-                    filteredPosts.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+                    filteredPosts.sort(
+                      (a, b) =>
+                        b.upvotes - b.downvotes - (a.upvotes - a.downvotes),
+                    );
                   } else if (filter === "Trending") {
-                    filteredPosts.sort((a, b) => (b.upvotes + b.downvotes + (b.comments || 0)) - (a.upvotes + a.downvotes + (a.comments || 0)));
+                    filteredPosts.sort(
+                      (a, b) =>
+                        b.upvotes +
+                        b.downvotes +
+                        (b.comments || 0) -
+                        (a.upvotes + a.downvotes + (a.comments || 0)),
+                    );
                   }
 
                   return (
                     <React.Fragment key={page.pageInfo?.endCursor ?? "123"}>
                       {filteredPosts.map((post, index) => (
-                        <div 
-                          key={post.id} 
-                          ref={post.id === startingPost.id ? startingPostRef : null}
+                        <div
+                          key={post.id}
+                          ref={
+                            post.id === startingPost.id ? startingPostRef : null
+                          }
                           className="animate-fade-in"
                           style={{ animationDelay: `${index * 100}ms` }}
                         >
@@ -182,16 +197,15 @@ const Feed = ({ startingPost = { id: null } }) => {
                     disabled={!hasNextPage || isFetchingNextPage}
                     className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
                       hasNextPage && !isFetchingNextPage
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl'
-                        : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                     }`}
                   >
-                    {isFetchingNextPage 
-                      ? "Loading more posts..." 
-                      : hasNextPage 
-                        ? "Load More Posts" 
-                        : "🎉 You've reached the end! Great job staying connected."
-                    }
+                    {isFetchingNextPage
+                      ? "Loading more posts..."
+                      : hasNextPage
+                        ? "Load More Posts"
+                        : "🎉 You've reached the end! Great job staying connected."}
                   </button>
                 </div>
               )}
@@ -206,7 +220,7 @@ const Feed = ({ startingPost = { id: null } }) => {
         </div>
 
         {/* Right Sidebar - Jobs */}
-        <div className="w-80 max-xl:w-72 max-lg:hidden">
+        <div className="w-100 max-xl:w-72 max-lg:hidden">
           <div className="sticky top-24">
             <SuggestedJobs />
           </div>
