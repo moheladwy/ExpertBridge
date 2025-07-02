@@ -80,12 +80,12 @@ const Feed = ({ startingPost = { id: null } }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex gap-8 max-w-9xl mx-auto p-6">
+      <div className="flex gap-6 max-w-9xl mx-auto p-6">
         {/* Left Sidebar - Users */}
         <div className="w-90 max-xl:w-72 max-lg:hidden">
           <div className="space-y-6">
-            <SuggestedExperts />
             <TopReputationUsers />
+            <SuggestedExperts />
           </div>
         </div>
 

@@ -121,7 +121,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 
         {/* Job Description */}
         <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3">
-          {job.content.substring(0, 100)}
+          {job.content.substring(0, 100)}...
         </p>
 
         {/* Area/Location */}
