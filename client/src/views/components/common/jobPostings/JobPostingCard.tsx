@@ -12,6 +12,7 @@ import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { JobPosting } from '@/features/jobPostings/types';
 import TimeAgo from '../../custom/TimeAgo';
 import JobPostingVoteButtons from './JobPostingVoteButtons';
+import PostingTags from '../tags/PostingTags';
 
 interface JobCardProps {
   job: JobPosting;
@@ -114,7 +115,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 
       {/* Job Description */}
       <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3">
-        {job.content}
+        {job.content.substring(0, 100)}
       </p>
 
       {/* Area/Location */}
@@ -126,23 +127,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
       )}
 
       {/* Skills/Tags */}
-      {job.postTags && job.postTags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
-          {job.postTags.slice(0, 5).map((tag) => (
-            <span
-              key={tag.id}
-              className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full"
-            >
-              {tag.name}
-            </span>
-          ))}
-          {job.postTags.length > 5 && (
-            <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-sm rounded-full">
-              +{job.postTags.length - 5} more
-            </span>
-          )}
-        </div>
-      )}
+      <PostingTags tags={job.tags} language={job.language} />
 
       {/* Footer with Actions and Stats */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">

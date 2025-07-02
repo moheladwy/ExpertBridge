@@ -51,6 +51,9 @@ namespace ExpertBridge.Core.Queries
                     IsOnboarded = p.User.IsOnboarded,
                     CommentsUpvotes = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)),
                     CommentsDownvotes = p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
+                    Reputation = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
+                                    - p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
+
                 });
         }
 

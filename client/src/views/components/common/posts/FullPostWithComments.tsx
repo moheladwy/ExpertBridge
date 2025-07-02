@@ -32,6 +32,7 @@ import PostTimeStamp from "./PostTimeStamp";
 import { useGetSimilarPostsQuery } from "@/features/posts/postsSlice";
 import SimilarPosts from "./SimilarPosts";
 import EditPostModal from "./EditPostModal";
+import PostingTags from "../tags/PostingTags";
 
 interface FullPostWithCommentsProps {
   post: Post;
@@ -228,6 +229,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 
                   {/* Media */}
                   <MediaCarousel medias={post.medias} />
+
+                  {/* Tags */}
+                  <PostingTags tags={post.tags} language={post.language} />
 
                   {/* Post Voting */}
                   <PostVoteButtons post={post} />

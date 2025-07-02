@@ -28,6 +28,7 @@ public class ProfilesController : ControllerBase
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly AuthorizationHelper _authHelper;
     private readonly UserService _userService;
+    private readonly ProfileService _profileService;
     private readonly ChannelWriter<UserInterestsProsessingMessage> _channelWriter;
     private readonly IValidator<UpdateProfileRequest> _updateProfileRequestValidator;
 
@@ -36,13 +37,15 @@ public class ProfilesController : ControllerBase
         AuthorizationHelper authHelper,
         Channel<UserInterestsProsessingMessage> channel,
         IValidator<UpdateProfileRequest> updateProfileRequestValidator,
-        UserService userService)
+        UserService userService,
+        ProfileService profileService)
     {
         _dbContext = dbContext;
         _authHelper = authHelper;
         _channelWriter = channel.Writer;
         _updateProfileRequestValidator = updateProfileRequestValidator;
         _userService = userService;
+        _profileService = profileService;
     }
 
     [AllowAnonymous]
@@ -223,5 +226,30 @@ public class ProfilesController : ControllerBase
                     p => p.Username == username,
                     cancellationToken
             );
+    }
+
+    [AllowAnonymous]
+    [HttpGet("suggested")]
+    public async Task<List<ProfileResponse>> GetSuggestedProfiles(
+        [FromQuery] int? limit,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
+
+        var profiles = await _profileService.GetSimilarProfilesAsync(user?.Profile, limit ?? 5);
+
+        return profiles;
+    }
+
+    [AllowAnonymous]
+    [HttpGet("top-reputation")]
+    public async Task<List<ProfileResponse>> GetTopReputationProfiles(
+        [FromQuery] int? limit)
+    {
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
+
+        var profiles = await _profileService.GetTopReputationProfilesAsync(user?.Profile, limit ?? 5);
+
+        return profiles;
     }
 }

@@ -23,5 +23,6 @@ namespace ExpertBridge.Core.Responses
         public bool IsOnboarded { get; set; }
         public int CommentsUpvotes { get; set; }
         public int CommentsDownvotes { get; set; }
+        public int Reputation { get; set; }
     }
 }

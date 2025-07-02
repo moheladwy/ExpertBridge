@@ -114,6 +114,14 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 				}
 			},
 		}),
+
+		getSuggestedExperts: builder.query<ProfileResponse[], number>({
+			query: (limit) => `/profiles/suggested?limit=${limit}`,
+		}),
+
+		getTopReputationProfiles: builder.query<ProfileResponse[], number>({
+			query: (limit) => `/profiles/top-reputation?limit=${limit}`,
+		}),
 	}),
 });
 
@@ -123,5 +131,7 @@ export const {
 	useOnboardUserMutation,
 	useOnboardUserV2Mutation,
 	useIsUsernameAvailableMutation,
-	useUpdateProfileMutation
+	useUpdateProfileMutation,
+	useGetSuggestedExpertsQuery,
+	useGetTopReputationProfilesQuery,
 } = profilesApiSlice;

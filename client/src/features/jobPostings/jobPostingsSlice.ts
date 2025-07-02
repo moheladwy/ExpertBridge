@@ -108,6 +108,13 @@ export const jobPostingsApiSlice = apiSlice.injectEndpoints({
       ],
     }),
 
+    getSuggestedJobs: builder.query<SimilarJobsResponse[], number>({
+      query: (limit) => ({
+        url: `/jobPostings/suggested?limit=${limit}`,
+        method: 'GET',
+      }),
+    }),
+
     createJobPosting: builder.mutation<JobPosting, CreateJobPostingRequest>({
       query: (initialPosting) => ({
         url: "/jobPostings",
@@ -403,6 +410,7 @@ export const jobPostingsApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetJobPostingQuery,
   useGetSimilarJobsQuery,
+  useGetSuggestedJobsQuery,
   useGetJobsCursorInfiniteQuery,
   useCreateJobPostingMutation,
   useUpvoteJobPostingMutation,

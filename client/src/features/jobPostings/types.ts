@@ -1,5 +1,6 @@
 import { Comment } from "../comments/types";
 import { MediaObject, MediaObjectResponse, PresignedUrl } from "../media/types";
+import { Tag } from "../tags/types";
 import { AppUser, Author } from "../users/types";
 
 export interface JobPostingTag {
@@ -31,6 +32,7 @@ export interface JobPosting {
   content: string;
   author: Author;
   budget: number;
+  language?: string;
   area: string;
   createdAt: string;
   lastModified?: string | null;
@@ -41,7 +43,7 @@ export interface JobPosting {
   medias: MediaObjectResponse[]; // Adjust later if media structure is known
   relevanceScore?: number;
   comments: number;
-  postTags: JobPostingTag[];
+  tags: Tag[];
 }
 
 export interface JobPostingResponse {
@@ -50,6 +52,7 @@ export interface JobPostingResponse {
   content: string;
   author: Author;
   budget: number;
+  language?: string;
   area: string;
   createdAt: Date;
   lastModified?: Date | null;
@@ -60,7 +63,7 @@ export interface JobPostingResponse {
   medias: MediaObjectResponse[]; // Adjust later if media structure is known
   relevanceScore?: number;
   comments: number;
-  postTags: JobPostingTag[];
+  tags: Tag[];
 }
 
 export interface SimilarJobsResponse {
@@ -69,6 +72,8 @@ export interface SimilarJobsResponse {
   content: string;
   authorName: string;
   createdAt?: Date;
+  budget: number;
+  area: string;
   relevanceScore: number;
 }
 

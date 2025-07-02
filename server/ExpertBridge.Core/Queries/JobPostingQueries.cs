@@ -24,6 +24,8 @@ namespace ExpertBridge.Core.Queries
                 .Include(p => p.Votes)
                 .Include(p => p.Medias)
                 .Include(p => p.Comments)
+                .Include(p => p.JobPostingTags)
+                .ThenInclude(t => t.Tag)
                 //.ThenInclude(c => c.Author)
                 //.Include(p => p.Comments)
                 //.ThenInclude(c => c.Replies)
@@ -60,6 +62,8 @@ namespace ExpertBridge.Core.Queries
                 Content = p.Content,
                 Area = p.Area,
                 Budget = p.Budget,
+                Language = p.Language,
+                Tags = p.JobPostingTags.Select(pt => pt.Tag.SelectTagResponseFromTag()).ToList(),
                 Author = p.Author.SelectAuthorResponseFromProfile(),
                 CreatedAt = p.CreatedAt.Value,
                 LastModified = p.UpdatedAt,

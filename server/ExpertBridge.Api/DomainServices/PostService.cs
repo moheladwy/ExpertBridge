@@ -189,6 +189,51 @@ namespace ExpertBridge.Api.DomainServices
             return similarPosts;
         }
 
+        public async Task<List<SimilarPostsResponse>> GetSuggestedPostsAsync(
+                Profile? userProfile,
+                int limit,
+                CancellationToken cancellationToken = default)
+        {
+            var cacheKey = $"SuggestedPosts_{userProfile?.Id ?? "Anonymous"}_{limit}";
+
+            var similarPosts = await _cache.GetOrCreateAsync<List<SimilarPostsResponse>>(
+                cacheKey,
+                async (entry) =>
+                {
+                    var query = _dbContext.Posts
+                        .AsNoTracking()
+                        .AsQueryable();
+
+                    var userEmbedding = userProfile?.UserInterestEmbedding ?? Generator.GenerateRandomVector(1024);
+
+                    if (userProfile != null)
+                    {
+                        query = query.Where(p => p.AuthorId != userProfile.Id); // Exclude posts by the current user
+                    }
+
+                    var similarPostsQuery = await query
+                        .Where(p => p.Embedding != null)
+                        .OrderBy(p => p.Embedding.CosineDistance(userEmbedding))
+                        .Take(limit) // Limit to the specified number of similar posts or default to 5
+                        .Include(p => p.Author) // Include author for response mapping
+                        .Select(p => new SimilarPostsResponse
+                        {
+                            PostId = p.Id,
+                            Title = p.Title,
+                            Content = p.Content,
+                            AuthorName = $"{p.Author.FirstName} {p.Author.LastName}",
+                            CreatedAt = p.CreatedAt,
+                            RelevanceScore = p.Embedding.CosineDistance(userEmbedding)
+                        })
+                        .ToListAsync(entry);
+
+                    return similarPostsQuery;
+                },
+                cancellationToken: cancellationToken);
+
+            return similarPosts;
+        }
+
         public async Task<List<PostResponse>> GetAllPostsAsync(string? currentMaybeUserProfileId)
         {
             return await _dbContext.Posts

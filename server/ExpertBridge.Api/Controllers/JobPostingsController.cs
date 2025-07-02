@@ -91,6 +91,22 @@ namespace ExpertBridge.Api.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet("suggested")]
+        public async Task<ActionResult<List<SimilarJobsResponse>>> GetSuggestedJobs(
+        [FromQuery] int? limit,
+        CancellationToken cancellationToken = default)
+        {
+            var user = await _userService.GetCurrentUserPopulatedModelAsync();
+            var suggestedJobs = await _jobPostingService.GetSuggestedJobsAsync(
+                user?.Profile,
+                limit ?? 5, // Default to 5 if not provided
+                cancellationToken);
+
+            return suggestedJobs;
+        }
+
+
+        [AllowAnonymous]
         [HttpPost("feed")]
         [ResponseCache(NoStore = true)]
         public async Task<ActionResult<JobPostingsPaginatedResponse>> GetOffsetPaginated(

@@ -18,6 +18,8 @@ namespace ExpertBridge.Core.Queries
                 .Include(p => p.Votes)
                 .Include(p => p.Medias)
                 .Include(p => p.Comments)
+                .Include(p => p.PostTags)
+                .ThenInclude(pt => pt.Tag)
                 //.ThenInclude(c => c.Author)
                 //.Include(p => p.Comments)
                 //.ThenInclude(c => c.Replies)
@@ -52,6 +54,7 @@ namespace ExpertBridge.Core.Queries
 
                 Title = p.Title,
                 Content = p.Content,
+                Langauge = p.Language,
                 Author = p.Author.SelectAuthorResponseFromProfile(),
                 CreatedAt = p.CreatedAt.Value,
                 LastModified = p.UpdatedAt,
@@ -59,6 +62,7 @@ namespace ExpertBridge.Core.Queries
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),
                 Comments = p.Comments.Count,
+                Tags = p.PostTags.Select(pt => pt.Tag.SelectTagResponseFromTag()).ToList(),
                 Medias = p.Medias.AsQueryable().SelectMediaObjectResponse().ToList(),
             };
         }

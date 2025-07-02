@@ -1,5 +1,6 @@
 import { Comment } from "../comments/types";
 import { MediaObject, MediaObjectResponse, PresignedUrl } from "../media/types";
+import { Tag } from "../tags/types";
 import { AppUser, Author } from "../users/types";
 
 export interface PostTag {
@@ -30,6 +31,7 @@ export interface Post {
 	title: string;
 	content: string;
 	author: Author;
+	language?: string;
 	createdAt: string;
 	lastModified?: string | null;
 	upvotes: number;
@@ -39,7 +41,7 @@ export interface Post {
 	medias: MediaObjectResponse[]; // Adjust later if media structure is known
 	relevanceScore?: number;
 	comments: number;
-	postTags: PostTag[];
+	tags: Tag[];
 }
 
 export interface PostResponse {
@@ -47,6 +49,7 @@ export interface PostResponse {
 	title: string;
 	content: string;
 	author: Author;
+	language?: string;
 	createdAt: Date;
 	lastModified?: Date | null;
 	upvotes: number;
@@ -56,7 +59,7 @@ export interface PostResponse {
 	medias: MediaObjectResponse[]; // Adjust later if media structure is known
 	relevanceScore?: number;
 	comments: number;
-	postTags: PostTag[];
+	tags: Tag[];
 }
 
 export interface SimilarPostsResponse {

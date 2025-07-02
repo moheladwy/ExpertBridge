@@ -16,6 +16,7 @@ export type ProfileResponse = {
 	isOnboarded: boolean;
 	commentsUpvotes: number;
 	commentsDownvotes: number;
+	reputation: number;
 };
 
 export interface OnboardUserRequest {

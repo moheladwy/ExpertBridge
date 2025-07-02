@@ -122,6 +122,21 @@ public class PostsController : ControllerBase
         return similarPosts;
     }
 
+    [AllowAnonymous]
+    [HttpGet("suggested")]
+    public async Task<ActionResult<List<SimilarPostsResponse>>> GetSuggestedPosts(
+        [FromQuery] int? limit,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
+        var suggestedPosts = await _postService.GetSuggestedPostsAsync(
+            user?.Profile,
+            limit ?? 5, // Default to 5 if not provided
+            cancellationToken);
+
+        return suggestedPosts;
+    }
+
     /// <summary>
     ///     Get all posts.
     /// </summary>
