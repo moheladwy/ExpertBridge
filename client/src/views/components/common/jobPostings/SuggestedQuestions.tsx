@@ -26,7 +26,7 @@ const SuggestedQuestions = () => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sticky top-4">
-      <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+      <h3 className="text-lg text-center font-semibold mb-4 text-gray-900 dark:text-white">
         {isLoggedIn ? 'Questions You Might Answer' : 'Suggested Questions'}
       </h3>
       <div className="space-y-3">

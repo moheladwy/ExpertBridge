@@ -8,16 +8,21 @@ import { Trophy, Crown, Medal } from "lucide-react";
 import { Link } from "react-router";
 
 const TopReputationUsers = ({ limit = 5 }) => {
-  const { data, isLoading, isError, error, refetch } = useGetSuggestedExpertsQuery(limit);
+  const { data, isLoading, isError, error, refetch } =
+    useGetSuggestedExpertsQuery(limit);
 
   useRefetchOnLogin(refetch);
 
   const getRankIcon = (index: number) => {
     switch (index) {
-      case 0: return <Crown className="w-5 h-5 text-yellow-500" />;
-      case 1: return <Medal className="w-5 h-5 text-gray-400" />;
-      case 2: return <Medal className="w-5 h-5 text-amber-600" />;
-      default: return <Trophy className="w-4 h-4 text-blue-500" />;
+      case 0:
+        return <Crown className="w-5 h-5 text-yellow-500" />;
+      case 1:
+        return <Medal className="w-5 h-5 text-gray-400" />;
+      case 2:
+        return <Medal className="w-5 h-5 text-amber-600" />;
+      default:
+        return <Trophy className="w-4 h-4 text-blue-500" />;
     }
   };
 
@@ -27,9 +32,11 @@ const TopReputationUsers = ({ limit = 5 }) => {
       "bg-gradient-to-r from-gray-300 to-gray-500 text-white",
       "bg-gradient-to-r from-amber-400 to-amber-600 text-white",
       "bg-gradient-to-r from-blue-400 to-blue-600 text-white",
-      "bg-gradient-to-r from-purple-400 to-purple-600 text-white"
+      "bg-gradient-to-r from-purple-400 to-purple-600 text-white",
     ];
-    return badges[index] || "bg-gradient-to-r from-gray-400 to-gray-600 text-white";
+    return (
+      badges[index] || "bg-gradient-to-r from-gray-400 to-gray-600 text-white"
+    );
   };
 
   if (isLoading) {
@@ -48,7 +55,12 @@ const TopReputationUsers = ({ limit = 5 }) => {
                 <Skeleton variant="text" width="70%" height={20} />
                 <Skeleton variant="text" width="50%" height={16} />
               </div>
-              <Skeleton variant="rectangular" width={60} height={24} className="rounded-full" />
+              <Skeleton
+                variant="rectangular"
+                width={60}
+                height={24}
+                className="rounded-full"
+              />
             </div>
           ))}
         </div>
@@ -69,10 +81,10 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl">
-      <div className="p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+      <div className="p-6 border-b text-center border-gray-100 dark:border-gray-700 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20">
+        <div className="flex items-center justify-center text-center">
+          <div className="flex text-center justify-center items-center gap-3">
+            <h3 className="font-semibold justify-center text-center text-gray-900 dark:text-white">
               Experts in Your Area of Interest
             </h3>
           </div>
@@ -82,7 +94,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
       <div className="p-6">
         <div className="space-y-4">
           {data?.map((user: ProfileResponse, index) => (
-            <Link to={`/profile/${user.id}`} >
+            <Link to={`/profile/${user.id}`}>
               <div
                 key={user.id}
                 className="group flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer relative overflow-hidden"
@@ -124,10 +136,9 @@ const TopReputationUsers = ({ limit = 5 }) => {
           ))}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-        </div>
+        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700"></div>
       </div>
-    </div >
+    </div>
   );
 };
 
