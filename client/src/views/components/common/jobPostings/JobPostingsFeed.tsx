@@ -8,6 +8,11 @@ import { useGetJobsCursorInfiniteQuery } from '@/features/jobPostings/jobPosting
 import CreateJobModal from './CreateJobModal';
 import { JobPosting, JobPostingPaginatedResponse } from '@/features/jobPostings/types';
 import JobPostingCard from './JobPostingCard';
+import SuggestedQuestions from './SuggestedQuestions';
+import SuggestedExperts from '../profile/SuggestedExperts';
+import TopReputationUsers from '../profile/TopReputationUsers';
+import { TrendingUp, Clock, DollarSign, Sparkles, Heart, Briefcase } from 'lucide-react';
+import { StringifyOptions } from 'querystring';
 
 const limit = 10;
 
@@ -29,7 +34,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
     isFetchingNextPage,
     refetch,
   } = useGetJobsCursorInfiniteQuery(
-    undefined, // query param
+    undefined,
     {
       initialPageParam: {
         pageSize: limit,
@@ -50,7 +55,6 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
   };
 
   const afterRef = useCallbackOnIntersection(fetchNextPage);
-
   const startingJobRef = useRef<HTMLDivElement>(null);
   const [hasCentered, setHasCentered] = useState<boolean>(false);
 
@@ -67,138 +71,222 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
   }, [data?.pages, hasCentered]);
 
   const [, , , , appUser] = useIsUserLoggedIn();
-
   useRefetchOnLogin(refetch);
 
+  const getFilterIcon = (filterName: string) => {
+    switch (filterName) {
+      case "Recommended": return <Sparkles className="w-4 h-4" />;
+      case "Recent": return <Clock className="w-4 h-4" />;
+      case "Highest Budget": return <DollarSign className="w-4 h-4" />;
+      case "Most Engaged": return <Heart className="w-4 h-4" />;
+      default: return null;
+    }
+  };
+
   const applyFilter = (page: JobPostingPaginatedResponse) => {
-    const filteredJobs = [...page.jobPostings]; // Create a copy to avoid mutating original data
+    const filteredJobs = [...page.jobPostings];
 
     if (filter === "Recent") {
-      // Sort by creation date (newest first)
       filteredJobs.sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
         return dateB - dateA;
       });
     } else if (filter === "Highest Budget") {
-      // Sort by budget (highest first)
       filteredJobs.sort((a, b) => b.budget - a.budget);
     } else if (filter === "Most Engaged") {
-      // Sort by engagement (upvotes + downvotes + comments)
       filteredJobs.sort((a, b) => {
         const aEngagement = a.upvotes + a.downvotes + (a.comments || 0);
         const bEngagement = b.upvotes + b.downvotes + (b.comments || 0);
         return bEngagement - aEngagement;
       });
     }
-    // "Recommended" uses the default order from the API
 
     return filteredJobs;
   };
 
   if (!data?.pages.length || data?.pages.length < 1) {
-    return null;
-  }
-
-  return (
-    <div className="flex flex-col w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full dark:bg-gray-900 dark:text-white">
-      <CreateJobModal />
-
-      <div className="flex justify-center">
-        <ToggleButtonGroup
-          color="primary"
-          value={filter}
-          exclusive
-          onChange={handleFilterChange}
-          aria-label="Job Filter"
-          className="bg-white dark:bg-gray-800 rounded-lg"
-        >
-          <ToggleButton
-            value="Recommended"
-            className="dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            Recommended
-          </ToggleButton>
-          <ToggleButton
-            value="Recent"
-            className="dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            Recent
-          </ToggleButton>
-          <ToggleButton
-            value="Highest Budget"
-            className="dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            Highest Budget
-          </ToggleButton>
-          <ToggleButton
-            value="Most Engaged"
-            className="dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
-          >
-            Most Engaged
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </div>
-
-      {isLoading ? (
-        <LoadingSkeleton count={7} />
-      ) : isError ? (
-        <div className="flex justify-center text-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
-          <p>Error: {error?.message || 'Failed to load job postings'}</p>
-        </div>
-      ) : null}
-
-      {isLoading ? (
-        <LoadingSkeleton count={7} />
-      ) : (
-        <>
-          <div className="space-y-6">
-            {data?.pages.map((page: JobPostingPaginatedResponse, index) => {
-              const filteredJobs = applyFilter(page);
-              
-              return (
-                <React.Fragment key={page.pageInfo?.endCursor ?? `job-page-${index}`}>
-                  {filteredJobs.map((job) => (
-                    <div
-                      key={job.id}
-                      ref={job.id === startingJob.id ? startingJobRef : null}
-                    >
-                      <JobPostingCard job={job} currUserId={appUser?.id} />
-                    </div>
-                  ))}
-                </React.Fragment>
-              );
-            })}
-
-            <div ref={afterRef}>
-              {isFetchingNextPage ? <LoadingSkeleton count={3} /> : null}
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="flex gap-8 max-w-7xl mx-auto p-6">
+          {/* Left Sidebar */}
+          <div className="w-80 max-xl:w-72 max-lg:hidden">
+            <div className="sticky top-24 space-y-6">
+              <SuggestedExperts />
+              <TopReputationUsers />
             </div>
           </div>
 
-          {!isFetchingNextPage && (
-            <div className="flex justify-center">
-              <button
-                onClick={() => fetchNextPage()}
-                disabled={!hasNextPage || isFetchingNextPage}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${hasNextPage && !isFetchingNextPage
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                  }`}
-              >
-                {isFetchingNextPage
-                  ? "Loading more jobs..."
-                  : hasNextPage
-                    ? "Load More Jobs"
-                    : "You've reached the end of available jobs!"}
-              </button>
+          {/* Main Content - Loading */}
+          <div className="flex-1 max-w-2xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+              <div className="text-center">
+                <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Loading Job Opportunities
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Please wait while we fetch the latest job postings...
+                </p>
+              </div>
             </div>
-          )}
+          </div>
 
-          {isFetching && !isFetchingNextPage ? (
-            <LoadingSkeleton count={2} />
-          ) : null}
-        </>
-      )}
+          {/* Right Sidebar */}
+          <div className="w-80 max-xl:w-72 max-lg:hidden">
+            <div className="sticky top-24">
+              <SuggestedQuestions />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex gap-8 max-w-7xl mx-auto p-6">
+        {/* Left Sidebar - Users */}
+        <div className="w-80 max-xl:w-72 max-lg:hidden">
+          <div className="sticky top-24 space-y-6">
+            <SuggestedExperts />
+            <TopReputationUsers />
+          </div>
+        </div>
+
+        {/* Main Jobs Feed Content */}
+        <div className="flex-1 max-w-2xl mx-auto space-y-6">
+          {/* Create Job Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <CreateJobModal />
+          </div>
+
+          {/* Filter Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg">
+                  <Briefcase className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Job Opportunities
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Discover your next career move
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
+                {["Recommended", "Recent", "Highest Budget", "Most Engaged"].map((filterOption) => (
+                  <button
+                    key={filterOption}
+                    onClick={() => setFilter(filterOption)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                      filter === filterOption
+                        ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-md'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-white/50 dark:hover:bg-gray-600/50'
+                    }`}
+                  >
+                    {getFilterIcon(filterOption)}
+                    <span className="hidden sm:inline">{filterOption}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Jobs Section */}
+          {isLoading ? (
+            <div className="space-y-6">
+              <LoadingSkeleton count={7} />
+            </div>
+          ) : isError ? (
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-100 dark:border-red-900 p-8">
+              <div className="text-center">
+                <div className="text-red-400 text-4xl mb-4">⚠️</div>
+                <div className="text-red-600 dark:text-red-400 font-medium">
+                  Unable to load job postings
+                </div>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                  {error?.message || 'Failed to load job postings'}
+                </p>
+                <button 
+                  onClick={() => refetch()}
+                  className="mt-4 px-6 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-6">
+                {data?.pages.map((page: JobPostingPaginatedResponse, pageIndex) => {
+                  const filteredJobs = applyFilter(page);
+                  
+                  return (
+                    <React.Fragment key={page.pageInfo?.endCursor ?? `job-page-${pageIndex}`}>
+                      {filteredJobs.map((job, jobIndex) => (
+                        <div
+                          key={job.id}
+                          ref={job.id === startingJob.id ? startingJobRef : null}
+                          className="animate-fade-in"
+                          style={{ animationDelay: `${jobIndex * 100}ms` }}
+                        >
+                          <JobPostingCard job={job} currUserId={appUser?.id} />
+                        </div>
+                      ))}
+                    </React.Fragment>
+                  );
+                })}
+
+                <div ref={afterRef}>
+                  {isFetchingNextPage && (
+                    <div className="space-y-6">
+                      <LoadingSkeleton count={3} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {!isFetchingNextPage && (
+                <div className="flex justify-center pt-8">
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                    className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
+                      hasNextPage && !isFetchingNextPage
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {isFetchingNextPage
+                      ? "Loading more opportunities..."
+                      : hasNextPage
+                        ? "Discover More Jobs"
+                        : "🎯 You've explored all available opportunities! Check back soon for new listings."}
+                  </button>
+                </div>
+              )}
+
+              {isFetching && !isFetchingNextPage && (
+                <div className="space-y-6">
+                  <LoadingSkeleton count={2} />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Right Sidebar - Suggested Questions */}
+        <div className="w-80 max-xl:w-72 max-lg:hidden">
+          <div className="sticky top-24">
+            <SuggestedQuestions />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

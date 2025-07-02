@@ -40,6 +40,7 @@ import JobPostingVoteButtons from "./JobPostingVoteButtons";
 import EditJobPostingModal from "./EditJobPostingModal";
 import SimilarJobs from "./SimilarJobs";
 import JobPostingCommentsSection from "../comments/JobPostingCommentsSection";
+import PostingTags from "../tags/PostingTags";
 
 interface FullJobPostingWithCommentsProps {
   jobPosting: JobPosting;
@@ -284,21 +285,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
                         <span className="text-lg">{jobPosting.area}</span>
                       </div>
                     )}
-
-                    {/* Skills/Tags */}
-                    {jobPosting.postTags && jobPosting.postTags.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {jobPosting.postTags.map((tag) => (
-                          <span
-                            key={tag.id}
-                            className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full font-medium"
-                          >
-                            {tag.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
+                    
                     {/* Job Description */}
                     <div className="break-words">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -314,6 +301,9 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 
                     {/* Media */}
                     <MediaCarousel medias={jobPosting.medias} />
+
+                    {/* Tags */}
+                    <PostingTags tags={jobPosting.tags} language={jobPosting.language} />
 
                     {/* Job Posting Voting */}
                     <JobPostingVoteButtons jobPosting={jobPosting} />

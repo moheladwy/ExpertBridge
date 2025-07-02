@@ -8,6 +8,10 @@ import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { useCallbackOnIntersection } from "@/hooks/useCallbackOnIntersection";
 import { PostsCursorPaginatedResponse } from "@/features/posts/types";
 import { ToggleButtonGroup, ToggleButton } from "@mui/material";
+import SuggestedJobs from "./SuggestedJobs";
+import SuggestedExperts from "../profile/SuggestedExperts";
+import TopReputationUsers from "../profile/TopReputationUsers";
+import { TrendingUp, Clock, ThumbsUp, Sparkles } from "lucide-react";
 
 const limit = 10;
 
@@ -23,7 +27,7 @@ const Feed = ({ startingPost = { id: null } }) => {
     isFetchingNextPage,
     refetch,
   } = useGetPostsCursorInfiniteQuery(
-    undefined, // query param
+    undefined,
     {
       initialPageParam: {
         pageSize: limit,
@@ -38,11 +42,12 @@ const Feed = ({ startingPost = { id: null } }) => {
     event: React.MouseEvent<HTMLElement>,
     newFilter: string,
   ) => {
-    setFilter(newFilter);
+    if (newFilter) {
+      setFilter(newFilter);
+    }
   };
 
   const afterRef = useCallbackOnIntersection(fetchNextPage);
-
   const startingPostRef = useRef<HTMLDivElement>(null);
   const [hasCentered, setHasCentered] = useState<boolean>(false);
 
@@ -58,131 +63,155 @@ const Feed = ({ startingPost = { id: null } }) => {
     }
   }, [data?.pages, hasCentered]);
 
-  // const {
-  //   data: posts,
-  //   isFetching: postsLoading,
-  //   isSuccess: postsSuccess,
-  //   isError: postsError,
-  //   error: postsErrorMessage,
-  //   refetch
-  // } = useGetPostsQuery();
-
-  useEffect(() => {
-    console.log("feed mounting...");
-  }, []);
-
-  // const orderedPostIds: string[] = useAppSelector(selectPostIds);
   const [, , , , appUser] = useIsUserLoggedIn();
-
   useRefetchOnLogin(refetch);
 
+  const getFilterIcon = (filterName: string) => {
+    switch (filterName) {
+      case "Recommended": return <Sparkles className="w-4 h-4" />;
+      case "Recent": return <Clock className="w-4 h-4" />;
+      case "Most Upvoted": return <ThumbsUp className="w-4 h-4" />;
+      case "Trending": return <TrendingUp className="w-4 h-4" />;
+      default: return null;
+    }
+  };
+
   return (
-    <div className="flex flex-col w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full dark:bg-gray-900 dark:text-white">
-      <CreatePostModal />
-      
-      <div className="flex justify-center">
-        <ToggleButtonGroup
-          color="primary"
-          value={filter}
-          exclusive
-          onChange={handleChange}
-          aria-label="Platform"
-        >
-          <ToggleButton value="Recommended" className="dark:text-white">
-            Recommended
-          </ToggleButton>
-          <ToggleButton value="Recent" className="dark:text-white">
-            Recent
-          </ToggleButton>
-          <ToggleButton value="Most Upvoted" className="dark:text-white">
-            Most Upvoted
-          </ToggleButton>
-          <ToggleButton value="Trending" className="dark:text-white">
-            Trending
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </div>
-      {isLoading ? (
-        <LoadingSkeleton count={7} />
-      ) : isError ? (
-        <div className="flex justify-center text-red-500">
-          Error: {error.message}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex gap-8 max-w-7xl mx-auto p-6">
+        {/* Left Sidebar - Users */}
+        <div className="w-80 max-xl:w-72 max-lg:hidden">
+          <div className="sticky top-24 space-y-6">
+            <SuggestedExperts />
+            <TopReputationUsers />
+          </div>
         </div>
-      ) : null}
 
-      {isLoading ? (
-        <LoadingSkeleton count={7} />
-      ) : (
-        <>
-          <div className="space-y-4">
-            {data?.pages.map((page: PostsCursorPaginatedResponse) => {
-              // Apply filters to posts
-              const filteredPosts = [...page.posts]; // Create a copy to avoid mutating original data
+        {/* Main Feed Content */}
+        <div className="flex-1 max-w-2xl mx-auto space-y-6">
+          {/* Create Post Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <CreatePostModal />
+          </div>
 
-              if (filter === "Recent") {
-                // Sort by creation date (newest first)
-                filteredPosts.sort((a, b) => {
-                  const dateA = new Date(a.createdAt).getTime();
-                  const dateB = new Date(b.createdAt).getTime();
-                  return dateB - dateA;
-                });
-              } else if (filter === "Most Upvoted") {
-                // Sort by net votes (upvotes - downvotes)
-                filteredPosts.sort(
-                  (a, b) => b.upvotes - b.downvotes - (a.upvotes - a.downvotes),
-                );
-              } else if (filter === "Trending") {
-                // Sort by engagement (upvotes + downvotes + comments)
-                filteredPosts.sort((a, b) => {
-                  const aEngagement =
-                    a.upvotes + a.downvotes + (a.comments || 0);
-                  const bEngagement =
-                    b.upvotes + b.downvotes + (b.comments || 0);
-                  return bEngagement - aEngagement;
-                });
-              }
-              // "Recommended for you" uses the default order from the API
-
-              return (
-                <React.Fragment key={page.pageInfo?.endCursor ?? "123"}>
-                  {filteredPosts.map((post) => (
-                    <div
-                      key={post.id}
-                      ref={post.id === startingPost.id ? startingPostRef : null}
-                    >
-                      <PostCard post={post} currUserId={appUser?.id} />
-                    </div>
-                  ))}
-                </React.Fragment>
-              );
-            })}
-
-            <div ref={afterRef}>
-              {isFetchingNextPage ? <LoadingSkeleton count={7} /> : null}
+          {/* Filter Section */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Your Feed
+              </h2>
+              
+              <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
+                {["Recommended", "Recent", "Most Upvoted", "Trending"].map((filterOption) => (
+                  <button
+                    key={filterOption}
+                    onClick={() => setFilter(filterOption)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      filter === filterOption
+                        ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-md'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/50 dark:hover:bg-gray-600/50'
+                    }`}
+                  >
+                    {getFilterIcon(filterOption)}
+                    <span className="hidden sm:inline">{filterOption}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <LoadingSkeleton count={3} />
+          {/* Posts Section */}
+          {isLoading ? (
+            <div className="space-y-6">
+              <LoadingSkeleton count={7} />
+            </div>
+          ) : isError ? (
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-100 dark:border-red-900 p-8">
+              <div className="text-center">
+                <div className="text-red-400 text-4xl mb-4">⚠️</div>
+                <div className="text-red-600 dark:text-red-400 font-medium">
+                  Unable to load posts
+                </div>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                  Please try refreshing the page
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-6">
+                {data?.pages.map((page: PostsCursorPaginatedResponse) => {
+                  const filteredPosts = [...page.posts];
+                  if (filter === "Recent") {
+                    filteredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                  } else if (filter === "Most Upvoted") {
+                    filteredPosts.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+                  } else if (filter === "Trending") {
+                    filteredPosts.sort((a, b) => (b.upvotes + b.downvotes + (b.comments || 0)) - (a.upvotes + a.downvotes + (a.comments || 0)));
+                  }
 
-          <div>
-            <button
-              onClick={() => fetchNextPage()}
-              disabled={!hasNextPage || isFetchingNextPage}
-            >
-              {isFetchingNextPage
-                ? "Loading more..."
-                : hasNextPage
-                  ? "Load Newer"
-                  : "You have reached the end of your Feed!"}
-            </button>
+                  return (
+                    <React.Fragment key={page.pageInfo?.endCursor ?? "123"}>
+                      {filteredPosts.map((post, index) => (
+                        <div 
+                          key={post.id} 
+                          ref={post.id === startingPost.id ? startingPostRef : null}
+                          className="animate-fade-in"
+                          style={{ animationDelay: `${index * 100}ms` }}
+                        >
+                          <PostCard post={post} currUserId={appUser?.id} />
+                        </div>
+                      ))}
+                    </React.Fragment>
+                  );
+                })}
+
+                <div ref={afterRef}>
+                  {isFetchingNextPage && (
+                    <div className="space-y-6">
+                      <LoadingSkeleton count={3} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {!isFetchingNextPage && (
+                <div className="flex justify-center pt-8">
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={!hasNextPage || isFetchingNextPage}
+                    className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
+                      hasNextPage && !isFetchingNextPage
+                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {isFetchingNextPage 
+                      ? "Loading more posts..." 
+                      : hasNextPage 
+                        ? "Load More Posts" 
+                        : "🎉 You've reached the end! Great job staying connected."
+                    }
+                  </button>
+                </div>
+              )}
+
+              {isFetching && !isFetchingNextPage && (
+                <div className="space-y-6">
+                  <LoadingSkeleton count={2} />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Right Sidebar - Jobs */}
+        <div className="w-80 max-xl:w-72 max-lg:hidden">
+          <div className="sticky top-24">
+            <SuggestedJobs />
           </div>
-          <div>
-            {isFetching && !isFetchingNextPage ? (
-              <LoadingSkeleton count={3} />
-            ) : null}
-          </div>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };

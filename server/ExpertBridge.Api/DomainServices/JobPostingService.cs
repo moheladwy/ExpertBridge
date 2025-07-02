@@ -30,6 +30,7 @@ namespace ExpertBridge.Api.DomainServices
     {
         private readonly ExpertBridgeDbContext _dbContext;
         private readonly MediaAttachmentService _mediaService;
+        private readonly TaggingService _taggingService;
         private readonly NotificationFacade _notificationFacade;
         private readonly HybridCache _cache;
         private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingChannel;
@@ -38,6 +39,7 @@ namespace ExpertBridge.Api.DomainServices
         public JobPostingService(
             ExpertBridgeDbContext dbContext,
             MediaAttachmentService mediaService,
+            TaggingService taggingService,
             NotificationFacade notificationFacade,
             Channel<PostProcessingPipelineMessage> postProcessingChannel,
             HybridCache cache,
@@ -45,6 +47,7 @@ namespace ExpertBridge.Api.DomainServices
         {
             _dbContext = dbContext;
             _mediaService = mediaService;
+            _taggingService = taggingService;
             _notificationFacade = notificationFacade;
             _cache = cache;
             _postProcessingChannel = postProcessingChannel.Writer;
@@ -235,6 +238,53 @@ namespace ExpertBridge.Api.DomainServices
             return similarPosts;
         }
 
+        public async Task<List<SimilarJobsResponse>> GetSuggestedJobsAsync(
+                Profile? userProfile,
+                int limit,
+                CancellationToken cancellationToken = default)
+        {
+            var cacheKey = $"SuggestedJobs_{userProfile?.Id ?? "Anonymous"}_{limit}";
+
+            var similarJobs = await _cache.GetOrCreateAsync<List<SimilarJobsResponse>>(
+                cacheKey,
+                async (entry) =>
+                {
+                    var query = _dbContext.JobPostings
+                        .AsNoTracking()
+                        .AsQueryable();
+
+                    var userEmbedding = userProfile?.UserInterestEmbedding ?? Generator.GenerateRandomVector(1024);
+
+                    if (userProfile != null)
+                    {
+                        query = query.Where(p => p.AuthorId != userProfile.Id); // Exclude posts by the current user
+                    }
+
+                    var similarJobsQuery = await query
+                        .Where(p => p.Embedding != null)
+                        .OrderBy(p => p.Embedding.CosineDistance(userEmbedding))
+                        .Take(limit) // Limit to the specified number of similar posts or default to 5
+                        .Include(p => p.Author) // Include author for response mapping
+                        .Select(p => new SimilarJobsResponse
+                        {
+                            JobPostingId = p.Id,
+                            Title = p.Title,
+                            Content = p.Content,
+                            AuthorName = $"{p.Author.FirstName} {p.Author.LastName}",
+                            CreatedAt = p.CreatedAt,
+                            Area = p.Area,
+                            Budget = p.Budget,
+                            RelevanceScore = p.Embedding.CosineDistance(userEmbedding)
+                        })
+                        .ToListAsync(entry);
+
+                    return similarJobsQuery;
+                },
+                cancellationToken: cancellationToken);
+
+            return similarJobs;
+        }
+
         public async Task<JobPostingResponse> EditJopPostingAsync(
             string postingId,
             EditJobPostingRequest request,
@@ -349,6 +399,8 @@ namespace ExpertBridge.Api.DomainServices
 
             var jobPosting = await _dbContext.JobPostings
                 .Include(p => p.Author) // For notification to post author
+                .Include(p => p.JobPostingTags) // Include tags for tagging service
+                .ThenInclude(pt => pt.Tag)
                 .FirstOrDefaultAsync(p => p.Id == postingId);
 
             if (jobPosting == null)
@@ -373,6 +425,10 @@ namespace ExpertBridge.Api.DomainServices
                 };
 
                 await _dbContext.JobPostingVotes.AddAsync(vote);
+                await _taggingService.AddTagsToUserProfileAsync(
+                    voterProfile.Id,
+                    jobPosting.JobPostingTags.Select(pt => pt.Tag)
+                );
             }
             else
             {

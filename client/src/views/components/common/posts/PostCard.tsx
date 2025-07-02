@@ -34,6 +34,7 @@ import EditPostModal from "./EditPostModal";
 import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
 import { Post } from "@/features/posts/types";
+import PostingTags from "../tags/PostingTags";
 
 interface PostCardProps {
 	post: Post;
@@ -41,11 +42,6 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
-	// const memoizedPostId = useMemo(() => postId, [postId]);
-	// const post = useAppSelector((state) =>
-	// 	selectPostById(state, memoizedPostId)
-	// );
-
 	const memoizedPost = useMemo(() => post, [post]);
 
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
@@ -84,24 +80,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 	const handleDeletePost = async () => {
 		await deletePost(memoizedPost.id);
 	};
-
-	// let media;
-	//Manage diffrent media typs
-	// if (post.medias?.length > 0) {
-	// 	if (post.medias[0].type.startsWith("image")) {
-	// 		media = (
-	// 			<img
-	// 				src={post.medias[0].url!}
-	// 				alt="Post content"
-	// 				onClick={handleOpen}
-	// 			/>
-	// 		);
-	// 	} else if (post.medias[0].type.startsWith("video")) {
-	// 		media = <ReactPlayer url={post.medias[0].url!} controls />;
-	// 	}
-	// }
-
-	// console.log(post);
 
 	return (
 		<>
@@ -239,7 +217,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 							className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap"
 							dir="auto"
 						>
-							{memoizedPost.content}
+							{memoizedPost.content.substring(0, 100)}
 						</p>
 					</div>
 				</Link>
@@ -249,20 +227,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 
 				{/* Post Metadata */}
 				{/* Tags */}
-				{memoizedPost.postTags?.length > 0 && (
-					<div className="flex space-x-2">
-						{memoizedPost.postTags.map(
-							(tag: any, index: number) => (
-								<span
-									key={index}
-									className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-1 rounded-full"
-								>
-									{tag.name}
-								</span>
-							)
-						)}
-					</div>
-				)}
+				<PostingTags tags={memoizedPost.tags} language={memoizedPost.language} />
 
 				{/* Interactions */}
 				<div className="flex justify-between items-center">

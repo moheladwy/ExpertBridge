@@ -16,6 +16,8 @@ namespace ExpertBridge.Core.Responses
         public string Content { get; set; }
         public string AuthorName { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public decimal Budget { get; set; }
+        public string Area { get; set; }
         public double RelevanceScore { get; set; }
     }
 }

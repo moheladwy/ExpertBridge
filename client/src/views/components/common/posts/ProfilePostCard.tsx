@@ -65,9 +65,9 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 
         {/* Post Metadata */}
         {/* Tags */}
-        {post.postTags?.length > 0 && (
+        {post.tags?.length > 0 && (
             <div className="flex space-x-2">
-              {post.postTags.map((tag: any, index: number) => (
+              {post.tags.map((tag: any, index: number) => (
                   <span
                       key={index}
                       className="text-xs bg-gray-200 dark:bg-gray-700 dark:text-gray-200 px-2 py-1 rounded-full"

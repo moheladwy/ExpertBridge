@@ -102,6 +102,13 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 			},
 		}),
 
+		getSuggestedPosts: builder.query<SimilarPostsResponse[], number>({
+			query: (limit) => ({
+				url: `/posts/suggested?limit=${limit}`,
+				method: 'GET'
+			}),
+		}),
+
 		// (DEPRECATED)
 		getPosts: builder.query<PostsState, void>({
 			query: () => "/posts",
@@ -433,6 +440,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 export const {
 	useGetPostQuery,
 	useGetSimilarPostsQuery,
+	useGetSuggestedPostsQuery,
 	useGetPostsQuery,
 	useGetPostsCursorInfiniteQuery,
 	useCreatePostMutation,

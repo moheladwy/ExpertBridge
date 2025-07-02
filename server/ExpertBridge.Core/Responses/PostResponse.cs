@@ -8,6 +8,7 @@ public record PostResponse
     public string Id { get; set; }
     public required string Title { get; set; }
     public required string Content { get; set; }
+    public string? Langauge { get; set; }
     public AuthorResponse? Author { get; set; }
     public DateTime? CreatedAt { get; set; }
     public DateTime? LastModified { get; set; }
@@ -18,4 +19,5 @@ public record PostResponse
     public bool IsDownvoted { get; set; }
     public double? RelevanceScore { get; set; }
     public List<MediaObjectResponse>? Medias { get; set; }
+    public List<TagResponse>? Tags { get; set; }
 }

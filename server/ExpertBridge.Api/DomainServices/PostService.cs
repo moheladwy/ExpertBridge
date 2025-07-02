@@ -14,6 +14,7 @@ using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 
@@ -31,6 +32,7 @@ namespace ExpertBridge.Api.DomainServices
         private readonly ExpertBridgeDbContext _dbContext;
         private readonly UserService _userService; // Or your specific UserService implementation
         private readonly MediaAttachmentService _mediaService;
+        private readonly TaggingService _taggingService;
         private readonly NotificationFacade _notificationFacade;
         private readonly ChannelWriter<PostProcessingPipelineMessage> _postProcessingChannel;
         private readonly ILogger<PostService> _logger;
@@ -40,6 +42,7 @@ namespace ExpertBridge.Api.DomainServices
             ExpertBridgeDbContext dbContext,
             UserService userService, // Or your UserService
             MediaAttachmentService mediaService,
+            TaggingService taggingService,
             NotificationFacade notificationFacade,
             Channel<PostProcessingPipelineMessage> postProcessingChannel,
             ILogger<PostService> logger,
@@ -48,6 +51,7 @@ namespace ExpertBridge.Api.DomainServices
             _dbContext = dbContext;
             _userService = userService;
             _mediaService = mediaService;
+            _taggingService = taggingService;
             _notificationFacade = notificationFacade;
             _postProcessingChannel = postProcessingChannel.Writer;
             _logger = logger;
@@ -179,6 +183,51 @@ namespace ExpertBridge.Api.DomainServices
                             AuthorName = $"{p.Author.FirstName} {p.Author.LastName}",
                             CreatedAt = p.CreatedAt,
                             RelevanceScore = p.Embedding.CosineDistance(currentPostEmbeddings)
+                        })
+                        .ToListAsync(entry);
+
+                    return similarPostsQuery;
+                },
+                cancellationToken: cancellationToken);
+
+            return similarPosts;
+        }
+
+        public async Task<List<SimilarPostsResponse>> GetSuggestedPostsAsync(
+                Profile? userProfile,
+                int limit,
+                CancellationToken cancellationToken = default)
+        {
+            var cacheKey = $"SuggestedPosts_{userProfile?.Id ?? "Anonymous"}_{limit}";
+
+            var similarPosts = await _cache.GetOrCreateAsync<List<SimilarPostsResponse>>(
+                cacheKey,
+                async (entry) =>
+                {
+                    var query = _dbContext.Posts
+                        .AsNoTracking()
+                        .AsQueryable();
+
+                    var userEmbedding = userProfile?.UserInterestEmbedding ?? Generator.GenerateRandomVector(1024);
+
+                    if (userProfile != null)
+                    {
+                        query = query.Where(p => p.AuthorId != userProfile.Id); // Exclude posts by the current user
+                    }
+
+                    var similarPostsQuery = await query
+                        .Where(p => p.Embedding != null)
+                        .OrderBy(p => p.Embedding.CosineDistance(userEmbedding))
+                        .Take(limit) // Limit to the specified number of similar posts or default to 5
+                        .Include(p => p.Author) // Include author for response mapping
+                        .Select(p => new SimilarPostsResponse
+                        {
+                            PostId = p.Id,
+                            Title = p.Title,
+                            Content = p.Content,
+                            AuthorName = $"{p.Author.FirstName} {p.Author.LastName}",
+                            CreatedAt = p.CreatedAt,
+                            RelevanceScore = p.Embedding.CosineDistance(userEmbedding)
                         })
                         .ToListAsync(entry);
 
@@ -465,13 +514,17 @@ namespace ExpertBridge.Api.DomainServices
             return true;
         }
 
-        public async Task<PostResponse> VotePostAsync(string postId, Profile voterProfile, bool isUpvoteIntent)
+        public async Task<PostResponse> VotePostAsync(
+            string postId, Profile voterProfile,
+            bool isUpvoteIntent)
         {
             ArgumentException.ThrowIfNullOrEmpty(postId);
             ArgumentNullException.ThrowIfNull(voterProfile);
 
             var post = await _dbContext.Posts
                 .Include(p => p.Author) // For notification to post author
+                .Include(p => p.PostTags)
+                .ThenInclude(t => t.Tag)
                 .FirstOrDefaultAsync(p => p.Id == postId);
 
             if (post == null)
@@ -496,6 +549,10 @@ namespace ExpertBridge.Api.DomainServices
                 };
 
                 await _dbContext.PostVotes.AddAsync(vote);
+                await _taggingService.AddTagsToUserProfileAsync(
+                    voterProfile.Id,
+                    post.PostTags.Select(pt => pt.Tag)
+                );
             }
             else
             {
