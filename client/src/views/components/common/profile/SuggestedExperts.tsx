@@ -93,10 +93,6 @@ const TopReputationUsers = ({ limit = 5 }) => {
                 )}
 
                 <div className="relative flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${getRankBadge(index)} shadow-md`}>
-                    {index + 1}
-                  </div>
-
                   <div className="relative">
                     <Avatar
                       src={user.profilePictureUrl}
