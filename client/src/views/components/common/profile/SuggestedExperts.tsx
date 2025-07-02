@@ -37,9 +37,6 @@ const TopReputationUsers = ({ limit = 5 }) => {
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="p-6 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
-              <Trophy className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-            </div>
             <Skeleton variant="text" width={120} height={24} />
           </div>
         </div>
@@ -105,11 +102,6 @@ const TopReputationUsers = ({ limit = 5 }) => {
                       src={user.profilePictureUrl}
                       className="w-12 h-12 ring-2 ring-white dark:ring-gray-700 shadow-md group-hover:ring-yellow-200 dark:group-hover:ring-yellow-700 transition-all duration-200"
                     />
-                    {index < 3 && (
-                      <div className="absolute -top-1 -right-1">
-                        {getRankIcon(index)}
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -118,11 +110,6 @@ const TopReputationUsers = ({ limit = 5 }) => {
                     <h4 className="font-medium text-gray-900 dark:text-white truncate group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
                       {user.firstName} {user.lastName}
                     </h4>
-                    {index === 0 && (
-                      <span className="text-xs bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-300 px-2 py-1 rounded-full font-medium">
-                        Champion
-                      </span>
-                    )}
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                     {user.jobTitle || "No title"}
@@ -131,7 +118,6 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
                 <div className="relative z-10 flex items-center gap-2">
                   <div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/50 dark:to-amber-900/50 rounded-full">
-                    <StarIcon className="w-4 h-4 text-yellow-500" />
                     <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
                       {user.reputation?.toLocaleString() || 0}
                     </span>
@@ -143,9 +129,6 @@ const TopReputationUsers = ({ limit = 5 }) => {
         </div>
 
         <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-          <button className="w-full text-sm font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 py-2 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/30 transition-colors">
-            View Full Leaderboard
-          </button>
         </div>
       </div>
     </div >
