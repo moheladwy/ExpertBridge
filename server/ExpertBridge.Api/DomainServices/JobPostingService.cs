@@ -5,6 +5,7 @@ using System.Threading.Channels;
 using Amazon.Runtime.Internal.Util;
 using ExpertBridge.Api.DataGenerator;
 using ExpertBridge.Api.Models.IPC;
+using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.Media.JobPostingMedia;
@@ -328,8 +329,8 @@ namespace ExpertBridge.Api.DomainServices
             {
                 jobPosting.Budget = request.Budget.Value;
                 changed = true;
-            } 
-            
+            }
+
 
             if (changed)
             {
@@ -460,6 +461,81 @@ namespace ExpertBridge.Api.DomainServices
                 .FirstAsync();
 
             return updatedJobPosting;
+        }
+
+        public async Task<JobApplicationResponse> ApplyToJobPostingAsync(
+            string postingId,
+            Profile applicantProfile,
+            ApplyToJobPostingRequest request)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(postingId);
+            ArgumentNullException.ThrowIfNull(applicantProfile);
+            ArgumentNullException.ThrowIfNull(request);
+
+            var jobPosting = await _dbContext.JobPostings
+                .Include(p => p.Author) // For notification to post author
+                .FirstOrDefaultAsync(p => p.Id == postingId);
+
+            if (jobPosting == null)
+            {
+                throw new PostNotFoundException($"JobPosting with id={postingId} was not found for application.");
+            }
+
+            var existingApplication = await _dbContext.JobApplications
+                .AnyAsync(a => a.JobPostingId == postingId && a.ApplicantId == applicantProfile.Id);
+
+            if (existingApplication)
+            {
+                throw new BadHttpRequestException($"You have already applied to this job posting {postingId}.");
+            }
+
+            var jobApplication = new JobApplication
+            {
+                JobPostingId = postingId,
+                ApplicantId = applicantProfile.Id,
+                Applicant = applicantProfile,
+                CoverLetter = request.CoverLetter?.Trim(),
+                OfferedCost = request.OfferedCost,
+            };
+
+            await _dbContext.JobApplications.AddAsync(jobApplication);
+            await _dbContext.SaveChangesAsync();
+
+            // Notify the job posting author about the new application
+            await _notificationFacade.NotifyJobApplicationSubmittedAsync(jobApplication);
+
+            return jobApplication.SelectJobApplicationResponseFromEntity();
+        }
+
+        public async Task<List<JobApplicationResponse>> GetJobApplicationsAsync(string jobPostingId, Profile userProfile)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(jobPostingId);
+            ArgumentNullException.ThrowIfNull(userProfile);
+
+            var jobPosting = await _dbContext.JobPostings
+                .Include(p => p.JobApplications)
+                .ThenInclude(a => a.Applicant)
+                .ThenInclude(p => p.Comments) // for the reputation calculation
+                .FirstOrDefaultAsync(p => p.Id == jobPostingId);
+
+            if (jobPosting == null)
+            {
+                throw new PostNotFoundException(
+                    $"JobPosting with id={jobPostingId} was not found for fetching applications.");
+            }
+
+            if (jobPosting.AuthorId != userProfile.Id)
+            {
+                _logger.LogWarning(
+                    "User {UserProfileId} attempted to access job applications for posting {JobPostingId} owned by {AuthorId}.",
+                    userProfile.Id, jobPosting.Id, jobPosting.AuthorId);
+
+                throw new UnauthorizedException($"User {userProfile.Id} is not authorized to view applications for post {jobPostingId}.");
+            }
+
+            return jobPosting.JobApplications
+                .Select(a => a.SelectJobApplicationResponseFromEntity())
+                .ToList();
         }
     }
 }

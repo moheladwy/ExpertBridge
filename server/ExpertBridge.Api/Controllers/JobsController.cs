@@ -295,7 +295,7 @@ namespace ExpertBridge.Api.Controllers
                 StartedAt = job.StartedAt,
                 EndedAt = job.EndedAt,
                 JobPostingId = job.JobPostingId,
-                CreatedAt = job.CreatedAt,
+                CreatedAt = job.CreatedAt.Value,
                 UpdatedAt = job.UpdatedAt,
                 AuthorProfile = new ProfileSummaryResponse
                 {

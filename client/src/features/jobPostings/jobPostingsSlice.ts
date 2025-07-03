@@ -6,7 +6,7 @@ import {
 import { apiSlice } from "../api/apiSlice";
 import { RootState } from "@/app/store";
 import { useAppSelector } from "@/app/hooks";
-import { CreateJobPostingRequest, JobPosting, JobPostingPaginatedResponse, JobPostingResponse, JobPostingsInitialPageParam, SimilarJobsResponse } from "./types";
+import { ApplyToJobPostingRequest, CreateJobPostingRequest, JobApplicationResponse, JobPosting, JobPostingPaginatedResponse, JobPostingResponse, JobPostingsInitialPageParam, SimilarJobsResponse } from "./types";
 
 type JobPostingsState = EntityState<JobPosting, string>;
 const jobPostingsAdapter = createEntityAdapter<JobPosting>({
@@ -404,10 +404,24 @@ export const jobPostingsApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+
+    applyToJobPosting: builder.mutation<JobApplicationResponse, ApplyToJobPostingRequest>({
+      query: (request) => ({
+        url: `/jobPostings/${request.jobPostingId}/apply`,
+        method: 'POST',
+        body: request,
+      })
+    }),
+
+    getJobApplications: builder.query<JobApplicationResponse[], string>({
+      query: (postingId) => `/jobPostings/${postingId}/applications`,
+    }),
   }),
 });
 
 export const {
+  useApplyToJobPostingMutation,
+  useGetJobApplicationsQuery,
   useGetJobPostingQuery,
   useGetSimilarJobsQuery,
   useGetSuggestedJobsQuery,

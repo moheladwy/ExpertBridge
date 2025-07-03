@@ -35,8 +35,6 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
         builder.Property(x => x.EndedAt)
             .IsRequired(false);
 
-
-
         builder.Property(j => j.Status)
             .IsRequired()
             .HasConversion<string>()
@@ -55,12 +53,12 @@ public class JobEntityConfiguration : IEntityTypeConfiguration<Job>
             .IsRequired();
 
 
-
         // Worker Profile (One-to-Many)
         builder.HasOne(j => j.Worker)
             .WithMany(p => p.JobsAsWorker)
             .HasForeignKey(j => j.WorkerId)
             .IsRequired();
+
 
         // JobReview (One-to-One)
         builder.HasOne(j => j.Review)

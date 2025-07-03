@@ -5,6 +5,7 @@ using System.Threading.Channels;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.ModerationReports;
@@ -162,6 +163,19 @@ namespace ExpertBridge.Notifications
                 .ToList();
 
             await NotifyInternalAsync(notifications);
+        }
+
+        public async Task NotifyJobApplicationSubmittedAsync(JobApplication jobApplication)
+        {
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = jobApplication.JobPosting.AuthorId,
+                Message = $"{jobApplication.Applicant.FirstName} applied for your job: {jobApplication.JobPosting.Title}",
+                ActionUrl = $"/job/{jobApplication.JobPosting.Id}/applications",
+                IconUrl = jobApplication.Applicant.ProfilePictureUrl,
+                IconActionUrl = $"/profiles/{jobApplication.ApplicantId}",
+                SenderId = jobApplication.ApplicantId,
+            });
         }
 
         private async Task NotifyInternalAsync(params List<Notification> notifications)

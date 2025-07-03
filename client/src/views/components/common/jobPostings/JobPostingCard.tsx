@@ -74,7 +74,6 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-100 dark:border-gray-700">
       <Link
         to={`/jobs/${job.id}`}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
       >
         {/* Header with Client Info */}
         <div className="flex items-start justify-between mb-4">
@@ -145,6 +144,12 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
             <span>{job.comments}</span>
           </div>
         </div>
+        <Link
+          to={`/jobs/${job.id}`}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+        >
+          View Details
+        </Link>
       </div>
     </div>
   );

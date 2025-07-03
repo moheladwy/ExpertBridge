@@ -1,5 +1,6 @@
 import { Comment } from "../comments/types";
 import { MediaObject, MediaObjectResponse, PresignedUrl } from "../media/types";
+import { JobApplicant } from "../profiles/types";
 import { Tag } from "../tags/types";
 import { AppUser, Author } from "../users/types";
 
@@ -38,6 +39,7 @@ export interface JobPosting {
   lastModified?: string | null;
   upvotes: number;
   downvotes: number;
+  isAppliedFor: boolean;
   isUpvoted: boolean;
   isDownvoted: boolean;
   medias: MediaObjectResponse[]; // Adjust later if media structure is known
@@ -58,6 +60,7 @@ export interface JobPostingResponse {
   lastModified?: Date | null;
   upvotes: number;
   downvotes: number;
+  isAppliedFor: boolean;
   isUpvoted: boolean;
   isDownvoted: boolean;
   medias: MediaObjectResponse[]; // Adjust later if media structure is known
@@ -80,3 +83,26 @@ export interface SimilarJobsResponse {
 export interface CreateJobPostingRequest extends Pick<JobPosting, "content" | "title" | "budget" | "area"> {
   media?: PresignedUrl[];
 }
+
+export interface ApplyToJobPostingRequest {
+  jobPostingId: string;
+  coverLetter?: string;
+  offeredCost: number;
+}
+
+export interface JobApplicationResponse {
+  jobPostingId: string;
+  applicantId: string;
+  coverLetter?: string;
+  offeredCost: number;
+  appliedAt: string;
+  applicant?: JobApplicant;
+}
+
+// public required string JobPostingId { get; set; }
+// public required string ApplicantId { get; set; }
+// public string? CoverLetter { get; set; }
+// public required decimal OfferedCost { get; set; }
+// public DateTime AppliedAt { get; set; }
+// public ApplicantResponse ? Applicant { get; set; }
+

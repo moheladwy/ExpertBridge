@@ -35,3 +35,17 @@ export interface UpdateProfileRequest {
 	jobTitle?: string;
 	bio?: string;
 }
+
+export interface JobApplicant {
+	id: string;
+	userId: string;
+	jobTitle?: string | null;
+	profilePictureUrl?: string;
+	username?: string;
+	firstName: string;
+	lastName?: string;
+	rating?: number;
+	reputation?: number;
+	jobsDone?: number;
+}
+

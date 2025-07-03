@@ -140,6 +140,7 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingTagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingVoteEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new JobApplicationEntityConfiguration());
     }
 
     // Event handlers
