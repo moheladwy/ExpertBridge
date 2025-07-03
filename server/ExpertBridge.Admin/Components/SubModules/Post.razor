@@ -5,21 +5,22 @@
     {
         <div class="p-5">
             <div class="flex items-center gap-3 mb-4">
-                @if (PostResponse.Author?.ProfilePictureUrl != null)
+                @if (!string.IsNullOrEmpty(PostResponse.Author?.ProfilePictureUrl))
                 {
-                    <img src="@PostResponse.Author.ProfilePictureUrl" alt="@PostResponse.Author.FirstName's profile"
-                         class="w-10 h-10 rounded-full object-cover"/>
+                    @* <img src="@PostResponse.Author.ProfilePictureUrl" alt="@PostResponse.Author.FirstName's profile" *@
+                    @*      class="w-10 h-10 rounded-full object-cover"/> *@
+                    <img src="images/default-profile.jpg" alt="@PostResponse.Author?.FirstName's profile"
+                         class="w-20 h-20 rounded-full object-cover"/>
                 }
                 else
                 {
-                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                        @(PostResponse.Author != null ? PostResponse.Author.FirstName.ToUpper() : "?")
-                    </div>
+                    <img src="images/default-profile.jpg" alt="@PostResponse.Author?.FirstName's profile"
+                         class="w-20 h-20 rounded-full object-cover"/>
                 }
                 <div>
                     @if (PostResponse.Author != null)
                     {
-                        <p class="font-medium text-gray-900">
+                        <p class="flex flex-col font-medium text-gray-900">
                             @PostResponse.Author.FirstName @PostResponse.Author.LastName
                             @if (!string.IsNullOrEmpty(PostResponse.Author.Username))
                             {
