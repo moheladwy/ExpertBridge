@@ -37,6 +37,7 @@ import JobPostingFromFeedPage from "./views/pages/jobPostings/JobPostingFromFeed
 import JobPostingFromUrlPage from "./views/pages/jobPostings/JobPostingFromUrlPage.tsx";
 import PrivacyPolicy from "./views/pages/landing/PrivacyPolicy.tsx";
 import JobApplicationsPage from "./views/pages/jobPostings/JobApplicationsPage.tsx";
+import { JobOffersDashboardPage } from "./views/pages/jobs/JobOffersDashboardPage.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -120,6 +121,14 @@ const router = createBrowserRouter([
 				element: (
 					<ProtectedRoute>
 						<Notifications />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "offers",
+				element: (
+					<ProtectedRoute>
+						<JobOffersDashboardPage />
 					</ProtectedRoute>
 				),
 			},

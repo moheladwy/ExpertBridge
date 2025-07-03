@@ -410,7 +410,7 @@ export const jobPostingsApiSlice = apiSlice.injectEndpoints({
         url: `/jobPostings/${request.jobPostingId}/apply`,
         method: 'POST',
         body: request,
-      })
+      }),
     }),
 
     getJobApplications: builder.query<JobApplicationResponse[], string>({

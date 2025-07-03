@@ -21,17 +21,21 @@ import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
 import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
 import ProfileCommentCard from "@/views/components/common/comments/ProfileCommentCard";
 import { Comment } from "@/features/comments/types";
+import HiringModal from "@/views/components/common/jobs/HiringModal";
 
 const UserProfilePage = () => {
 	const { userId } = useParams<{ userId: string }>();
 	const navigate = useNavigate();
 	const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
+	
 	const {
 		data: profile,
 		isLoading,
 		error,
 	} = useGetProfileByIdQuery(userId || "");
+
 	const [activeTab, setActiveTab] = useState("latest");
+	const [isHiringModalOpen, setIsHiringModalOpen] = useState(false);
 
 	// Get all posts
 	const { data: postsData } = useGetPostsQuery();
@@ -100,6 +104,20 @@ const UserProfilePage = () => {
 		return post ? post.title : "Unknown Post";
 	};
 
+	// Handle hiring modal
+	const handleHireClick = () => {
+		if (!authUser) {
+			toast.error("Please log in to hire this expert.");
+			return;
+		}
+		setIsHiringModalOpen(true);
+	};
+
+	const handleHiringSuccess = () => {
+		setIsHiringModalOpen(false);
+		toast.success("Hiring request sent successfully!");
+	};
+
 	// Don't render anything if error and no profile
 	if (error && !profile) return null;
 
@@ -149,7 +167,10 @@ const UserProfilePage = () => {
 								{isLoading ? (
 									<Skeleton className="h-9 w-28" />
 								) : (
-									<Button className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white gap-2">
+									<Button
+										className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white gap-2"
+										onClick={handleHireClick}
+									>
 										<UserPlusIcon size={16} />
 										<span>Hire Me</span>
 									</Button>
@@ -262,7 +283,7 @@ const UserProfilePage = () => {
 					{/* Tabs Section */}
 					<div className="my-6">
 						{isLoading ||
-						(activeTab === "answers" && isCommentsLoading) ? (
+							(activeTab === "answers" && isCommentsLoading) ? (
 							<>
 								<Skeleton className="h-10 w-full mb-6" />
 								<div className="space-y-4">
@@ -351,6 +372,16 @@ const UserProfilePage = () => {
 					</div>
 				</div>
 			</div>
+
+			{/* Hiring Modal */}
+			{profile && (
+				<HiringModal
+					isOpen={isHiringModalOpen}
+					onClose={() => setIsHiringModalOpen(false)}
+					onSuccess={handleHiringSuccess}
+					expertProfile={profile}
+				/>
+			)}
 		</>
 	);
 };

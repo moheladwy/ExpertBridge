@@ -116,13 +116,22 @@ const NavBar = () => {
             </Link>
 
             {isLoggedIn ? (
-              <Link
-                to="/jobs"
-                className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
+              <>
+                <Link
+                  to="/jobs"
+                  className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
                   ${location.pathname === "/jobs" ? "bg-blue-950" : ""}`}
-              >
-                <div className="text-white font-light">Jobs</div>
-              </Link>
+                >
+                  <div className="text-white font-light">Jobs</div>
+                </Link>
+                <Link
+                  to="/offers"
+                  className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
+                  ${location.pathname === "/offers" ? "bg-blue-950" : ""}`}
+                >
+                  <div className="text-white font-light">Offers</div>
+                </Link>
+              </>
             ) : (
               <Link
                 to="/AboutUs"
@@ -196,7 +205,7 @@ const NavBar = () => {
                 <DropdownMenuContent className="dark:bg-gray-800 w-48" align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  
+
                   {/* Mobile-only menu items */}
                   <div className="sm:hidden">
                     <DropdownMenuItem>
@@ -209,6 +218,12 @@ const NavBar = () => {
                       <Link to="/jobs" className="flex items-center w-full">
                         <Briefcase className="w-4 h-4 mr-2" />
                         Jobs
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to="/offers" className="flex items-center w-full">
+                        <Briefcase className="w-4 h-4 mr-2" />
+                        Offers
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
@@ -229,7 +244,7 @@ const NavBar = () => {
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  
+
                   {/* Mobile Mode Toggle */}
                   <div className="sm:hidden">
                     <DropdownMenuSeparator />
@@ -238,7 +253,7 @@ const NavBar = () => {
                       <ModeToggle />
                     </DropdownMenuItem>
                   </div>
-                  
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-red-600 hover:cursor-pointer focus:text-red-600"
@@ -288,7 +303,7 @@ const NavBar = () => {
                 <X className="w-5 h-5" />
               </Button>
             </div>
-            
+
             <nav className="p-4 space-y-4">
               <Link
                 to="/home"
@@ -314,7 +329,7 @@ const NavBar = () => {
                 <Shield className="w-5 h-5 mr-3" />
                 Privacy Policy
               </Link>
-              
+
               <div className="pt-4 border-t dark:border-gray-700 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-800 dark:text-white">Theme</span>
