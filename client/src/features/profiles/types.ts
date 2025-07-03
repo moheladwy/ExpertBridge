@@ -20,10 +20,6 @@ export type ProfileResponse = {
 };
 
 export interface OnboardUserRequest {
-	tagIds: string[];
-}
-
-export interface OnboardUserRequestV2 {
 	tags: string[];
 }
 

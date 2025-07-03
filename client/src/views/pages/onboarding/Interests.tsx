@@ -11,7 +11,7 @@ import { Button } from "../../components/custom/button"
 import { Toggle } from "../../components/custom/toggle"
 import { useEffect, useState } from "react";
 import { useGetTagsQuery } from "@/features/tags/tagsSlice";
-import { useOnboardUserV2Mutation } from "@/features/profiles/profilesSlice";
+import { useOnboardUserMutation } from "@/features/profiles/profilesSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
@@ -19,7 +19,7 @@ import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 function Interests() {
   const navigate = useNavigate();
   const { data: tags = [], isLoading } = useGetTagsQuery();
-  const [onboardUserV2, onboardingResult] = useOnboardUserV2Mutation();
+  const [onboardUser, onboardingResult] = useOnboardUserMutation();
 
   // Replace current interests state with simple string array
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -84,7 +84,7 @@ function Interests() {
   const handleUpdateUser = async () => {
     if (selectedTags.length >= 5) {
       console.log(`Selected Tags to be sumbitted to the user => [${selectedTags}]`)
-      await onboardUserV2({
+      await onboardUser({
         tags: selectedTags.map(tag => tag.toLowerCase()),
       });
     } else {

@@ -24,7 +24,10 @@ namespace ExpertBridge.Api.DomainServices
             _logger = logger;
         }
 
-        public async Task<List<ProfileResponse>> GetSimilarProfilesAsync(Profile? userProfile, int limit)
+        public async Task<List<ProfileResponse>> GetSimilarProfilesAsync(
+            Profile? userProfile,
+            int limit,
+            CancellationToken cancellationToken = default)
         {
             var userEmbedding = userProfile?.UserInterestEmbedding ?? Generator.GenerateRandomVector(1024);
 
@@ -43,12 +46,15 @@ namespace ExpertBridge.Api.DomainServices
                 .Take(limit)
                 .OrderBy(p => p.UserInterestEmbedding.CosineDistance(userEmbedding))
                 .SelectProfileResponseFromProfile()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return suggested;
         }
 
-        public async Task<List<ProfileResponse>> GetTopReputationProfilesAsync(Profile? userProfile, int limit)
+        public async Task<List<ProfileResponse>> GetTopReputationProfilesAsync(
+            Profile? userProfile,
+            int limit,
+            CancellationToken cancellationToken = default)
         {
             var query = _dbContext.Profiles
                 .AsNoTracking()
@@ -67,7 +73,7 @@ namespace ExpertBridge.Api.DomainServices
                 .Take(limit)
                 .SelectProfileResponseFromProfile()
                 .OrderByDescending(p => p.Reputation)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return topProfiles;
         }
