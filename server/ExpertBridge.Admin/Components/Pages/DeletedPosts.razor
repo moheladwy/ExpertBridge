@@ -13,7 +13,7 @@
     else if (reportedPosts.Count == 0)
     {
         <div class="bg-white rounded-lg shadow-sm p-8 text-center">
-            <p class="text-gray-600 text-lg">No deleted posts found</p>
+            <p class="text-gray-600 w-full text-center text-lg">No deleted posts found</p>
         </div>
     }
     else
@@ -21,7 +21,7 @@
         <div class="grid gap-6">
             @foreach (var post in reportedPosts)
             {
-                <div class="bg-white rounded-lg shadow-sm">
+                <div class="bg-white rounded-lg shadow-sm p-6 m-2">
                     <Post PostResponse="@post" />
                 </div>
             }
