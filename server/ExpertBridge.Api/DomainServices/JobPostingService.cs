@@ -474,6 +474,8 @@ namespace ExpertBridge.Api.DomainServices
 
             var jobPosting = await _dbContext.JobPostings
                 .Include(p => p.Author) // For notification to post author
+                .Include(p => p.JobPostingTags)
+                .ThenInclude(pt => pt.Tag) // Include tags for tagging service
                 .FirstOrDefaultAsync(p => p.Id == postingId);
 
             if (jobPosting == null)
@@ -500,6 +502,11 @@ namespace ExpertBridge.Api.DomainServices
 
             await _dbContext.JobApplications.AddAsync(jobApplication);
             await _dbContext.SaveChangesAsync();
+
+            await _taggingService.AddTagsToUserProfileAsync(
+                applicantProfile.Id,
+                jobPosting.JobPostingTags.Select(pt => pt.Tag)
+            );
 
             // Notify the job posting author about the new application
             await _notificationFacade.NotifyJobApplicationSubmittedAsync(jobApplication);

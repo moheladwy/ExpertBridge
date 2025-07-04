@@ -42,4 +42,5 @@ public class JobPosting : BaseModel, ISoftDeletable, IRecommendableContent
     public ICollection<Comment> Comments { get; set; } = [];
     public ICollection<JobPostingVote> Votes { get; set; } = [];
     public ICollection<JobApplication> JobApplications { get; set; } = [];
+    public ICollection<Job> Jobs { get; set; } = [];
 }

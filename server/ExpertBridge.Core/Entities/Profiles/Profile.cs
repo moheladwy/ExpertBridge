@@ -4,6 +4,7 @@
 using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.JobApplications;
+using ExpertBridge.Core.Entities.JobOffers;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.Jobs;
@@ -62,10 +63,8 @@ public partial class Profile
     public ICollection<JobPostingVote> JobPostingVotes { get; set; } = [];
 
 
-
-
     public ICollection<Job> JobsAsAuthor { get; set; } = [];
     public ICollection<Job> JobsAsWorker { get; set; } = [];
-    public ICollection<Job> AuthoredJobs { get; set; } = [];
-    public ICollection<Job> WorkedJobs { get; set; } = [];
+    public ICollection<JobOffer> AuthoredJobOffers { get; set; } = [];
+    public ICollection<JobOffer> ReceivedJobOffers { get; set; } = [];
 }

@@ -1,6 +1,7 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.JobStatuses;
@@ -21,86 +22,54 @@ namespace ExpertBridge.Api.Controllers
     public class JobsController : ControllerBase
     {
         private readonly ExpertBridgeDbContext _dbContext;
-        private readonly AuthorizationHelper _authHelper;
+        private readonly UserService _userService;
+        private readonly JobService _jobService;
 
         public JobsController(
             ExpertBridgeDbContext dbContext,
-            AuthorizationHelper authHelper)
+            UserService userService,
+            JobService jobService)
         {
             _dbContext = dbContext;
-            _authHelper = authHelper;
+            _userService = userService;
+            _jobService = jobService;
         }
 
-        [HttpPost("offer")]
-        public async Task<ActionResult<JobResponse>> InitiateJobOffer([FromBody] InitiateJobOfferRequest request)
+        [HttpPost("offers")]
+        public async Task<ActionResult<JobOfferResponse>> InitiateJobOffer(
+            [FromBody] CreateJobOfferRequest request)
         {
+            var userProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-            var user = await _authHelper.GetCurrentUserAsync();
-            var clientProfileId = user?.Profile?.Id ?? string.Empty;
+            var offer = await _jobService.CreateJobOfferAsync(userProfile, request);
 
+            return offer;
+        }
 
-            if (string.IsNullOrEmpty(clientProfileId))
-            {
-                return Unauthorized("Profile ID could not be determined.");
-            }
+        [HttpGet("offers")]
+        public async Task<List<JobOfferResponse>> GetMyOffers()
+        {
+            var userProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-            var clientProfile = await _dbContext.Profiles
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(p => p.Id == clientProfileId);
+            var offers = await _jobService.GetMyOffersAsync(userProfile);
 
-            if (clientProfile == null)
-            {
-                throw new ProfileNotFoundException("Client profile not found.");
-            }
+            return offers;
+        }
 
-            var contractorProfile = await _dbContext.Profiles
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(p => p.Id == request.ContractorProfileId);
+        [HttpGet("offers/received")]
+        public async Task<List<JobOfferResponse>> GetReceivedOffers()
+        {
+            var userProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-            if (contractorProfile == null)
-            {
-                throw new ProfileNotFoundException("Contractor profile not found.");
-            }
+            var offers = await _jobService.GetReceivedOffersAsync(userProfile);
 
-            if (clientProfile.Id == contractorProfile.Id)
-            {
-                return BadRequest("Cannot initiate a job offer to yourself.");
-            }
-
-            // if JobPostingId is valid if provided
-            if (!string.IsNullOrEmpty(request.JobPostingId))
-            {
-                var jobPostingExists = await _dbContext.JobPostings.AnyAsync(jp => jp.Id == request.JobPostingId && jp.AuthorId == clientProfile.Id);
-                if (!jobPostingExists)
-                {
-                    return BadRequest("Invalid JobPostingId / it does not belong to you.");
-                }
-            }
-
-            var newJob = new Job
-            {
-                Title = request.Title,
-                Description = request.Description,
-                ActualCost = request.ProposedRate,
-                AuthorId = clientProfile.Id,
-                WorkerId = contractorProfile.Id,
-                Status = JobStatusEnum.Offered, // initial status
-                JobPostingId = request.JobPostingId,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            _dbContext.Jobs.Add(newJob);
-            await _dbContext.SaveChangesAsync();
-
-
-
-            return Ok(MapToJobResponse(newJob, clientProfile, contractorProfile));
+            return offers;
         }
 
         [HttpPatch("{jobId}/response")]
         public async Task<ActionResult<JobResponse>> RespondToJobOffer(string jobId, [FromBody] RespondToJobOfferRequest request)
         {
-            var user = await _authHelper.GetCurrentUserAsync();
+            var user = await _userService.GetCurrentUserPopulatedModelAsync();
             if (user?.Profile == null)
             {
                 return Unauthorized("User profile not found.");
@@ -152,7 +121,7 @@ namespace ExpertBridge.Api.Controllers
         [HttpPatch("{jobId}/status")]
         public async Task<ActionResult<JobResponse>> UpdateJobStatus(string jobId, [FromBody] UpdateJobStatusRequest request)
         {
-            var currentUser = await _authHelper.GetCurrentUserAsync();
+            var currentUser = await _userService.GetCurrentUserPopulatedModelAsync();
             if (currentUser?.Profile == null)
             {
                 return Unauthorized("User profile not found.");
@@ -223,7 +192,7 @@ namespace ExpertBridge.Api.Controllers
         [HttpGet("{jobId}")]
         public async Task<ActionResult<JobResponse>> GetJobById(string jobId)
         {
-            var currentUser = await _authHelper.GetCurrentUserAsync();
+            var currentUser = await _userService.GetCurrentUserPopulatedModelAsync();   
             if (currentUser?.Profile == null)
             {
                 return Unauthorized("User profile not found.");
@@ -255,7 +224,7 @@ namespace ExpertBridge.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobResponse>>> GetJobsForCurrentUser()
         {
-            var currentUser = await _authHelper.GetCurrentUserAsync();
+            var currentUser = await _userService.GetCurrentUserPopulatedModelAsync();
             if (currentUser?.Profile == null)
             {
                 return Unauthorized("User profile not found");
@@ -291,7 +260,7 @@ namespace ExpertBridge.Api.Controllers
                 Title = job.Title,
                 Description = job.Description,
                 Status = job.Status.ToString(),
-                ActualCost = job.ActualCost,
+                ActualCost = (double)job.ActualCost,
                 StartedAt = job.StartedAt,
                 EndedAt = job.EndedAt,
                 JobPostingId = job.JobPostingId,

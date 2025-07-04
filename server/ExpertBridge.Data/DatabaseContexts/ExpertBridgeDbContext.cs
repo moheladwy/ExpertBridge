@@ -9,6 +9,7 @@ using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobCategories;
+using ExpertBridge.Core.Entities.JobOffers;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.JobReviews;
@@ -83,6 +84,7 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<MediaGrant> MediaGrants { get; set; }
     public DbSet<ModerationReport> ModerationReports { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<JobOffer> JobOffers { get; set; }
 
 
     /// <summary>
@@ -119,28 +121,29 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PostTagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new JobOfferEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobReviewEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ChatMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new UserInterestEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new MediaGrantEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CommentVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobCategoryEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileBadgeEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new UserInterestEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileSkillEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileMediaEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new CommentMediaEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new JobPostingMediaEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new ChatParticipantEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new ProfileExperienceEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new ProfileExperienceMediaEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new MediaGrantEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new ModerationReportEntityConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentMediaEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingTagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobPostingVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobApplicationEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new JobPostingMediaEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ChatParticipantEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ModerationReportEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ProfileExperienceEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new ProfileExperienceMediaEntityConfiguration());
     }
 
     // Event handlers
