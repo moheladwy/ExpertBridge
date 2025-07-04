@@ -9,7 +9,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
     {
         private readonly double _startDelay;
         private readonly string _workerName;
-        private readonly ILogger<TWorker> _logger;
+        protected readonly ILogger<TWorker> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PeriodicWorker{TWorker}"/> class.
@@ -29,9 +29,10 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             // This delay to break the synchronization with the start of each Priodic Worker's period.
-            await Task.Delay(TimeSpan.FromHours(_startDelay), stoppingToken);
+            // await Task.Delay(TimeSpan.FromHours(_startDelay), stoppingToken);
 
-            var period = 60 * 60 * 24 * 1; // 1 day
+            // var period = 60 * 60 * 24 * 1; // 1 day
+            var period = 60; // 1 minute
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
             while (!stoppingToken.IsCancellationRequested
