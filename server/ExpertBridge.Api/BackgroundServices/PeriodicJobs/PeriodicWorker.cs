@@ -29,10 +29,9 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             // This delay to break the synchronization with the start of each Priodic Worker's period.
-            // await Task.Delay(TimeSpan.FromHours(_startDelay), stoppingToken);
+            await Task.Delay(TimeSpan.FromHours(_startDelay), stoppingToken);
 
-            // var period = 60 * 60 * 24 * 1; // 1 day
-            var period = 60; // 1 minute
+            var period = 60 * 60 * 24 * 1; // 1 day
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(period));
 
             while (!stoppingToken.IsCancellationRequested
