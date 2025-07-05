@@ -51,9 +51,7 @@ namespace ExpertBridge.Core.Queries
                     IsOnboarded = p.User.IsOnboarded,
                     CommentsUpvotes = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)),
                     CommentsDownvotes = p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
-                    Reputation = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
-                                    - p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
-
+                    Reputation = p.SelectReputationFromProfile(),
                 });
         }
 
@@ -69,6 +67,27 @@ namespace ExpertBridge.Core.Queries
                 LastName = profile.LastName,
                 Username = profile.Username
             };
+        }
+
+        public static ApplicantResponse? SelectApplicantResponseFromProfile(this Profile? profile)
+        {
+            return profile == null ? null : new ApplicantResponse
+            {
+                Id = profile.Id,
+                UserId = profile.UserId,
+                JobTitle = profile.JobTitle,
+                ProfilePictureUrl = profile.ProfilePictureUrl,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                Username = profile.Username,
+                Reputation = profile.SelectReputationFromProfile(),
+            };
+        }
+
+        private static int SelectReputationFromProfile(this Profile profile)
+        {
+            return profile.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
+                   - profile.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote));
         }
     }
 }

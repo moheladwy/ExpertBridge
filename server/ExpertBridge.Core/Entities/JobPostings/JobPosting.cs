@@ -3,6 +3,7 @@
 
 using ExpertBridge.Core.Entities.Areas;
 using ExpertBridge.Core.Entities.Comments;
+using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobCategories;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.Jobs;
@@ -40,4 +41,6 @@ public class JobPosting : BaseModel, ISoftDeletable, IRecommendableContent
     public ICollection<JobPostingTag> JobPostingTags { get; set; } = [];
     public ICollection<Comment> Comments { get; set; } = [];
     public ICollection<JobPostingVote> Votes { get; set; } = [];
+    public ICollection<JobApplication> JobApplications { get; set; } = [];
+    public ICollection<Job> Jobs { get; set; } = [];
 }

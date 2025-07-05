@@ -1,35 +1,61 @@
+// Enhanced Notifications Component with highlight management
 import { useGetNotificationsQuery, useReadNotificationsMutation } from "@/features/notifications/notificationsSlice";
+import { NotificationResponse } from "@/features/notifications/types";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { NotificationCard } from "@/views/components/common/notifications/NotificationCard";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 
 function Notifications() {
   const { data: userProfile } = useGetCurrentUserProfileQuery();
   const { data: notifications = [], isFetching } = useGetNotificationsQuery(userProfile!.id);
   const [readAll] = useReadNotificationsMutation();
 
-  useEffect(() => {
-    if (!isFetching) {
-      readAll(userProfile!.id);
-    }
-  }, [isFetching]);
+  // Track which notifications were unread when component first loaded
+  const [initialUnreadIds, setInitialUnreadIds] = useState<Set<string>>(new Set());
+  const hasInitialized = useRef(false);
 
-  // TODO: Figure out a way to keep the new notifications highlighted 
-  // event after the readAll have been fired.
+  // Capture initial unread notifications
+  useEffect(() => {
+    if (!isFetching && notifications.length > 0 && !hasInitialized.current) {
+      const unreadIds = new Set(
+        notifications
+          .filter(n => !n.isRead)
+          .map(n => n.id)
+      );
+      setInitialUnreadIds(unreadIds);
+      hasInitialized.current = true;
+    }
+  }, [notifications, isFetching]);
+
+  // Mark all as read after a delay to allow user to see new notifications
+  useEffect(() => {
+    if (!isFetching && initialUnreadIds.size > 0) {
+      const timer = setTimeout(() => {
+        readAll(userProfile!.id);
+      }, 3000); // 3 second delay - adjust as needed
+
+      return () => clearTimeout(timer);
+    }
+  }, [isFetching, initialUnreadIds.size, readAll, userProfile?.id]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-semibold mb-4">Notifications</h1>
-
       {isFetching ? (
         <p>Loading...</p>
       ) : notifications.length === 0 ? (
         <p>No notifications yet.</p>
       ) : (
         <ul className="space-y-4">
-          {notifications.map((notification) => (
-            <NotificationCard key={notification.id} notification={notification} />
-          ))}
+          {[...notifications]
+            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+            .map((notification: NotificationResponse) => (
+              <NotificationCard
+                key={notification.id}
+                notification={notification}
+                isNewNotification={initialUnreadIds.has(notification.id)}
+              />
+            ))}
         </ul>
       )}
     </div>
@@ -37,4 +63,3 @@ function Notifications() {
 }
 
 export default Notifications;
-

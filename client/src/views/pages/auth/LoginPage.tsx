@@ -373,7 +373,7 @@ const LoginPage: React.FC = () => {
           {/* Terms of Service and Privacy Policy Footer */}
           <div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">
             By clicking continue, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            <Link to='/privacy-policy'>Terms of Service</Link> and <Link to='/privacy-policy'>Privacy Policy</Link>.
           </div>
         </div>
       </div>

@@ -9,4 +9,5 @@ public static class GlobalEntitiesConstraints
     public const int MaxEnumsLength = 128;
     public const int MaxTitleLength = 500;
     public const int MaxDescriptionLength = 1000;
+    public const int MaxCoverLetterLength = 1000;
 }

@@ -1,30 +1,41 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities.JobReviews;
+using ExpertBridge.Core.Entities.JobStatuses;
+using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Interfaces;
+
 namespace ExpertBridge.Core.Entities.Jobs;
 
-public class Job
+public class Job : BaseModel, ISoftDeletable
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public double ActualCost { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public decimal ActualCost { get; set; }
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
-    public JobStatuses.JobStatusEnum Status { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+
+    public bool IsPaid { get; set; }
+    public bool IsCompleted { get; set; }
+
+    public JobStatusEnum Status { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     // Foreign keys
 
-    public string WorkerId { get; set; }
-    public string AuthorId { get; set; }
+    public required string AuthorId { get; set; }
+    public required string WorkerId { get; set; }
+    public string? ReviewId { get; set; }
     public string? JobPostingId { get; set; }
 
     // Navigation properties
-    public JobReviews.JobReview Review { get; set; }
-    public JobPostings.JobPosting JobPosting { get; set; }
-    public Profiles.Profile Author { get; set; }
-    public Profiles.Profile Worker { get; set; }
+    public JobReview? Review { get; set; }
+    public JobPosting? JobPosting { get; set; }
+    public Profile Author { get; set; }
+    public Profile Worker { get; set; }
 }

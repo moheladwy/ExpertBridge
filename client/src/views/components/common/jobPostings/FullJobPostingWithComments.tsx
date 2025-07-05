@@ -21,6 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/views/components/ui/alert-dialog";
+import { Button } from "@/views/components/ui/button";
 
 import toast from "react-hot-toast";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
@@ -29,11 +30,12 @@ import {
   MapPinIcon,
   CurrencyDollarIcon,
   StarIcon,
-  BriefcaseIcon
+  BriefcaseIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { JobPosting } from "@/features/jobPostings/types";
-import { useGetSimilarJobsQuery } from "@/features/jobPostings/jobPostingsSlice";
+import { useApplyToJobPostingMutation, useGetSimilarJobsQuery } from "@/features/jobPostings/jobPostingsSlice";
 import TimeAgo from "../../custom/TimeAgo";
 import MediaCarousel from "../media/MediaCarousel";
 import JobPostingVoteButtons from "./JobPostingVoteButtons";
@@ -41,6 +43,7 @@ import EditJobPostingModal from "./EditJobPostingModal";
 import SimilarJobs from "./SimilarJobs";
 import JobPostingCommentsSection from "../comments/JobPostingCommentsSection";
 import PostingTags from "../tags/PostingTags";
+import ApplyToJobModal from "./ApplyToJobModal";
 
 interface FullJobPostingWithCommentsProps {
   jobPosting: JobPosting;
@@ -51,18 +54,14 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
   jobPosting,
   deleteJobPosting,
 }) => {
-  const [, , , , userProfile] = useIsUserLoggedIn();
+  const [isLoggedIn, , , , userProfile] = useIsUserLoggedIn();
   const memoizedJobPosting = useMemo(() => jobPosting, [jobPosting]);
 
-  const {
-    data: similarJobs,
-    error: similarJobsError,
-    isLoading: similarJobsLoading,
-  } = useGetSimilarJobsQuery(jobPosting.id, { skip: !jobPosting.id });
-
-  // confirm delete dialog
+  // Modal states
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const handleCopyLink = () => {
@@ -81,6 +80,14 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
   const handleDeleteJobPosting = async () => {
     deleteJobPosting(jobPosting.id);
     navigate("/jobs");
+  };
+
+  const handleOpenApplyModal = () => {
+    setIsApplyModalOpen(true);
+  };
+
+  const handleViewApplicants = () => {
+    navigate(`/job/${jobPosting.id}/applications`);
   };
 
   const formatBudget = (budget: number) => {
@@ -119,6 +126,8 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 
     return stars;
   };
+
+  const isJobAuthor = userProfile?.id === jobPosting.author.id;
 
   return (
     <>
@@ -285,7 +294,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
                         <span className="text-lg">{jobPosting.area}</span>
                       </div>
                     )}
-                    
+
                     {/* Job Description */}
                     <div className="break-words">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -305,6 +314,33 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
                     {/* Tags */}
                     <PostingTags tags={jobPosting.tags} language={jobPosting.language} />
 
+                    {/* Application Action Button */}
+                    {isLoggedIn && (
+                      <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
+                        {isJobAuthor ? (
+                          <Button
+                            onClick={handleViewApplicants}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold"
+                          >
+                            <UserGroupIcon className="h-5 w-5 mr-2" />
+                            View Applicants
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={handleOpenApplyModal}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg font-semibold"
+                            disabled={jobPosting.isAppliedFor}
+                          >
+                            <BriefcaseIcon className="h-5 w-5 mr-2" />
+                            {jobPosting.isAppliedFor
+                              ? 'You have already applied for this Job'
+                              : 'Apply for this Job'
+                            }
+                          </Button>
+                        )}
+                      </div>
+                    )}
+
                     {/* Job Posting Voting */}
                     <JobPostingVoteButtons jobPosting={jobPosting} />
 
@@ -321,6 +357,13 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
                     onClose={() => setIsEditModalOpen(false)}
                   />
                 ) : null}
+
+                {/* Apply Modal */}
+                <ApplyToJobModal
+                  isOpen={isApplyModalOpen}
+                  onClose={() => setIsApplyModalOpen(false)}
+                  jobPosting={jobPosting}
+                />
               </div>
             ) : (
               <p className="dark:text-white">Job posting not found.</p>
