@@ -92,6 +92,49 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
       },
     }),
 
+    getCurrentUserSkills: builder.query<string[], void>({
+      query: () => `/profiles/skills`,
+      providesTags: ["CurrentUserSkills"],
+    }),
+
+    getProfileSkills: builder.query<string[], string>({
+      query: (id) => `/profiles/${id}/skills`,
+      providesTags: (result, error, arg) => [
+        { type: "ProfileSkills", id: arg },
+      ],
+    }),
+
+    updateProfileSkills: builder.mutation<ProfileResponse, string[]>({
+      query: (skills) => ({
+        url: `/profiles/skills`,
+        method: "PUT",
+        body: skills,
+      }),
+      invalidatesTags: [
+        "CurrentUserSkills",
+        "ProfileSkills",
+        "CurrentUser",
+        "AuthUser",
+      ],
+      onQueryStarted: async (request, lifecycleApi) => {
+        const patchResult = lifecycleApi.dispatch(
+          profilesApiSlice.util.updateQueryData(
+            "getCurrentUserProfile",
+            undefined,
+            (draft) => {
+              draft.skills = request;
+            },
+          ),
+        );
+
+        try {
+          await lifecycleApi.queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
+
     getSuggestedExperts: builder.query<ProfileResponse[], number>({
       query: (limit) => `/profiles/suggested?limit=${limit}`,
     }),
@@ -108,6 +151,9 @@ export const {
   useOnboardUserMutation,
   useIsUsernameAvailableMutation,
   useUpdateProfileMutation,
+  useGetCurrentUserSkillsQuery,
+  useGetProfileSkillsQuery,
+  useUpdateProfileSkillsMutation,
   useGetSuggestedExpertsQuery,
   useGetTopReputationProfilesQuery,
 } = profilesApiSlice;

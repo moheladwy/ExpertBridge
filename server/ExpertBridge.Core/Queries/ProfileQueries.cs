@@ -15,6 +15,8 @@ namespace ExpertBridge.Core.Queries
             return query
                 .AsNoTracking()
                 .Include(p => p.User)
+                .Include(p => p.ProfileSkills)
+                .ThenInclude(ps => ps.Skill)
                 .Include(p => p.Comments)
                 .ThenInclude(c => c.Votes)
                 ;
@@ -49,11 +51,10 @@ namespace ExpertBridge.Core.Queries
                     RatingCount = p.RatingCount,
                     Username = p.Username,
                     IsOnboarded = p.User.IsOnboarded,
+                    Skills = p.SelectSkillsNamesFromProfile(),
                     CommentsUpvotes = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)),
                     CommentsDownvotes = p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
-                    Reputation = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
-                                    - p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
-
+                    Reputation = p.CalculateReputation()
                 });
         }
 
@@ -69,6 +70,19 @@ namespace ExpertBridge.Core.Queries
                 LastName = profile.LastName,
                 Username = profile.Username
             };
+        }
+
+        private static List<string> SelectSkillsNamesFromProfile(this Profile profile)
+        {
+            return profile?.ProfileSkills
+                .Select(ps => ps.Skill.Name)
+                .ToList() ?? [];
+        }
+
+        private static int CalculateReputation(this Profile profile)
+        {
+            return profile.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
+                   - profile.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote));
         }
     }
 }

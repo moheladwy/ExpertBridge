@@ -268,8 +268,8 @@ public class ProfilesController : ControllerBase
     {
         // Current authenticated user.
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
-        ArgumentNullException.ThrowIfNull(user);
-        ArgumentNullException.ThrowIfNull(user.Profile);
+        if (user is null)
+            throw new UnauthorizedAccessException("The user is not authorized.");
 
         var skills = await _dbContext.ProfileSkills
             .Include(ps => ps.Skill)
@@ -307,46 +307,57 @@ public class ProfilesController : ControllerBase
 
         // Current authenticated user.
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
-        ArgumentNullException.ThrowIfNull(user);
-        ArgumentNullException.ThrowIfNull(user.Profile);
+        if (user is null)
+            throw new UnauthorizedAccessException("The user is not authorized.");
+
+        // Normalize skills: trim whitespace, convert to lowercase, and remove duplicates
+        request.Skills = request.Skills
+            .Where(skill => !string.IsNullOrWhiteSpace(skill))
+            .Select(skill => skill.Trim().ToLower(CultureInfo.InvariantCulture))
+            .Distinct()
+            .ToList();
 
         // get the exiting skills from the database.
-        var existingSkills = await _dbContext.ProfileSkills
-            .Include(p => p.Profile)
-            .Include(p => p.Skill)
-            .Where(p => p.ProfileId == user.Profile.Id)
+        var existingSkills = await _dbContext.Skills
+            .AsNoTracking()
+            .Where(skill => request.Skills.Contains(skill.Name))
             .ToListAsync(cancellationToken);
 
-        // normalize the existing skills to lower case for comparison.
-        var existingSkillNames = existingSkills
-            .Select(p => p.Skill.Name.ToLower(CultureInfo.CurrentCulture))
+        var skillsToBeAdded = request.Skills
+            .Where(skill => existingSkills
+                .All(existingSkill => !existingSkill.Name.Equals(skill, StringComparison.OrdinalIgnoreCase)))
+            .Select(skillName => new Skill { Name = skillName })
             .ToList();
 
-        // Normalize the request skills to lower case for comparison.
-        var requestSkills = request.Skills
-            .Select(s => s.ToLower(CultureInfo.CurrentCulture))
-            .ToList();
+        await _dbContext.Skills.AddRangeAsync(skillsToBeAdded, cancellationToken);
 
-        // Find the skills that are in the request but not in the existing skills and add them to the database.
-        var skillsToBeAdded = requestSkills
-            .Where(skill => !existingSkillNames.Contains(skill))
-            .Select(skill => new ProfileSkill
+        var allSkills = existingSkills.Concat(skillsToBeAdded).ToList();
+
+        var existingProfileSkills = await _dbContext.ProfileSkills
+            .Include(ps => ps.Skill)
+            .Where(ps => ps.ProfileId == user.Profile.Id)
+            .ToListAsync(cancellationToken);
+
+        var profileSkillsToBeAdded = request.Skills
+            .Where(skill => existingProfileSkills
+                .All(existingSkill => !existingSkill.Skill.Name
+                    .Equals(skill, StringComparison.OrdinalIgnoreCase)))
+            .Select(skillName => new ProfileSkill
             {
                 ProfileId = user.Profile.Id,
-                Skill = new Skill { Name = skill }
+                SkillId = allSkills
+                    .First(s => s.Name.Equals(skillName, StringComparison.OrdinalIgnoreCase))
+                    .Id,
             })
             .ToList();
 
-        // Find the skills that are in the existing skills but not in the request and remove them from the database.
-        var skillsToBeRemoved = existingSkills
-            .Where(existingSkill => !requestSkills.Contains(existingSkill.Skill.Name.ToLower(CultureInfo.CurrentCulture)))
+        var profileSkillsToBeRemoved = existingProfileSkills
+            .Where(ps => !request.Skills.Contains(ps.Skill.Name))
             .ToList();
 
-        // Remove the skills that are not in the request.
-        _dbContext.ProfileSkills.RemoveRange(skillsToBeRemoved);
+        _dbContext.ProfileSkills.RemoveRange(profileSkillsToBeRemoved);
 
-        // Add the new skills that are in the request but not in the existing skills.
-        await _dbContext.ProfileSkills.AddRangeAsync(skillsToBeAdded, cancellationToken);
+        await _dbContext.ProfileSkills.AddRangeAsync(profileSkillsToBeAdded, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
