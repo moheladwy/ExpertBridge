@@ -12,6 +12,8 @@ namespace ExpertBridge.Core.Entities.JobOffers
         public required string Description { get; set; }
         public required decimal Budget { get; set; }
         public required string Area { get; set; }
+        public bool IsAccepted { get; set; }
+        public bool IsDeclined { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 

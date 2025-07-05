@@ -9,6 +9,8 @@ namespace ExpertBridge.Notifications
     public interface INotificationClient
     {
         Task ReceiveNotification(NotificationResponse notification);
+
+        Task ReceiveMessage(Message message);
     }
 
     public class NotificationsHub : Hub<INotificationClient>

@@ -1,6 +1,7 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Core.Entities.Chats;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobReviews;
 using ExpertBridge.Core.Entities.JobStatuses;
@@ -13,7 +14,9 @@ public class Job : BaseModel, ISoftDeletable
 {
     public required string Title { get; set; }
     public required string Description { get; set; }
+    public string ChatId { get; set; }
     public decimal ActualCost { get; set; }
+    public string Area { get; set; } 
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
 
@@ -38,4 +41,5 @@ public class Job : BaseModel, ISoftDeletable
     public JobPosting? JobPosting { get; set; }
     public Profile Author { get; set; }
     public Profile Worker { get; set; }
+    public Chat Chat { get; set; }
 }

@@ -9,8 +9,4 @@
     <PackageReference Include="Pgvector.EntityFrameworkCore" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Entities\Messages\" />
-  </ItemGroup>
-
 </Project>

@@ -20,11 +20,13 @@ import { useGetJobPostingQuery, useGetJobApplicationsQuery } from "@/features/jo
 import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import TimeAgo from "@/views/components/custom/TimeAgo";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
+import { acceptApplication } from "@/api/jobService";
 
 const JobApplicationsPage: React.FC = () => {
   const { jobPostingId } = useParams<{ jobPostingId: string }>();
   const navigate = useNavigate();
   const [selectedApplicant, setSelectedApplicant] = useState<string | null>(null);
+  const [acceptingApplication, setAcceptingApplication] = useState<string | null>(null);
 
   // Fetch job posting and applications
   const {
@@ -100,6 +102,22 @@ const JobApplicationsPage: React.FC = () => {
         color: "text-red-600",
         bgColor: "bg-red-100"
       };
+    }
+  };
+
+  const handleAcceptApplication = async (applicationId: string) => {
+    setAcceptingApplication(applicationId);
+    try {
+      const jobResponse = await acceptApplication(applicationId);
+      
+      // Redirect to the job page using the returned job ID
+      navigate(`/my-jobs/${jobResponse.id}`);
+    } catch (error) {
+      console.error('Failed to accept application:', error);
+      // Handle error (show toast, etc.)
+      // You might want to show an error message to the user
+    } finally {
+      setAcceptingApplication(null);
     }
   };
 
@@ -205,6 +223,7 @@ const JobApplicationsPage: React.FC = () => {
             {sortedApplications?.map((application) => {
               const applicant = application.applicant;
               const costDiff = getCostDifference(application.offeredCost, jobPosting.budget);
+              const isAccepting = acceptingApplication === application.id;
 
               return (
                 <Card
@@ -324,11 +343,18 @@ const JobApplicationsPage: React.FC = () => {
                             className="bg-green-600 hover:bg-green-700 text-white"
                             onClick={(e) => {
                               e.stopPropagation();
-                              // TODO: Implement hire functionality
-                              console.log('Hire applicant:', application.applicantId);
+                              handleAcceptApplication(application.id);
                             }}
+                            disabled={isAccepting}
                           >
-                            Hire This Applicant
+                            {isAccepting ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Hiring...
+                              </>
+                            ) : (
+                              'Hire This Applicant'
+                            )}
                           </Button>
                           <Button
                             variant="outline"
@@ -337,6 +363,7 @@ const JobApplicationsPage: React.FC = () => {
                               // TODO: Implement message functionality
                               console.log('Message applicant:', application.applicantId);
                             }}
+                            disabled={isAccepting}
                           >
                             Send Message
                           </Button>

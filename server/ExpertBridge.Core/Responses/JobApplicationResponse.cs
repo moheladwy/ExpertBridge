@@ -13,6 +13,7 @@ namespace ExpertBridge.Core.Responses
 {
     public class JobApplicationResponse
     {
+        public required string Id { get; set; }
         public required string JobPostingId { get; set; }
         public required string ApplicantId { get; set; }
         public string? CoverLetter { get; set; }

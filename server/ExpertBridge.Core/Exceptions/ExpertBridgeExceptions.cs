@@ -30,6 +30,33 @@ public class JobNotFoundException : HttpNotFoundException
     }
 }
 
+public class ChatNotFoundException : HttpNotFoundException
+{
+    public ChatNotFoundException() { }
+    public ChatNotFoundException(string message) : base(message) { }
+    public ChatNotFoundException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
+
+public class JobOfferNotFoundException : HttpNotFoundException
+{
+    public JobOfferNotFoundException() { }
+    public JobOfferNotFoundException(string message) : base(message) { }
+    public JobOfferNotFoundException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
+
+public class JobApplicationNotFoundException : HttpNotFoundException
+{
+    public JobApplicationNotFoundException() { }
+    public JobApplicationNotFoundException(string message) : base(message) { }
+    public JobApplicationNotFoundException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
+
 public class ProfileNotFoundException : HttpNotFoundException
 {
     public ProfileNotFoundException() { }

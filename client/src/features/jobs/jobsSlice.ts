@@ -1,8 +1,19 @@
 import { apiSlice } from "../api/apiSlice";
-import { CreateJobOfferRequest, JobOfferResponse } from "./types";
+import { CreateJobOfferRequest, JobOfferResponse, JobResponse } from "./types";
 
 export const jobsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+
+    getMyJobs: builder.query<JobResponse[], void>({
+      query: () => '/jobs',
+      providesTags: ['Job'],
+    }),
+
+    getJobById: builder.query<JobResponse, string>({
+      query: (jobId) => `/jobs/${jobId}`,
+      providesTags: ['Job'],
+    }),
+
     // Get my job offers (offers I've sent)
     getMyJobOffers: builder.query<JobOfferResponse[], void>({
       query: () => '/jobs/offers',
@@ -53,6 +64,8 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
+  useGetMyJobsQuery,
+  useGetJobByIdQuery,
   useCreateJobOfferMutation,
   useGetMyJobOffersQuery,
   useGetReceivedJobOffersQuery,

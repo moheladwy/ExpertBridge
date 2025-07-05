@@ -8,7 +8,5 @@ namespace ExpertBridge.Core.Requests.Jobs;
 
 public class UpdateJobStatusRequest
 {
-    [Required]
-    public JobStatusEnum NewStatus { get; set; }
-
+    public string Status { get; set; }
 }

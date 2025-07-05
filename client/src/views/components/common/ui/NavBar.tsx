@@ -131,6 +131,13 @@ const NavBar = () => {
                 >
                   <div className="text-white font-light">Offers</div>
                 </Link>
+                <Link
+                  to="/my-jobs"
+                  className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
+                  ${location.pathname === "/my-jobs" ? "bg-blue-950" : ""}`}
+                >
+                  <div className="text-white font-light">My Jobs</div>
+                </Link>
               </>
             ) : (
               <Link
@@ -224,6 +231,12 @@ const NavBar = () => {
                       <Link to="/offers" className="flex items-center w-full">
                         <Briefcase className="w-4 h-4 mr-2" />
                         Offers
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to="/my-jobs" className="flex items-center w-full">
+                        <Briefcase className="w-4 h-4 mr-2" />
+                        My Jobs
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>

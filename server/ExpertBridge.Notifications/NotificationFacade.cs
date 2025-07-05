@@ -9,6 +9,7 @@ using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobOffers;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
+using ExpertBridge.Core.Entities.Messages;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
@@ -189,6 +190,19 @@ namespace ExpertBridge.Notifications
                 IconUrl = offer.Author.ProfilePictureUrl,
                 IconActionUrl = $"/profile/{offer.AuthorId}",
                 SenderId = offer.AuthorId,
+            });
+        }
+
+        public async Task NotifyNewMessageReceivedAsync(Message message, string receiverId, string jobId)
+        {
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = receiverId,
+                Message = $"{message.Sender.FirstName} sent you a message: {message.Content}",
+                ActionUrl = $"/my-jobs/{jobId}",
+                IconUrl = message.Sender.ProfilePictureUrl,
+                IconActionUrl = $"/profile/{message.SenderId}",
+                SenderId = message.SenderId,
             });
         }
 

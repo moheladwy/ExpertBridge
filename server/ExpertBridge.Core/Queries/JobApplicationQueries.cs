@@ -24,6 +24,7 @@ namespace ExpertBridge.Core.Queries
         {
             return new JobApplicationResponse
             {
+                Id = j.Id,
                 Applicant = j.Applicant.SelectApplicantResponseFromProfile(),
                 ApplicantId = j.ApplicantId,
                 JobPostingId = j.JobPostingId,
