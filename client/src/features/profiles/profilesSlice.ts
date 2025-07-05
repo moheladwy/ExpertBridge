@@ -1,4 +1,3 @@
-import { API_URL } from "@/lib/api/endpoints";
 import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn } from "../auth/authSlice";
 import {
@@ -104,37 +103,6 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
       ],
     }),
 
-    updateProfileSkills: builder.mutation<ProfileResponse, string[]>({
-      query: (skills) => ({
-        url: `/profiles/skills`,
-        method: "PUT",
-        body: skills,
-      }),
-      invalidatesTags: [
-        "CurrentUserSkills",
-        "ProfileSkills",
-        "CurrentUser",
-        "AuthUser",
-      ],
-      onQueryStarted: async (request, lifecycleApi) => {
-        const patchResult = lifecycleApi.dispatch(
-          profilesApiSlice.util.updateQueryData(
-            "getCurrentUserProfile",
-            undefined,
-            (draft) => {
-              draft.skills = request;
-            },
-          ),
-        );
-
-        try {
-          await lifecycleApi.queryFulfilled;
-        } catch {
-          patchResult.undo();
-        }
-      },
-    }),
-
     getSuggestedExperts: builder.query<ProfileResponse[], number>({
       query: (limit) => `/profiles/suggested?limit=${limit}`,
     }),
@@ -153,7 +121,6 @@ export const {
   useUpdateProfileMutation,
   useGetCurrentUserSkillsQuery,
   useGetProfileSkillsQuery,
-  useUpdateProfileSkillsMutation,
   useGetSuggestedExpertsQuery,
   useGetTopReputationProfilesQuery,
 } = profilesApiSlice;

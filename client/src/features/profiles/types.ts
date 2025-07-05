@@ -31,8 +31,5 @@ export interface UpdateProfileRequest {
   phoneNumber?: string;
   jobTitle?: string;
   bio?: string;
-}
-
-export interface UpdateProfileSkillsRequest {
   skills: string[];
 }
