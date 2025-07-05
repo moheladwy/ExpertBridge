@@ -116,17 +116,51 @@ class NsfwDetectionResponse(BaseModel):
     )
 
 
+class ProcessedSkill(BaseModel):
+    """
+    Model representing a processed skill with its name and description.
+
+    Attributes:
+        Name: The name of the skill that was processed.
+        Description: The description of the skill that was processed.
+    """
+    Name: str = Field(...,
+                            min_length=3,
+                            max_length=256,
+                            description="The name of the skill that was processed.")
+    Description: str = Field(...,
+                                   min_length=3,
+                                   max_length=256,
+                                   description="The description of the skill that was processed.")
+
+
+class ProcessedSkillsResponse(BaseModel):
+    """
+    Response model for processed skills.
+
+    Attributes:
+        skills: List of processed skills with their names and descriptions.
+    """
+    Skills: List[ProcessedSkill] = Field(...,
+                                          min_length=1,
+                                          description="The list of processed skills with their names and descriptions.")
+
+
 def generate_json_schemas():
-    with open("PostCategorizationOutputFormat.json", "w", encoding="utf-8") as f:
-        json.dump(CategorizationResponse.model_json_schema(),
-                  f, ensure_ascii=False, indent=2)
-
-    with open("TranslateTagResponseOutputFormat.json", "w", encoding="utf-8") as f:
-        json.dump(TranslateTagsResponse.model_json_schema(),
-                  f, ensure_ascii=False, indent=2)
-
-    with open("NSFWDetectionOutputFormat.json", "w", encoding="utf-8") as f:
-        json.dump(NsfwDetectionResponse.model_json_schema(),
+    # with open("PostCategorizationOutputFormat.json", "w", encoding="utf-8") as f:
+    #     json.dump(CategorizationResponse.model_json_schema(),
+    #               f, ensure_ascii=False, indent=2)
+    #
+    # with open("TranslateTagResponseOutputFormat.json", "w", encoding="utf-8") as f:
+    #     json.dump(TranslateTagsResponse.model_json_schema(),
+    #               f, ensure_ascii=False, indent=2)
+    #
+    # with open("NSFWDetectionOutputFormat.json", "w", encoding="utf-8") as f:
+    #     json.dump(NsfwDetectionResponse.model_json_schema(),
+    #               f, ensure_ascii=False, indent=2)
+    #
+    with open("ProcessedSkillsOutputFormat.json", "w", encoding="utf-8") as f:
+        json.dump(ProcessedSkillsResponse.model_json_schema(),
                   f, ensure_ascii=False, indent=2)
 
 

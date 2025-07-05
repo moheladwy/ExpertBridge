@@ -120,9 +120,9 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
   if (!data?.pages.length || data?.pages.length < 1) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="flex gap-8 max-w-9xl mx-auto p-6">
+        <div className="flex gap-4 max-w-9xl mx-2 p-4">
           {/* Left Sidebar */}
-          <div className="w-90 max-xl:w-72 max-lg:hidden">
+          <div className="w-100 max-xl:w-72 max-lg:hidden">
             <div className="space-y-6">
               <TopReputationUsers />
               <SuggestedExperts />
@@ -130,7 +130,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
           </div>
 
           {/* Main Content - Loading */}
-          <div className="flex-1 max-w-2xl mx-auto">
+          <div className="flex-1 max-w-4xl mx-auto space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
               <div className="text-center">
                 <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -159,7 +159,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="flex gap-6 max-w-9xl mx-auto p-6">
         {/* Left Sidebar - Users */}
-        <div className="w-80 max-xl:w-72 max-lg:hidden">
+        <div className="w-90 max-xl:w-72 max-lg:hidden">
           <div className="sticky top-24 space-y-6">
             <TopReputationUsers />
             <SuggestedExperts />
@@ -167,7 +167,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
         </div>
 
         {/* Main Jobs Feed Content */}
-        <div className="flex-1 max-w-7xl mx-auto space-y-6">
+        <div className="flex-1 max-w-4xl mx-auto space-y-6">
           {/* Create Job Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
             <CreateJobModal />

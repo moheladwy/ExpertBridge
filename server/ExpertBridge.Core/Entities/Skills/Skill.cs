@@ -2,14 +2,15 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
+using Pgvector;
 
 namespace ExpertBridge.Core.Entities.Skills;
 
 public class Skill
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public required string Name { get; set; }
+    public string? Description { get; set; }
 
     public ICollection<ProfileSkill> ProfileSkills { get; set; } = [];
 }

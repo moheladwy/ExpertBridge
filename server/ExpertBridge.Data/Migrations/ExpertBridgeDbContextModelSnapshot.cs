@@ -1438,7 +1438,6 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 

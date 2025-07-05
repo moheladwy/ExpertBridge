@@ -14,7 +14,6 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
     public class PostTaggingPeriodicWorker : PeriodicWorker<PostTaggingPeriodicWorker>
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<PostTaggingPeriodicWorker> _logger;
         private readonly ChannelWriter<TagPostMessage> _tagPostChannel;
 
         public PostTaggingPeriodicWorker(
@@ -27,7 +26,6 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 logger)
         {
             _services = services;
-            _logger = logger;
             _tagPostChannel = tagPostChannel.Writer;
         }
 

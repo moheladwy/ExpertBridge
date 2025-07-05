@@ -1,6 +1,8 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Core.Entities.Skills;
+
 namespace ExpertBridge.Core.Requests.UpdateProfileRequest;
 
 using FluentValidation;
@@ -40,5 +42,11 @@ public class ValidateUpdateProfileRequest : AbstractValidator<UpdateProfileReque
             .Matches(@"^\+?[1-9]\d{1,14}$")
             .WithMessage("Phone number must be in a valid international format.")
             .When(x => x.PhoneNumber != null);
+
+        RuleFor(x => x.Skills)
+            .Must(skills => skills
+                .TrueForAll(s => s.Length <= SkillEntityConstraints.MaxNameLength))
+            .WithMessage("Each skill must be at most 256 characters long.")
+            .When(x => x.Skills.Count > 0);
     }
 }
