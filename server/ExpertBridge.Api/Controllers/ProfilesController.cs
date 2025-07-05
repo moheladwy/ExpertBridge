@@ -1,12 +1,15 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using System.Globalization;
 using System.Threading.Channels;
 using ExpertBridge.Api.DomainServices;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Models.IPC;
 using ExpertBridge.Api.Settings;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
+using ExpertBridge.Core.Entities.Skills;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
@@ -82,10 +85,9 @@ public class ProfilesController : ControllerBase
         return profile;
     }
 
-    [Route("/api/v2/Profiles/onboard")]
-    [HttpPost]
-    public async Task<ProfileResponse> OnboardUserV2(
-        [FromBody] OnboardUserRequestV2 request,
+    [HttpPost("onboard")]
+    public async Task<ProfileResponse> OnboardUser(
+        [FromBody] OnboardUserRequest request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -146,58 +148,10 @@ public class ProfilesController : ControllerBase
         if (user is null)
             throw new UnauthorizedAccessException("The user is not authorized.");
 
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
-
-        // Validate the request using the validator from FluentValidation.
-        var validationResult = await _updateProfileRequestValidator
-            .ValidateAsync(request, cancellationToken);
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
-
-        var profile = user.Profile;
-
-        if (!string.IsNullOrEmpty(request.Username) &&
-                request.Username != user.Profile.Username)
-        {
-            var isUsernameExists = await _dbContext.Profiles
-                .AsNoTracking()
-                .AnyAsync(p => p.Username == request.Username && p.Username != user.Profile.Username,
-                        cancellationToken);
-            if (isUsernameExists)
-                throw new ProfileUserNameAlreadyExistsException($"Username '{user.Profile.Username}' already exists.");
-            profile.Username = request.Username;
-        }
-        if (!string.IsNullOrEmpty(request.PhoneNumber) &&
-                request.PhoneNumber != user.Profile.PhoneNumber)
-        {
-            var isPhoneNumberExisting = await _dbContext.Profiles
-                .AsNoTracking()
-                .AnyAsync(p =>
-                        p.PhoneNumber == request.PhoneNumber && p.PhoneNumber != user.Profile.PhoneNumber,
-                        cancellationToken);
-            if (isPhoneNumberExisting)
-                throw new ProfilePhoneNumberAlreadyExistsException(
-                        $"Phone number '{request.PhoneNumber}' already exists.");
-            profile.PhoneNumber = request.PhoneNumber;
-        }
-        if (!string.IsNullOrEmpty(request.FirstName) && request.FirstName != user.Profile.FirstName)
-            profile.FirstName = request.FirstName;
-        if (!string.IsNullOrEmpty(request.LastName) && request.LastName != user.Profile.LastName)
-            profile.LastName = request.LastName;
-        if (!string.IsNullOrEmpty(request.Bio) && request.Bio != user.Profile.Bio)
-            profile.Bio = request.Bio;
-        if (!string.IsNullOrEmpty(request.JobTitle) && request.JobTitle != user.Profile.JobTitle)
-            profile.JobTitle = request.JobTitle;
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        var profileResponse = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (profileResponse == null)
-            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+        var profileResponse = await _profileService.UpdateProfileAsync(
+            user,
+            request,
+            cancellationToken);
 
         return profileResponse;
     }
@@ -236,7 +190,10 @@ public class ProfilesController : ControllerBase
     {
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
 
-        var profiles = await _profileService.GetSimilarProfilesAsync(user?.Profile, limit ?? 5);
+        var profiles = await _profileService.GetSimilarProfilesAsync(
+            user?.Profile,
+            limit ?? 5,
+            cancellationToken);
 
         return profiles;
     }
@@ -244,12 +201,51 @@ public class ProfilesController : ControllerBase
     [AllowAnonymous]
     [HttpGet("top-reputation")]
     public async Task<List<ProfileResponse>> GetTopReputationProfiles(
-        [FromQuery] int? limit)
+        [FromQuery] int? limit,
+        CancellationToken cancellationToken = default)
     {
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
 
-        var profiles = await _profileService.GetTopReputationProfilesAsync(user?.Profile, limit ?? 5);
+        var profiles = await _profileService.GetTopReputationProfilesAsync(
+            user?.Profile,
+            limit ?? 5,
+            cancellationToken);
 
         return profiles;
+    }
+
+    [Authorize]
+    [HttpGet("skills")]
+    public async Task<List<string>> GetCurrentUserSkills(CancellationToken cancellationToken = default)
+    {
+        // Current authenticated user.
+        var user = await _userService.GetCurrentUserPopulatedModelAsync();
+        if (user is null)
+            throw new UnauthorizedAccessException("The user is not authorized.");
+
+        var skills = await _dbContext.ProfileSkills
+            .Include(ps => ps.Skill)
+            .Where(ps => ps.ProfileId == user.Profile.Id)
+            .Select(ps => ps.Skill.Name)
+            .ToListAsync(cancellationToken);
+
+        return skills;
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{profileId}/skills")]
+    public async Task<List<string>> GetProfileSkills(
+        [FromRoute] string profileId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
+
+        var skills = await _dbContext.ProfileSkills
+            .Include(ps => ps.Skill)
+            .Where(ps => ps.ProfileId == profileId)
+            .Select(ps => ps.Skill.Name)
+            .ToListAsync(cancellationToken);
+
+        return skills;
     }
 }

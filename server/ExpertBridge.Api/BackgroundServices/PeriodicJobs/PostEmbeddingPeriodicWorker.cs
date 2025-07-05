@@ -14,7 +14,6 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
     public class PostEmbeddingPeriodicWorker : PeriodicWorker<PostEmbeddingPeriodicWorker>
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<PostEmbeddingPeriodicWorker> _logger;
         private readonly ChannelWriter<EmbedPostMessage> _embedPostChannel;
 
         public PostEmbeddingPeriodicWorker(
@@ -27,7 +26,6 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                 logger)
         {
             _services = services;
-            _logger = logger;
             _embedPostChannel = postEmbeddingChannel.Writer;
         }
 

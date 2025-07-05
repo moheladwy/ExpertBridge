@@ -15,6 +15,8 @@ namespace ExpertBridge.Core.Queries
             return query
                 .AsNoTracking()
                 .Include(p => p.User)
+                .Include(p => p.ProfileSkills)
+                .ThenInclude(ps => ps.Skill)
                 .Include(p => p.Comments)
                 .ThenInclude(c => c.Votes)
                 ;
@@ -49,6 +51,7 @@ namespace ExpertBridge.Core.Queries
                     RatingCount = p.RatingCount,
                     Username = p.Username,
                     IsOnboarded = p.User.IsOnboarded,
+                    Skills = p.SelectSkillsNamesFromProfile(),
                     CommentsUpvotes = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)),
                     CommentsDownvotes = p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
                     Reputation = p.SelectReputationFromProfile(),
@@ -67,6 +70,13 @@ namespace ExpertBridge.Core.Queries
                 LastName = profile.LastName,
                 Username = profile.Username
             };
+        }
+
+        private static List<string> SelectSkillsNamesFromProfile(this Profile profile)
+        {
+            return profile?.ProfileSkills
+                .Select(ps => ps.Skill.Name)
+                .ToList() ?? [];
         }
 
         public static ApplicantResponse? SelectApplicantResponseFromProfile(this Profile? profile)

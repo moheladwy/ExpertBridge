@@ -53,6 +53,8 @@ export const apiSlice = createApi({
 		"Comment",
 		"Profile",
 		"Tag",
+		"CurrentUserSkills",
+		"ProfileSkills",
 		"SimilarPosts",
 		"SimilarJobs",
 		"JobPosting",

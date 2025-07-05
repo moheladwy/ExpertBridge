@@ -1,10 +1,13 @@
-import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
+import {
+  useGetCurrentUserProfileQuery,
+  useGetCurrentUserSkillsQuery,
+} from "@/features/profiles/profilesSlice";
 import { Button } from "@/views/components/ui/button";
 import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
 } from "@/views/components/ui/tabs";
 import { Pencil } from "lucide-react";
 import { Badge } from "@/views/components/ui/badge";
@@ -14,364 +17,449 @@ import defaultProfile from "../../../assets/Profile-pic/ProfilePic.svg";
 import { Skeleton } from "@/views/components/ui/skeleton";
 import toast from "react-hot-toast";
 import { useAppSelector } from "@/app/hooks";
-import { selectAllPosts, useGetPostsQuery } from "@/features/posts/postsSlice";
+import {
+  selectAllPosts,
+  useGetAllPostsByProfileIdQuery,
+  useGetPostsQuery,
+} from "@/features/posts/postsSlice";
 import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
 import ProfileCommentCard from "@/views/components/common/comments/ProfileCommentCard";
 import {
-	Dialog,
-	DialogContent,
-	DialogOverlay,
-	DialogPortal,
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
 } from "@/views/components/custom/dialog";
 import UpdateProfile from "@/views/components/common/profile/UpdateProfile";
 import { Comment } from "@/features/comments/types";
 
+// Helper function to generate gradient colors for skill tags
+const getGradientColors = (index: number) => {
+  const gradients = [
+    "#4F46E5, #7C3AED", // indigo to purple
+    "#3B82F6, #2563EB", // blue variations
+    "#8B5CF6, #6D28D9", // purple variations
+    "#EC4899, #DB2777", // pink variations
+    "#10B981, #059669", // emerald variations
+    "#F59E0B, #D97706", // amber variations
+    "#EF4444, #DC2626", // red variations
+    "#6366F1, #4338CA", // indigo variations
+    "#8B5CF6, #5B21B6", // violet variations
+    "#14B8A6, #0D9488", // teal variations
+  ];
+
+  return gradients[index % gradients.length];
+};
+
 const MyProfilePage = () => {
-	const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
-	const { data: profile, isLoading, error } = useGetCurrentUserProfileQuery();
-	const [activeTab, setActiveTab] = useState("questions");
-	const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
+  const { data: profile, isLoading, error } = useGetCurrentUserProfileQuery();
+  const [activeTab, setActiveTab] = useState("questions");
+  // Get user skills
+  const { data: userSkills, isLoading: isSkillsLoading } =
+    useGetCurrentUserSkillsQuery();
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const {
+    data: allPosts,
+    isLoading: isPostsLoading,
+    isError: isPostsError,
+    error: postsError,
+    isFetching: isPostsFetching,
+  } = useGetAllPostsByProfileIdQuery(appUser?.id || "");
 
-	// Get all posts
-	const { data: postsData } = useGetPostsQuery();
-	const allPosts = useAppSelector(selectAllPosts);
+  // Get user comments
+  const {
+    data: userComments,
+    isLoading: isCommentsLoading,
+    isError: isCommentsError,
+    error: commentsError,
+    isFetching: isCommentsFetching,
+  } = useGetCommentsByUserIdQuery(appUser?.id || "");
 
-	// Get user comments
-	const {
-		data: userComments,
-		isLoading: isCommentsLoading,
-		isError: isCommentsError,
-		error: commentsError,
-	} = useGetCommentsByUserIdQuery(appUser?.id || "");
+  // Calculate total upvotes from all user posts
+  const totalUpvotes = useMemo(() => {
+    return allPosts?.reduce((sum, post) => sum + post.upvotes, 0);
+  }, [allPosts]);
 
-	// Filter posts by current user's ID
-	const userPosts = useMemo(() => {
-		return allPosts.filter((post) => post.author.id === appUser?.id);
-	}, [allPosts, appUser?.id]);
+  const totalDownvotes = useMemo(() => {
+    return allPosts?.reduce((sum, post) => sum + post.downvotes, 0);
+  }, [allPosts]);
 
-	// Calculate total upvotes from all user posts
-	const totalUpvotes = useMemo(() => {
-		return userPosts.reduce((sum, post) => sum + post.upvotes, 0);
-	}, [userPosts]);
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to load profile data. Please try again later!");
+    }
 
-	const totalDownvotes = useMemo(() => {
-		return userPosts.reduce((sum, post) => sum + post.downvotes, 0);
-	}, [userPosts]);
+    if (isCommentsError && commentsError) {
+      toast.error("Error loading your comments.");
+      console.error("Error loading comments:", commentsError);
+    }
+  }, [error, isCommentsError, commentsError]);
 
-	useEffect(() => {
-		if (error) {
-			toast.error("Failed to load profile data. Please try again later!");
-		}
+  const fullName = `${profile?.firstName || ""} ${profile?.lastName || ""}`;
+  const jobTitle = profile?.jobTitle || "Expert";
+  const username = profile?.username;
+  const location = "Giza, Egypt"; // This would come from profile data if available
+  const bio = profile?.bio || "No bio available";
 
-		if (isCommentsError && commentsError) {
-			toast.error("Error loading your comments.");
-			console.error("Error loading comments:", commentsError);
-		}
-	}, [error, isCommentsError, commentsError]);
+  // User statistics
+  const stats = {
+    questions: allPosts?.length,
+    upvotes: totalUpvotes,
+    downvotes: totalDownvotes,
+    answers: userComments?.length || 0,
+    skills: profile?.skills?.length || 0,
+  };
 
-	const fullName = `${profile?.firstName || ""} ${profile?.lastName || ""}`;
-	const jobTitle = profile?.jobTitle || "Expert";
-	const username = profile?.username;
-	const location = "Giza, Egypt"; // This would come from profile data if available
-	const bio = profile?.bio || "No bio available";
+  // Helper function to find post title by post ID
+  const getPostTitleById = (postId: string) => {
+    const post = allPosts?.find((p) => p.id === postId);
+    return post ? post.title : "Unknown Post";
+  };
 
-	// User statistics
-	const stats = {
-		questions: userPosts.length,
-		upvotes: totalUpvotes,
-		downvotes: totalDownvotes,
-		answers: userComments?.length || 0,
-	};
+  const handleEditProfile = () => {
+    setIsEditProfileOpen(true);
+  };
 
-	// Helper function to find post title by post ID
-	const getPostTitleById = (postId: string) => {
-		const post = allPosts.find((p) => p.id === postId);
-		return post ? post.title : "Unknown Post";
-	};
+  const handleCloseEditProfile = () => {
+    setIsEditProfileOpen(false);
+  };
 
-	const handleEditProfile = () => {
-		setIsEditProfileOpen(true);
-	};
+  return (
+    <>
+      <div className="w-full flex justify-center">
+        <div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-3">
+          {/* Profile Header */}
+          <div className="border-gray-200 dark:border-gray-700">
+            {/* Cover Photo */}
+            {isLoading ? (
+              <Skeleton className="h-48 rounded-t-lg" />
+            ) : (
+              <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
+            )}
 
-	const handleCloseEditProfile = () => {
-		setIsEditProfileOpen(false);
-	};
+            {/* Profile Info Section */}
+            <div className="relative px-8 pb-6">
+              {/* Avatar */}
+              <div className="absolute -top-16 left-8">
+                {isLoading ? (
+                  <Skeleton className="rounded-full w-[110px] h-[110px] border-white dark:border-gray-800 border-4" />
+                ) : (
+                  <div className="flex justify-center items-center rounded-full border-white dark:border-gray-800 border-4 text-white text-4xl font-bold">
+                    {profile?.profilePictureUrl ? (
+                      <img
+                        src={profile.profilePictureUrl}
+                        alt={fullName}
+                        className="rounded-full"
+                        width={110}
+                        height={110}
+                      />
+                    ) : (
+                      <img
+                        src={defaultProfile}
+                        className="rounded-full"
+                        width={110}
+                        height={110}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
 
-	return (
-		<>
-			<div className="w-full flex justify-center">
-				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-3">
-					{/* Profile Header */}
-					<div className="border-gray-200 dark:border-gray-700">
-						{/* Cover Photo */}
-						{isLoading ? (
-							<Skeleton className="h-48 rounded-t-lg" />
-						) : (
-							<div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
-						)}
+              {/* Edit Button */}
+              <div className="flex justify-end pt-4">
+                {isLoading ? (
+                  <Skeleton className="h-9 w-24" />
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 dark:bg-gray-800 dark:text-white dark:border-gray-800"
+                    onClick={handleEditProfile}
+                  >
+                    <Pencil size={16} />
+                    <span>Edit</span>
+                  </Button>
+                )}
+              </div>
 
-						{/* Profile Info Section */}
-						<div className="relative px-8 pb-6">
-							{/* Avatar */}
-							<div className="absolute -top-16 left-8">
-								{isLoading ? (
-									<Skeleton className="rounded-full w-[110px] h-[110px] border-white dark:border-gray-800 border-4" />
-								) : (
-									<div className="flex justify-center items-center rounded-full border-white dark:border-gray-800 border-4 text-white text-4xl font-bold">
-										{profile?.profilePictureUrl ? (
-											<img
-												src={profile.profilePictureUrl}
-												alt={fullName}
-												className="rounded-full"
-												width={110}
-												height={110}
-											/>
-										) : (
-											<img
-												src={defaultProfile}
-												className="rounded-full"
-												width={110}
-												height={110}
-											/>
-										)}
-									</div>
-								)}
-							</div>
+              {/* User Info */}
+              <div className="mt-12">
+                {isLoading ? (
+                  <>
+                    <div className="flex items-center">
+                      <Skeleton className="h-8 w-48 mr-4" />
+                      <Skeleton className="h-6 w-24" />
+                    </div>
+                    <div className="flex items-center mt-2">
+                      <Skeleton className="h-5 w-32 mr-4" />
+                      <Skeleton className="h-5 w-24" />
+                    </div>
+                    <Skeleton className="h-16 w-full mt-4" />
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center">
+                      <h1 className="text-2xl font-bold mr-4 dark:text-white">
+                        {fullName}
+                      </h1>
+                      <Badge className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+                        Top Rated
+                      </Badge>
+                    </div>
 
-							{/* Edit Button */}
-							<div className="flex justify-end pt-4">
-								{isLoading ? (
-									<Skeleton className="h-9 w-24" />
-								) : (
-									<Button
-										variant="outline"
-										size="sm"
-										className="gap-2 dark:bg-gray-800 dark:text-white dark:border-gray-800"
-										onClick={handleEditProfile}
-									>
-										<Pencil size={16} />
-										<span>Edit</span>
-									</Button>
-								)}
-							</div>
+                    <div className="flex items-center text-gray-500 dark:text-gray-400 mt-2">
+                      <span className="mr-1">@{username}</span>-
+                      <span className="ml-1">{jobTitle}</span>
+                    </div>
 
-							{/* User Info */}
-							<div className="mt-12">
-								{isLoading ? (
-									<>
-										<div className="flex items-center">
-											<Skeleton className="h-8 w-48 mr-4" />
-											<Skeleton className="h-6 w-24" />
-										</div>
-										<div className="flex items-center mt-2">
-											<Skeleton className="h-5 w-32 mr-4" />
-											<Skeleton className="h-5 w-24" />
-										</div>
-										<Skeleton className="h-16 w-full mt-4" />
-									</>
-								) : (
-									<>
-										<div className="flex items-center">
-											<h1 className="text-2xl font-bold mr-4 dark:text-white">
-												{fullName}
-											</h1>
-											<Badge className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600">
-												Top Rated
-											</Badge>
-										</div>
+                    <div className="mt-4 whitespace-pre-line text-gray-700 dark:text-gray-300">
+                      {bio}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
 
-										<div className="flex items-center text-gray-500 dark:text-gray-400 mt-2">
-											<span className="mr-1">
-												@{username}
-											</span>
-											-
-											<span className="ml-1">
-												{jobTitle}
-											</span>
-										</div>
+          <Separator
+            className="my-3 dark:bg-gray-700"
+            style={{ height: "2px" }}
+          />
 
-										<div className="mt-4 whitespace-pre-line text-gray-700 dark:text-gray-300">
-											{bio}
-										</div>
-									</>
-								)}
-							</div>
-						</div>
-					</div>
+          {/* Stats Section */}
+          <div className="grid grid-cols-5 gap-4 my-6">
+            {isLoading || isCommentsLoading ? (
+              <>
+                <div className="text-center">
+                  <Skeleton className="h-10 w-16 mx-auto mb-2" />
+                  <Skeleton className="h-5 w-24 mx-auto" />
+                </div>
+                <div className="text-center">
+                  <Skeleton className="h-10 w-16 mx-auto mb-2" />
+                  <Skeleton className="h-5 w-24 mx-auto" />
+                </div>
+                <div className="text-center">
+                  <Skeleton className="h-10 w-16 mx-auto mb-2" />
+                  <Skeleton className="h-5 w-24 mx-auto" />
+                </div>
+                <div className="text-center">
+                  <Skeleton className="h-10 w-16 mx-auto mb-2" />
+                  <Skeleton className="h-5 w-24 mx-auto" />
+                </div>
+                <div className="text-center">
+                  <Skeleton className="h-10 w-16 mx-auto mb-2" />
+                  <Skeleton className="h-5 w-24 mx-auto" />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-center">
+                  <div className="text-3xl font-semibold dark:text-white">
+                    {stats.questions}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Questions Asked
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-semibold text-green-500 dark:text-green-400">
+                    {stats.upvotes}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Total Up Votes
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-semibold text-red-600 dark:text-red-400">
+                    {stats.downvotes}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Total Down Votes
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-semibold dark:text-white">
+                    {stats.answers}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Given Answers
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-semibold dark:text-white">
+                    {stats.skills}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Skills
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
-					<Separator
-						className="my-3 dark:bg-gray-700"
-						style={{ height: "2px" }}
-					/>
+          <Separator
+            className="my-3 dark:bg-gray-700"
+            style={{ height: "2px" }}
+          />
 
-					{/* Stats Section */}
-					<div className="grid grid-cols-4 gap-4 my-6">
-						{isLoading || isCommentsLoading ? (
-							<>
-								<div className="text-center">
-									<Skeleton className="h-10 w-16 mx-auto mb-2" />
-									<Skeleton className="h-5 w-24 mx-auto" />
-								</div>
-								<div className="text-center">
-									<Skeleton className="h-10 w-16 mx-auto mb-2" />
-									<Skeleton className="h-5 w-24 mx-auto" />
-								</div>
-								<div className="text-center">
-									<Skeleton className="h-10 w-16 mx-auto mb-2" />
-									<Skeleton className="h-5 w-24 mx-auto" />
-								</div>
-							</>
-						) : (
-							<>
-								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
-										{stats.questions}
-									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
-										Questions Asked
-									</div>
-								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-green-500 dark:text-green-400">
-										{stats.upvotes}
-									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
-										Total Up Votes
-									</div>
-								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-red-600 dark:text-red-400">
-										{stats.downvotes}
-									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
-										Total Down Votes
-									</div>
-								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
-										{stats.answers}
-									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
-										Given Answers
-									</div>
-								</div>
-							</>
-						)}
-					</div>
-
-					<Separator
-						className="my-3 dark:bg-gray-700"
-						style={{ height: "2px" }}
-					/>
-
-					{/* Tabs Section */}
-					<div className="my-6">
-						{isLoading ||
-						(activeTab === "answers" && isCommentsLoading) ? (
-							<>
-								<Skeleton className="h-10 w-full mb-6" />
-								<div className="space-y-4">
-									{[1, 2, 3].map((i) => (
-										<div
-											key={i}
-											className="border-b dark:border-gray-700 pb-4"
-										>
-											<Skeleton className="h-6 w-3/4 mb-2" />
-											<div className="flex my-1">
-												<Skeleton className="h-4 w-24 mr-4" />
-												<Skeleton className="h-4 w-32" />
-											</div>
-											<Skeleton className="h-16 w-full" />
-										</div>
-									))}
-								</div>
-							</>
-						) : (
-							<Tabs
-								defaultValue="questions"
-								onValueChange={setActiveTab}
-								className="w-full"
-							>
-								<TabsList className="grid grid-cols-2 mb-6 dark:bg-gray-700">
-									<TabsTrigger
-										value="questions"
-										className="data-[state=active]:bg-white
+          {/* Tabs Section */}
+          <div className="my-6">
+            {isLoading || (activeTab === "answers" && isCommentsLoading) ? (
+              <>
+                <Skeleton className="h-10 w-full mb-6" />
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="border-b dark:border-gray-700 pb-4">
+                      <Skeleton className="h-6 w-3/4 mb-2" />
+                      <div className="flex my-1">
+                        <Skeleton className="h-4 w-24 mr-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                      <Skeleton className="h-16 w-full" />
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <Tabs
+                defaultValue="questions"
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
+                <TabsList className="grid grid-cols-3 mb-6 dark:bg-gray-700">
+                  <TabsTrigger
+                    value="questions"
+                    className="data-[state=active]:bg-white
 									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
-									>
-										My Questions
-									</TabsTrigger>
-									<TabsTrigger
-										value="answers"
-										className="data-[state=active]:bg-white
+                  >
+                    My Questions
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="answers"
+                    className="data-[state=active]:bg-white
 									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
-									>
-										My Answers
-									</TabsTrigger>
-								</TabsList>
+                  >
+                    My Answers
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="skills"
+                    className="data-[state=active]:bg-white
+									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+                  >
+                    My Skills
+                  </TabsTrigger>
+                </TabsList>
 
-								{/* Latest Questions (Posts) Tab Content */}
-								<TabsContent
-									value="questions"
-									className="space-y-4"
-								>
-									{userPosts.length > 0 ? (
-										userPosts.map((post) => (
-											<ProfilePostCard
-												key={post.id}
-												post={post}
-											/>
-										))
-									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											You haven't asked any questions yet.
-										</div>
-									)}
-								</TabsContent>
+                {/* Latest Questions (Posts) Tab Content */}
+                <TabsContent value="questions" className="space-y-4">
+                  {isPostsLoading ? (
+                    <div className="space-y-4">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="border rounded-lg p-4 dark:border-gray-700"
+                        >
+                          <Skeleton className="h-6 w-3/4 mb-2" />
+                          <div className="flex my-1">
+                            <Skeleton className="h-4 w-24 mr-4" />
+                            <Skeleton className="h-4 w-32" />
+                          </div>
+                          <Skeleton className="h-16 w-full" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : allPosts && allPosts.length > 0 ? (
+                    allPosts.map((post) => (
+                      <ProfilePostCard key={post.id} post={post} />
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      You haven't asked any questions yet.
+                    </div>
+                  )}
+                </TabsContent>
 
-								{/* Answered Questions (Comments) Tab Content */}
-								<TabsContent
-									value="answers"
-									className="space-y-4"
-								>
-									{userComments && userComments.length > 0 ? (
-										userComments.map((comment: Comment) => (
-											<ProfileCommentCard
-												key={comment.id}
-												comment={comment}
-												postTitle={getPostTitleById(
-													comment.postId!
-												)}
-											/>
-										))
-									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											You haven't answered any questions
-											yet.
-										</div>
-									)}
-								</TabsContent>
-							</Tabs>
-						)}
-					</div>
-				</div>
-			</div>
+                {/* Answered Questions (Comments) Tab Content */}
+                <TabsContent value="answers" className="space-y-4">
+                  {isCommentsLoading ? (
+                    <div className="space-y-4">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="border rounded-lg p-4 dark:border-gray-700"
+                        >
+                          <Skeleton className="h-6 w-3/4 mb-2" />
+                          <div className="flex my-1">
+                            <Skeleton className="h-4 w-24 mr-4" />
+                            <Skeleton className="h-4 w-32" />
+                          </div>
+                          <Skeleton className="h-16 w-full" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : userComments && userComments.length > 0 ? (
+                    userComments.map((comment: Comment) => (
+                      <ProfileCommentCard
+                        key={comment.id}
+                        comment={comment}
+                        postTitle={getPostTitleById(comment.postId!)}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      You haven't answered any questions yet.
+                    </div>
+                  )}
+                </TabsContent>
 
-			{/* Edit Profile Dialog */}
-			<Dialog
-				open={isEditProfileOpen}
-				onOpenChange={setIsEditProfileOpen}
-			>
-				<DialogPortal>
-					<DialogOverlay className="bg-black/50" />
-					<DialogContent className="sm:max-w-[600px] p-0">
-						<UpdateProfile onClose={handleCloseEditProfile} />
-					</DialogContent>
-				</DialogPortal>
-			</Dialog>
-		</>
-	);
+                {/* Skills Tab Content */}
+                <TabsContent value="skills" className="py-4">
+                  {isSkillsLoading ? (
+                    <div className="grid grid-cols-3 gap-4">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <Skeleton
+                          key={i}
+                          className="h-10 w-full rounded-full"
+                        />
+                      ))}
+                    </div>
+                  ) : profile?.skills && profile.skills.length > 0 ? (
+                    <div className="grid grid-cols-6 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
+                      {profile.skills.map((skill, index) => (
+                        <div
+                          key={index}
+                          className="rounded-full px-1 py-2 text-white text-center font-medium bg-indigo-700 dark:bg-indigo-500 bg-gradient-to-r"
+                        >
+                          {skill}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      You haven't added any skills yet.
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={isEditProfileOpen} onOpenChange={setIsEditProfileOpen}>
+        <DialogPortal>
+          <DialogOverlay className="bg-black/50" />
+          <DialogContent className="sm:max-w-[600px] p-0">
+            <UpdateProfile onClose={handleCloseEditProfile} />
+          </DialogContent>
+        </DialogPortal>
+      </Dialog>
+    </>
+  );
 };
 
 export default MyProfilePage;

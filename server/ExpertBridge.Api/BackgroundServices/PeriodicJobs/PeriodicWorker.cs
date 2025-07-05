@@ -9,7 +9,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
     {
         private readonly double _startDelay;
         private readonly string _workerName;
-        private readonly ILogger<TWorker> _logger;
+        protected readonly ILogger<TWorker> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PeriodicWorker{TWorker}"/> class.

@@ -24,5 +24,6 @@ namespace ExpertBridge.Core.Responses
         public int CommentsUpvotes { get; set; }
         public int CommentsDownvotes { get; set; }
         public int Reputation { get; set; }
+        public List<string>? Skills { get; set; } = [];
     }
 }
