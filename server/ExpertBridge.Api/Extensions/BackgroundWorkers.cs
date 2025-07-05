@@ -29,7 +29,6 @@ public static class BackgroundWorkers
             .AddHostedService<PostEmbeddingPeriodicWorker>()
             .AddHostedService<UserInterestUpdaterPeriodicWorker>()
             .AddHostedService<ContentModerationPeriodicWorker>()
-            .AddHostedService<SkillsEmbeddingPeriodicWorker>()
             .AddHostedService<PostProcessingPipelineHandlerWorker>()
             .AddHostedService<PostTaggingHandlerWorker>()
             .AddHostedService<PostEmbeddingHandlerWorker>()
@@ -38,7 +37,6 @@ public static class BackgroundWorkers
             .AddHostedService<InappropriateCommentDetectionHandlerWorker>()
             .AddHostedService<UserInterestsTagsProcessingHandlerWorker>()
             .AddHostedService<CleanUpNotificationsPeriodicWorker>()
-            .AddHostedService<SkillsEmbeddingHandlerWorker>()
             ;
 
         return builder;

@@ -1,7 +1,3 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Core.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -25,17 +21,5 @@ public class SkillEntityConfiguration : IEntityTypeConfiguration<Skill>
         builder.Property(x => x.Description)
             .IsRequired(false)
             .HasMaxLength(SkillEntityConstraints.MaxDescriptionLength);
-
-        builder.Property(p => p.Embedding)
-            .HasColumnType(ColumnTypes.Vector1024)
-            .IsRequired(false);
-
-        builder
-            .HasIndex(s => s.Embedding)
-            .HasMethod(IndexMethods.Hnsw)
-            .HasOperators("vector_cosine_ops")
-            .HasStorageParameter("m", 64) // Example, tune this
-            .HasStorageParameter("ef_construction", 128) // Example, tune this
-            ;
     }
 }

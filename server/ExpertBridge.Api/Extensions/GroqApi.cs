@@ -48,7 +48,6 @@ public static class GroqApi
             .AddScoped<GroqPostTaggingService>()
             .AddScoped<GroqTagProcessorService>()
             .AddScoped<GroqInappropriateLanguageDetectionService>()
-            .AddScoped<GroqSkillProcessorService>()
             ;
 
         // Adding an HttpClient to a service should take place after registering this

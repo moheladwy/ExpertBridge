@@ -31,7 +31,6 @@ public static class IpcChannels
             .AddSingleton(_ => Channel.CreateUnbounded<AcknowledgePostProcessingMessage>())
             .AddSingleton(_ => Channel.CreateUnbounded<PostProcessingPipelineMessage>())
             .AddSingleton(_ => Channel.CreateUnbounded<UserInterestsProsessingMessage>())
-            .AddSingleton(_ => Channel.CreateUnbounded<EmbedSkillsMessage>())
             ;
 
         return builder;

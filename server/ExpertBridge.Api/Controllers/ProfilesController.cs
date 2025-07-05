@@ -34,7 +34,6 @@ public class ProfilesController : ControllerBase
     private readonly ProfileService _profileService;
     private readonly ChannelWriter<UserInterestsProsessingMessage> _channelWriter;
     private readonly IValidator<UpdateProfileRequest> _updateProfileRequestValidator;
-    private readonly ChannelWriter<EmbedSkillsMessage> _embedProfileSkillsChannelWriter;
 
     public ProfilesController(
         ExpertBridgeDbContext dbContext,
@@ -42,8 +41,7 @@ public class ProfilesController : ControllerBase
         Channel<UserInterestsProsessingMessage> channel,
         IValidator<UpdateProfileRequest> updateProfileRequestValidator,
         UserService userService,
-        ProfileService profileService,
-        ChannelWriter<EmbedSkillsMessage> embedProfileSkillsChannelWriter)
+        ProfileService profileService)
     {
         _dbContext = dbContext;
         _authHelper = authHelper;
@@ -51,7 +49,6 @@ public class ProfilesController : ControllerBase
         _updateProfileRequestValidator = updateProfileRequestValidator;
         _userService = userService;
         _profileService = profileService;
-        _embedProfileSkillsChannelWriter = embedProfileSkillsChannelWriter;
     }
 
     [AllowAnonymous]
@@ -352,19 +349,6 @@ public class ProfilesController : ControllerBase
         await _dbContext.ProfileSkills.AddRangeAsync(skillsToBeAdded, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-
-        // After updating the skills, we need to embed the new skills.
-        await _dbContext.Skills
-            .AsNoTracking()
-            .Where(s => s.Description != null && s.Embedding == null)
-            .Select(s => new EmbedSkillsMessage
-            {
-                SkillId = s.Id
-            })
-            .ForEachAsync(async void (skill) =>
-                await _embedProfileSkillsChannelWriter.WriteAsync(skill, cancellationToken),
-                cancellationToken
-            );
 
         var response = await _dbContext.Profiles
             .FullyPopulatedProfileQuery(p => p.Id == user.Profile.Id)
