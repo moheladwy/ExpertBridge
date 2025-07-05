@@ -35,6 +35,9 @@ import SearchUsers from "./views/pages/search/SearchUsers.tsx";
 import JobPostingsFeed from "./views/components/common/jobPostings/JobPostingsFeed.tsx";
 import JobPostingFromFeedPage from "./views/pages/jobPostings/JobPostingFromFeedPage.tsx";
 import JobPostingFromUrlPage from "./views/pages/jobPostings/JobPostingFromUrlPage.tsx";
+import PrivacyPolicy from "./views/pages/landing/PrivacyPolicy.tsx";
+import JobApplicationsPage from "./views/pages/jobPostings/JobApplicationsPage.tsx";
+import { JobOffersDashboardPage } from "./views/pages/jobs/JobOffersDashboardPage.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -88,6 +91,12 @@ const router = createBrowserRouter([
 				),
 			},
 			{
+				path: "job/:jobPostingId/applications",
+				element: (
+					<JobApplicationsPage />
+				),
+			},
+			{
 				path: "profile",
 				element: (
 					<ProtectedRoute>
@@ -114,6 +123,18 @@ const router = createBrowserRouter([
 						<Notifications />
 					</ProtectedRoute>
 				),
+			},
+			{
+				path: "offers",
+				element: (
+					<ProtectedRoute>
+						<JobOffersDashboardPage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "privacy-policy",
+				element: <PrivacyPolicy />
 			},
 		],
 	},

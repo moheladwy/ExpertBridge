@@ -5,6 +5,8 @@ using System.Threading.Channels;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.JobApplications;
+using ExpertBridge.Core.Entities.JobOffers;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.ModerationReports;
@@ -45,7 +47,7 @@ namespace ExpertBridge.Notifications
                     Message = $"{comment.Author.FirstName} commented on your post: {comment.Content}",
                     ActionUrl = $"/{(comment.PostId != null ? "posts" : "jobPostings")}/{comment.PostId ?? comment.JobPostingId}/#comment-{comment.Id}",
                     IconUrl = comment.Author.ProfilePictureUrl,
-                    IconActionUrl = $"/profiles/{comment.AuthorId}",
+                    IconActionUrl = $"/profile/{comment.AuthorId}",
                     SenderId = comment.AuthorId,
                 });
             }
@@ -62,7 +64,7 @@ namespace ExpertBridge.Notifications
                     Message = $"{comment.Author.FirstName} replied to a comment on your post: {comment.Content}",
                     ActionUrl = $"/{(comment.PostId != null ? "posts" : "jobPostings")}/{comment.PostId ?? comment.JobPostingId}/#comment-{comment.Id}",
                     IconUrl = comment.Author.ProfilePictureUrl,
-                    IconActionUrl = $"/profiles/{comment.AuthorId}",
+                    IconActionUrl = $"/profile/{comment.AuthorId}",
                     SenderId = comment.AuthorId,
                 }
             };
@@ -76,7 +78,7 @@ namespace ExpertBridge.Notifications
                     Message = $"{comment.Author.FirstName} replied to your comment: {comment.Content}",
                     ActionUrl = $"/{(comment.PostId != null ? "posts" : "jobPostings")}/{comment.PostId ?? comment.JobPostingId}/#comment-{comment.Id}",
                     IconUrl = comment.Author.ProfilePictureUrl,
-                    IconActionUrl = $"/profiles/{comment.AuthorId}",
+                    IconActionUrl = $"/profile/{comment.AuthorId}",
                     SenderId = comment.AuthorId,
                 });
             }
@@ -162,6 +164,32 @@ namespace ExpertBridge.Notifications
                 .ToList();
 
             await NotifyInternalAsync(notifications);
+        }
+
+        public async Task NotifyJobApplicationSubmittedAsync(JobApplication jobApplication)
+        {
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = jobApplication.JobPosting.AuthorId,
+                Message = $"{jobApplication.Applicant.FirstName} applied for your job: {jobApplication.JobPosting.Title}",
+                ActionUrl = $"/job/{jobApplication.JobPosting.Id}/applications",
+                IconUrl = jobApplication.Applicant.ProfilePictureUrl,
+                IconActionUrl = $"/profile/{jobApplication.ApplicantId}",
+                SenderId = jobApplication.ApplicantId,
+            });
+        }
+
+        public async Task NotifyJobOfferCreatedAsync(JobOffer offer)
+        {
+            await NotifyInternalAsync(new Notification
+            {
+                RecipientId = offer.WorkerId,
+                Message = $"{offer.Author.FirstName} wants to hire you: {offer.Title}",
+                ActionUrl = $"/offers",
+                IconUrl = offer.Author.ProfilePictureUrl,
+                IconActionUrl = $"/profile/{offer.AuthorId}",
+                SenderId = offer.AuthorId,
+            });
         }
 
         private async Task NotifyInternalAsync(params List<Notification> notifications)

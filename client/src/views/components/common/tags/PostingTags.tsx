@@ -18,7 +18,7 @@ const PostingTags: React.FC<PostingTagsProps> = ({ tags, language, className = "
 					key={index}
 					className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full font-medium border border-purple-200 dark:border-purple-700 hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors cursor-pointer"
 				>
-					{language && language === 'Arabic' ? tag.arabicName : tag.englishName}
+					{language === 'Arabic' ? tag.arabicName : tag.englishName}
 				</span>
 			))}
 		</div>

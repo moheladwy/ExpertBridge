@@ -20,17 +20,21 @@ import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
 import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
 import ProfileCommentCard from "@/views/components/common/comments/ProfileCommentCard";
 import { Comment } from "@/features/comments/types";
+import HiringModal from "@/views/components/common/jobs/HiringModal";
 
 const UserProfilePage = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
+
   const {
     data: profile,
     isLoading: isProfileLoading,
     error,
   } = useGetProfileByIdQuery(userId || "");
+
   const [activeTab, setActiveTab] = useState("questions");
+  const [isHiringModalOpen, setIsHiringModalOpen] = useState(false);
 
   const {
     data: userPosts,
@@ -102,6 +106,20 @@ const UserProfilePage = () => {
     return "Unknown Post";
   };
 
+  // Handle hiring modal
+  const handleHireClick = () => {
+    if (!authUser) {
+      toast.error("Please log in to hire this expert.");
+      return;
+    }
+    setIsHiringModalOpen(true);
+  };
+
+  const handleHiringSuccess = () => {
+    setIsHiringModalOpen(false);
+    toast.success("Hiring request sent successfully!");
+  };
+
   // Don't render anything if error and no profile
   if (error && !profile) return null;
 
@@ -151,7 +169,10 @@ const UserProfilePage = () => {
                 {isProfileLoading ? (
                   <Skeleton className="h-9 w-28" />
                 ) : (
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white gap-2">
+                  <Button
+                    className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white gap-2"
+                    onClick={handleHireClick}
+                  >
                     <UserPlusIcon size={16} />
                     <span>Hire Me</span>
                   </Button>
@@ -296,22 +317,19 @@ const UserProfilePage = () => {
                 <TabsList className="grid grid-cols-3 mb-6 dark:bg-gray-700">
                   <TabsTrigger
                     value="questions"
-                    className="data-[state=active]:bg-white
-									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+                    className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
                   >
                     Latest Questions
                   </TabsTrigger>
                   <TabsTrigger
                     value="answers"
-                    className="data-[state=active]:bg-white
-									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+                    className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
                   >
                     Answered Questions
                   </TabsTrigger>
                   <TabsTrigger
                     value="skills"
-                    className="data-[state=active]:bg-white
-									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+                    className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
                   >
                     Skills
                   </TabsTrigger>
@@ -412,6 +430,16 @@ const UserProfilePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Hiring Modal */}
+      {profile && (
+        <HiringModal
+          isOpen={isHiringModalOpen}
+          onClose={() => setIsHiringModalOpen(false)}
+          onSuccess={handleHiringSuccess}
+          expertProfile={profile}
+        />
+      )}
     </>
   );
 };

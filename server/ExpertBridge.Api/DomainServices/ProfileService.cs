@@ -68,7 +68,6 @@ public class ProfileService
         CancellationToken cancellationToken = default)
     {
         var query = _dbContext.Profiles
-            .AsNoTracking()
             .FullyPopulatedProfileQuery()
             .AsQueryable();
 
@@ -78,15 +77,11 @@ public class ProfileService
         }
 
         var topProfiles = await query
-            //.OrderByDescending(p =>
-            //    p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
-            //    - p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)))
             .Take(limit)
             .SelectProfileResponseFromProfile()
-            .OrderByDescending(p => p.Reputation)
             .ToListAsync(cancellationToken);
 
-        return topProfiles;
+        return topProfiles.OrderByDescending(p => p.Reputation).ToList();
     }
 
     public async Task<ProfileResponse> UpdateProfileAsync(

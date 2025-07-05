@@ -21,6 +21,7 @@ namespace ExpertBridge.Api.Extensions
                 .AddScoped<PostService>()
                 .AddScoped<JobPostingService>()
                 .AddScoped<ProfileService>()
+                .AddScoped<JobService>()
                 ;
 
             return services;

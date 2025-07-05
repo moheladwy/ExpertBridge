@@ -24,6 +24,7 @@ namespace ExpertBridge.Core.Queries
                 .Include(p => p.Votes)
                 .Include(p => p.Medias)
                 .Include(p => p.Comments)
+                .Include(p => p.JobApplications)
                 .Include(p => p.JobPostingTags)
                 .ThenInclude(t => t.Tag)
                 //.ThenInclude(c => c.Author)
@@ -71,6 +72,7 @@ namespace ExpertBridge.Core.Queries
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),
                 Comments = p.Comments.Count,
+                IsAppliedFor = p.JobApplications.Any(ja => ja.ApplicantId == userProfileId),
                 Medias = p.Medias.AsQueryable().SelectMediaObjectResponse().ToList(),
             };
         }

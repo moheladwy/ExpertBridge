@@ -1,15 +1,18 @@
 using System;
+using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Interfaces;
 namespace ExpertBridge.Core.Entities.JobApplications;
 
-public class JobApplication
+public class JobApplication : BaseModel, ISoftDeletable
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string JobPostingId { get; set; }
-    public string ContractorProfileId { get; set; }
-    public string CoverLetter { get; set; }
-    public DateTime AppliedAt { get; set; } = DateTime.UtcNow;
+    public required string JobPostingId { get; set; }
+    public required string ApplicantId { get; set; }
+    public string? CoverLetter { get; set; }
+    public required decimal OfferedCost { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
-    public Profile ContractorProfile { get; set; }
-
+    public Profile Applicant { get; set; }
+    public JobPosting JobPosting { get; set; }
 }

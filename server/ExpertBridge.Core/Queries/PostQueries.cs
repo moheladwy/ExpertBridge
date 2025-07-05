@@ -54,7 +54,7 @@ namespace ExpertBridge.Core.Queries
 
                 Title = p.Title,
                 Content = p.Content,
-                Langauge = p.Language,
+                Language = p.Language,
                 Author = p.Author.SelectAuthorResponseFromProfile(),
                 CreatedAt = p.CreatedAt.Value,
                 LastModified = p.UpdatedAt,

@@ -8,7 +8,7 @@ public record PostResponse
     public string Id { get; set; }
     public required string Title { get; set; }
     public required string Content { get; set; }
-    public string? Langauge { get; set; }
+    public string? Language { get; set; }
     public AuthorResponse? Author { get; set; }
     public DateTime? CreatedAt { get; set; }
     public DateTime? LastModified { get; set; }

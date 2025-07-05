@@ -202,26 +202,43 @@ namespace ExpertBridge.Data.Migrations
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobApplications.JobApplication", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
 
-                    b.Property<DateTime>("AppliedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ContractorProfileId")
+                    b.Property<string>("ApplicantId")
                         .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<string>("CoverLetter")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("JobPostingId")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("OfferedCost")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContractorProfileId");
+                    b.HasIndex("ApplicantId");
+
+                    b.HasIndex("JobPostingId");
 
                     b.ToTable("JobApplications");
                 });
@@ -249,6 +266,59 @@ namespace ExpertBridge.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("JobCategories");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Core.Entities.JobOffers.JobOffer", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<decimal>("Budget")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("WorkerId")
+                        .IsRequired()
+                        .HasColumnType("character varying(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("JobOffers");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobPostings.JobPosting", b =>
@@ -426,15 +496,18 @@ namespace ExpertBridge.Data.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
 
-                    b.Property<double>("ActualCost")
+                    b.Property<decimal>("ActualCost")
                         .HasPrecision(18, 2)
-                        .HasColumnType("double precision");
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<string>("AuthorId")
                         .IsRequired()
                         .HasColumnType("character varying(450)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -445,14 +518,23 @@ namespace ExpertBridge.Data.Migrations
                     b.Property<DateTime?>("EndedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("JobPostingId")
                         .HasColumnType("character varying(450)");
 
-                    b.Property<string>("ProfileId")
-                        .HasColumnType("character varying(450)");
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ProfileId1")
-                        .HasColumnType("character varying(450)");
+                    b.Property<string>("ReviewId")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("StartedAt")
                         .HasColumnType("timestamp with time zone");
@@ -479,10 +561,6 @@ namespace ExpertBridge.Data.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("JobPostingId");
-
-                    b.HasIndex("ProfileId");
-
-                    b.HasIndex("ProfileId1");
 
                     b.HasIndex("WorkerId");
 
@@ -1476,13 +1554,40 @@ namespace ExpertBridge.Data.Migrations
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobApplications.JobApplication", b =>
                 {
-                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "ContractorProfile")
-                        .WithMany()
-                        .HasForeignKey("ContractorProfileId")
+                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "Applicant")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("ApplicantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ContractorProfile");
+                    b.HasOne("ExpertBridge.Core.Entities.JobPostings.JobPosting", "JobPosting")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("JobPostingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Applicant");
+
+                    b.Navigation("JobPosting");
+                });
+
+            modelBuilder.Entity("ExpertBridge.Core.Entities.JobOffers.JobOffer", b =>
+                {
+                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "Author")
+                        .WithMany("AuthoredJobOffers")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "Worker")
+                        .WithMany("ReceivedJobOffers")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Worker");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.JobPostings.JobPosting", b =>
@@ -1559,16 +1664,8 @@ namespace ExpertBridge.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("ExpertBridge.Core.Entities.JobPostings.JobPosting", "JobPosting")
-                        .WithMany()
+                        .WithMany("Jobs")
                         .HasForeignKey("JobPostingId");
-
-                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", null)
-                        .WithMany("AuthoredJobs")
-                        .HasForeignKey("ProfileId");
-
-                    b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", null)
-                        .WithMany("WorkedJobs")
-                        .HasForeignKey("ProfileId1");
 
                     b.HasOne("ExpertBridge.Core.Entities.Profiles.Profile", "Worker")
                         .WithMany("JobsAsWorker")
@@ -1844,7 +1941,11 @@ namespace ExpertBridge.Data.Migrations
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("JobApplications");
+
                     b.Navigation("JobPostingTags");
+
+                    b.Navigation("Jobs");
 
                     b.Navigation("Medias");
 
@@ -1853,8 +1954,7 @@ namespace ExpertBridge.Data.Migrations
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.Jobs.Job", b =>
                 {
-                    b.Navigation("Review")
-                        .IsRequired();
+                    b.Navigation("Review");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.Posts.Post", b =>
@@ -1877,7 +1977,7 @@ namespace ExpertBridge.Data.Migrations
                 {
                     b.Navigation("Areas");
 
-                    b.Navigation("AuthoredJobs");
+                    b.Navigation("AuthoredJobOffers");
 
                     b.Navigation("ChatParticipant")
                         .IsRequired();
@@ -1887,6 +1987,8 @@ namespace ExpertBridge.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Experiences");
+
+                    b.Navigation("JobApplications");
 
                     b.Navigation("JobPostingVotes");
 
@@ -1908,7 +2010,7 @@ namespace ExpertBridge.Data.Migrations
 
                     b.Navigation("ProfileTags");
 
-                    b.Navigation("WorkedJobs");
+                    b.Navigation("ReceivedJobOffers");
                 });
 
             modelBuilder.Entity("ExpertBridge.Core.Entities.Skills.Skill", b =>

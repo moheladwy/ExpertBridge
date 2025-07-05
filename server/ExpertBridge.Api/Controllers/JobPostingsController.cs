@@ -188,73 +188,27 @@ namespace ExpertBridge.Api.Controllers
         // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
 
 
-        //[HttpPost("{jobPostingId}/apply")]
-        //public async Task<IActionResult> ApplyToJobPosting(string jobPostingId, [FromBody] ApplyToJobPostingRequest request)
-        //{
-        //    //var user = await _authHelper.GetCurrentUserAsync();
-        //    //var contractorProfileId = user?.Profile?.Id;
-        //    //if (contractorProfileId == null)
-        //    //    return Unauthorized("User profile not found.");
+        [HttpPost("{jobPostingId}/apply")]
+        public async Task<IActionResult> ApplyToJobPosting(
+            [FromRoute] string jobPostingId,
+            [FromBody] ApplyToJobPostingRequest request)
+        {
+            var userProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-        //    //var jobPosting = await _dbContext.JobPostings.FindAsync(jobPostingId);
-        //    //if (jobPosting == null)
-        //    //    return NotFound("Job posting not found.");
+            var response = await _jobPostingService.ApplyToJobPostingAsync(jobPostingId, userProfile, request);
 
-        //    //var alreadyApplied = await _dbContext.JobApplications
-        //    //    .AnyAsync(a => a.JobPostingId == jobPostingId && a.ContractorProfileId == contractorProfileId);
-        //    //if (alreadyApplied)
-        //    //    return BadRequest("You have already applied to this job posting.");
+            return Ok();
+        }
 
-        //    //var application = new JobApplication
-        //    //{
-        //    //    JobPostingId = jobPostingId,
-        //    //    ContractorProfileId = contractorProfileId,
-        //    //    CoverLetter = request.CoverLetter
-        //    //};
+        [HttpGet("{jobPostingId}/applications")]
+        public async Task<List<JobApplicationResponse>> GetJobApplications([FromRoute] string jobPostingId)
+        {
+            var userProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-        //    //_dbContext.JobApplications.Add(application);
-        //    //await _dbContext.SaveChangesAsync();
+            var applications = await _jobPostingService.GetJobApplicationsAsync(jobPostingId, userProfile);
 
-        //    return Ok();
-        //}
-
-        //[HttpGet("{jobPostingId}/applicants")]
-        //public async Task<IActionResult> GetApplicants(string jobPostingId)
-        //{
-        //    //var user = await _authHelper.GetCurrentUserAsync();
-        //    //var clientProfileId = user?.Profile?.Id;
-        //    //if (clientProfileId == null)
-        //    //    return Unauthorized("User profile not found.");
-
-        //    //var jobPosting = await _dbContext.JobPostings
-        //    //    .AsNoTracking()
-        //    //    .FirstOrDefaultAsync(jp => jp.Id == jobPostingId && jp.AuthorId == clientProfileId);
-
-        //    //if (jobPosting == null)
-        //    //    return NotFound("Job posting not found or you are not the author.");
-
-        //    //var applicants = await _dbContext.JobApplications
-        //    //    .Where(a => a.JobPostingId == jobPostingId)
-        //    //    .Include(a => a.ContractorProfile)
-        //    //        .ThenInclude(p => p.User)
-        //    //    .Select(a => new
-        //    //    {
-        //    //        a.Id,
-        //    //        a.ContractorProfileId,
-        //    //        a.CoverLetter,
-        //    //        a.AppliedAt,
-        //    //        Contractor = new
-        //    //        {
-        //    //            a.ContractorProfile.Id,
-        //    //            a.ContractorProfile.User.FirstName,
-        //    //            a.ContractorProfile.User.LastName,
-        //    //            a.ContractorProfile.ProfilePictureUrl
-        //    //        }
-        //    //    })
-        //    //    .ToListAsync();
-
-        //    return Ok();
-        //}
+            return applications;
+        }
 
 
         //// GET /api/JobPostings
@@ -264,7 +218,7 @@ namespace ExpertBridge.Api.Controllers
         //    [FromServices] ExpertBridgeDbContext db)
         //{
         //    var user = db.Users.Include(u => u.Profile).First();
-            
+
         //    await _jobPostingService.CreateAsync(new CreateJobPostingRequest
         //    {
         //        Area = "",
