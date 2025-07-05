@@ -35,6 +35,26 @@ namespace ExpertBridge.Api.Controllers
             _jobService = jobService;
         }
 
+        [HttpGet("{jobId}")]
+        public async Task<ActionResult<JobResponse>> GetJobById(string jobId)
+        {
+            var userProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
+
+            var job = await _jobService.GetJobByIdAsync(userProfile, jobId);
+
+            return Ok(job);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<JobResponse>>> GetJobsForCurrentUser()
+        {
+            var userProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
+
+            var jobs = await _jobService.GetMyJobsAsync(userProfile);
+
+            return Ok(jobs);
+        }
+
         [HttpPost("offers")]
         public async Task<ActionResult<JobOfferResponse>> InitiateJobOffer(
             [FromBody] CreateJobOfferRequest request)
@@ -66,221 +86,35 @@ namespace ExpertBridge.Api.Controllers
             return offers;
         }
 
-        [HttpPatch("{jobId}/response")]
-        public async Task<ActionResult<JobResponse>> RespondToJobOffer(string jobId, [FromBody] RespondToJobOfferRequest request)
+        [HttpPatch("offers/{offerId}/status")]
+        public async Task<JobOfferResponse> UpdateJobStatus(
+            string offerId, [FromBody] UpdateJobStatusRequest request)
         {
-            var user = await _userService.GetCurrentUserPopulatedModelAsync();
-            if (user?.Profile == null)
-            {
-                return Unauthorized("User profile not found.");
-            }
+            var user = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-            var contractorProfileId = user.Profile.Id;
+            var offer = await _jobService.UpdateJobOfferStatusAsync(offerId, user, request);
 
-            var job = await _dbContext.Jobs
-                .Include(j => j.Author)
-                    .ThenInclude(p => p.User)
-                .Include(j => j.Worker)
-                    .ThenInclude(p => p.User)
-                .FirstOrDefaultAsync(j => j.Id == jobId);
-
-            if (job == null)
-            {
-                throw new JobNotFoundException($"Job with Id '{jobId} is not found.'");
-            }
-
-            if (job.WorkerId != contractorProfileId)
-            {
-                return Forbid("You are not authorised to respond to this job request");
-            }
-
-            if (job.Status != JobStatusEnum.Offered)
-            {
-                return BadRequest("This job is no longer in the offered state.");
-            }
-
-            job.UpdatedAt = DateTime.UtcNow;
-
-            if (request.Accept)
-            {
-                job.Status = JobStatusEnum.Accepted;
-                job.StartedAt = DateTime.UtcNow;
-            }
-            else
-            {
-                job.Status = JobStatusEnum.Declined;
-            }
-
-            _dbContext.Jobs.Update(job);
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(MapToJobResponse(job, job.Author, job.Worker));
-
+            return offer;
         }
 
-        [HttpPatch("{jobId}/status")]
-        public async Task<ActionResult<JobResponse>> UpdateJobStatus(string jobId, [FromBody] UpdateJobStatusRequest request)
+        [HttpPatch("offers/{offerId}/accept")]
+        public async Task<JobResponse> AcceptOffer([FromRoute] string offerId)
         {
-            var currentUser = await _userService.GetCurrentUserPopulatedModelAsync();
-            if (currentUser?.Profile == null)
-            {
-                return Unauthorized("User profile not found.");
-            }
+            var user = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-            var userProfileId = currentUser.Profile.Id;
+            var job = await _jobService.AcceptOfferAsync(user, offerId);
 
-            var job = await _dbContext.Jobs
-                .Include(j => j.Author)
-                    .ThenInclude(p => p.User)
-                .Include(j => j.Worker)
-                    .ThenInclude(p => p.User)
-                .FirstOrDefaultAsync(j => j.Id == jobId);
-
-            if (job == null)
-            {
-                throw new JobNotFoundException($"Job with '{jobId} not found.");
-            }
-
-            // user is either client or contractor
-            if (job.AuthorId != userProfileId && job.WorkerId != userProfileId)
-            {
-                return Forbid("You are not authorised to update the status of this job.");
-            }
-
-            // business logic
-            // only client can move from PendingClientApproval to Completed
-            // only contractor can move from accepted to inprogress when they arrives
-            // only contractor cam move from inprogress to PendingClientApproval
-            // Either can be moved to cancelled if not completed
-
-            var oldStatus = job.Status;
-            if (oldStatus == request.NewStatus)
-            {
-                return BadRequest($"Job is already in '{request.NewStatus}' status.");
-            }
-
-            var newStatus = request.NewStatus;
-            bool isValidTransition = false;
-
-            if (oldStatus == JobStatusEnum.PendingClientApproval && newStatus == JobStatusEnum.Completed && job.AuthorId == userProfileId
-                || oldStatus == JobStatusEnum.Accepted && newStatus == JobStatusEnum.InProgress && job.WorkerId == userProfileId
-                || oldStatus == JobStatusEnum.InProgress && newStatus == JobStatusEnum.PendingClientApproval && job.WorkerId == userProfileId
-                || !(oldStatus == JobStatusEnum.Completed) && newStatus == JobStatusEnum.Cancelled)
-            {
-                isValidTransition = true;
-            }
-
-            if (!isValidTransition)
-            {
-                return BadRequest($"Invalid status transition form '{oldStatus}' to '{request.NewStatus}' or you're not authorized.");
-            }
-
-            job.Status = request.NewStatus;
-            job.UpdatedAt = DateTime.UtcNow;
-
-            if (request.NewStatus == JobStatusEnum.Completed)
-            {
-                job.EndedAt = DateTime.UtcNow;
-            }
-
-            _dbContext.Jobs.Update(job);
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(MapToJobResponse(job, job.Author, job.Worker));
+            return job;
         }
 
-        [HttpGet("{jobId}")]
-        public async Task<ActionResult<JobResponse>> GetJobById(string jobId)
+        [HttpPatch("applications/{applicationId}/accept")]
+        public async Task<JobResponse> AcceptApplication([FromRoute] string applicationId)
         {
-            var currentUser = await _userService.GetCurrentUserPopulatedModelAsync();   
-            if (currentUser?.Profile == null)
-            {
-                return Unauthorized("User profile not found.");
-            }
+            var user = await _userService.GetCurrentUserProfileOrThrowAsync();
 
-            var userProfileId = currentUser.Profile.Id;
+            var job = await _jobService.AcceptApplicationAsync(user, applicationId);
 
-            var job = await _dbContext.Jobs
-                .Include(j => j.Author)
-                    .ThenInclude(p => p.User)
-                .Include(j => j.Worker)
-                    .ThenInclude(p => p.User)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(j => j.Id == jobId);
-
-            if (job == null)
-            {
-                throw new JobNotFoundException("Job Id is not found");
-            }
-
-            if (job.AuthorId != userProfileId && job.WorkerId != userProfileId)
-            {
-                return Forbid("You are not authorized to view this job.");
-            }
-
-            return Ok(MapToJobResponse(job, job.Author, job.Worker));
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobResponse>>> GetJobsForCurrentUser()
-        {
-            var currentUser = await _userService.GetCurrentUserPopulatedModelAsync();
-            if (currentUser?.Profile == null)
-            {
-                return Unauthorized("User profile not found");
-            }
-
-            var userProfileId = currentUser.Profile.Id;
-
-            var jobs = await _dbContext.Jobs
-                .Include(j => j.Author)
-                    .ThenInclude(p => p.User)
-                .Include(j => j.Worker)
-                    .ThenInclude(p => p.User)
-                .Where(j => j.AuthorId == userProfileId || j.WorkerId == userProfileId)
-                .AsNoTracking()
-                .ToListAsync();
-
-            if (!jobs.Any())
-            {
-                return Ok(new List<JobResponse>());
-            }
-
-            var jobResponses = jobs.Select(job => MapToJobResponse(job, job.Author, job.Worker)).ToList();
-
-            return Ok(jobResponses);
-        }
-
-
-        private static JobResponse MapToJobResponse(Job job, Profile authorProfile, Profile workerProfile)
-        {
-            return new JobResponse
-            {
-                Id = job.Id,
-                Title = job.Title,
-                Description = job.Description,
-                Status = job.Status.ToString(),
-                ActualCost = (double)job.ActualCost,
-                StartedAt = job.StartedAt,
-                EndedAt = job.EndedAt,
-                JobPostingId = job.JobPostingId,
-                CreatedAt = job.CreatedAt.Value,
-                UpdatedAt = job.UpdatedAt,
-                AuthorProfile = new ProfileSummaryResponse
-                {
-                    ProfileId = authorProfile.Id,
-                    FirstName = authorProfile.User?.FirstName,
-                    LastName = authorProfile.User?.LastName,
-                    ProfilePictureUrl = authorProfile.ProfilePictureUrl,
-                },
-                WorkerProfile = new ProfileSummaryResponse
-                {
-                    ProfileId = workerProfile.Id,
-                    FirstName = workerProfile.User?.FirstName,
-                    LastName = workerProfile.User?.LastName,
-                    ProfilePictureUrl = workerProfile.ProfilePictureUrl,
-                }
-            };
+            return job;
         }
     }
 

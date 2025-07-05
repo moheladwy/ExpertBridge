@@ -12,10 +12,10 @@ public class ChatParticipantEntityConfiguration : IEntityTypeConfiguration<ChatP
     {
         builder.HasKey(x => new { x.ChatId, x.ProfileId });
 
-        builder.HasOne(cp => cp.Chat)
-            .WithMany(c => c.Participants)
-            .HasForeignKey(cp => cp.ChatId)
-            .IsRequired();
+        //builder.HasOne(cp => cp.Chat)
+        //    .WithMany(c => c.Participants)
+        //    .HasForeignKey(cp => cp.ChatId)
+        //    .IsRequired();
 
         builder.HasOne(cp => cp.Profile)
             .WithOne(p => p.ChatParticipant)

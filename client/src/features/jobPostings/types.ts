@@ -91,6 +91,7 @@ export interface ApplyToJobPostingRequest {
 }
 
 export interface JobApplicationResponse {
+  id: string;
   jobPostingId: string;
   applicantId: string;
   coverLetter?: string;

@@ -38,6 +38,8 @@ import JobPostingFromUrlPage from "./views/pages/jobPostings/JobPostingFromUrlPa
 import PrivacyPolicy from "./views/pages/landing/PrivacyPolicy.tsx";
 import JobApplicationsPage from "./views/pages/jobPostings/JobApplicationsPage.tsx";
 import { JobOffersDashboardPage } from "./views/pages/jobs/JobOffersDashboardPage.tsx";
+import { MyJobsPage } from "./views/pages/jobs/MyJobsPage.tsx";
+import { JobDetailsPage } from "./views/pages/jobs/JobDetailsPage.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -129,6 +131,22 @@ const router = createBrowserRouter([
 				element: (
 					<ProtectedRoute>
 						<JobOffersDashboardPage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "my-jobs",
+				element: (
+					<ProtectedRoute>
+						<MyJobsPage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "my-jobs/:jobId",
+				element: (
+					<ProtectedRoute>
+						<JobDetailsPage />
 					</ProtectedRoute>
 				),
 			},

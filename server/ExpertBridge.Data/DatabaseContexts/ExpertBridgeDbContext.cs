@@ -27,6 +27,7 @@ using ExpertBridge.Core.Entities.Media.MediaGrants;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
 using ExpertBridge.Core.Entities.Media.ProfileMedia;
+using ExpertBridge.Core.Entities.Messages;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
@@ -85,6 +86,7 @@ public sealed class ExpertBridgeDbContext : DbContext
     public DbSet<ModerationReport> ModerationReports { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<JobOffer> JobOffers { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
 
     /// <summary>
@@ -121,6 +123,7 @@ public sealed class ExpertBridgeDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PostTagEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new MessageEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobOfferEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PostVoteEntityConfiguration());
         modelBuilder.ApplyConfiguration(new JobReviewEntityConfiguration());

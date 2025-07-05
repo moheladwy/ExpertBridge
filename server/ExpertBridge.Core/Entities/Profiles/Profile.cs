@@ -2,6 +2,9 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json.Serialization;
+using ExpertBridge.Core.Entities.Areas;
+using ExpertBridge.Core.Entities.Chats;
+using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobOffers;
@@ -13,7 +16,11 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Media.ProfileMedia;
+using ExpertBridge.Core.Entities.Messages;
+using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
+using ExpertBridge.Core.Entities.ProfileExperiences;
+using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Interfaces;
 using Pgvector;
 
@@ -43,15 +50,15 @@ public partial class Profile
 {
     // Navigation properties
     [JsonIgnore]
-    public Users.User User { get; set; }
-    public ICollection<Areas.Area> Areas { get; set; } = [];
-    public ICollection<ProfileExperiences.ProfileExperience> Experiences { get; set; } = [];
+    public User User { get; set; }
+    public ICollection<Area> Areas { get; set; } = [];
+    public ICollection<ProfileExperience> Experiences { get; set; } = [];
     public ICollection<ProfileMedia> Medias { get; set; } = [];
 
     [JsonIgnore]
-    public ICollection<Posts.Post> Posts { get; set; } = [];
+    public ICollection<Post> Posts { get; set; } = [];
     [JsonIgnore]
-    public ICollection<Comments.Comment> Comments { get; set; } = [];
+    public ICollection<Comment> Comments { get; set; } = [];
     public ICollection<JobPosting> JobPostings { get; set; } = [];
     public ICollection<JobApplication> JobApplications { get; set; } = [];
     public ChatParticipant ChatParticipant { get; set; }
@@ -67,4 +74,9 @@ public partial class Profile
     public ICollection<Job> JobsAsWorker { get; set; } = [];
     public ICollection<JobOffer> AuthoredJobOffers { get; set; } = [];
     public ICollection<JobOffer> ReceivedJobOffers { get; set; } = [];
+
+    public ICollection<Chat> ChatsAsWorker { get; set; } = [];
+    public ICollection<Chat> ChatsAsHirer { get; set; } = [];
+
+    public ICollection<Message> SentMessages { get; set; } = [];
 }
