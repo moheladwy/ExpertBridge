@@ -16,12 +16,7 @@ import { Separator } from "@/views/components/ui/separator";
 import defaultProfile from "../../../assets/Profile-pic/ProfilePic.svg";
 import { Skeleton } from "@/views/components/ui/skeleton";
 import toast from "react-hot-toast";
-import { useAppSelector } from "@/app/hooks";
-import {
-  selectAllPosts,
-  useGetAllPostsByProfileIdQuery,
-  useGetPostsQuery,
-} from "@/features/posts/postsSlice";
+import { useGetAllPostsByProfileIdQuery } from "@/features/posts/postsSlice";
 import { useGetCommentsByUserIdQuery } from "@/features/comments/commentsSlice";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import ProfilePostCard from "@/views/components/common/posts/ProfilePostCard";
@@ -35,26 +30,8 @@ import {
 import UpdateProfile from "@/views/components/common/profile/UpdateProfile";
 import { Comment } from "@/features/comments/types";
 
-// Helper function to generate gradient colors for skill tags
-const getGradientColors = (index: number) => {
-  const gradients = [
-    "#4F46E5, #7C3AED", // indigo to purple
-    "#3B82F6, #2563EB", // blue variations
-    "#8B5CF6, #6D28D9", // purple variations
-    "#EC4899, #DB2777", // pink variations
-    "#10B981, #059669", // emerald variations
-    "#F59E0B, #D97706", // amber variations
-    "#EF4444, #DC2626", // red variations
-    "#6366F1, #4338CA", // indigo variations
-    "#8B5CF6, #5B21B6", // violet variations
-    "#14B8A6, #0D9488", // teal variations
-  ];
-
-  return gradients[index % gradients.length];
-};
-
 const MyProfilePage = () => {
-  const [_, __, ___, authUser, appUser] = useIsUserLoggedIn();
+  const [_, userLoading, userError, authUser, appUser] = useIsUserLoggedIn();
   const { data: profile, isLoading, error } = useGetCurrentUserProfileQuery();
   const [activeTab, setActiveTab] = useState("questions");
   // Get user skills
@@ -126,6 +103,60 @@ const MyProfilePage = () => {
   const handleCloseEditProfile = () => {
     setIsEditProfileOpen(false);
   };
+
+  if (userLoading) {
+    return (
+      <div className="w-full flex justify-center">
+        <div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-6">
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-300">
+              Loading your profile...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (userError) {
+    return (
+      <div className="w-full flex justify-center">
+        <div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-6">
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="text-red-500 dark:text-red-400 mb-4">
+              <svg
+                className="w-16 h-16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Authentication Error
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 text-center mb-4">
+              There was an error loading your profile. Please try signing in
+              again.
+            </p>
+            <Button
+              onClick={() => window.location.reload()}
+              className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+            >
+              Reload Page
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -372,9 +403,14 @@ const MyProfilePage = () => {
                       ))}
                     </div>
                   ) : allPosts && allPosts.length > 0 ? (
-                    allPosts.map((post) => (
-                      <ProfilePostCard key={post.id} post={post} />
-                    ))
+                    (() => {
+                      const sortedPosts = [...allPosts].sort((a, b) =>
+                        b.createdAt.localeCompare(a.createdAt),
+                      );
+                      return sortedPosts.map((post) => {
+                        return <ProfilePostCard key={post.id} post={post} />;
+                      });
+                    })()
                   ) : (
                     <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                       You haven't asked any questions yet.
@@ -401,13 +437,18 @@ const MyProfilePage = () => {
                       ))}
                     </div>
                   ) : userComments && userComments.length > 0 ? (
-                    userComments.map((comment: Comment) => (
-                      <ProfileCommentCard
-                        key={comment.id}
-                        comment={comment}
-                        postTitle={getPostTitleById(comment.postId!)}
-                      />
-                    ))
+                    (() => {
+                      const sortedComments = [...userComments].sort((a, b) =>
+                        b.createdAt.localeCompare(a.createdAt),
+                      );
+                      return sortedComments.map((comment: Comment) => (
+                        <ProfileCommentCard
+                          key={comment.id}
+                          comment={comment}
+                          postTitle={getPostTitleById(comment.postId!)}
+                        />
+                      ));
+                    })()
                   ) : (
                     <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                       You haven't answered any questions yet.
