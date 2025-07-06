@@ -120,4 +120,62 @@ public class SearchController : ControllerBase
             .ToListAsync(cancellationToken);
         return users;
     }
+
+    [HttpGet("jobs")]
+    public async Task<List<JobPostingResponse>> SearchJobs(
+            [FromQuery] SearchJobPostsRequest request,
+            CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+
+        var normalizedQuery = request.Query.ToLower(CultureInfo.CurrentCulture).Trim();
+        var queryEmbedding = await _embeddingService.GenerateEmbedding(request.Query);
+
+        var query = _dbContext.JobPostings
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(request.Area))
+        {
+            query = query
+                .Where(j =>
+                        j.Area
+                        .ToLower(CultureInfo.CurrentCulture)
+                        .Contains(request.Area.ToLower(CultureInfo.CurrentCulture))
+                );
+        }
+        if (request.IsRemote)
+        {
+            query = query
+                .Where(j =>
+                        j.Area
+                        .ToLower(CultureInfo.CurrentCulture)
+                        .Contains("remote")
+                );
+        }
+        if (request.MinBudget.HasValue && request.MinBudget.Value >= 0)
+        {
+            query = query.Where(j => j.Budget >= request.MinBudget.Value);
+        }
+        if (request.MaxBudget.HasValue &&
+            request.MaxBudget.Value >= 0 &&
+            request.MaxBudget.Value > request.MinBudget.GetValueOrDefault(0))
+        {
+            query = query.Where(j => j.Budget <= request.MaxBudget.Value);
+        }
+
+        query = query
+            .Where(j => j.Embedding != null && j.Embedding.CosineDistance(queryEmbedding) < _cosineDistanceThreshold)
+            .OrderBy(j => j.Embedding.CosineDistance(queryEmbedding))
+            .Take(request.Limit ?? _defaultLimit);
+
+
+        var jobPosts = await query
+            .Select(j => j.SelectJopPostingResponseFromFullJobPosting(userProfileId, queryEmbedding))
+            .ToListAsync(cancellationToken);
+
+        return jobPosts;
+    }
 }
