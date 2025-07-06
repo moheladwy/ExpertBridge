@@ -1,5 +1,8 @@
 // Enhanced Notifications Component with highlight management
-import { useGetNotificationsQuery, useReadNotificationsMutation } from "@/features/notifications/notificationsSlice";
+import {
+  useGetNotificationsQuery,
+  useReadNotificationsMutation,
+} from "@/features/notifications/notificationsSlice";
 import { NotificationResponse } from "@/features/notifications/types";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { NotificationCard } from "@/views/components/common/notifications/NotificationCard";
@@ -7,20 +10,22 @@ import { useEffect, useState, useRef } from "react";
 
 function Notifications() {
   const { data: userProfile } = useGetCurrentUserProfileQuery();
-  const { data: notifications = [], isFetching } = useGetNotificationsQuery(userProfile!.id);
+  const { data: notifications = [], isFetching } = useGetNotificationsQuery(
+    userProfile!.id,
+  );
   const [readAll] = useReadNotificationsMutation();
 
   // Track which notifications were unread when component first loaded
-  const [initialUnreadIds, setInitialUnreadIds] = useState<Set<string>>(new Set());
+  const [initialUnreadIds, setInitialUnreadIds] = useState<Set<string>>(
+    new Set(),
+  );
   const hasInitialized = useRef(false);
 
   // Capture initial unread notifications
   useEffect(() => {
     if (!isFetching && notifications.length > 0 && !hasInitialized.current) {
       const unreadIds = new Set(
-        notifications
-          .filter(n => !n.isRead)
-          .map(n => n.id)
+        notifications.filter((n) => !n.isRead).map((n) => n.id),
       );
       setInitialUnreadIds(unreadIds);
       hasInitialized.current = true;
@@ -36,15 +41,26 @@ function Notifications() {
 
       return () => clearTimeout(timer);
     }
-  }, [isFetching, initialUnreadIds.size, readAll, userProfile?.id]);
+  }, [
+    isFetching,
+    initialUnreadIds.size,
+    readAll,
+    userProfile?.id,
+    userProfile,
+  ]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-semibold mb-4">Notifications</h1>
+      <h1 className="text-2xl text-center font-semibold mb-4">Notifications</h1>
       {isFetching ? (
-        <p>Loading...</p>
+        <div className="flex flex-col items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">
+            Loading notifications...
+          </p>
+        </div>
       ) : notifications.length === 0 ? (
-        <p>No notifications yet.</p>
+        <p className="text-center">No notifications yet.</p>
       ) : (
         <ul className="space-y-4">
           {[...notifications]
