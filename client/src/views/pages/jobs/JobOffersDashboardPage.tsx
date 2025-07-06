@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/views/components/ui/card';
-import { Badge } from '@/views/components/ui/badge';
-import { Button } from '@/views/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/views/components/ui/tabs';
-import { Skeleton } from '@/views/components/ui/skeleton';
-import { AlertTriangle, Briefcase, DollarSign, MapPin, User, Calendar, CheckCircle, XCircle, Trash2 } from 'lucide-react';
-import { 
-  useGetMyJobOffersQuery, 
+import { useState } from "react";
+import { Card, CardContent, CardHeader } from "@/views/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/views/components/ui/tabs";
+import { Skeleton } from "@/views/components/ui/skeleton";
+import { AlertTriangle, Briefcase, User } from "lucide-react";
+import {
+  useGetMyJobOffersQuery,
   useGetReceivedJobOffersQuery,
   useUpdateJobOfferStatusMutation,
-  useDeleteJobOfferMutation 
-} from '@/features/jobs/jobsSlice';
-import { JobOfferResponse } from '@/features/jobs/types';
-import { toast } from 'sonner';
-import JobOfferCard from '@/views/components/common/jobs/JobOfferCard';
+  useDeleteJobOfferMutation,
+} from "@/features/jobs/jobsSlice";
+import { toast } from "sonner";
+import JobOfferCard from "@/views/components/common/jobs/JobOfferCard";
 
 const JobOffersSkeleton = () => (
   <div className="space-y-4">
@@ -40,42 +42,44 @@ const JobOffersSkeleton = () => (
   </div>
 );
 
-const EmptyState = ({ type }: { type: 'sent' | 'received' }) => (
+const EmptyState = ({ type }: { type: "sent" | "received" }) => (
   <div className="text-center py-12">
-    <Briefcase className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+    <Briefcase className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
+    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
       No {type} job offers
     </h3>
-    <p className="text-gray-600">
-      {type === 'sent' 
+    <p className="text-gray-600 dark:text-gray-400">
+      {type === "sent"
         ? "You haven't sent any job offers yet."
-        : "You haven't received any job offers yet."
-      }
+        : "You haven't received any job offers yet."}
     </p>
   </div>
 );
 
 export const JobOffersDashboardPage = () => {
-  const [activeTab, setActiveTab] = useState('sent');
-  
+  const [activeTab, setActiveTab] = useState("sent");
+
   const {
     data: sentOffers = [],
     isLoading: sentLoading,
     error: sentError,
     refetch: refetchMyOffers,
   } = useGetMyJobOffersQuery();
-  
-  const { 
-    data: receivedOffers = [], 
-    isLoading: receivedLoading, 
+
+  const {
+    data: receivedOffers = [],
+    isLoading: receivedLoading,
     error: receivedError,
     refetch: refetchReceivedOffers,
   } = useGetReceivedJobOffersQuery();
-  
+
   const [updateJobOfferStatus] = useUpdateJobOfferStatusMutation();
   const [deleteJobOffer] = useDeleteJobOfferMutation();
 
-  const handleStatusUpdate = async (id: string, status: 'accepted' | 'declined') => {
+  const handleStatusUpdate = async (
+    id: string,
+    status: "accepted" | "declined",
+  ) => {
     try {
       await updateJobOfferStatus({ id, status }).unwrap();
       toast.success(`Job offer ${status} successfully!`);
@@ -87,26 +91,36 @@ export const JobOffersDashboardPage = () => {
   const handleDelete = async (id: string) => {
     try {
       await deleteJobOffer(id).unwrap();
-      toast.success('Job offer deleted successfully!');
+      toast.success("Job offer deleted successfully!");
     } catch (error) {
-      toast.error('Failed to delete job offer. Please try again.');
+      toast.error("Failed to delete job offer. Please try again.");
     }
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Job Offers</h1>
-        <p className="text-gray-600">Manage your sent and received job offers</p>
+      <div className="flex flex-col items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Job Offers
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Manage your sent and received job offers
+        </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="sent" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 dark:bg-gray-800">
+          <TabsTrigger
+            value="sent"
+            className="flex items-center gap-2 dark:data-[state=active]:bg-gray-700 dark:text-gray-300"
+          >
             <Briefcase className="h-4 w-4" />
             Sent ({sentOffers.length})
           </TabsTrigger>
-          <TabsTrigger value="received" className="flex items-center gap-2">
+          <TabsTrigger
+            value="received"
+            className="flex items-center gap-2 dark:data-[state=active]:bg-gray-700 dark:text-gray-300"
+          >
             <User className="h-4 w-4" />
             Received ({receivedOffers.length})
           </TabsTrigger>
@@ -114,18 +128,20 @@ export const JobOffersDashboardPage = () => {
 
         <TabsContent value="sent" className="mt-6">
           {sentLoading && <JobOffersSkeleton />}
-          
+
           {sentError && (
-            <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-red-600" />
-              <p className="text-red-800">Failed to load sent job offers.</p>
+            <div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <p className="text-red-800 dark:text-red-300">
+                Failed to load sent job offers.
+              </p>
             </div>
           )}
-          
+
           {!sentLoading && !sentError && sentOffers.length === 0 && (
             <EmptyState type="sent" />
           )}
-          
+
           {!sentLoading && !sentError && sentOffers.length > 0 && (
             <div className="space-y-4">
               {sentOffers.map((offer) => (
@@ -142,18 +158,20 @@ export const JobOffersDashboardPage = () => {
 
         <TabsContent value="received" className="mt-6">
           {receivedLoading && <JobOffersSkeleton />}
-          
+
           {receivedError && (
-            <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-red-600" />
-              <p className="text-red-800">Failed to load received job offers.</p>
+            <div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <p className="text-red-800 dark:text-red-300">
+                Failed to load received job offers.
+              </p>
             </div>
           )}
-          
-          {!receivedLoading && !receivedError && receivedOffers.length === 0 && (
-            <EmptyState type="received" />
-          )}
-          
+
+          {!receivedLoading &&
+            !receivedError &&
+            receivedOffers.length === 0 && <EmptyState type="received" />}
+
           {!receivedLoading && !receivedError && receivedOffers.length > 0 && (
             <div className="space-y-4">
               {receivedOffers.map((offer) => (
