@@ -93,47 +93,53 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
       <div className="p-6">
         <div className="space-y-4">
-          {data?.map((user: ProfileResponse, index) => (
-            <Link to={`/profile/${user.id}`}>
-              <div
-                key={user.id}
-                className="group flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer relative overflow-hidden"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {index < 3 && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50/30 to-transparent dark:via-yellow-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                )}
+          {data
+            ?.filter((user: ProfileResponse) => (user.reputation || 0) >= 0)
+            ?.sort(
+              (a: ProfileResponse, b: ProfileResponse) =>
+                (b.reputation || 0) - (a.reputation || 0),
+            )
+            ?.map((user: ProfileResponse, index) => (
+              <Link to={`/profile/${user.id}`}>
+                <div
+                  key={user.id}
+                  className="group flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer relative overflow-hidden"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {index < 3 && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50/30 to-transparent dark:via-yellow-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  )}
 
-                <div className="relative flex items-center gap-3">
-                  <div className="relative">
-                    <Avatar
-                      src={user.profilePictureUrl}
-                      className="w-12 h-12 ring-2 ring-white dark:ring-gray-700 shadow-md group-hover:ring-yellow-200 dark:group-hover:ring-yellow-700 transition-all duration-200"
-                    />
+                  <div className="relative flex items-center gap-3">
+                    <div className="relative">
+                      <Avatar
+                        src={user.profilePictureUrl}
+                        className="w-12 h-12 ring-2 ring-white dark:ring-gray-700 shadow-md group-hover:ring-yellow-200 dark:group-hover:ring-yellow-700 transition-all duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex-1 min-w-0 relative z-10">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-medium text-gray-900 dark:text-white truncate group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+                        {user.firstName} {user.lastName}
+                      </h4>
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                      {user.jobTitle || "No title"}
+                    </p>
+                  </div>
+
+                  <div className="relative z-10 flex items-center gap-2">
+                    <div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/50 dark:to-amber-900/50 rounded-full">
+                      <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
+                        {user.reputation?.toLocaleString() || 0}
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                <div className="flex-1 min-w-0 relative z-10">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-medium text-gray-900 dark:text-white truncate group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
-                      {user.firstName} {user.lastName}
-                    </h4>
-                  </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                    {user.jobTitle || "No title"}
-                  </p>
-                </div>
-
-                <div className="relative z-10 flex items-center gap-2">
-                  <div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/50 dark:to-amber-900/50 rounded-full">
-                    <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
-                      {user.reputation?.toLocaleString() || 0}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
         </div>
 
         <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700"></div>
