@@ -354,9 +354,11 @@ const UserProfilePage = () => {
                       ))}
                     </div>
                   ) : userPosts && userPosts.length > 0 ? (
-                    userPosts.map((post) => (
-                      <ProfilePostCard key={post.id} post={post} />
-                    ))
+                    [...userPosts]
+                      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+                      .map((post) => (
+                        <ProfilePostCard key={post.id} post={post} />
+                      ))
                   ) : (
                     <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                       This user hasn't asked any questions yet.
@@ -383,13 +385,15 @@ const UserProfilePage = () => {
                       ))}
                     </div>
                   ) : userComments && userComments.length > 0 ? (
-                    userComments.map((comment: Comment) => (
-                      <ProfileCommentCard
-                        key={comment.id}
-                        comment={comment}
-                        postTitle={getPostTitleById(comment.postId!)}
-                      />
-                    ))
+                    [...userComments]
+                      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+                      .map((comment: Comment) => (
+                        <ProfileCommentCard
+                          key={comment.id}
+                          comment={comment}
+                          postTitle={getPostTitleById(comment.postId!)}
+                        />
+                      ))
                   ) : (
                     <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                       This user hasn't answered any questions yet.

@@ -1,18 +1,29 @@
 import { JobResponse } from "@/features/jobs/types";
 import { Button } from "../../custom/button";
-import { Calendar, CheckCircle, DollarSign, MapPin, MessageCircle, User } from "lucide-react";
+import {
+  Calendar,
+  CheckCircle,
+  DollarSign,
+  MapPin,
+  MessageCircle,
+  User,
+} from "lucide-react";
 import { Badge } from "../../ui/badge";
 
-export const JobCard: React.FC<{ job: JobResponse; appUser: any; onViewDetails: () => void }> = ({ job, appUser, onViewDetails }) => {
+export const JobCard: React.FC<{
+  job: JobResponse;
+  appUser: any;
+  onViewDetails: () => void;
+}> = ({ job, appUser, onViewDetails }) => {
   const isWorker = appUser.id === job.workerId;
   const otherParty = isWorker ? job.author : job.worker;
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Not started';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    if (!dateString) return "Not started";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -27,7 +38,7 @@ export const JobCard: React.FC<{ job: JobResponse; appUser: any; onViewDetails: 
             </h3>
             <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
               <User size={14} className="mr-1" />
-              {isWorker ? 'Hired by' : 'Working with'} {otherParty.firstName}
+              {isWorker ? "Hired by" : "Working with"} {otherParty.firstName}
             </div>
           </div>
           <div className="flex items-center space-x-1">
@@ -49,17 +60,26 @@ export const JobCard: React.FC<{ job: JobResponse; appUser: any; onViewDetails: 
         {/* Details */}
         <div className="space-y-3">
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <DollarSign size={16} className="mr-2 text-green-600 dark:text-green-400" />
+            <DollarSign
+              size={16}
+              className="mr-2 text-green-600 dark:text-green-400"
+            />
             <span className="font-medium">${job.actualCost}</span>
           </div>
-          
+
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <MapPin size={16} className="mr-2 text-blue-600 dark:text-blue-400" />
+            <MapPin
+              size={16}
+              className="mr-2 text-blue-600 dark:text-blue-400"
+            />
             <span>{job.area}</span>
           </div>
 
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <Calendar size={16} className="mr-2 text-purple-600 dark:text-purple-400" />
+            <Calendar
+              size={16}
+              className="mr-2 text-purple-600 dark:text-purple-400"
+            />
             <span>Started: {formatDate(job.startedAt)}</span>
           </div>
         </div>
@@ -83,4 +103,3 @@ export const JobCard: React.FC<{ job: JobResponse; appUser: any; onViewDetails: 
     </div>
   );
 };
-
