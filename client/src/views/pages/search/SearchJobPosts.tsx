@@ -38,7 +38,17 @@ const SearchJobPosts = () => {
   useEffect(() => {
     if (!posts) return;
     const data = Object.values(posts.entities);
-    const sorted = data.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const sorted = data.sort((a, b) => {
+      // First sort by relevance score (if available)
+      if (a.relevanceScore !== undefined && b.relevanceScore !== undefined) {
+        // Higher relevance score first
+        if (b.relevanceScore !== a.relevanceScore) {
+          return a.relevanceScore - b.relevanceScore;
+        }
+      }
+      // Then sort by creation date (newest first)
+      return b.createdAt.localeCompare(a.createdAt);
+    });
     setSortedPosts(sorted);
   }, [posts]);
 
