@@ -17,7 +17,8 @@ public static class Embedding
 
         var settings = config.Get<EmbeddingServiceSettings>();
 
-        builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(serviceProvider =>
+        builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(
+            serviceProvider =>
             new OllamaEmbeddingGenerator(
                 settings.Endpoint,
                 settings.ModelId)

@@ -8,7 +8,7 @@ export const SEARCH_URL = `${API_URL}/Search`;
 export const USER_ENDPOINTS = {
   GET_USER_BY_FIREBASE_ID: `${USER_URL}/get`,
   REGISTER_NEW_USER: `${USER_URL}/register`,
-}
+};
 
 export const MEDIA_ENDPOINTS = {
   DOWNLOAD_MEDIA_BY_KEY: `${MEDIA_URL}/download`,
@@ -16,9 +16,10 @@ export const MEDIA_ENDPOINTS = {
   GET_PRESIGNED_URL_BY_KEY: `${MEDIA_URL}/presigned-url`,
   UPLOAD_MEDIA: `${MEDIA_URL}/upload`,
   DELETE_MEDIA_BY_KEY: `${MEDIA_URL}/delete`,
-}
+};
 
 export const SEARCH_ENDPOINTS = {
   SEARCH_USERS: `${SEARCH_URL}/users`,
-	SEARCH_POSTS: `${SEARCH_URL}/posts`,
+  SEARCH_POSTS: `${SEARCH_URL}/posts`,
+  SEARCH_JOB_POSTS: `${SEARCH_URL}/jobs`,
 };

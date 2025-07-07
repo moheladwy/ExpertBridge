@@ -1,16 +1,12 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using ExpertBridge.Core.Entities.JobPostings;
-using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Responses;
 using Microsoft.EntityFrameworkCore;
+using Pgvector;
+using Pgvector.EntityFrameworkCore;
 
 namespace ExpertBridge.Core.Queries
 {
@@ -45,6 +41,7 @@ namespace ExpertBridge.Core.Queries
         public static IQueryable<JobPostingResponse> SelectJopPostingResponseFromFullJobPosting(
             this IQueryable<JobPosting> query,
             string? userProfileId)
+
         {
             return query
                 .Select(p => SelectJopPostingResponseFromFullJobPosting(p, userProfileId));
@@ -68,6 +65,7 @@ namespace ExpertBridge.Core.Queries
                 Author = p.Author.SelectAuthorResponseFromProfile(),
                 CreatedAt = p.CreatedAt.Value,
                 LastModified = p.UpdatedAt,
+                // RelevanceScore = p.Embedding?.CosineDistance(queryEmbedding) ?? 0,
                 Id = p.Id,
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),

@@ -13,7 +13,17 @@ import {
 import { Button } from "@/views/components/custom/button";
 import { CommandDialog, CommandInput } from "@/views/components/custom/command";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
-import { Bell, FileQuestion, Search, User, Menu, X, Home, Briefcase, Info, Shield } from "lucide-react";
+import {
+  Bell,
+  Search,
+  User,
+  Menu,
+  X,
+  Home,
+  Briefcase,
+  Info,
+  Shield,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
@@ -21,6 +31,7 @@ import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice
 import { useGetNotificationsQuery } from "@/features/notifications/notificationsSlice";
 import { ModeToggle } from "../theme/ToggleMode";
 import LoginBtn from "../../custom/LoginBtn";
+import SearchDialog from "../search/SearchDialog";
 
 const NavBar = () => {
   useGetCurrentUserProfileQuery();
@@ -57,24 +68,10 @@ const NavBar = () => {
   }, [signOut, navigate]);
 
   const [open, setOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchType, setSearchType] = useState<"posts" | "users">("posts");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handelSearch = () => {
-    setOpen((open) => !open);
-  };
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.target.value);
-  };
-
   const handleSearch = () => {
-    if (searchInput.trim()) {
-      setOpen(false);
-      const searchPath = searchType === "posts" ? "/search/p" : "/search/u";
-      navigate(`${searchPath}?query=${encodeURIComponent(searchInput.trim())}`);
-    }
+    setOpen(true);
   };
 
   const handleLogoClick = useCallback(() => {
@@ -152,22 +149,24 @@ const NavBar = () => {
         </div>
 
         {/* Right side - Actions */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-5">
+        <div className="flex w-2/5 items-center justify-center text-center gap-2 sm:gap-3 lg:gap-5">
           {/* Search Button */}
           <Button
             className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue transition-colors
-                       hidden sm:flex px-4 lg:px-9"
-            onClick={handelSearch}
+                       hidden sm:flex px-4 lg:px-9 shadow-sm border border-gray-200 dark:border-gray-600"
+            onClick={handleSearch}
           >
             <Search className="w-4 h-4" />
-            <span className="ml-2 hidden md:inline">Search about questions or users</span>
+            <span className="ml-2 hidden md:inline">
+              Search jobs, questions, or users...
+            </span>
             <span className="ml-2 md:hidden">Search</span>
           </Button>
 
           {/* Mobile Search Button */}
           <Button
             className="sm:hidden bg-transparent hover:bg-blue-950 text-white p-2"
-            onClick={handelSearch}
+            onClick={handleSearch}
           >
             <Search className="w-5 h-5" />
           </Button>
@@ -209,7 +208,10 @@ const NavBar = () => {
                     )}
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="dark:bg-gray-800 w-48" align="end">
+                <DropdownMenuContent
+                  className="dark:bg-gray-800 w-48"
+                  align="end"
+                >
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
 
@@ -240,7 +242,10 @@ const NavBar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Link to="/notifications" className="flex items-center w-full">
+                      <Link
+                        to="/notifications"
+                        className="flex items-center w-full"
+                      >
                         <Bell className="w-4 h-4 mr-2" />
                         Notifications
                         {hasNewNotifications && (
@@ -303,10 +308,15 @@ const NavBar = () => {
 
       {/* Mobile Menu Overlay for non-logged in users */}
       {!isLoggedIn && mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-50" onClick={closeMobileMenu}>
+        <div
+          className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-50"
+          onClick={closeMobileMenu}
+        >
           <div className="fixed right-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out">
             <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Menu</h2>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+                Menu
+              </h2>
               <Button
                 variant="ghost"
                 size="sm"
@@ -359,67 +369,7 @@ const NavBar = () => {
       )}
 
       {/* Search Dialog */}
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <DialogTitle className="sr-only">Search</DialogTitle>
-        <DialogDescription className="sr-only">
-          Search about questions / users
-        </DialogDescription>
-
-        <div className="flex h-full w-full items-baseline border-b px-1 dark:bg-gray-800">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild className="dark:bg-gray-700">
-              <Button
-                variant="outline"
-                size="sm"
-                className="ml-1 dark:bg-gray-700"
-              >
-                {searchType === "posts" ? (
-                  <>
-                    <FileQuestion className="h-4 w-4 mr-2" /> Questions
-                  </>
-                ) : (
-                  <>
-                    <User className="h-4 w-4 mr-2" /> Users
-                  </>
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => setSearchType("posts")}
-                className={
-                  searchType === "posts"
-                    ? "bg-blue-50 dark:bg-blue-900"
-                    : ""
-                }
-              >
-                <FileQuestion className="h-4 w-4 mr-2" />
-                Search Questions
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setSearchType("users")}
-                className={
-                  searchType === "users"
-                    ? "bg-blue-50 dark:bg-blue-900"
-                    : ""
-                }
-              >
-                <User className="h-4 w-4 mr-2" />
-                Search Users
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <CommandInput
-            placeholder={`Search ${searchType === "posts" ? "questions" : "users"}...`}
-            onChangeCapture={handleChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && searchInput.trim()) {
-                handleSearch();
-              }
-            }}
-          />
-        </div>
-      </CommandDialog>
+      <SearchDialog open={open} setOpen={setOpen} />
     </>
   );
 };

@@ -120,4 +120,52 @@ public class SearchController : ControllerBase
             .ToListAsync(cancellationToken);
         return users;
     }
+
+    [HttpGet("jobs")]
+    public async Task<List<JobPostingResponse>> SearchJobs(
+            [FromQuery] SearchJobPostsRequest request,
+            CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
+
+        var queryEmbedding = await _embeddingService.GenerateEmbedding(request.Query);
+
+        var query = _dbContext.JobPostings
+            .AsNoTracking()
+            .FullyPopulatedJobPostingQuery()
+            .AsQueryable();
+
+        if (request.IsRemote)
+        {
+            query = query.Where(j => j.Area.ToLower().Contains("remote"));
+        }
+        else if (!string.IsNullOrEmpty(request.Area))
+        {
+            request.Area = request.Area.Trim().ToLower(CultureInfo.CurrentCulture);
+            query = query.Where(j => j.Area.ToLower().Contains(request.Area));
+        }
+        if (request.MinBudget is >= 0)
+        {
+            query = query.Where(j => j.Budget >= request.MinBudget.Value);
+        }
+        if (request.MaxBudget is >= 0 &&
+            request.MaxBudget.Value > request.MinBudget.GetValueOrDefault(0))
+        {
+            query = query.Where(j => j.Budget <= request.MaxBudget.Value);
+        }
+
+        query = query
+            .Where(j => j.Embedding != null && j.Embedding.CosineDistance(queryEmbedding) < _cosineDistanceThreshold)
+            .OrderBy(j => j.Embedding.CosineDistance(queryEmbedding))
+            .Take(request.Limit ?? _defaultLimit);
+
+
+        var jobPosts = await query
+            .Select(j => j.SelectJopPostingResponseFromFullJobPosting(userProfileId))
+            .ToListAsync(cancellationToken);
+
+        return jobPosts;
+    }
 }
