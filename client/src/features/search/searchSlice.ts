@@ -73,7 +73,7 @@ export const searchApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
-    searchJobPosts: builder.query<JobPosting[], SearchJobPostsRequest>({
+    searchJobPosts: builder.query<JobPostingsState, SearchJobPostsRequest>({
       query: (request) => ({
         url: SEARCH_ENDPOINTS.SEARCH_JOB_POSTS,
         params: {
@@ -84,8 +84,8 @@ export const searchApiSlice = apiSlice.injectEndpoints({
           maxBudget: request.maxBudget,
           isRemote: request.isRemote,
         },
-        transformResponse: jobPostingsResponseTransformer,
       }),
+      transformResponse: jobPostingsResponseTransformer,
     }),
   }),
 });

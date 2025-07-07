@@ -37,8 +37,10 @@ const SearchJobPosts = () => {
 
   useEffect(() => {
     if (!posts) return;
-    const sorted = posts.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const data = Object.values(posts.entities);
+    const sorted = data.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     setSortedPosts(sorted);
+    console.log("Sorted Posts:", sorted);
   }, [posts]);
 
   if (isPostsLoading || isPostsFetching) {
@@ -110,7 +112,8 @@ const SearchJobPosts = () => {
       </div>
     );
   }
-  if (!posts || !posts.length) {
+  if (!posts || !posts.entities || sortedPosts.length === 0) {
+    console.log("Posts state", posts);
     return (
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-6">
         <div className="md:w-1/4">
