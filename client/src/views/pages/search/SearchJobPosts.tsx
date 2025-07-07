@@ -40,7 +40,6 @@ const SearchJobPosts = () => {
     const data = Object.values(posts.entities);
     const sorted = data.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     setSortedPosts(sorted);
-    console.log("Sorted Posts:", sorted);
   }, [posts]);
 
   if (isPostsLoading || isPostsFetching) {
