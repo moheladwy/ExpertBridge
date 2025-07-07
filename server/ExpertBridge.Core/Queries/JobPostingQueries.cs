@@ -40,18 +40,16 @@ namespace ExpertBridge.Core.Queries
 
         public static IQueryable<JobPostingResponse> SelectJopPostingResponseFromFullJobPosting(
             this IQueryable<JobPosting> query,
-            string? userProfileId,
-            Vector? queryEmbedding = null)
+            string? userProfileId)
 
         {
             return query
-                .Select(p => SelectJopPostingResponseFromFullJobPosting(p, userProfileId, queryEmbedding));
+                .Select(p => SelectJopPostingResponseFromFullJobPosting(p, userProfileId));
         }
 
         public static JobPostingResponse SelectJopPostingResponseFromFullJobPosting(
             this JobPosting p,
-            string? userProfileId,
-            Vector? queryEmbedding = null)
+            string? userProfileId)
         {
             return new JobPostingResponse
             {
@@ -67,7 +65,7 @@ namespace ExpertBridge.Core.Queries
                 Author = p.Author.SelectAuthorResponseFromProfile(),
                 CreatedAt = p.CreatedAt.Value,
                 LastModified = p.UpdatedAt,
-                RelevanceScore = p.Embedding?.CosineDistance(queryEmbedding) ?? 0,
+                // RelevanceScore = p.Embedding?.CosineDistance(queryEmbedding) ?? 0,
                 Id = p.Id,
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),

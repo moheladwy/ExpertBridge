@@ -130,37 +130,26 @@ public class SearchController : ControllerBase
 
         var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
 
-        var normalizedQuery = request.Query.ToLower(CultureInfo.CurrentCulture).Trim();
         var queryEmbedding = await _embeddingService.GenerateEmbedding(request.Query);
 
         var query = _dbContext.JobPostings
             .AsNoTracking()
             .AsQueryable();
 
-        if (!string.IsNullOrEmpty(request.Area))
-        {
-            query = query
-                .Where(j =>
-                        j.Area
-                        .ToLower(CultureInfo.CurrentCulture)
-                        .Contains(request.Area.ToLower(CultureInfo.CurrentCulture))
-                );
-        }
         if (request.IsRemote)
         {
-            query = query
-                .Where(j =>
-                        j.Area
-                        .ToLower(CultureInfo.CurrentCulture)
-                        .Contains("remote")
-                );
+            query = query.Where(j => j.Area.ToLower().Contains("remote"));
         }
-        if (request.MinBudget.HasValue && request.MinBudget.Value >= 0)
+        else if (!string.IsNullOrEmpty(request.Area))
+        {
+            request.Area = request.Area.Trim().ToLower(CultureInfo.CurrentCulture);
+            query = query.Where(j => j.Area.ToLower().Contains(request.Area));
+        }
+        if (request.MinBudget is >= 0)
         {
             query = query.Where(j => j.Budget >= request.MinBudget.Value);
         }
-        if (request.MaxBudget.HasValue &&
-            request.MaxBudget.Value >= 0 &&
+        if (request.MaxBudget is >= 0 &&
             request.MaxBudget.Value > request.MinBudget.GetValueOrDefault(0))
         {
             query = query.Where(j => j.Budget <= request.MaxBudget.Value);
@@ -173,7 +162,7 @@ public class SearchController : ControllerBase
 
 
         var jobPosts = await query
-            .Select(j => j.SelectJopPostingResponseFromFullJobPosting(userProfileId, queryEmbedding))
+            .Select(j => j.SelectJopPostingResponseFromFullJobPosting(userProfileId))
             .ToListAsync(cancellationToken);
 
         return jobPosts;
