@@ -37,7 +37,7 @@ const SearchJobPosts = () => {
 
   useEffect(() => {
     if (!posts) return;
-    const sorted = posts.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const sorted = [...posts].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     setSortedPosts(sorted);
   }, [posts]);
 
