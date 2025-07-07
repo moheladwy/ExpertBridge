@@ -1,6 +1,3 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using ExpertBridge.Api.EmbeddingService;
 using ExpertBridge.Api.Helpers;
 using ExpertBridge.Api.Services;
@@ -23,11 +20,11 @@ public static class Services
     public static void AddServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>()
-            // .AddTransient<FirebaseAuthService>()
             .AddScoped<AuthorizationHelper>()
             .AddScoped<S3Service>()
             ;
 
-        services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
+        // services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
+        services.AddSingleton<IEmbeddingService, QueuedEmbeddingService>();
     }
 }
