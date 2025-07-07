@@ -23,9 +23,9 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import {
-	createTheme,
-	StyledEngineProvider,
-	ThemeProvider,
+  createTheme,
+  StyledEngineProvider,
+  ThemeProvider,
 } from "@mui/material/styles";
 import PostFromUrlPage from "./views/pages/posts/PostFromUrlPage.tsx";
 import UserProfilePage from "./views/pages/profile/UserProfilePage.tsx";
@@ -40,172 +40,169 @@ import JobApplicationsPage from "./views/pages/jobPostings/JobApplicationsPage.t
 import { JobOffersDashboardPage } from "./views/pages/jobs/JobOffersDashboardPage.tsx";
 import { MyJobsPage } from "./views/pages/jobs/MyJobsPage.tsx";
 import { JobDetailsPage } from "./views/pages/jobs/JobDetailsPage.tsx";
+import SearchJobPosts from "./views/pages/search/SearchJobPosts.tsx";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <App />, // Ensures NavBar is always present
-		children: [
-			{
-				index: true,
-				element: <LandingPage />,
-			},
-			{
-				path: "home",
-				element: (
-					// <ProtectedRoute>
-					<HomePage />
-					// </ProtectedRoute>
-				),
-			},
-			{
-				path: "posts/:postId",
-				element: (
-					// <ProtectedRoute>
-					<PostFromUrlPage />
-					// </ProtectedRoute>
-				),
-			},
-			{
-				path: "feed/:postId",
-				element: (
-					// <ProtectedRoute>
-					<PostFromFeedPage />
-					// </ProtectedRoute>
-				),
-			},
-			{
-				path: "jobs",
-				element: (
-					<JobPostingsFeed />
-				),
-			},
-			{
-				path: "jobs/:jobPostingId",
-				element: (
-					<JobPostingFromFeedPage />
-				),
-			},
-			{
-				path: "job/:jobPostingId",
-				element: (
-					<JobPostingFromUrlPage />
-				),
-			},
-			{
-				path: "job/:jobPostingId/applications",
-				element: (
-					<JobApplicationsPage />
-				),
-			},
-			{
-				path: "profile",
-				element: (
-					<ProtectedRoute>
-						<MyProfilePage />
-					</ProtectedRoute>
-				),
-			},
-			{
-				path: "profile/:userId",
-				element: <UserProfilePage />,
-			},
-			{
-				path: "search/p",
-				element: <SearchPosts />,
-			},
-			{
-				path: "search/u",
-				element: <SearchUsers />,
-			},
-			{
-				path: "notifications",
-				element: (
-					<ProtectedRoute>
-						<Notifications />
-					</ProtectedRoute>
-				),
-			},
-			{
-				path: "offers",
-				element: (
-					<ProtectedRoute>
-						<JobOffersDashboardPage />
-					</ProtectedRoute>
-				),
-			},
-			{
-				path: "my-jobs",
-				element: (
-					<ProtectedRoute>
-						<MyJobsPage />
-					</ProtectedRoute>
-				),
-			},
-			{
-				path: "my-jobs/:jobId",
-				element: (
-					<ProtectedRoute>
-						<JobDetailsPage />
-					</ProtectedRoute>
-				),
-			},
-			{
-				path: "privacy-policy",
-				element: <PrivacyPolicy />
-			},
-		],
-	},
-	{
-		path: "login",
-		element: <LoginPage />,
-	},
-	{
-		path: "signup",
-		element: <SignUpPage />,
-	},
-	{
-		path: "verify-email",
-		element: <EmailVerificationPage />,
-	},
-	{
-		path: "onboarding",
-		element: (
-			<ProtectedRoute>
-				<Interests />
-			</ProtectedRoute>
-		),
-	},
-	{ path: "*", element: <NotFoundError /> }, // Catch-all 404
+  {
+    path: "/",
+    element: <App />, // Ensures NavBar is always present
+    children: [
+      {
+        index: true,
+        element: <LandingPage />,
+      },
+      {
+        path: "home",
+        element: (
+          // <ProtectedRoute>
+          <HomePage />
+          // </ProtectedRoute>
+        ),
+      },
+      {
+        path: "posts/:postId",
+        element: (
+          // <ProtectedRoute>
+          <PostFromUrlPage />
+          // </ProtectedRoute>
+        ),
+      },
+      {
+        path: "feed/:postId",
+        element: (
+          // <ProtectedRoute>
+          <PostFromFeedPage />
+          // </ProtectedRoute>
+        ),
+      },
+      {
+        path: "jobs",
+        element: <JobPostingsFeed />,
+      },
+      {
+        path: "jobs/:jobPostingId",
+        element: <JobPostingFromFeedPage />,
+      },
+      {
+        path: "job/:jobPostingId",
+        element: <JobPostingFromUrlPage />,
+      },
+      {
+        path: "job/:jobPostingId/applications",
+        element: <JobApplicationsPage />,
+      },
+      {
+        path: "profile",
+        element: (
+          <ProtectedRoute>
+            <MyProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "profile/:userId",
+        element: <UserProfilePage />,
+      },
+      {
+        path: "search/p",
+        element: <SearchPosts />,
+      },
+      {
+        path: "search/u",
+        element: <SearchUsers />,
+      },
+      {
+        path: "search/jobs",
+        element: <SearchJobPosts />,
+      },
+      {
+        path: "notifications",
+        element: (
+          <ProtectedRoute>
+            <Notifications />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "offers",
+        element: (
+          <ProtectedRoute>
+            <JobOffersDashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-jobs",
+        element: (
+          <ProtectedRoute>
+            <MyJobsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "my-jobs/:jobId",
+        element: (
+          <ProtectedRoute>
+            <JobDetailsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+    ],
+  },
+  {
+    path: "login",
+    element: <LoginPage />,
+  },
+  {
+    path: "signup",
+    element: <SignUpPage />,
+  },
+  {
+    path: "verify-email",
+    element: <EmailVerificationPage />,
+  },
+  {
+    path: "onboarding",
+    element: (
+      <ProtectedRoute>
+        <Interests />
+      </ProtectedRoute>
+    ),
+  },
+  { path: "*", element: <NotFoundError /> }, // Catch-all 404
 ]);
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement!);
 
 const theme = createTheme({
-	cssVariables: true,
-	components: {
-		MuiPopover: {
-			defaultProps: {
-				container: rootElement,
-			},
-		},
-		MuiPopper: {
-			defaultProps: {
-				container: rootElement,
-			},
-		},
-	},
+  cssVariables: true,
+  components: {
+    MuiPopover: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+    MuiPopper: {
+      defaultProps: {
+        container: rootElement,
+      },
+    },
+  },
 });
 
 root.render(
-	<StrictMode>
-		<StyledEngineProvider injectFirst>
-			<ThemeProvider theme={theme}>
-				<ReduxProvider store={store}>
-					<RouterProvider router={router} />
-				</ReduxProvider>
-			</ThemeProvider>
-		</StyledEngineProvider>
-	</StrictMode>
+  <StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <ReduxProvider store={store}>
+          <RouterProvider router={router} />
+        </ReduxProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </StrictMode>,
 );

@@ -134,6 +134,7 @@ public class SearchController : ControllerBase
 
         var query = _dbContext.JobPostings
             .AsNoTracking()
+            .FullyPopulatedJobPostingQuery()
             .AsQueryable();
 
         if (request.IsRemote)
