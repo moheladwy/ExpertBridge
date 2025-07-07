@@ -163,7 +163,33 @@ public class SearchController : ControllerBase
 
 
         var jobPosts = await query
-            .Select(j => j.SelectJopPostingResponseFromFullJobPosting(userProfileId))
+            .Select(p => new JobPostingResponse
+                    {
+                        IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
+                        IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
+                        Title = p.Title,
+                        Content = p.Content,
+                        Area = p.Area,
+                        Budget = p.Budget,
+                        Language = p.Language,
+                        Tags = p.JobPostingTags.Select(pt => pt.Tag.SelectTagResponseFromTag()).ToList(),
+                        Author = p.Author.SelectAuthorResponseFromProfile(),
+                        CreatedAt = p.CreatedAt,
+                        LastModified = p.UpdatedAt,
+                        Id = p.Id,
+                        Upvotes = p.Votes.Count(v => v.IsUpvote),
+                        Downvotes = p.Votes.Count(v => !v.IsUpvote),
+                        Comments = p.Comments.Count,
+                        IsAppliedFor = p.JobApplications.Any(ja => ja.ApplicantId == userProfileId),
+                        Medias = p.Medias.Select(m => new MediaObjectResponse
+                                {
+                                    Id = m.Id,
+                                    Name = m.Name,
+                                    Type = m.Type,
+                                    Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
+                                }).ToList(),
+                        RelevanceScore = p.Embedding.CosineDistance(queryEmbedding)
+                    })
             .ToListAsync(cancellationToken);
 
         return jobPosts;
