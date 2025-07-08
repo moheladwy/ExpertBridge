@@ -41,6 +41,7 @@ import { JobOffersDashboardPage } from "./views/pages/jobs/JobOffersDashboardPag
 import { MyJobsPage } from "./views/pages/jobs/MyJobsPage.tsx";
 import { JobDetailsPage } from "./views/pages/jobs/JobDetailsPage.tsx";
 import SearchJobPosts from "./views/pages/search/SearchJobPosts.tsx";
+import AboutUsPage from "./views/pages/landing/AboutUsePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -150,6 +151,10 @@ const router = createBrowserRouter([
       {
         path: "privacy-policy",
         element: <PrivacyPolicy />,
+      },
+      {
+        path: "AboutUs",
+        element: <AboutUsPage />,
       },
     ],
   },
