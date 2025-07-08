@@ -335,6 +335,14 @@ const NavBar = () => {
                 Home
               </Link>
               <Link
+                to="/jobs"
+                className="flex items-center text-gray-800 dark:text-white hover:text-main-blue dark:hover:text-blue-400 transition-colors"
+                onClick={closeMobileMenu}
+              >
+                <Briefcase className="w-5 h-5 mr-3" />
+                Jobs
+              </Link>
+              <Link
                 to="/AboutUs"
                 className="flex items-center text-gray-800 dark:text-white hover:text-main-blue dark:hover:text-blue-400 transition-colors"
                 onClick={closeMobileMenu}
