@@ -221,7 +221,7 @@ const Feed = ({ startingPost = { id: null } }) => {
 
         {/* Right Sidebar - Jobs */}
         <div className="w-100 max-xl:w-72 max-lg:hidden">
-          <div className="sticky top-24">
+          <div className="sticky top-20">
             <SuggestedJobs />
           </div>
         </div>

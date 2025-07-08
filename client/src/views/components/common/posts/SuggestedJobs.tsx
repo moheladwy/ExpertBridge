@@ -15,7 +15,7 @@ const SuggestedJobs = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sticky top-4">
         <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-          {isLoggedIn ? 'See Jobs That Match Your Profile' : 'Suggested Jobs'}
+          {isLoggedIn ? "See Jobs That Match Your Profile" : "Suggested Jobs"}
         </h3>
         <LoadingSkeleton count={3} />
       </div>
@@ -26,8 +26,8 @@ const SuggestedJobs = () => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sticky top-4">
-      <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-        {isLoggedIn ? 'See Jobs That Match Your Profile' : 'Suggested Jobs'}
+      <h3 className="text-lg text-center font-semibold mb-4 text-gray-900 dark:text-white">
+        {isLoggedIn ? "See Jobs That Match Your Profile" : "Suggested Jobs"}
       </h3>
       <div className="space-y-3">
         {jobPostings.map((job) => (
@@ -35,7 +35,7 @@ const SuggestedJobs = () => {
             key={job.jobPostingId}
             className="p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
           >
-            <Link to={`/job/${job.jobPostingId}`} >
+            <Link to={`/job/${job.jobPostingId}`}>
               <h4 className="font-medium text-sm text-gray-900 dark:text-white mb-2 line-clamp-2">
                 {job.title}
               </h4>
