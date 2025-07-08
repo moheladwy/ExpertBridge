@@ -1,5 +1,6 @@
 // Enhanced NotificationCard that accepts isNewNotification prop
 import { NotificationResponse } from "@/features/notifications/types";
+import { useNavigate } from "react-router";
 
 interface NotificationCardProps {
   notification: NotificationResponse;
@@ -10,6 +11,7 @@ export function NotificationCard({
   notification,
   isNewNotification = false,
 }: NotificationCardProps) {
+  const navigate = useNavigate();
   return (
     <li
       className={`
@@ -48,8 +50,10 @@ export function NotificationCard({
 
           {notification.actionUrl && (
             <a
-              href={notification.actionUrl}
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium mt-2 inline-block"
+              onClick={() =>
+                navigate(notification.actionUrl ?? "", { replace: false })
+              }
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 hover:cursor-pointer dark:hover:text-blue-300 text-sm font-medium mt-2 inline-block"
             >
               View Details →
             </a>
