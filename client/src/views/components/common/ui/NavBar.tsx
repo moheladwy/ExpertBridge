@@ -73,9 +73,9 @@ const NavBar = () => {
   };
 
   const handleLogoClick = useCallback(() => {
-    if (isLoggedIn) navigate("/home");
-    else navigate("/");
-  }, [isLoggedIn, navigate]);
+    // if (isLoggedIn) navigate("/home");
+    navigate("/");
+  }, [navigate]);
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
