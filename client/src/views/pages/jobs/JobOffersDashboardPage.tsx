@@ -16,6 +16,7 @@ import {
 } from "@/features/jobs/jobsSlice";
 import { toast } from "sonner";
 import JobOfferCard from "@/views/components/common/jobs/JobOfferCard";
+import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 
 const JobOffersSkeleton = () => (
   <div className="space-y-4">
@@ -72,6 +73,9 @@ export const JobOffersDashboardPage = () => {
     error: receivedError,
     refetch: refetchReceivedOffers,
   } = useGetReceivedJobOffersQuery();
+  
+  useRefetchOnLogin(refetchReceivedOffers)
+  useRefetchOnLogin(refetchMyOffers)
 
   const [updateJobOfferStatus] = useUpdateJobOfferStatusMutation();
   const [deleteJobOffer] = useDeleteJobOfferMutation();
