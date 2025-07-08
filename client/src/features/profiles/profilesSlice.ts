@@ -40,6 +40,7 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: request,
       }),
+      invalidatesTags: ["CurrentUser", { type: "Profile", id: "LIST" }],
       onQueryStarted: async (request, lifecycleApi) => {
         const patchResult = lifecycleApi.dispatch(
           profilesApiSlice.util.updateQueryData(

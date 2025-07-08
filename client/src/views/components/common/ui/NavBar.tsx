@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "@/lib/firebase";
 import useSignOut from "@/lib/firebase/useSignOut";
-import RegisterBtn from "../../custom/RegisterBtn";
+import RegisterBtn from "@/views/components/custom/RegisterBtn";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,8 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/views/components/custom/dropdown-menu";
 import { Button } from "@/views/components/custom/button";
-import { CommandDialog, CommandInput } from "@/views/components/custom/command";
-import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import {
   Bell,
   Search,
@@ -26,12 +24,12 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
-import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
+import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { useGetNotificationsQuery } from "@/features/notifications/notificationsSlice";
-import { ModeToggle } from "../theme/ToggleMode";
-import LoginBtn from "../../custom/LoginBtn";
-import SearchDialog from "../search/SearchDialog";
+import { ModeToggle } from "@/views/components/common/theme/ToggleMode";
+import LoginBtn from "@/views/components/custom/LoginBtn";
+import SearchDialog from "@/views/components/common/search/SearchDialog";
 
 const NavBar = () => {
   useGetCurrentUserProfileQuery();
@@ -111,16 +109,16 @@ const NavBar = () => {
             >
               <div className="text-white font-light">Home</div>
             </Link>
+            <Link
+              to="/jobs"
+              className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
+              ${location.pathname === "/jobs" ? "bg-blue-950" : ""}`}
+            >
+              <div className="text-white font-light">Jobs</div>
+            </Link>
 
             {isLoggedIn ? (
               <>
-                <Link
-                  to="/jobs"
-                  className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
-                  ${location.pathname === "/jobs" ? "bg-blue-950" : ""}`}
-                >
-                  <div className="text-white font-light">Jobs</div>
-                </Link>
                 <Link
                   to="/offers"
                   className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
@@ -196,7 +194,7 @@ const NavBar = () => {
                     {userProfile?.profilePictureUrl ? (
                       <img
                         src={userProfile.profilePictureUrl}
-                        className="w-full h-full rounded-full object-cover"
+                        className="w-full text-white h-full rounded-full object-cover"
                         alt="Profile"
                       />
                     ) : (
@@ -335,6 +333,14 @@ const NavBar = () => {
               >
                 <Home className="w-5 h-5 mr-3" />
                 Home
+              </Link>
+              <Link
+                to="/jobs"
+                className="flex items-center text-gray-800 dark:text-white hover:text-main-blue dark:hover:text-blue-400 transition-colors"
+                onClick={closeMobileMenu}
+              >
+                <Briefcase className="w-5 h-5 mr-3" />
+                Jobs
               </Link>
               <Link
                 to="/AboutUs"
