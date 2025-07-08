@@ -182,9 +182,9 @@ const NavBar = () => {
                 className="text-white hover:text-blue-300 relative hidden sm:block"
               >
                 <Bell className="w-6 h-6" />
-                {hasNewNotifications && (
+                {hasNewNotifications ? (
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
-                )}
+                ) : null}
               </Link>
 
               {/* Profile Dropdown */}
