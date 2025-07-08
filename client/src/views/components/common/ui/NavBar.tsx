@@ -147,7 +147,7 @@ const NavBar = () => {
         </div>
 
         {/* Right side - Actions */}
-        <div className="flex w-2/5 items-center justify-center text-center gap-2 sm:gap-3 lg:gap-5">
+        <div className="flex items-center text-center gap-2 sm:gap-3 lg:gap-5">
           {/* Search Button */}
           <Button
             className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue transition-colors
