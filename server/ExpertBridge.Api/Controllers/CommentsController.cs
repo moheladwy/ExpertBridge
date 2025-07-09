@@ -1,8 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Api.Settings;
+using ExpertBridge.Application.DomainServices;
+using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests.CreateComment;
 using ExpertBridge.Core.Requests.EditComment;
@@ -156,7 +153,7 @@ public class CommentsController : ControllerBase
         }
         catch (ForbiddenAccessException ex)
         {
-            // Even for forbidden, you might return 204 to not leak info, 
+            // Even for forbidden, you might return 204 to not leak info,
             // or 403 if you want to be explicit. Standard is often 204 for DELETE.
             // However, if _userService.GetCurrentUserProfileOrThrowAsync() throws Unauthorized,
             // that will result in 401 before this.

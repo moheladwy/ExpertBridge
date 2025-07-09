@@ -1,9 +1,6 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Middleware;
-using ExpertBridge.Api.Settings;
+using ExpertBridge.Application.Settings;
 using ExpertBridge.Extensions.CORS;
 using ExpertBridge.Extensions.HealthChecks;
 using ExpertBridge.Notifications;

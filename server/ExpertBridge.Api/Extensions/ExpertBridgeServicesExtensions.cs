@@ -1,9 +1,6 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using System.Text.Json;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Api.Settings.Serilog;
+﻿using System.Text.Json;
+using ExpertBridge.Application.Settings;
+using ExpertBridge.Application.Settings.Serilog;
 using ExpertBridge.Data;
 using ExpertBridge.Extensions.Caching;
 using ExpertBridge.GroqLibrary.Settings;
@@ -45,7 +42,6 @@ namespace ExpertBridge.Api.Extensions
 
             // External remote services
             builder.AddEmbeddingServices();
-            builder.AddRefitHttpClients();
             builder
                 .AddGroqApiServices()
                 ;

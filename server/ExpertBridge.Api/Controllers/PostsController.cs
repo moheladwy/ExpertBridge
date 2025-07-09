@@ -1,5 +1,5 @@
-using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Api.Settings;
+using ExpertBridge.Application.DomainServices;
+using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
@@ -43,7 +43,7 @@ public class PostsController : ControllerBase
     /// <exception cref="UnauthorizedException">
     ///     Thrown when the user is not authenticated or the user is not authorized to create a post.
     /// </exception>
-    /// <exception cref="BadHttpRequestException">
+    /// <exception cref="Microsoft.AspNetCore.Server.Kestrel.Core.BadHttpRequestException">
     ///     Thrown when the request is invalid.
     /// </exception>
     /// <exception cref="ArgumentNullException">

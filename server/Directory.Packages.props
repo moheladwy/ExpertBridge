@@ -5,11 +5,12 @@
   <ItemGroup>
     <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
-    <PackageVersion Include="AWSSDK.S3" Version="4.0.4" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.4.2" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
-    <PackageVersion Include="FirebaseAdmin" Version="3.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
+    <PackageVersion Include="FirebaseAdmin" Version="3.3.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
@@ -17,7 +18,8 @@
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client.Core" Version="9.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.AI" Version="9.6.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="9.7.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.7.0" />
     <PackageVersion Include="Microsoft.Extensions.AI.Ollama" Version="9.4.0-preview.1.25207.5" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
@@ -25,6 +27,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="9.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Resilience" Version="9.6.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
@@ -36,7 +39,7 @@
     <PackageVersion Include="Serilog.Enrichers.Process" Version="3.0.0" />
     <PackageVersion Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.3" />
     <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.11.0-beta.1" />
     <PackageVersion Include="Refit" Version="8.0.0" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="8.0.0" />
@@ -56,7 +59,7 @@
     <PackageVersion Include="Serilog.Sinks.Seq" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.6" />
@@ -74,8 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.6" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

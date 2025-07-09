@@ -1,8 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using System.Net.Http.Headers;
-using ExpertBridge.Api.Services;
+using ExpertBridge.Application.Services;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Providers;
 using ExpertBridge.GroqLibrary.Settings;

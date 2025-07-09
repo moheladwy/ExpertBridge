@@ -1,18 +1,9 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Api.Helpers;
-using ExpertBridge.Core.Entities.Jobs;
-using ExpertBridge.Core.Entities.JobStatuses;
-using ExpertBridge.Core.Entities.Profiles;
-using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Core.Requests.Jobs;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Controllers
 {

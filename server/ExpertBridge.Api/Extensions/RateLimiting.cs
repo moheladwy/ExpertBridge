@@ -1,8 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using System.Threading.RateLimiting;
-using ExpertBridge.Api.Settings;
+﻿using System.Threading.RateLimiting;
+using ExpertBridge.Application.Settings;
 
 namespace ExpertBridge.Api.Extensions;
 

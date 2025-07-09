@@ -1,15 +1,9 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using System.Globalization;
 using System.Threading.Channels;
-using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Api.Helpers;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Settings;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
+using ExpertBridge.Application.DomainServices;
+using ExpertBridge.Application.Helpers;
+using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
-using ExpertBridge.Core.Entities.Skills;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;

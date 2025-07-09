@@ -1,11 +1,7 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-
-using System.Threading.Channels;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Services;
-using ExpertBridge.Api.Settings;
+﻿using System.Threading.Channels;
+using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Application.Services;
+using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Exceptions;

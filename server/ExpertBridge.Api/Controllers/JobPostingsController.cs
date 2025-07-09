@@ -1,16 +1,10 @@
-using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Api.Helpers;
-using ExpertBridge.Core.Entities.JobApplications;
-using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests;
-using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Requests.JobPostings;
 using ExpertBridge.Core.Responses;
-using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace ExpertBridge.Api.Controllers

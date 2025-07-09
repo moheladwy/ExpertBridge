@@ -1,9 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.BackgroundServices.Handlers;
+﻿using ExpertBridge.Api.BackgroundServices.Handlers;
 using ExpertBridge.Api.BackgroundServices.PeriodicJobs;
-using ExpertBridge.Api.DataGenerator;
 
 namespace ExpertBridge.Api.Extensions;
 

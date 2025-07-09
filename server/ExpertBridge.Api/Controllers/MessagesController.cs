@@ -1,12 +1,7 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using Amazon.Runtime.Internal;
-using ExpertBridge.Api.DomainServices;
+﻿using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpertBridge.Api.Controllers

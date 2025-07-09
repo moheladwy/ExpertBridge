@@ -46,6 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExpertBridge.Application\ExpertBridge.Application.csproj" />
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
     <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj" />
@@ -61,6 +62,13 @@
     <Content Include="..\.dockerignore">
       <Link>.dockerignore</Link>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="LlmOutputFormat\NSFWDetectionOutputFormat.json" />
+    <_ContentIncludedByDefault Remove="LlmOutputFormat\PostCategorizationOutputFormat.json" />
+    <_ContentIncludedByDefault Remove="LlmOutputFormat\ProcessedSkillsOutputFormat.json" />
+    <_ContentIncludedByDefault Remove="LlmOutputFormat\TranslateTagResponseOutputFormat.json" />
   </ItemGroup>
 
 </Project>

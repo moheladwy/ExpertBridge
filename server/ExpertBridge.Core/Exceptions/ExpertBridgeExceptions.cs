@@ -146,3 +146,9 @@ public class ProfilePhoneNumberAlreadyExistsException : Exception
     public ProfilePhoneNumberAlreadyExistsException(string? message, Exception? innerException) : base(message, innerException) { }
 }
 
+public class BadHttpRequestException : Exception
+{
+    public BadHttpRequestException() { }
+    public BadHttpRequestException(string titleAndContentAreRequired) : base(titleAndContentAreRequired) { }
+    public BadHttpRequestException(string? message, Exception? innerException) : base(message, innerException) { }
+}
