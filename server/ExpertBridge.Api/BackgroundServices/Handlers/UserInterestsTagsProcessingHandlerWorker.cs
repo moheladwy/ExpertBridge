@@ -1,9 +1,6 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using System.Threading.Channels;
-using ExpertBridge.Api.Models.IPC;
-using ExpertBridge.Api.Services;
+using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Application.Services;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Core.Exceptions;

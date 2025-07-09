@@ -1,10 +1,7 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using ExpertBridge.Api.Settings;
+using ExpertBridge.Application.Settings;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Api.Extensions;

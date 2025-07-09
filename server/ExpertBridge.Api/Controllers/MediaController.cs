@@ -1,7 +1,4 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
-
-using ExpertBridge.Api.Services;
+using ExpertBridge.Application.Services;
 using ExpertBridge.Core.Entities.Media.MediaGrants;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;

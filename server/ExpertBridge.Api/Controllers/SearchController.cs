@@ -1,6 +1,6 @@
 using System.Globalization;
-using ExpertBridge.Api.DomainServices;
-using ExpertBridge.Api.EmbeddingService;
+using ExpertBridge.Application.DomainServices;
+using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;
