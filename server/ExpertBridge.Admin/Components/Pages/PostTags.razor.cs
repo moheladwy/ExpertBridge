@@ -2,6 +2,7 @@ using ExpertBridge.Admin.ViewModels;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
+using Radzen.Blazor;
 
 namespace ExpertBridge.Admin.Components.Pages;
 
@@ -12,6 +13,7 @@ public partial class PostTags
     public List<PostTagsViewModel> postTags;
     public int TotalActiveTags => postTags.Count(pt => pt.PostCount > 0);
     public int TotalInactiveTags => postTags.Count(pt => pt.PostCount == 0);
+    private RadzenDataGrid<PostTagsViewModel>? grid;
 
     public PostTags(ExpertBridgeDbContext dbContext, HybridCache cache)
     {

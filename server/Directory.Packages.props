@@ -104,5 +104,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="Aspire.Hosting.Testing" Version="9.0.0" />
+    <PackageVersion Include="Radzen.Blazor" Version="7.4.3"/>
+    <PackageVersion Include="Razor.Templating.Core" Version="2.1.0"/>
   </ItemGroup>
 </Project>

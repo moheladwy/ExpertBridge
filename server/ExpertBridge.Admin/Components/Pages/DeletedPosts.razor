@@ -1,30 +1,56 @@
 @page "/deleted-posts"
 @using ExpertBridge.Admin.Components.SubModules
 
-<div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">Deleted Posts</h1>
+<PageTitle>Deleted Posts</PageTitle>
+
+<RadzenStack Gap="1.5rem" class="rz-p-4 rz-p-md-6">
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="1rem">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenIcon Icon="delete_sweep" IconStyle="IconStyle.Secondary" />
+                <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1" class="rz-m-0">
+                    Deleted Posts
+                </RadzenText>
+            </RadzenStack>
+            @if (reportedPosts != null)
+            {
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{reportedPosts.Count} deleted")" Shade="Shade.Lighter" />
+            }
+        </RadzenStack>
+    </RadzenCard>
 
     @if (reportedPosts == null)
     {
-        <div class="flex justify-center items-center h-64">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
+        <RadzenCard>
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="min-height: 300px;">
+                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+                <RadzenText TextStyle="TextStyle.Body1">Loading deleted posts...</RadzenText>
+            </RadzenStack>
+        </RadzenCard>
     }
     else if (reportedPosts.Count == 0)
     {
-        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
-            <p class="text-gray-600 w-full text-center text-lg">No deleted posts found</p>
-        </div>
+        <RadzenCard>
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="padding: 3rem 0;">
+                <RadzenIcon Icon="post_add" Style="font-size: 64px;" class="rz-color-secondary" />
+                <RadzenStack AlignItems="AlignItems.Center" Gap="0.25rem">
+                    <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-medium">
+                        No deleted posts found
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                        Deleted posts will appear here
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
     }
     else
     {
-        <div class="grid gap-6">
+        <RadzenStack Gap="1.5rem">
             @foreach (var post in reportedPosts)
             {
-                <div class="bg-white rounded-lg shadow-sm p-6 m-2">
-                    <Post PostResponse="@post" />
-                </div>
+                <Post PostResponse="@post" />
             }
-        </div>
+        </RadzenStack>
     }
-</div>
+</RadzenStack>

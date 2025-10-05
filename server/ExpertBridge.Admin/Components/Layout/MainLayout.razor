@@ -1,19 +1,46 @@
 ﻿@inherits LayoutComponentBase
+@inject ThemeService ThemeService
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+<RadzenComponents @rendermode="InteractiveServer"/>
 
-    <main>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+<RadzenLayout
+    Style="grid-template-columns: 1fr auto; grid-template-areas: 'rz-header rz-header' 'rz-body rz-sidebar ' 'rz-footer rz-sidebar'">
+
+    <RadzenHeader Style="display: flex ;justify-content: space-between;">
+        <RadzenStack Style="margin: 1rem;" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start"
+                     AlignItems="AlignItems.Center">
+            <RadzenLink
+                Text="Expert Bridge Admin Site"
+                Path="https://admin.expertbridge.duckdns.org" Target="_blank" Icon="home"
+                Style="font-size: 1.2rem;"
+            />
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End"
+                     AlignItems="AlignItems.Center" Gap="1rem">
+            <RadzenAppearanceToggle/>
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" class="rz-m-0"/>
+        </RadzenStack>
+    </RadzenHeader>
+
+    <RadzenSidebar @bind-Expanded="@sidebarExpanded">
+        <RadzenPanelMenu Style="direction: rtl">
+            <RadzenPanelMenuItem Text="Home" Icon="home" Path="/"/>
+            <RadzenPanelMenuItem Text="Deleted Posts" Icon="delete" Path="/deleted-posts"/>
+            <RadzenPanelMenuItem Text="Deleted Comments" Icon="delete" Path="/deleted-comments"/>
+            <RadzenPanelMenuItem Text="All Posts Tags" Icon="tag" Path="/post-tags"/>
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+
+    <RadzenBody Style="overflow: auto">
+        @Body
+    </RadzenBody>
+
+    <RadzenFooter Style="text-align: center;">
+        <span>Copyright © @DateTime.Now.Year, Expert Bridge. All rights reserved.</span>
+    </RadzenFooter>
+</RadzenLayout>
+
+@code {
+    bool sidebarExpanded = true;
+}

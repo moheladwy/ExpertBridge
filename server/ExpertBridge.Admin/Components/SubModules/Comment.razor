@@ -1,114 +1,127 @@
-<div class="border-l-4 border-gray-200 pl-3 py-2 mb-3 @(CommentResponse?.ParentCommentId == null ? "" : "ml-6")">
+<div style="border-left: 4px solid var(--rz-border-color); padding-left: 0.75rem; padding-top: 0.5rem; padding-bottom: 0.5rem; margin-bottom: 0.75rem; @(CommentResponse?.ParentCommentId == null ? "" : "margin-left: 1.5rem;")">
     @if (CommentResponse != null)
     {
-        <div class="flex items-start gap-3">
-            <div class="flex-shrink-0">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="0.75rem">
+            <div style="flex-shrink: 0;">
                 @if (CommentResponse.Author?.ProfilePictureUrl != null)
                 {
-                    <img src="@CommentResponse.Author.ProfilePictureUrl" alt="@CommentResponse.Author.FirstName's profile"
-                         class="w-8 h-8 rounded-full object-cover"/>
+                    <RadzenImage Path="@CommentResponse.Author.ProfilePictureUrl"
+                                 alt="@($"{CommentResponse.Author.FirstName}'s profile")"
+                                 Style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" />
                 }
                 else
                 {
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm">
-                        @(CommentResponse.Author != null ? CommentResponse.Author.FirstName[0].ToString().ToUpper() : "?")
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--rz-secondary-lighter); display: flex; align-items: center; justify-content: center;">
+                        <RadzenText TextStyle="TextStyle.Caption" Style="color: var(--rz-text-secondary-color);">
+                            @(CommentResponse.Author != null ? CommentResponse.Author.FirstName[0].ToString().ToUpper() : "?")
+                        </RadzenText>
                     </div>
                 }
             </div>
 
-            <div class="flex-1">
-                <div class="flex flex-wrap items-baseline gap-2 mb-1">
+            <RadzenStack Gap="0.5rem" Style="flex: 1;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" Wrap="FlexWrap.Wrap">
                     @if (CommentResponse.Author != null)
                     {
-                        <span class="font-medium text-gray-900">
+                        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-font-weight-medium">
                             @CommentResponse.Author.FirstName @CommentResponse.Author.LastName
-                        </span>
+                        </RadzenText>
                         @if (!string.IsNullOrEmpty(CommentResponse.Author.Username))
                         {
-                            <span class="text-sm text-gray-500">@("@" + CommentResponse.Author.Username)</span>
+                            <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
+                                @("@" + CommentResponse.Author.Username)
+                            </RadzenText>
                         }
                     }
                     else
                     {
-                        <span class="font-medium text-gray-900">Anonymous</span>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-font-weight-medium">
+                            Anonymous
+                        </RadzenText>
                     }
-                    <span class="text-xs text-gray-500">
+                    <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
                         @CommentResponse.CreatedAt.ToString("MMM dd • h:mm tt")
-                    </span>
-                </div>
+                    </RadzenText>
+                </RadzenStack>
 
-                <div class="text-gray-700 mb-2">@CommentResponse.Content</div>
+                <RadzenText TextStyle="TextStyle.Body2">
+                    @CommentResponse.Content
+                </RadzenText>
 
                 @if (CommentResponse.Medias != null && CommentResponse.Medias.Any())
                 {
-                    <div class="grid @(CommentResponse.Medias.Count == 1 ? "" : "grid-cols-2") gap-2 mb-3">
+                    <RadzenRow Gap="0.5rem">
                         @foreach (var media in CommentResponse.Medias)
                         {
-                            @if (media.Type.StartsWith("image"))
-                            {
-                                <img src="@media.Url" alt="@media.Name" class="rounded-lg w-full h-auto object-cover" />
-                            }
-                            else if (media.Type.StartsWith("video"))
-                            {
-                                <video src="@media.Url" controls class="rounded-lg w-full">
-                                    Your browser does not support the video tag.
-                                </video>
-                            }
-                            else
-                            {
-                                <div class="flex items-center gap-2 p-2 rounded-lg border border-gray-200">
-                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                    <a href="@media.Url" target="_blank" class="text-sm text-blue-600 hover:underline">@media.Name</a>
-                                </div>
-                            }
+                            <RadzenColumn Size="@(CommentResponse.Medias.Count == 1 ? 12 : 6)">
+                                @if (media.Type.StartsWith("image"))
+                                {
+                                    <RadzenImage Path="@media.Url"
+                                                 alt="@media.Name"
+                                                 Style="border-radius: 8px; width: 100%; height: auto; object-fit: cover;" />
+                                }
+                                else if (media.Type.StartsWith("video"))
+                                {
+                                    <video src="@media.Url" controls style="border-radius: 8px; width: 100%;">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                }
+                                else
+                                {
+                                    <RadzenCard Style="padding: 0.5rem;">
+                                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                                            <RadzenIcon Icon="description" />
+                                            <RadzenLink Path="@media.Url" Target="_blank" Text="@media.Name" Style="font-size: 0.875rem;" />
+                                        </RadzenStack>
+                                    </RadzenCard>
+                                }
+                            </RadzenColumn>
                         }
-                    </div>
+                    </RadzenRow>
                 }
 
-                <div class="flex items-center gap-3 mt-1">
-                    <button class="flex items-center gap-1 @(CommentResponse.IsUpvoted ? "text-blue-600" : "text-gray-500") hover:text-blue-600 text-sm">
-                        <svg class="w-4 h-4" fill="@(CommentResponse.IsUpvoted ? "currentColor" : "none")" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-                        </svg>
-                        <span>@CommentResponse.Upvotes</span>
-                    </button>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.75rem" AlignItems="AlignItems.Center" Style="margin-top: 0.25rem;">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
+                                 Style="@(CommentResponse.IsUpvoted ? "color: var(--rz-primary);" : "color: var(--rz-text-disabled-color);")">
+                        <RadzenIcon Icon="@(CommentResponse.IsUpvoted ? "arrow_upward" : "keyboard_arrow_up")" Style="font-size: 16px;" />
+                        <RadzenText TextStyle="TextStyle.Caption">@CommentResponse.Upvotes</RadzenText>
+                    </RadzenStack>
 
-                    <button class="flex items-center gap-1 @(CommentResponse.IsDownvoted ? "text-red-600" : "text-gray-500") hover:text-red-600 text-sm">
-                        <svg class="w-4 h-4" fill="@(CommentResponse.IsDownvoted ? "currentColor" : "none")" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                        <span>@CommentResponse.Downvotes</span>
-                    </button>
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
+                                 Style="@(CommentResponse.IsDownvoted ? "color: var(--rz-danger);" : "color: var(--rz-text-disabled-color);")">
+                        <RadzenIcon Icon="@(CommentResponse.IsDownvoted ? "arrow_downward" : "keyboard_arrow_down")" Style="font-size: 16px;" />
+                        <RadzenText TextStyle="TextStyle.Caption">@CommentResponse.Downvotes</RadzenText>
+                    </RadzenStack>
 
-                    <button class="text-sm text-gray-500 hover:text-gray-700">Reply</button>
-                </div>
+                    <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Text="Reply" />
+                </RadzenStack>
 
                 @if (CommentResponse.Replies != null && CommentResponse.Replies.Any())
                 {
-                    <div class="mt-3">
+                    <RadzenStack Gap="0.75rem" Style="margin-top: 0.75rem;">
                         @foreach (var reply in CommentResponse.Replies)
                         {
                             <Comment CommentResponse="reply" />
                         }
-                    </div>
+                    </RadzenStack>
                 }
-            </div>
-        </div>
+            </RadzenStack>
+        </RadzenStack>
     }
     else
     {
-        <div class="animate-pulse flex items-start gap-3">
-            <div class="bg-gray-200 rounded-full h-8 w-8 flex-shrink-0"></div>
-            <div class="flex-1">
-                <div class="h-3 bg-gray-200 rounded w-1/4 mb-2"></div>
-                <div class="h-12 bg-gray-200 rounded mb-2"></div>
-                <div class="flex gap-2">
-                    <div class="h-4 bg-gray-200 rounded w-10"></div>
-                    <div class="h-4 bg-gray-200 rounded w-10"></div>
-                </div>
-            </div>
-        </div>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="0.75rem">
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                       Size="ProgressBarCircularSize.Small"
+                                       Style="width: 32px; height: 32px; flex-shrink: 0;" />
+            <RadzenStack Gap="0.5rem" Style="flex: 1;">
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 12px; width: 25%;" />
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 48px;" />
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 16px; width: 40px;" />
+                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 16px; width: 40px;" />
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenStack>
     }
 </div>
