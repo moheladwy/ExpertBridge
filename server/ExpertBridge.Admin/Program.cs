@@ -8,6 +8,7 @@ using ExpertBridge.Extensions.CORS;
 using ExpertBridge.Extensions.HealthChecks;
 using ExpertBridge.Extensions.Logging;
 using ExpertBridge.Extensions.OpenTelemetry;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,11 @@ builder.AddFusionCache();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services
+    .AddRadzenComponents()
+    .AddRadzenCookieThemeService()
+    .AddRadzenQueryStringThemeService();
 
 var app = builder.Build();
 

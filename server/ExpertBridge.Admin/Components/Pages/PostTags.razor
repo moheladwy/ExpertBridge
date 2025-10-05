@@ -3,158 +3,104 @@
 
 <PageTitle>Post Tags</PageTitle>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-grey shadow-xl rounded-lg overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-black flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"></path>
-                    </svg>
+<RadzenStack Gap="1.5rem" class="rz-p-4 rz-p-md-6">
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenIcon Icon="local_offer" />
+                <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-m-0">
                     Post Tags Overview
-                </h3>
-                <span class="block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                    Total Tags: @postTags.Count
-                </span>
-                <span class="block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                    Total Active Tags: @TotalActiveTags
-                </span>
-                <span class="block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                    Total Inactive Tags: @TotalInactiveTags
-                </span>
-            </div>
-        </div>
+                </RadzenText>
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"Total Tags: {postTags.Count}")" />
+                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Active Tags: {TotalActiveTags}")" />
+                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@($"Inactive Tags: {TotalInactiveTags}")" />
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenCard>
 
-        <div class="p-6">
-            @if (postTags == null)
-            {
-                <div class="flex justify-center items-center h-48">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                </div>
-            }
-            else if (!postTags.Any())
-            {
-                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm text-blue-700">
-                                No tags found in the system.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V4z"></path>
-                                        </svg>
-                                        Tag ID
-                                    </div>
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        English Name
-                                    </div>
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M7 2a1 1 0 011 1v1h3a1 1 0 110 2H9.578a18.87 18.87 0 01-1.724 4.78c.29.354.596.696.914 1.026a1 1 0 11-1.44 1.389c-.188-.196-.373-.396-.554-.6a19.098 19.098 0 01-3.107 3.567 1 1 0 01-1.334-1.49 17.087 17.087 0 003.13-3.733 18.992 18.992 0 01-1.487-2.494 1 1 0 111.79-.89c.234.47.489.928.764 1.372.417-.934.752-1.913.997-2.927H3a1 1 0 110-2h3V3a1 1 0 011-1zm6 6a1 1 0 01.894.553l2.991 5.982a.869.869 0 01.02.037l.99 1.98A1 1 0 1117.118 18H16.95l-.086-.17-2.99-5.982A1 1 0 0113 8z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Arabic Name
-                                    </div>
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Description
-                                    </div>
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
-                                        </svg>
-                                        Post Count
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach (var postTag in postTags)
+    <RadzenCard>
+        @if (isLoading)
+        {
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="min-height: 200px;">
+                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+                <RadzenText TextStyle="TextStyle.Body1">Loading tags...</RadzenText>
+            </RadzenStack>
+        }
+        else if (!postTags.Any())
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenIcon Icon="info" />
+                    <RadzenText TextStyle="TextStyle.Body1">
+                        No tags found in the system.
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenAlert>
+        }
+        else
+        {
+            <RadzenDataGrid @ref="grid" Data="@postTags" TItem="PostTagsViewModel"
+                            AllowFiltering="true" FilterMode="FilterMode.Advanced"
+                            AllowSorting="true" AllowPaging="true" PageSize="10"
+                            AllowColumnResize="true" ColumnWidth="200px"
+                            Density="Density.Compact">
+                <Columns>
+                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="TagId" Title="Tag ID" Width="250px" Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@data.TagId" />
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="EnglishName" Title="English Name" Width="200px" Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@data.EnglishName" Shade="Shade.Lighter" />
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="ArabicName" Title="Arabic Name" Width="200px" Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            @if (!string.IsNullOrEmpty(data.ArabicName))
                             {
-                                <tr class="hover:bg-gray-50 transition-colors duration-200">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <code class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">@postTag.TagId</code>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            @postTag.EnglishName
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @if (!string.IsNullOrEmpty(postTag.ArabicName))
-                                        {
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800" dir="rtl">
-                                                @postTag.ArabicName
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-gray-400">-</span>
-                                        }
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 max-w-xs">
-                                        @if (!string.IsNullOrEmpty(postTag.Description))
-                                        {
-                                            <div title="@postTag.Description" class="truncate">
-                                                @(postTag.Description.Length > 100
-                                                    ? postTag.Description.Substring(0, 100) + "..."
-                                                    : postTag.Description)
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-gray-400">No description</span>
-                                        }
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @if (postTag.PostCount > 0)
-                                        {
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                @postTag.PostCount
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                0
-                                            </span>
-                                        }
-                                    </td>
-                                </tr>
+                                <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@data.ArabicName" Shade="Shade.Lighter" dir="rtl" />
                             }
-                        </tbody>
-                    </table>
-                </div>
-            }
-        </div>
-    </div>
-</div>
+                            else
+                            {
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">-</RadzenText>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="Description" Title="Description" Width="300px" Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            @if (!string.IsNullOrEmpty(data.Description))
+                            {
+                                <RadzenText TextStyle="TextStyle.Body2" title="@data.Description" Style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px;">
+                                    @(data.Description.Length > 100 ? data.Description.Substring(0, 100) + "..." : data.Description)
+                                </RadzenText>
+                            }
+                            else
+                            {
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">No description</RadzenText>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="PostCount" Title="Post Count" Width="150px" Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            @if (data.PostCount > 0)
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@data.PostCount.ToString()" Shade="Shade.Lighter" />
+                            }
+                            else
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="0" Shade="Shade.Lighter" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+    </RadzenCard>
+</RadzenStack>
