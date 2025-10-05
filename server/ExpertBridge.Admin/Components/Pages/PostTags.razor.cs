@@ -14,6 +14,7 @@ public partial class PostTags
     public int TotalActiveTags => postTags.Count(pt => pt.PostCount > 0);
     public int TotalInactiveTags => postTags.Count(pt => pt.PostCount == 0);
     private RadzenDataGrid<PostTagsViewModel>? grid;
+    private bool isLoading = true;
 
     public PostTags(ExpertBridgeDbContext dbContext, HybridCache cache)
     {
@@ -24,25 +25,33 @@ public partial class PostTags
 
     protected override async Task OnInitializedAsync()
     {
-        var key = "AllPostTags";
-        postTags = await _cache.GetOrCreateAsync(key,
-        async (cancellationToken) =>
+        try
         {
-            return await _dbContext.Tags
-                .AsNoTracking()
-                .Include(tag => tag.PostTags)
-                .Where(tag => tag.PostTags.Any())
-                .Select(tag => new PostTagsViewModel
-                {
-                    TagId = tag.Id,
-                    EnglishName = tag.EnglishName,
-                    ArabicName = tag.ArabicName ?? string.Empty,
-                    Description = tag.Description,
-                    PostCount = tag.PostTags.Count
-                })
-                .OrderByDescending(tag => tag.PostCount)
-                .ToListAsync(cancellationToken);
-        });
+            isLoading = true;
+            var key = "AllPostTags";
+            postTags = await _cache.GetOrCreateAsync(key,
+            async (cancellationToken) =>
+            {
+                return await _dbContext.Tags
+                    .AsNoTracking()
+                    .Include(tag => tag.PostTags)
+                    .Where(tag => tag.PostTags.Any())
+                    .Select(tag => new PostTagsViewModel
+                    {
+                        TagId = tag.Id,
+                        EnglishName = tag.EnglishName,
+                        ArabicName = tag.ArabicName ?? string.Empty,
+                        Description = tag.Description,
+                        PostCount = tag.PostTags.Count
+                    })
+                    .OrderByDescending(tag => tag.PostCount)
+                    .ToListAsync(cancellationToken);
+            });
+        }
+        finally
+        {
+            isLoading = false;
+        }
         await base.OnInitializedAsync();
     }
 }

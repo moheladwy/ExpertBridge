@@ -21,7 +21,7 @@
     </RadzenCard>
 
     <RadzenCard>
-        @if (postTags == null)
+        @if (isLoading)
         {
             <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="min-height: 200px;">
                 <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />

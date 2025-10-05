@@ -10,5 +10,12 @@ namespace ExpertBridge.Admin.Components.SubModules
     {
         [Parameter]
         public CommentResponse CommentResponse { get; set; }
+
+        private bool _showReplies = true;
+
+        private void ToggleReplies()
+        {
+            _showReplies = !_showReplies;
+        }
     }
 }

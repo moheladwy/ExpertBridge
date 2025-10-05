@@ -93,10 +93,22 @@
                         <RadzenText TextStyle="TextStyle.Caption">@CommentResponse.Downvotes</RadzenText>
                     </RadzenStack>
 
-                    <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Text="Reply" />
+                    @if (CommentResponse.Replies != null && CommentResponse.Replies.Any())
+                    {
+                        <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall"
+                                      Click="@ToggleReplies"
+                                      Style="padding: 0.25rem 0.5rem; min-width: auto;">
+                            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem">
+                                <RadzenIcon Icon="@(_showReplies ? "expand_less" : "expand_more")" Style="font-size: 16px;" />
+                                <RadzenText TextStyle="TextStyle.Caption">
+                                    @(_showReplies ? "Hide" : "Show") @CommentResponse.Replies.Count @(CommentResponse.Replies.Count == 1 ? "reply" : "replies")
+                                </RadzenText>
+                            </RadzenStack>
+                        </RadzenButton>
+                    }
                 </RadzenStack>
 
-                @if (CommentResponse.Replies != null && CommentResponse.Replies.Any())
+                @if (_showReplies && CommentResponse.Replies != null && CommentResponse.Replies.Any())
                 {
                     <RadzenStack Gap="0.75rem" Style="margin-top: 0.75rem;">
                         @foreach (var reply in CommentResponse.Replies)

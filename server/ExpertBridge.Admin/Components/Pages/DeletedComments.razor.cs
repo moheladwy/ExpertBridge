@@ -7,26 +7,44 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
+using Radzen;
 
 namespace ExpertBridge.Admin.Components.Pages;
 
 public partial class DeletedComments : ComponentBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
-    public List<CommentResponse> Comments { get; set; }
     private readonly HybridCache _cache;
+    public List<CommentResponse> Comments { get; set; }
+    private List<CommentResponse>? pagedComments;
+    private int pageSize = 4;
 
     public DeletedComments(ExpertBridgeDbContext dbContext, HybridCache cache)
     {
         _dbContext = dbContext;
         _cache = cache;
         Comments = [];
+        pagedComments = [];
     }
 
     protected override async Task OnInitializedAsync()
     {
         Comments = await GetDeletedComments();
+        UpdatePagedComments(0, pageSize);
         await base.OnInitializedAsync();
+    }
+
+    private void OnPageChanged(PagerEventArgs args)
+    {
+        UpdatePagedComments(args.Skip, args.Top);
+    }
+
+    private void UpdatePagedComments(int skip, int take)
+    {
+        if (Comments != null)
+        {
+            pagedComments = Comments.Skip(skip).Take(take).ToList();
+        }
     }
 
     private async Task<List<CommentResponse>> GetDeletedComments()

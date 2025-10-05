@@ -101,21 +101,57 @@
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
                              Style="@(PostResponse.IsUpvoted ? "color: var(--rz-primary);" : "color: var(--rz-text-disabled-color);")">
                     <RadzenIcon Icon="@(PostResponse.IsUpvoted ? "arrow_upward" : "keyboard_arrow_up")" />
-                    <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Upvotes</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Upvotes upvotes</RadzenText>
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
                              Style="@(PostResponse.IsDownvoted ? "color: var(--rz-danger);" : "color: var(--rz-text-disabled-color);")">
                     <RadzenIcon Icon="@(PostResponse.IsDownvoted ? "arrow_downward" : "keyboard_arrow_down")" />
-                    <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Downvotes</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Downvotes downvotes</RadzenText>
                 </RadzenStack>
 
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
-                             class="rz-color-secondary">
-                    <RadzenIcon Icon="chat_bubble_outline" />
-                    <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Comments</RadzenText>
-                </RadzenStack>
+                <RadzenButton Variant="Variant.Text" Size="ButtonSize.Small"
+                              Click="@ToggleCommentsAsync"
+                              Style="padding: 0.25rem 0.5rem; min-width: auto;">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
+                                 class="rz-color-secondary">
+                        <RadzenIcon Icon="@(_showComments ? "chat_bubble" : "chat_bubble_outline")" />
+                        <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Comments comments</RadzenText>
+                    </RadzenStack>
+                </RadzenButton>
             </RadzenStack>
+
+            @if (_showComments)
+            {
+                <RadzenStack Gap="1rem" Style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--rz-border-color);">
+                    <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-font-weight-medium">
+                        Comments (@PostResponse.Comments)
+                    </RadzenText>
+
+                    @if (_loadingComments)
+                    {
+                        <RadzenStack AlignItems="AlignItems.Center" Gap="0.5rem" Style="padding: 2rem 0;">
+                            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Medium" />
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">Loading comments...</RadzenText>
+                        </RadzenStack>
+                    }
+                    else if (_comments == null || !_comments.Any())
+                    {
+                        <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                            <RadzenText TextStyle="TextStyle.Body2">No comments yet. Be the first to comment!</RadzenText>
+                        </RadzenAlert>
+                    }
+                    else
+                    {
+                        <RadzenStack Gap="1rem">
+                            @foreach (var comment in _comments)
+                            {
+                                <Comment CommentResponse="comment" />
+                            }
+                        </RadzenStack>
+                    }
+                </RadzenStack>
+            }
         </RadzenStack>
     }
     else

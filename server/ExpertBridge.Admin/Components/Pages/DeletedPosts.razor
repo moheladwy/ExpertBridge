@@ -47,10 +47,23 @@
     else
     {
         <RadzenStack Gap="1.5rem">
-            @foreach (var post in reportedPosts)
+            <RadzenPager Count="@reportedPosts.Count" PageSize="@pageSize" PageNumbersCount="5"
+                         PageChanged="@OnPageChanged" ShowPagingSummary="true"
+                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted posts)"
+                         HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
+
+            @if (pagedPosts != null && pagedPosts.Any())
             {
-                <Post PostResponse="@post" />
+                @foreach (var post in pagedPosts)
+                {
+                    <Post PostResponse="@post" />
+                }
             }
+
+            <RadzenPager Count="@reportedPosts.Count" PageSize="@pageSize" PageNumbersCount="5"
+                         PageChanged="@OnPageChanged" ShowPagingSummary="true"
+                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted posts)"
+                         HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
         </RadzenStack>
     }
 </RadzenStack>

@@ -5,26 +5,25 @@
 
 
 <RadzenLayout
-    Style="grid-template-columns: 1fr auto; grid-template-areas: 'rz-header rz-header' 'rz-body rz-sidebar ' 'rz-footer rz-sidebar'">
+    Style="grid-template-areas: 'rz-header rz-header' 'rz-sidebar rz-body' 'rz-sidebar rz-footer'">
 
-    <RadzenHeader Style="display: flex ;justify-content: space-between;">
+    <RadzenHeader Style="display: flex ;justify-content: start">
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End"
+                     AlignItems="AlignItems.Center" Gap="1rem">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" class="rz-m-0"/>
+            <RadzenAppearanceToggle/>
+        </RadzenStack>
         <RadzenStack Style="margin: 1rem;" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start"
                      AlignItems="AlignItems.Center">
             <RadzenLink
                 Text="Expert Bridge Admin Site"
                 Path="https://admin.expertbridge.duckdns.org" Target="_blank" Icon="home"
-                Style="font-size: 1.2rem;"
-            />
-        </RadzenStack>
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End"
-                     AlignItems="AlignItems.Center" Gap="1rem">
-            <RadzenAppearanceToggle/>
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" class="rz-m-0"/>
+                Style="font-size: 1rem;"/>
         </RadzenStack>
     </RadzenHeader>
 
     <RadzenSidebar @bind-Expanded="@sidebarExpanded">
-        <RadzenPanelMenu Style="direction: rtl">
+        <RadzenPanelMenu>
             <RadzenPanelMenuItem Text="Home" Icon="home" Path="/"/>
             <RadzenPanelMenuItem Text="Deleted Posts" Icon="delete" Path="/deleted-posts"/>
             <RadzenPanelMenuItem Text="Deleted Comments" Icon="delete" Path="/deleted-comments"/>
