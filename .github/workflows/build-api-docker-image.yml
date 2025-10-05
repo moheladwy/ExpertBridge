@@ -5,7 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "server/**"
-      - ".github/workflows/build-server-docker-image.yml"
+      - ".github/workflows/build-api-docker-image.yml"
 
 env:
   API_IMAGE_NAME: expert-bridge-api
