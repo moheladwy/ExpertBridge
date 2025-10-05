@@ -71,4 +71,11 @@
     <_ContentIncludedByDefault Remove="LlmOutputFormat\TranslateTagResponseOutputFormat.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="LlmOutputFormat\NSFWDetectionOutputFormat.json" />
+    <None Include="LlmOutputFormat\PostCategorizationOutputFormat.json" />
+    <None Include="LlmOutputFormat\ProcessedSkillsOutputFormat.json" />
+    <None Include="LlmOutputFormat\TranslateTagResponseOutputFormat.json" />
+  </ItemGroup>
+
 </Project>
