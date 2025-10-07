@@ -28,6 +28,33 @@
         </RadzenColumn>
     </RadzenRow>
 
+    @* Search Bar *@
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" Wrap="FlexWrap.Wrap">
+            <RadzenIcon Icon="search" Style="color: var(--rz-text-secondary-color);" />
+            <RadzenTextBox Value="@searchText"
+                           Placeholder="Search by name, username, email, job title, bio, or skills..."
+                           Style="flex: 1; min-width: 300px;"
+                           Change="@((value) => OnSearchChanged(value))"
+                           class="rz-border-radius-2" />
+
+            @if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                <RadzenButton Icon="clear"
+                              ButtonStyle="ButtonStyle.Light"
+                              Variant="Variant.Flat"
+                              Size="ButtonSize.Medium"
+                              Click="@ClearSearch"
+                              title="Clear search"
+                              Text="Clear" />
+
+                <RadzenBadge BadgeStyle="BadgeStyle.Success"
+                             Text="@($"{displayedProfileCount} result{(displayedProfileCount != 1 ? "s" : "")}")"
+                             Shade="Shade.Lighter" />
+            }
+        </RadzenStack>
+    </RadzenCard>
+
     @if (isLoading)
     {
         <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 3rem;">
@@ -37,19 +64,36 @@
     }
     else if (profiles != null && profiles.Count > 0)
     {
-        <RadzenCard>
-            <RadzenStack Gap="1.5rem">
-                @* Profiles Grid with Equal Height Cards *@
-                <RadzenRow Gap="1.5rem" Style="min-height: 600px;">
-                    @foreach (var profile in pagedProfiles)
-                    {
-                        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" Style="display: flex;">
-                            <div style="width: 100%; display: flex;">
-                                <ProfileCard ProfileData="@profile" LoadInterests="true" />
-                            </div>
-                        </RadzenColumn>
-                    }
-                </RadzenRow>
+        @if (!string.IsNullOrWhiteSpace(searchText) && displayedProfileCount == 0)
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Warning" Shade="Shade.Lighter">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenIcon Icon="search_off" />
+                    <RadzenText TextStyle="TextStyle.Body1">
+                        No profiles found matching "<strong>@searchText</strong>".
+                    </RadzenText>
+                    <RadzenButton Text="Clear Search"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Size="ButtonSize.Small"
+                                  Click="@ClearSearch" />
+                </RadzenStack>
+            </RadzenAlert>
+        }
+        else
+        {
+            <RadzenCard>
+                <RadzenStack Gap="1.5rem">
+                    @* Profiles Grid with Equal Height Cards *@
+                    <RadzenRow Gap="1.5rem" Style="min-height: 600px;">
+                        @foreach (var profile in pagedProfiles)
+                        {
+                            <RadzenColumn Size="12" SizeMD="6" SizeLG="4" Style="display: flex;">
+                                <div style="width: 100%; display: flex;">
+                                    <ProfileCard ProfileData="@profile" LoadInterests="true" />
+                                </div>
+                            </RadzenColumn>
+                        }
+                    </RadzenRow>
 
                 @* Pagination Controls *@
                 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="1rem" Style="padding-top: 1rem; border-top: 1px solid var(--rz-border-color);">
@@ -58,8 +102,14 @@
                             Page @(currentPage + 1) of @totalPages
                         </RadzenText>
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
-                            (@((currentPage * pageSize) + 1)-@Math.Min((currentPage + 1) * pageSize, totalProfiles) of @totalProfiles)
+                            (@((currentPage * pageSize) + 1)-@Math.Min((currentPage + 1) * pageSize, displayedProfileCount) of @displayedProfileCount)
                         </RadzenText>
+                        @if (!string.IsNullOrWhiteSpace(searchText))
+                        {
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                (filtered from @totalProfiles total)
+                            </RadzenText>
+                        }
                     </RadzenStack>
 
                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
@@ -71,11 +121,12 @@
                                         Style="width: 80px;" />
                     </RadzenStack>
 
-                    <RadzenPager Count="@totalProfiles" PageSize="@pageSize" PageNumbersCount="5"
+                    <RadzenPager Count="@displayedProfileCount" PageSize="@pageSize" PageNumbersCount="5"
                                  PageChanged="@((args) => OnPageChanged(args.PageIndex))" ShowPagingSummary="false" />
                 </RadzenStack>
-            </RadzenStack>
-        </RadzenCard>
+                </RadzenStack>
+            </RadzenCard>
+        }
     }
     else
     {

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Hybrid;
 using Radzen;
 using Radzen.Blazor;
 
-namespace ExpertBridge.Admin.Components.Pages;
+namespace ExpertBridge.Admin.Components.Pages.MainContent;
 
 public partial class PostTags
 {

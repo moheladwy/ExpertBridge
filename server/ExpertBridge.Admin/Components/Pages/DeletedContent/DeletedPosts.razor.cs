@@ -20,6 +20,13 @@ public sealed partial class DeletedPosts : ComponentBase
     private int pageSize = 4;
     private bool isLoading = true;
 
+    // Search properties
+    private string searchText = string.Empty;
+    private List<PostResponse>? filteredPosts;
+    private int filteredCount;
+    private int displayedPostCount => string.IsNullOrWhiteSpace(searchText) ? (reportedPosts?.Count ?? 0) : filteredCount;
+    private string pagingSummaryFormat => $"Displaying page {{0}} of {{1}} (total {{2}} {(string.IsNullOrWhiteSpace(searchText) ? "deleted posts" : "results")})";
+
     public DeletedPosts(ExpertBridgeDbContext dbContext, HybridCache cache)
     {
         _dbContext = dbContext;
@@ -48,11 +55,42 @@ public sealed partial class DeletedPosts : ComponentBase
         UpdatePagedPosts(args.Skip, args.Top);
     }
 
+    private List<PostResponse> GetFilteredPosts()
+    {
+        if (reportedPosts == null || string.IsNullOrWhiteSpace(searchText))
+            return reportedPosts ?? [];
+
+        return reportedPosts.Where(p =>
+            (p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Content?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Author?.Username?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Author?.FirstName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Author?.LastName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Tags?.Any(t => t.EnglishName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                             t.ArabicName.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ?? false)
+        ).ToList();
+    }
+
+    private void OnSearchChanged(string value)
+    {
+        searchText = value;
+        filteredPosts = GetFilteredPosts();
+        filteredCount = filteredPosts.Count;
+        UpdatePagedPosts(0, pageSize); // Reset to first page when search changes
+    }
+
+    private void ClearSearch()
+    {
+        searchText = string.Empty;
+        OnSearchChanged(string.Empty);
+    }
+
     private void UpdatePagedPosts(int skip, int take)
     {
-        if (reportedPosts != null)
+        var source = string.IsNullOrWhiteSpace(searchText) ? reportedPosts : filteredPosts;
+        if (source != null)
         {
-            pagedPosts = reportedPosts.Skip(skip).Take(take).ToList();
+            pagedPosts = source.Skip(skip).Take(take).ToList();
         }
     }
 

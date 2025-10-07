@@ -1,0 +1,101 @@
+@page "/comments"
+
+<PageTitle>Comments - ExpertBridge Admin</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12">
+    <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
+        <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Comments</RadzenText>
+
+        @* Search Bar *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-mb-4">
+                <RadzenIcon Icon="search" />
+                <RadzenTextBox
+                    @bind-Value="@searchText"
+                    Change="@(args => OnSearchChanged(args))"
+                    Placeholder="Search by Comment ID, Content, Author, Post ID, or Job Posting ID..."
+                    Style="width: 100%;"
+                />
+                @if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    <RadzenButton
+                        Icon="clear"
+                        ButtonStyle="ButtonStyle.Light"
+                        Click="@ClearSearch"
+                        Size="ButtonSize.Small"
+                        title="Clear search"
+                    />
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"{filteredCount} results")" />
+                }
+            </RadzenStack>
+        </RadzenCard>
+
+        @if (pagedComments.Count == 0 && !string.IsNullOrWhiteSpace(searchText))
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenIcon Icon="info" />
+                    <RadzenText>No comments found matching "<strong>@searchText</strong>"</RadzenText>
+                </RadzenStack>
+            </RadzenAlert>
+        }
+
+        @foreach (var comment in pagedComments)
+        {
+            <RadzenCard>
+                <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
+                    <RadzenText TextStyle="TextStyle.Body1">@comment.Content</RadzenText>
+
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                        @if (comment.Author != null)
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@($"Author: {comment.Author.Username}")" />
+                            @if (!string.IsNullOrWhiteSpace(comment.Author.FirstName) || !string.IsNullOrWhiteSpace(comment.Author.LastName))
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@($"{comment.Author.FirstName} {comment.Author.LastName}")" />
+                            }
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(comment.PostId))
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"Post: {comment.PostId}")" />
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(comment.JobPostingId))
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Job: {comment.JobPostingId}")" />
+                        }
+
+                        @if (comment.Replies != null && comment.Replies.Any())
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@($"{comment.Replies.Count} replies")" />
+                        }
+                    </RadzenStack>
+
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                        <RadzenText TextStyle="TextStyle.Caption">Created: @comment.CreatedAt.ToString("g")</RadzenText>
+                        @if (comment.LastModified.HasValue)
+                        {
+                            <RadzenText TextStyle="TextStyle.Caption">Modified: @comment.LastModified.Value.ToString("g")</RadzenText>
+                        }
+                    </RadzenStack>
+
+                    <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">ID: @comment.Id</RadzenText>
+                </RadzenStack>
+            </RadzenCard>
+        }
+
+        @if (displayedCount > 0)
+        {
+            <RadzenPager
+                Count="@displayedCount"
+                PageSize="@pageSize"
+                PageNumbersCount="5"
+                PageChanged="@PageChanged"
+                ShowPagingSummary="true"
+                PagingSummaryFormat="@pagingSummaryFormat"
+                HorizontalAlign="HorizontalAlign.Center"
+            />
+        }
+    </RadzenStack>
+</div>

@@ -19,6 +19,36 @@
         </RadzenStack>
     </RadzenCard>
 
+    @* Search Bar *@
+    @if (!isLoading && Comments.Any())
+    {
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" Wrap="FlexWrap.Wrap">
+                <RadzenIcon Icon="search" Style="color: var(--rz-text-secondary-color);" />
+                <RadzenTextBox Value="@searchText"
+                               Placeholder="Search by comment ID, content, author, post ID, or job posting ID..."
+                               Style="flex: 1; min-width: 300px;"
+                               Change="@((value) => OnSearchChanged(value))"
+                               class="rz-border-radius-2" />
+
+                @if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    <RadzenButton Icon="clear"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Variant="Variant.Flat"
+                                  Size="ButtonSize.Medium"
+                                  Click="@ClearSearch"
+                                  title="Clear search"
+                                  Text="Clear" />
+
+                    <RadzenBadge BadgeStyle="BadgeStyle.Success"
+                                 Text="@($"{displayedCommentCount} result{(displayedCommentCount != 1 ? "s" : "")}")"
+                                 Shade="Shade.Lighter" />
+                }
+            </RadzenStack>
+        </RadzenCard>
+    }
+
     @if (isLoading)
     {
         <RadzenCard>
@@ -46,30 +76,70 @@
     }
     else
     {
-        <RadzenStack Gap="1.5rem">
-            <RadzenPager Count="@Comments.Count" PageSize="@pageSize" PageNumbersCount="5"
-                         PageChanged="@OnPageChanged" ShowPagingSummary="true"
-                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted comments)"
-                         HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
-
+        @if (!string.IsNullOrWhiteSpace(searchText) && displayedCommentCount == 0)
+        {
             <RadzenCard>
-                @if (pagedComments != null && pagedComments.Any())
-                {
-                    <RadzenStack Gap="1.5rem">
-                        @foreach (var comment in pagedComments)
+                <RadzenAlert AlertStyle="AlertStyle.Warning" Shade="Shade.Lighter">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                        <RadzenIcon Icon="search_off" />
+                        <RadzenText TextStyle="TextStyle.Body1">
+                            No comments found matching "<strong>@searchText</strong>".
+                        </RadzenText>
+                        <RadzenButton Text="Clear Search"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Size="ButtonSize.Small"
+                                      Click="@ClearSearch" />
+                    </RadzenStack>
+                </RadzenAlert>
+            </RadzenCard>
+        }
+        else
+        {
+            <RadzenStack Gap="1.5rem">
+                <RadzenCard>
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Gap="0.5rem">
+                        <RadzenPager Count="@displayedCommentCount" PageSize="@pageSize" PageNumbersCount="5"
+                                     PageChanged="@OnPageChanged" ShowPagingSummary="true"
+                                     PagingSummaryFormat="@pagingSummaryFormat"
+                                     HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
+                        @if (!string.IsNullOrWhiteSpace(searchText))
                         {
-                            <div style="padding-bottom: 1.5rem; border-bottom: 1px solid var(--rz-border-color);">
-                                <Comment CommentResponse="comment" />
-                            </div>
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                (filtered from @Comments.Count total)
+                            </RadzenText>
                         }
                     </RadzenStack>
-                }
-            </RadzenCard>
+                </RadzenCard>
 
-            <RadzenPager Count="@Comments.Count" PageSize="@pageSize" PageNumbersCount="5"
-                         PageChanged="@OnPageChanged" ShowPagingSummary="true"
-                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted comments)"
-                         HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
-        </RadzenStack>
+                <RadzenCard>
+                    @if (pagedComments != null && pagedComments.Any())
+                    {
+                        <RadzenStack Gap="1.5rem">
+                            @foreach (var comment in pagedComments)
+                            {
+                                <div style="padding-bottom: 1.5rem; border-bottom: 1px solid var(--rz-border-color);">
+                                    <Comment CommentResponse="comment" />
+                                </div>
+                            }
+                        </RadzenStack>
+                    }
+                </RadzenCard>
+
+                <RadzenCard>
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Gap="0.5rem">
+                        <RadzenPager Count="@displayedCommentCount" PageSize="@pageSize" PageNumbersCount="5"
+                                     PageChanged="@OnPageChanged" ShowPagingSummary="true"
+                                     PagingSummaryFormat="@pagingSummaryFormat"
+                                     HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
+                        @if (!string.IsNullOrWhiteSpace(searchText))
+                        {
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                (filtered from @Comments.Count total)
+                            </RadzenText>
+                        }
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenStack>
+        }
     }
 </RadzenStack>
