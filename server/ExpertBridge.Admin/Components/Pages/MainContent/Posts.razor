@@ -1,0 +1,62 @@
+@page "/posts"
+@using ExpertBridge.Admin.Components.SubModules
+
+<PageTitle>Posts - ExpertBridge Admin</PageTitle>
+
+<div class="rz-p-4 rz-p-md-12">
+    <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
+        <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Posts</RadzenText>
+
+        @* Search Bar *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-mb-4">
+                <RadzenIcon Icon="search" />
+                <RadzenTextBox
+                    @bind-Value="@searchText"
+                    Change="@(args => OnSearchChanged(args))"
+                    Placeholder="Search by Post ID, Title, Content, Author, or Tags..."
+                    Style="width: 100%;"
+                />
+                @if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    <RadzenButton
+                        Icon="clear"
+                        ButtonStyle="ButtonStyle.Light"
+                        Click="@ClearSearch"
+                        Size="ButtonSize.Small"
+                        title="Clear search"
+                    />
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"{filteredCount} results")" />
+                }
+            </RadzenStack>
+        </RadzenCard>
+
+        @if (pagedPosts.Count == 0 && !string.IsNullOrWhiteSpace(searchText))
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenIcon Icon="info" />
+                    <RadzenText>No posts found matching "<strong>@searchText</strong>"</RadzenText>
+                </RadzenStack>
+            </RadzenAlert>
+        }
+
+        @foreach (var post in pagedPosts)
+        {
+            <Post PostResponse="@post" />
+        }
+
+        @if (displayedCount > 0)
+        {
+            <RadzenPager
+                Count="@displayedCount"
+                PageSize="@pageSize"
+                PageNumbersCount="5"
+                PageChanged="@PageChanged"
+                ShowPagingSummary="true"
+                PagingSummaryFormat="@pagingSummaryFormat"
+                HorizontalAlign="HorizontalAlign.Center"
+            />
+        }
+    </RadzenStack>
+</div>

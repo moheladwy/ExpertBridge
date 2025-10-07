@@ -6,7 +6,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Admin.Components.Pages;
+namespace ExpertBridge.Admin.Components.Pages.MainContent;
 
 /// <summary>
 /// UserProfiles page displays all user profiles with pagination support.
@@ -19,11 +19,17 @@ public partial class UserProfiles : ComponentBase
     private List<ProfileResponse> pagedProfiles = [];
     private bool isLoading = true;
 
+    // Search properties
+    private string searchText = string.Empty;
+    private List<ProfileResponse> filteredProfiles = [];
+    private int filteredCount;
+
     // Pagination properties
     private int currentPage;
     private int pageSize = 3; // 3 columns x 3 rows
     private int totalProfiles;
-    private int totalPages => (int)Math.Ceiling((double)totalProfiles / pageSize);
+    private int displayedProfileCount => string.IsNullOrWhiteSpace(searchText) ? totalProfiles : filteredCount;
+    private int totalPages => (int)Math.Ceiling((double)displayedProfileCount / pageSize);
     private readonly int[] pageSizeOptions = [3, 6, 9, 12, 18, 24];
 
     [Inject]
@@ -98,9 +104,41 @@ public partial class UserProfiles : ComponentBase
         }
     }
 
+    private List<ProfileResponse> GetFilteredProfiles()
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return profiles;
+
+        return profiles.Where(p =>
+            (p.FirstName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.LastName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Username?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Email?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.JobTitle?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Bio?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (p.Skills?.Any(s => s.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ?? false)
+        ).ToList();
+    }
+
+    private void OnSearchChanged(string value)
+    {
+        searchText = value;
+        filteredProfiles = GetFilteredProfiles();
+        filteredCount = filteredProfiles.Count;
+        currentPage = 0; // Reset to first page when search changes
+        UpdatePagedProfiles();
+    }
+
+    private void ClearSearch()
+    {
+        searchText = string.Empty;
+        OnSearchChanged(string.Empty);
+    }
+
     private void UpdatePagedProfiles()
     {
-        pagedProfiles = profiles
+        var source = string.IsNullOrWhiteSpace(searchText) ? profiles : filteredProfiles;
+        pagedProfiles = source
             .Skip(currentPage * pageSize)
             .Take(pageSize)
             .ToList();
