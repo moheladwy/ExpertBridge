@@ -1,0 +1,130 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
+using ExpertBridge.Core.Responses;
+using ExpertBridge.Data.DatabaseContexts;
+using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
+
+namespace ExpertBridge.Admin.Components.Pages;
+
+/// <summary>
+/// UserProfiles page displays all user profiles with pagination support.
+/// </summary>
+public partial class UserProfiles : ComponentBase
+{
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    private List<ProfileResponse> profiles = [];
+    private List<ProfileResponse> pagedProfiles = [];
+    private bool isLoading = true;
+
+    // Pagination properties
+    private int currentPage;
+    private int pageSize = 3; // 3 columns x 3 rows
+    private int totalProfiles;
+    private int totalPages => (int)Math.Ceiling((double)totalProfiles / pageSize);
+    private readonly int[] pageSizeOptions = [3, 6, 9, 12, 18, 24];
+
+    [Inject]
+    public ExpertBridgeDbContext DbContext
+    {
+        get => _dbContext;
+        init => _dbContext = value;
+    }
+
+    public UserProfiles(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProfilesAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadProfilesAsync()
+    {
+        try
+        {
+            isLoading = true;
+
+            // Get total count
+            totalProfiles = await _dbContext.Profiles
+                .AsNoTracking()
+                .Where(p => !p.IsDeleted)
+                .CountAsync();
+
+            // Load all profiles
+            profiles = await _dbContext.Profiles
+                .AsNoTracking()
+                .Include(p => p.User)
+                .Include(p => p.ProfileSkills)
+                .ThenInclude(ps => ps.Skill)
+                .Include(p => p.Comments)
+                .ThenInclude(c => c.Votes)
+                .Where(p => !p.IsDeleted)
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new ProfileResponse
+                {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    CreatedAt = p.CreatedAt!.Value,
+                    Email = p.Email,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    IsBanned = p.IsBanned,
+                    JobTitle = p.JobTitle,
+                    Bio = p.Bio,
+                    PhoneNumber = p.PhoneNumber,
+                    ProfilePictureUrl = p.ProfilePictureUrl,
+                    Rating = p.Rating,
+                    RatingCount = p.RatingCount,
+                    Username = p.Username,
+                    IsOnboarded = p.User.IsOnboarded,
+                    Skills = p.ProfileSkills.Select(ps => ps.Skill.Name).ToList(),
+                    CommentsUpvotes = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)),
+                    CommentsDownvotes = p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
+                    Reputation = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)) - p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote))
+                })
+                .ToListAsync();
+
+            UpdatePagedProfiles();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void UpdatePagedProfiles()
+    {
+        pagedProfiles = profiles
+            .Skip(currentPage * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    private void OnPageChanged(int pageIndex)
+    {
+        currentPage = pageIndex;
+        UpdatePagedProfiles();
+    }
+
+    private void OnPageSizeChanged(object value)
+    {
+        if (value is int newPageSize)
+        {
+            pageSize = newPageSize;
+            currentPage = 0; // Reset to first page when page size changes
+            UpdatePagedProfiles();
+        }
+    }
+
+    private async Task RefreshData()
+    {
+        currentPage = 0;
+        await LoadProfilesAsync();
+    }
+}

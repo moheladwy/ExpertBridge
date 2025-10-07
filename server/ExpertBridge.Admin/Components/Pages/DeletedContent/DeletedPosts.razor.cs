@@ -18,6 +18,7 @@ public sealed partial class DeletedPosts : ComponentBase
     private List<PostResponse>? reportedPosts;
     private List<PostResponse>? pagedPosts;
     private int pageSize = 4;
+    private bool isLoading = true;
 
     public DeletedPosts(ExpertBridgeDbContext dbContext, HybridCache cache)
     {
@@ -29,8 +30,16 @@ public sealed partial class DeletedPosts : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        reportedPosts = await GetDeletedPosts();
-        UpdatePagedPosts(0, pageSize);
+        try
+        {
+            isLoading = true;
+            reportedPosts = await GetDeletedPosts();
+            UpdatePagedPosts(0, pageSize);
+        }
+        finally
+        {
+            isLoading = false;
+        }
         await base.OnInitializedAsync();
     }
 

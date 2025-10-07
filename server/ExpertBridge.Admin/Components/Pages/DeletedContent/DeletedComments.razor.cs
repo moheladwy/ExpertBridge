@@ -18,6 +18,7 @@ public partial class DeletedComments : ComponentBase
     public List<CommentResponse> Comments { get; set; }
     private List<CommentResponse>? pagedComments;
     private int pageSize = 4;
+    private bool isLoading = true;
 
     public DeletedComments(ExpertBridgeDbContext dbContext, HybridCache cache)
     {
@@ -29,8 +30,16 @@ public partial class DeletedComments : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        Comments = await GetDeletedComments();
-        UpdatePagedComments(0, pageSize);
+        try
+        {
+            isLoading = true;
+            Comments = await GetDeletedComments();
+            UpdatePagedComments(0, pageSize);
+        }
+        finally
+        {
+            isLoading = false;
+        }
         await base.OnInitializedAsync();
     }
 

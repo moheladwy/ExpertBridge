@@ -9,4 +9,21 @@ public class PostTagsViewModel
     public string ArabicName { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public int PostCount { get; set; }
+    public int UserInterestCount { get; set; }
+    public int JobPostingCount { get; set; }
+    public bool IsUsedInPosts => PostCount > 0;
+    public bool IsUsedInUserInterests => UserInterestCount > 0;
+    public bool IsUsedInJobPostings => JobPostingCount > 0;
+    public bool IsUsedAnywhere => IsUsedInPosts || IsUsedInUserInterests || IsUsedInJobPostings;
+    public string UsageLocations
+    {
+        get
+        {
+            var locations = new List<string>();
+            if (IsUsedInPosts) locations.Add("Posts");
+            if (IsUsedInUserInterests) locations.Add("User Interests");
+            if (IsUsedInJobPostings) locations.Add("Job Postings");
+            return locations.Any() ? string.Join(", ", locations) : "Not Used";
+        }
+    }
 }

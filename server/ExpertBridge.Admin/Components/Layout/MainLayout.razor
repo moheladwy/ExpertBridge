@@ -24,10 +24,18 @@
 
     <RadzenSidebar @bind-Expanded="@sidebarExpanded">
         <RadzenPanelMenu>
-            <RadzenPanelMenuItem Text="Home" Icon="home" Path="/"/>
-            <RadzenPanelMenuItem Text="Deleted Posts" Icon="delete" Path="/deleted-posts"/>
-            <RadzenPanelMenuItem Text="Deleted Comments" Icon="delete" Path="/deleted-comments"/>
+            <RadzenPanelMenuItem Text="User Profiles" Icon="account_circle" Path="/user-profiles"/>
             <RadzenPanelMenuItem Text="All Posts Tags" Icon="tag" Path="/post-tags"/>
+            <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" Expanded="true">
+                <RadzenPanelMenuItem Text="Users & Profiles" Icon="people" Path="/"/>
+                <RadzenPanelMenuItem Text="Content" Icon="article" Path="/dashboard/content"/>
+                <RadzenPanelMenuItem Text="Tags" Icon="label" Path="/dashboard/tags"/>
+            </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Deleted Content" Icon="delete" Expanded="false">
+                <RadzenPanelMenuItem Text="Deleted Posts" Icon="article" Path="/deleted-posts"/>
+                <RadzenPanelMenuItem Text="Deleted Comments" Icon="chat_bubble" Path="/deleted-comments"/>
+                <RadzenPanelMenuItem Text="Deleted Tags" Icon="label" Path="/deleted-tags"/>
+            </RadzenPanelMenuItem>
         </RadzenPanelMenu>
     </RadzenSidebar>
 

@@ -1,21 +1,19 @@
-@page "/post-tags"
+@page "/deleted-tags"
 @using ExpertBridge.Admin.ViewModels
 
-<PageTitle>Post Tags</PageTitle>
+<PageTitle>Deleted Tags</PageTitle>
 
 <RadzenStack Gap="1.5rem" class="rz-p-4 rz-p-md-6">
     <RadzenCard>
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                <RadzenIcon Icon="local_offer" />
+                <RadzenIcon Icon="delete" />
                 <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-m-0">
-                    All Tags Overview
+                    Deleted Tags Overview
                 </RadzenText>
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
-                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"Total Tags: {postTags.Count}")" />
-                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Used: {TotalActiveTags}")" />
-                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@($"Unused: {TotalInactiveTags}")" />
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"Deleted Tags: {deletedTags.Count}")" />
             </RadzenStack>
         </RadzenStack>
     </RadzenCard>
@@ -25,23 +23,23 @@
         {
             <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="min-height: 200px;">
                 <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
-                <RadzenText TextStyle="TextStyle.Body1">Loading tags...</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">Loading deleted tags...</RadzenText>
             </RadzenStack>
         }
-        else if (!postTags.Any())
+        else if (!deletedTags.Any())
         {
             <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
                     <RadzenIcon Icon="info" />
                     <RadzenText TextStyle="TextStyle.Body1">
-                        No tags found in the system.
+                        No deleted tags found. Tags in this system do not support soft deletion.
                     </RadzenText>
                 </RadzenStack>
             </RadzenAlert>
         }
         else
         {
-            <RadzenDataGrid @ref="grid" Data="@postTags" TItem="PostTagsViewModel"
+            <RadzenDataGrid @ref="grid" Data="@deletedTags" TItem="PostTagsViewModel"
                             AllowFiltering="true" FilterMode="FilterMode.Advanced"
                             AllowSorting="true" AllowPaging="true" PageSize="15"
                             AllowColumnResize="true" ColumnWidth="200px"
@@ -55,7 +53,7 @@
 
                     <RadzenDataGridColumn TItem="PostTagsViewModel" Property="EnglishName" Title="English Name" Width="200px" Filterable="true" Sortable="true">
                         <Template Context="data">
-                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@data.EnglishName" Shade="Shade.Lighter" />
+                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@data.EnglishName" Shade="Shade.Lighter" />
                         </Template>
                     </RadzenDataGridColumn>
 
@@ -87,7 +85,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="PostCount" Title="Posts" Width="120px" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="PostCount" Title="Post Count" Width="150px" Filterable="true" Sortable="true">
                         <Template Context="data">
                             @if (data.PostCount > 0)
                             {
@@ -95,58 +93,8 @@
                             }
                             else
                             {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="0" Shade="Shade.Lighter" />
+                                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="0" Shade="Shade.Lighter" />
                             }
-                        </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="UserInterestCount" Title="User Interests" Width="150px" Filterable="true" Sortable="true">
-                        <Template Context="data">
-                            @if (data.UserInterestCount > 0)
-                            {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@data.UserInterestCount.ToString()" Shade="Shade.Lighter" />
-                            }
-                            else
-                            {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="0" Shade="Shade.Lighter" />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="JobPostingCount" Title="Job Postings" Width="150px" Filterable="true" Sortable="true">
-                        <Template Context="data">
-                            @if (data.JobPostingCount > 0)
-                            {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@data.JobPostingCount.ToString()" Shade="Shade.Lighter" />
-                            }
-                            else
-                            {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="0" Shade="Shade.Lighter" />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="PostTagsViewModel" Property="UsageLocations" Title="Usage" Width="200px" Filterable="true" Sortable="true">
-                        <Template Context="data">
-                            @if (data.IsUsedAnywhere)
-                            {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@data.UsageLocations" Shade="Shade.Lighter" />
-                            }
-                            else
-                            {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Not Used" Shade="Shade.Lighter" />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="PostTagsViewModel" Title="Actions" Width="150px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"
-                                          Size="ButtonSize.Small" Click="@(() => OpenEditDialog(data))"
-                                          title="Edit Tag" class="me-1" />
-                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat"
-                                          Size="ButtonSize.Small" Click="@(() => DeleteTag(data))"
-                                          title="Delete Tag" />
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
