@@ -3,14 +3,15 @@
 
 using ExpertBridge.Admin.ViewModels;
 using ExpertBridge.Data.DatabaseContexts;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 using Radzen;
 using Radzen.Blazor;
 
-namespace ExpertBridge.Admin.Components.Pages;
+namespace ExpertBridge.Admin.Components.Pages.DeletedContent;
 
-public partial class DeletedTags
+public partial class DeletedTags : ComponentBase
 {
   private readonly ExpertBridgeDbContext _dbContext;
   private readonly HybridCache _cache;

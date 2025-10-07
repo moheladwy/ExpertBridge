@@ -5,9 +5,9 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Admin.Components.Pages;
+namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
-public partial class ContentDashboard
+public partial class ContentDashboard : ComponentBase
 {
     private readonly ExpertBridgeDbContext DbContext;
     private bool _loading;

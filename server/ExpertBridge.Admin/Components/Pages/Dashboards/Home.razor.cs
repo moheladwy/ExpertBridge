@@ -5,9 +5,9 @@ using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Admin.Components.Pages;
+namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
-public partial class Home
+public partial class Home : ComponentBase
 {
     private readonly ExpertBridgeDbContext DbContext;
     private bool _loading;

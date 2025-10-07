@@ -4,10 +4,11 @@
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 
-namespace ExpertBridge.Admin.Components.Pages;
+namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
-public partial class TagsDashboard
+public partial class TagsDashboard : ComponentBase
 {
     private readonly ExpertBridgeDbContext DbContext;
     private bool _loading;
