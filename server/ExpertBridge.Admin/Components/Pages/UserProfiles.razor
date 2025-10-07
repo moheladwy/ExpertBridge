@@ -1,0 +1,101 @@
+@page "/user-profiles"
+@using ExpertBridge.Admin.Components.SubModules
+@using ExpertBridge.Core.Responses
+@using ExpertBridge.Data.DatabaseContexts
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>User Profiles - ExpertBridge Admin</PageTitle>
+
+<RadzenStack Gap="1.5rem">
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                <RadzenStack Gap="0.5rem">
+                    <RadzenText TextStyle="TextStyle.H3" class="rz-font-weight-bold">
+                        User Profiles
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                        Browse and manage user profiles
+                    </RadzenText>
+                </RadzenStack>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                    <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"
+                                  Size="ButtonSize.Medium" Click="@RefreshData"
+                                  title="Refresh Data" />
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"{totalProfiles} Total")" Shade="Shade.Lighter" />
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+
+    @if (isLoading)
+    {
+        <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 3rem;">
+            <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+            <RadzenText TextStyle="TextStyle.Body1">Loading profiles...</RadzenText>
+        </RadzenStack>
+    }
+    else if (profiles != null && profiles.Count > 0)
+    {
+        <RadzenCard>
+            <RadzenStack Gap="1.5rem">
+                @* Profiles Grid with Equal Height Cards *@
+                <RadzenRow Gap="1.5rem" Style="min-height: 600px;">
+                    @foreach (var profile in pagedProfiles)
+                    {
+                        <RadzenColumn Size="12" SizeMD="6" SizeLG="4" Style="display: flex;">
+                            <div style="width: 100%; display: flex;">
+                                <ProfileCard ProfileData="@profile" LoadInterests="true" />
+                            </div>
+                        </RadzenColumn>
+                    }
+                </RadzenRow>
+
+                @* Pagination Controls *@
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="1rem" Style="padding-top: 1rem; border-top: 1px solid var(--rz-border-color);">
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            Page @(currentPage + 1) of @totalPages
+                        </RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            (@((currentPage * pageSize) + 1)-@Math.Min((currentPage + 1) * pageSize, totalProfiles) of @totalProfiles)
+                        </RadzenText>
+                    </RadzenStack>
+
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            Items per page:
+                        </RadzenText>
+                        <RadzenDropDown TValue="int" Value="@pageSize" Data="@pageSizeOptions"
+                                        Change="@OnPageSizeChanged"
+                                        Style="width: 80px;" />
+                    </RadzenStack>
+
+                    <RadzenPager Count="@totalProfiles" PageSize="@pageSize" PageNumbersCount="5"
+                                 PageChanged="@((args) => OnPageChanged(args.PageIndex))" ShowPagingSummary="false" />
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    }
+    else
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Info" Shade="Shade.Lighter">
+            <RadzenText TextStyle="TextStyle.Body1">
+                No profiles found in the database.
+            </RadzenText>
+        </RadzenAlert>
+    }
+</RadzenStack>
+
+<style>
+    /* Ensure all profile cards have the same height */
+    .rz-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rz-card > .rz-stack {
+        flex: 1;
+    }
+</style>

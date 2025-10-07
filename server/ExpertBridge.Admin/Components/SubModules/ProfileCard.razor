@@ -1,0 +1,232 @@
+@namespace ExpertBridge.Admin.Components.SubModules
+
+<RadzenCard Style="width: 100%; max-width: 400px; height: 100%; min-height: 650px; display: flex; flex-direction: column; background-color: var(--rz-surface); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+    @if (ProfileData != null)
+    {
+        <RadzenStack Gap="1rem" Style="flex: 1; display: flex; flex-direction: column;">
+            @* Main Content Area *@
+            <RadzenStack Gap="1rem" Style="flex: 1;">
+            @* Profile Header with Image and Basic Info *@
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Start">
+                @* Profile Picture *@
+                <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Center">
+                    @if (!string.IsNullOrEmpty(ProfileData.ProfilePictureUrl))
+                    {
+                        <RadzenImage Path="@ProfileData.ProfilePictureUrl"
+                                     alt="@($"{ProfileData.FirstName}'s profile")"
+                                     Style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--rz-primary);" />
+                    }
+                    else
+                    {
+                        <RadzenImage Path="images/default-profile.jpg"
+                                     alt="@($"{ProfileData.FirstName}'s profile")"
+                                     Style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--rz-primary);" />
+                    }
+
+                    @* Rating Badge *@
+                    @if (ProfileData.RatingCount > 0)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Warning" Shade="Shade.Lighter">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem" AlignItems="AlignItems.Center">
+                                <RadzenIcon Icon="star" Style="font-size: 14px;" />
+                                <span>@ProfileData.Rating.ToString("F1")</span>
+                                <span class="rz-color-secondary" style="font-size: 0.8em;">(@ProfileData.RatingCount)</span>
+                            </RadzenStack>
+                        </RadzenBadge>
+                    }
+                </RadzenStack>
+
+                @* Profile Info *@
+                <RadzenStack Gap="0.5rem" Style="flex: 1; min-width: 0;">
+                    @* Name and Username *@
+                    <RadzenStack Gap="0.1rem" Style="min-width: 0;">
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold" Style="margin: 0;">
+                            @ProfileData.FirstName @ProfileData.LastName
+                        </RadzenText>
+                        @if (!string.IsNullOrEmpty(ProfileData.Username))
+                        {
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="word-break: break-all; overflow-wrap: anywhere; max-width: 100%;">
+                                @("@" + ProfileData.Username)
+                            </RadzenText>
+                        }
+                    </RadzenStack>
+
+                    @* Job Title *@
+                    @if (!string.IsNullOrEmpty(ProfileData.JobTitle))
+                    {
+                        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-color-primary rz-font-weight-medium">
+                            @ProfileData.JobTitle
+                        </RadzenText>
+                    }
+
+                    @* Badges Row *@
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                        @if (ProfileData.IsOnboarded)
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Onboarded" Shade="Shade.Lighter" />
+                        }
+                        else
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="Not Onboarded" Shade="Shade.Lighter" />
+                        }
+
+                        @if (ProfileData.IsBanned)
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Banned" Shade="Shade.Lighter" />
+                        }
+
+                        @if (ProfileData.Reputation > 0)
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Shade="Shade.Lighter">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem" AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="trending_up" Style="font-size: 14px;" />
+                                    <span>@ProfileData.Reputation Rep</span>
+                                </RadzenStack>
+                            </RadzenBadge>
+                        }
+                    </RadzenStack>
+                </RadzenStack>
+            </RadzenStack>
+
+            @* Bio Section *@
+            <RadzenStack Gap="0.25rem">
+                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-font-weight-medium">
+                    Bio
+                </RadzenText>
+                @if (!string.IsNullOrEmpty(ProfileData.Bio))
+                {
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="line-height: 1.5;">
+                        @ProfileData.Bio
+                    </RadzenText>
+                }
+                else
+                {
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="font-style: italic;">
+                        No bio
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            @* Skills Section *@
+            <RadzenStack Gap="0.25rem">
+                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-font-weight-medium">
+                    Skills
+                </RadzenText>
+                @if (ProfileData.Skills != null && ProfileData.Skills.Count > 0)
+                {
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                        @foreach (var skill in ProfileData.Skills)
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@skill" Shade="Shade.Lighter" />
+                        }
+                    </RadzenStack>
+                }
+                else
+                {
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="font-style: italic;">
+                        No skills
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            @* Interests Section *@
+            <RadzenStack Gap="0.25rem">
+                <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-font-weight-medium">
+                    Interests
+                </RadzenText>
+                @if (ShowLoadingInterests)
+                {
+                    <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                }
+                else if (UserInterests != null && UserInterests.Count > 0)
+                {
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                        @foreach (var interest in UserInterests)
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@interest" Shade="Shade.Light" />
+                        }
+                    </RadzenStack>
+                }
+                else
+                {
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary" Style="font-style: italic;">
+                        No interests
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            @* Statistics Section *@
+            <RadzenRow>
+                <RadzenColumn Size="4">
+                    <RadzenStack AlignItems="AlignItems.Center" Gap="0.25rem">
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">
+                            @ProfileData.CommentsUpvotes
+                        </RadzenText>
+                        <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
+                            Upvotes
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn Size="4">
+                    <RadzenStack AlignItems="AlignItems.Center" Gap="0.25rem">
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">
+                            @ProfileData.CommentsDownvotes
+                        </RadzenText>
+                        <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
+                            Downvotes
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn Size="4">
+                    <RadzenStack AlignItems="AlignItems.Center" Gap="0.25rem">
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">
+                            @ProfileData.Reputation
+                        </RadzenText>
+                        <RadzenText TextStyle="TextStyle.Caption" class="rz-color-secondary">
+                            Reputation
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+            </RadzenStack>
+
+            @* Footer Section - Contact Information and Member Since *@
+            <RadzenStack Gap="0.75rem" Style="padding-top: 1rem; border-top: 1px solid var(--rz-border-color); margin-top: auto;">
+                @* Contact Information *@
+                <RadzenStack Gap="0.5rem">
+                    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-font-weight-medium">
+                        Contact
+                    </RadzenText>
+                    <RadzenStack Gap="0.25rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" Style="min-width: 0;">
+                            <RadzenIcon Icon="email" Style="font-size: 16px; flex-shrink: 0;" />
+                            <RadzenText TextStyle="TextStyle.Body2" Style="word-break: break-all; overflow-wrap: anywhere; min-width: 0; flex: 1;">@ProfileData.Email</RadzenText>
+                        </RadzenStack>
+                        @if (!string.IsNullOrEmpty(ProfileData.PhoneNumber))
+                        {
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                <RadzenIcon Icon="phone" Style="font-size: 16px; flex-shrink: 0;" />
+                                <RadzenText TextStyle="TextStyle.Body2">@ProfileData.PhoneNumber</RadzenText>
+                            </RadzenStack>
+                        }
+                    </RadzenStack>
+                </RadzenStack>
+
+                @* Member Since *@
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
+                    <RadzenBadge BadgeStyle="BadgeStyle.Light" Shade="Shade.Lighter">
+                        Member since @ProfileData.CreatedAt.ToString("MMMM yyyy")
+                    </RadzenBadge>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenStack>
+    }
+    else
+    {
+        <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 2rem;">
+            <RadzenText TextStyle="TextStyle.Body1" class="rz-color-secondary">
+                No profile data available
+            </RadzenText>
+        </RadzenStack>
+    }
+</RadzenCard>

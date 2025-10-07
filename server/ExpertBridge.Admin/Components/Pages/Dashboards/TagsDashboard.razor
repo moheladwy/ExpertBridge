@@ -1,0 +1,196 @@
+@page "/dashboard/tags"
+
+<PageTitle>Tags Dashboard - ExpertBridge Admin</PageTitle>
+
+<RadzenStack Gap="1.5rem">
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                <RadzenStack Gap="0.5rem">
+                    <RadzenText TextStyle="TextStyle.H3" class="rz-font-weight-bold">
+                        Tags Dashboard
+                    </RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                        Tag statistics, distribution, and analytics
+                    </RadzenText>
+                </RadzenStack>
+                <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Large"
+                              Click="@RefreshData" Disabled="@_loading" title="Refresh Data" />
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+
+    @if (_loading)
+    {
+        <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 4rem 0;">
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+            <RadzenText TextStyle="TextStyle.Body1" class="rz-color-secondary">Loading tags data...</RadzenText>
+        </RadzenStack>
+    }
+    else
+    {
+        <!-- Tag Stats Cards -->
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+                <RadzenCard Style="height: 100%;">
+                    <RadzenStack Gap="0.5rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">TOTAL TAGS</RadzenText>
+                            <RadzenIcon Icon="label" Style="color: var(--rz-primary);" />
+                        </RadzenStack>
+                        <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.TotalTags</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            Unique tags in system
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+                <RadzenCard Style="height: 100%;">
+                    <RadzenStack Gap="0.5rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">USER INTERESTS</RadzenText>
+                            <RadzenIcon Icon="interests" Style="color: var(--rz-info);" />
+                        </RadzenStack>
+                        <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.UserInterestsCount</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            Unique tags in user interests
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+                <RadzenCard Style="height: 100%;">
+                    <RadzenStack Gap="0.5rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">POST TAGS</RadzenText>
+                            <RadzenIcon Icon="local_offer" Style="color: var(--rz-success);" />
+                        </RadzenStack>
+                        <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.PostTagsCount</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            Unique tags used in posts
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+                <RadzenCard Style="height: 100%;">
+                    <RadzenStack Gap="0.5rem">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">JOB POSTING TAGS</RadzenText>
+                            <RadzenIcon Icon="work_outline" Style="color: var(--rz-warning);" />
+                        </RadzenStack>
+                        <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.JobPostingTagsCount</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                            Unique tags in job postings
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <!-- Tag Usage Distribution Chart -->
+        <RadzenRow>
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenCard Style="height: 450px;">
+                    <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="height: 100%;">
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Tag Usage Distribution</RadzenText>
+                        <RadzenStack Style="width: 100%; max-width: 400px;">
+                            <RadzenChart>
+                                <RadzenDonutSeries Data="@_tagUsageChartData" CategoryProperty="Category" ValueProperty="Value"
+                                                 Fills="@(new[] { "var(--rz-info)", "var(--rz-success)", "var(--rz-warning)" })">
+                                    <ChildContent>
+                                        <RadzenSeriesDataLabels Visible="@_showDataLabels" />
+                                    </ChildContent>
+                                    <TitleTemplate>
+                                        <div class="rz-donut-content">
+                                            <div style="font-size: 2rem; font-weight: bold;">@_stats.TotalTagUsage</div>
+                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">Unique Tags Used</div>
+                                        </div>
+                                    </TitleTemplate>
+                                </RadzenDonutSeries>
+                            </RadzenChart>
+                        </RadzenStack>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="6">
+                <RadzenCard Style="height: 450px;">
+                    <RadzenStack Gap="1rem" Style="height: 100%; justify-content: center;">
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold" Style="text-align: center;">
+                            Tag Statistics Summary
+                        </RadzenText>
+                        <RadzenStack Gap="1rem" Style="padding: 1rem;">
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="label" Style="color: var(--rz-primary);" />
+                                    <RadzenText TextStyle="TextStyle.Body1">Total Unique Tags</RadzenText>
+                                </RadzenStack>
+                                <RadzenBadge BadgeStyle="BadgeStyle.Primary" Text="@_stats.TotalTags.ToString()" Shade="Shade.Lighter" />
+                            </RadzenStack>
+
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="functions" Style="color: var(--rz-success);" />
+                                    <RadzenText TextStyle="TextStyle.Body1">Tags Used Across Platform</RadzenText>
+                                </RadzenStack>
+                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@_stats.TotalTagUsage.ToString()" Shade="Shade.Lighter" />
+                            </RadzenStack>
+
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="calculate" Style="color: var(--rz-info);" />
+                                    <RadzenText TextStyle="TextStyle.Body1">Tag Coverage</RadzenText>
+                                </RadzenStack>
+                                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@((_stats.TotalTags > 0 ? ((_stats.TotalTagUsage * 100.0 / _stats.TotalTags).ToString("F1") + "%") : "0%"))" Shade="Shade.Lighter" />
+                            </RadzenStack>
+
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="interests" Style="color: var(--rz-info);" />
+                                    <RadzenText TextStyle="TextStyle.Body1">User Interest Tags</RadzenText>
+                                </RadzenStack>
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@_stats.UserInterestsCount.ToString()" />
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                        @((_stats.TotalTags > 0 ? ((_stats.UserInterestsCount * 100.0 / _stats.TotalTags).ToString("F0") + "%") : "0%"))
+                                    </RadzenText>
+                                </RadzenStack>
+                            </RadzenStack>
+
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="local_offer" Style="color: var(--rz-success);" />
+                                    <RadzenText TextStyle="TextStyle.Body1">Post Tags</RadzenText>
+                                </RadzenStack>
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@_stats.PostTagsCount.ToString()" />
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                        @((_stats.TotalTags > 0 ? ((_stats.PostTagsCount * 100.0 / _stats.TotalTags).ToString("F0") + "%") : "0%"))
+                                    </RadzenText>
+                                </RadzenStack>
+                            </RadzenStack>
+
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="work_outline" Style="color: var(--rz-warning);" />
+                                    <RadzenText TextStyle="TextStyle.Body1">Job Posting Tags</RadzenText>
+                                </RadzenStack>
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@_stats.JobPostingTagsCount.ToString()" />
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                        @((_stats.TotalTags > 0 ? ((_stats.JobPostingTagsCount * 100.0 / _stats.TotalTags).ToString("F0") + "%") : "0%"))
+                                    </RadzenText>
+                                </RadzenStack>
+                            </RadzenStack>
+                        </RadzenStack>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+    }
+</RadzenStack>

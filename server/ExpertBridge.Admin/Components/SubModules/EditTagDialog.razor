@@ -1,0 +1,28 @@
+<RadzenStack Gap="1.5rem">
+    <RadzenStack Gap="1rem">
+        <RadzenFormField Text="English Name" Variant="Variant.Outlined">
+            <RadzenTextBox @bind-Value="@EnglishName" Style="width: 100%;" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Arabic Name" Variant="Variant.Outlined">
+            <RadzenTextBox @bind-Value="@ArabicName" Style="width: 100%;" dir="rtl" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Description" Variant="Variant.Outlined">
+            <RadzenTextArea @bind-Value="@Description" Style="width: 100%;" Rows="4" />
+        </RadzenFormField>
+    </RadzenStack>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter">
+            @errorMessage
+        </RadzenAlert>
+    }
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Text="Cancel" ButtonStyle="ButtonStyle.Light" Click="@Cancel" />
+        <RadzenButton Text="Save" ButtonStyle="ButtonStyle.Primary" Click="@SaveTag"
+                      Disabled="@isSaving" Icon="@(isSaving ? "hourglass_empty" : "save")" />
+    </RadzenStack>
+</RadzenStack>

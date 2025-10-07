@@ -1,44 +1,44 @@
-@page "/deleted-posts"
+@page "/deleted-comments"
 @using ExpertBridge.Admin.Components.SubModules
 
-<PageTitle>Deleted Posts</PageTitle>
+<PageTitle>Deleted Comments</PageTitle>
 
 <RadzenStack Gap="1.5rem" class="rz-p-4 rz-p-md-6">
     <RadzenCard>
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="1rem">
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                <RadzenIcon Icon="delete_sweep" IconStyle="IconStyle.Secondary" />
+                <RadzenIcon Icon="delete" IconStyle="IconStyle.Secondary" />
                 <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1" class="rz-m-0">
-                    Deleted Posts
+                    Deleted Comments
                 </RadzenText>
             </RadzenStack>
-            @if (reportedPosts != null)
+            @if (!isLoading)
             {
-                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{reportedPosts.Count} deleted")" Shade="Shade.Lighter" />
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{Comments.Count} deleted")" Shade="Shade.Lighter" />
             }
         </RadzenStack>
     </RadzenCard>
 
-    @if (reportedPosts == null)
+    @if (isLoading)
     {
         <RadzenCard>
             <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="min-height: 300px;">
                 <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
-                <RadzenText TextStyle="TextStyle.Body1">Loading deleted posts...</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">Loading deleted comments...</RadzenText>
             </RadzenStack>
         </RadzenCard>
     }
-    else if (reportedPosts.Count == 0)
+    else if (!Comments.Any())
     {
         <RadzenCard>
             <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="padding: 3rem 0;">
-                <RadzenIcon Icon="post_add" Style="font-size: 64px;" class="rz-color-secondary" />
+                <RadzenIcon Icon="sentiment_dissatisfied" Style="font-size: 64px;" class="rz-color-secondary" />
                 <RadzenStack AlignItems="AlignItems.Center" Gap="0.25rem">
                     <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-medium">
-                        No deleted posts found
+                        No deleted comments found
                     </RadzenText>
                     <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
-                        Deleted posts will appear here
+                        Deleted comments will appear here
                     </RadzenText>
                 </RadzenStack>
             </RadzenStack>
@@ -47,22 +47,28 @@
     else
     {
         <RadzenStack Gap="1.5rem">
-            <RadzenPager Count="@reportedPosts.Count" PageSize="@pageSize" PageNumbersCount="5"
+            <RadzenPager Count="@Comments.Count" PageSize="@pageSize" PageNumbersCount="5"
                          PageChanged="@OnPageChanged" ShowPagingSummary="true"
-                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted posts)"
+                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted comments)"
                          HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
 
-            @if (pagedPosts != null && pagedPosts.Any())
-            {
-                @foreach (var post in pagedPosts)
+            <RadzenCard>
+                @if (pagedComments != null && pagedComments.Any())
                 {
-                    <Post PostResponse="@post" />
+                    <RadzenStack Gap="1.5rem">
+                        @foreach (var comment in pagedComments)
+                        {
+                            <div style="padding-bottom: 1.5rem; border-bottom: 1px solid var(--rz-border-color);">
+                                <Comment CommentResponse="comment" />
+                            </div>
+                        }
+                    </RadzenStack>
                 }
-            }
+            </RadzenCard>
 
-            <RadzenPager Count="@reportedPosts.Count" PageSize="@pageSize" PageNumbersCount="5"
+            <RadzenPager Count="@Comments.Count" PageSize="@pageSize" PageNumbersCount="5"
                          PageChanged="@OnPageChanged" ShowPagingSummary="true"
-                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted posts)"
+                         PagingSummaryFormat="Displaying page {0} of {1} (total {2} deleted comments)"
                          HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
         </RadzenStack>
     }
