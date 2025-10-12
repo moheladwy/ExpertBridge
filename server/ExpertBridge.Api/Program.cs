@@ -3,6 +3,7 @@ using ExpertBridge.Api.Middleware;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Extensions.CORS;
 using ExpertBridge.Extensions.HealthChecks;
+using ExpertBridge.Extensions.MessageBroker;
 using ExpertBridge.Notifications;
 using ExpertBridge.Notifications.Extensions;
 using HealthChecks.UI.Client;
@@ -61,6 +62,8 @@ builder.Services.AddControllers(options =>
     // You can also set options.JsonSerializerOptions.PropertyNameCaseInsensitive = true; if needed for property names,
     // but JsonStringEnumConverter usually handles enum value casing well.
 });
+
+builder.RegisterMessageBroker(typeof(Program).Assembly);
 
 var app = builder.Build();
 
