@@ -14,3 +14,9 @@ services:
       context: .
       dockerfile: Admin/Dockerfile
 
+  expertbridge.worker:
+    image: expertbridge.worker
+    build:
+      context: .
+      dockerfile: ExpertBridge.Worker/Dockerfile
+

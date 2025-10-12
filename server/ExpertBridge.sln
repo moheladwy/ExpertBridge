@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Extensions", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Application", "ExpertBridge.Application\ExpertBridge.Application.csproj", "{75E4B720-7611-4E14-8856-20394BD6012F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Worker", "ExpertBridge.Worker\ExpertBridge.Worker.csproj", "{5B5C433E-0072-41FC-84FA-8DDA9F9F0DB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{75E4B720-7611-4E14-8856-20394BD6012F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75E4B720-7611-4E14-8856-20394BD6012F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75E4B720-7611-4E14-8856-20394BD6012F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B5C433E-0072-41FC-84FA-8DDA9F9F0DB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B5C433E-0072-41FC-84FA-8DDA9F9F0DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B5C433E-0072-41FC-84FA-8DDA9F9F0DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B5C433E-0072-41FC-84FA-8DDA9F9F0DB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
