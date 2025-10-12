@@ -6,13 +6,36 @@ using Quartz;
 
 namespace ExpertBridge.Worker.PeriodicJobs;
 
-[DisallowConcurrentExecution]
+/// <summary>
+/// Periodic worker job responsible for moderating content in the system.
+/// This job scans unprocessed posts, job postings, and comments, and publishes messages to the appropriate processing pipelines.
+/// </summary>
+/// <remarks>
+/// The worker ensures that requests to external moderation services (such as GROQ API) are rate-limited by queuing messages for downstream processing.
+/// </remarks>
 internal sealed class ContentModerationPeriodicWorker : IJob
 {
+    /// <summary>
+    /// Logger instance for logging job execution and errors.
+    /// </summary>
     private readonly ILogger<ContentModerationPeriodicWorker> _logger;
+
+    /// <summary>
+    /// Database context for accessing posts, job postings, and comments.
+    /// </summary>
     private readonly ExpertBridgeDbContext _dbContext;
+
+    /// <summary>
+    /// Endpoint for publishing moderation and processing messages.
+    /// </summary>
     private readonly IPublishEndpoint _publishEndpoint;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ContentModerationPeriodicWorker"/> class.
+    /// </summary>
+    /// <param name="logger">The logger instance.</param>
+    /// <param name="dbContext">The database context.</param>
+    /// <param name="publishEndpoint">The message bus publish endpoint.</param>
     public ContentModerationPeriodicWorker(
         ILogger<ContentModerationPeriodicWorker> logger,
         ExpertBridgeDbContext dbContext,
@@ -23,6 +46,15 @@ internal sealed class ContentModerationPeriodicWorker : IJob
         _publishEndpoint = publishEndpoint;
     }
 
+    /// <summary>
+    /// Executes the periodic content moderation job.
+    /// Scans for unprocessed posts, job postings, and comments, and publishes them to the appropriate processing pipelines.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    /// Exceptions during publishing individual messages are logged, but do not stop the job from processing other items.
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         try
@@ -43,11 +75,12 @@ internal sealed class ContentModerationPeriodicWorker : IJob
                     Title = p.Title,
                     IsJobPosting = false,
                 })
-                .ForEachAsync(async void (post) =>
+                .ForEachAsync(async void (postProcessingPipelineMessage) =>
                     {
                         try
                         {
-                            await _publishEndpoint.Publish(post, context.CancellationToken);
+                            await _publishEndpoint
+                                .Publish(postProcessingPipelineMessage, context.CancellationToken);
                         }
                         catch (Exception e)
                         {
@@ -68,11 +101,12 @@ internal sealed class ContentModerationPeriodicWorker : IJob
                     Title = p.Title,
                     IsJobPosting = true,
                 })
-                .ForEachAsync(async void (post) =>
+                .ForEachAsync(async void (postProcessingPipelineMessage) =>
                     {
                         try
                         {
-                            await _publishEndpoint.Publish(post, context.CancellationToken);
+                            await _publishEndpoint
+                                .Publish(postProcessingPipelineMessage, context.CancellationToken);
                         }
                         catch (Exception e)
                         {
@@ -91,11 +125,12 @@ internal sealed class ContentModerationPeriodicWorker : IJob
                     AuthorId = c.AuthorId,
                     Content = c.Content,
                 })
-                .ForEachAsync(async void (comment) =>
+                .ForEachAsync(async void (detectInappropriateCommentMessage) =>
                     {
                         try
                         {
-                            await _publishEndpoint.Publish(comment, context.CancellationToken);
+                            await _publishEndpoint
+                                .Publish(detectInappropriateCommentMessage, context.CancellationToken);
                         }
                         catch (Exception e)
                         {

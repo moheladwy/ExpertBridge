@@ -5,7 +5,7 @@ using ExpertBridge.Worker;
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddDatabase(builder.Configuration);
-builder.Services.AddBackgroundServices();
+builder.Services.AddBackgroundServices(builder.Configuration);
 builder.RegisterMessageBroker(typeof(Program).Assembly);
 
 var host = builder.Build();

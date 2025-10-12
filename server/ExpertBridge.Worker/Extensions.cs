@@ -1,3 +1,4 @@
+using ExpertBridge.Worker.PeriodicJobs;
 using Quartz;
 
 namespace ExpertBridge.Worker;
@@ -24,13 +25,22 @@ internal static class Extensions
     ///     </list>
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when the services parameter is null.</exception>
-    public static void AddBackgroundServices(this IServiceCollection services)
+    public static void AddBackgroundServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddQuartz(options =>
         {
-#pragma warning disable CS0618 // Type or member is obsolete
             options.UseMicrosoftDependencyInjectionJobFactory();
-#pragma warning restore CS0618 // Type or member is obsolete
+
+            options.UsePersistentStore(persistentOptions =>
+            {
+                persistentOptions.UsePostgres(cfg =>
+                {
+                    cfg.ConnectionString = configuration.GetConnectionString("Postgresql")!;
+                    cfg.TablePrefix = "scheduler.quartz_";
+                });
+                persistentOptions.UseProperties = true;
+                persistentOptions.UseNewtonsoftJsonSerializer();
+            });
         });
 
         services.AddQuartzHostedService(options =>
@@ -39,5 +49,7 @@ internal static class Extensions
             options.WaitForJobsToComplete = true;
             options.StartDelay = TimeSpan.FromSeconds(5);
         });
+
+        services.ConfigureOptions<ContentModerationPeriodicWorkerSetup>();
     }
 }

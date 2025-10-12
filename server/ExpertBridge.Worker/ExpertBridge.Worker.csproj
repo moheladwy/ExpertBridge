@@ -10,6 +10,7 @@
       <PackageReference Include="Quartz"/>
       <PackageReference Include="Quartz.Extensions.DependencyInjection"/>
       <PackageReference Include="Quartz.Extensions.Hosting"/>
+      <PackageReference Include="Quartz.Serialization.Json" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,9 +23,5 @@
       <ProjectReference Include="..\ExpertBridge.Contract\ExpertBridge.Contract.csproj" />
       <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
       <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Consumers\" />
     </ItemGroup>
 </Project>
