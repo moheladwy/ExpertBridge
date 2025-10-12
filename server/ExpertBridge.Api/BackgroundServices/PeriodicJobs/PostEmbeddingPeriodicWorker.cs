@@ -1,6 +1,6 @@
 ﻿using System.Threading.Channels;
 using ExpertBridge.Application.Models;
-using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Serilog;

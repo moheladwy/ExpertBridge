@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Channels;
 using ExpertBridge.Application.EmbeddingService;
-using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;

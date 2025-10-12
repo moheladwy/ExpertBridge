@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Contract.Messages;
 
 namespace ExpertBridge.Api.Extensions;
 

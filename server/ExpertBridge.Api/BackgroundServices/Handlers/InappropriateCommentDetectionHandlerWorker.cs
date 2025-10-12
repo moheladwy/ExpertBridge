@@ -1,7 +1,7 @@
 ﻿using System.Threading.Channels;
-using ExpertBridge.Application.Models.IPC;
 using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Exceptions;

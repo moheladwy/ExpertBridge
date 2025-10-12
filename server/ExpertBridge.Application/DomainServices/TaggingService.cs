@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;

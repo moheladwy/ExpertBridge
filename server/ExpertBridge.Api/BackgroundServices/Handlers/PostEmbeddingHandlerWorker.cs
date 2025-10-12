@@ -1,6 +1,6 @@
 ﻿using System.Threading.Channels;
 using ExpertBridge.Application.EmbeddingService;
-using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Exceptions;

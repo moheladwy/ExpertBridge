@@ -29,7 +29,7 @@ public static class Extensions
             {
                 o.UseVector();
                 o.EnableRetryOnFailure(
-                    maxRetryCount: 10,
+                    maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(60),
                     errorCodesToAdd: null);
             });

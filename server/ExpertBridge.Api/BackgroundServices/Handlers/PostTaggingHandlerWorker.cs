@@ -1,7 +1,7 @@
 ﻿using System.Threading.Channels;
 using ExpertBridge.Application.DomainServices;
-using ExpertBridge.Application.Models.IPC;
 using ExpertBridge.Application.Services;
+using ExpertBridge.Contract.Messages;
 using Serilog;
 
 namespace ExpertBridge.Api.BackgroundServices.Handlers

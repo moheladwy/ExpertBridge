@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;

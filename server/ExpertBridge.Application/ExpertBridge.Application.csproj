@@ -13,6 +13,7 @@
     <PackageReference Include="Z.EntityFramework.Extensions.EFCore" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExpertBridge.Contract\ExpertBridge.Contract.csproj" />
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
     <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" />

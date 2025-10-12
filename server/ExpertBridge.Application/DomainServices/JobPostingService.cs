@@ -1,6 +1,6 @@
 ﻿using System.Threading.Channels;
 using ExpertBridge.Application.DataGenerator;
-using ExpertBridge.Application.Models.IPC;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;

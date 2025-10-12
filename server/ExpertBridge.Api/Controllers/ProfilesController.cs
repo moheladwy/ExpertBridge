@@ -1,8 +1,8 @@
 using System.Threading.Channels;
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Helpers;
-using ExpertBridge.Application.Models.IPC;
 using ExpertBridge.Application.Settings;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Queries;
