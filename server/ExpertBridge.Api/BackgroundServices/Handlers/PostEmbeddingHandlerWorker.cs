@@ -4,6 +4,7 @@ using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Interfaces;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using Microsoft.EntityFrameworkCore;

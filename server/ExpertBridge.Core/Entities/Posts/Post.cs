@@ -13,16 +13,17 @@ using Pgvector;
 
 namespace ExpertBridge.Core.Entities.Posts;
 
-public class Post : BaseModel, ISoftDeletable, IRecommendableContent
+public class Post : BaseModel, ISoftDeletable, IRecommendableContent, ISafeContent
 {
     public required string Title { get; set; }
     public required string Content { get; set; }
     public required string AuthorId { get; set; }
     public string? Language { get; set; }
     public bool IsTagged { get; set; }
+    public bool IsSafeContent { get; set; }
     public bool IsProcessed { get; set; }
     public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }    
+    public DateTime? DeletedAt { get; set; }
 
     // this is the date when the author updated the post last time.
     // it is different from LastModified, which is set by the system.

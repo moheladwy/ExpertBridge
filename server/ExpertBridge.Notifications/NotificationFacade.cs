@@ -15,6 +15,7 @@ using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Interfaces;
 using ExpertBridge.Notifications.Models.IPC;
 
 namespace ExpertBridge.Notifications

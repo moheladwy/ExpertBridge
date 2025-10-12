@@ -10,7 +10,7 @@ using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Core.Entities.Comments;
 
-public class Comment : BaseModel, ISoftDeletable
+public class Comment : BaseModel, ISoftDeletable, ISafeContent
 {
     public required string AuthorId { get; set; }
     public string? PostId { get; set; }
@@ -18,6 +18,7 @@ public class Comment : BaseModel, ISoftDeletable
     public required string Content { get; set; }
     public string? ParentCommentId { get; set; }
     public bool IsProcessed { get; set; }
+    public bool IsSafeContent { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
