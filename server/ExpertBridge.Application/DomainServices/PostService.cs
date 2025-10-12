@@ -110,6 +110,7 @@ namespace ExpertBridge.Application.DomainServices
                 PostId = post.Id,       // Use post.Id from the saved entity
                 Title = post.Title,
                 IsJobPosting = false,
+                IsSafeContent = false
             });
 
             // No notifications for new post creation in the original controller, but if you had them:
@@ -471,6 +472,7 @@ namespace ExpertBridge.Application.DomainServices
                         PostId = post.Id,
                         Title = post.Title, // Send current title
                         IsJobPosting = false,
+                        IsSafeContent = false
                     });
                 }
             }

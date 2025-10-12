@@ -53,6 +53,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                         Content = p.Content,
                         Title = p.Title,
                         IsJobPosting = false,
+                        IsSafeContent = false,
                     })
                     .ForEachAsync(async post =>
                         await _postProcessingPipelineChannel.WriteAsync(post, stoppingToken),
@@ -69,6 +70,7 @@ namespace ExpertBridge.Api.BackgroundServices.PeriodicJobs
                         Content = p.Content,
                         Title = p.Title,
                         IsJobPosting = true,
+                        IsSafeContent = false,
                     })
                     .ForEachAsync(async post =>
                         await _postProcessingPipelineChannel.WriteAsync(post, stoppingToken),

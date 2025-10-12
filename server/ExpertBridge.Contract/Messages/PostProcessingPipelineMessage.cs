@@ -14,5 +14,6 @@ namespace ExpertBridge.Contract.Messages
         public string Title { get; set; }
         public string Content { get; set; }
         public required bool IsJobPosting { get; set; }
+        public required bool IsSafeContent { get; set; }
     }
 }

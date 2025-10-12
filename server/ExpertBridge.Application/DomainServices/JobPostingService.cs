@@ -106,6 +106,7 @@ namespace ExpertBridge.Application.DomainServices
                 PostId = posting.Id,       // Use post.Id from the saved entity
                 Title = posting.Title,
                 IsJobPosting = true,
+                IsSafeContent = false
             });
 
             return posting.SelectJopPostingResponseFromFullJobPosting(authorProfile.Id);
@@ -341,6 +342,7 @@ namespace ExpertBridge.Application.DomainServices
                         PostId = jobPosting.Id,
                         Title = jobPosting.Title, // Send current title
                         IsJobPosting = true,
+                        IsSafeContent = false
                     });
                 }
             }
