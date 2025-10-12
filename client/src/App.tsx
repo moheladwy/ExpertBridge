@@ -14,6 +14,7 @@ import {
   useAuthPrompt,
 } from "@/contexts/AuthPromptContext";
 import { ThemeProvider } from "@/views/components/common/theme/ThemeProvider";
+import ApiHealthGuard from "@/views/components/common/ui/ApiHealthGuard";
 
 function AppContent() {
   const [updateUser] = useUpdateUserMutation();
@@ -122,7 +123,9 @@ function AppContent() {
 function App() {
   return (
     <AuthPromptProvider>
-      <AppContent />
+      <ApiHealthGuard>
+        <AppContent />
+      </ApiHealthGuard>
     </AuthPromptProvider>
   );
 }
