@@ -20,18 +20,18 @@ namespace ExpertBridge.Worker.PeriodicJobs.PostModeration;
 internal sealed class PostsModerationPeriodicWorker : IJob
 {
     /// <summary>
+    ///     Database context instance for accessing and managing JobPosts and related entities within the system.
+    ///     Provides a connection to the database and enables querying and updating JobPosts data.
+    /// </summary>
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    /// <summary>
     ///     Logger instance for logging job execution and errors.
     /// </summary>
     private readonly ILogger<PostsModerationPeriodicWorker> _logger;
 
     /// <summary>
-    /// Database context instance for accessing and managing JobPosts and related entities within the system.
-    /// Provides a connection to the database and enables querying and updating JobPosts data.
-    /// </summary>
-    private readonly ExpertBridgeDbContext _dbContext;
-
-    /// <summary>
-    /// Endpoint for publishing messages related to job post moderation to the message broker.
+    ///     Endpoint for publishing messages related to job post moderation to the message broker.
     /// </summary>
     private readonly IPublishEndpoint _publishEndpoint;
 

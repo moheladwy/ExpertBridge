@@ -20,18 +20,18 @@ namespace ExpertBridge.Worker.PeriodicJobs.JobPostsModeration;
 internal sealed class JobPostsModerationPeriodicWorker : IJob
 {
     /// <summary>
+    ///     Database context instance for accessing and managing JobPosts and related entities within the system.
+    ///     Provides a connection to the database and enables querying and updating JobPosts data.
+    /// </summary>
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    /// <summary>
     ///     Logger instance for logging job execution and errors.
     /// </summary>
     private readonly ILogger<JobPostsModerationPeriodicWorker> _logger;
 
     /// <summary>
-    /// Database context instance for accessing and managing JobPosts and related entities within the system.
-    /// Provides a connection to the database and enables querying and updating JobPosts data.
-    /// </summary>
-    private readonly ExpertBridgeDbContext _dbContext;
-
-    /// <summary>
-    /// Endpoint for publishing messages related to job post moderation to the message broker.
+    ///     Endpoint for publishing messages related to job post moderation to the message broker.
     /// </summary>
     private readonly IPublishEndpoint _publishEndpoint;
 
@@ -56,86 +56,86 @@ internal sealed class JobPostsModerationPeriodicWorker : IJob
         try
         {
             _logger.LogInformation("Starting JobPosts moderation periodic job.");
-                    await _dbContext.JobPostings
-            .AsNoTracking()
-            .Where(p => !p.IsProcessed && !p.IsSafeContent)
-            .Select(p => new DetectInappropriatePostMessage
-            {
-                PostId = p.Id,
-                AuthorId = p.AuthorId,
-                Content = p.Content,
-                Title = p.Title,
-                IsJobPosting = true
-            })
-            .ForEachAsync(async void (detectInappropriatePostMessage) =>
+            await _dbContext.JobPostings
+                .AsNoTracking()
+                .Where(p => !p.IsProcessed && !p.IsSafeContent)
+                .Select(p => new DetectInappropriatePostMessage
                 {
-                    try
+                    PostId = p.Id,
+                    AuthorId = p.AuthorId,
+                    Content = p.Content,
+                    Title = p.Title,
+                    IsJobPosting = true
+                })
+                .ForEachAsync(async void (detectInappropriatePostMessage) =>
                     {
-                        await _publishEndpoint
-                            .Publish(detectInappropriatePostMessage, context.CancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e, "Failed to send job posting to post processing pipeline.");
-                    }
-                },
-                context.CancellationToken
-            );
+                        try
+                        {
+                            await _publishEndpoint
+                                .Publish(detectInappropriatePostMessage, context.CancellationToken);
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError(e, "Failed to send job posting to post processing pipeline.");
+                        }
+                    },
+                    context.CancellationToken
+                );
 
-        await _dbContext.JobPostings
-            .AsNoTracking()
-            .Where(p => !p.IsProcessed && p.IsSafeContent && !p.IsTagged)
-            .Select(p => new TagPostMessage
-            {
-                PostId = p.Id,
-                AuthorId = p.AuthorId,
-                Content = p.Content,
-                Title = p.Title,
-                IsJobPosting = true
-            })
-            .ForEachAsync(async void (tagPostMessage) =>
+            await _dbContext.JobPostings
+                .AsNoTracking()
+                .Where(p => !p.IsProcessed && p.IsSafeContent && !p.IsTagged)
+                .Select(p => new TagPostMessage
                 {
-                    try
+                    PostId = p.Id,
+                    AuthorId = p.AuthorId,
+                    Content = p.Content,
+                    Title = p.Title,
+                    IsJobPosting = true
+                })
+                .ForEachAsync(async void (tagPostMessage) =>
                     {
-                        await _publishEndpoint
-                            .Publish(tagPostMessage, context.CancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e, "Failed to send job posting to post processing pipeline.");
-                    }
-                },
-                context.CancellationToken
-            );
+                        try
+                        {
+                            await _publishEndpoint
+                                .Publish(tagPostMessage, context.CancellationToken);
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError(e, "Failed to send job posting to post processing pipeline.");
+                        }
+                    },
+                    context.CancellationToken
+                );
 
-        await _dbContext.JobPostings
-            .AsNoTracking()
-            .Where(p => p.IsProcessed && p.Embedding == null)
-            .Select(p => new EmbedPostMessage
-            {
-                PostId = p.Id, Content = p.Content, Title = p.Title, IsJobPosting = true
-            })
-            .ForEachAsync(async void (embedPostMessage) =>
+            await _dbContext.JobPostings
+                .AsNoTracking()
+                .Where(p => p.IsProcessed && p.Embedding == null)
+                .Select(p => new EmbedPostMessage
                 {
-                    try
+                    PostId = p.Id, Content = p.Content, Title = p.Title, IsJobPosting = true
+                })
+                .ForEachAsync(async void (embedPostMessage) =>
                     {
-                        await _publishEndpoint
-                            .Publish(embedPostMessage, context.CancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e, "Failed to send job posting to post processing pipeline.");
-                    }
-                },
-                context.CancellationToken
-            );
+                        try
+                        {
+                            await _publishEndpoint
+                                .Publish(embedPostMessage, context.CancellationToken);
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError(e, "Failed to send job posting to post processing pipeline.");
+                        }
+                    },
+                    context.CancellationToken
+                );
 
-        await _dbContext.JobPostings
-            .Where(jp => !jp.IsProcessed && jp.IsSafeContent && jp.IsTagged)
-            .ExecuteUpdateAsync(setPropertyCalls =>
-                    setPropertyCalls.SetProperty(jobPosting => jobPosting.IsProcessed, true),
-                context.CancellationToken);
-        _logger.LogInformation("JobPosts moderation periodic job completed.");
+            await _dbContext.JobPostings
+                .Where(jp => !jp.IsProcessed && jp.IsSafeContent && jp.IsTagged)
+                .ExecuteUpdateAsync(setPropertyCalls =>
+                        setPropertyCalls.SetProperty(jobPosting => jobPosting.IsProcessed, true),
+                    context.CancellationToken);
+            _logger.LogInformation("JobPosts moderation periodic job completed.");
         }
         catch (Exception e)
         {

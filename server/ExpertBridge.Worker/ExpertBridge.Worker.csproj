@@ -27,6 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pipelines\" />
+    <Folder Include="Pipelines\"/>
   </ItemGroup>
 </Project>
