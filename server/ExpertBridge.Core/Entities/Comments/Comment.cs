@@ -18,9 +18,6 @@ public class Comment : BaseModel, ISoftDeletable, ISafeContent
     public required string Content { get; set; }
     public string? ParentCommentId { get; set; }
     public bool IsProcessed { get; set; }
-    public bool IsSafeContent { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
     // Navigation property
@@ -31,4 +28,7 @@ public class Comment : BaseModel, ISoftDeletable, ISafeContent
     public ICollection<Comment> Replies { get; set; } = [];
     public ICollection<CommentVote> Votes { get; set; } = [];
     public ICollection<CommentMedia> Medias { get; set; } = [];
+    public bool IsSafeContent { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

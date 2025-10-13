@@ -16,8 +16,8 @@ namespace ExpertBridge.Api.Controllers;
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent, Duration = 60)]
 public class CommentsController : ControllerBase
 {
-    private readonly UserService _userService;
     private readonly CommentService _commentService;
+    private readonly UserService _userService;
 
     public CommentsController(
         UserService userService,
@@ -92,13 +92,12 @@ public class CommentsController : ControllerBase
     [AllowAnonymous]
     public async Task<List<CommentResponse>> GetAllByProfileId([FromRoute] string profileId)
     {
-
         // currentMaybeUserProfileId is passed for consistency, but for "comments by profile X",
         // the perspective for IsUpvoted/IsDownvoted is often the *requesting user*, not profileId.
         // If profileId is meant to be the perspective, then pass profileId to SelectCommentResponseFromFullComment.
         // Usually, it's the *current authenticated user's* perspective.
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
-        string? requestingUserProfileId = user?.Profile?.Id;
+        var requestingUserProfileId = user?.Profile?.Id;
 
         var comments = await _commentService.GetCommentsByProfileAsync(profileId, requestingUserProfileId);
 
@@ -109,7 +108,7 @@ public class CommentsController : ControllerBase
     public async Task<CommentResponse> Upvote([FromRoute] string commentId)
     {
         var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Throws if not authorized
-        var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, isUpvoteIntent: true);
+        var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, true);
 
         return updatedComment;
     }
@@ -118,7 +117,7 @@ public class CommentsController : ControllerBase
     public async Task<CommentResponse> Downvote([FromRoute] string commentId)
     {
         var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Throws if not authorized
-        var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, isUpvoteIntent: false);
+        var updatedComment = await _commentService.VoteCommentAsync(commentId, voterProfile, false);
 
         return updatedComment;
     }

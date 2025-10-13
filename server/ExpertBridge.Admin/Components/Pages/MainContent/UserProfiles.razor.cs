@@ -9,40 +9,31 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Admin.Components.Pages.MainContent;
 
 /// <summary>
-/// UserProfiles page displays all user profiles with pagination support.
+///     UserProfiles page displays all user profiles with pagination support.
 /// </summary>
 public partial class UserProfiles : ComponentBase
 {
-    private readonly ExpertBridgeDbContext _dbContext;
-
-    private List<ProfileResponse> profiles = [];
-    private List<ProfileResponse> pagedProfiles = [];
-    private bool isLoading = true;
-
-    // Search properties
-    private string searchText = string.Empty;
-    private List<ProfileResponse> filteredProfiles = [];
-    private int filteredCount;
+    private readonly int[] pageSizeOptions = [3, 6, 9, 12, 18, 24];
 
     // Pagination properties
     private int currentPage;
+    private int filteredCount;
+    private List<ProfileResponse> filteredProfiles = [];
+    private bool isLoading = true;
+    private List<ProfileResponse> pagedProfiles = [];
     private int pageSize = 3; // 3 columns x 3 rows
+
+    private List<ProfileResponse> profiles = [];
+
+    // Search properties
+    private string searchText = string.Empty;
     private int totalProfiles;
+
+    public UserProfiles(ExpertBridgeDbContext dbContext) => DbContext = dbContext;
     private int displayedProfileCount => string.IsNullOrWhiteSpace(searchText) ? totalProfiles : filteredCount;
     private int totalPages => (int)Math.Ceiling((double)displayedProfileCount / pageSize);
-    private readonly int[] pageSizeOptions = [3, 6, 9, 12, 18, 24];
 
-    [Inject]
-    public ExpertBridgeDbContext DbContext
-    {
-        get => _dbContext;
-        init => _dbContext = value;
-    }
-
-    public UserProfiles(ExpertBridgeDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    [Inject] public ExpertBridgeDbContext DbContext { get; init; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,13 +48,13 @@ public partial class UserProfiles : ComponentBase
             isLoading = true;
 
             // Get total count
-            totalProfiles = await _dbContext.Profiles
+            totalProfiles = await DbContext.Profiles
                 .AsNoTracking()
                 .Where(p => !p.IsDeleted)
                 .CountAsync();
 
             // Load all profiles
-            profiles = await _dbContext.Profiles
+            profiles = await DbContext.Profiles
                 .AsNoTracking()
                 .Include(p => p.User)
                 .Include(p => p.ProfileSkills)
@@ -92,7 +83,8 @@ public partial class UserProfiles : ComponentBase
                     Skills = p.ProfileSkills.Select(ps => ps.Skill.Name).ToList(),
                     CommentsUpvotes = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)),
                     CommentsDownvotes = p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote)),
-                    Reputation = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)) - p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote))
+                    Reputation = p.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote)) -
+                                 p.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote))
                 })
                 .ToListAsync();
 
@@ -107,7 +99,9 @@ public partial class UserProfiles : ComponentBase
     private List<ProfileResponse> GetFilteredProfiles()
     {
         if (string.IsNullOrWhiteSpace(searchText))
+        {
             return profiles;
+        }
 
         return profiles.Where(p =>
             (p.FirstName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||

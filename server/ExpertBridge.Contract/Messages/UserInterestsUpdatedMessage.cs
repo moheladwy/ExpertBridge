@@ -1,10 +1,9 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-namespace ExpertBridge.Contract.Messages
+namespace ExpertBridge.Contract.Messages;
+
+public class UserInterestsUpdatedMessage
 {
-    public class UserInterestsUpdatedMessage
-    {
-        public string UserProfileId { get; set; }
-    }
+    public string UserProfileId { get; set; }
 }

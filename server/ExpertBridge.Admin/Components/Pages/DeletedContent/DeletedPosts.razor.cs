@@ -13,19 +13,17 @@ namespace ExpertBridge.Admin.Components.Pages.DeletedContent;
 
 public sealed partial class DeletedPosts : ComponentBase
 {
-    private readonly ExpertBridgeDbContext _dbContext;
     private readonly HybridCache _cache;
-    private List<PostResponse>? reportedPosts;
-    private List<PostResponse>? pagedPosts;
-    private int pageSize = 4;
+    private readonly ExpertBridgeDbContext _dbContext;
+    private readonly int pageSize = 4;
+    private int filteredCount;
+    private List<PostResponse>? filteredPosts;
     private bool isLoading = true;
+    private List<PostResponse>? pagedPosts;
+    private List<PostResponse>? reportedPosts;
 
     // Search properties
     private string searchText = string.Empty;
-    private List<PostResponse>? filteredPosts;
-    private int filteredCount;
-    private int displayedPostCount => string.IsNullOrWhiteSpace(searchText) ? (reportedPosts?.Count ?? 0) : filteredCount;
-    private string pagingSummaryFormat => $"Displaying page {{0}} of {{1}} (total {{2}} {(string.IsNullOrWhiteSpace(searchText) ? "deleted posts" : "results")})";
 
     public DeletedPosts(ExpertBridgeDbContext dbContext, HybridCache cache)
     {
@@ -34,6 +32,11 @@ public sealed partial class DeletedPosts : ComponentBase
         reportedPosts = [];
         pagedPosts = [];
     }
+
+    private int displayedPostCount => string.IsNullOrWhiteSpace(searchText) ? reportedPosts?.Count ?? 0 : filteredCount;
+
+    private string pagingSummaryFormat =>
+        $"Displaying page {{0}} of {{1}} (total {{2}} {(string.IsNullOrWhiteSpace(searchText) ? "deleted posts" : "results")})";
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,18 +50,18 @@ public sealed partial class DeletedPosts : ComponentBase
         {
             isLoading = false;
         }
+
         await base.OnInitializedAsync();
     }
 
-    private void OnPageChanged(PagerEventArgs args)
-    {
-        UpdatePagedPosts(args.Skip, args.Top);
-    }
+    private void OnPageChanged(PagerEventArgs args) => UpdatePagedPosts(args.Skip, args.Top);
 
     private List<PostResponse> GetFilteredPosts()
     {
         if (reportedPosts == null || string.IsNullOrWhiteSpace(searchText))
+        {
             return reportedPosts ?? [];
+        }
 
         return reportedPosts.Where(p =>
             (p.Title?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
@@ -67,7 +70,7 @@ public sealed partial class DeletedPosts : ComponentBase
             (p.Author?.FirstName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
             (p.Author?.LastName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
             (p.Tags?.Any(t => t.EnglishName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                             t.ArabicName.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ?? false)
+                              t.ArabicName.Contains(searchText, StringComparison.OrdinalIgnoreCase)) ?? false)
         ).ToList();
     }
 
@@ -98,7 +101,7 @@ public sealed partial class DeletedPosts : ComponentBase
     {
         const string cacheKey = "deleted-posts";
         var posts = await _cache.GetOrCreateAsync<List<PostResponse>>(cacheKey, async token =>
-                await _dbContext.Posts
+            await _dbContext.Posts
                 .IgnoreQueryFilters()
                 .FullyPopulatedPostQuery(p => p.IsDeleted)
                 .SelectPostResponseFromFullPost(null)

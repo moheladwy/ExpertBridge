@@ -34,7 +34,7 @@ public class ChatEntityConfiguration : IEntityTypeConfiguration<Chat>
 
         builder.HasOne(c => c.Job)
             .WithOne(j => j.Chat)
-            .IsRequired();  
+            .IsRequired();
 
         // Configure participants relationship
         //builder.HasMany(c => c.Participants)

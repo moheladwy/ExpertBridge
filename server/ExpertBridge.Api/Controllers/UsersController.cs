@@ -21,15 +21,13 @@ namespace ExpertBridge.Api.Controllers;
 public sealed class UsersController(
     //IUsersService userService,
     ExpertBridgeDbContext _dbContext
-    ) : ControllerBase
+) : ControllerBase
 {
     [HttpGet("get/{identityProviderId}")]
-    public async Task<UserResponse> GetUserByIdentityProviderId([FromRoute] string identityProviderId)
-    {
+    public async Task<UserResponse> GetUserByIdentityProviderId([FromRoute] string identityProviderId) => throw
         //ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
         //return await userService.GetUserByIdentityProviderId(identityProviderId);
-        throw new NotImplementedException();
-    }
+        new NotImplementedException();
 
 
     [HttpGet("get-by-email/{email}")]
@@ -40,7 +38,7 @@ public sealed class UsersController(
         var user = await _dbContext.Users
                        .AsNoTracking()
                        .SingleOrDefaultAsync(u => u.Email == email)
-            ?? throw new UserNotFoundException("User not found");
+                   ?? throw new UserNotFoundException("User not found");
 
         return new UserResponse(user);
     }

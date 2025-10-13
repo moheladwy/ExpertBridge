@@ -7,17 +7,6 @@ namespace ExpertBridge.Core.Responses;
 
 public class UserResponse
 {
-    public string Id { get; set; }
-    public string FirebaseId { get; set; }
-    public string Email { get; set; }
-    public string Username { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public bool IsBanned { get; set; }
-    public bool IsEmailVerified { get; set; }
-    public bool IsDeleted { get; set; }
-
     public UserResponse(User user)
     {
         ArgumentNullException.ThrowIfNull(user, nameof(user));
@@ -32,4 +21,15 @@ public class UserResponse
         IsEmailVerified = user.IsEmailVerified;
         IsDeleted = user.IsDeleted;
     }
+
+    public string Id { get; set; }
+    public string FirebaseId { get; set; }
+    public string Email { get; set; }
+    public string Username { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public bool IsBanned { get; set; }
+    public bool IsEmailVerified { get; set; }
+    public bool IsDeleted { get; set; }
 }

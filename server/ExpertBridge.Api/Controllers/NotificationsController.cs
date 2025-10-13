@@ -7,62 +7,61 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Controllers
+namespace ExpertBridge.Api.Controllers;
+
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class NotificationsController : ControllerBase
 {
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class NotificationsController : ControllerBase
+    private readonly AuthorizationHelper _authHelper;
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    public NotificationsController(
+        ExpertBridgeDbContext dbContext,
+        AuthorizationHelper authHelper)
     {
-        private readonly ExpertBridgeDbContext _dbContext;
-        private readonly AuthorizationHelper _authHelper;
+        _dbContext = dbContext;
+        _authHelper = authHelper;
+    }
 
-        public NotificationsController(
-            ExpertBridgeDbContext dbContext,
-            AuthorizationHelper authHelper)
+    [HttpGet]
+    public async Task<List<NotificationResponse>> GetAll()
+    {
+        var user = await _authHelper.GetCurrentUserAsync();
+
+        if (user == null || user.Profile == null)
         {
-            _dbContext = dbContext;
-            _authHelper = authHelper;
+            throw new UnauthorizedException();
         }
 
-        [HttpGet]
-        public async Task<List<NotificationResponse>> GetAll()
+        var notifications = await _dbContext.Notifications
+            .Where(n => n.RecipientId == user.Profile.Id)
+            .SelectNotificationResopnse()
+            .ToListAsync();
+
+        return notifications;
+    }
+
+    [HttpPatch]
+    public async Task MarkAllRead()
+    {
+        var user = await _authHelper.GetCurrentUserAsync();
+
+        if (user == null || user.Profile == null)
         {
-            var user = await _authHelper.GetCurrentUserAsync();
-
-            if (user == null || user.Profile == null)
-            {
-                throw new UnauthorizedException();
-            }
-
-            var notifications = await _dbContext.Notifications
-                .Where(n => n.RecipientId == user.Profile.Id)
-                .SelectNotificationResopnse()
-                .ToListAsync();
-
-            return notifications;
+            throw new UnauthorizedException();
         }
 
-        [HttpPatch]
-        public async Task MarkAllRead()
+        var notifications = await _dbContext.Notifications
+            .Where(n => n.RecipientId == user.Profile.Id && !n.IsRead)
+            .ToListAsync();
+
+        foreach (var notification in notifications)
         {
-            var user = await _authHelper.GetCurrentUserAsync();
-
-            if (user == null || user.Profile == null)
-            {
-                throw new UnauthorizedException();
-            }
-
-            var notifications = await _dbContext.Notifications
-                .Where(n => n.RecipientId == user.Profile.Id && !n.IsRead)
-                .ToListAsync();
-
-            foreach (var notification in notifications)
-            {
-                notification.IsRead = true;
-            }
-
-            await _dbContext.SaveChangesAsync();
+            notification.IsRead = true;
         }
+
+        await _dbContext.SaveChangesAsync();
     }
 }

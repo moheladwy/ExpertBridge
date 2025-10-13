@@ -6,7 +6,6 @@ using ExpertBridge.Notifications.BackgroundServices;
 using ExpertBridge.Notifications.Models.IPC;
 using Microsoft.Extensions.DependencyInjection;
 
-
 namespace ExpertBridge.Notifications.Extensions;
 
 public static class ServicesExtensions

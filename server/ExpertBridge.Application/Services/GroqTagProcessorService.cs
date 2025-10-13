@@ -24,19 +24,19 @@ public class GroqTagProcessorService
     private readonly GroqLlmTextProvider _groqLlmTextProvider;
 
     /// <summary>
-    /// A pipeline instance implemented via <see cref="Polly" /> to handle resilient
-    /// execution and retry policies for operations encountering scenarios such as
-    /// malformed JSON responses. This supports maintaining robust and fault-tolerant
-    /// behavior when communicating with external APIs or processing data.
-    /// </summary>
-    private readonly ResiliencePipeline _resiliencePipeline;
-
-    /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
     ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     A pipeline instance implemented via <see cref="Polly" /> to handle resilient
+    ///     execution and retry policies for operations encountering scenarios such as
+    ///     malformed JSON responses. This supports maintaining robust and fault-tolerant
+    ///     behavior when communicating with external APIs or processing data.
+    /// </summary>
+    private readonly ResiliencePipeline _resiliencePipeline;
 
     /// <summary>
     ///     Provides functionality for processing and analyzing tags or text categorizations
@@ -52,9 +52,7 @@ public class GroqTagProcessorService
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true,
-            AllowOutOfOrderMetadataProperties = true,
-            AllowTrailingCommas = true
+            PropertyNameCaseInsensitive = true, AllowOutOfOrderMetadataProperties = true, AllowTrailingCommas = true
         };
     }
 
@@ -83,8 +81,8 @@ public class GroqTagProcessorService
                 var userPrompt = GetUserPrompt(existingTags);
                 var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
                 result = JsonSerializer.Deserialize<TranslateTagsResponse>(response, _jsonSerializerOptions)
-                             ?? throw new InvalidOperationException(
-                                 "Failed to deserialize the tag processing response: null result");
+                         ?? throw new InvalidOperationException(
+                             "Failed to deserialize the tag processing response: null result");
                 return ValueTask.CompletedTask;
             });
             return result;
@@ -101,7 +99,8 @@ public class GroqTagProcessorService
     /// <returns>
     ///     A string containing the JSON schema definition for translating tag responses.
     /// </returns>
-    private static string GetOutputFormatSchema() => File.ReadAllText("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
+    private static string GetOutputFormatSchema() =>
+        File.ReadAllText("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
 
     /// <summary>
     ///     Generates and returns the system prompt used for tag translation tasks.

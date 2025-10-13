@@ -61,7 +61,7 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
             .WithMany(c => c.Replies)
             .HasForeignKey(c => c.ParentCommentId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);  // Parent won't be deleted
+            .OnDelete(DeleteBehavior.NoAction); // Parent won't be deleted
 
         // Configure cascade delete for replies when parent is deleted
         builder.HasMany(c => c.Replies)

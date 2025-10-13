@@ -43,11 +43,11 @@ public static class LlmRoles
     public const string ToolRole = "tool";
 
     /// <summary>
-    /// Represents the constant value associated with the assistant's role in a conversation with language models (LLMs).
+    ///     Represents the constant value associated with the assistant's role in a conversation with language models (LLMs).
     /// </summary>
     /// <remarks>
-    /// The <c>AssistantRole</c> is typically used to define the role of the language model acting as an assistant
-    /// in the interaction. It helps in specifying the assistant's responses and behavior in such exchanges.
+    ///     The <c>AssistantRole</c> is typically used to define the role of the language model acting as an assistant
+    ///     in the interaction. It helps in specifying the assistant's responses and behavior in such exchanges.
     /// </remarks>
     public const string AssistantRole = "assistant";
 }

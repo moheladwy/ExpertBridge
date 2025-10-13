@@ -45,10 +45,7 @@ public class FirebaseAuthService
     /// <param name="httpClient">
     ///     The HTTP client used to communicate with Firebase Authentication endpoints.
     /// </param>
-    public FirebaseAuthService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    public FirebaseAuthService(HttpClient httpClient) => _httpClient = httpClient;
 
     /// <summary>
     ///     Asynchronously registers a new user with Firebase Authentication using the provided email and password.

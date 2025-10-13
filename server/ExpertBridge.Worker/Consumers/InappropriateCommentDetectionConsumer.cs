@@ -14,53 +14,55 @@ namespace ExpertBridge.Worker.Consumers;
 
 /// <summary>
 ///     Consumer for detecting inappropriate comments using the GroqInappropriateLanguageDetectionService.
-///     This class processes messages to analyze comment content, generate moderation reports, and handle comment removal and notifications.
+///     This class processes messages to analyze comment content, generate moderation reports, and handle comment removal
+///     and notifications.
 /// </summary>
 internal sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInappropriateCommentMessage>
 {
     /// <summary>
-    /// An instance of <see cref="ILogger{TCategoryName}"/> used for logging events, errors, and debugging information
-    /// within the <see cref="InappropriateCommentDetectionConsumer"/> class.
-    /// This logger is primarily utilized for monitoring and troubleshooting the detection
-    /// of inappropriate language in comments, as well as logging relevant information
-    /// during the moderation process.
-    /// </summary>
-    private readonly ILogger<InappropriateCommentDetectionConsumer> _logger;
-
-    /// <summary>
-    /// An instance of <see cref="GroqInappropriateLanguageDetectionService"/> responsible for detecting
-    /// inappropriate language in comments by utilizing defined detection algorithms and strategies.
-    /// This service is used within the <see cref="InappropriateCommentDetectionConsumer"/> class
-    /// to analyze content for moderation purposes.
-    /// </summary>
-    private readonly GroqInappropriateLanguageDetectionService _detectionService;
-
-    /// <summary>
-    /// An instance of <see cref="InappropriateLanguageThresholds"/> containing the configured thresholds
-    /// for detecting various forms of inappropriate language, such as toxicity, obscenity, insults, threats,
-    /// and other harmful behaviors in user-generated content. These thresholds are used to determine whether
-    /// a comment exceeds permissible limits for specific categories of inappropriate language during the moderation process.
-    /// </summary>
-    private readonly InappropriateLanguageThresholds _thresholds;
-
-    /// <summary>
-    /// An instance of <see cref="ExpertBridgeDbContext"/> used to interact with the application's database for performing
-    /// CRUD operations, particularly related to comments and moderation reports. It facilitates the storage and retrieval
-    /// of data as part of the inappropriate comment detection process.
+    ///     An instance of <see cref="ExpertBridgeDbContext" /> used to interact with the application's database for performing
+    ///     CRUD operations, particularly related to comments and moderation reports. It facilitates the storage and retrieval
+    ///     of data as part of the inappropriate comment detection process.
     /// </summary>
     private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
-    /// An instance of <see cref="NotificationFacade"/> used to manage and send notifications
-    /// related to various actions and events, such as the deletion of inappropriate comments.
-    /// This instance is leveraged within the <see cref="InappropriateCommentDetectionConsumer"/> class
-    /// to notify users or systems about moderation actions and ensure proper communication during the
-    /// content moderation process.
+    ///     An instance of <see cref="GroqInappropriateLanguageDetectionService" /> responsible for detecting
+    ///     inappropriate language in comments by utilizing defined detection algorithms and strategies.
+    ///     This service is used within the <see cref="InappropriateCommentDetectionConsumer" /> class
+    ///     to analyze content for moderation purposes.
+    /// </summary>
+    private readonly GroqInappropriateLanguageDetectionService _detectionService;
+
+    /// <summary>
+    ///     An instance of <see cref="ILogger{TCategoryName}" /> used for logging events, errors, and debugging information
+    ///     within the <see cref="InappropriateCommentDetectionConsumer" /> class.
+    ///     This logger is primarily utilized for monitoring and troubleshooting the detection
+    ///     of inappropriate language in comments, as well as logging relevant information
+    ///     during the moderation process.
+    /// </summary>
+    private readonly ILogger<InappropriateCommentDetectionConsumer> _logger;
+
+    /// <summary>
+    ///     An instance of <see cref="NotificationFacade" /> used to manage and send notifications
+    ///     related to various actions and events, such as the deletion of inappropriate comments.
+    ///     This instance is leveraged within the <see cref="InappropriateCommentDetectionConsumer" /> class
+    ///     to notify users or systems about moderation actions and ensure proper communication during the
+    ///     content moderation process.
     /// </summary>
     private readonly NotificationFacade _notifications;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InappropriateCommentDetectionConsumer"/> class.
+    ///     An instance of <see cref="InappropriateLanguageThresholds" /> containing the configured thresholds
+    ///     for detecting various forms of inappropriate language, such as toxicity, obscenity, insults, threats,
+    ///     and other harmful behaviors in user-generated content. These thresholds are used to determine whether
+    ///     a comment exceeds permissible limits for specific categories of inappropriate language during the moderation
+    ///     process.
+    /// </summary>
+    private readonly InappropriateLanguageThresholds _thresholds;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InappropriateCommentDetectionConsumer" /> class.
     /// </summary>
     /// <param name="logger">Logger for logging actions and errors.</param>
     /// <param name="detectionService">Service for detecting inappropriate language in comments.</param>
@@ -83,12 +85,13 @@ internal sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectIn
     }
 
     /// <summary>
-    ///     Consumes a <see cref="DetectInappropriateCommentMessage"/> to detect inappropriate content in a comment.
+    ///     Consumes a <see cref="DetectInappropriateCommentMessage" /> to detect inappropriate content in a comment.
     /// </summary>
     /// <param name="context">The consume context containing the message.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <remarks>
-    ///     This method analyzes the comment content, generates a moderation report, removes inappropriate comments, and sends notifications.
+    ///     This method analyzes the comment content, generates a moderation report, removes inappropriate comments, and sends
+    ///     notifications.
     /// </remarks>
     /// <exception cref="RemoteServiceCallFailedException">Thrown if the detection service returns null.</exception>
     public async Task Consume(ConsumeContext<DetectInappropriateCommentMessage> context)
@@ -107,7 +110,7 @@ internal sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectIn
             }
 
             var existingComment = await _dbContext.Comments
-                        .FirstOrDefaultAsync(c => c.Id == message.CommentId, context.CancellationToken);
+                .FirstOrDefaultAsync(c => c.Id == message.CommentId, context.CancellationToken);
 
             if (existingComment == null)
             {
@@ -145,14 +148,15 @@ internal sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectIn
                 ContentId = existingComment.Id,
                 IsNegative = !isAppropriate,
                 Reason = reason,
-                IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
+                IsResolved =
+                    true, // Because this is an automated report generation, not issued by a user of the application
                 IdentityAttack = results.IdentityAttack,
                 Obscene = results.Obscene,
                 Insult = results.Insult,
                 SevereToxicity = results.SevereToxicity,
                 SexualExplicit = results.SexualExplicit,
                 Threat = results.Threat,
-                Toxicity = results.Toxicity,
+                Toxicity = results.Toxicity
             };
 
             await _dbContext.ModerationReports.AddAsync(report, context.CancellationToken);

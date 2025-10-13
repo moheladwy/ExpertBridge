@@ -12,6 +12,8 @@ namespace ExpertBridge.Application.DataGenerator;
 
 public static class Generator
 {
+    private static readonly Random random = new();
+
     public static List<User> GenerateUsers(int count)
     {
         var userFaker = new Faker<User>()
@@ -34,27 +36,24 @@ public static class Generator
     public static List<Profile> GenerateProfiles(List<User> users)
     {
         var profileFaker = new Faker<Profile>()
-            .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
-            .RuleFor(p => p.UserId, f => f.PickRandom(users).Id)
-            .RuleFor(p => p.JobTitle, f => f.Name.JobTitle().OrNull(f, 0.2f))
-            .RuleFor(p => p.Bio, f => f.Lorem.Sentence().OrNull(f, 0.3f))
-            .RuleFor(p => p.ProfilePictureUrl, f => f.Internet.Avatar().OrNull(f, 0.2f))
-            .RuleFor(p => p.Rating, f => f.Random.Double(1, 5))
-            .RuleFor(p => p.RatingCount, f => f.Random.Int(0, 100))
-            .RuleFor(p => p.Email, f => f.Internet.Email())
-            .RuleFor(p => p.PhoneNumber, f => f.PickRandom(users).PhoneNumber.OrNull(f, 0.3f))
-            .RuleFor(p => p.FirstName, f => f.PickRandom(users).FirstName)
-            .RuleFor(p => p.LastName, f => f.PickRandom(users).LastName)
+                .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
+                .RuleFor(p => p.UserId, f => f.PickRandom(users).Id)
+                .RuleFor(p => p.JobTitle, f => f.Name.JobTitle().OrNull(f, 0.2f))
+                .RuleFor(p => p.Bio, f => f.Lorem.Sentence().OrNull(f, 0.3f))
+                .RuleFor(p => p.ProfilePictureUrl, f => f.Internet.Avatar().OrNull(f, 0.2f))
+                .RuleFor(p => p.Rating, f => f.Random.Double(1, 5))
+                .RuleFor(p => p.RatingCount, f => f.Random.Int(0, 100))
+                .RuleFor(p => p.Email, f => f.Internet.Email())
+                .RuleFor(p => p.PhoneNumber, f => f.PickRandom(users).PhoneNumber.OrNull(f, 0.3f))
+                .RuleFor(p => p.FirstName, f => f.PickRandom(users).FirstName)
+                .RuleFor(p => p.LastName, f => f.PickRandom(users).LastName)
             ;
 
         return profileFaker.Generate(users.Count);
     }
 
-    private static readonly Random random = new Random();
-    public static Vector GenerateRandomVector(int dimensions)
-    {
-        return new Vector(GenerateRandomVectorArray(dimensions));
-    }
+    public static Vector GenerateRandomVector(int dimensions) => new(GenerateRandomVectorArray(dimensions));
+
     public static float[] GenerateRandomVectorArray(int dimensions)
     {
         var values = new float[dimensions];
@@ -69,15 +68,15 @@ public static class Generator
     public static List<Post> GeneratePosts(List<Profile> profiles, int count)
     {
         var postFaker = new Faker<Post>()
-            .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
-            .RuleFor(p => p.Author, f => f.PickRandom(profiles))
-            //.RuleFor(p => p.AuthorId, f => f.PickRandom(profiles).Id)
-            .RuleFor(p => p.Title, f => f.Lorem.Sentence())
-            .RuleFor(p => p.Content, f => f.Lorem.Paragraph())
-            .RuleFor(p => p.CreatedAt, f => f.Date.Past(1).ToUniversalTime())
-            .RuleFor(p => p.LastModified, f => f.Date.Recent(10).ToUniversalTime().OrNull(f, 0.3f))
-            .RuleFor(p => p.IsDeleted, f => f.Random.Bool(0.1f))
-            .RuleFor(p => p.Embedding, f => GenerateRandomVector(1024))
+                .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
+                .RuleFor(p => p.Author, f => f.PickRandom(profiles))
+                //.RuleFor(p => p.AuthorId, f => f.PickRandom(profiles).Id)
+                .RuleFor(p => p.Title, f => f.Lorem.Sentence())
+                .RuleFor(p => p.Content, f => f.Lorem.Paragraph())
+                .RuleFor(p => p.CreatedAt, f => f.Date.Past().ToUniversalTime())
+                .RuleFor(p => p.LastModified, f => f.Date.Recent(10).ToUniversalTime().OrNull(f, 0.3f))
+                .RuleFor(p => p.IsDeleted, f => f.Random.Bool(0.1f))
+                .RuleFor(p => p.Embedding, f => GenerateRandomVector(1024))
             ;
 
         return postFaker.Generate(count);
@@ -86,13 +85,13 @@ public static class Generator
     public static List<Post> GeneratePosts(string profileId, int count)
     {
         var postFaker = new Faker<Post>()
-            .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
-            .RuleFor(p => p.AuthorId, f => profileId)
-            .RuleFor(p => p.Title, f => f.Lorem.Sentence(wordCount: 10))
-            .RuleFor(p => p.Content, f => f.Lorem.Sentence(wordCount: 20))
-            .RuleFor(p => p.CreatedAt, f => f.Date.Past(1, DateTime.UtcNow).ToUniversalTime())
-            .RuleFor(p => p.IsDeleted, f => false)
-            .RuleFor(p => p.Embedding, f => GenerateRandomVector(1024))
+                .RuleFor(p => p.Id, f => Guid.NewGuid().ToString())
+                .RuleFor(p => p.AuthorId, f => profileId)
+                .RuleFor(p => p.Title, f => f.Lorem.Sentence(10))
+                .RuleFor(p => p.Content, f => f.Lorem.Sentence(20))
+                .RuleFor(p => p.CreatedAt, f => f.Date.Past(1, DateTime.UtcNow).ToUniversalTime())
+                .RuleFor(p => p.IsDeleted, f => false)
+                .RuleFor(p => p.Embedding, f => GenerateRandomVector(1024))
             ;
 
         return postFaker.Generate(count);
@@ -105,12 +104,11 @@ public static class Generator
             .RuleFor(c => c.Author, f => f.PickRandom(profiles))
             .RuleFor(c => c.Post, f => f.PickRandom(posts))
             .RuleFor(c => c.Content, f => f.Lorem.Sentence())
-            .RuleFor(c => c.CreatedAt, f => f.Date.Past(1).ToUniversalTime())
+            .RuleFor(c => c.CreatedAt, f => f.Date.Past().ToUniversalTime())
             .RuleFor(c => c.IsDeleted, f => false);
 
         return commentFaker.Generate(count);
     }
-
 
 
     public static List<Job> GenerateJobs(List<Profile> profiles, int count)
@@ -119,7 +117,7 @@ public static class Generator
             .RuleFor(j => j.Id, f => Guid.NewGuid().ToString())
             .RuleFor(j => j.Author, f => f.PickRandom(profiles))
             .RuleFor(j => j.Worker, f => f.PickRandom(profiles))
-            .RuleFor(j => j.StartedAt, f => f.Date.Past(1).ToUniversalTime())
+            .RuleFor(j => j.StartedAt, f => f.Date.Past().ToUniversalTime())
             .RuleFor(j => j.Status, f => f.PickRandom<JobStatusEnum>());
 
         return jobFaker.Generate(count);

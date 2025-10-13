@@ -13,12 +13,7 @@ internal static class MediaHelper
 
         var putRequest = new PutObjectRequest
         {
-            InputStream = memoryStream,
-            ContentType = file.ContentType,
-            Metadata =
-            {
-                ["file-name"] = file.FileName
-            }
+            InputStream = memoryStream, ContentType = file.ContentType, Metadata = { ["file-name"] = file.FileName }
         };
         return putRequest;
     }

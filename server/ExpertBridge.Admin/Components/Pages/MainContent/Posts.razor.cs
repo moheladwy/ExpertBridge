@@ -13,31 +13,28 @@ namespace ExpertBridge.Admin.Components.Pages.MainContent;
 
 public partial class Posts : ComponentBase
 {
-    [Inject]
-    private ExpertBridgeDbContext DbContext { get; set; } = default!;
-
-    [Inject]
-    private HybridCache Cache { get; set; } = default!;
+    private readonly int pageSize = 4;
+    private int count;
+    private int filteredCount;
+    private List<PostResponse>? filteredPosts;
+    private List<PostResponse> pagedPosts = [];
 
     private List<PostResponse> posts = [];
-    private List<PostResponse> pagedPosts = [];
-    private int count;
-    private int pageSize = 4;
 
     // Search properties
     private string searchText = string.Empty;
-    private List<PostResponse>? filteredPosts;
-    private int filteredCount;
+
+    [Inject] private ExpertBridgeDbContext DbContext { get; set; } = default!;
+
+    [Inject] private HybridCache Cache { get; set; } = default!;
+
     private int displayedCount => string.IsNullOrWhiteSpace(searchText) ? count : filteredCount;
 
     private string pagingSummaryFormat => string.IsNullOrWhiteSpace(searchText)
         ? "Displaying page {0} of {1} <b>(total {2} posts)</b>"
         : "Displaying page {0} of {1} <b>({2} posts found, {3} total)</b>";
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadPostsAsync();
-    }
+    protected override async Task OnInitializedAsync() => await LoadPostsAsync();
 
     private async Task LoadPostsAsync()
     {
@@ -57,17 +54,14 @@ public partial class Posts : ComponentBase
 
     private void UpdatePaged(int skip, int take)
     {
-        var sourceList = string.IsNullOrWhiteSpace(searchText) ? posts : (filteredPosts ?? posts);
+        var sourceList = string.IsNullOrWhiteSpace(searchText) ? posts : filteredPosts ?? posts;
         pagedPosts = sourceList
             .Skip(skip)
             .Take(take)
             .ToList();
     }
 
-    private void PageChanged(PagerEventArgs args)
-    {
-        UpdatePaged(args.Skip, args.Top);
-    }
+    private void PageChanged(PagerEventArgs args) => UpdatePaged(args.Skip, args.Top);
 
     private List<PostResponse> GetFilteredPosts()
     {

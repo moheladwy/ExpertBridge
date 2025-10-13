@@ -17,52 +17,60 @@ using Microsoft.Extensions.Options;
 namespace ExpertBridge.Worker.Consumers;
 
 /// <summary>
-/// Consumer that handles <see cref="DetectInappropriatePostMessage"/> messages and runs automated
-/// inappropriate language detection on posts (or job postings) using <see cref="GroqInappropriateLanguageDetectionService"/>.
+///     Consumer that handles <see cref="DetectInappropriatePostMessage" /> messages and runs automated
+///     inappropriate language detection on posts (or job postings) using
+///     <see cref="GroqInappropriateLanguageDetectionService" />.
 /// </summary>
 /// <remarks>
-/// This consumer:
-/// - Calls the detection service to analyse the combined title and content of a post.
-/// - Creates a <see cref="ModerationReport"/> based on detection thresholds.
-/// - Removes the offending content when thresholds are exceeded and notifies interested parties via <see cref="NotificationFacade"/>.
-/// - Persists moderation reports to the <see cref="ExpertBridgeDbContext"/>.
+///     This consumer:
+///     - Calls the detection service to analyse the combined title and content of a post.
+///     - Creates a <see cref="ModerationReport" /> based on detection thresholds.
+///     - Removes the offending content when thresholds are exceeded and notifies interested parties via
+///     <see cref="NotificationFacade" />.
+///     - Persists moderation reports to the <see cref="ExpertBridgeDbContext" />.
 /// </remarks>
 internal sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappropriatePostMessage>
 {
     /// <summary>
-    /// Logger for emitting information, warning and error messages during the consume flow.
-    /// </summary>
-    private readonly ILogger<InappropriatePostDetectionConsumer> _logger;
-
-    /// <summary>
-    /// Service that performs inappropriate language detection using the Groq provider.
-    /// </summary>
-    private readonly GroqInappropriateLanguageDetectionService _detectionService;
-
-    /// <summary>
-    /// Database context for reading/updating posts and writing moderation reports.
+    ///     Database context for reading/updating posts and writing moderation reports.
     /// </summary>
     private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
-    /// Thresholds used to determine when detection scores are considered violations.
+    ///     Service that performs inappropriate language detection using the Groq provider.
     /// </summary>
-    private readonly InappropriateLanguageThresholds _thresholds;
+    private readonly GroqInappropriateLanguageDetectionService _detectionService;
 
     /// <summary>
-    /// Notification facade used to send notifications when posts are removed.
+    ///     Logger for emitting information, warning and error messages during the consume flow.
+    /// </summary>
+    private readonly ILogger<InappropriatePostDetectionConsumer> _logger;
+
+    /// <summary>
+    ///     Notification facade used to send notifications when posts are removed.
     /// </summary>
     private readonly NotificationFacade _notifications;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InappropriatePostDetectionConsumer"/> class.
+    ///     Thresholds used to determine when detection scores are considered violations.
+    /// </summary>
+    private readonly InappropriateLanguageThresholds _thresholds;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InappropriatePostDetectionConsumer" /> class.
     /// </summary>
     /// <param name="logger">The logger instance to log consumer actions and decisions.</param>
     /// <param name="detectionService">The Groq inappropriate language detection service.</param>
     /// <param name="dbContext">The database context used to lookup and modify posts and moderation reports.</param>
-    /// <param name="thresholds">Snapshot of <see cref="InappropriateLanguageThresholds"/> used to decide when to mark content as inappropriate.</param>
+    /// <param name="thresholds">
+    ///     Snapshot of <see cref="InappropriateLanguageThresholds" /> used to decide when to mark content
+    ///     as inappropriate.
+    /// </param>
     /// <param name="notifications">The notification facade used to send deletion/notification messages.</param>
-    /// <exception cref="ArgumentNullException">Thrown by DI container or callers if any required dependency is missing (dependency injection should prevent this).</exception>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown by DI container or callers if any required dependency is missing
+    ///     (dependency injection should prevent this).
+    /// </exception>
     public InappropriatePostDetectionConsumer(
         ILogger<InappropriatePostDetectionConsumer> logger,
         GroqInappropriateLanguageDetectionService detectionService,
@@ -78,21 +86,33 @@ internal sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInapp
     }
 
     /// <summary>
-    /// Handles incoming <see cref="DetectInappropriatePostMessage"/> messages. Runs inappropriate-content detection,
-    /// constructs and persists a <see cref="ModerationReport"/>, removes offending content when thresholds are exceeded,
-    /// and triggers notifications about deletions.
+    ///     Handles incoming <see cref="DetectInappropriatePostMessage" /> messages. Runs inappropriate-content detection,
+    ///     constructs and persists a <see cref="ModerationReport" />, removes offending content when thresholds are exceeded,
+    ///     and triggers notifications about deletions.
     /// </summary>
-    /// <param name="context">The MassTransit <see cref="ConsumeContext{T}"/> carrying the <see cref="DetectInappropriatePostMessage"/>.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous consume operation.</returns>
+    /// <param name="context">
+    ///     The MassTransit <see cref="ConsumeContext{T}" /> carrying the
+    ///     <see cref="DetectInappropriatePostMessage" />.
+    /// </param>
+    /// <returns>A <see cref="Task" /> representing the asynchronous consume operation.</returns>
     /// <remarks>
-    /// - The message's <c>Title</c> and <c>Content</c> are concatenated and sent to <see cref="_detectionService"/>.
-    /// - If the service returns null, a <see cref="RemoteServiceCallFailedException"/> is thrown to indicate a failure calling the remote detection service.
-    /// - If any detection score meets or exceeds the configured thresholds, the content is considered inappropriate, a moderation report is created,
-    ///   the content is removed from the database and a notification is dispatched.
-    /// - The method marks the existing post as processed regardless of the result and persists the moderation report and changes.
+    ///     - The message's <c>Title</c> and <c>Content</c> are concatenated and sent to <see cref="_detectionService" />.
+    ///     - If the service returns null, a <see cref="RemoteServiceCallFailedException" /> is thrown to indicate a failure
+    ///     calling the remote detection service.
+    ///     - If any detection score meets or exceeds the configured thresholds, the content is considered inappropriate, a
+    ///     moderation report is created,
+    ///     the content is removed from the database and a notification is dispatched.
+    ///     - The method marks the existing post as processed regardless of the result and persists the moderation report and
+    ///     changes.
     /// </remarks>
-    /// <exception cref="RemoteServiceCallFailedException">Thrown when the detection service returns null or indicates a failure to produce results.</exception>
-    /// <exception cref="DbUpdateException">May be thrown by EF Core when saving changes to the database (e.g., <see cref="ExpertBridgeDbContext.SaveChangesAsync(CancellationToken)"/>).</exception>
+    /// <exception cref="RemoteServiceCallFailedException">
+    ///     Thrown when the detection service returns null or indicates a
+    ///     failure to produce results.
+    /// </exception>
+    /// <exception cref="DbUpdateException">
+    ///     May be thrown by EF Core when saving changes to the database (e.g.,
+    ///     <see cref="ExpertBridgeDbContext.SaveChangesAsync(CancellationToken)" />).
+    /// </exception>
     public async Task Consume(ConsumeContext<DetectInappropriatePostMessage> context)
     {
         var post = context.Message;
@@ -128,7 +148,7 @@ internal sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInapp
             return;
         }
 
-        bool isAppropriate = true;
+        var isAppropriate = true;
         var reason = "No issues.";
 
         if (results.Insult >= _thresholds.Insult
@@ -155,14 +175,15 @@ internal sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInapp
             ContentId = existingPost.Id,
             IsNegative = !isAppropriate,
             Reason = reason,
-            IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
+            IsResolved =
+                true, // Because this is an automated report generation, not issued by a user of the application
             IdentityAttack = results.IdentityAttack,
             Obscene = results.Obscene,
             Insult = results.Insult,
             SevereToxicity = results.SevereToxicity,
             SexualExplicit = results.SexualExplicit,
             Threat = results.Threat,
-            Toxicity = results.Toxicity,
+            Toxicity = results.Toxicity
         };
 
         await _dbContext.ModerationReports.AddAsync(report, context.CancellationToken);

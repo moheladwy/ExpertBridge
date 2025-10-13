@@ -7,7 +7,5 @@ namespace ExpertBridge.Core.Requests.Jobs;
 
 public class RespondToJobOfferRequest
 {
-    [Required]
-    public bool Accept { get; set; }
-
+    [Required] public bool Accept { get; set; }
 }

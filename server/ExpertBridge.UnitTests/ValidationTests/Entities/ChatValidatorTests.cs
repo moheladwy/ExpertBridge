@@ -76,3 +76,5 @@
 //        resultOfInvalidEndedAt.ShouldHaveValidationErrorFor(x => x.EndedAt);
 //    }
 //}
+
+

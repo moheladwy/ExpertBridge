@@ -7,11 +7,11 @@ namespace ExpertBridge.Application.EmbeddingService;
 
 public sealed class QueuedEmbeddingService : IEmbeddingService
 {
-    private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
-    private readonly SemaphoreSlim _semaphore;
-    private readonly ILogger<QueuedEmbeddingService> _logger;
-    private readonly HybridCache _cache;
     private const int MaxConcurrentRequests = 1;
+    private readonly HybridCache _cache;
+    private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
+    private readonly ILogger<QueuedEmbeddingService> _logger;
+    private readonly SemaphoreSlim _semaphore;
 
     public QueuedEmbeddingService(
         IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,

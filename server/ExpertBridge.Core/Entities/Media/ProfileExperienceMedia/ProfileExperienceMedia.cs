@@ -7,7 +7,6 @@ namespace ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
 
 public class ProfileExperienceMedia : MediaObject
 {
-
     // Foreign keys
     public string ProfileExperienceId { get; set; }
 

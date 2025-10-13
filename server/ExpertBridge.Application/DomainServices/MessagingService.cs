@@ -10,102 +10,101 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace ExpertBridge.Application.DomainServices
+namespace ExpertBridge.Application.DomainServices;
+
+public class MessagingService
 {
-    public class MessagingService
+    private readonly ExpertBridgeDbContext _dbContext;
+    private readonly IHubContext<NotificationsHub, INotificationClient> _hubContext;
+    private readonly ILogger<MessagingService> _logger;
+    private readonly NotificationFacade _notifications;
+
+    public MessagingService(
+        ExpertBridgeDbContext dbContext,
+        IHubContext<NotificationsHub, INotificationClient> hubContext,
+        NotificationFacade notifications,
+        ILogger<MessagingService> logger)
     {
-        private readonly ExpertBridgeDbContext _dbContext;
-        private readonly IHubContext<NotificationsHub, INotificationClient> _hubContext;
-        private readonly NotificationFacade _notifications;
-        private readonly ILogger<MessagingService> _logger;
+        _dbContext = dbContext;
+        _hubContext = hubContext;
+        _notifications = notifications;
+        _logger = logger;
+    }
 
-        public MessagingService(
-            ExpertBridgeDbContext dbContext,
-            IHubContext<NotificationsHub, INotificationClient> hubContext,
-            NotificationFacade notifications,
-            ILogger<MessagingService> logger)
+    public async Task<MessageResponse> CreateAsync(Profile userProfile, CreateMessageRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(userProfile);
+        ArgumentNullException.ThrowIfNull(request);
+
+        // WARNING!
+        // Do NOT trust the chat id coming from the client.
+        // Always check if the creating user is participent in this chat first.
+        // (RESOLVED)
+        var chat = await _dbContext.Chats
+            .Include(c => c.Job)
+            .WhereProfileIsChatParticipant(userProfile.Id)
+            .FirstOrDefaultAsync(c => c.Id == request.ChatId);
+
+        if (chat is null)
         {
-            _dbContext = dbContext;
-            _hubContext = hubContext;
-            _notifications = notifications;
-            _logger = logger;
+            throw new ChatNotFoundException($"Chat with id = {request.ChatId} was not found");
         }
 
-        public async Task<MessageResponse> CreateAsync(Profile userProfile, CreateMessageRequest request)
+        var message = new Message
         {
-            ArgumentNullException.ThrowIfNull(userProfile);
-            ArgumentNullException.ThrowIfNull(request);
+            ChatId = chat.Id,
+            SenderId = userProfile.Id,
+            IsConfirmationMessage = false,
+            Content = request.Content,
+            Sender = userProfile
+        };
 
-            // WARNING!
-            // Do NOT trust the chat id coming from the client.
-            // Always check if the creating user is participent in this chat first.
-            // (RESOLVED)
-            var chat = await _dbContext.Chats
-                .Include(c => c.Job)
-                .WhereProfileIsChatParticipant(userProfile.Id)
-                .FirstOrDefaultAsync(c => c.Id == request.ChatId);
+        await _dbContext.Messages.AddAsync(message);
+        await _dbContext.SaveChangesAsync();
 
-            if (chat is null)
-            {
-                throw new ChatNotFoundException($"Chat with id = {request.ChatId} was not found");
-            }
+        var receiverId = userProfile.Id == chat.HirerId ? chat.WorkerId : chat.HirerId;
 
-            var message = new Message
-            {
-                ChatId = chat.Id,
-                SenderId = userProfile.Id,
-                IsConfirmationMessage = false,
-                Content = request.Content,
-                Sender = userProfile,
-            };
+        // notify the other chat participant
+        await _notifications.NotifyNewMessageReceivedAsync(message, receiverId, chat.Job.Id);
 
-            await _dbContext.Messages.AddAsync(message);
-            await _dbContext.SaveChangesAsync();
+        // send the message through SignalR
+        await _hubContext.Clients.All.ReceiveMessage(new Notifications.Models.Message
+        {
+            ChatId = chat.Id,
+            ReceiverId = receiverId,
+            SenderId = message.SenderId,
+            IsConfirmationMessage = message.IsConfirmationMessage,
+            Content = message.Content,
+            CreatedAt = message.CreatedAt.Value
+        });
 
-            var receiverId = userProfile.Id == chat.HirerId ? chat.WorkerId : chat.HirerId;
+        return message.SelectMessageResponseFromFullMessage();
+    }
 
-            // notify the other chat participant
-            await _notifications.NotifyNewMessageReceivedAsync(message, receiverId, chat.Job.Id);
+    public async Task<List<MessageResponse>> GetChatMessagesAsync(Profile userProfile, string chatId)
+    {
+        ArgumentNullException.ThrowIfNull(userProfile);
+        ArgumentNullException.ThrowIfNull(chatId);
 
-            // send the message through SignalR
-            await _hubContext.Clients.All.ReceiveMessage(new Notifications.Models.Message
-            {
-                ChatId = chat.Id,
-                ReceiverId = receiverId,
-                SenderId = message.SenderId,
-                IsConfirmationMessage = message.IsConfirmationMessage,
-                Content = message.Content,
-                CreatedAt = message.CreatedAt.Value,
-            });
+        // WARNING!
+        // Do NOT trust the chat id coming from the client.
+        // Always check if the requesting user is participent in this chat first.
+        // (RESOLVED)
+        var chat = await _dbContext.Chats
+            .WhereProfileIsChatParticipant(userProfile.Id)
+            .FirstOrDefaultAsync(c => c.Id == chatId);
 
-            return message.SelectMessageResponseFromFullMessage();
+        if (chat is null)
+        {
+            throw new ChatNotFoundException($"Chat with id = {chatId} was not found");
         }
 
-        public async Task<List<MessageResponse>> GetChatMessagesAsync(Profile userProfile, string chatId)
-        {
-            ArgumentNullException.ThrowIfNull(userProfile);
-            ArgumentNullException.ThrowIfNull(chatId);
+        var messages = await _dbContext.Messages
+            .Where(m => m.ChatId == chatId)
+            .OrderBy(m => m.CreatedAt)
+            .SelectMessageResponseFromFullMessage()
+            .ToListAsync();
 
-            // WARNING!
-            // Do NOT trust the chat id coming from the client.
-            // Always check if the requesting user is participent in this chat first.
-            // (RESOLVED)
-            var chat = await _dbContext.Chats
-                .WhereProfileIsChatParticipant(userProfile.Id)
-                .FirstOrDefaultAsync(c => c.Id == chatId);
-
-            if (chat is null)
-            {
-                throw new ChatNotFoundException($"Chat with id = {chatId} was not found");
-            }
-
-            var messages = await _dbContext.Messages
-                .Where(m => m.ChatId == chatId)
-                .OrderBy(m => m.CreatedAt)
-                .SelectMessageResponseFromFullMessage()
-                .ToListAsync();
-
-            return messages;
-        }
+        return messages;
     }
 }

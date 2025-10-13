@@ -8,7 +8,7 @@ var rabbitMqPassword = builder
     .AddParameterFromConfiguration("RabbitMq-Password", "RabbitMQ:Password");
 
 var rabbitMq = builder
-    .AddRabbitMQ("rabbitmq", rabbitMqUsername, rabbitMqPassword, port: 5672)
+    .AddRabbitMQ("rabbitmq", rabbitMqUsername, rabbitMqPassword, 5672)
     .WithContainerName("expertbridge-rabbitmq")
     .WithDataVolume("expertbridge-rabbitmq-data")
     .WithLifetime(ContainerLifetime.Persistent)
@@ -17,7 +17,7 @@ var rabbitMq = builder
     .WithExternalHttpEndpoints();
 
 var redis = builder
-    .AddRedis("Redis", port: 6379)
+    .AddRedis("Redis", 6379)
     .WithImage("redis", "alpine")
     .WithContainerName("expertbridge-redis")
     .WithDataVolume("expertbridge-redis-data")
@@ -27,7 +27,7 @@ var redis = builder
     .PublishAsConnectionString();
 
 var seq = builder
-    .AddSeq("Seq", port: 4002)
+    .AddSeq("Seq", 4002)
     .WithContainerName("expertbridge-seq")
     .WithDataVolume("expertbridge-seq-data")
     .WithLifetime(ContainerLifetime.Persistent)

@@ -12,7 +12,8 @@ public class ChatEntityValidator : AbstractValidator<Chat>
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Chat Id is required")
             .NotEmpty().WithMessage("Chat Id is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Chat Id must not exceed {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Chat Id must not exceed {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("Chat CreatedAt is required")

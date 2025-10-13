@@ -93,42 +93,63 @@ public class ProfileService
         var validationResult = await _updateProfileRequestValidator
             .ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
+        {
             throw new ValidationException(validationResult.Errors);
+        }
 
         var profile = user.Profile;
 
         if (!string.IsNullOrEmpty(request.Username) &&
-                request.Username != user.Profile.Username)
+            request.Username != user.Profile.Username)
         {
             var isUsernameExists = await _dbContext.Profiles
                 .AsNoTracking()
                 .AnyAsync(p => p.Username == request.Username && p.Username != user.Profile.Username,
-                        cancellationToken);
+                    cancellationToken);
             if (isUsernameExists)
+            {
                 throw new ProfileUserNameAlreadyExistsException($"Username '{user.Profile.Username}' already exists.");
+            }
+
             profile.Username = request.Username;
         }
+
         if (!string.IsNullOrEmpty(request.PhoneNumber) &&
-                request.PhoneNumber != user.Profile.PhoneNumber)
+            request.PhoneNumber != user.Profile.PhoneNumber)
         {
             var isPhoneNumberExisting = await _dbContext.Profiles
                 .AsNoTracking()
                 .AnyAsync(p =>
                         p.PhoneNumber == request.PhoneNumber && p.PhoneNumber != user.Profile.PhoneNumber,
-                        cancellationToken);
+                    cancellationToken);
             if (isPhoneNumberExisting)
+            {
                 throw new ProfilePhoneNumberAlreadyExistsException(
-                        $"Phone number '{request.PhoneNumber}' already exists.");
+                    $"Phone number '{request.PhoneNumber}' already exists.");
+            }
+
             profile.PhoneNumber = request.PhoneNumber;
         }
+
         if (!string.IsNullOrEmpty(request.FirstName) && request.FirstName != user.Profile.FirstName)
+        {
             profile.FirstName = request.FirstName;
+        }
+
         if (!string.IsNullOrEmpty(request.LastName) && request.LastName != user.Profile.LastName)
+        {
             profile.LastName = request.LastName;
+        }
+
         if (!string.IsNullOrEmpty(request.Bio) && request.Bio != user.Profile.Bio)
+        {
             profile.Bio = request.Bio;
+        }
+
         if (!string.IsNullOrEmpty(request.JobTitle) && request.JobTitle != user.Profile.JobTitle)
+        {
             profile.JobTitle = request.JobTitle;
+        }
 
         await UpdateProfileSkillsAsync(
             profile,
@@ -143,15 +164,17 @@ public class ProfileService
             .FirstOrDefaultAsync(cancellationToken);
 
         if (profileResponse == null)
+        {
             throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+        }
 
         return profileResponse;
     }
 
     private async Task UpdateProfileSkillsAsync(
-            Profile profile,
-            UpdateProfileSkillsRequest request,
-            CancellationToken cancellationToken = default)
+        Profile profile,
+        UpdateProfileSkillsRequest request,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(profile);
         ArgumentNullException.ThrowIfNull(request);
@@ -193,7 +216,7 @@ public class ProfileService
                 ProfileId = profile.Id,
                 SkillId = allSkills
                     .First(s => s.Name.Equals(skillName, StringComparison.OrdinalIgnoreCase))
-                    .Id,
+                    .Id
             })
             .ToList();
 

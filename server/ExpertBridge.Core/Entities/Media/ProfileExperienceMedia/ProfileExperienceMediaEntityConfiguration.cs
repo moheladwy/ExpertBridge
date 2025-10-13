@@ -8,8 +8,5 @@ namespace ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
 
 public class ProfileExperienceMediaEntityConfiguration : IEntityTypeConfiguration<ProfileExperienceMedia>
 {
-    public void Configure(EntityTypeBuilder<ProfileExperienceMedia> builder)
-    {
-        builder.ConfigureAbstractMedia();
-    }
+    public void Configure(EntityTypeBuilder<ProfileExperienceMedia> builder) => builder.ConfigureAbstractMedia();
 }

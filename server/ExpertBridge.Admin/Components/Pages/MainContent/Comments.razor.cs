@@ -13,31 +13,28 @@ namespace ExpertBridge.Admin.Components.Pages.MainContent;
 
 public partial class Comments : ComponentBase
 {
-    [Inject]
-    private ExpertBridgeDbContext DbContext { get; set; } = default!;
-
-    [Inject]
-    private HybridCache Cache { get; set; } = default!;
+    private readonly int pageSize = 4;
 
     private List<CommentResponse> comments = [];
-    private List<CommentResponse> pagedComments = [];
     private int count;
-    private int pageSize = 4;
+    private List<CommentResponse>? filteredComments;
+    private int filteredCount;
+    private List<CommentResponse> pagedComments = [];
 
     // Search properties
     private string searchText = string.Empty;
-    private List<CommentResponse>? filteredComments;
-    private int filteredCount;
+
+    [Inject] private ExpertBridgeDbContext DbContext { get; set; } = default!;
+
+    [Inject] private HybridCache Cache { get; set; } = default!;
+
     private int displayedCount => string.IsNullOrWhiteSpace(searchText) ? count : filteredCount;
 
     private string pagingSummaryFormat => string.IsNullOrWhiteSpace(searchText)
         ? "Displaying page {0} of {1} <b>(total {2} comments)</b>"
         : "Displaying page {0} of {1} <b>({2} comments found, {3} total)</b>";
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadCommentsAsync();
-    }
+    protected override async Task OnInitializedAsync() => await LoadCommentsAsync();
 
     private async Task LoadCommentsAsync()
     {
@@ -58,17 +55,14 @@ public partial class Comments : ComponentBase
 
     private void UpdatePaged(int skip, int take)
     {
-        var sourceList = string.IsNullOrWhiteSpace(searchText) ? comments : (filteredComments ?? comments);
+        var sourceList = string.IsNullOrWhiteSpace(searchText) ? comments : filteredComments ?? comments;
         pagedComments = sourceList
             .Skip(skip)
             .Take(take)
             .ToList();
     }
 
-    private void PageChanged(PagerEventArgs args)
-    {
-        UpdatePaged(args.Skip, args.Top);
-    }
+    private void PageChanged(PagerEventArgs args) => UpdatePaged(args.Skip, args.Top);
 
     private List<CommentResponse> GetFilteredComments()
     {
@@ -97,16 +91,14 @@ public partial class Comments : ComponentBase
         return false;
     }
 
-    private static bool CommentFieldsMatch(CommentResponse comment, string searchTerm)
-    {
-        return (comment.Id?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Content?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Author?.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Author?.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Author?.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.PostId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.JobPostingId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false);
-    }
+    private static bool CommentFieldsMatch(CommentResponse comment, string searchTerm) =>
+        (comment.Id?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Content?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Author?.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Author?.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Author?.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.PostId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.JobPostingId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false);
 
     private void OnSearchChanged(string value)
     {

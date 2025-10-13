@@ -8,8 +8,5 @@ namespace ExpertBridge.Core.Entities.Media.JobPostingMedia;
 
 public class JobPostingMediaEntityConfiguration : IEntityTypeConfiguration<JobPostingMedia>
 {
-    public void Configure(EntityTypeBuilder<JobPostingMedia> builder)
-    {
-        builder.ConfigureAbstractMedia();
-    }
+    public void Configure(EntityTypeBuilder<JobPostingMedia> builder) => builder.ConfigureAbstractMedia();
 }

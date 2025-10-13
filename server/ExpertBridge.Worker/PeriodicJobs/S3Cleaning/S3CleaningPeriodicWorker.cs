@@ -13,36 +13,36 @@ using Quartz;
 namespace ExpertBridge.Worker.PeriodicJobs.S3Cleaning;
 
 /// <summary>
-/// Represents a periodic worker for cleaning up resources in an AWS S3 bucket.
-/// This job interacts with the database, retrieves relevant data, and performs cleanup operations
-/// on the S3 bucket based on the defined logic.
+///     Represents a periodic worker for cleaning up resources in an AWS S3 bucket.
+///     This job interacts with the database, retrieves relevant data, and performs cleanup operations
+///     on the S3 bucket based on the defined logic.
 /// </summary>
 internal sealed class S3CleaningPeriodicWorker : IJob
 {
     /// <summary>
-    /// Logger instance for logging job execution and errors.
-    /// </summary>
-    private readonly ILogger<S3CleaningPeriodicWorker> _logger;
-
-    /// <summary>
-    /// Database context for accessing posts, job postings, and comments.
-    /// </summary>
-    private readonly ExpertBridgeDbContext _dbContext;
-
-    /// <summary>
-    /// Instance of Amazon S3 client used for interacting with AWS S3 service,
-    /// including operations like deleting objects for periodic cleaning tasks.
-    /// </summary>
-    private readonly IAmazonS3 _s3Client;
-
-    /// <summary>
-    /// Configuration settings for AWS integrations, including the S3 bucket,
-    /// region, and authentication details.
+    ///     Configuration settings for AWS integrations, including the S3 bucket,
+    ///     region, and authentication details.
     /// </summary>
     private readonly AwsSettings _awsSettings;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="S3CleaningPeriodicWorker"/> class.
+    ///     Database context for accessing posts, job postings, and comments.
+    /// </summary>
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    /// <summary>
+    ///     Logger instance for logging job execution and errors.
+    /// </summary>
+    private readonly ILogger<S3CleaningPeriodicWorker> _logger;
+
+    /// <summary>
+    ///     Instance of Amazon S3 client used for interacting with AWS S3 service,
+    ///     including operations like deleting objects for periodic cleaning tasks.
+    /// </summary>
+    private readonly IAmazonS3 _s3Client;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="S3CleaningPeriodicWorker" /> class.
     /// </summary>
     /// <param name="logger">The logger instance.</param>
     /// <param name="dbContext">The database context.</param>
@@ -79,9 +79,13 @@ internal sealed class S3CleaningPeriodicWorker : IJob
                 .ForEachAsync(media =>
                 {
                     if (media.Post is not null && !media.Post.IsDeleted)
+                    {
                         validKeys.Add(media.Key);
+                    }
                     else
+                    {
                         deletedMedias.Add(media);
+                    }
                 }, context.CancellationToken);
 
             // CommentMedias
@@ -92,9 +96,13 @@ internal sealed class S3CleaningPeriodicWorker : IJob
                 .ForEachAsync(media =>
                 {
                     if (media.Comment is not null && !media.Comment.IsDeleted)
+                    {
                         validKeys.Add(media.Key);
+                    }
                     else
+                    {
                         deletedMedias.Add(media);
+                    }
                 }, context.CancellationToken);
 
             // ProfileMedias
@@ -105,9 +113,13 @@ internal sealed class S3CleaningPeriodicWorker : IJob
                 .ForEachAsync(media =>
                 {
                     if (media.Profile is not null && !media.Profile.IsDeleted)
+                    {
                         validKeys.Add(media.Key);
+                    }
                     else
+                    {
                         deletedMedias.Add(media);
+                    }
                 }, context.CancellationToken);
 
             // ChatMedias
@@ -118,9 +130,13 @@ internal sealed class S3CleaningPeriodicWorker : IJob
                 .ForEachAsync(media =>
                 {
                     if (media.Chat is not null && !media.Chat.IsDeleted)
+                    {
                         validKeys.Add(media.Key);
+                    }
                     else
+                    {
                         deletedMedias.Add(media);
+                    }
                 }, context.CancellationToken);
 
             // JobPostingMedias
@@ -131,9 +147,13 @@ internal sealed class S3CleaningPeriodicWorker : IJob
                 .ForEachAsync(media =>
                 {
                     if (media.JobPosting is not null && !media.JobPosting.IsDeleted)
+                    {
                         validKeys.Add(media.Key);
+                    }
                     else
+                    {
                         deletedMedias.Add(media);
+                    }
                 }, context.CancellationToken);
 
             // ProfileExperienceMedias
@@ -144,9 +164,13 @@ internal sealed class S3CleaningPeriodicWorker : IJob
                 .ForEachAsync(media =>
                 {
                     if (media.ProfileExperience is not null && !media.ProfileExperience.IsDeleted)
+                    {
                         validKeys.Add(media.Key);
+                    }
                     else
+                    {
                         deletedMedias.Add(media);
+                    }
                 }, context.CancellationToken);
 
             if (deletedMedias.Count + onHoldGrants.Count > 0)
@@ -157,10 +181,10 @@ internal sealed class S3CleaningPeriodicWorker : IJob
                         BucketName = _awsSettings.BucketName,
                         Objects =
                             deletedMedias.Select(m => m.Key)
-                            .Where(k => !validKeys.Contains(k))
-                            .Concat(onHoldGrants.Select(g => g.Key))
-                            .Select(k => new KeyVersion { Key = k })
-                            .ToList()
+                                .Where(k => !validKeys.Contains(k))
+                                .Concat(onHoldGrants.Select(g => g.Key))
+                                .Select(k => new KeyVersion { Key = k })
+                                .ToList()
                     },
                     context.CancellationToken);
 

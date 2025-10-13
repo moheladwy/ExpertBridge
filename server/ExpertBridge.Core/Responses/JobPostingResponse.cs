@@ -1,5 +1,3 @@
-using System;
-
 namespace ExpertBridge.Core.Responses;
 
 public class JobPostingResponse
@@ -16,7 +14,7 @@ public class JobPostingResponse
     public int Comments { get; set; }
     public bool IsUpvoted { get; set; }
     public bool IsDownvoted { get; set; }
-    public bool IsAppliedFor { get; set; } 
+    public bool IsAppliedFor { get; set; }
     public double? RelevanceScore { get; set; }
 
     public decimal Budget { get; set; }

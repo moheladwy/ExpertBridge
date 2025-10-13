@@ -37,11 +37,10 @@ public static class HealthChecks
 
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
-        app.MapHealthChecks("/health", new HealthCheckOptions
-        { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+        app.MapHealthChecks("/health",
+            new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
         // Only health checks tagged with the "live" tag must pass for the app to be considered alive
-        app.MapHealthChecks("/alive", new HealthCheckOptions
-        { Predicate = r => r.Tags.Contains("live") });
+        app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
 
         return app;
     }

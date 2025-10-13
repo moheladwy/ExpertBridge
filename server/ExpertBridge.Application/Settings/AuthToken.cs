@@ -5,7 +5,6 @@ namespace ExpertBridge.Application.Settings;
 internal sealed class AuthTokenSettings
 {
     [JsonPropertyName("kind")]
-
     public string Kind { get; set; }
 
     [JsonPropertyName("localId")]

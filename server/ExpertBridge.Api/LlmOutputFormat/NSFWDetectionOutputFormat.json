@@ -1,72 +1,72 @@
 {
-  "description": "Scores for various types of toxic content, each as a float in [0,1].\n\nAttributes:\n    toxicity: Probability the comment is rude, disrespectful, or unreasonable, likely to make people leave a discussion.\n    severe_toxicity: Probability the comment is very hateful, aggressive, or otherwise extremely disruptive.\n    obscene: Probability the comment contains profanity or other vulgar language.\n    threat: Probability the comment expresses an intention to inflict harm or violence.\n    insult: Probability the comment is insulting or demeaning toward an individual or group.\n    identity_attack: Probability the comment targets someone based on a protected identity (e.g., race, gender).\n    sexual_explicit: Probability the comment contains graphic sexual content or references.",
-  "properties": {
-    "Toxicity": {
-      "decimal_places": 5,
-      "description": "A score between 0 and 1 for a rude, disrespectful, or unreasonable comment that is likely to make people leave a hateful discussion.",
-      "maximum": 1,
-      "minimum": 0,
-      "title": "Toxicity",
-      "type": "number"
+    "description": "Scores for various types of toxic content, each as a float in [0,1].\n\nAttributes:\n    toxicity: Probability the comment is rude, disrespectful, or unreasonable, likely to make people leave a discussion.\n    severe_toxicity: Probability the comment is very hateful, aggressive, or otherwise extremely disruptive.\n    obscene: Probability the comment contains profanity or other vulgar language.\n    threat: Probability the comment expresses an intention to inflict harm or violence.\n    insult: Probability the comment is insulting or demeaning toward an individual or group.\n    identity_attack: Probability the comment targets someone based on a protected identity (e.g., race, gender).\n    sexual_explicit: Probability the comment contains graphic sexual content or references.",
+    "properties": {
+        "Toxicity": {
+            "decimal_places": 5,
+            "description": "A score between 0 and 1 for a rude, disrespectful, or unreasonable comment that is likely to make people leave a hateful discussion.",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Toxicity",
+            "type": "number"
+        },
+        "SevereToxicity": {
+            "decimal_places": 5,
+            "description": "A score between 0 and 1 for a very hateful, aggressive, or disrespectful comment that is highly likely to make a user leave a discussion or give up on sharing their perspective.",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "SevereToxicity",
+            "type": "number"
+        },
+        "Obscene": {
+            "decimal_places": 5,
+            "description": "A score between 0 and 1 for a use of profanity, curse words, or other vulgar language.",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Obscene",
+            "type": "number"
+        },
+        "Threat": {
+            "decimal_places": 5,
+            "description": "A score between 0 and 1 for expressions of intent to inflict pain, injury, threats, or violence.",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Threat",
+            "type": "number"
+        },
+        "Insult": {
+            "decimal_places": 5,
+            "description": "A score between 0 and 1 for an insulting, inflammatory, or demeaning language toward an individual or group.",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Insult",
+            "type": "number"
+        },
+        "IdentityAttack": {
+            "decimal_places": 5,
+            "description": "A score between 0 and 1 for a negative or hateful comments targeting someone based on their identity.",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "IdentityAttack",
+            "type": "number"
+        },
+        "SexualExplicit": {
+            "decimal_places": 5,
+            "description": "A score between 0 and 1 for a references to sexual acts, body parts, or other graphic sexual content.",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "SexualExplicit",
+            "type": "number"
+        }
     },
-    "SevereToxicity": {
-      "decimal_places": 5,
-      "description": "A score between 0 and 1 for a very hateful, aggressive, or disrespectful comment that is highly likely to make a user leave a discussion or give up on sharing their perspective.",
-      "maximum": 1,
-      "minimum": 0,
-      "title": "SevereToxicity",
-      "type": "number"
-    },
-    "Obscene": {
-      "decimal_places": 5,
-      "description": "A score between 0 and 1 for a use of profanity, curse words, or other vulgar language.",
-      "maximum": 1,
-      "minimum": 0,
-      "title": "Obscene",
-      "type": "number"
-    },
-    "Threat": {
-      "decimal_places": 5,
-      "description": "A score between 0 and 1 for expressions of intent to inflict pain, injury, threats, or violence.",
-      "maximum": 1,
-      "minimum": 0,
-      "title": "Threat",
-      "type": "number"
-    },
-    "Insult": {
-      "decimal_places": 5,
-      "description": "A score between 0 and 1 for an insulting, inflammatory, or demeaning language toward an individual or group.",
-      "maximum": 1,
-      "minimum": 0,
-      "title": "Insult",
-      "type": "number"
-    },
-    "IdentityAttack": {
-      "decimal_places": 5,
-      "description": "A score between 0 and 1 for a negative or hateful comments targeting someone based on their identity.",
-      "maximum": 1,
-      "minimum": 0,
-      "title": "IdentityAttack",
-      "type": "number"
-    },
-    "SexualExplicit": {
-      "decimal_places": 5,
-      "description": "A score between 0 and 1 for a references to sexual acts, body parts, or other graphic sexual content.",
-      "maximum": 1,
-      "minimum": 0,
-      "title": "SexualExplicit",
-      "type": "number"
-    }
-  },
-  "required": [
-    "Toxicity",
-    "SevereToxicity",
-    "Obscene",
-    "Threat",
-    "Insult",
-    "IdentityAttack",
-    "SexualExplicit"
-  ],
-  "title": "NsfwDetectionResponse",
-  "type": "object"
+    "required": [
+        "Toxicity",
+        "SevereToxicity",
+        "Obscene",
+        "Threat",
+        "Insult",
+        "IdentityAttack",
+        "SexualExplicit"
+    ],
+    "title": "NsfwDetectionResponse",
+    "type": "object"
 }

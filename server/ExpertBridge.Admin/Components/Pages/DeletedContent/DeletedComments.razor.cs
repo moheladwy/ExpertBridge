@@ -13,19 +13,16 @@ namespace ExpertBridge.Admin.Components.Pages.DeletedContent;
 
 public partial class DeletedComments : ComponentBase
 {
-    private readonly ExpertBridgeDbContext _dbContext;
     private readonly HybridCache _cache;
-    public List<CommentResponse> Comments { get; set; }
-    private List<CommentResponse>? pagedComments;
-    private int pageSize = 4;
+    private readonly ExpertBridgeDbContext _dbContext;
+    private readonly int pageSize = 4;
+    private List<CommentResponse>? filteredComments;
+    private int filteredCount;
     private bool isLoading = true;
+    private List<CommentResponse>? pagedComments;
 
     // Search properties
     private string searchText = string.Empty;
-    private List<CommentResponse>? filteredComments;
-    private int filteredCount;
-    private int displayedCommentCount => string.IsNullOrWhiteSpace(searchText) ? Comments.Count : filteredCount;
-    private string pagingSummaryFormat => $"Displaying page {{0}} of {{1}} (total {{2}} {(string.IsNullOrWhiteSpace(searchText) ? "deleted comments" : "results")})";
 
     public DeletedComments(ExpertBridgeDbContext dbContext, HybridCache cache)
     {
@@ -34,6 +31,12 @@ public partial class DeletedComments : ComponentBase
         Comments = [];
         pagedComments = [];
     }
+
+    public List<CommentResponse> Comments { get; set; }
+    private int displayedCommentCount => string.IsNullOrWhiteSpace(searchText) ? Comments.Count : filteredCount;
+
+    private string pagingSummaryFormat =>
+        $"Displaying page {{0}} of {{1}} (total {{2}} {(string.IsNullOrWhiteSpace(searchText) ? "deleted comments" : "results")})";
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,18 +50,18 @@ public partial class DeletedComments : ComponentBase
         {
             isLoading = false;
         }
+
         await base.OnInitializedAsync();
     }
 
-    private void OnPageChanged(PagerEventArgs args)
-    {
-        UpdatePagedComments(args.Skip, args.Top);
-    }
+    private void OnPageChanged(PagerEventArgs args) => UpdatePagedComments(args.Skip, args.Top);
 
     private List<CommentResponse> GetFilteredComments()
     {
         if (Comments == null || string.IsNullOrWhiteSpace(searchText))
+        {
             return Comments ?? [];
+        }
 
         return Comments.Where(c => CommentMatchesSearch(c, searchText)).ToList();
     }
@@ -67,7 +70,9 @@ public partial class DeletedComments : ComponentBase
     {
         // Check if the comment itself matches
         if (CommentFieldsMatch(comment, search))
+        {
             return true;
+        }
 
         // Recursively check if any nested reply matches
         if (comment.Replies != null && comment.Replies.Count > 0)
@@ -78,16 +83,14 @@ public partial class DeletedComments : ComponentBase
         return false;
     }
 
-    private static bool CommentFieldsMatch(CommentResponse comment, string search)
-    {
-        return (comment.Id?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Content?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Author?.Username?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Author?.FirstName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.Author?.LastName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.PostId?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-               (comment.JobPostingId?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false);
-    }
+    private static bool CommentFieldsMatch(CommentResponse comment, string search) =>
+        (comment.Id?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Content?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Author?.Username?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Author?.FirstName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.Author?.LastName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.PostId?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+        (comment.JobPostingId?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false);
 
     private void OnSearchChanged(string value)
     {

@@ -19,9 +19,9 @@ public class AreaEntityConfiguration : IEntityTypeConfiguration<Area>
             .IsRequired()
             .HasMaxLength(AreaEntityConstraints.MaxGovernorateLength)
             .HasConversion(
-                    v => v.ToString(),
-                    v => Enum.Parse<Governorates>(v)
-                );
+                v => v.ToString(),
+                v => Enum.Parse<Governorates>(v)
+            );
 
         builder.Property(x => x.Region)
             .IsRequired()

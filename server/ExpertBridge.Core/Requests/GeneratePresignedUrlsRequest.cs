@@ -3,10 +3,9 @@
 
 using ExpertBridge.Core.Entities;
 
-namespace ExpertBridge.Core.Requests
+namespace ExpertBridge.Core.Requests;
+
+public class GeneratePresignedUrlsRequest
 {
-    public class GeneratePresignedUrlsRequest
-    {
-        public List<FileMetadata> Files { get; set; }
-    }
+    public List<FileMetadata> Files { get; set; }
 }

@@ -7,9 +7,7 @@ public class TagValidatorTests
 {
     private readonly Tag _tag = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        EnglishName = "Test Tag",
-        Description = "Test Description"
+        Id = Guid.NewGuid().ToString(), EnglishName = "Test Tag", Description = "Test Description"
     };
 
     private readonly TagEntityValidator _tagValidator = new();

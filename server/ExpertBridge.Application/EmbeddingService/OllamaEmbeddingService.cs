@@ -5,8 +5,8 @@ namespace ExpertBridge.Application.EmbeddingService;
 
 // DEPRECATED: Use QueuedEmbeddingService instead.
 public class OllamaEmbeddingService(
-        IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator
-    ) : IEmbeddingService
+    IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator
+) : IEmbeddingService
 {
     public async Task<Vector> GenerateEmbedding(string text)
     {

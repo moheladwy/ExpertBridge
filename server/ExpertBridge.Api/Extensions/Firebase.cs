@@ -45,10 +45,10 @@ internal static class Firebase
         var settings = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>()!;
 
         builder.Services.AddHttpClient<FirebaseAuthService>(httpClient =>
-        {
-            httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
-        })
-        .AddStandardResilienceHandler();
+            {
+                httpClient.BaseAddress = new Uri(settings.AuthenticationTokenUri);
+            })
+            .AddStandardResilienceHandler();
 
         return builder;
     }

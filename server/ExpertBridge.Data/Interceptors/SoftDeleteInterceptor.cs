@@ -13,12 +13,17 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
         DbContextEventData eventData,
         InterceptionResult<int> result)
     {
-        if (eventData?.Context is null) return result;
+        if (eventData?.Context is null)
+        {
+            return result;
+        }
 
         foreach (var entry in eventData.Context.ChangeTracker.Entries())
         {
             if (entry is not { State: EntityState.Deleted, Entity: ISoftDeletable entity })
+            {
                 continue;
+            }
 
             entry.State = EntityState.Modified;
             entity.IsDeleted = true;

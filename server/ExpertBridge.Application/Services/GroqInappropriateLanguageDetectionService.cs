@@ -27,6 +27,10 @@ public sealed class GroqInappropriateLanguageDetectionService
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
+    /// <summary>
+    /// An instance of <see cref="ResiliencePipeline" /> used to provide resilience mechanisms such as retries
+    /// and transient fault handling when interacting with the Groq Large Language Model (LLM) API.
+    /// </summary>
     private readonly ResiliencePipeline _resiliencePipeline;
 
     /// <summary>
@@ -41,9 +45,7 @@ public sealed class GroqInappropriateLanguageDetectionService
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true,
-            AllowOutOfOrderMetadataProperties = true,
-            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true, AllowOutOfOrderMetadataProperties = true, AllowTrailingCommas = true
         };
     }
 
@@ -53,7 +55,10 @@ public sealed class GroqInappropriateLanguageDetectionService
     ///     Processes text using the Groq Large Language Model (LLM) API and returns the analysis as a structured response.
     /// </summary>
     /// <param name="text">The input text to be analyzed for NSFW content. Must not be null or empty.</param>
-    /// <returns>A <see cref="InappropriateLanguageDetectionResponse" /> object containing the detection results for multiple NSFW categories.</returns>
+    /// <returns>
+    ///     A <see cref="InappropriateLanguageDetectionResponse" /> object containing the detection results for multiple
+    ///     NSFW categories.
+    /// </returns>
     /// <exception cref="ArgumentException">Thrown when the provided <paramref name="text" /> is null or empty.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the response fails deserialization or parsing.</exception>
     public async Task<InappropriateLanguageDetectionResponse?> DetectAsync(string text)
@@ -69,9 +74,10 @@ public sealed class GroqInappropriateLanguageDetectionService
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(text);
                 var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
-                result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response, _jsonSerializerOptions)
-                             ?? throw new InvalidOperationException(
-                                 "Failed to deserialize the nsfw detection response: null result");
+                result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response,
+                             _jsonSerializerOptions)
+                         ?? throw new InvalidOperationException(
+                             "Failed to deserialize the nsfw detection response: null result");
             });
 
             return result;

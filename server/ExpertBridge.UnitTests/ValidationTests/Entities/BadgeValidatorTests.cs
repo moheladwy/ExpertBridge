@@ -9,9 +9,7 @@ public class BadgeValidatorTests
 
     private readonly Badge _validBadge = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Name = "Badge Name",
-        Description = "Badge Description"
+        Id = Guid.NewGuid().ToString(), Name = "Badge Name", Description = "Badge Description"
     };
 
     [Fact]

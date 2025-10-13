@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Core.Entities.Posts;
+
 public class PostEntityConstraints
 {
     public const int MaxTitleLength = 256;

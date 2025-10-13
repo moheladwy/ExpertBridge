@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ExpertBridge.Api.Controllers;
 
 /// <summary>
-///     This controller is used to handle media operations like uploading, downloading, and deleting objects from the s3 bucket.
+///     This controller is used to handle media operations like uploading, downloading, and deleting objects from the s3
+///     bucket.
 /// </summary>
 /// <param name="objectStorageService">
 ///     The service that handles the operations on the s3 bucket.
@@ -19,8 +20,8 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 public class MediaController : ControllerBase
 {
-    private readonly S3Service _s3Service;
     private readonly ExpertBridgeDbContext _dbContext;
+    private readonly S3Service _s3Service;
 
     public MediaController(S3Service s3Service, ExpertBridgeDbContext dbContext)
     {
@@ -32,7 +33,9 @@ public class MediaController : ControllerBase
     public async Task<List<PresignedUrlResponse>> GenerateUrls([FromBody] GeneratePresignedUrlsRequest request)
     {
         if (request == null || request.Files == null || request.Files.Count == 0)
+        {
             throw new ArgumentException("Files cannot be null or empty", nameof(request));
+        }
 
         var urls = new List<PresignedUrlResponse>();
 
@@ -44,10 +47,7 @@ public class MediaController : ControllerBase
         await _dbContext.MediaGrants.AddRangeAsync(
             urls.Select(url => new MediaGrant
             {
-                Key = url.Key,
-                GrantedAt = DateTime.UtcNow,
-                IsActive = false,
-                OnHold = true
+                Key = url.Key, GrantedAt = DateTime.UtcNow, IsActive = false, OnHold = true
             }));
 
         await _dbContext.SaveChangesAsync();

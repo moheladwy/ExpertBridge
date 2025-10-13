@@ -8,8 +8,5 @@ namespace ExpertBridge.Core.Entities.Media.ProfileMedia;
 
 public class ProfileMediaEntityConfiguration : IEntityTypeConfiguration<ProfileMedia>
 {
-    public void Configure(EntityTypeBuilder<ProfileMedia> builder)
-    {
-        builder.ConfigureAbstractMedia();
-    }
+    public void Configure(EntityTypeBuilder<ProfileMedia> builder) => builder.ConfigureAbstractMedia();
 }

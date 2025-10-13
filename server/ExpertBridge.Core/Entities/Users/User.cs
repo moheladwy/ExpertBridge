@@ -18,10 +18,10 @@ public class User : BaseModel, ISoftDeletable
     public bool IsBanned { get; set; }
     public bool IsEmailVerified { get; set; }
     public bool IsOnboarded { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
 
     // Navigation properties
-    [JsonIgnore]
-    public Profile Profile { get; set; }
+    [JsonIgnore] public Profile Profile { get; set; }
+
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

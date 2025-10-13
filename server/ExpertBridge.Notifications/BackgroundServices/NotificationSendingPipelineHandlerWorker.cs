@@ -11,92 +11,91 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ExpertBridge.Notifications.BackgroundServices
+namespace ExpertBridge.Notifications.BackgroundServices;
+
+public class NotificationSendingPipelineHandlerWorker : BackgroundService
 {
-    public class NotificationSendingPipelineHandlerWorker : BackgroundService
+    private readonly ChannelReader<SendNotificationsRequestMessage> _channel;
+    private readonly ILogger<NotificationSendingPipelineHandlerWorker> _logger;
+    private readonly IServiceProvider _services;
+
+    public NotificationSendingPipelineHandlerWorker(
+        IServiceProvider services,
+        Channel<SendNotificationsRequestMessage> channel,
+        ILogger<NotificationSendingPipelineHandlerWorker> logger)
     {
-        private readonly IServiceProvider _services;
-        private readonly ILogger<NotificationSendingPipelineHandlerWorker> _logger;
-        private readonly ChannelReader<SendNotificationsRequestMessage> _channel;
+        _services = services;
+        _logger = logger;
+        _channel = channel.Reader;
+    }
 
-        public NotificationSendingPipelineHandlerWorker(
-            IServiceProvider services,
-            Channel<SendNotificationsRequestMessage> channel,
-            ILogger<NotificationSendingPipelineHandlerWorker> logger)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        try
         {
-            _services = services;
-            _logger = logger;
-            _channel = channel.Reader;
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            try
+            while (await _channel.WaitToReadAsync(stoppingToken))
             {
-                while (await _channel.WaitToReadAsync(stoppingToken))
+                var message = await _channel.ReadAsync(stoppingToken);
+
+                try
                 {
-                    var message = await _channel.ReadAsync(stoppingToken);
+                    using var scope = _services.CreateScope();
 
-                    try
+                    var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
+
+                    var notificationEnitites = message.Notifications.Select(n => new Notification
                     {
-                        using var scope = _services.CreateScope();
+                        RecipientId = n.RecipientId,
+                        SenderId = n.SenderId,
+                        Message = n.Message,
+                        ActionUrl = n.ActionUrl,
+                        IconUrl = n.IconUrl,
+                        IconActionUrl = n.IconActionUrl,
+                        IsRead = n.IsRead
+                    });
 
-                        var dbContext = scope.ServiceProvider.GetRequiredService<ExpertBridgeDbContext>();
+                    await dbContext.Notifications.AddRangeAsync(notificationEnitites, stoppingToken);
+                    await dbContext.SaveChangesAsync(stoppingToken);
 
-                        var notificationEnitites = message.Notifications.Select(n => new Notification
+                    var hub = scope.ServiceProvider
+                        .GetRequiredService<IHubContext<NotificationsHub, INotificationClient>>();
+
+                    foreach (var notification in notificationEnitites)
+                    {
+                        // Send the notification to the client
+                        // We can use the notification ID as a unique identifier
+                        // for the notification in the client-side application.
+                        await hub.Clients.All.ReceiveNotification(new NotificationResponse
                         {
-                            RecipientId = n.RecipientId,
-                            SenderId = n.SenderId,
-                            Message = n.Message,
-                            ActionUrl = n.ActionUrl,
-                            IconUrl = n.IconUrl,
-                            IconActionUrl = n.IconActionUrl,
-                            IsRead = n.IsRead,
+                            Id = notification.Id,
+                            ActionUrl = notification.ActionUrl,
+                            CreatedAt = notification.CreatedAt ?? DateTime.UtcNow,
+                            IconActionUrl = notification.IconActionUrl,
+                            IconUrl = notification.IconUrl,
+                            IsRead = notification.IsRead,
+                            Message = notification.Message,
+                            RecipientId = notification.RecipientId
                         });
-
-                        await dbContext.Notifications.AddRangeAsync(notificationEnitites, stoppingToken);
-                        await dbContext.SaveChangesAsync(stoppingToken);
-
-                        var hub = scope.ServiceProvider
-                            .GetRequiredService<IHubContext<NotificationsHub, INotificationClient>>();
-
-                        foreach (var notification in notificationEnitites)
-                        {
-                            // Send the notification to the client
-                            // We can use the notification ID as a unique identifier
-                            // for the notification in the client-side application.
-                            await hub.Clients.All.ReceiveNotification(new NotificationResponse
-                            {
-                                Id = notification.Id,
-                                ActionUrl = notification.ActionUrl,
-                                CreatedAt = notification.CreatedAt ?? DateTime.UtcNow,
-                                IconActionUrl = notification.IconActionUrl,
-                                IconUrl = notification.IconUrl,
-                                IsRead = notification.IsRead,
-                                Message = notification.Message,
-                                RecipientId = notification.RecipientId,
-                            });
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex,
-                            "Pipeline: An error occurred while processing notification ={NotificationId}.",
-                            message.Notifications.First().Message);
                     }
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex,
+                        "Pipeline: An error occurred while processing notification ={NotificationId}.",
+                        message.Notifications.First().Message);
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex,
-                    "An error occurred while reading from the channel in {NotificationSenderHandlerWorker}.",
-                    nameof(NotificationSendingPipelineHandlerWorker));
-            }
-            finally
-            {
-                _logger.LogInformation("Terminating {NotificationSenderHandlerWorker}.",
-                    nameof(NotificationSendingPipelineHandlerWorker));
-            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex,
+                "An error occurred while reading from the channel in {NotificationSenderHandlerWorker}.",
+                nameof(NotificationSendingPipelineHandlerWorker));
+        }
+        finally
+        {
+            _logger.LogInformation("Terminating {NotificationSenderHandlerWorker}.",
+                nameof(NotificationSendingPipelineHandlerWorker));
         }
     }
 }

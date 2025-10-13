@@ -2,10 +2,9 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Entities.Skills;
+using FluentValidation;
 
 namespace ExpertBridge.Core.Requests.UpdateProfileRequest;
-
-using FluentValidation;
 
 public class ValidateUpdateProfileRequest : AbstractValidator<UpdateProfileRequest>
 {

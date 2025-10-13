@@ -40,25 +40,25 @@ public partial class Profile : BaseModel, ISoftDeletable
     public required string Username { get; set; }
     public string? PhoneNumber { get; set; }
     public bool IsBanned { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
 
     public Vector? UserInterestEmbedding { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }
 
 public partial class Profile
 {
     // Navigation properties
-    [JsonIgnore]
-    public User User { get; set; }
+    [JsonIgnore] public User User { get; set; }
+
     public ICollection<Area> Areas { get; set; } = [];
     public ICollection<ProfileExperience> Experiences { get; set; } = [];
     public ICollection<ProfileMedia> Medias { get; set; } = [];
 
-    [JsonIgnore]
-    public ICollection<Post> Posts { get; set; } = [];
-    [JsonIgnore]
-    public ICollection<Comment> Comments { get; set; } = [];
+    [JsonIgnore] public ICollection<Post> Posts { get; set; } = [];
+
+    [JsonIgnore] public ICollection<Comment> Comments { get; set; } = [];
+
     public ICollection<JobPosting> JobPostings { get; set; } = [];
     public ICollection<JobApplication> JobApplications { get; set; } = [];
     public ChatParticipant ChatParticipant { get; set; }

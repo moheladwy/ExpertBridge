@@ -1,6 +1,5 @@
 ﻿using System.Threading.Channels;
 using ExpertBridge.Contract.Messages;
-using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
@@ -8,6 +7,7 @@ using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Core.Interfaces;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Application.DomainServices;
@@ -25,32 +25,20 @@ public sealed class TaggingService
     private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
-    ///     Represents a channel writer used for publishing messages related to user interest updates.
-    ///     This allows asynchronous communication of changes to user profiles, such as updated tags or interests.
+    /// Represents the publish endpoint used for sending messages to the message broker,
+    /// enabling asynchronous communication and event-driven workflows within the application's infrastructure.
     /// </summary>
-    private readonly ChannelWriter<UserInterestsUpdatedMessage> _userInterestsChannel;
-
-    /// <summary>
-    /// Represents the channel writer responsible for handling and dispatching
-    /// messages containing user interest processing data, ensuring proper
-    /// communication and task coordination within the system.
-    /// </summary>
-    private readonly ChannelWriter<UserInterestsProsessingMessage> _userInterestsProcessingChannel;
+    private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TaggingService" /> class.
     /// </summary>
     /// <param name="dbContext">The database context used for data operations.</param>
-    /// <param name="userInterestsChannel">The channel used for publishing user interest update messages.</param>
-    /// <param name="userInterestsProcessingChannel">The channel used for processing user interest messages.</param>
-    public TaggingService(
-        ExpertBridgeDbContext dbContext,
-        Channel<UserInterestsUpdatedMessage> userInterestsChannel,
-        Channel<UserInterestsProsessingMessage> userInterestsProcessingChannel)
+    /// <param name="publishEndpoint">The publish endpoint for messaging.</param>
+    public TaggingService(ExpertBridgeDbContext dbContext, IPublishEndpoint publishEndpoint)
     {
         _dbContext = dbContext;
-        _userInterestsChannel = userInterestsChannel;
-        _userInterestsProcessingChannel = userInterestsProcessingChannel.Writer;
+        _publishEndpoint = publishEndpoint;
     }
 
 
@@ -59,6 +47,7 @@ public sealed class TaggingService
     /// </summary>
     /// <param name="postId">The unique identifier of the post to which the tags will be added.</param>
     /// <param name="authorId">The unique identifier of the author of the post.</param>
+    /// <param name="isJobPosting">Indicates whether the post is a job posting.</param>
     /// <param name="tags">The categorizer response containing the tags to be added to the post.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation if needed.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
@@ -95,8 +84,7 @@ public sealed class TaggingService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _userInterestsChannel.WriteAsync(new UserInterestsUpdatedMessage { UserProfileId = authorId },
-            cancellationToken);
+        await _publishEndpoint.Publish(new UserInterestsUpdatedMessage { UserProfileId = authorId }, cancellationToken);
     }
 
     private async Task<IEnumerable<Tag?>> CreateTagsInDatabaseAsync(
@@ -120,9 +108,7 @@ public sealed class TaggingService
 
         var newTags = newRawTags.Select(tag => new Tag
         {
-            EnglishName = tag.EnglishName,
-            ArabicName = tag.ArabicName,
-            Description = tag.Description
+            EnglishName = tag.EnglishName, ArabicName = tag.ArabicName, Description = tag.Description
         }).ToList();
 
         await _dbContext.AddRangeAsync(newTags, cancellationToken);
@@ -163,7 +149,8 @@ public sealed class TaggingService
     }
 
     /// <summary>
-    ///     Associates a collection of tag IDs with a specific JobPosting by creating JobPostingTag relationships in the database.
+    ///     Associates a collection of tag IDs with a specific JobPosting by creating JobPostingTag relationships in the
+    ///     database.
     ///     changes to the database, as it is intended to be part of a larger unit of work.
     ///     So it should not be called outside directly.
     /// </summary>
@@ -252,6 +239,6 @@ public sealed class TaggingService
         await AddTagsToUserProfileInternalAsync(profileId, tagIds);
         await _dbContext.SaveChangesAsync();
 
-        await _userInterestsChannel.WriteAsync(new UserInterestsUpdatedMessage { UserProfileId = profileId });
+        await _publishEndpoint.Publish(new UserInterestsUpdatedMessage { UserProfileId = profileId });
     }
 }

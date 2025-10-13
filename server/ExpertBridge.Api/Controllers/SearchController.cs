@@ -6,9 +6,9 @@ using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -22,16 +22,16 @@ namespace ExpertBridge.Api.Controllers;
 [AllowAnonymous]
 public class SearchController : ControllerBase
 {
+    private readonly float _cosineDistanceThreshold;
     private readonly ExpertBridgeDbContext _dbContext;
+    private readonly int _defaultLimit;
     private readonly IEmbeddingService _embeddingService;
     private readonly UserService _userService;
-    private readonly int _defaultLimit;
-    private readonly float _cosineDistanceThreshold;
 
     public SearchController(
-            ExpertBridgeDbContext dbContext,
-            IEmbeddingService embeddingService,
-            UserService userService)
+        ExpertBridgeDbContext dbContext,
+        IEmbeddingService embeddingService,
+        UserService userService)
     {
         _dbContext = dbContext;
         _embeddingService = embeddingService;
@@ -42,8 +42,8 @@ public class SearchController : ControllerBase
 
     [HttpGet("posts")]
     public async Task<List<PostResponse>> SearchPosts(
-            [FromQuery] SearchPostRequest request,
-            CancellationToken cancellationToken = default)
+        [FromQuery] SearchPostRequest request,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
@@ -68,8 +68,12 @@ public class SearchController : ControllerBase
                 LastModified = p.LastModified,
                 Upvotes = p.Votes.Count(v => v.IsUpvote),
                 Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                IsUpvoted = notNullOrEmptyCurrentUserProfileId && p.Votes.Any(v => v.IsUpvote && v.ProfileId == currentUserProfileId),
-                IsDownvoted = notNullOrEmptyCurrentUserProfileId && p.Votes.Any(v => !v.IsUpvote && v.ProfileId == currentUserProfileId),
+                IsUpvoted =
+                    notNullOrEmptyCurrentUserProfileId &&
+                    p.Votes.Any(v => v.IsUpvote && v.ProfileId == currentUserProfileId),
+                IsDownvoted =
+                    notNullOrEmptyCurrentUserProfileId &&
+                    p.Votes.Any(v => !v.IsUpvote && v.ProfileId == currentUserProfileId),
                 Comments = p.Comments.Count,
                 RelevanceScore = p.Embedding.CosineDistance(queryEmbeddings),
                 Medias = p.Medias.Select(m => new MediaObjectResponse
@@ -86,8 +90,8 @@ public class SearchController : ControllerBase
 
     [HttpGet("users")]
     public async Task<List<SearchUserResponse>> SearchUsers(
-            [FromQuery] SearchUserRequest request,
-            CancellationToken cancellationToken = default)
+        [FromQuery] SearchUserRequest request,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
@@ -97,25 +101,25 @@ public class SearchController : ControllerBase
         var users = await _dbContext.Profiles
             .AsNoTracking()
             .Where(p =>
-                    EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
+                EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
                     .Matches(EF.Functions.PhraseToTsQuery("english", request.Query)) ||
-                    p.Email.Contains(normalizedQuery) ||
-                    (p.Username != null && p.Username.Contains(normalizedQuery)))
+                p.Email.Contains(normalizedQuery) ||
+                (p.Username != null && p.Username.Contains(normalizedQuery)))
             .Take(request.Limit ?? _defaultLimit)
             .Select(p => new SearchUserResponse
-                    {
-                        Id = p.Id,
-                        Email = p.Email,
-                        Username = p.Username,
-                        PhoneNumber = p.PhoneNumber,
-                        FirstName = p.FirstName,
-                        LastName = p.LastName,
-                        ProfilePictureUrl = p.ProfilePictureUrl,
-                        JobTitle = p.JobTitle,
-                        Bio = p.Bio,
-                        Rank = EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
-                        .Rank(EF.Functions.PhraseToTsQuery("english", normalizedQuery))
-                    })
+            {
+                Id = p.Id,
+                Email = p.Email,
+                Username = p.Username,
+                PhoneNumber = p.PhoneNumber,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                ProfilePictureUrl = p.ProfilePictureUrl,
+                JobTitle = p.JobTitle,
+                Bio = p.Bio,
+                Rank = EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
+                    .Rank(EF.Functions.PhraseToTsQuery("english", normalizedQuery))
+            })
             .OrderByDescending(p => p.Rank)
             .ToListAsync(cancellationToken);
         return users;
@@ -123,8 +127,8 @@ public class SearchController : ControllerBase
 
     [HttpGet("jobs")]
     public async Task<List<JobPostingResponse>> SearchJobs(
-            [FromQuery] SearchJobPostsRequest request,
-            CancellationToken cancellationToken = default)
+        [FromQuery] SearchJobPostsRequest request,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
@@ -146,10 +150,12 @@ public class SearchController : ControllerBase
             request.Area = request.Area.Trim().ToLower(CultureInfo.CurrentCulture);
             query = query.Where(j => j.Area.ToLower().Contains(request.Area));
         }
+
         if (request.MinBudget is >= 0)
         {
             query = query.Where(j => j.Budget >= request.MinBudget.Value);
         }
+
         if (request.MaxBudget is >= 0 &&
             request.MaxBudget.Value > request.MinBudget.GetValueOrDefault(0))
         {
@@ -164,32 +170,32 @@ public class SearchController : ControllerBase
 
         var jobPosts = await query
             .Select(p => new JobPostingResponse
-                    {
-                        IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
-                        IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
-                        Title = p.Title,
-                        Content = p.Content,
-                        Area = p.Area,
-                        Budget = p.Budget,
-                        Language = p.Language,
-                        Tags = p.JobPostingTags.Select(pt => pt.Tag.SelectTagResponseFromTag()).ToList(),
-                        Author = p.Author.SelectAuthorResponseFromProfile(),
-                        CreatedAt = p.CreatedAt,
-                        LastModified = p.UpdatedAt,
-                        Id = p.Id,
-                        Upvotes = p.Votes.Count(v => v.IsUpvote),
-                        Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                        Comments = p.Comments.Count,
-                        IsAppliedFor = p.JobApplications.Any(ja => ja.ApplicantId == userProfileId),
-                        Medias = p.Medias.Select(m => new MediaObjectResponse
-                                {
-                                    Id = m.Id,
-                                    Name = m.Name,
-                                    Type = m.Type,
-                                    Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
-                                }).ToList(),
-                        RelevanceScore = p.Embedding.CosineDistance(queryEmbedding)
-                    })
+            {
+                IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
+                IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
+                Title = p.Title,
+                Content = p.Content,
+                Area = p.Area,
+                Budget = p.Budget,
+                Language = p.Language,
+                Tags = p.JobPostingTags.Select(pt => pt.Tag.SelectTagResponseFromTag()).ToList(),
+                Author = p.Author.SelectAuthorResponseFromProfile(),
+                CreatedAt = p.CreatedAt,
+                LastModified = p.UpdatedAt,
+                Id = p.Id,
+                Upvotes = p.Votes.Count(v => v.IsUpvote),
+                Downvotes = p.Votes.Count(v => !v.IsUpvote),
+                Comments = p.Comments.Count,
+                IsAppliedFor = p.JobApplications.Any(ja => ja.ApplicantId == userProfileId),
+                Medias = p.Medias.Select(m => new MediaObjectResponse
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Type = m.Type,
+                    Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
+                }).ToList(),
+                RelevanceScore = p.Embedding.CosineDistance(queryEmbedding)
+            })
             .ToListAsync(cancellationToken);
 
         return jobPosts;

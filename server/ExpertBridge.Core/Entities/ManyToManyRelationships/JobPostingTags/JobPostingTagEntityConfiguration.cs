@@ -4,28 +4,27 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags
+namespace ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
+
+public class JobPostingTagEntityConfiguration : IEntityTypeConfiguration<JobPostingTag>
 {
-    public class JobPostingTagEntityConfiguration : IEntityTypeConfiguration<JobPostingTag>
+    public void Configure(EntityTypeBuilder<JobPostingTag> builder)
     {
-        public void Configure(EntityTypeBuilder<JobPostingTag> builder)
-        {
-            // Configure composite key
-            builder.HasKey(pt => new { pt.JobPostingId, pt.TagId });
+        // Configure composite key
+        builder.HasKey(pt => new { pt.JobPostingId, pt.TagId });
 
-            // Configure relationship with Post
-            builder.HasOne(pt => pt.JobPosting)
-                .WithMany(p => p.JobPostingTags)
-                .HasForeignKey(pt => pt.JobPostingId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+        // Configure relationship with Post
+        builder.HasOne(pt => pt.JobPosting)
+            .WithMany(p => p.JobPostingTags)
+            .HasForeignKey(pt => pt.JobPostingId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
-            // Configure relationship with Tag
-            builder.HasOne(pt => pt.Tag)
-                .WithMany(t => t.JobPostingTags)
-                .HasForeignKey(pt => pt.TagId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-        }
+        // Configure relationship with Tag
+        builder.HasOne(pt => pt.Tag)
+            .WithMany(t => t.JobPostingTags)
+            .HasForeignKey(pt => pt.TagId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

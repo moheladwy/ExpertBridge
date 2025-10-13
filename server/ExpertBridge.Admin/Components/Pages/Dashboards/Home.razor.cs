@@ -9,29 +9,26 @@ namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
 public partial class Home : ComponentBase
 {
+    private readonly bool _showDataLabels;
+    private readonly DashboardStats _stats;
     private readonly ExpertBridgeDbContext DbContext;
     private bool _loading;
-    private bool _showDataLabels;
-    private DashboardStats _stats;
-    private List<ChartDataItem> _userChartData;
-    private List<ChartDataItem> _profileChartData;
     private List<OverviewChartData> _overviewChartData;
+    private List<ChartDataItem> _profileChartData;
+    private List<ChartDataItem> _userChartData;
 
     public Home(ExpertBridgeDbContext dbContext)
     {
         DbContext = dbContext;
         _loading = true;
         _showDataLabels = true;
-        _stats = new();
+        _stats = new DashboardStats();
         _userChartData = [];
         _profileChartData = [];
         _overviewChartData = [];
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshData();
-    }
+    protected override async Task OnInitializedAsync() => await RefreshData();
 
     private async Task RefreshData()
     {
@@ -72,7 +69,10 @@ public partial class Home : ComponentBase
         _overviewChartData =
         [
             new OverviewChartData { Category = "Users", Active = _stats.ActiveUsers, Deleted = _stats.DeletedUsers },
-            new OverviewChartData { Category = "Profiles", Active = _stats.ActiveProfiles, Deleted = _stats.DeletedProfiles }
+            new OverviewChartData
+            {
+                Category = "Profiles", Active = _stats.ActiveProfiles, Deleted = _stats.DeletedProfiles
+            }
         ];
     }
 

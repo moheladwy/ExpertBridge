@@ -16,12 +16,9 @@ public class Job : BaseModel, ISoftDeletable
     public required string Description { get; set; }
     public string ChatId { get; set; }
     public decimal ActualCost { get; set; }
-    public string Area { get; set; } 
+    public string Area { get; set; }
     public DateTime? StartedAt { get; set; }
     public DateTime? EndedAt { get; set; }
-
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
 
     public bool IsPaid { get; set; }
     public bool IsCompleted { get; set; }
@@ -42,4 +39,7 @@ public class Job : BaseModel, ISoftDeletable
     public Profile Author { get; set; }
     public Profile Worker { get; set; }
     public Chat Chat { get; set; }
+
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

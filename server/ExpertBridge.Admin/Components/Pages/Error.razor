@@ -20,7 +20,7 @@
                         <RadzenText TextStyle="TextStyle.Body1">
                             <strong>Request ID:</strong>
                         </RadzenText>
-                        <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@RequestId" />
+                        <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@RequestId"/>
                     </RadzenStack>
                 </RadzenAlert>
             }
@@ -34,7 +34,9 @@
             </RadzenText>
 
             <RadzenText TextStyle="TextStyle.Body1">
-                Swapping to <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="Development" /> environment will display more detailed information about the error that occurred.
+                Swapping to
+                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="Development"/>
+                environment will display more detailed information about the error that occurred.
             </RadzenText>
 
             <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
@@ -50,7 +52,13 @@
 
             <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
                 <RadzenText TextStyle="TextStyle.Body2">
-                    For local debugging, enable the <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="Development" /> environment by setting the <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="ASPNETCORE_ENVIRONMENT" /> environment variable to <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="Development" /> and restarting the app.
+                    For local debugging, enable the
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="Development"/>
+                    environment by setting the
+                    <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="ASPNETCORE_ENVIRONMENT"/>
+                    environment variable to
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="Development"/>
+                    and restarting the app.
                 </RadzenText>
             </RadzenAlert>
         </RadzenStack>
@@ -63,7 +71,9 @@
     private string? RequestId { get; set; }
     private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-    protected override void OnInitialized() =>
+    protected override void OnInitialized()
+    {
         RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+    }
 
 }

@@ -5,14 +5,14 @@ services:
     environment:
       REDIS_PASSWORD: "expertbridge_redis_password"
     volumes:
-    - "expertbridge-redis-data:/data"
+      - "expertbridge-redis-data:/data"
     ports:
-    - target: 6379
-      published: 6379
+      - target: 6379
+        published: 6379
     command:
-    - "-c"
-    - "redis-server --requirepass $REDIS_PASSWORD --save 300 1"
-    - "/bin/sh"
+      - "-c"
+      - "redis-server --requirepass $REDIS_PASSWORD --save 300 1"
+      - "/bin/sh"
     restart: unless-stopped
   Seq:
     container_name: "Seq"
@@ -20,10 +20,10 @@ services:
     environment:
       ACCEPT_EULA: "Y"
     volumes:
-    - "expertbridge-seq-data:/data"
+      - "expertbridge-seq-data:/data"
     ports:
-    - target: 80
-      published: 4002
+      - target: 80
+        published: 4002
     restart: unless-stopped
   ExpertBridgeApi:
     container_name: "ExpertBridgeApi"
@@ -37,10 +37,10 @@ services:
       ConnectionStrings__Redis: "Redis:6379,password={Redis-password.value}"
       ConnectionStrings__Seq: "http://Seq:80"
     ports:
-    - target: 8080
-      published: 10000
-    - target: 8443
-      published: 10001
+      - target: 8080
+        published: 10000
+      - target: 8443
+        published: 10001
     restart: unless-stopped
   ExpertBridgeAdmin:
     container_name: "ExpertBridgeAdmin"
@@ -53,11 +53,11 @@ services:
       HTTP_PORTS: "8080"
       ConnectionStrings__Seq: "http://Seq:80"
     ports:
-    - target: 8080
-      published: 10002
-    - target: 8443
-      published: 10003
+      - target: 8080
+        published: 10002
+      - target: 8443
+        published: 10003
     restart: unless-stopped
 volumes:
-  expertbridge-redis-data: {}
-  expertbridge-seq-data: {}
+  expertbridge-redis-data: { }
+  expertbridge-seq-data: { }

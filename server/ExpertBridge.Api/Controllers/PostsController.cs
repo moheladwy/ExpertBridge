@@ -17,9 +17,9 @@ namespace ExpertBridge.Api.Controllers;
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent)]
 public class PostsController : ControllerBase
 {
+    private readonly ILogger<PostsController> _logger;
     private readonly PostService _postService;
     private readonly UserService _userService;
-    private readonly ILogger<PostsController> _logger;
 
     public PostsController(
         PostService postService,
@@ -83,7 +83,7 @@ public class PostsController : ControllerBase
         // string? userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync(); // Get this if needed for vote perspective
         // For now, assuming your UserService provides a method like this from previous discussion:
         var user = await _userService.GetCurrentUserPopulatedModelAsync(); // Or your specific method
-        string? userProfileId = user?.Profile?.Id;
+        var userProfileId = user?.Profile?.Id;
 
 
         var postResponse = await _postService.GetPostByIdAsync(postId, userProfileId);
@@ -91,33 +91,39 @@ public class PostsController : ControllerBase
         if (postResponse == null)
         {
             // return post ?? throw new PostNotFoundException($"Post with id={postId} was not found");
-            return NotFound(new ProblemDetails { Title = "Not Found", Detail = $"Post with id={postId} was not found.", Status = StatusCodes.Status404NotFound });
+            return NotFound(new ProblemDetails
+            {
+                Title = "Not Found",
+                Detail = $"Post with id={postId} was not found.",
+                Status = StatusCodes.Status404NotFound
+            });
         }
+
         return postResponse;
     }
 
     /// <summary>
-    /// Retrieves a list of posts that are similar to the specified post.
+    ///     Retrieves a list of posts that are similar to the specified post.
     /// </summary>
     /// <param name="postId">The unique identifier of the post to find similar posts for.</param>
     /// <param name="limit">The maximum number of similar posts to return. Defaults to 5 if not specified.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A list of similar posts as <see cref="SimilarPostsResponse"/> objects.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="postId"/> is null or empty.</exception>
+    /// <returns>A list of similar posts as <see cref="SimilarPostsResponse" /> objects.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="postId" /> is null or empty.</exception>
     /// <remarks>This endpoint allows anonymous access.</remarks>
     [AllowAnonymous]
     [HttpGet("{postId}/similar")]
     public async Task<List<SimilarPostsResponse>> GetSimilarPosts(
-            [FromRoute] string postId,
-            [FromQuery] int? limit = 5,
-            CancellationToken cancellationToken = default)
+        [FromRoute] string postId,
+        [FromQuery] int? limit = 5,
+        CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId)); // Service handles
 
         var similarPosts = await _postService.GetSimilarPostsAsync(
-                postId,
-                limit ?? 5, // Default to 5 if not provided
-                cancellationToken);
+            postId,
+            limit ?? 5, // Default to 5 if not provided
+            cancellationToken);
 
         return similarPosts;
     }
@@ -157,7 +163,6 @@ public class PostsController : ControllerBase
     //    var posts = await _postService.GetAllPostsAsync(userProfileId);
     //    return posts;
     //}
-
     [AllowAnonymous]
     [HttpPost("feed")]
     [ResponseCache(NoStore = true)]
@@ -183,7 +188,7 @@ public class PostsController : ControllerBase
 
         // string? requestingUserProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync(); // Or however you get it
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
-        string? requestingUserProfileId = user?.Profile?.Id;
+        var requestingUserProfileId = user?.Profile?.Id;
 
         var posts = await _postService.GetPostsByProfileIdAsync(profileId, requestingUserProfileId);
         return posts;
@@ -204,7 +209,7 @@ public class PostsController : ControllerBase
     ///     Thrown when the postId is null or empty.
     /// </exception>
     /// <exception cref="PostNotFoundException">
-    ///    Thrown when the post with the given ID does not exist.
+    ///     Thrown when the post with the given ID does not exist.
     /// </exception>
     /// <returns>
     ///     The post response with the updated votes count.
@@ -212,9 +217,10 @@ public class PostsController : ControllerBase
     [HttpPatch("{postId}/upvote")]
     public async Task<ActionResult<PostResponse>> Upvote([FromRoute] string postId)
     {
-        var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
+        var voterProfile =
+            await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
 
-        var postResponse = await _postService.VotePostAsync(postId, voterProfile, isUpvoteIntent: true); // true for upvote
+        var postResponse = await _postService.VotePostAsync(postId, voterProfile, true); // true for upvote
         return postResponse;
     }
 
@@ -241,9 +247,10 @@ public class PostsController : ControllerBase
     [HttpPatch("{postId}/downvote")]
     public async Task<ActionResult<PostResponse>> Downvote([FromRoute] string postId)
     {
-        var voterProfile = await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
+        var voterProfile =
+            await _userService.GetCurrentUserProfileOrThrowAsync(); // Ensures authenticated user with profile
 
-        var postResponse = await _postService.VotePostAsync(postId, voterProfile, isUpvoteIntent: false); // false for downvote
+        var postResponse = await _postService.VotePostAsync(postId, voterProfile, false); // false for downvote
         return postResponse;
     }
 
@@ -260,15 +267,15 @@ public class PostsController : ControllerBase
     ///     Thrown when the postId is null or empty.
     /// </exception>
     /// <exception cref="PostNotFoundException">
-    ///    Thrown when the post with the given ID does not exist or doesn't belong to the user.
+    ///     Thrown when the post with the given ID does not exist or doesn't belong to the user.
     /// </exception>
     /// <returns>
     ///     The updated post.
     /// </returns>
     [HttpPatch("{postId}")]
     public async Task<ActionResult<PostResponse>> Edit(
-    [FromRoute] string postId,
-    [FromBody] EditPostRequest request)
+        [FromRoute] string postId,
+        [FromBody] EditPostRequest request)
     {
         var editorProfile = await _userService.GetCurrentUserProfileOrThrowAsync();
 

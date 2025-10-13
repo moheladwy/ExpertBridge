@@ -25,9 +25,9 @@ public class ExpertBridgeDbContextFactory : IDesignTimeDbContextFactory<ExpertBr
         {
             o.UseVector();
             o.EnableRetryOnFailure(
-                maxRetryCount: 10,
-                maxRetryDelay: TimeSpan.FromSeconds(60),
-                errorCodesToAdd: null);
+                10,
+                TimeSpan.FromSeconds(60),
+                null);
         });
         return new ExpertBridgeDbContext(optionsBuilder.Options);
     }

@@ -9,9 +9,7 @@ public class SkillValidatorTests
 
     private readonly Skill _validSkill = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Name = "Test Skill",
-        Description = "Test Description"
+        Id = Guid.NewGuid().ToString(), Name = "Test Skill", Description = "Test Description"
     };
 
     [Fact]

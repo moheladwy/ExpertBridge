@@ -26,13 +26,13 @@ public sealed class GroqApiToolClient
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    /// Initializes a new instance of the GroqApiToolClient with a specified GroqApiChatCompletionClient and HttpClient.
+    ///     Initializes a new instance of the GroqApiToolClient with a specified GroqApiChatCompletionClient and HttpClient.
     /// </summary>
     /// <param name="groqApiChatCompletionClient">
-    /// The client of type <see cref="GroqApiChatCompletionClient"/> responsible for handling chat completions
-    /// with the Groq API.
+    ///     The client of type <see cref="GroqApiChatCompletionClient" /> responsible for handling chat completions
+    ///     with the Groq API.
     /// </param>
-    /// <param name="httpClient">The <see cref="HttpClient"/> instance used for HTTP communication.</param>
+    /// <param name="httpClient">The <see cref="HttpClient" /> instance used for HTTP communication.</param>
     public GroqApiToolClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
     {
         _httpClient = httpClient;
@@ -66,7 +66,8 @@ public sealed class GroqApiToolClient
     /// <exception cref="HttpRequestException">Thrown when API requests fail.</exception>
     /// <exception cref="JsonException">Thrown when parsing JSON responses fails.</exception>
     /// <exception cref="Exception">Thrown for any other unexpected errors.</exception>
-    public async Task<string> RunConversationWithToolsAsync(string userPrompt, IReadOnlyCollection<Tool> tools, string model,
+    public async Task<string> RunConversationWithToolsAsync(string userPrompt, IReadOnlyCollection<Tool> tools,
+        string model,
         string systemMessage)
     {
         try

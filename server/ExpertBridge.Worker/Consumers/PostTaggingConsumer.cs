@@ -10,8 +10,8 @@ namespace ExpertBridge.Worker.Consumers;
 
 internal sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
 {
-    private readonly ILogger<PostTaggingConsumer> _logger;
     private readonly GroqPostTaggingService _groqPostTaggingService;
+    private readonly ILogger<PostTaggingConsumer> _logger;
     private readonly TaggingService _taggingService;
 
     public PostTaggingConsumer(

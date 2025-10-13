@@ -1,6 +1,9 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities.Profiles;
+
 namespace ExpertBridge.Core.Entities.Areas;
 
 public class Area
@@ -11,6 +14,6 @@ public class Area
     public string Region { get; set; }
 
     // Navigation properties
-    public Profiles.Profile Profile { get; set; }
-    public ICollection<JobPostings.JobPosting> JobPostings { get; set; } = [];
+    public Profile Profile { get; set; }
+    public ICollection<JobPosting> JobPostings { get; set; } = [];
 }

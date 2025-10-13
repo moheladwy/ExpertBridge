@@ -1,17 +1,10 @@
 ﻿// Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace ExpertBridge.Core.Responses;
 
-namespace ExpertBridge.Core.Responses
+public class JobPostingsPaginatedResponse
 {
-    public class JobPostingsPaginatedResponse
-    {
-        public List<JobPostingResponse> JobPostings { get; set; }
-        public PageInfoResponse PageInfo { get; set; }
-    }
+    public List<JobPostingResponse> JobPostings { get; set; }
+    public PageInfoResponse PageInfo { get; set; }
 }

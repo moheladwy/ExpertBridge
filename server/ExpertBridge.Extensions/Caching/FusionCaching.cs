@@ -41,8 +41,7 @@ public static class FusionCaching
                 new RedisCache(
                     new RedisCacheOptions
                     {
-                        Configuration = redisConnectionString,
-                        InstanceName = cacheSettings.InstanceName
+                        Configuration = redisConnectionString, InstanceName = cacheSettings.InstanceName
                     }
                 )
 #pragma warning restore CA2000

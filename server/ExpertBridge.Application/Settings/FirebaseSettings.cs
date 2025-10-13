@@ -16,5 +16,4 @@ public sealed class FirebaseSettings
     public string ClientX509CertUrl { get; set; }
     public string UniverseDomain { get; set; }
     public string AuthenticationTokenUri { get; set; }
-
 }

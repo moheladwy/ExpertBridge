@@ -13,7 +13,7 @@ public class JobPostingValidatorTests
         AuthorId = Guid.NewGuid().ToString(),
         Title = "Job Posting Title",
         Area = "Area Name",
-        Content = "Job Posting Content",
+        Content = "Job Posting Content"
     };
 
     [Fact]

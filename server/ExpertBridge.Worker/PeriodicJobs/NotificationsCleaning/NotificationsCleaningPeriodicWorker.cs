@@ -9,9 +9,9 @@ namespace ExpertBridge.Worker.PeriodicJobs.NotificationsCleaning;
 
 internal sealed class NotificationsCleaningPeriodicWorker : IJob
 {
-    private readonly ILogger<NotificationsCleaningPeriodicWorker> _logger;
-    private readonly ExpertBridgeDbContext _dbContext;
     private const int TimeIntervalForNotificationCleanupInDays = 30;
+    private readonly ExpertBridgeDbContext _dbContext;
+    private readonly ILogger<NotificationsCleaningPeriodicWorker> _logger;
 
     public NotificationsCleaningPeriodicWorker(
         ILogger<NotificationsCleaningPeriodicWorker> logger,

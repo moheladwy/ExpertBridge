@@ -4,18 +4,17 @@
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.Profiles;
 
-namespace ExpertBridge.Core.Entities.JobPostingsVotes
+namespace ExpertBridge.Core.Entities.JobPostingsVotes;
+
+public class JobPostingVote : BaseModel
 {
-    public class JobPostingVote : BaseModel
-    {
-        public bool IsUpvote { get; set; }
+    public bool IsUpvote { get; set; }
 
-        // Foreign keys
-        public string ProfileId { get; set; }
-        public string JobPostingId { get; set; }
+    // Foreign keys
+    public string ProfileId { get; set; }
+    public string JobPostingId { get; set; }
 
-        // Navigation properties
-        public Profile Profile { get; set; }
-        public JobPosting JobPosting { get; set; }
-    }
+    // Navigation properties
+    public Profile Profile { get; set; }
+    public JobPosting JobPosting { get; set; }
 }

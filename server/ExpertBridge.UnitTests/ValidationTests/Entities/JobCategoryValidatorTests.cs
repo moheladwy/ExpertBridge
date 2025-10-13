@@ -9,9 +9,7 @@ public class JobCategoryValidatorTests
 
     private readonly JobCategory _validJobCategory = new()
     {
-        Id = Guid.NewGuid().ToString(),
-        Name = "Job Category Name",
-        Description = "Job Category Description"
+        Id = Guid.NewGuid().ToString(), Name = "Job Category Name", Description = "Job Category Description"
     };
 
     [Fact]

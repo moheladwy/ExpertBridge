@@ -31,10 +31,10 @@ public sealed class GroqApiAudioClient
     /// </summary>
     /// <remarks>This constructor allows for the use of a shared HttpClient for API requests.</remarks>
     /// <param name="groqApiChatCompletionClient">
-    ///     The <see cref="GroqApiChatCompletionClient"/> instance to be used for chat completion functionalities.
+    ///     The <see cref="GroqApiChatCompletionClient" /> instance to be used for chat completion functionalities.
     /// </param>
     /// <param name="httpClient">
-    ///     The <see cref="HttpClient"/> instance to use for audio-related API requests.
+    ///     The <see cref="HttpClient" /> instance to use for audio-related API requests.
     /// </param>
     public GroqApiAudioClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
     {

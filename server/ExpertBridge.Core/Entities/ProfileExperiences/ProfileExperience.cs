@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
+using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Interfaces;
 
 namespace ExpertBridge.Core.Entities.ProfileExperiences;
@@ -15,10 +16,10 @@ public class ProfileExperience : BaseModel, ISoftDeletable
     public string Location { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
 
     // Navigation properties
-    public Profiles.Profile Profile { get; set; }
+    public Profile Profile { get; set; }
     public ICollection<ProfileExperienceMedia> Medias { get; set; } = [];
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

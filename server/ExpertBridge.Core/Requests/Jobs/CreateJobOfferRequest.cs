@@ -3,15 +3,16 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace ExpertBridge.Core.Requests.Jobs
+namespace ExpertBridge.Core.Requests.Jobs;
+
+public class CreateJobOfferRequest
 {
-    public class CreateJobOfferRequest
-    {
-        public required string Title { get; set; }
-        public required string Description { get; set; }
-        public required string Area { get; set; }
-        [Range(0, double.MaxValue, ErrorMessage = "Budget must be non-negative.")]
-        public decimal Budget { get; set; }
-        public string WorkerId { get; set; }
-    }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public required string Area { get; set; }
+
+    [Range(0, double.MaxValue, ErrorMessage = "Budget must be non-negative.")]
+    public decimal Budget { get; set; }
+
+    public string WorkerId { get; set; }
 }

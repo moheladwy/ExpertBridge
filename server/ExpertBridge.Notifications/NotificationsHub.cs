@@ -4,31 +4,22 @@
 using ExpertBridge.Notifications.Models;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ExpertBridge.Notifications
+namespace ExpertBridge.Notifications;
+
+public interface INotificationClient
 {
-    public interface INotificationClient
-    {
-        Task ReceiveNotification(NotificationResponse notification);
+    Task ReceiveNotification(NotificationResponse notification);
 
-        Task ReceiveMessage(Message message);
-    }
+    Task ReceiveMessage(Message message);
+}
 
-    public class NotificationsHub : Hub<INotificationClient>
-    {
-        public override async Task OnConnectedAsync()
-        {
-            await base.OnConnectedAsync();
-        }
-        public override async Task OnDisconnectedAsync(Exception? exception)
-        {
-            await base.OnDisconnectedAsync(exception);
-        }
+public class NotificationsHub : Hub<INotificationClient>
+{
+    public override async Task OnConnectedAsync() => await base.OnConnectedAsync();
 
-        // This is a remotely callable method from the client side.
-        // DO NOT TURN INTO A PROPERTY!
-        public string GetConnectionId()
-        {
-            return Context.ConnectionId;
-        }
-    }
+    public override async Task OnDisconnectedAsync(Exception? exception) => await base.OnDisconnectedAsync(exception);
+
+    // This is a remotely callable method from the client side.
+    // DO NOT TURN INTO A PROPERTY!
+    public string GetConnectionId() => Context.ConnectionId;
 }

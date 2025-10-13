@@ -12,22 +12,22 @@ namespace ExpertBridge.Worker.PeriodicJobs.CommentsModeration;
 internal sealed class CommentsModerationPeriodicWorker : IJob
 {
     /// <summary>
-    /// Logger instance for logging job execution and errors.
-    /// </summary>
-    private readonly ILogger<CommentsModerationPeriodicWorker> _logger;
-
-    /// <summary>
-    /// Database context for accessing posts, job postings, and comments.
+    ///     Database context for accessing posts, job postings, and comments.
     /// </summary>
     private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
-    /// Endpoint for publishing moderation and processing messages.
+    ///     Logger instance for logging job execution and errors.
+    /// </summary>
+    private readonly ILogger<CommentsModerationPeriodicWorker> _logger;
+
+    /// <summary>
+    ///     Endpoint for publishing moderation and processing messages.
     /// </summary>
     private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CommentsModerationPeriodicWorker"/> class.
+    ///     Initializes a new instance of the <see cref="CommentsModerationPeriodicWorker" /> class.
     /// </summary>
     /// <param name="logger">The logger instance.</param>
     /// <param name="dbContext">The database context.</param>
@@ -49,9 +49,7 @@ internal sealed class CommentsModerationPeriodicWorker : IJob
             .Where(c => !c.IsProcessed && !c.IsSafeContent)
             .Select(c => new DetectInappropriateCommentMessage
             {
-                CommentId = c.Id,
-                AuthorId = c.AuthorId,
-                Content = c.Content,
+                CommentId = c.Id, AuthorId = c.AuthorId, Content = c.Content
             })
             .ForEachAsync(async void (detectInappropriateCommentMessage) =>
                 {
@@ -71,7 +69,7 @@ internal sealed class CommentsModerationPeriodicWorker : IJob
         await _dbContext.Comments
             .Where(c => !c.IsProcessed && c.IsSafeContent)
             .ExecuteUpdateAsync(setPropertyCalls =>
-                setPropertyCalls.SetProperty(comment => comment.IsProcessed, true),
+                    setPropertyCalls.SetProperty(comment => comment.IsProcessed, true),
                 context.CancellationToken);
     }
 }

@@ -10,25 +10,22 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Admin.Components.SubModules;
 
 /// <summary>
-/// This is the code-behind file for the Post component.
+///     This is the code-behind file for the Post component.
 /// </summary>
 public partial class Post : ComponentBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
-    private bool _showComments;
-    private bool _loadingComments;
     private List<CommentResponse>? _comments;
+    private bool _loadingComments;
+    private bool _showComments;
+
+    public Post(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
 
     /// <summary>
-    ///   The post-data to be displayed in the component.
+    ///     The post-data to be displayed in the component.
     /// </summary>
     [Parameter]
     public PostResponse? PostResponse { get; set; }
-
-    public Post(ExpertBridgeDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
 
     private async Task ToggleCommentsAsync()
     {
@@ -43,7 +40,10 @@ public partial class Post : ComponentBase
 
     private async Task LoadCommentsAsync()
     {
-        if (PostResponse == null) return;
+        if (PostResponse == null)
+        {
+            return;
+        }
 
         _loadingComments = true;
         StateHasChanged();

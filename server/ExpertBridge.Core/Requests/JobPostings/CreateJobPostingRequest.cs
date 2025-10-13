@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExpertBridge.Core.Requests.JobPostings;
@@ -11,5 +10,6 @@ public class CreateJobPostingRequest
 
     [Range(0, double.MaxValue, ErrorMessage = "Budget must be non-negative.")]
     public decimal Budget { get; set; }
+
     public List<MediaObjectRequest>? Media { get; set; }
 }

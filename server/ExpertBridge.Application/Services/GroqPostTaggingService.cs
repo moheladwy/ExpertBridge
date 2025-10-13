@@ -29,6 +29,10 @@ public sealed class GroqPostTaggingService
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
+    /// <summary>
+    /// A configured instance of <see cref="ResiliencePipeline" /> used to handle transient faults and retries
+    /// during the execution of resilient operations in the categorization process.
+    /// </summary>
     private readonly ResiliencePipeline _resiliencePipeline;
 
     /// <summary>
@@ -44,9 +48,7 @@ public sealed class GroqPostTaggingService
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true,
-            AllowOutOfOrderMetadataProperties = true,
-            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true, AllowOutOfOrderMetadataProperties = true, AllowTrailingCommas = true
         };
     }
 
@@ -85,8 +87,8 @@ public sealed class GroqPostTaggingService
                 var userPrompt = GetUserPrompt(title, content, existingTags);
                 var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
                 result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
-                             ?? throw new InvalidOperationException(
-                                 "Failed to deserialize the categorizer response: null result");
+                         ?? throw new InvalidOperationException(
+                             "Failed to deserialize the categorizer response: null result");
 
                 return ValueTask.CompletedTask;
             });
@@ -106,7 +108,8 @@ public sealed class GroqPostTaggingService
     /// <returns>
     ///     A string containing the JSON schema definition for the expected output format.
     /// </returns>
-    private static string GetOutputFormatSchema() => File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
+    private static string GetOutputFormatSchema() =>
+        File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
 
     /// <summary>
     ///     Generates a predefined system prompt used to instruct the text categorization AI on how to process

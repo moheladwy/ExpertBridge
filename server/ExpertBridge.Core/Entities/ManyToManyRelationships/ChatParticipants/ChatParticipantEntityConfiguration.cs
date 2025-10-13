@@ -22,5 +22,4 @@ public class ChatParticipantEntityConfiguration : IEntityTypeConfiguration<ChatP
             .HasForeignKey<ChatParticipant>(cp => cp.ProfileId)
             .IsRequired();
     }
-
 }
