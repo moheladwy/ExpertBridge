@@ -1,32 +1,23 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using System.Net.Http.Headers;
-using ExpertBridge.Application.Services;
 using ExpertBridge.GroqLibrary.Clients;
 using ExpertBridge.GroqLibrary.Providers;
 using ExpertBridge.GroqLibrary.Settings;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace ExpertBridge.Api.Extensions;
+namespace ExpertBridge.GroqLibrary;
 
-/// <summary>
-///     The GroqApi class provides an extension method for adding Groq API-related services to the dependency injection
-///     container
-///     of an ASP.NET Core application.
-/// </summary>
-/// <remarks>
-///     This static class is used to register services that are essential for integrating the Groq API functionalities into
-///     a web application.
-///     Specifically, it adds the <see cref="GroqApiChatCompletionClient" /> and <see cref="GroqLlmTextProvider" />
-///     services to the ASP.NET Core
-///     service collection.
-/// </remarks>
-/// <seealso cref="GroqApiChatCompletionClient" />
-/// <seealso cref="GroqLlmTextProvider" />
-public static class GroqApi
+public static class Extensions
 {
     /// <summary>
     ///     Adds Groq API-related services to the dependency injection container of the application.
     /// </summary>
-    /// <param name="services">
-    ///     The service collection to add the Groq API-related services to.
+    /// <param name="builder">
+    ///     The builder to add the Groq API-related services to.
     /// </param>
     /// <remarks>
     ///     This method registers the <see cref="GroqApiChatCompletionClient" /> and
@@ -35,20 +26,13 @@ public static class GroqApi
     /// </remarks>
     /// <seealso cref="GroqApiChatCompletionClient" />
     /// <seealso cref="GroqLlmTextProvider" />
-    public static WebApplicationBuilder AddGroqApiServices(
-        this WebApplicationBuilder builder)
+    public static TBuilder AddGroqApiServices<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
-
         builder.Services
             .AddScoped<GroqApiChatCompletionClient>()
             .AddScoped<GroqLlmTextProvider>()
-            .AddScoped<GroqPostTaggingService>()
-            .AddScoped<GroqTagProcessorService>()
-            .AddScoped<GroqInappropriateLanguageDetectionService>()
             ;
 
-        // Adding an HttpClient to a service should take place after registering this
-        // service with the DI first.
         builder.AddGroqHttpClient();
         return builder;
     }
@@ -61,23 +45,23 @@ public static class GroqApi
     ///     The web application builder to which the Groq HTTP client will be added.
     /// </param>
     /// <returns>
-    ///     The modified <see cref="WebApplicationBuilder" /> instance.
+    ///     The modified <see cref="TBuilder" /> instance.
     /// </returns>
     /// <remarks>
     ///     This method initializes an HTTP client with a base address and authorization header
     ///     using the API key from the <see cref="GroqSettings" /> configuration.
     /// </remarks>
-    public static WebApplicationBuilder AddGroqHttpClient(this WebApplicationBuilder builder)
+    public static TBuilder AddGroqHttpClient<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
-        var settings = builder.Configuration.GetSection(GroqSettings.Section).Get<GroqSettings>()!;
+        var settings = builder.Configuration
+            .GetSection(GroqSettings.Section)
+            .Get<GroqSettings>()!;
 
         builder.Services.AddHttpClient<GroqApiChatCompletionClient>(client =>
         {
             client.BaseAddress = new Uri(GroqApiEndpoints.BaseUrl);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", settings.ApiKey);
-        })
-            .AddStandardResilienceHandler();
-        ;
+        }).AddStandardResilienceHandler();
 
         return builder;
     }

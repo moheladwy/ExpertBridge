@@ -7,25 +7,24 @@ using ExpertBridge.Notifications.Models.IPC;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace ExpertBridge.Notifications.Extensions
+namespace ExpertBridge.Notifications.Extensions;
+
+public static class ServicesExtensions
 {
-    public static class ServicesExtensions
+    public static IServiceCollection AddNotifications(this IServiceCollection services)
     {
-        public static IServiceCollection AddExpertBridgeNotifications(this IServiceCollection services)
-        {
-            // Infrastructrue
-            services.AddSignalR();
+        // Infrastructrue
+        services.AddSignalR();
 
-            // Background services
-            services.AddHostedService<NotificationSendingPipelineHandlerWorker>();
+        // Background services
+        services.AddHostedService<NotificationSendingPipelineHandlerWorker>();
 
-            // Services
-            services.AddScoped<NotificationFacade>();
+        // Services
+        services.AddScoped<NotificationFacade>();
 
-            // IPC
-            services.AddSingleton(_ => Channel.CreateUnbounded<SendNotificationsRequestMessage>());
+        // IPC
+        services.AddSingleton(_ => Channel.CreateUnbounded<SendNotificationsRequestMessage>());
 
-            return services;
-        }
+        return services;
     }
 }

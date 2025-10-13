@@ -1,8 +1,13 @@
 ﻿using System.Text.Json;
+using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Application.Settings.Serilog;
 using ExpertBridge.Data;
 using ExpertBridge.Extensions.Caching;
+using ExpertBridge.Extensions.AWS;
+using ExpertBridge.Extensions.Embeddings;
+using ExpertBridge.Extensions.OpenTelemetry;
+using ExpertBridge.GroqLibrary;
 using ExpertBridge.GroqLibrary.Settings;
 using Polly;
 using Polly.Retry;
@@ -42,15 +47,13 @@ namespace ExpertBridge.Api.Extensions
 
             // External remote services
             builder.AddEmbeddingServices();
-            builder
-                .AddGroqApiServices()
+            builder.AddGroqApiServices();
+            builder.Services
+                .AddScoped<GroqPostTaggingService>()
+                .AddScoped<GroqTagProcessorService>()
+                .AddScoped<GroqInappropriateLanguageDetectionService>()
                 ;
 
-            // Background jobs
-            builder.AddIpcChannels();
-            builder.AddBackgroundWorkers();
-
-            builder.Services.AddServices();
             builder.Services.AddDomainServices();
 
             builder.Services.AddResiliencePipeline(ResiliencePipelines.MalformedJsonModelResponse, static builder =>
@@ -59,7 +62,7 @@ namespace ExpertBridge.Api.Extensions
                 builder.AddRetry(new RetryStrategyOptions
                 {
                     ShouldHandle = new PredicateBuilder().Handle<JsonException>(),
-                    MaxRetryAttempts = 5,
+                    MaxRetryAttempts = 3,
                     Delay = TimeSpan.FromSeconds(2),
                     BackoffType = DelayBackoffType.Exponential,
                     UseJitter = true,

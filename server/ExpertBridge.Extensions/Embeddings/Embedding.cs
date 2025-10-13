@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace ExpertBridge.Extensions.Embeddings;
 
 public static class Embedding
 {
-    public static WebApplicationBuilder AddEmbeddingServices(this WebApplicationBuilder builder)
+    public static TBuilder AddEmbeddingServices<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
         var config = builder.Configuration.GetSection(EmbeddingServiceSettings.Section);
         builder.Services.Configure<EmbeddingServiceSettings>(config);
@@ -19,9 +20,9 @@ public static class Embedding
 
         builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(
             serviceProvider =>
-            new OllamaEmbeddingGenerator(
-                settings.Endpoint,
-                settings.ModelId)
+                new OllamaEmbeddingGenerator(
+                    settings.Endpoint,
+                    settings.ModelId)
         );
 
         return builder;

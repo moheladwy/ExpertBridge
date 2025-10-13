@@ -31,9 +31,9 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 });
 
 builder.AddExpertBridgeServices();
-builder.Services.AddExpertBridgeNotifications();
+builder.Services.AddNotifications();
 
-builder.AddSwaggerGen();
+builder.AddSwaggerGen("ExpertBridgeApi");
 builder.AddCors();
 
 builder.Services.AddHttpContextAccessor();
