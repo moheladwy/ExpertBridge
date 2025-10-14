@@ -25,8 +25,7 @@ internal static class DomainServices
             .AddScoped<S3Service>()
             ;
 
-        // services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
-        services.AddSingleton<IEmbeddingService, QueuedEmbeddingService>();
+        services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
         services
             .AddScoped<CommentService>()
             .AddScoped<ContentModerationService>()

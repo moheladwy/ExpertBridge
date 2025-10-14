@@ -16,6 +16,17 @@ var rabbitMq = builder
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 
+var ollama = builder
+    .AddOllama("ollama", 11434)
+    .WithContainerName("expertbridge-ollama")
+    .WithDataVolume("expertbridge-ollama-data")
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithGPUSupport()
+    .WithOpenWebUI()
+    .WithOtlpExporter()
+    .PublishAsConnectionString()
+    .AddModel("snowflake-arctic-embed2:latest");
+
 var redis = builder
     .AddRedis("Redis", 6379)
     .WithImage("redis", "alpine")
@@ -53,5 +64,18 @@ builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
     .WaitFor(rabbitMq)
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
+
+builder.AddProject<ExpertBridge_Worker>("ExpertBridgeWorker")
+    .WithReference(redis)
+    .WithReference(rabbitMq)
+    .WithReference(ollama)
+    .WithReference(seq)
+    .WithReference(ollama)
+    .WaitFor(rabbitMq)
+    .WaitFor(ollama)
+    .WaitFor(redis)
+    .WaitFor(seq)
+    .WaitFor(ollama)
+    .WithOtlpExporter();
 
 await builder.Build().RunAsync();

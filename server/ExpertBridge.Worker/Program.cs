@@ -16,7 +16,7 @@ builder.Services.AddNotifications();
 builder
     .AddEmbeddingServices()
     .AddGroqApiServices();
-builder.Services.AddSingleton<IEmbeddingService, QueuedEmbeddingService>();
+builder.Services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
 builder.Services
     .AddScoped<GroqPostTaggingService>()
     .AddScoped<GroqTagProcessorService>()
