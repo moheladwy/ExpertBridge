@@ -7,6 +7,7 @@ using ExpertBridge.Extensions.AWS;
 using ExpertBridge.Extensions.Caching;
 using ExpertBridge.Extensions.Embeddings;
 using ExpertBridge.Extensions.OpenTelemetry;
+using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary;
 using ExpertBridge.GroqLibrary.Settings;
 using Polly;
@@ -55,29 +56,7 @@ public static class ExpertBridgeServicesExtensions
             ;
 
         builder.Services.AddDomainServices();
-
-        builder.Services.AddResiliencePipeline(ResiliencePipelines.MalformedJsonModelResponse, static builder =>
-        {
-            // See: https://www.pollydocs.org/strategies/retry.html
-            builder.AddRetry(new RetryStrategyOptions
-            {
-                ShouldHandle = new PredicateBuilder().Handle<JsonException>(),
-                MaxRetryAttempts = 3,
-                Delay = TimeSpan.FromSeconds(2),
-                BackoffType = DelayBackoffType.Exponential,
-                UseJitter = true,
-                OnRetry = context =>
-                {
-                    // Log the retry attempt
-                    Log.Information("Retrying due to a malformed json in model response. Attempt");
-                    return ValueTask.CompletedTask;
-                }
-            });
-
-            // See: https://www.pollydocs.org/strategies/timeout.html
-            builder.AddTimeout(TimeSpan.FromSeconds(90));
-        });
-
+        builder.AddResiliencePipeline();
 
         var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
         if (!Directory.Exists(logDirectory))

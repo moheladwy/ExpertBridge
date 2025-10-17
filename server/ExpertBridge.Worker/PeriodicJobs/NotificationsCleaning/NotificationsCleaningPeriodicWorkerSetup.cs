@@ -11,17 +11,17 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
     /// <summary>
     ///     The group name for the Quartz job and trigger.
     /// </summary>
-    private const string Group = "scheduler";
+    private const string Group = "periodic";
 
     /// <summary>
     ///     The name of the Quartz job for the Content Moderation periodic worker.
     /// </summary>
-    private const string JobName = nameof(NotificationsCleaningPeriodicWorker);
+    private const string JobName = $"{nameof(NotificationsCleaningPeriodicWorker)}.Job";
 
     /// <summary>
     ///     The name of the Quartz trigger for the Content Moderation periodic worker.
     /// </summary>
-    private const string TriggerName = $"{JobName}.trigger";
+    private const string TriggerName = $"{nameof(NotificationsCleaningPeriodicWorker)}.trigger";
 
     /// <summary>
     ///     The description of the Quartz job for the Content Moderation periodic worker.
@@ -33,7 +33,8 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
     /// </summary>
     private const int TriggerJobIntervalInHours = 24;
 
-    public void Configure(QuartzOptions options) =>
+    public void Configure(QuartzOptions options)
+    {
         options
             .AddJob<NotificationsCleaningPeriodicWorker>(jobBuilder =>
             {
@@ -47,7 +48,7 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
             {
                 // Configures the trigger for the job with a simple schedule
                 // to run every 24 hours indefinitely.
-                triggerBuilder.ForJob(JobName);
+                triggerBuilder.ForJob(JobName, Group);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>
                 {
                     scheduleBuilder
@@ -56,4 +57,5 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
                 });
                 triggerBuilder.WithIdentity(TriggerName, Group);
             });
+    }
 }

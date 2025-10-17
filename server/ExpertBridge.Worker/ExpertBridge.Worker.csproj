@@ -6,7 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL" />
     <PackageReference Include="Microsoft.Extensions.Hosting"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Quartz"/>
     <PackageReference Include="Quartz.Extensions.DependencyInjection"/>
     <PackageReference Include="Quartz.Extensions.Hosting"/>
@@ -24,9 +30,5 @@
     <ProjectReference Include="..\ExpertBridge.Contract\ExpertBridge.Contract.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pipelines\"/>
   </ItemGroup>
 </Project>

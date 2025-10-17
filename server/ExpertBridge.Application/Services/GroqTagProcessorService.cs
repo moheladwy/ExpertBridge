@@ -1,9 +1,11 @@
 using System.Text.Json;
 using ExpertBridge.Application.Models.GroqResponses;
 using ExpertBridge.Application.Settings;
+using ExpertBridge.Extensions.OpenTelemetry;
+using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
-using Polly;
 using Polly.Registry;
+using ResiliencePipeline = Polly.ResiliencePipeline;
 
 namespace ExpertBridge.Application.Services;
 

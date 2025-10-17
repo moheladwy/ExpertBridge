@@ -1,4 +1,4 @@
-﻿namespace ExpertBridge.Application.Settings;
+﻿namespace ExpertBridge.Extensions.Resilience;
 
 public static class ResiliencePipelines
 {

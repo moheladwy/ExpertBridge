@@ -4,9 +4,11 @@
 using System.Text.Json;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Responses;
+using ExpertBridge.Extensions.OpenTelemetry;
+using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
-using Polly;
 using Polly.Registry;
+using ResiliencePipeline = Polly.ResiliencePipeline;
 
 namespace ExpertBridge.Application.Services;
 
@@ -30,7 +32,7 @@ public sealed class GroqPostTaggingService
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
-    /// A configured instance of <see cref="ResiliencePipeline" /> used to handle transient faults and retries
+    /// A configured instance of <see cref="Polly.ResiliencePipeline" /> used to handle transient faults and retries
     /// during the execution of resilient operations in the categorization process.
     /// </summary>
     private readonly ResiliencePipeline _resiliencePipeline;

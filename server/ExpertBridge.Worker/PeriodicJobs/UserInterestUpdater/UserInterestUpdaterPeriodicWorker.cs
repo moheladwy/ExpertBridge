@@ -70,7 +70,9 @@ internal sealed class UserInterestUpdaterPeriodicWorker : IJob
         _publishEndpoint = publishEndpoint;
     }
 
-    public async Task Execute(IJobExecutionContext context) =>
+    public async Task Execute(IJobExecutionContext context)
+    {
+        _logger.LogInformation("Starting User Interest Updater Periodic Worker.");
         await _dbContext.Profiles
             .AsNoTracking()
             .Where(p => p.UserInterestEmbedding == null)
@@ -88,4 +90,6 @@ internal sealed class UserInterestUpdaterPeriodicWorker : IJob
                 },
                 context.CancellationToken
             );
+        _logger.LogInformation("User Interest Updater Periodic Worker completed.");
+    }
 }

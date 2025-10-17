@@ -5,6 +5,7 @@ using ExpertBridge.Worker.PeriodicJobs.PostModeration;
 using ExpertBridge.Worker.PeriodicJobs.S3Cleaning;
 using ExpertBridge.Worker.PeriodicJobs.UserInterestUpdater;
 using Quartz;
+using Quartz.Impl.AdoJobStore;
 
 namespace ExpertBridge.Worker;
 
@@ -21,6 +22,7 @@ internal static class Extensions
     ///     Adds and configures Quartz background services to the service collection.
     /// </summary>
     /// <param name="services">The service collection to add background services to.</param>
+    /// <param name="configuration">The application configuration for retrieving connection strings.</param>
     /// <remarks>
     ///     This method:
     ///     <list type="bullet">
@@ -29,7 +31,7 @@ internal static class Extensions
     ///         <item>Configures the logging background job</item>
     ///     </list>
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when the services parameter is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when the service parameter is null.</exception>
     public static void AddBackgroundServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddQuartz(options =>
@@ -40,8 +42,9 @@ internal static class Extensions
             {
                 persistentOptions.UsePostgres(cfg =>
                 {
-                    cfg.ConnectionString = configuration.GetConnectionString("Postgresql")!;
-                    cfg.TablePrefix = "scheduler.quartz_";
+                    cfg.UseDriverDelegate<PostgreSQLDelegate>();
+                    cfg.ConnectionString = configuration.GetConnectionString("QuartzDatabase")!;
+                    cfg.TablePrefix = "quartz.qrtz_";
                 });
                 persistentOptions.UseProperties = true;
                 persistentOptions.UseNewtonsoftJsonSerializer();
@@ -56,9 +59,9 @@ internal static class Extensions
         });
 
         services.ConfigureOptions<S3CleaningPeriodicWorkerSetup>();
-        services.ConfigureOptions<PostsModerationPeriodicWorkerSetup>();
-        services.ConfigureOptions<JobPostsModerationPeriodicWorkerSetup>();
-        services.ConfigureOptions<CommentsModerationPeriodicWorkerSetup>();
+        // services.ConfigureOptions<PostsModerationPeriodicWorkerSetup>();
+        // services.ConfigureOptions<JobPostsModerationPeriodicWorkerSetup>();
+        // services.ConfigureOptions<CommentsModerationPeriodicWorkerSetup>();
         services.ConfigureOptions<UserInterestUpdaterPeriodicWorkerSetup>();
         services.ConfigureOptions<NotificationsCleaningPeriodicWorkerSetup>();
     }

@@ -1,9 +1,11 @@
 using System.Text.Json;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Responses;
+using ExpertBridge.Extensions.OpenTelemetry;
+using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
-using Polly;
 using Polly.Registry;
+using ResiliencePipeline = Polly.ResiliencePipeline;
 
 namespace ExpertBridge.Application.Services;
 
@@ -28,7 +30,7 @@ public sealed class GroqInappropriateLanguageDetectionService
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
-    /// An instance of <see cref="ResiliencePipeline" /> used to provide resilience mechanisms such as retries
+    /// An instance of <see cref="Polly.ResiliencePipeline" /> used to provide resilience mechanisms such as retries
     /// and transient fault handling when interacting with the Groq Large Language Model (LLM) API.
     /// </summary>
     private readonly ResiliencePipeline _resiliencePipeline;

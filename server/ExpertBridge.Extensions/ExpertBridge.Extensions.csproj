@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.AI.Ollama"/>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis"/>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
+    <PackageReference Include="Microsoft.Extensions.Resilience"/>
     <PackageReference Include="FirebaseAdmin"/>
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
     <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore"/>
