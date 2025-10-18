@@ -6,20 +6,40 @@ using Microsoft.Extensions.Hosting;
 
 namespace ExpertBridge.Extensions.CORS;
 
+/// <summary>
+/// Provides extension methods for configuring Cross-Origin Resource Sharing (CORS) policies in the ExpertBridge application.
+/// Defines multiple policies for different client access patterns including unrestricted API access and SignalR real-time connections.
+/// </summary>
 public static class Cors
 {
     /// <summary>
-    ///     Adds a default CORS policy service to allow any origin, method, and header.
+    /// Registers CORS policies for the application including unrestricted access and SignalR client-specific policies.
+    /// Configures two policies: AllowAll for general API access and SignalRClients for real-time WebSocket connections with credentials.
     /// </summary>
-    /// <param name="builder">
-    ///     The application builder to configure CORS service for.
-    /// </param>
-    /// <typeparam name="TBuilder">
-    ///     The type of the application builder.
-    /// </typeparam>
-    /// <returns>
-    ///     The application builder with CORS service configured.
-    /// </returns>
+    /// <typeparam name="TBuilder">The type of the host application builder.</typeparam>
+    /// <param name="builder">The host application builder to configure CORS policies for.</param>
+    /// <returns>The builder instance for method chaining.</returns>
+    /// <remarks>
+    /// This method configures two CORS policies:
+    /// 
+    /// **AllowAll Policy:**
+    /// - Permits requests from any origin
+    /// - Allows all HTTP methods (GET, POST, PUT, DELETE, etc.)
+    /// - Allows all headers
+    /// - Suitable for development or public API endpoints
+    /// - Does not support credentials (cookies, authorization headers)
+    /// 
+    /// **SignalRClients Policy:**
+    /// - Restricts origins to specific allowed URLs:
+    ///   - http://localhost:5173 (Vite development server)
+    ///   - http://localhost:5174 (Alternative development port)
+    ///   - https://expert-bridge.netlify.app (Production deployment)
+    /// - Allows all HTTP methods and headers
+    /// - Enables credentials support for authenticated SignalR connections
+    /// - Required for real-time notification and chat features via SignalR hubs
+    /// 
+    /// Use the policy names from <see cref="CorsPolicyNames"/> when applying policies to controllers or endpoints.
+    /// </remarks>
     public static TBuilder AddCors<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
