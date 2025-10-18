@@ -1,7 +1,7 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Contract.Messages;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +72,9 @@ internal sealed class JobPostsModerationPeriodicWorker : IJob
 
             _logger.LogInformation("Found {Count} JobPosts to be safe-checked.", jobPostsToBeSafeChecked.Count);
             foreach (var posts in jobPostsToBeSafeChecked)
+            {
                 await _publishEndpoint.Publish(posts, context.CancellationToken);
+            }
 
             var jobPostsToBeTagged = await _dbContext.JobPostings
                 .AsNoTracking()
@@ -89,7 +91,9 @@ internal sealed class JobPostsModerationPeriodicWorker : IJob
 
             _logger.LogInformation("Found {Count} JobPosts to be tagged.", jobPostsToBeTagged.Count);
             foreach (var posts in jobPostsToBeTagged)
+            {
                 await _publishEndpoint.Publish(posts, context.CancellationToken);
+            }
 
             var jobPostsToBeEmbedded = await _dbContext.JobPostings
                 .AsNoTracking()
@@ -102,13 +106,15 @@ internal sealed class JobPostsModerationPeriodicWorker : IJob
 
             _logger.LogInformation("Found {Count} JobPosts to be embedded.", jobPostsToBeEmbedded.Count);
             foreach (var posts in jobPostsToBeEmbedded)
+            {
                 await _publishEndpoint.Publish(posts, context.CancellationToken);
+            }
 
             await _dbContext.JobPostings
                 .Where(jp => jp.IsProcessed && !jp.IsSafeContent && jp.IsTagged && jp.Embedding != null)
                 .ExecuteUpdateAsync(set =>
                         set.SetProperty(jobPosting => jobPosting.IsSafeContent, true),
-                        context.CancellationToken);
+                    context.CancellationToken);
 
             _logger.LogInformation("JobPosts moderation periodic job completed.");
         }

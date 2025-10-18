@@ -1,11 +1,11 @@
 ﻿using ExpertBridge.Application.DataGenerator;
-using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities.JobApplications;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.Media.JobPostingMedia;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.JobPostings;

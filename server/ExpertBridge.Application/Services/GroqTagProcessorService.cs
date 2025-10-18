@@ -1,7 +1,5 @@
 using System.Text.Json;
 using ExpertBridge.Application.Models.GroqResponses;
-using ExpertBridge.Application.Settings;
-using ExpertBridge.Extensions.OpenTelemetry;
 using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
 using Polly.Registry;

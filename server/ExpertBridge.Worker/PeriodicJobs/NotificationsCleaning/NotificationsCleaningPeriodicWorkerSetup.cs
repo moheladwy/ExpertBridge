@@ -33,8 +33,7 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
     /// </summary>
     private const int TriggerJobIntervalInHours = 24;
 
-    public void Configure(QuartzOptions options)
-    {
+    public void Configure(QuartzOptions options) =>
         options
             .AddJob<NotificationsCleaningPeriodicWorker>(jobBuilder =>
             {
@@ -57,5 +56,4 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
                 });
                 triggerBuilder.WithIdentity(TriggerName, Group);
             });
-    }
 }

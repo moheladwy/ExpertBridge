@@ -1,11 +1,10 @@
-﻿using System.Threading.Channels;
-using ExpertBridge.Application.DataGenerator;
-using ExpertBridge.Contract.Messages;
+﻿using ExpertBridge.Application.DataGenerator;
 using ExpertBridge.Core.Entities.Media.PostMedia;
 using ExpertBridge.Core.Entities.Posts;
 using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;

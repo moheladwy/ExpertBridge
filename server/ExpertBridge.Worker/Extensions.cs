@@ -1,9 +1,4 @@
-using ExpertBridge.Worker.PeriodicJobs.CommentsModeration;
-using ExpertBridge.Worker.PeriodicJobs.JobPostsModeration;
-using ExpertBridge.Worker.PeriodicJobs.NotificationsCleaning;
 using ExpertBridge.Worker.PeriodicJobs.PostModeration;
-using ExpertBridge.Worker.PeriodicJobs.S3Cleaning;
-using ExpertBridge.Worker.PeriodicJobs.UserInterestUpdater;
 using Quartz;
 using Quartz.Impl.AdoJobStore;
 

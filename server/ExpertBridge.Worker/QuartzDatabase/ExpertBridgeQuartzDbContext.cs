@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Worker.QuartzDatabase;
 
-internal sealed class ExpertBridgeQuartzDbContext(DbContextOptions<ExpertBridgeQuartzDbContext> options) : DbContext(options)
+internal sealed class ExpertBridgeQuartzDbContext(DbContextOptions<ExpertBridgeQuartzDbContext> options)
+    : DbContext(options)
 {
     /// <summary>
     ///     The OnModelCreating method that is called when the model is being created.

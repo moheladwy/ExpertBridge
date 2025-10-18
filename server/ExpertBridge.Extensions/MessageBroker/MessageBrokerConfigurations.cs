@@ -83,7 +83,7 @@ public static class MessageBrokerConfigurations
     ///     <code>
     /// // Register without consumers
     /// builder.RegisterMessageBroker();
-    ///
+    /// 
     /// // Register with consumers from current consumerAssembly
     /// builder.RegisterMessageBroker(Assembly.GetExecutingAssembly());
     /// </code>
@@ -101,7 +101,10 @@ public static class MessageBrokerConfigurations
             configure.SetKebabCaseEndpointNameFormatter();
 
             // If a consumerAssembly is provided, register all consumers from the specified consumerAssembly.
-            if (consumerAssembly is not null) configure.AddConsumers(consumerAssembly);
+            if (consumerAssembly is not null)
+            {
+                configure.AddConsumers(consumerAssembly);
+            }
 
             // Configure RabbitMQ as the transport layer for MassTransit.
             configure.UsingRabbitMq((ctx, cfg) =>

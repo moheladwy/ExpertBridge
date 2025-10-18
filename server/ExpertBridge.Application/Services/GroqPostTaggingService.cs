@@ -2,9 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Responses;
-using ExpertBridge.Extensions.OpenTelemetry;
 using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
 using Polly.Registry;
@@ -32,8 +30,8 @@ public sealed class GroqPostTaggingService
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
-    /// A configured instance of <see cref="Polly.ResiliencePipeline" /> used to handle transient faults and retries
-    /// during the execution of resilient operations in the categorization process.
+    ///     A configured instance of <see cref="Polly.ResiliencePipeline" /> used to handle transient faults and retries
+    ///     during the execution of resilient operations in the categorization process.
     /// </summary>
     private readonly ResiliencePipeline _resiliencePipeline;
 

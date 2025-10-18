@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using ExpertBridge.Application.Services;
+﻿using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Application.Settings.Serilog;
 using ExpertBridge.Data;
@@ -10,9 +9,6 @@ using ExpertBridge.Extensions.OpenTelemetry;
 using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary;
 using ExpertBridge.GroqLibrary.Settings;
-using Polly;
-using Polly.Retry;
-using Serilog;
 
 namespace ExpertBridge.Api.Extensions;
 

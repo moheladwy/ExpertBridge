@@ -3,13 +3,13 @@
   <PropertyGroup>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>335ee25f-14d9-4622-b7ae-e4c95c7f7914</UserSecretsId>
+    <RootNamespace>ExpertBridge.Admin</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj"/>
-    <ProjectReference Include="..\ExpertBridge.Notifications\ExpertBridge.Notifications.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Contract.Messages;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +55,9 @@ internal sealed class CommentsModerationPeriodicWorker : IJob
 
         _logger.LogInformation("Found {Count} Comments to be safe-checked.", comments.Count);
         foreach (var comment in comments)
+        {
             await _publishEndpoint.Publish(comment, context.CancellationToken);
+        }
 
         await _dbContext.Comments
             .Where(c => c.IsProcessed)

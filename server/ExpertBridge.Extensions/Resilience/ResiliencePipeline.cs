@@ -11,7 +11,8 @@ namespace ExpertBridge.Extensions.Resilience;
 
 public static class ResiliencePipeline
 {
-    public static TBuilder AddResiliencePipeline<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    public static TBuilder AddResiliencePipeline<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
     {
         builder.Services.AddResiliencePipeline(ResiliencePipelines.MalformedJsonModelResponse, static builder =>
         {

@@ -1,9 +1,9 @@
-﻿using ExpertBridge.Contract.Messages;
-using ExpertBridge.Core.Entities.Comments;
+﻿using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreateComment;

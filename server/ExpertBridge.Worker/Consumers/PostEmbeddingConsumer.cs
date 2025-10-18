@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Application.EmbeddingService;
-using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Interfaces;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using MassTransit;

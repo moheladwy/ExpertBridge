@@ -3,11 +3,11 @@
 
 using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
-using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Interfaces;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using MassTransit;
@@ -175,7 +175,8 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
             ContentId = existingPost.Id,
             IsNegative = !isAppropriate,
             Reason = reason,
-            IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
+            IsResolved =
+                true, // Because this is an automated report generation, not issued by a user of the application
             IdentityAttack = results.IdentityAttack,
             Obscene = results.Obscene,
             Insult = results.Insult,

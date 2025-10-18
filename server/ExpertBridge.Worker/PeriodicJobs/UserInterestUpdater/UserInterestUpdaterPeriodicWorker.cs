@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Contract.Messages;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -85,7 +85,8 @@ internal sealed class UserInterestUpdaterPeriodicWorker : IJob
             try
             {
                 await _publishEndpoint.Publish(profile, context.CancellationToken);
-                _logger.LogInformation("Published user with Id {UserId} interests updated message.", profile.UserProfileId);
+                _logger.LogInformation("Published user with Id {UserId} interests updated message.",
+                    profile.UserProfileId);
             }
             catch (Exception e)
             {

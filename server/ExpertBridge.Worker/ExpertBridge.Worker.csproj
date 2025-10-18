@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL" />
+    <PackageReference Include="AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL"/>
     <PackageReference Include="Microsoft.Extensions.Hosting"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpertBridge.Application\ExpertBridge.Application.csproj"/>
-    <ProjectReference Include="..\ExpertBridge.Contract\ExpertBridge.Contract.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj"/>
   </ItemGroup>

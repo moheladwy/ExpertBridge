@@ -33,8 +33,7 @@ internal sealed class S3CleaningPeriodicWorkerSetup : IConfigureOptions<QuartzOp
     /// </summary>
     private const int TriggerJobIntervalInHours = 24;
 
-    public void Configure(QuartzOptions options)
-    {
+    public void Configure(QuartzOptions options) =>
         options
             .AddJob<S3CleaningPeriodicWorker>(jobBuilder =>
             {
@@ -57,5 +56,4 @@ internal sealed class S3CleaningPeriodicWorkerSetup : IConfigureOptions<QuartzOp
                 });
                 triggerBuilder.WithIdentity(TriggerName, Group);
             });
-    }
 }

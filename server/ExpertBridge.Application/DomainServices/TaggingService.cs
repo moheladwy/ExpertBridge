@@ -1,10 +1,9 @@
-﻿using System.Threading.Channels;
-using ExpertBridge.Contract.Messages;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
+﻿using ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Core.Interfaces;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
@@ -25,8 +24,8 @@ public sealed class TaggingService
     private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
-    /// Represents the publish endpoint used for sending messages to the message broker,
-    /// enabling asynchronous communication and event-driven workflows within the application's infrastructure.
+    ///     Represents the publish endpoint used for sending messages to the message broker,
+    ///     enabling asynchronous communication and event-driven workflows within the application's infrastructure.
     /// </summary>
     private readonly IPublishEndpoint _publishEndpoint;
 

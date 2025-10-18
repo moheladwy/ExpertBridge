@@ -7,7 +7,7 @@ using Serilog;
 namespace ExpertBridge.Worker.QuartzDatabase;
 
 /// <summary>
-/// Provides functionality for database migration operations at application startup.
+///     Provides functionality for database migration operations at application startup.
 /// </summary>
 internal static class DbMigration
 {

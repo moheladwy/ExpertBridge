@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Contract.Messages;
+using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +72,9 @@ internal sealed class PostsModerationPeriodicWorker : IJob
 
             _logger.LogInformation("Found {Count} Posts to be safe-checked.", postsToBeSafeChecked.Count);
             foreach (var post in postsToBeSafeChecked)
+            {
                 await _publishEndpoint.Publish(post, context.CancellationToken);
+            }
 
             var postsToBeTagged = await _dbContext.Posts
                 .AsNoTracking()
@@ -89,7 +91,9 @@ internal sealed class PostsModerationPeriodicWorker : IJob
 
             _logger.LogInformation("Found {Count} Posts to be tagged.", postsToBeTagged.Count);
             foreach (var post in postsToBeTagged)
+            {
                 await _publishEndpoint.Publish(post, context.CancellationToken);
+            }
 
             var postsToBeEmbedded = await _dbContext.Posts
                 .AsNoTracking()
@@ -102,7 +106,9 @@ internal sealed class PostsModerationPeriodicWorker : IJob
 
             _logger.LogInformation("Found {Count} Posts to be embedded.", postsToBeEmbedded.Count);
             foreach (var post in postsToBeEmbedded)
+            {
                 await _publishEndpoint.Publish(post, context.CancellationToken);
+            }
 
             _logger.LogInformation("Published all Posts moderation messages.");
 

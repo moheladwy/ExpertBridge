@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.0" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.0"/>
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,22 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
-    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
-    <PackageReference Include="Aspire.Hosting.Redis" />
-    <PackageReference Include="Aspire.Hosting.Seq" />
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" />
+    <PackageReference Include="Aspire.Hosting.AppHost"/>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
+    <PackageReference Include="Aspire.Hosting.RabbitMQ"/>
+    <PackageReference Include="Aspire.Hosting.Redis"/>
+    <PackageReference Include="Aspire.Hosting.Seq"/>
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExpertBridge.Admin\ExpertBridge.Admin.csproj" />
-    <ProjectReference Include="..\ExpertBridge.Api\ExpertBridge.Api.csproj" />
-    <ProjectReference Include="..\ExpertBridge.Worker\ExpertBridge.Worker.csproj" />
+    <ProjectReference Include="..\ExpertBridge.Admin\ExpertBridge.Admin.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Api\ExpertBridge.Api.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Worker\ExpertBridge.Worker.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="obj\" />
+    <Folder Include="obj\"/>
   </ItemGroup>
 
 </Project>
