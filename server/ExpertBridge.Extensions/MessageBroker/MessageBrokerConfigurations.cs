@@ -83,7 +83,7 @@ public static class MessageBrokerConfigurations
     ///     <code>
     /// // Register without consumers
     /// builder.RegisterMessageBroker();
-    /// 
+    ///
     /// // Register with consumers from current consumerAssembly
     /// builder.RegisterMessageBroker(Assembly.GetExecutingAssembly());
     /// </code>
@@ -104,6 +104,16 @@ public static class MessageBrokerConfigurations
             if (consumerAssembly is not null)
             {
                 configure.AddConsumers(consumerAssembly);
+
+                configure.AddConfigureEndpointsCallback((name, cfg) =>
+                {
+                    // This will be called for each consumer endpoint
+                    Console.WriteLine($"Configuring endpoint: {name}");
+                });
+            }
+            else
+            {
+                Console.WriteLine("No consumerAssembly provided. Skipping consumer registration.");
             }
 
             // Configure RabbitMQ as the transport layer for MassTransit.
@@ -123,8 +133,8 @@ public static class MessageBrokerConfigurations
                 cfg.ConfigureEndpoints(ctx);
                 cfg.UseInstrumentation();
                 cfg.UseMessageRetry(retryConfigurator => { retryConfigurator.Interval(2, 1000); });
-                cfg.ConcurrentMessageLimit = 5;
-                cfg.PrefetchCount = 5;
+                // cfg.ConcurrentMessageLimit = 5;
+                // cfg.PrefetchCount = 5;
             });
         });
 

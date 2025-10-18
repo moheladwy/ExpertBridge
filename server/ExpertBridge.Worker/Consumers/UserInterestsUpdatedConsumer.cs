@@ -26,7 +26,7 @@ namespace ExpertBridge.Worker.Consumers;
 /// <remarks>
 ///     Handles logging of processing information and errors during the consumption of the message.
 /// </remarks>
-internal sealed class UserInterestsUpdatedConsumer : IConsumer<UserInterestsUpdatedMessage>
+public sealed class UserInterestsUpdatedConsumer : IConsumer<UserInterestsUpdatedMessage>
 {
     /// <summary>
     ///     Database context for accessing and managing persistent storage related to the ExpertBridge domain.

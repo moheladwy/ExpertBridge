@@ -50,11 +50,8 @@ internal sealed class UserInterestUpdaterPeriodicWorkerSetup : IConfigureOptions
                 triggerBuilder.ForJob(JobName, Group);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>
                 {
-                    // scheduleBuilder
-                    //     .WithIntervalInHours(TriggerJobIntervalInHours)
-                    //     .RepeatForever();
                     scheduleBuilder
-                        .WithIntervalInMinutes(1)
+                        .WithIntervalInHours(TriggerJobIntervalInHours)
                         .RepeatForever();
                 });
                 triggerBuilder.WithIdentity(TriggerName, Group);

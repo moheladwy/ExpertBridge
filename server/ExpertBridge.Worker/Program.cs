@@ -10,6 +10,7 @@ using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary;
 using ExpertBridge.Notifications.Extensions;
 using ExpertBridge.Worker;
+using ExpertBridge.Worker.Consumers;
 using ExpertBridge.Worker.QuartzDatabase;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -34,7 +35,7 @@ builder.Services
 builder.Services.Configure<AwsSettings>(
     builder.Configuration.GetSection(AwsSettings.Section));
 builder.AddS3ObjectService();
-builder.RegisterMessageBroker(typeof(Program).Assembly);
+builder.RegisterMessageBroker(typeof(UserInterestsUpdatedConsumer).Assembly);
 builder.Services.AddBackgroundServices(builder.Configuration);
 
 var host = builder.Build();

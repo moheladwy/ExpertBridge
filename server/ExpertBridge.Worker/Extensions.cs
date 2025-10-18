@@ -55,7 +55,7 @@ internal static class Extensions
         {
             options.AwaitApplicationStarted = true;
             options.WaitForJobsToComplete = true;
-            options.StartDelay = TimeSpan.FromSeconds(5);
+            options.StartDelay = TimeSpan.FromSeconds(30);
         });
 
         services.ConfigureOptions<S3CleaningPeriodicWorkerSetup>();

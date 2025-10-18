@@ -17,7 +17,7 @@ namespace ExpertBridge.Worker.Consumers;
 ///     This class processes messages to analyze comment content, generate moderation reports, and handle comment removal
 ///     and notifications.
 /// </summary>
-internal sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInappropriateCommentMessage>
+public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInappropriateCommentMessage>
 {
     /// <summary>
     ///     An instance of <see cref="ExpertBridgeDbContext" /> used to interact with the application's database for performing

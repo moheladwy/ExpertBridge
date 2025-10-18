@@ -20,7 +20,7 @@ namespace ExpertBridge.Worker.Consumers;
 ///     and utilizes the <see cref="GroqTagProcessorService" /> for tag translation and categorization.
 ///     The processed tags and user interests are saved into the database using <see cref="ExpertBridgeDbContext" />.
 /// </remarks>
-internal sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterestsProsessingMessage>
+public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterestsProsessingMessage>
 {
     /// <summary>
     ///     Represents the database context used for accessing and managing the application's database entities

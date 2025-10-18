@@ -8,7 +8,7 @@ using MassTransit;
 
 namespace ExpertBridge.Worker.Consumers;
 
-internal sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
+public sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
 {
     private readonly GroqPostTaggingService _groqPostTaggingService;
     private readonly ILogger<PostTaggingConsumer> _logger;

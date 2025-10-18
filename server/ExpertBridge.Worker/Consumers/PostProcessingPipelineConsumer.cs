@@ -6,7 +6,7 @@ using MassTransit;
 
 namespace ExpertBridge.Worker.Consumers;
 
-internal sealed class PostProcessingPipelineConsumer : IConsumer<PostProcessingPipelineMessage>
+public sealed class PostProcessingPipelineConsumer : IConsumer<PostProcessingPipelineMessage>
 {
     private readonly ILogger<PostProcessingPipelineConsumer> _logger;
     private readonly IPublishEndpoint _publishEndpoint;

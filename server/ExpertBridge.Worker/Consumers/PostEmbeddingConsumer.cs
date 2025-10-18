@@ -33,7 +33,7 @@ namespace ExpertBridge.Worker.Consumers;
 /// <seealso cref="EmbedPostMessage" />
 /// <seealso cref="ExpertBridgeDbContext" />
 /// <seealso cref="IEmbeddingService" />
-internal sealed class PostEmbeddingConsumer : IConsumer<EmbedPostMessage>
+public sealed class PostEmbeddingConsumer : IConsumer<EmbedPostMessage>
 {
     /// <summary>
     ///     Provides database access functionality for the <see cref="PostEmbeddingConsumer" /> class.

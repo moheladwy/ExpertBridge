@@ -73,23 +73,26 @@ internal sealed class UserInterestUpdaterPeriodicWorker : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         _logger.LogInformation("Starting User Interest Updater Periodic Worker.");
-        await _dbContext.Profiles
+
+        var profiles = await _dbContext.Profiles
             .AsNoTracking()
             .Where(p => p.UserInterestEmbedding == null)
             .Select(p => new UserInterestsUpdatedMessage { UserProfileId = p.Id })
-            .ForEachAsync(async void (message) =>
-                {
-                    try
-                    {
-                        await _publishEndpoint.Publish(message, context.CancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e, "Failed to send user interests to user interests updated channel.");
-                    }
-                },
-                context.CancellationToken
-            );
+            .ToListAsync(context.CancellationToken);
+
+        foreach (var profile in profiles)
+        {
+            try
+            {
+                await _publishEndpoint.Publish(profile, context.CancellationToken);
+                _logger.LogInformation("Published user with Id {UserId} interests updated message.", profile.UserProfileId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to send user interests to user interests updated channel.");
+            }
+        }
+
         _logger.LogInformation("User Interest Updater Periodic Worker completed.");
     }
 }

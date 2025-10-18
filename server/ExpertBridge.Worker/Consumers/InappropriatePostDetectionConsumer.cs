@@ -29,7 +29,7 @@ namespace ExpertBridge.Worker.Consumers;
 ///     <see cref="NotificationFacade" />.
 ///     - Persists moderation reports to the <see cref="ExpertBridgeDbContext" />.
 /// </remarks>
-internal sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappropriatePostMessage>
+public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappropriatePostMessage>
 {
     /// <summary>
     ///     Database context for reading/updating posts and writing moderation reports.
