@@ -45,25 +45,25 @@ var seq = builder
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 
-// builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
-//     .WithReference(redis)
-//     .WithReference(seq)
-//     .WaitFor(rabbitMq)
-//     .WaitFor(redis)
-//     .WaitFor(seq)
-//     .WaitFor(rabbitMq)
-//     .WithOtlpExporter()
-//     .WithExternalHttpEndpoints();
-//
-// builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
-//     .WithReference(redis)
-//     .WithReference(seq)
-//     .WaitFor(rabbitMq)
-//     .WaitFor(seq)
-//     .WaitFor(redis)
-//     .WaitFor(rabbitMq)
-//     .WithOtlpExporter()
-//     .WithExternalHttpEndpoints();
+builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
+    .WithReference(redis)
+    .WithReference(seq)
+    .WaitFor(rabbitMq)
+    .WaitFor(redis)
+    .WaitFor(seq)
+    .WaitFor(rabbitMq)
+    .WithOtlpExporter()
+    .WithExternalHttpEndpoints();
+
+builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
+    .WithReference(redis)
+    .WithReference(seq)
+    .WaitFor(rabbitMq)
+    .WaitFor(seq)
+    .WaitFor(redis)
+    .WaitFor(rabbitMq)
+    .WithOtlpExporter()
+    .WithExternalHttpEndpoints();
 
 builder.AddProject<ExpertBridge_Worker>("ExpertBridgeWorker")
     .WithReference(redis)

@@ -56,9 +56,10 @@ internal sealed class PostsModerationPeriodicWorker : IJob
         try
         {
             _logger.LogInformation("Starting Posts moderation periodic job.");
-            await _dbContext.Posts
+
+            var postsToBeSafeChecked = await _dbContext.Posts
                 .AsNoTracking()
-                .Where(p => !p.IsProcessed && !p.IsSafeContent)
+                .Where(p => !p.IsProcessed)
                 .Select(p => new DetectInappropriatePostMessage
                 {
                     PostId = p.Id,
@@ -67,24 +68,15 @@ internal sealed class PostsModerationPeriodicWorker : IJob
                     Title = p.Title,
                     IsJobPosting = false
                 })
-                .ForEachAsync(async void (detectInappropriatePostMessage) =>
-                    {
-                        try
-                        {
-                            await _publishEndpoint
-                                .Publish(detectInappropriatePostMessage, context.CancellationToken);
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogError(e, "Failed to send post to post processing pipeline.");
-                        }
-                    },
-                    context.CancellationToken
-                );
+                .ToListAsync(context.CancellationToken);
 
-            await _dbContext.Posts
+            _logger.LogInformation("Found {Count} Posts to be safe-checked.", postsToBeSafeChecked.Count);
+            foreach (var post in postsToBeSafeChecked)
+                await _publishEndpoint.Publish(post, context.CancellationToken);
+
+            var postsToBeTagged = await _dbContext.Posts
                 .AsNoTracking()
-                .Where(p => !p.IsProcessed && p.IsSafeContent && !p.IsTagged)
+                .Where(p => p.IsProcessed && !p.IsTagged)
                 .Select(p => new TagPostMessage
                 {
                     PostId = p.Id,
@@ -93,48 +85,34 @@ internal sealed class PostsModerationPeriodicWorker : IJob
                     Title = p.Title,
                     IsJobPosting = false
                 })
-                .ForEachAsync(async void (tagPostMessage) =>
-                    {
-                        try
-                        {
-                            await _publishEndpoint
-                                .Publish(tagPostMessage, context.CancellationToken);
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogError(e, "Failed to send post to post processing pipeline.");
-                        }
-                    },
-                    context.CancellationToken
-                );
+                .ToListAsync(context.CancellationToken);
 
-            await _dbContext.Posts
+            _logger.LogInformation("Found {Count} Posts to be tagged.", postsToBeTagged.Count);
+            foreach (var post in postsToBeTagged)
+                await _publishEndpoint.Publish(post, context.CancellationToken);
+
+            var postsToBeEmbedded = await _dbContext.Posts
                 .AsNoTracking()
                 .Where(p => p.IsProcessed && p.Embedding == null)
                 .Select(p => new EmbedPostMessage
                 {
                     PostId = p.Id, Content = p.Content, Title = p.Title, IsJobPosting = false
                 })
-                .ForEachAsync(async void (embedPostMessage) =>
-                    {
-                        try
-                        {
-                            await _publishEndpoint
-                                .Publish(embedPostMessage, context.CancellationToken);
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogError(e, "Failed to send post to post processing pipeline.");
-                        }
-                    },
-                    context.CancellationToken
-                );
+                .ToListAsync(context.CancellationToken);
 
+            _logger.LogInformation("Found {Count} Posts to be embedded.", postsToBeEmbedded.Count);
+            foreach (var post in postsToBeEmbedded)
+                await _publishEndpoint.Publish(post, context.CancellationToken);
+
+            _logger.LogInformation("Published all Posts moderation messages.");
+
+            _logger.LogInformation("Updating Posts and Job Postings with inappropriate content...");
             await _dbContext.Posts
-                .Where(p => !p.IsProcessed && p.IsSafeContent && p.IsTagged)
+                .Where(p => p.IsProcessed && p.IsTagged && p.Embedding != null && !p.IsSafeContent)
                 .ExecuteUpdateAsync(setPropertyCalls =>
-                        setPropertyCalls.SetProperty(post => post.IsProcessed, true),
+                        setPropertyCalls.SetProperty(post => post.IsSafeContent, true),
                     context.CancellationToken);
+
             _logger.LogInformation("Posts moderation periodic job completed.");
         }
         catch (Exception e)

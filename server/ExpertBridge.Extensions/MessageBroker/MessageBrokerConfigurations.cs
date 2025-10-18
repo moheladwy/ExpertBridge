@@ -101,20 +101,7 @@ public static class MessageBrokerConfigurations
             configure.SetKebabCaseEndpointNameFormatter();
 
             // If a consumerAssembly is provided, register all consumers from the specified consumerAssembly.
-            if (consumerAssembly is not null)
-            {
-                configure.AddConsumers(consumerAssembly);
-
-                configure.AddConfigureEndpointsCallback((name, cfg) =>
-                {
-                    // This will be called for each consumer endpoint
-                    Console.WriteLine($"Configuring endpoint: {name}");
-                });
-            }
-            else
-            {
-                Console.WriteLine("No consumerAssembly provided. Skipping consumer registration.");
-            }
+            if (consumerAssembly is not null) configure.AddConsumers(consumerAssembly);
 
             // Configure RabbitMQ as the transport layer for MassTransit.
             configure.UsingRabbitMq((ctx, cfg) =>
@@ -133,8 +120,7 @@ public static class MessageBrokerConfigurations
                 cfg.ConfigureEndpoints(ctx);
                 cfg.UseInstrumentation();
                 cfg.UseMessageRetry(retryConfigurator => { retryConfigurator.Interval(2, 1000); });
-                // cfg.ConcurrentMessageLimit = 5;
-                // cfg.PrefetchCount = 5;
+                cfg.ConcurrentMessageLimit = 2;
             });
         });
 

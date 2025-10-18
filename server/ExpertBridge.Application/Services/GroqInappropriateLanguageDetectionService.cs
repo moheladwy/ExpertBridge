@@ -108,12 +108,15 @@ public sealed class GroqInappropriateLanguageDetectionService
     {
         List<string> systemPrompt =
         [
-            "You are an AI moderation assistant specialized in detecting various forms of toxicity in user‐generated text whether in English, Egyptian Arabic, or another language.",
-            "When given a piece of text, you must assign a probability between 0 and 1 to each of the following categories:",
+            "You are an AI moderation system specializing in the detection of NSFW and toxic language across multiple languages, including English and Egyptian Arabic.",
+            "Your task is to analyze the given text and output the likelihood (as a probability between 0 and 1) that it falls into each of the following categories:",
             "Toxicity, SevereToxicity, Obscene, Threat, Insult, IdentityAttack, SexualExplicit.",
-            "Your response must be a single JSON object that exactly matches the provided “NsfwDetectionResponse” pydantic schema",
-            "no additional fields or commentary.",
-            "Validate that each value is a number rounded to five decimal places, and that every field from the schema appears in the output.\n"
+            "Base your evaluation on linguistic meaning, intent, and contextual cues — not only on isolated words. Be sensitive to cultural nuances and slang used in Arabic and English code-switching.",
+            "Your response must strictly be a valid JSON object conforming to the exact 'NsfwDetectionResponse' schema with the following fields:",
+            GetOutputFormatSchema(),
+            "Each probability value must be a numeric value between 0 and 1, inclusive, rounded to five decimal places.",
+            "Do not include any explanations, comments, markdown formatting, or additional fields. Output only the JSON object.",
+            "If uncertain, make a probabilistic estimation based on linguistic cues rather than abstaining."
         ];
         return string.Join("\n", systemPrompt);
     }
@@ -129,9 +132,7 @@ public sealed class GroqInappropriateLanguageDetectionService
         [
             "Please analyze the following text and  return your classification according to the NSFW detection results.",
             "The text is: ",
-            text,
-            "The output format should be follow the following pydantic schema:",
-            GetOutputFormatSchema()
+            text
         ];
         return string.Join("\n", userPrompt);
     }

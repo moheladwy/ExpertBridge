@@ -36,11 +36,9 @@ public class PostService
     private readonly NotificationFacade _notificationFacade;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly TaggingService _taggingService;
-    private readonly UserService _userService; // Or your specific UserService implementation
 
     public PostService(
         ExpertBridgeDbContext dbContext,
-        UserService userService, // Or your UserService
         MediaAttachmentService mediaService,
         TaggingService taggingService,
         NotificationFacade notificationFacade,
@@ -49,7 +47,6 @@ public class PostService
         IPublishEndpoint publishEndpoint)
     {
         _dbContext = dbContext;
-        _userService = userService;
         _mediaService = mediaService;
         _taggingService = taggingService;
         _notificationFacade = notificationFacade;

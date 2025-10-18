@@ -3,6 +3,7 @@
     <PackageReference Include="AWSSDK.S3"/>
     <PackageReference Include="Bogus"/>
     <PackageReference Include="FirebaseAdmin"/>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
     <PackageReference Include="Microsoft.AspNetCore.Http"/>
     <PackageReference Include="Microsoft.Extensions.AI.Abstractions"/>
     <PackageReference Include="Microsoft.Extensions.Identity.Core"/>

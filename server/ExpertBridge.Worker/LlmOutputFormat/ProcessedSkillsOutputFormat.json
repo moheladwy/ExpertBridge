@@ -1,0 +1,46 @@
+{
+    "$defs": {
+        "ProcessedSkill": {
+            "description": "Model representing a processed skill with its name and description.\n\nAttributes:\n    Name: The name of the skill that was processed.\n    Description: The description of the skill that was processed.",
+            "properties": {
+                "Name": {
+                    "description": "The name of the skill that was processed.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "title": "Name",
+                    "type": "string"
+                },
+                "Description": {
+                    "description": "The description of the skill that was processed.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "title": "Description",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Name",
+                "Description"
+            ],
+            "title": "ProcessedSkill",
+            "type": "object"
+        }
+    },
+    "description": "Response model for processed skills.\n\nAttributes:\n    skills: List of processed skills with their names and descriptions.",
+    "properties": {
+        "Skills": {
+            "description": "The list of processed skills with their names and descriptions.",
+            "items": {
+                "$ref": "#/$defs/ProcessedSkill"
+            },
+            "minItems": 1,
+            "title": "Skills",
+            "type": "array"
+        }
+    },
+    "required": [
+        "Skills"
+    ],
+    "title": "ProcessedSkillsResponse",
+    "type": "object"
+}

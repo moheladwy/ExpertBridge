@@ -58,11 +58,11 @@ internal static class Extensions
             options.StartDelay = TimeSpan.FromSeconds(30);
         });
 
-        services.ConfigureOptions<S3CleaningPeriodicWorkerSetup>();
-        // services.ConfigureOptions<PostsModerationPeriodicWorkerSetup>();
+        // services.ConfigureOptions<S3CleaningPeriodicWorkerSetup>();
+        services.ConfigureOptions<PostsModerationPeriodicWorkerSetup>();
         // services.ConfigureOptions<JobPostsModerationPeriodicWorkerSetup>();
         // services.ConfigureOptions<CommentsModerationPeriodicWorkerSetup>();
-        services.ConfigureOptions<UserInterestUpdaterPeriodicWorkerSetup>();
-        services.ConfigureOptions<NotificationsCleaningPeriodicWorkerSetup>();
+        // services.ConfigureOptions<UserInterestUpdaterPeriodicWorkerSetup>();
+        // services.ConfigureOptions<NotificationsCleaningPeriodicWorkerSetup>();
     }
 }

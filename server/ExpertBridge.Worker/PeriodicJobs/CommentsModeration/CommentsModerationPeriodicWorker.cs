@@ -44,32 +44,23 @@ internal sealed class CommentsModerationPeriodicWorker : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        await _dbContext.Comments
+        var comments = await _dbContext.Comments
             .AsNoTracking()
-            .Where(c => !c.IsProcessed && !c.IsSafeContent)
+            .Where(c => !c.IsProcessed)
             .Select(c => new DetectInappropriateCommentMessage
             {
                 CommentId = c.Id, AuthorId = c.AuthorId, Content = c.Content
             })
-            .ForEachAsync(async void (detectInappropriateCommentMessage) =>
-                {
-                    try
-                    {
-                        await _publishEndpoint
-                            .Publish(detectInappropriateCommentMessage, context.CancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError(e, "Failed to send comment to inappropriate comment channel.");
-                    }
-                },
-                context.CancellationToken
-            );
+            .ToListAsync(context.CancellationToken);
+
+        _logger.LogInformation("Found {Count} Comments to be safe-checked.", comments.Count);
+        foreach (var comment in comments)
+            await _publishEndpoint.Publish(comment, context.CancellationToken);
 
         await _dbContext.Comments
-            .Where(c => !c.IsProcessed && c.IsSafeContent)
+            .Where(c => c.IsProcessed)
             .ExecuteUpdateAsync(setPropertyCalls =>
-                    setPropertyCalls.SetProperty(comment => comment.IsProcessed, true),
+                    setPropertyCalls.SetProperty(comment => comment.IsSafeContent, true),
                 context.CancellationToken);
     }
 }

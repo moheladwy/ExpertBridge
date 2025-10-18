@@ -101,7 +101,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     ///     calling the remote detection service.
     ///     - If any detection score meets or exceeds the configured thresholds, the content is considered inappropriate, a
     ///     moderation report is created,
-    ///     the content is removed from the database and a notification is dispatched.
+    ///     the content is removed from the database, and a notification is dispatched.
     ///     - The method marks the existing post as processed regardless of the result and persists the moderation report and
     ///     changes.
     /// </remarks>
@@ -127,7 +127,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
                 $"Error: Inappropriate language service returned null for post=${post.PostId}.");
         }
 
-        IRecommendableContent? existingPost = null;
+        IRecommendableContent? existingPost;
 
         if (post.IsJobPosting)
         {
@@ -175,8 +175,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
             ContentId = existingPost.Id,
             IsNegative = !isAppropriate,
             Reason = reason,
-            IsResolved =
-                true, // Because this is an automated report generation, not issued by a user of the application
+            IsResolved = true, // Because this is an automated report generation, not issued by a user of the application
             IdentityAttack = results.IdentityAttack,
             Obscene = results.Obscene,
             Insult = results.Insult,
