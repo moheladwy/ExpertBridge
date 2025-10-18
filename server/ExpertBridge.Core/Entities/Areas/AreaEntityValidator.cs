@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Areas;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Area"/> entity.
+/// </summary>
 public class AreaEntityValidator : AbstractValidator<Area>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AreaEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public AreaEntityValidator()
     {
         RuleFor(area => area.Id)

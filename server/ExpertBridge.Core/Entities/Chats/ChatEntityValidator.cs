@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Chats;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Chat"/> entity.
+/// </summary>
 public class ChatEntityValidator : AbstractValidator<Chat>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChatEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public ChatEntityValidator()
     {
         RuleFor(x => x.Id)

@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Media;
 
+/// <summary>
+/// Provides validation rules for the <see cref="MediaObject"/> entity.
+/// </summary>
 public class MediaEntityValidator : AbstractValidator<MediaObject>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MediaEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public MediaEntityValidator()
     {
         RuleFor(x => x.Id)

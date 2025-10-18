@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Comments;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="Comment"/> entity.
+/// </summary>
 public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for comments.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Comment> builder)
     {
         builder.HasKey(x => x.Id);

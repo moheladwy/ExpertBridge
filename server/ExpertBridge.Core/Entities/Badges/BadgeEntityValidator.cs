@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Badges;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Badge"/> entity.
+/// </summary>
 public class BadgeEntityValidator : AbstractValidator<Badge>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BadgeEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public BadgeEntityValidator()
     {
         RuleFor(x => x.Id)

@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.JobApplications;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="JobApplication"/> entity.
+/// </summary>
 public class JobApplicationEntityConfiguration : IEntityTypeConfiguration<JobApplication>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for job applications.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<JobApplication> builder)
     {
         builder.HasKey(x => x.Id);

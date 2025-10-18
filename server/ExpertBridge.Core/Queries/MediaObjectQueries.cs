@@ -7,12 +7,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Core.Queries;
 
+/// <summary>
+/// Provides extension methods for querying and projecting MediaObject entities.
+/// </summary>
+/// <remarks>
+/// These query extensions project media attachments to response DTOs with constructed S3 URLs.
+/// </remarks>
 public static class MediaObjectQueries
 {
-    // WARNING!
-    // This method uses a hardcoded URL for the media object.
-    // This is a magic string that will be a pain in the ass to maintain
-    // and cause dependent modules to rebuild on change.
+    /// <summary>
+    /// Projects media objects to MediaObjectResponse DTOs with S3 URLs.
+    /// </summary>
+    /// <param name="query">The source queryable of media objects.</param>
+    /// <returns>A queryable of MediaObjectResponse with constructed URLs.</returns>
+    /// <remarks>
+    /// <strong>Warning:</strong> This method uses a hardcoded S3 bucket URL.
+    /// Consider moving this to configuration to improve maintainability.
+    /// </remarks>
     public static IQueryable<MediaObjectResponse> SelectMediaObjectResponse(
         this IQueryable<MediaObject> query) =>
         query

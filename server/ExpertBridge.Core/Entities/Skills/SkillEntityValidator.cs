@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Skills;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Skill"/> entity.
+/// </summary>
 public class SkillEntityValidator : AbstractValidator<Skill>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SkillEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public SkillEntityValidator()
     {
         RuleFor(x => x.Id)

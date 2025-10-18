@@ -3,6 +3,12 @@
 
 namespace ExpertBridge.Core.Requests.DeleteFileFromPost;
 
+/// <summary>
+/// Represents a request to delete a media file attachment from a post.
+/// </summary>
+/// <remarks>
+/// This is a placeholder request. The file identification is typically passed via route parameters.
+/// </remarks>
 public class DeleteFileFromPostRequest
 {
 }

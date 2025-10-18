@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.ProfileExperiences;
 
+/// <summary>
+/// Provides validation rules for the <see cref="ProfileExperience"/> entity.
+/// </summary>
 public class ProfileExperienceValidator : AbstractValidator<ProfileExperience>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProfileExperienceValidator"/> class and defines validation rules.
+    /// </summary>
     public ProfileExperienceValidator()
     {
         RuleFor(x => x.Id)

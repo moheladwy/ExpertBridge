@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Chats;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="Chat"/> entity.
+/// </summary>
 public class ChatEntityConfiguration : IEntityTypeConfiguration<Chat>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for chats.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Chat> builder)
     {
         builder.HasKey(x => x.Id);

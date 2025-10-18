@@ -6,15 +6,39 @@ using ExpertBridge.Core.Entities.Profiles;
 
 namespace ExpertBridge.Core.Entities.JobPostingsVotes;
 
+/// <summary>
+/// Represents a user's vote (upvote or downvote) on a job posting.
+/// </summary>
+/// <remarks>
+/// Job posting votes help surface quality job opportunities and provide feedback to hirers.
+/// Users can only cast one vote per job posting.
+/// </remarks>
 public class JobPostingVote : BaseModel
 {
+    /// <summary>
+    /// Gets or sets a value indicating whether this is an upvote (true) or downvote (false).
+    /// </summary>
     public bool IsUpvote { get; set; }
 
     // Foreign keys
-    public string ProfileId { get; set; }
-    public string JobPostingId { get; set; }
+    /// <summary>
+    /// Gets or sets the unique identifier of the profile that cast the vote.
+    /// </summary>
+    public string ProfileId { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the unique identifier of the job posting being voted on.
+    /// </summary>
+    public string JobPostingId { get; set; } = null!;
 
     // Navigation properties
-    public Profile Profile { get; set; }
-    public JobPosting JobPosting { get; set; }
+    /// <summary>
+    /// Gets or sets the profile that cast this vote.
+    /// </summary>
+    public Profile Profile { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the job posting that received this vote.
+    /// </summary>
+    public JobPosting JobPosting { get; set; } = null!;
 }

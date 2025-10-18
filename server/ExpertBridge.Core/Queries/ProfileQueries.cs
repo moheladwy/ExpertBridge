@@ -8,8 +8,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Core.Queries;
 
+/// <summary>
+/// Provides extension methods for querying and projecting Profile entities.
+/// </summary>
+/// <remarks>
+/// These query extensions support loading related user data, skills, comments, and votes,
+/// and projecting to various response DTOs including ProfileResponse, AuthorResponse, and ApplicantResponse.
+/// </remarks>
 public static class ProfileQueries
 {
+    /// <summary>
+    /// Eagerly loads all related data for profiles including user, skills, comments, and votes.
+    /// </summary>
+    /// <param name="query">The source queryable of profiles.</param>
+    /// <returns>A queryable of profiles with all navigation properties included.</returns>
+    /// <remarks>
+    /// Uses AsNoTracking for read-only queries. Includes: User, ProfileSkills with Skills, Comments with Votes.
+    /// </remarks>
     public static IQueryable<Profile> FullyPopulatedProfileQuery(this IQueryable<Profile> query) =>
         query
             .AsNoTracking()
@@ -19,6 +34,12 @@ public static class ProfileQueries
             .Include(p => p.Comments)
             .ThenInclude(c => c.Votes);
 
+    /// <summary>
+    /// Eagerly loads all related data for profiles and filters by the specified predicate.
+    /// </summary>
+    /// <param name="query">The source queryable of profiles.</param>
+    /// <param name="predicate">The filter expression to apply.</param>
+    /// <returns>A filtered queryable with all navigation properties included.</returns>
     public static IQueryable<Profile> FullyPopulatedProfileQuery(
         this IQueryable<Profile> query,
         Expression<Func<Profile, bool>> predicate) =>
@@ -26,6 +47,11 @@ public static class ProfileQueries
             .FullyPopulatedProfileQuery()
             .Where(predicate);
 
+    /// <summary>
+    /// Projects a queryable of Profile entities to ProfileResponse DTOs with calculated reputation.
+    /// </summary>
+    /// <param name="query">The source queryable of profiles.</param>
+    /// <returns>A queryable of ProfileResponse objects with skills, ratings, and reputation scores.</returns>
     public static IQueryable<ProfileResponse> SelectProfileResponseFromProfile(this IQueryable<Profile> query) =>
         query
             .Select(p => new ProfileResponse
@@ -51,6 +77,11 @@ public static class ProfileQueries
                 Reputation = p.SelectReputationFromProfile()
             });
 
+    /// <summary>
+    /// Projects a Profile entity to an AuthorResponse DTO for use in posts and comments.
+    /// </summary>
+    /// <param name="profile">The profile entity to project, or null.</param>
+    /// <returns>An AuthorResponse object with basic profile information, or null if the input is null.</returns>
     public static AuthorResponse? SelectAuthorResponseFromProfile(this Profile? profile) =>
         profile == null
             ? null
@@ -65,11 +96,21 @@ public static class ProfileQueries
                 Username = profile.Username
             };
 
+    /// <summary>
+    /// Extracts the list of skill names from a profile's ProfileSkills collection.
+    /// </summary>
+    /// <param name="profile">The profile entity to extract skills from.</param>
+    /// <returns>A list of skill names, or an empty list if profile is null or has no skills.</returns>
     private static List<string> SelectSkillsNamesFromProfile(this Profile profile) =>
         profile?.ProfileSkills
             .Select(ps => ps.Skill.Name)
             .ToList() ?? [];
 
+    /// <summary>
+    /// Projects a Profile entity to an ApplicantResponse DTO with reputation score for job applications.
+    /// </summary>
+    /// <param name="profile">The profile entity to project, or null.</param>
+    /// <returns>An ApplicantResponse object with profile information and reputation, or null if the input is null.</returns>
     public static ApplicantResponse? SelectApplicantResponseFromProfile(this Profile? profile) =>
         profile == null
             ? null
@@ -85,6 +126,11 @@ public static class ProfileQueries
                 Reputation = profile.SelectReputationFromProfile()
             };
 
+    /// <summary>
+    /// Calculates the reputation score for a profile based on comment votes.
+    /// </summary>
+    /// <param name="profile">The profile entity to calculate reputation for.</param>
+    /// <returns>The reputation score (upvotes minus downvotes).</returns>
     private static int SelectReputationFromProfile(this Profile profile) =>
         profile.Comments.Sum(c => c.Votes.Count(v => v.IsUpvote))
         - profile.Comments.Sum(c => c.Votes.Count(v => !v.IsUpvote));

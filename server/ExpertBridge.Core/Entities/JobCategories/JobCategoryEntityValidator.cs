@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.JobCategories;
 
+/// <summary>
+/// Provides validation rules for the <see cref="JobCategory"/> entity.
+/// </summary>
 public class JobCategoryEntityValidator : AbstractValidator<JobCategory>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JobCategoryEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public JobCategoryEntityValidator()
     {
         RuleFor(x => x.Id)

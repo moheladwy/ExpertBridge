@@ -3,7 +3,16 @@
 
 namespace ExpertBridge.Core.Entities.Comments;
 
+/// <summary>
+/// Defines validation constraints for Comment entity properties.
+/// </summary>
+/// <remarks>
+/// These constraints are used in Entity Framework Core configurations and FluentValidation validators.
+/// </remarks>
 public class CommentEntityConstraints
 {
+    /// <summary>
+    /// Maximum length for comment content (5000 characters).
+    /// </summary>
     public const int MaxContentLength = 5000;
 }

@@ -7,8 +7,18 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Requests.UpdateUserRequest;
 
+/// <summary>
+/// Validates UpdateUserRequest to ensure all user update fields meet constraints.
+/// </summary>
+/// <remarks>
+/// Validates ProviderId, Email, FirstName, LastName, and PhoneNumber against entity constraints.
+/// Phone number validation includes format checking with regex pattern for international numbers.
+/// </remarks>
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
 {
+    /// <summary>
+    /// Initializes a new instance of the UpdateUserRequestValidator with validation rules.
+    /// </summary>
     public UpdateUserRequestValidator()
     {
         RuleFor(x => x.ProviderId)

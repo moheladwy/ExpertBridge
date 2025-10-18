@@ -5,11 +5,23 @@ using ExpertBridge.Core.Entities.Posts;
 
 namespace ExpertBridge.Core.Entities.Media.PostMedia;
 
+/// <summary>
+/// Represents a media attachment associated with a post.
+/// </summary>
+/// <remarks>
+/// Post media files are stored in AWS S3 and can include images, videos, or documents that enrich post content.
+/// </remarks>
 public class PostMedia : MediaObject
 {
     // Foreign keys
-    public string PostId { get; set; }
+    /// <summary>
+    /// Gets or sets the unique identifier of the post this media belongs to.
+    /// </summary>
+    public string PostId { get; set; } = null!;
 
     // Navigation properties
-    public Post Post { get; set; }
+    /// <summary>
+    /// Gets or sets the post this media is attached to.
+    /// </summary>
+    public Post Post { get; set; } = null!;
 }

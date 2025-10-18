@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="JobPostingTag"/> entity.
+/// </summary>
 public class JobPostingTagEntityConfiguration : IEntityTypeConfiguration<JobPostingTag>
 {
+    /// <summary>
+    /// Configures the entity mapping, composite key, and relationships for job posting tags.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<JobPostingTag> builder)
     {
         // Configure composite key

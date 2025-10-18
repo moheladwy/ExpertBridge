@@ -6,12 +6,33 @@ using ExpertBridge.Core.Entities.Profiles;
 
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 
+/// <summary>
+/// Represents a many-to-many relationship between chats and profiles.
+/// </summary>
+/// <remarks>
+/// Chat participants define membership in job-related conversations between hirers and workers.
+/// Typically, a chat has two participants: the job poster and the applicant/worker.
+/// </remarks>
 public class ChatParticipant
 {
-    public string ChatId { get; set; }
-    public string ProfileId { get; set; }
+    /// <summary>
+    /// Gets or sets the unique identifier of the chat.
+    /// </summary>
+    public string ChatId { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the unique identifier of the profile participating in the chat.
+    /// </summary>
+    public string ProfileId { get; set; } = null!;
 
     // Navigation properties
-    public Chat Chat { get; set; }
-    public Profile Profile { get; set; }
+    /// <summary>
+    /// Gets or sets the chat this participant belongs to.
+    /// </summary>
+    public Chat Chat { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the profile participating in the chat.
+    /// </summary>
+    public Profile Profile { get; set; } = null!;
 }

@@ -3,9 +3,27 @@
 
 namespace ExpertBridge.Core.Messages;
 
+/// <summary>
+/// Represents a message to trigger content moderation for a comment via RabbitMQ/MassTransit.
+/// </summary>
+/// <remarks>
+/// This message invokes AI moderation services to detect inappropriate content including
+/// toxicity, threats, obscenity, and other harmful language categories in user comments.
+/// </remarks>
 public class DetectInappropriateCommentMessage
 {
-    public string CommentId { get; set; }
-    public string Content { get; set; }
-    public string AuthorId { get; set; }
+    /// <summary>
+    /// Gets or sets the unique identifier of the comment to moderate.
+    /// </summary>
+    public string CommentId { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the content of the comment.
+    /// </summary>
+    public string Content { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the unique identifier of the user who created the comment.
+    /// </summary>
+    public string AuthorId { get; set; } = null!;
 }

@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Posts;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Post"/> entity.
+/// </summary>
 public class PostEntityValidator : AbstractValidator<Post>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PostEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public PostEntityValidator()
     {
         RuleFor(x => x.Id)

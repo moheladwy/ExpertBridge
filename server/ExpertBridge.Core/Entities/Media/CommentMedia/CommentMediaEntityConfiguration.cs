@@ -6,7 +6,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Media.CommentMedia;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="CommentMedia"/> entity.
+/// </summary>
 public class CommentMediaEntityConfiguration : IEntityTypeConfiguration<CommentMedia>
 {
+    /// <summary>
+    /// Configures the entity mapping using shared media object configuration.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<CommentMedia> builder) => builder.ConfigureAbstractMedia();
 }

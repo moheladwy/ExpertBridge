@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Notifications;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="Notification"/> entity.
+/// </summary>
 public class NotificationEntityConfiguration : IEntityTypeConfiguration<Notification>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for notifications.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Notification> builder)
     {
         builder.HasKey(n => n.Id);

@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Posts;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="Post"/> entity.
+/// </summary>
 public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, indexes, and database constraints for posts.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Post> builder)
     {
         builder.HasKey(x => x.Id);

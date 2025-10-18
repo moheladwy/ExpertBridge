@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.ModerationReports;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="ModerationReport"/> entity.
+/// </summary>
 public class ModerationReportEntityConfiguration : IEntityTypeConfiguration<ModerationReport>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for moderation reports.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<ModerationReport> builder)
     {
         builder.HasKey(x => x.Id);

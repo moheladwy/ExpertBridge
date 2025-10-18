@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Messages;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="Message"/> entity.
+/// </summary>
 public class MessageEntityConfiguration : IEntityTypeConfiguration<Message>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for messages.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Message> builder)
     {
         builder.HasKey(x => x.Id);

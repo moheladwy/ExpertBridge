@@ -5,8 +5,14 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Tags;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Tag"/> entity.
+/// </summary>
 public class TagEntityValidator : AbstractValidator<Tag>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TagEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public TagEntityValidator()
     {
         RuleFor(x => x.Id)
