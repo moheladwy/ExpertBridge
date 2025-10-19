@@ -1,0 +1,46 @@
+services:
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: "rabbitmq:management"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "rabbitmq"
+    volumes:
+      - "rabbitmq-data:/var/lib/rabbitmq"
+      - "rabbitmq-logs:/var/log/rabbitmq"
+    networks:
+      - shared
+      - rabbitmq
+    ports:
+      - target: 5672
+        published: 5672
+      - target: 15672
+        published: 15672
+    restart: unless-stopped
+
+networks:
+  shared:
+    name: "shared"
+    driver: "bridge"
+    external: true
+  rabbitmq:
+    name: "rabbitmq"
+    driver: "bridge"
+
+volumes:
+  rabbitmq-data:
+    name: "rabbitmq-data"
+    driver: "local"
+    driver_opts:
+      type: "none"
+      device: "./data"
+      o: "bind"
+  rabbitmq-logs:
+    name: "rabbitmq-logs"
+    driver: "local"
+    driver_opts:
+      type: "none"
+      device: "./logs"
+      o: "bind"

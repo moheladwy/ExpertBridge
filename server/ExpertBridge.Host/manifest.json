@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json.schemastore.org/aspire-8.0.json",
+  "resources": {
+    "RabbitMq-Username": {
+      "type": "parameter.v0",
+      "value": "{RabbitMq-Username.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "RabbitMq-Password": {
+      "type": "parameter.v0",
+      "value": "{RabbitMq-Password.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "rabbitmq": {
+      "type": "container.v0",
+      "connectionString": "amqp://{RabbitMq-Username.value}:{RabbitMq-Password.value}@{rabbitmq.bindings.tcp.host}:{rabbitmq.bindings.tcp.port}",
+      "image": "docker.io/library/rabbitmq:4.1-management",
+      "volumes": [
+        {
+          "name": "expertbridge-rabbitmq-data",
+          "target": "/var/lib/rabbitmq",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "RABBITMQ_DEFAULT_USER": "{RabbitMq-Username.value}",
+        "RABBITMQ_DEFAULT_PASS": "{RabbitMq-Password.value}"
+      },
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "targetPort": 5672
+        },
+        "management": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 15672,
+          "external": true
+        }
+      }
+    },
+    "ollama": {
+      "type": "parameter.v0",
+      "connectionString": "{ollama.value}",
+      "value": "{ollama.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "ollama-snowflake-arctic-embed2": {
+      "type": "value.v0",
+      "connectionString": "{ollama.connectionString};Model=snowflake-arctic-embed2:latest"
+    },
+    "Redis": {
+      "type": "parameter.v0",
+      "connectionString": "{Redis.value}",
+      "value": "{Redis.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "Seq": {
+      "type": "container.v0",
+      "connectionString": "{Seq.bindings.http.url}",
+      "image": "docker.io/datalust/seq:2025.2",
+      "volumes": [
+        {
+          "name": "expertbridge-seq-data",
+          "target": "/data",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "ACCEPT_EULA": "Y",
+        "SEQ_FIRSTRUN_NOAUTHENTICATION": "True"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "port": 4002,
+          "targetPort": 80,
+          "external": true
+        }
+      }
+    },
+    "ExpertBridgeApi": {
+      "type": "project.v0",
+      "path": "../ExpertBridge.Api/ExpertBridge.Api.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "HTTP_PORTS": "{ExpertBridgeApi.bindings.http.targetPort}",
+        "ConnectionStrings__Redis": "{Redis.connectionString}",
+        "ConnectionStrings__Seq": "{Seq.connectionString}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "external": true
+        },
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http",
+          "external": true
+        }
+      }
+    },
+    "ExpertBridgeAdmin": {
+      "type": "project.v0",
+      "path": "../ExpertBridge.Admin/ExpertBridge.Admin.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "HTTP_PORTS": "{ExpertBridgeAdmin.bindings.http.targetPort}",
+        "ConnectionStrings__Redis": "{Redis.connectionString}",
+        "ConnectionStrings__Seq": "{Seq.connectionString}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "external": true
+        },
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http",
+          "external": true
+        }
+      }
+    },
+    "ExpertBridgeWorker": {
+      "type": "project.v0",
+      "path": "../ExpertBridge.Worker/ExpertBridge.Worker.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
+        "ConnectionStrings__Redis": "{Redis.connectionString}",
+        "ConnectionStrings__rabbitmq": "{rabbitmq.connectionString}",
+        "ConnectionStrings__Seq": "{Seq.connectionString}",
+        "ConnectionStrings__ollama-snowflake-arctic-embed2": "{ollama-snowflake-arctic-embed2.connectionString}"
+      }
+    }
+  }
+}

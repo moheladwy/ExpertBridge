@@ -1,0 +1,47 @@
+{
+  "projectPath": ".",
+  "outputPath": "aspirate-output",
+  "containerImageTags": [
+    "latest"
+  ],
+  "containerBuilder": "docker",
+  "outputFormat": "compose",
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": true,
+  "secrets": {
+    "salt": "jGzL6HdKOcWWTggG",
+    "hash": "aym/gvP92Mw7/JOwG7tQGoU42xX22Rkv1JBU2vTxSTg=",
+    "secrets": {
+      "RabbitMq-Username": {
+        "value": "jGzL6HdKOcWWTggGFr8PQEPWDsCaZZPHKrkcbtF2PHX4"
+      },
+      "RabbitMq-Password": {
+        "value": "jGzL6HdKOcWWTggGFr8PQEPWDsCaZZPHKrkcbtF2PHX4"
+      },
+      "ollama": {
+        "value": "jGzL6HdKOcWWTggG/parWap/aDMxPHUGiFS38NlvNWfhsw=="
+      },
+      "Redis": {
+        "value": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//"
+      },
+      "rabbitmq": {},
+      "ollama-snowflake-arctic-embed2": {},
+      "Seq": {},
+      "ExpertBridgeApi": {
+        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
+        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME="
+      },
+      "ExpertBridgeAdmin": {
+        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
+        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME="
+      },
+      "ExpertBridgeWorker": {
+        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
+        "ConnectionStrings__rabbitmq": "jGzL6HdKOcWWTggGbjSKvq2YSJmN7hEsByIuI9duKHa2/VxaBH3wfMsIiGAYvJiQTQBEIPqH12SeWOQs",
+        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME=",
+        "ConnectionStrings__ollama-snowflake-arctic-embed2": "jGzL6HdKOcWWTggGPamDGZr/cSPtAJwgYbjvpdlvNWfhs0hwHnzmZMwck2ocrrSDRwcLKPyJ0jfIQ7ZzA/pxNnzt6C8fGHA="
+      }
+    }
+  },
+  "processAllComponents": true
+}
