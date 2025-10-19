@@ -17,11 +17,11 @@ public class CommentMedia : MediaObject
     /// <summary>
     /// Gets or sets the unique identifier of the comment this media belongs to.
     /// </summary>
-    public string CommentId { get; set; } = null!;
+    public string CommentId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the comment this media is attached to.
     /// </summary>
-    public Comment Comment { get; set; } = null!;
+    public Comment Comment { get; set; }
 }

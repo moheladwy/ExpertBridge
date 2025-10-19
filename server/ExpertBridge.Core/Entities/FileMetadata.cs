@@ -15,7 +15,7 @@ public class FileMetadata
     /// <summary>
     /// Gets or sets the MIME content type of the file (e.g., "image/jpeg", "video/mp4").
     /// </summary>
-    public string ContentType { get; set; } = null!;
+    public string ContentType { get; set; }
 
     /// <summary>
     /// Gets or sets the S3 object key where the file is stored.
@@ -25,12 +25,12 @@ public class FileMetadata
     /// <summary>
     /// Gets or sets the type category of the file (e.g., "image", "video", "document").
     /// </summary>
-    public string Type { get; set; } = null!;
+    public string Type { get; set; }
 
     /// <summary>
     /// Gets or sets the original file name.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets or sets the file size in bytes.
@@ -40,7 +40,7 @@ public class FileMetadata
     /// <summary>
     /// Gets or sets the file extension (e.g., ".jpg", ".mp4").
     /// </summary>
-    public string Extension { get; set; } = null!;
+    public string Extension { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the file was created.

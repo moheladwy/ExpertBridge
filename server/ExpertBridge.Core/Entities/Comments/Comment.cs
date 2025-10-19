@@ -69,7 +69,7 @@ public class Comment : BaseModel, ISoftDeletable, ISafeContent
     /// <summary>
     /// Gets or sets the profile of the user who authored the comment.
     /// </summary>
-    public Profile Author { get; set; } = null!;
+    public Profile Author { get; set; }
 
     /// <summary>
     /// Gets or sets the post this comment belongs to.
@@ -84,7 +84,7 @@ public class Comment : BaseModel, ISoftDeletable, ISafeContent
     /// <summary>
     /// Gets or sets the parent comment if this is a reply.
     /// </summary>
-    public Comment ParentComment { get; set; } = null!;
+    public Comment ParentComment { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of replies to this comment.

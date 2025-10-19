@@ -22,7 +22,7 @@ public class Area
     /// <summary>
     /// Gets or sets the unique identifier of the associated profile.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the governorate (administrative division).
@@ -32,13 +32,13 @@ public class Area
     /// <summary>
     /// Gets or sets the region name within the governorate.
     /// </summary>
-    public string Region { get; set; } = null!;
+    public string Region { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the profile associated with this area.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of job postings in this area.

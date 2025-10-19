@@ -18,11 +18,11 @@ public class ChatMedia : MediaObject
     /// <summary>
     /// Gets or sets the unique identifier of the chat this media belongs to.
     /// </summary>
-    public string ChatId { get; set; } = null!;
+    public string ChatId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the chat this media is attached to.
     /// </summary>
-    public Chat Chat { get; set; } = null!;
+    public Chat Chat { get; set; }
 }

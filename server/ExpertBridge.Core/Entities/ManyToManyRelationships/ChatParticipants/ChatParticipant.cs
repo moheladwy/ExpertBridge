@@ -18,21 +18,21 @@ public class ChatParticipant
     /// <summary>
     /// Gets or sets the unique identifier of the chat.
     /// </summary>
-    public string ChatId { get; set; } = null!;
+    public string ChatId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the profile participating in the chat.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the chat this participant belongs to.
     /// </summary>
-    public Chat Chat { get; set; } = null!;
+    public Chat Chat { get; set; }
 
     /// <summary>
     /// Gets or sets the profile participating in the chat.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 }

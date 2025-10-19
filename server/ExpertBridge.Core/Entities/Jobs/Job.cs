@@ -32,7 +32,7 @@ public class Job : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the unique identifier of the chat conversation for this job.
     /// </summary>
-    public string ChatId { get; set; } = null!;
+    public string ChatId { get; set; }
 
     /// <summary>
     /// Gets or sets the actual cost paid for the completed job.
@@ -45,7 +45,7 @@ public class Job : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the geographic area or location where the job is performed.
     /// </summary>
-    public string Area { get; set; } = null!;
+    public string Area { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when work on the job commenced.
@@ -116,17 +116,17 @@ public class Job : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the profile of the job author (hirer).
     /// </summary>
-    public Profile Author { get; set; } = null!;
+    public Profile Author { get; set; }
 
     /// <summary>
     /// Gets or sets the profile of the assigned worker.
     /// </summary>
-    public Profile Worker { get; set; } = null!;
+    public Profile Worker { get; set; }
 
     /// <summary>
     /// Gets or sets the chat conversation associated with this job.
     /// </summary>
-    public Chat Chat { get; set; } = null!;
+    public Chat Chat { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the job is marked as deleted.

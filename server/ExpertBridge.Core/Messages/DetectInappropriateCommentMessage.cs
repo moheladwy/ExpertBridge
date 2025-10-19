@@ -15,15 +15,15 @@ public class DetectInappropriateCommentMessage
     /// <summary>
     /// Gets or sets the unique identifier of the comment to moderate.
     /// </summary>
-    public string CommentId { get; set; } = null!;
+    public string CommentId { get; set; }
 
     /// <summary>
     /// Gets or sets the content of the comment.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string Content { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the user who created the comment.
     /// </summary>
-    public string AuthorId { get; set; } = null!;
+    public string AuthorId { get; set; }
 }

@@ -35,10 +35,10 @@ public class CommentVote : BaseModel
     /// <summary>
     /// Gets or sets the profile that cast this vote.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the comment that received this vote.
     /// </summary>
-    public Comment Comment { get; set; } = null!;
+    public Comment Comment { get; set; }
 }

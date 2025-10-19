@@ -38,17 +38,17 @@ public class Chat : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the profile of the hirer participant.
     /// </summary>
-    public Profile Hirer { get; set; } = null!;
+    public Profile Hirer { get; set; }
 
     /// <summary>
     /// Gets or sets the profile of the worker participant.
     /// </summary>
-    public Profile Worker { get; set; } = null!;
+    public Profile Worker { get; set; }
 
     /// <summary>
     /// Gets or sets the job associated with this chat conversation.
     /// </summary>
-    public Job Job { get; set; } = null!;
+    public Job Job { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of messages exchanged in this chat.

@@ -41,5 +41,5 @@ public class CreateJobOfferRequest
     /// <summary>
     /// Gets or sets the unique identifier of the worker receiving the job offer.
     /// </summary>
-    public string WorkerId { get; set; } = null!;
+    public string WorkerId { get; set; }
 }

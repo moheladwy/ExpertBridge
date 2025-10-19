@@ -25,7 +25,7 @@ public record AuthorResponse
     /// <summary>
     /// Gets or sets the author's first name.
     /// </summary>
-    public string FirstName { get; set; } = null!;
+    public string FirstName { get; set; }
 
     /// <summary>
     /// Gets or sets the author's last name.

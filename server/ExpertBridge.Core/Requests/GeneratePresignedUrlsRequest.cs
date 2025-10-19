@@ -17,5 +17,5 @@ public class GeneratePresignedUrlsRequest
     /// <summary>
     /// Gets or sets the collection of file metadata for which presigned URLs should be generated.
     /// </summary>
-    public List<FileMetadata> Files { get; set; } = null!;
+    public List<FileMetadata> Files { get; set; }
 }

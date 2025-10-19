@@ -19,7 +19,7 @@ public class InitiateJobOfferRequest
     /// Gets or sets the unique identifier of the contractor (worker) profile.
     /// </summary>
     [Required]
-    public string ContractorProfileId { get; set; } = null!;
+    public string ContractorProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the job offer.
@@ -29,7 +29,7 @@ public class InitiateJobOfferRequest
     /// </remarks>
     [Required]
     [StringLength(GlobalEntitiesConstraints.MaxTitleLength)]
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
 
     /// <summary>
     /// Gets or sets the detailed description of the job offer.
@@ -39,7 +39,7 @@ public class InitiateJobOfferRequest
     /// </remarks>
     [Required]
     [StringLength(GlobalEntitiesConstraints.MaxDescriptionLength)]
-    public string Description { get; set; } = null!;
+    public string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the proposed rate for the job.
