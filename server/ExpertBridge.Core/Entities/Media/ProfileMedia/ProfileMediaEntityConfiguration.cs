@@ -6,10 +6,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Media.ProfileMedia;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="ProfileMedia"/> entity.
+/// </summary>
 public class ProfileMediaEntityConfiguration : IEntityTypeConfiguration<ProfileMedia>
 {
-    public void Configure(EntityTypeBuilder<ProfileMedia> builder)
-    {
-        builder.ConfigureAbstractMedia();
-    }
+    /// <summary>
+    /// Configures the entity mapping using shared media object configuration.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
+    public void Configure(EntityTypeBuilder<ProfileMedia> builder) => builder.ConfigureAbstractMedia();
 }

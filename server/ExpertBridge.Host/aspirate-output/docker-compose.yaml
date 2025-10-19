@@ -1,24 +1,37 @@
 services:
-  Redis:
-    container_name: "Redis"
-    image: "docker.io/redis:alpine"
+  aspire-dashboard:
+    container_name: "aspire-dashboard"
+    image: "mcr.microsoft.com/dotnet/aspire-dashboard:9.0"
     environment:
-      REDIS_PASSWORD: "expertbridge_redis_password"
-    volumes:
-    - "expertbridge-redis-data:/data"
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
     ports:
-    - target: 6379
-      published: 6379
-    command:
-    - "-c"
-    - "redis-server --requirepass $REDIS_PASSWORD --save 300 1"
-    - "/bin/sh"
+    - target: 18888
+      published: 18888
+    restart: unless-stopped
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: "docker.io/library/rabbitmq:4.1-management"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "rabbitmq"
+    volumes:
+    - "expertbridge-rabbitmq-data:/var/lib/rabbitmq"
+    ports:
+    - target: 5672
+      published: 5672
+    - target: 15672
+      published: 15672
     restart: unless-stopped
   Seq:
     container_name: "Seq"
-    image: "docker.io/datalust/seq:2024.3"
+    image: "docker.io/datalust/seq:2025.2"
     environment:
       ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "True"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "Seq"
     volumes:
     - "expertbridge-seq-data:/data"
     ports:
@@ -34,8 +47,10 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       HTTP_PORTS: "8080"
-      ConnectionStrings__Redis: "Redis:6379,password={Redis-password.value}"
+      ConnectionStrings__Redis: "redis"
       ConnectionStrings__Seq: "http://Seq:80"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "ExpertBridgeApi"
     ports:
     - target: 8080
       published: 10000
@@ -51,13 +66,30 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       HTTP_PORTS: "8080"
+      ConnectionStrings__Redis: "redis"
       ConnectionStrings__Seq: "http://Seq:80"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "ExpertBridgeAdmin"
     ports:
     - target: 8080
       published: 10002
     - target: 8443
       published: 10003
     restart: unless-stopped
+  ExpertBridgeWorker:
+    container_name: "ExpertBridgeWorker"
+    image: "expertbridgeworker:latest"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ConnectionStrings__Redis: "redis"
+      ConnectionStrings__rabbitmq: "amqp://guest:guest@rabbitmq:5672"
+      ConnectionStrings__Seq: "http://Seq:80"
+      ConnectionStrings__ollama-snowflake-arctic-embed2: "ollama;Model=snowflake-arctic-embed2:latest"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "ExpertBridgeWorker"
+    restart: unless-stopped
 volumes:
-  expertbridge-redis-data: {}
+  expertbridge-rabbitmq-data: {}
   expertbridge-seq-data: {}

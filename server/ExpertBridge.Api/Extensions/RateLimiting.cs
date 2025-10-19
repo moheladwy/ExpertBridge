@@ -6,20 +6,16 @@ namespace ExpertBridge.Api.Extensions;
 /// <summary>
 ///     Provides extension methods for configuring rate limiting in an application.
 /// </summary>
-public static class RateLimiting
+internal static class RateLimiting
 {
     /// Adds rate limiting functionality to the application's service collection using the specified settings.
-    /// <param name="services">
-    ///     The application's service collection to which the rate limiting will be added.
-    /// </param>
-    /// <param name="rateLimitOptions">
-    ///     Settings for configuring rate limiting, including limits and options.
+    /// <param name="builder">
+    ///     The application builder to configure rate limiting for.
     /// </param>
     /// <returns>
     ///     The updated service collection with rate limiting configured.
     /// </returns>
-    public static WebApplicationBuilder AddRateLimiting(
-        this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddRateLimiting(this WebApplicationBuilder builder)
     {
         var rateLimitOptions = new ExpertBridgeRateLimitSettings();
         builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName)

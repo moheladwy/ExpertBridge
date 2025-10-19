@@ -7,8 +7,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Users;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="User"/> entity.
+/// </summary>
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for users.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(x => x.Id);

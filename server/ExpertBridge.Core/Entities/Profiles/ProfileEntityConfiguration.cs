@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Profiles;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="Profile"/> entity.
+/// </summary>
 public class ProfileEntityConfiguration : IEntityTypeConfiguration<Profile>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, indexes, and database constraints for profiles.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Profile> builder)
     {
         builder.HasKey(x => x.Id);

@@ -9,7 +9,7 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 public class FakerController(
     ExpertBridgeDbContext _dbContext
-    )
+)
     : ControllerBase
 {
     [HttpGet("generate")]

@@ -1,22 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" />
-    <PackageReference Include="Bogus" />
-    <PackageReference Include="FirebaseAdmin" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" />
-    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" />
-    <PackageReference Include="Refit" />
-    <PackageReference Include="Refit.HttpClientFactory" />
-    <PackageReference Include="Microsoft.Extensions.Resilience" />
-    <PackageReference Include="Serilog" />
-    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" />
+    <PackageReference Include="AWSSDK.S3"/>
+    <PackageReference Include="Bogus"/>
+    <PackageReference Include="FirebaseAdmin"/>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+    <PackageReference Include="Microsoft.AspNetCore.Http"/>
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions"/>
+    <PackageReference Include="Microsoft.Extensions.Identity.Core"/>
+    <PackageReference Include="Refit"/>
+    <PackageReference Include="Refit.HttpClientFactory"/>
+    <PackageReference Include="Microsoft.Extensions.Resilience"/>
+    <PackageReference Include="Serilog"/>
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj" />
-    <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
-    <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj" />
-    <ProjectReference Include="..\ExpertBridge.Notifications\ExpertBridge.Notifications.csproj" />
+    <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Notifications\ExpertBridge.Notifications.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <Content Update="LlmOutputFormat\NSFWDetectionOutputFormat.json">

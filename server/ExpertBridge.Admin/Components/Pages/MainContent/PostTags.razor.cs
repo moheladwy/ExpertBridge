@@ -10,17 +10,16 @@ namespace ExpertBridge.Admin.Components.Pages.MainContent;
 
 public partial class PostTags
 {
-    private readonly ExpertBridgeDbContext _dbContext;
     private readonly HybridCache _cache;
+    private readonly ExpertBridgeDbContext _dbContext;
     private readonly DialogService _dialogService;
     private readonly NotificationService _notificationService;
-    public List<PostTagsViewModel> postTags;
-    public int TotalActiveTags => postTags.Count(pt => pt.IsUsedAnywhere);
-    public int TotalInactiveTags => postTags.Count(pt => !pt.IsUsedAnywhere);
     private RadzenDataGrid<PostTagsViewModel>? grid;
     private bool isLoading = true;
+    public List<PostTagsViewModel> postTags;
 
-    public PostTags(ExpertBridgeDbContext dbContext, HybridCache cache, DialogService dialogService, NotificationService notificationService)
+    public PostTags(ExpertBridgeDbContext dbContext, HybridCache cache, DialogService dialogService,
+        NotificationService notificationService)
     {
         _dbContext = dbContext;
         _cache = cache;
@@ -29,6 +28,9 @@ public partial class PostTags
         postTags = [];
     }
 
+    public int TotalActiveTags => postTags.Count(pt => pt.IsUsedAnywhere);
+    public int TotalInactiveTags => postTags.Count(pt => !pt.IsUsedAnywhere);
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -36,31 +38,32 @@ public partial class PostTags
             isLoading = true;
             var key = "AllTags";
             postTags = await _cache.GetOrCreateAsync(key,
-            async (cancellationToken) =>
-            {
-                return await _dbContext.Tags
-                    .AsNoTracking()
-                    .Include(tag => tag.PostTags)
-                    .Include(tag => tag.ProfileTags)
-                    .Include(tag => tag.JobPostingTags)
-                    .Select(tag => new PostTagsViewModel
-                    {
-                        TagId = tag.Id,
-                        EnglishName = tag.EnglishName,
-                        ArabicName = tag.ArabicName ?? string.Empty,
-                        Description = tag.Description,
-                        PostCount = tag.PostTags.Count,
-                        UserInterestCount = tag.ProfileTags.Count,
-                        JobPostingCount = tag.JobPostingTags.Count
-                    })
-                    .OrderByDescending(tag => tag.PostCount + tag.UserInterestCount + tag.JobPostingCount)
-                    .ToListAsync(cancellationToken);
-            });
+                async cancellationToken =>
+                {
+                    return await _dbContext.Tags
+                        .AsNoTracking()
+                        .Include(tag => tag.PostTags)
+                        .Include(tag => tag.ProfileTags)
+                        .Include(tag => tag.JobPostingTags)
+                        .Select(tag => new PostTagsViewModel
+                        {
+                            TagId = tag.Id,
+                            EnglishName = tag.EnglishName,
+                            ArabicName = tag.ArabicName ?? string.Empty,
+                            Description = tag.Description,
+                            PostCount = tag.PostTags.Count,
+                            UserInterestCount = tag.ProfileTags.Count,
+                            JobPostingCount = tag.JobPostingTags.Count
+                        })
+                        .OrderByDescending(tag => tag.PostCount + tag.UserInterestCount + tag.JobPostingCount)
+                        .ToListAsync(cancellationToken);
+                });
         }
         finally
         {
             isLoading = false;
         }
+
         await base.OnInitializedAsync();
     }
 
@@ -104,12 +107,7 @@ public partial class PostTags
         var confirmed = await _dialogService.Confirm(
             $"Are you sure you want to delete the tag '{tag.EnglishName}'? This will remove all associations with posts, job postings, and user interests.",
             "Delete Tag",
-            new ConfirmOptions
-            {
-                OkButtonText = "Delete",
-                CancelButtonText = "Cancel",
-                AutoFocusFirstElement = true
-            });
+            new ConfirmOptions { OkButtonText = "Delete", CancelButtonText = "Cancel", AutoFocusFirstElement = true });
 
         if (confirmed == true)
         {
@@ -192,26 +190,26 @@ public partial class PostTags
 
             var key = "AllTags";
             postTags = await _cache.GetOrCreateAsync(key,
-            async (cancellationToken) =>
-            {
-                return await _dbContext.Tags
-                    .AsNoTracking()
-                    .Include(tag => tag.PostTags)
-                    .Include(tag => tag.ProfileTags)
-                    .Include(tag => tag.JobPostingTags)
-                    .Select(tag => new PostTagsViewModel
-                    {
-                        TagId = tag.Id,
-                        EnglishName = tag.EnglishName,
-                        ArabicName = tag.ArabicName ?? string.Empty,
-                        Description = tag.Description,
-                        PostCount = tag.PostTags.Count,
-                        UserInterestCount = tag.ProfileTags.Count,
-                        JobPostingCount = tag.JobPostingTags.Count
-                    })
-                    .OrderByDescending(tag => tag.PostCount + tag.UserInterestCount + tag.JobPostingCount)
-                    .ToListAsync(cancellationToken);
-            });
+                async cancellationToken =>
+                {
+                    return await _dbContext.Tags
+                        .AsNoTracking()
+                        .Include(tag => tag.PostTags)
+                        .Include(tag => tag.ProfileTags)
+                        .Include(tag => tag.JobPostingTags)
+                        .Select(tag => new PostTagsViewModel
+                        {
+                            TagId = tag.Id,
+                            EnglishName = tag.EnglishName,
+                            ArabicName = tag.ArabicName ?? string.Empty,
+                            Description = tag.Description,
+                            PostCount = tag.PostTags.Count,
+                            UserInterestCount = tag.ProfileTags.Count,
+                            JobPostingCount = tag.JobPostingTags.Count
+                        })
+                        .OrderByDescending(tag => tag.PostCount + tag.UserInterestCount + tag.JobPostingCount)
+                        .ToListAsync(cancellationToken);
+                });
         }
         finally
         {

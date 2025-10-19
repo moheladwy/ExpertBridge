@@ -10,10 +10,7 @@ public class AuthController : ControllerBase
 {
     private readonly FirebaseAuthService _authService;
 
-    public AuthController(FirebaseAuthService authService)
-    {
-        _authService = authService;
-    }
+    public AuthController(FirebaseAuthService authService) => _authService = authService;
 
     [HttpPost("login")]
     public async Task<string> Login([FromBody] LoginRequest request)

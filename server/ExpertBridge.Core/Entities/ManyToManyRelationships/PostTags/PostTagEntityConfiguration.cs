@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="PostTag"/> entity.
+/// </summary>
 public class PostTagEntityConfiguration : IEntityTypeConfiguration<PostTag>
 {
+    /// <summary>
+    /// Configures the entity mapping, composite key, and relationships for post tags.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<PostTag> builder)
     {
         // Configure composite key

@@ -5,14 +5,21 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Chats;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Chat"/> entity.
+/// </summary>
 public class ChatEntityValidator : AbstractValidator<Chat>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChatEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public ChatEntityValidator()
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Chat Id is required")
             .NotEmpty().WithMessage("Chat Id is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Chat Id must not exceed {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Chat Id must not exceed {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("Chat CreatedAt is required")

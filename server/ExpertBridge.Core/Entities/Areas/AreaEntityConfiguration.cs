@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Areas;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="Area"/> entity.
+/// </summary>
 public class AreaEntityConfiguration : IEntityTypeConfiguration<Area>
 {
+    /// <summary>
+    /// Configures the entity mapping, relationships, and database constraints for areas.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Area> builder)
     {
         builder.HasKey(x => x.Id);
@@ -19,9 +26,9 @@ public class AreaEntityConfiguration : IEntityTypeConfiguration<Area>
             .IsRequired()
             .HasMaxLength(AreaEntityConstraints.MaxGovernorateLength)
             .HasConversion(
-                    v => v.ToString(),
-                    v => Enum.Parse<Governorates>(v)
-                );
+                v => v.ToString(),
+                v => Enum.Parse<Governorates>(v)
+            );
 
         builder.Property(x => x.Region)
             .IsRequired()

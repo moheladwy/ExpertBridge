@@ -1,9 +1,9 @@
 using System.Text.Json;
 using ExpertBridge.Application.Models.GroqResponses;
-using ExpertBridge.Application.Settings;
+using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
-using Polly;
 using Polly.Registry;
+using ResiliencePipeline = Polly.ResiliencePipeline;
 
 namespace ExpertBridge.Application.Services;
 
@@ -24,19 +24,19 @@ public class GroqTagProcessorService
     private readonly GroqLlmTextProvider _groqLlmTextProvider;
 
     /// <summary>
-    /// A pipeline instance implemented via <see cref="Polly" /> to handle resilient
-    /// execution and retry policies for operations encountering scenarios such as
-    /// malformed JSON responses. This supports maintaining robust and fault-tolerant
-    /// behavior when communicating with external APIs or processing data.
-    /// </summary>
-    private readonly ResiliencePipeline _resiliencePipeline;
-
-    /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
     ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     A pipeline instance implemented via <see cref="Polly" /> to handle resilient
+    ///     execution and retry policies for operations encountering scenarios such as
+    ///     malformed JSON responses. This supports maintaining robust and fault-tolerant
+    ///     behavior when communicating with external APIs or processing data.
+    /// </summary>
+    private readonly ResiliencePipeline _resiliencePipeline;
 
     /// <summary>
     ///     Provides functionality for processing and analyzing tags or text categorizations
@@ -76,15 +76,15 @@ public class GroqTagProcessorService
         ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
         try
         {
-            TranslateTagsResponse result = null!;
+            TranslateTagsResponse? result = null;
             await _resiliencePipeline.ExecuteAsync(async ct =>
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(existingTags);
                 var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
                 result = JsonSerializer.Deserialize<TranslateTagsResponse>(response, _jsonSerializerOptions)
-                             ?? throw new InvalidOperationException(
-                                 "Failed to deserialize the tag processing response: null result");
+                         ?? throw new InvalidOperationException(
+                             "Failed to deserialize the tag processing response: null result");
                 return ValueTask.CompletedTask;
             });
             return result;
@@ -101,36 +101,58 @@ public class GroqTagProcessorService
     /// <returns>
     ///     A string containing the JSON schema definition for translating tag responses.
     /// </returns>
-    private static string GetOutputFormatSchema() => File.ReadAllText("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
+    private static string GetOutputFormatSchema() =>
+        File.ReadAllText("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
 
     /// <summary>
-    ///     Generates and returns the system prompt used for tag translation tasks.
-    ///     The prompt provides instructions for translating tags and generating descriptions
-    ///     in accordance with specific rules, ensuring consistent and accurate output.
+    ///     Generates and returns the system prompt used for tag translation and description generation.
+    ///     This prompt instructs the model to accurately translate tags between English and Egyptian Arabic,
+    ///     ensuring semantic consistency, linguistic correctness, and standardized output formatting.
     /// </summary>
     /// <returns>
-    ///     A string representing the system prompt, formatted with detailed instructions
-    ///     for tag translation and description generation.
+    ///     A string containing the complete system prompt, formatted with detailed multilingual translation
+    ///     and output specifications compliant with the defined schema.
     /// </returns>
     private static string GetSystemPrompt()
     {
         List<string> systemPrompt =
         [
-            "You are a tag translation specialist. Translate tags between English and Egyptian Arabic and provide detailed descriptions in English only.",
-            "Your task is to translate the given tags and provide their descriptions.",
-            "1. Provide both English and Egyptian Arabic translations for each tag.",
-            "2. Provide a concise description in English.",
-            "3. All names should be lowercase and separated by spaces.",
-            "4. If a tag is already in English, provide its Egyptian Arabic translation and vice versa.",
-            "5. If the language is unclear, try to determine the most likely translation.",
-            "6. Tags should be unique and not repetitive.",
-            "7. Tags should not contain numbers, or special characters.",
-            "8. Tags should not contain the language name.",
-            "9. Do not generate any introductory or concluding text."
+            "You are an advanced tag translation and description generation assistant.",
+            "Your primary objective is to translate tags between English and Egyptian Arabic, ensuring cultural and linguistic accuracy.",
+            "For each provided tag, perform the following steps precisely:",
+
+            "1. Generate two versions of the tag:",
+            "   - 'english': the English translation of the tag, written in lowercase letters separated by spaces.",
+            "   - 'egyptian_arabic': the Egyptian Arabic translation of the tag, also written in lowercase using Arabic script.",
+            "2. Provide a concise, clear English description explaining the meaning or context of the tag.",
+            "3. If the original tag is already in English, only translate it into Egyptian Arabic.",
+            "   If it is already in Egyptian Arabic, only translate it into English.",
+            "4. If the language is ambiguous, infer the most probable translation from context.",
+            "5. Ensure that all tags are unique, natural, and non-repetitive.",
+
+            "Formatting and Validation Rules:",
+            "6. Tags must not contain numbers, punctuation, or special characters.",
+            "7. Tags must not include the name of any language (e.g., 'english', 'arabic', etc.).",
+            "8. All tag names must be lowercase, separated by single spaces.",
+            "9. Do not include explanations, markdown, or commentary outside the JSON output.",
+            "10. Output only the final JSON structure — no preface, code blocks, or additional text.",
+
+            "Output Format Requirements:",
+            "Your response must strictly conform to the following JSON schema representation.",
+            "Each field must appear exactly as defined, without omissions or renaming.",
+
+            "```json",
+            GetOutputFormatSchema(),
+            "```",
+
+            "The output must be raw JSON (no markdown formatting, no code fences).",
+            "If multiple tags are given, return a JSON array following the same schema for each item.",
+            "Maintain absolute formatting integrity — the output must be valid JSON."
         ];
 
         return string.Join("\n", systemPrompt);
     }
+
 
     /// <summary>
     ///     Generates a user prompt string for translating and describing tags by providing detailed
@@ -145,19 +167,7 @@ public class GroqTagProcessorService
         List<string> userPrompt =
         [
             "Translate and provide descriptions for the following tags:",
-            $"[{string.Join(", ", existingTags.ToList())}]",
-            "For each tag:",
-            "1. Provide both English and Egyptian Arabic translations",
-            "2. Provide a concise description in English",
-            "3. All names should be lowercase and separated by spaces",
-            "4. If a tag is already in English, provide its Egyptian Arabic translation and vice versa",
-            "5. If the language is unclear, try to determine the most likely translation",
-            "Return only the raw JSON in the format described below without any markdown code block formatting.",
-            "### Pydantic Details:",
-            "```json",
-            GetOutputFormatSchema(),
-            "```",
-            "Return only the raw JSON without any markdown code block formatting."
+            $"[{string.Join(", ", existingTags.ToList())}]"
         ];
 
         return string.Join("\n", userPrompt);

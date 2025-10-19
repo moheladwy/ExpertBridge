@@ -4,42 +4,38 @@
 using System.Security.Claims;
 using ExpertBridge.Core.Exceptions;
 
-namespace ExpertBridge.Api.Middleware
+namespace ExpertBridge.Api.Middleware;
+
+public class EmailVerifiedMiddleware
 {
-    public class EmailVerifiedMiddleware
+    private readonly RequestDelegate _next;
+
+    public EmailVerifiedMiddleware(RequestDelegate next) => _next = next;
+
+    public async Task InvokeAsync(HttpContext context)
     {
-        private readonly RequestDelegate _next;
-
-        public EmailVerifiedMiddleware(RequestDelegate next)
+        // Allow initial creation for non email-verified users.
+        if (context.Request.Path.HasValue
+            && context.Request.Path.Value
+                .EndsWith("/api/users", StringComparison.InvariantCultureIgnoreCase)
+            && context.Request.Method == "PUT")
         {
-            _next = next;
+            await _next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        else
         {
-            // Allow initial creation for non email-verified users.
-            if (context.Request.Path.HasValue
-                && context.Request.Path.Value
-                    .EndsWith("/api/users", StringComparison.InvariantCultureIgnoreCase)
-                && context.Request.Method == "PUT")
-            {
-                await _next(context);
-            }
-            else
-            {
-                var isAuth = context.User?.Identity?.IsAuthenticated ?? false;
+            var isAuth = context.User?.Identity?.IsAuthenticated ?? false;
 
-                if (isAuth)
+            if (isAuth)
+            {
+                var isEmailVerified = context.User.FindFirstValue("email_verified") == "true";
+                if (!isEmailVerified)
                 {
-                    bool isEmailVerified = context.User.FindFirstValue("email_verified") == "true";
-                    if (!isEmailVerified)
-                    {
-                        throw new UnauthorizedException("Email not verified");
-                    }
+                    throw new UnauthorizedException("Email not verified");
                 }
-
-                await _next(context);
             }
+
+            await _next(context);
         }
     }
 }

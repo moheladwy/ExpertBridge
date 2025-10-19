@@ -2,13 +2,24 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Entities.Skills;
+using FluentValidation;
 
 namespace ExpertBridge.Core.Requests.UpdateProfileRequest;
 
-using FluentValidation;
-
+/// <summary>
+/// Validates UpdateProfileRequest to ensure profile update data meets requirements.
+/// </summary>
+/// <remarks>
+/// Validates optional fields including JobTitle, Bio, FirstName, LastName, Username, PhoneNumber, and Skills.
+/// All validations use .When() to only validate when fields are provided (conditional validation).
+/// Username includes regex validation for allowed characters. PhoneNumber uses international format validation.
+/// Skills collection ensures each skill name meets length constraints.
+/// </remarks>
 public class ValidateUpdateProfileRequest : AbstractValidator<UpdateProfileRequest>
 {
+    /// <summary>
+    /// Initializes a new instance of the ValidateUpdateProfileRequest with conditional validation rules.
+    /// </summary>
     public ValidateUpdateProfileRequest()
     {
         RuleFor(x => x.JobTitle)

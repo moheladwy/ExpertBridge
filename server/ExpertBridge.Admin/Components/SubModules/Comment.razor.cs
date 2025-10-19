@@ -4,18 +4,13 @@
 using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Components;
 
-namespace ExpertBridge.Admin.Components.SubModules
+namespace ExpertBridge.Admin.Components.SubModules;
+
+public partial class Comment : ComponentBase
 {
-    public partial class Comment : ComponentBase
-    {
-        [Parameter]
-        public CommentResponse CommentResponse { get; set; }
+    private bool _showReplies = true;
 
-        private bool _showReplies = true;
+    [Parameter] public CommentResponse CommentResponse { get; set; }
 
-        private void ToggleReplies()
-        {
-            _showReplies = !_showReplies;
-        }
-    }
+    private void ToggleReplies() => _showReplies = !_showReplies;
 }

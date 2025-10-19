@@ -5,16 +5,18 @@
 
 <RadzenStack Gap="1.5rem" class="rz-p-4 rz-p-md-6">
     <RadzenCard>
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="1rem">
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                     AlignItems="AlignItems.Center" Gap="1rem">
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                <RadzenIcon Icon="delete_sweep" IconStyle="IconStyle.Secondary" />
+                <RadzenIcon Icon="delete_sweep" IconStyle="IconStyle.Secondary"/>
                 <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1" class="rz-m-0">
                     Deleted Posts
                 </RadzenText>
             </RadzenStack>
             @if (!isLoading && reportedPosts != null)
             {
-                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{reportedPosts.Count} deleted")" Shade="Shade.Lighter" />
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"{reportedPosts.Count} deleted")"
+                             Shade="Shade.Lighter"/>
             }
         </RadzenStack>
     </RadzenCard>
@@ -23,13 +25,14 @@
     @if (!isLoading && reportedPosts != null && reportedPosts.Count > 0)
     {
         <RadzenCard>
-            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" Wrap="FlexWrap.Wrap">
-                <RadzenIcon Icon="search" Style="color: var(--rz-text-secondary-color);" />
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center"
+                         Wrap="FlexWrap.Wrap">
+                <RadzenIcon Icon="search" Style="color: var(--rz-text-secondary-color);"/>
                 <RadzenTextBox Value="@searchText"
                                Placeholder="Search by title, content, author, or tags..."
                                Style="flex: 1; min-width: 300px;"
-                               Change="@((value) => OnSearchChanged(value))"
-                               class="rz-border-radius-2" />
+                               Change="@(value => OnSearchChanged(value))"
+                               class="rz-border-radius-2"/>
 
                 @if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -39,11 +42,11 @@
                                   Size="ButtonSize.Medium"
                                   Click="@ClearSearch"
                                   title="Clear search"
-                                  Text="Clear" />
+                                  Text="Clear"/>
 
                     <RadzenBadge BadgeStyle="BadgeStyle.Success"
                                  Text="@($"{displayedPostCount} result{(displayedPostCount != 1 ? "s" : "")}")"
-                                 Shade="Shade.Lighter" />
+                                 Shade="Shade.Lighter"/>
                 }
             </RadzenStack>
         </RadzenCard>
@@ -52,8 +55,10 @@
     @if (isLoading)
     {
         <RadzenCard>
-            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="min-height: 300px;">
-                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem"
+                         Style="min-height: 300px;">
+                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                           Size="ProgressBarCircularSize.Large"/>
                 <RadzenText TextStyle="TextStyle.Body1">Loading deleted posts...</RadzenText>
             </RadzenStack>
         </RadzenCard>
@@ -61,8 +66,9 @@
     else if (reportedPosts != null && reportedPosts.Count == 0)
     {
         <RadzenCard>
-            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" Style="padding: 3rem 0;">
-                <RadzenIcon Icon="post_add" Style="font-size: 64px;" class="rz-color-secondary" />
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem"
+                         Style="padding: 3rem 0;">
+                <RadzenIcon Icon="post_add" Style="font-size: 64px;" class="rz-color-secondary"/>
                 <RadzenStack AlignItems="AlignItems.Center" Gap="0.25rem">
                     <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-medium">
                         No deleted posts found
@@ -81,14 +87,14 @@
             <RadzenCard>
                 <RadzenAlert AlertStyle="AlertStyle.Warning" Shade="Shade.Lighter">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                        <RadzenIcon Icon="search_off" />
+                        <RadzenIcon Icon="search_off"/>
                         <RadzenText TextStyle="TextStyle.Body1">
                             No posts found matching "<strong>@searchText</strong>".
                         </RadzenText>
                         <RadzenButton Text="Clear Search"
                                       ButtonStyle="ButtonStyle.Light"
                                       Size="ButtonSize.Small"
-                                      Click="@ClearSearch" />
+                                      Click="@ClearSearch"/>
                     </RadzenStack>
                 </RadzenAlert>
             </RadzenCard>
@@ -97,11 +103,12 @@
         {
             <RadzenStack Gap="1.5rem">
                 <RadzenCard>
-                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center"
+                                 AlignItems="AlignItems.Center" Gap="0.5rem">
                         <RadzenPager Count="@displayedPostCount" PageSize="@pageSize" PageNumbersCount="5"
                                      PageChanged="@OnPageChanged" ShowPagingSummary="true"
                                      PagingSummaryFormat="@pagingSummaryFormat"
-                                     HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
+                                     HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact"/>
                         @if (!string.IsNullOrWhiteSpace(searchText))
                         {
                             <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
@@ -115,16 +122,17 @@
                 {
                     @foreach (var post in pagedPosts)
                     {
-                        <Post PostResponse="@post" />
+                        <Post PostResponse="@post"/>
                     }
                 }
 
                 <RadzenCard>
-                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center"
+                                 AlignItems="AlignItems.Center" Gap="0.5rem">
                         <RadzenPager Count="@displayedPostCount" PageSize="@pageSize" PageNumbersCount="5"
                                      PageChanged="@OnPageChanged" ShowPagingSummary="true"
                                      PagingSummaryFormat="@pagingSummaryFormat"
-                                     HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact" />
+                                     HorizontalAlign="HorizontalAlign.Center" Density="Density.Compact"/>
                         @if (!string.IsNullOrWhiteSpace(searchText))
                         {
                             <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">

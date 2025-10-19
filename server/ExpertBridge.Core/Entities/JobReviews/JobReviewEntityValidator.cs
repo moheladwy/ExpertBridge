@@ -5,14 +5,21 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.JobReviews;
 
+/// <summary>
+/// Provides validation rules for the <see cref="JobReview"/> entity.
+/// </summary>
 public class JobReviewEntityValidator : AbstractValidator<JobReview>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JobReviewEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public JobReviewEntityValidator()
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
             .NotEmpty().WithMessage("Id is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Rating)
             .NotNull().WithMessage("Rating is required")
@@ -36,7 +43,8 @@ public class JobReviewEntityValidator : AbstractValidator<JobReview>
             .When(x => x.LastModified.HasValue);
 
         RuleFor(x => x.LastModified)
-            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("LastModified must be less than or equal to the current date")
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("LastModified must be less than or equal to the current date")
             .When(x => x.LastModified.HasValue)
             .GreaterThan(x => x.CreatedAt).WithMessage("LastModified must be greater than or equal to CreatedAt")
             .When(x => x.CreatedAt != DateTime.MaxValue);
@@ -47,17 +55,19 @@ public class JobReviewEntityValidator : AbstractValidator<JobReview>
         RuleFor(x => x.WorkerId)
             .NotNull().WithMessage("WorkerId is required")
             .NotEmpty().WithMessage("WorkerId is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"WorkerId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"WorkerId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.CustomerId)
             .NotNull().WithMessage("CustomerId is required")
             .NotEmpty().WithMessage("CustomerId is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"CustomerId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"CustomerId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.JobId)
             .NotNull().WithMessage("JobId is required")
             .NotEmpty().WithMessage("JobId is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"JobId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
-
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"JobId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
     }
 }

@@ -1,8 +1,8 @@
 using Amazon.S3;
 using Amazon.S3.Model;
-using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Responses;
+using ExpertBridge.Extensions.AWS;
 using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Application.Services;
@@ -81,10 +81,7 @@ public sealed class S3Service
             Key = Guid.NewGuid().ToString(),
             Expires = DateTime.UtcNow.AddMinutes(60),
             Verb = HttpVerb.PUT,
-            Headers =
-            {
-                ["Cache-Control"] = _awsSettings.CacheControl
-            },
+            Headers = { ["Cache-Control"] = _awsSettings.CacheControl }
         };
 
         request.Metadata.Add("file-name", file.Name);
@@ -97,8 +94,7 @@ public sealed class S3Service
 
         var response = new PresignedUrlResponse
         {
-            Url = await _s3Client.GetPreSignedURLAsync(request),
-            Key = request.Key
+            Url = await _s3Client.GetPreSignedURLAsync(request), Key = request.Key
         };
 
         return response;
@@ -120,16 +116,10 @@ public sealed class S3Service
     {
         var request = new GetPreSignedUrlRequest
         {
-            BucketName = _awsSettings.BucketName,
-            Key = key,
-            Expires = DateTime.UtcNow.AddMinutes(60)
+            BucketName = _awsSettings.BucketName, Key = key, Expires = DateTime.UtcNow.AddMinutes(60)
         };
 
-        var response = new PresignedUrlResponse
-        {
-            Url = await _s3Client.GetPreSignedURLAsync(request),
-            Key = key
-        };
+        var response = new PresignedUrlResponse { Url = await _s3Client.GetPreSignedURLAsync(request), Key = key };
 
         return response;
     }

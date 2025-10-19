@@ -4,16 +4,22 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ExpertBridge.Core.Entities.Media.MediaGrants
-{
-    public class MediaGrantEntityConfiguration : IEntityTypeConfiguration<MediaGrant>
-    {
-        public void Configure(EntityTypeBuilder<MediaGrant> builder)
-        {
-            builder.HasKey(x => x.Id);
+namespace ExpertBridge.Core.Entities.Media.MediaGrants;
 
-            // Composite index so that we make effective use of the boolean value 'OnHold'.
-            builder.HasIndex(x => new { x.OnHold, x.GrantedAt });
-        }
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="MediaGrant"/> entity.
+/// </summary>
+public class MediaGrantEntityConfiguration : IEntityTypeConfiguration<MediaGrant>
+{
+    /// <summary>
+    /// Configures the entity mapping, indexes, and database constraints for media grants.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
+    public void Configure(EntityTypeBuilder<MediaGrant> builder)
+    {
+        builder.HasKey(x => x.Id);
+
+        // Composite index so that we make effective use of the boolean value 'OnHold'.
+        builder.HasIndex(x => new { x.OnHold, x.GrantedAt });
     }
 }

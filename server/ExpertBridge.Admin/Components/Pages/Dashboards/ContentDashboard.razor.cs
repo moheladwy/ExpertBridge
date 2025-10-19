@@ -9,31 +9,28 @@ namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
 public partial class ContentDashboard : ComponentBase
 {
+    private readonly bool _showDataLabels;
+    private readonly ContentStats _stats;
     private readonly ExpertBridgeDbContext DbContext;
-    private bool _loading;
-    private bool _showDataLabels;
-    private ContentStats _stats;
-    private List<ChartDataItem> _postChartData;
     private List<ChartDataItem> _commentChartData;
     private List<ChartDataItem> _jobPostingChartData;
+    private bool _loading;
     private List<OverviewChartData> _overviewChartData;
+    private List<ChartDataItem> _postChartData;
 
     public ContentDashboard(ExpertBridgeDbContext dbContext)
     {
         DbContext = dbContext;
         _loading = true;
         _showDataLabels = true;
-        _stats = new();
+        _stats = new ContentStats();
         _postChartData = [];
         _commentChartData = [];
         _jobPostingChartData = [];
         _overviewChartData = [];
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshData();
-    }
+    protected override async Task OnInitializedAsync() => await RefreshData();
 
     private async Task RefreshData()
     {
@@ -106,8 +103,14 @@ public partial class ContentDashboard : ComponentBase
         _overviewChartData =
         [
             new OverviewChartData { Category = "Posts", Active = _stats.ActivePosts, Deleted = _stats.DeletedPosts },
-            new OverviewChartData { Category = "Comments", Active = _stats.ActiveComments, Deleted = _stats.DeletedComments },
-            new OverviewChartData { Category = "Job Postings", Active = _stats.ActiveJobPostings, Deleted = _stats.DeletedJobPostings }
+            new OverviewChartData
+            {
+                Category = "Comments", Active = _stats.ActiveComments, Deleted = _stats.DeletedComments
+            },
+            new OverviewChartData
+            {
+                Category = "Job Postings", Active = _stats.ActiveJobPostings, Deleted = _stats.DeletedJobPostings
+            }
         ];
     }
 

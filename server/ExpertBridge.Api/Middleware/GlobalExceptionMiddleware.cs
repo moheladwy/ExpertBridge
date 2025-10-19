@@ -65,9 +65,9 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
                     statusCode: StatusCodes.Status400BadRequest,
                     extensions: new Dictionary<string, object?>
                     {
-                        {"traceId", Activity.Current?.Id},
-                        {"Endpoint", httpContext.GetEndpoint()?.DisplayName},
-                        {"message", ex.Message}
+                        { "traceId", Activity.Current?.Id },
+                        { "Endpoint", httpContext.GetEndpoint()?.DisplayName },
+                        { "message", ex.Message }
                     }
                 )
                 .ExecuteAsync(httpContext);

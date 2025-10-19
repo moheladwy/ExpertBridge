@@ -7,26 +7,39 @@
   "containerBuilder": "docker",
   "outputFormat": "compose",
   "privateRegistryEmail": "aspir8@aka.ms",
-  "includeDashboard": false,
+  "includeDashboard": true,
   "secrets": {
-    "salt": "2vpYANV4sI7aBHhe",
-    "hash": "QtWb4w2ls5dWW8/uke\u002BVukUi2I/mget4fOkH5Nqh39E=",
+    "salt": "jGzL6HdKOcWWTggG",
+    "hash": "aym/gvP92Mw7/JOwG7tQGoU42xX22Rkv1JBU2vTxSTg=",
     "secrets": {
+      "RabbitMq-Username": {
+        "value": "jGzL6HdKOcWWTggGFr8PQEPWDsCaZZPHKrkcbtF2PHX4"
+      },
+      "RabbitMq-Password": {
+        "value": "jGzL6HdKOcWWTggGFr8PQEPWDsCaZZPHKrkcbtF2PHX4"
+      },
+      "ollama": {
+        "value": "jGzL6HdKOcWWTggG/parWap/aDMxPHUGiFS38NlvNWfhsw=="
+      },
       "Redis": {
-        "value": "2vpYANV4sI7aBHheMNkNwusfrRRynOwUc6KOHXtpjbuv"
+        "value": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//"
       },
-      "Seq": {
-        "value": "2vpYANV4sI7aBHhezMHc8Zp81Q3OXEeGQJamq3ppmA=="
-      },
+      "rabbitmq": {},
+      "ollama-snowflake-arctic-embed2": {},
+      "Seq": {},
       "ExpertBridgeApi": {
-        "ConnectionStrings__Redis": "2vpYANV4sI7aBHheX8\u002BHE1P1otXRJk7ADF9PQFtpjbuvEQWNyTxNoV4JBUjPD7ORsIUNntJQSVqb3utuyV0Yt6aKUmqLZw==",
-        "ConnectionStrings__Seq": "2vpYANV4sI7aBHheBODm4gmtP/J9YOZyPQW8WmF4naLmBBztm3Rb6Q8="
+        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
+        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME="
       },
       "ExpertBridgeAdmin": {
-        "ConnectionStrings__Seq": "2vpYANV4sI7aBHheBODm4gmtP/J9YOZyPQW8WmF4naLmBBztm3Rb6Q8="
+        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
+        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME="
       },
-      "Redis-password": {
-        "value": "2vpYANV4sI7aBHheFQHrmvlEHxjhcjd0ejIGjEQ4qqHkH1v/m1EGonJKBA7QT4b/\u002BIU="
+      "ExpertBridgeWorker": {
+        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
+        "ConnectionStrings__rabbitmq": "jGzL6HdKOcWWTggGbjSKvq2YSJmN7hEsByIuI9duKHa2/VxaBH3wfMsIiGAYvJiQTQBEIPqH12SeWOQs",
+        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME=",
+        "ConnectionStrings__ollama-snowflake-arctic-embed2": "jGzL6HdKOcWWTggGPamDGZr/cSPtAJwgYbjvpdlvNWfhs0hwHnzmZMwck2ocrrSDRwcLKPyJ0jfIQ7ZzA/pxNnzt6C8fGHA="
       }
     }
   },

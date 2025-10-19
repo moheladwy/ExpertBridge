@@ -4,16 +4,15 @@
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Hybrid;
 
 namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
 public partial class TagsDashboard : ComponentBase
 {
+    private readonly bool _showDataLabels;
+    private readonly TagStats _stats;
     private readonly ExpertBridgeDbContext DbContext;
     private bool _loading;
-    private bool _showDataLabels;
-    private TagStats _stats;
     private List<ChartDataItem> _tagUsageChartData;
 
     public TagsDashboard(ExpertBridgeDbContext dbContext)
@@ -21,14 +20,11 @@ public partial class TagsDashboard : ComponentBase
         DbContext = dbContext;
         _loading = true;
         _showDataLabels = true;
-        _stats = new();
+        _stats = new TagStats();
         _tagUsageChartData = [];
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshData();
-    }
+    protected override async Task OnInitializedAsync() => await RefreshData();
 
     private async Task RefreshData()
     {

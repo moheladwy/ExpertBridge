@@ -5,63 +5,122 @@ using FirebaseAdmin.Auth;
 namespace ExpertBridge.Application.Services;
 
 /// <summary>
-///     Provides authentication services implementing Firebase functionality.
+/// Provides comprehensive authentication services using Firebase Authentication for user management and session validation.
 /// </summary>
 /// <remarks>
-///     Contains methods for user registration, login, and token verification using Firebase Authentication.
+/// This service acts as a wrapper around Firebase Admin SDK and Firebase Authentication REST API,
+/// providing a unified interface for authentication operations in the ExpertBridge platform.
+/// 
+/// **Key Responsibilities:**
+/// - User registration with Firebase Authentication
+/// - Email/password authentication and ID token generation
+/// - JWT token validation and verification
+/// - User session management
+/// 
+/// **Firebase Integration:**
+/// - Uses Firebase Admin SDK for user management operations (create, verify)
+/// - Uses Firebase Authentication REST API for password-based sign-in
+/// - Returns Firebase ID tokens (JWT) for API authentication
+/// - Integrates with ASP.NET Core JWT Bearer authentication middleware
+/// 
+/// **Authentication Flow:**
+/// 1. User registers via RegisterAsync → Firebase UID generated
+/// 2. User logs in via LoginAsync → Firebase ID token (JWT) returned
+/// 3. Client sends token in Authorization header
+/// 4. Server validates token via VerifyIdTokenAsync
+/// 5. User claims extracted for authorization
+/// 
+/// **Security Features:**
+/// - Password complexity enforced by Firebase
+/// - Tokens cryptographically signed by Firebase
+/// - Token expiration (1 hour default)
+/// - Refresh token support for long-lived sessions
+/// 
+/// HttpClient should be configured with Firebase Authentication endpoint in dependency injection.
 /// </remarks>
 public class FirebaseAuthService
 {
     /// <summary>
-    ///     Represents the Firebase Authentication instance used for managing user authentication operations.
+    /// The Firebase Admin SDK authentication instance for server-side user management operations.
     /// </summary>
     /// <remarks>
-    ///     This variable holds a default instance of Firebase Authentication and is used to perform operations
-    ///     such as creating new users, verifying ID tokens, and handling other authentication-related tasks in the Firebase
-    ///     context.
+    /// Uses the default Firebase app instance configured during application startup.
+    /// Provides administrative access to Firebase Authentication including user creation,
+    /// token verification, and custom claims management.
     /// </remarks>
     private readonly FirebaseAuth _auth = FirebaseAuth.DefaultInstance;
 
     /// <summary>
-    ///     Represents the HTTP client instance used for sending requests to the Firebase Authentication service.
+    /// The HTTP client configured for Firebase Authentication REST API endpoints.
     /// </summary>
     /// <remarks>
-    ///     This variable is configured with a base address pointing to the authentication token endpoint specified in the
-    ///     Firebase settings.
-    ///     It is used to perform HTTP operations such as posting authentication requests and handling Firebase token
-    ///     transactions.
+    /// Should be configured with BaseAddress pointing to Firebase Authentication token endpoint:
+    /// https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={API_KEY}
+    /// 
+    /// Used for password-based authentication which is not available in Admin SDK.
     /// </remarks>
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    ///     Service implementation for Firebase authentication, providing functionality for user registration, login, and token
-    ///     validation.
+    /// Initializes a new instance of the <see cref="FirebaseAuthService"/> class with the configured HTTP client.
     /// </summary>
-    /// <remarks>
-    ///     This class leverages Firebase Authentication for securely managing user credentials and session tokens.
-    ///     It provides methods to register new users, authenticate existing users with email/password credentials,
-    ///     and verify Firebase ID tokens to ensure the validity of user sessions.
-    /// </remarks>
     /// <param name="httpClient">
-    ///     The HTTP client used to communicate with Firebase Authentication endpoints.
+    /// The HTTP client for communicating with Firebase Authentication REST API.
+    /// Should be pre-configured with the authentication token endpoint URL.
     /// </param>
-    public FirebaseAuthService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    /// <remarks>
+    /// HttpClient should be registered in DI with a named or typed client configuration
+    /// that includes the Firebase Authentication endpoint as BaseAddress.
+    /// 
+    /// Example DI registration:
+    /// <code>
+    /// services.AddHttpClient&lt;FirebaseAuthService&gt;(client =>
+    /// {
+    ///     client.BaseAddress = new Uri(firebaseSettings.AuthenticationTokenUri);
+    /// });
+    /// </code>
+    /// </remarks>
+    public FirebaseAuthService(HttpClient httpClient) => _httpClient = httpClient;
 
     /// <summary>
-    ///     Asynchronously registers a new user with Firebase Authentication using the provided email and password.
+    /// Asynchronously registers a new user in Firebase Authentication and returns the unique user identifier.
     /// </summary>
     /// <param name="email">
-    ///     The email address of the user to register. Must be unique and valid.
+    /// The email address for the new user account. Must be unique and valid according to Firebase rules.
     /// </param>
     /// <param name="password">
-    ///     The password for the user. Must meet Firebase password complexity requirements.
+    /// The password for the new user account. Must meet Firebase password requirements (minimum 6 characters).
     /// </param>
     /// <returns>
-    ///     A unique identifier (UID) for the newly registered user.
+    /// A task representing the asynchronous operation, containing the Firebase UID (unique identifier) of the newly created user.
     /// </returns>
+    /// <remarks>
+    /// This method uses Firebase Admin SDK to create a new user with the following configuration:
+    /// - Email: Provided email address (used as DisplayName initially)
+    /// - Password: Hashed and stored securely by Firebase
+    /// - EmailVerified: Set to true (bypassing email verification for platform control)
+    /// - Disabled: Set to false (account is active immediately)
+    /// 
+    /// **Registration Flow:**
+    /// 1. Firebase creates user record with credentials
+    /// 2. Unique UID is generated by Firebase
+    /// 3. UID is returned to create corresponding ExpertBridge Profile entity
+    /// 
+    /// **Important Considerations:**
+    /// - EmailVerified is set to true to allow immediate platform access
+    /// - The UID should be stored as IdentityProviderId in the User entity
+    /// - DisplayName is initially set to email but can be updated later
+    /// 
+    /// **Error Handling:**
+    /// - Throws FirebaseAuthException if email already exists
+    /// - Throws ArgumentException for invalid email format
+    /// - Throws FirebaseAuthException if password doesn't meet requirements
+    /// 
+    /// After registration, the client should call LoginAsync to obtain an ID token for API authentication.
+    /// </remarks>
+    /// <exception cref="FirebaseAuthException">
+    /// Thrown when user creation fails due to duplicate email, invalid credentials, or Firebase service errors.
+    /// </exception>
     public async Task<string> RegisterAsync(string email, string password)
     {
         var userArgs = new UserRecordArgs
@@ -78,21 +137,64 @@ public class FirebaseAuthService
     }
 
     /// <summary>
-    ///     Authenticates a user by email and password using Firebase Authentication and returns a Firebase ID token.
+    /// Authenticates a user with email and password, returning a Firebase ID token (JWT) for API access.
     /// </summary>
     /// <param name="email">
-    ///     The email address of the user attempting to log in.
+    /// The email address of the user attempting to authenticate.
     /// </param>
     /// <param name="password">
-    ///     The password associated with the provided email address.
+    /// The password associated with the email address.
     /// </param>
     /// <returns>
-    ///     A task that represents the asynchronous operation. The task result contains the Firebase ID token
-    ///     for the authenticated user upon a successful login.
+    /// A task representing the asynchronous operation, containing the Firebase ID token (JWT) for the authenticated user.
+    /// This token should be sent in the Authorization header for subsequent API requests.
     /// </returns>
+    /// <remarks>
+    /// This method uses Firebase Authentication REST API (not Admin SDK) because password-based sign-in
+    /// requires client-side authentication flow.
+    /// 
+    /// **Authentication Process:**
+    /// 1. Sends email/password to Firebase REST API endpoint
+    /// 2. Firebase validates credentials and generates ID token
+    /// 3. Response contains idToken, refreshToken, expiresIn, and user details
+    /// 4. ID token (JWT) is extracted and returned to client
+    /// 
+    /// **Token Details:**
+    /// - Format: JSON Web Token (JWT) signed by Firebase
+    /// - Expiration: 1 hour by default
+    /// - Claims: uid, email, email_verified, auth_time, etc.
+    /// - Usage: Bearer token in Authorization header
+    /// 
+    /// **Example Usage:**
+    /// <code>
+    /// var idToken = await firebaseAuthService.LoginAsync("user@example.com", "password123");
+    /// // Client includes in requests: Authorization: Bearer {idToken}
+    /// </code>
+    /// 
+    /// **Security Considerations:**
+    /// - Never log or expose the ID token
+    /// - Token contains sensitive user claims
+    /// - Should be transmitted only over HTTPS
+    /// - Client should store securely (not in localStorage for XSS protection)
+    /// 
+    /// **Response Handling:**
+    /// The method deserializes the response into AuthTokenSettings which contains:
+    /// - idToken: The JWT for authentication
+    /// - refreshToken: For obtaining new tokens after expiration
+    /// - expiresIn: Token validity period (typically "3600" for 1 hour)
+    /// - localId: Firebase UID
+    /// - email, displayName: User information
+    /// </remarks>
+    /// <exception cref="HttpRequestException">
+    /// Thrown when the HTTP request to Firebase fails (network error, service unavailable).
+    /// </exception>
     /// <exception cref="InvalidOperationException">
-    ///     Thrown if the response from Firebase Authentication is not as expected or the authentication token cannot be
-    ///     parsed.
+    /// Thrown when the response cannot be deserialized or is in an unexpected format.
+    /// Common causes: malformed JSON response, API version mismatch.
+    /// </exception>
+    /// <exception cref="FirebaseAuthException">
+    /// Thrown by Firebase for authentication failures: invalid email, wrong password, user disabled, too many attempts.
+    /// Check the error code in the response for specific failure reason.
     /// </exception>
     public async Task<string> LoginAsync(string email, string password)
     {
@@ -107,19 +209,68 @@ public class FirebaseAuthService
     }
 
     /// <summary>
-    ///     Verifies the validity of a Firebase ID token and decodes it into a FirebaseToken object.
+    /// Verifies the authenticity and validity of a Firebase ID token and returns the decoded token information.
     /// </summary>
-    /// <remarks>
-    ///     This method is used for validating Firebase ID tokens to verify user sessions.
-    ///     It ensures that the token is authentic and decodes the token to extract the user's information.
-    /// </remarks>
     /// <param name="idToken">
-    ///     The Firebase ID token to be verified.
+    /// The Firebase ID token (JWT) to verify. Typically extracted from the Authorization header.
     /// </param>
     /// <returns>
-    ///     A <see cref="FirebaseToken" /> object containing the decoded information from the ID token if verification is
-    ///     successful;
-    ///     otherwise, returns null if the token is invalid or verification fails.
+    /// A task representing the asynchronous operation, containing the decoded <see cref="FirebaseToken"/> if valid,
+    /// or null if the token is invalid, expired, or verification fails.
+    /// </returns>
+    /// <remarks>
+    /// This method is used by authentication middleware to validate tokens on protected API endpoints.
+    /// 
+    /// **Verification Process:**
+    /// 1. Firebase Admin SDK fetches current public keys from Google
+    /// 2. Verifies token signature using public key cryptography
+    /// 3. Validates standard JWT claims (issuer, audience, expiration)
+    /// 4. Checks if token has been revoked (when checkRevoked = true)
+    /// 5. Decodes and returns token claims if all checks pass
+    /// 
+    /// **Token Validation Checks:**
+    /// - Signature verification (cryptographic proof of authenticity)
+    /// - Expiration time (exp claim must be in the future)
+    /// - Issued at time (iat claim must be in the past)
+    /// - Issuer verification (iss claim matches Firebase project)
+    /// - Audience verification (aud claim matches Firebase project ID)
+    /// - Revocation check (optional, checks Firebase revocation list)
+    /// 
+    /// **FirebaseToken Contents:**
+    /// The returned FirebaseToken object contains user claims:
+    /// - Uid: Firebase user identifier (maps to IdentityProviderId)
+    /// - Issuer: Token issuer (securetoken.google.com)
+    /// - Claims: Dictionary of custom and standard claims
+    /// - AuthTime: When user authenticated
+    /// - ExpirationTime: When token expires
+    /// 
+    /// **Null Return Cases:**
+    /// - Token signature is invalid (tampered or forged)
+    /// - Token has expired
+    /// - Token has been revoked by admin
+    /// - Token format is malformed
+    /// - Firebase service unreachable (network error)
+    /// 
+    /// **Usage in Authentication Middleware:**
+    /// <code>
+    /// var token = await firebaseAuthService.VerifyIdTokenAsync(idToken);
+    /// if (token == null)
+    /// {
+    ///     return Results.Unauthorized();
+    /// }
+    /// var userId = token.Uid; // Use to look up ExpertBridge user
+    /// </code>
+    /// 
+    /// **Performance Consideration:**
+    /// Firebase SDK caches public keys to minimize network requests.
+    /// Keys are only refreshed when they expire or signature verification fails.
+    /// 
+    /// The checkRevoked parameter is set to true to ensure maximum security by
+    /// checking if the token has been explicitly revoked by an administrator.
+    /// </remarks>
+    /// <returns>
+    /// The decoded FirebaseToken containing user claims if verification succeeds, otherwise null.
+    /// Null indicates the token should be rejected and the user should re-authenticate.
     /// </returns>
     public async Task<FirebaseToken?> VerifyIdTokenAsync(string idToken)
     {

@@ -1,16 +1,31 @@
 services:
+  aspire-dashboard:
+    container_name: "aspire-dashboard"
+    image: "mcr.microsoft.com/dotnet/aspire-dashboard:9.0"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    environment:
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+    ports:
+      - target: 18888
+        published: 18888
+    restart: unless-stopped
+    networks:
+      - shared
+      - expert-bridge
+
   ExpertBridgeRedis:
     container_name: ExpertBridgeRedis
     image: "redis:alpine"
     volumes:
-    - "expertbridge-redis-data:/data"
+      - "expertbridge-redis-data:/data"
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     command:
-    - "--save"
-    - "300"
-    - "1"
-    networks: 
+      - "--save"
+      - "300"
+      - "1"
+    networks:
       - expert-bridge
       - shared
     healthcheck:
@@ -19,12 +34,12 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-  
+
   ExpertBridgeApi:
     image: "only1adwy/expert-bridge-api:latest"
     deploy:
       mode: replicated
-      replicas: 1 
+      replicas: 1
       update_config:
         parallelism: 1
       restart_policy:
@@ -35,12 +50,18 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES}
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES}
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_SERVICE_NAME: "ExpertBridgeApi"
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: ${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       HTTP_PORTS: ${HTTP_PORTS}
+      ConnectionStrings__rabbitmq: ${ConnectionStrings__rabbitmq}
       ConnectionStrings__Redis: ${ConnectionStrings__Redis}
       ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
       ConnectionStrings__Seq: ${ConnectionStrings__Seq}
+      MessageBroker__Host: ${MessageBroker__Host}
+      MessageBroker__Username: ${MessageBroker__Username}
+      MessageBroker__Password: ${MessageBroker__Password}
       Firebase__Type: ${Firebase__Type}
       Firebase__ProjectId: ${Firebase__ProjectId}
       Firebase__PrivateKeyId: ${Firebase__PrivateKeyId}
@@ -73,13 +94,13 @@ services:
       - expertbridge-api-logs:/ExpertBridgeApi/logs
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
-    networks: 
+    networks:
       - expert-bridge
       - shared
     depends_on:
       - ExpertBridgeRedis
     restart: unless-stopped
-  
+
   ExpertBridgeAdmin:
     container_name: "ExpertBridgeAdmin"
     image: "only1adwy/expert-bridge-admin:latest"
@@ -89,6 +110,8 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_SERVICE_NAME: "ExpertBridgeAdmin"
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       HTTP_PORTS: "8080"
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
@@ -99,11 +122,74 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
     volumes:
       - expertbridge-admin-logs:/ExpertBridgeAdmin/logs
-    networks: 
+    networks:
       - expert-bridge
       - shared
     depends_on:
-      - Seq
+      - ExpertBridgeRedis
+
+  ExpertBridgeWorker:
+    container_name: "ExpertBridgeWorker"
+    image: "only1adwy/expert-bridge-worker:latest"
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
+    env_file:
+      - ".env"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_SERVICE_NAME: "ExpertBridgeWorker"
+      ConnectionStrings__rabbitmq: ${ConnectionStrings__rabbitmq}
+      ConnectionStrings__Redis: ${ConnectionStrings__Redis}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+      ConnectionStrings__QuartzDatabase: ${ConnectionStrings__QuartzDatabase}
+      ConnectionStrings__Seq: ${ConnectionStrings__Seq}
+      MessageBroker__Host: ${MessageBroker__Host}
+      MessageBroker__Username: ${MessageBroker__Username}
+      MessageBroker__Password: ${MessageBroker__Password}
+      Firebase__Type: ${Firebase__Type}
+      Firebase__ProjectId: ${Firebase__ProjectId}
+      Firebase__PrivateKeyId: ${Firebase__PrivateKeyId}
+      Firebase__PrivateKey: ${Firebase__PrivateKey}
+      Firebase__ClientEmail: ${Firebase__ClientEmail}
+      Firebase__ClientId: ${Firebase__ClientId}
+      Firebase__AuthUri: ${Firebase__AuthUri}
+      Firebase__TokenUri: ${Firebase__TokenUri}
+      Firebase__ClientX509CertUrl: ${Firebase__ClientX509CertUrl}
+      Firebase__UniverseDomain: ${Firebase__UniverseDomain}
+      Firebase__AuthProviderX509CertUrl: ${Firebase__AuthProviderX509CertUrl}
+      Firebase__AuthenticationTokenUri: ${Firebase__AuthenticationTokenUri}
+      Authentication__Firebase__Issuer: ${Authentication__Firebase__Issuer}
+      Authentication__Firebase__Audience: ${Authentication__Firebase__Audience}
+      Authentication__Firebase__TokenUri: ${Authentication__Firebase__TokenUri}
+      AwsS3__Region: ${AwsS3__Region}
+      AwsS3__BucketName: ${AwsS3__BucketName}
+      AwsS3__AwsKey: ${AwsS3__AwsKey}
+      AwsS3__AwsSecret: ${AwsS3__AwsSecret}
+      AwsS3__BucketUrl: ${AwsS3__BucketUrl}
+      AwsS3__CacheControl: ${AwsS3__CacheControl}
+      AwsS3__MaxFileSize: ${AwsS3__MaxFileSize}
+      PostCategorizer__BaseUrl: ${PostCategorizer__BaseUrl}
+      Ollama__Endpoint: ${Ollama__Endpoint}
+      Ollama__ModelId: ${Ollama__ModelId}
+      Groq__Apikey: ${Groq__Apikey}
+      Groq__Model: ${Groq__Model}
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - expert-bridge
+      - shared
+    depends_on:
+      - ExpertBridgeRedis
+      - aspire-dashboard
 
   Seq:
     container_name: "seq"
@@ -115,45 +201,44 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     networks:
-      - expert-bridge 
+      - expert-bridge
       - shared
     ports:
-    - target: 80
-      published: 4002
-    - target: 5341
-      published: 5341
+      - target: 80
+        published: 4002
+      - target: 5341
+        published: 5341
     restart: unless-stopped
 
 volumes:
-  expertbridge-redis-data: 
+  expertbridge-redis-data:
     name: "expertbridge-redis-data"
     driver: local
     driver_opts:
       type: none
-      device: /root/deployments/expert-bridge/redis-data
+      device: ./redis-data
       o: bind
   expertbridge-seq-data:
     name: "expertbridge-seq-data"
     driver: local
     driver_opts:
       type: none
-      device: /root/deployments/expert-bridge/seq-data
+      device: ./seq-data
       o: bind
   expertbridge-api-logs:
     name: "expertbridge-api-logs"
     driver: local
     driver_opts:
       type: none
-      device: /root/deployments/expert-bridge/api-logs
+      device: ./api-logs
       o: bind
   expertbridge-admin-logs:
     name: "expertbridge-admin-logs"
     driver: local
     driver_opts:
       type: none
-      device: /root/deployments/expert-bridge/admin-logs
+      device: ./admin-logs
       o: bind
-            
 
 networks:
   expert-bridge:

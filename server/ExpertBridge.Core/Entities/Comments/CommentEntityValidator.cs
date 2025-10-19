@@ -5,28 +5,38 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Comments;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Comment"/> entity.
+/// </summary>
 public class CommentEntityValidator : AbstractValidator<Comment>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CommentEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public CommentEntityValidator()
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
             .NotEmpty().WithMessage("Id is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.AuthorId)
             .NotNull().WithMessage("AuthorId is required")
             .NotEmpty().WithMessage("AuthorId is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"AuthorId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"AuthorId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.PostId)
             .NotEmpty().WithMessage("PostId cannot be empty")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"PostId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"PostId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Content)
             .NotNull().WithMessage("Content is required")
             .NotEmpty().WithMessage("Content is required")
-            .MaximumLength(CommentEntityConstraints.MaxContentLength).WithMessage("Content must be less than 1000 characters");
+            .MaximumLength(CommentEntityConstraints.MaxContentLength)
+            .WithMessage("Content must be less than 1000 characters");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required")
@@ -36,7 +46,8 @@ public class CommentEntityValidator : AbstractValidator<Comment>
             .When(x => x.LastModified.HasValue);
 
         RuleFor(x => x.LastModified)
-            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("LastModified must be less than or equal to the current date")
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("LastModified must be less than or equal to the current date")
             .When(x => x.LastModified.HasValue)
             .GreaterThan(x => x.CreatedAt).WithMessage("LastModified must be greater than or equal to CreatedAt")
             .When(x => x.CreatedAt != DateTime.MaxValue);

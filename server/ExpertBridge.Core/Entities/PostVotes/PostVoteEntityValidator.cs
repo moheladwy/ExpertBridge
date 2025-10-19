@@ -5,14 +5,21 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.PostVotes;
 
+/// <summary>
+/// Provides validation rules for the <see cref="PostVote"/> entity.
+/// </summary>
 public class PostVoteEntityValidator : AbstractValidator<PostVote>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PostVoteEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public PostVoteEntityValidator()
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
             .NotEmpty().WithMessage("Id is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required")
@@ -26,11 +33,13 @@ public class PostVoteEntityValidator : AbstractValidator<PostVote>
         RuleFor(x => x.ProfileId)
             .NotNull().WithMessage("ProfileId is required")
             .NotEmpty().WithMessage("ProfileId is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"ProfileId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"ProfileId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.PostId)
             .NotNull().WithMessage("PostId is required")
             .NotEmpty().WithMessage("PostId is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"PostId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"PostId must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
     }
 }

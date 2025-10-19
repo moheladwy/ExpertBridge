@@ -6,10 +6,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.Media.ChatMedia;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="ChatMedia"/> entity.
+/// </summary>
 public class ChatMediaEntityConfiguration : IEntityTypeConfiguration<ChatMedia>
 {
-    public void Configure(EntityTypeBuilder<ChatMedia> builder)
-    {
-        builder.ConfigureAbstractMedia();
-    }
+    /// <summary>
+    /// Configures the entity mapping using shared media object configuration.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
+    public void Configure(EntityTypeBuilder<ChatMedia> builder) => builder.ConfigureAbstractMedia();
 }

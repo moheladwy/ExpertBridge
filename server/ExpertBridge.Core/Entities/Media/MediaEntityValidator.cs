@@ -5,19 +5,27 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Media;
 
+/// <summary>
+/// Provides validation rules for the <see cref="MediaObject"/> entity.
+/// </summary>
 public class MediaEntityValidator : AbstractValidator<MediaObject>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MediaEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public MediaEntityValidator()
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
             .NotEmpty().WithMessage("Id is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name is required")
             .NotEmpty().WithMessage("Name is required")
-            .MaximumLength(MediaEntityConstraints.MaxNameLength).WithMessage($"Name must be less than {MediaEntityConstraints.MaxNameLength} characters");
+            .MaximumLength(MediaEntityConstraints.MaxNameLength)
+            .WithMessage($"Name must be less than {MediaEntityConstraints.MaxNameLength} characters");
 
         RuleFor(x => x.Type)
             .NotNull().WithMessage("Media Type is required");

@@ -5,23 +5,32 @@ using FluentValidation;
 
 namespace ExpertBridge.Core.Entities.Tags;
 
+/// <summary>
+/// Provides validation rules for the <see cref="Tag"/> entity.
+/// </summary>
 public class TagEntityValidator : AbstractValidator<Tag>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TagEntityValidator"/> class and defines validation rules.
+    /// </summary>
     public TagEntityValidator()
     {
         RuleFor(x => x.Id)
             .NotNull().WithMessage("Id is required")
             .NotEmpty().WithMessage("Id is required")
-            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength).WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Id must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.EnglishName)
             .NotNull().WithMessage("EnglishName is required")
             .NotEmpty().WithMessage("EnglishName is required")
-            .MaximumLength(TagEntityConstraints.MaxNameLength).WithMessage($"Name must be less than {TagEntityConstraints.MaxNameLength} characters");
+            .MaximumLength(TagEntityConstraints.MaxNameLength)
+            .WithMessage($"Name must be less than {TagEntityConstraints.MaxNameLength} characters");
 
         RuleFor(x => x.Description)
             .NotNull().WithMessage("Description is required")
             .NotEmpty().WithMessage("Description is required")
-            .MaximumLength(TagEntityConstraints.MaxDescriptionLength).WithMessage($"Description must be less than {TagEntityConstraints.MaxDescriptionLength} characters");
+            .MaximumLength(TagEntityConstraints.MaxDescriptionLength)
+            .WithMessage($"Description must be less than {TagEntityConstraints.MaxDescriptionLength} characters");
     }
 }

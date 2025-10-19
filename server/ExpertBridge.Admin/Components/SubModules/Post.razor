@@ -4,7 +4,8 @@
     @if (PostResponse != null)
     {
         <RadzenStack Gap="1rem">
-            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Start" Gap="1rem">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                         AlignItems="AlignItems.Start" Gap="1rem">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="0.75rem">
                     @if (!string.IsNullOrEmpty(PostResponse.Author?.ProfilePictureUrl))
                     {
@@ -13,13 +14,13 @@
                         @*              Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" /> *@
                         <RadzenImage Path="images/default-profile.jpg"
                                      alt="@($"{PostResponse.Author?.FirstName}'s profile")"
-                                     Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+                                     Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;"/>
                     }
                     else
                     {
                         <RadzenImage Path="images/default-profile.jpg"
                                      alt="@($"{PostResponse.Author?.FirstName}'s profile")"
-                                     Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+                                     Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;"/>
                     }
                     <RadzenStack Gap="0.25rem">
                         @if (PostResponse.Author != null)
@@ -52,7 +53,7 @@
                 </RadzenStack>
                 <RadzenBadge BadgeStyle="BadgeStyle.Light"
                              Text="@(PostResponse.CreatedAt?.ToString("MMM dd, yyyy • h:mm tt") ?? "Unknown date")"
-                             Shade="Shade.Lighter" />
+                             Shade="Shade.Lighter"/>
             </RadzenStack>
 
             <RadzenStack Gap="0.5rem">
@@ -74,7 +75,7 @@
                             {
                                 <RadzenImage Path="@media.Url"
                                              alt="@media.Name"
-                                             Style="border-radius: 8px; width: 100%; height: auto; object-fit: cover;" />
+                                             Style="border-radius: 8px; width: 100%; height: auto; object-fit: cover;"/>
                             }
                             else if (media.Type.StartsWith("video"))
                             {
@@ -85,9 +86,10 @@
                             else
                             {
                                 <RadzenCard Style="padding: 0.75rem;">
-                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                                        <RadzenIcon Icon="description" />
-                                        <RadzenLink Path="@media.Url" Target="_blank" Text="@media.Name" />
+                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                                 Gap="0.5rem">
+                                        <RadzenIcon Icon="description"/>
+                                        <RadzenLink Path="@media.Url" Target="_blank" Text="@media.Name"/>
                                     </RadzenStack>
                                 </RadzenCard>
                             }
@@ -100,13 +102,13 @@
                          Style="padding-top: 0.75rem; border-top: 1px solid var(--rz-border-color);">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
                              Style="@(PostResponse.IsUpvoted ? "color: var(--rz-primary);" : "color: var(--rz-text-disabled-color);")">
-                    <RadzenIcon Icon="@(PostResponse.IsUpvoted ? "arrow_upward" : "keyboard_arrow_up")" />
+                    <RadzenIcon Icon="@(PostResponse.IsUpvoted ? "arrow_upward" : "keyboard_arrow_up")"/>
                     <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Upvotes upvotes</RadzenText>
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
                              Style="@(PostResponse.IsDownvoted ? "color: var(--rz-danger);" : "color: var(--rz-text-disabled-color);")">
-                    <RadzenIcon Icon="@(PostResponse.IsDownvoted ? "arrow_downward" : "keyboard_arrow_down")" />
+                    <RadzenIcon Icon="@(PostResponse.IsDownvoted ? "arrow_downward" : "keyboard_arrow_down")"/>
                     <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Downvotes downvotes</RadzenText>
                 </RadzenStack>
 
@@ -115,7 +117,7 @@
                               Style="padding: 0.25rem 0.5rem; min-width: auto;">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
                                  class="rz-color-secondary">
-                        <RadzenIcon Icon="@(_showComments ? "chat_bubble" : "chat_bubble_outline")" />
+                        <RadzenIcon Icon="@(_showComments ? "chat_bubble" : "chat_bubble_outline")"/>
                         <RadzenText TextStyle="TextStyle.Body2">@PostResponse.Comments comments</RadzenText>
                     </RadzenStack>
                 </RadzenButton>
@@ -123,7 +125,8 @@
 
             @if (_showComments)
             {
-                <RadzenStack Gap="1rem" Style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--rz-border-color);">
+                <RadzenStack Gap="1rem"
+                             Style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--rz-border-color);">
                     <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-font-weight-medium">
                         Comments (@PostResponse.Comments)
                     </RadzenText>
@@ -131,14 +134,17 @@
                     @if (_loadingComments)
                     {
                         <RadzenStack AlignItems="AlignItems.Center" Gap="0.5rem" Style="padding: 2rem 0;">
-                            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Medium" />
-                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">Loading comments...</RadzenText>
+                            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                                       Size="ProgressBarCircularSize.Medium"/>
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">Loading comments...
+                            </RadzenText>
                         </RadzenStack>
                     }
                     else if (_comments == null || !_comments.Any())
                     {
                         <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
-                            <RadzenText TextStyle="TextStyle.Body2">No comments yet. Be the first to comment!</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body2">No comments yet. Be the first to comment!
+                            </RadzenText>
                         </RadzenAlert>
                     }
                     else
@@ -146,7 +152,7 @@
                         <RadzenStack Gap="1rem">
                             @foreach (var comment in _comments)
                             {
-                                <Comment CommentResponse="comment" />
+                                <Comment CommentResponse="comment"/>
                             }
                         </RadzenStack>
                     }
@@ -160,19 +166,25 @@
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="0.75rem">
                 <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
                                            Size="ProgressBarCircularSize.Small"
-                                           Style="width: 60px; height: 60px;" />
+                                           Style="width: 60px; height: 60px;"/>
                 <RadzenStack Gap="0.5rem" Style="flex: 1;">
-                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 16px; width: 25%;" />
-                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 12px; width: 16.67%; margin-top: 0.5rem;" />
+                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                       Style="height: 16px; width: 25%;"/>
+                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                       Style="height: 12px; width: 16.67%; margin-top: 0.5rem;"/>
                 </RadzenStack>
             </RadzenStack>
-            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 24px; width: 75%;" />
-            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 80px;" />
-            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 160px;" />
+            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                               Style="height: 24px; width: 75%;"/>
+            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 80px;"/>
+            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 160px;"/>
             <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem">
-                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 20px; width: 64px;" />
-                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 20px; width: 64px;" />
-                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 20px; width: 64px;" />
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                   Style="height: 20px; width: 64px;"/>
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                   Style="height: 20px; width: 64px;"/>
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                   Style="height: 20px; width: 64px;"/>
             </RadzenStack>
         </RadzenStack>
     }

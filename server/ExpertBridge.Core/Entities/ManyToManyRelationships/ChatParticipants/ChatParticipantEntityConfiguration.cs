@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 
+/// <summary>
+/// Configures the Entity Framework Core mapping for the <see cref="ChatParticipant"/> entity.
+/// </summary>
 public class ChatParticipantEntityConfiguration : IEntityTypeConfiguration<ChatParticipant>
 {
+    /// <summary>
+    /// Configures the entity mapping, composite key, and relationships for chat participants.
+    /// </summary>
+    /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<ChatParticipant> builder)
     {
         builder.HasKey(x => new { x.ChatId, x.ProfileId });
@@ -22,5 +29,4 @@ public class ChatParticipantEntityConfiguration : IEntityTypeConfiguration<ChatP
             .HasForeignKey<ChatParticipant>(cp => cp.ProfileId)
             .IsRequired();
     }
-
 }

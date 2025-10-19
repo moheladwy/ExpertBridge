@@ -9,69 +9,62 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Admin.Components.SubModules;
 
 /// <summary>
-/// ProfileCard component displays user/profile information in a card format
-/// with profile picture, bio, skills, and interests.
+///     ProfileCard component displays user/profile information in a card format
+///     with profile picture, bio, skills, and interests.
 /// </summary>
 public partial class ProfileCard : ComponentBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
-    private List<string>? _userInterests;
-    private bool _showLoadingInterests;
+
+    public ProfileCard(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
 
     /// <summary>
-    /// The profile data to be displayed in the component.
+    ///     The profile data to be displayed in the component.
     /// </summary>
     [Parameter]
     public ProfileResponse? ProfileData { get; set; }
 
     /// <summary>
-    /// Whether to automatically load user interests when the component initializes.
+    ///     Whether to automatically load user interests when the component initializes.
     /// </summary>
     [Parameter]
     public bool LoadInterests { get; set; } = true;
 
     /// <summary>
-    /// The list of user interests (tags) to display. If not provided and LoadInterests is true,
-    /// they will be loaded from the database.
+    ///     The list of user interests (tags) to display. If not provided and LoadInterests is true,
+    ///     they will be loaded from the database.
     /// </summary>
     [Parameter]
-    public List<string>? UserInterests
-    {
-        get => _userInterests;
-        set => _userInterests = value;
-    }
+    public List<string>? UserInterests { get; set; }
 
     /// <summary>
-    /// Whether to show a loading indicator for interests.
+    ///     Whether to show a loading indicator for interests.
     /// </summary>
-    public bool ShowLoadingInterests => _showLoadingInterests;
-
-    public ProfileCard(ExpertBridgeDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    public bool ShowLoadingInterests { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (ProfileData != null && LoadInterests && _userInterests == null)
+        if (ProfileData != null && LoadInterests && UserInterests == null)
         {
             await LoadUserInterestsAsync();
         }
+
         await base.OnInitializedAsync();
     }
 
     protected override async Task OnParametersSetAsync()
     {
         // Reload interests if profile data changed and LoadInterests is enabled
-        if (ProfileData != null && LoadInterests && _userInterests == null)
+        if (ProfileData != null && LoadInterests && UserInterests == null)
         {
             await LoadUserInterestsAsync();
         }
+
         await base.OnParametersSetAsync();
     }
 
     /// <summary>
-    /// Loads user interests (tags) from the database for the current profile.
+    ///     Loads user interests (tags) from the database for the current profile.
     /// </summary>
     private async Task LoadUserInterestsAsync()
     {
@@ -82,10 +75,10 @@ public partial class ProfileCard : ComponentBase
 
         try
         {
-            _showLoadingInterests = true;
+            ShowLoadingInterests = true;
             StateHasChanged();
 
-            _userInterests = await _dbContext.UserInterests
+            UserInterests = await _dbContext.UserInterests
                 .AsNoTracking()
                 .Where(ui => ui.ProfileId == ProfileData.Id)
                 .Include(ui => ui.Tag)
@@ -95,21 +88,21 @@ public partial class ProfileCard : ComponentBase
         catch (Exception)
         {
             // Silently fail - just don't show interests
-            _userInterests = [];
+            UserInterests = [];
         }
         finally
         {
-            _showLoadingInterests = false;
+            ShowLoadingInterests = false;
             StateHasChanged();
         }
     }
 
     /// <summary>
-    /// Manually refresh user interests from the database.
+    ///     Manually refresh user interests from the database.
     /// </summary>
     public async Task RefreshInterestsAsync()
     {
-        _userInterests = null;
+        UserInterests = null;
         await LoadUserInterestsAsync();
     }
 }

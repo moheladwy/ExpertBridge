@@ -5,7 +5,8 @@
 <RadzenStack Gap="1.5rem">
     <RadzenRow>
         <RadzenColumn Size="12">
-            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                         AlignItems="AlignItems.Center">
                 <RadzenStack Gap="0.5rem">
                     <RadzenText TextStyle="TextStyle.H3" class="rz-font-weight-bold">
                         Users & Profiles Dashboard
@@ -15,7 +16,7 @@
                     </RadzenText>
                 </RadzenStack>
                 <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Large"
-                              Click="@RefreshData" Disabled="@_loading" title="Refresh Data" />
+                              Click="@RefreshData" Disabled="@_loading" title="Refresh Data"/>
             </RadzenStack>
         </RadzenColumn>
     </RadzenRow>
@@ -23,7 +24,8 @@
     @if (_loading)
     {
         <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 4rem 0;">
-            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                       Size="ProgressBarCircularSize.Large"/>
             <RadzenText TextStyle="TextStyle.Body1" class="rz-color-secondary">Loading dashboard data...</RadzenText>
         </RadzenStack>
     }
@@ -34,9 +36,10 @@
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenCard Style="height: 100%;">
                     <RadzenStack Gap="0.5rem">
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                     JustifyContent="JustifyContent.SpaceBetween">
                             <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">USERS</RadzenText>
-                            <RadzenIcon Icon="people" Style="color: var(--rz-primary);" />
+                            <RadzenIcon Icon="people" Style="color: var(--rz-primary);"/>
                         </RadzenStack>
                         <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.TotalUsers</RadzenText>
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
@@ -49,11 +52,13 @@
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenCard Style="height: 100%;">
                     <RadzenStack Gap="0.5rem">
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                     JustifyContent="JustifyContent.SpaceBetween">
                             <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">PROFILES</RadzenText>
-                            <RadzenIcon Icon="badge" Style="color: var(--rz-info);" />
+                            <RadzenIcon Icon="badge" Style="color: var(--rz-info);"/>
                         </RadzenStack>
-                        <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.TotalProfiles</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H4"
+                                    class="rz-font-weight-bold">@_stats.TotalProfiles</RadzenText>
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
                             @_stats.ActiveProfiles active • @_stats.DeletedProfiles deleted
                         </RadzenText>
@@ -70,15 +75,18 @@
                         <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">User Distribution</RadzenText>
                         <RadzenStack Style="width: 100%; max-width: 400px;">
                             <RadzenChart>
-                                <RadzenDonutSeries Data="@_userChartData" CategoryProperty="Category" ValueProperty="Value"
-                                                 Fills="@(new[] { "var(--rz-success)", "var(--rz-danger)" })">
+                                <RadzenDonutSeries Data="@_userChartData" CategoryProperty="Category"
+                                                   ValueProperty="Value"
+                                                   Fills="@(new[] { "var(--rz-success)", "var(--rz-danger)" })">
                                     <ChildContent>
-                                        <RadzenSeriesDataLabels Visible="@_showDataLabels" />
+                                        <RadzenSeriesDataLabels Visible="@_showDataLabels"/>
                                     </ChildContent>
                                     <TitleTemplate>
                                         <div class="rz-donut-content">
                                             <div style="font-size: 2rem; font-weight: bold;">@_stats.TotalUsers</div>
-                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">Total Users</div>
+                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">
+                                                Total Users
+                                            </div>
                                         </div>
                                     </TitleTemplate>
                                 </RadzenDonutSeries>
@@ -91,18 +99,22 @@
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenCard Style="height: 450px;">
                     <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="height: 100%;">
-                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Profile Distribution</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Profile Distribution
+                        </RadzenText>
                         <RadzenStack Style="width: 100%; max-width: 400px;">
                             <RadzenChart>
-                                <RadzenDonutSeries Data="@_profileChartData" CategoryProperty="Category" ValueProperty="Value"
-                                                 Fills="@(new[] { "var(--rz-info)", "var(--rz-danger)" })">
+                                <RadzenDonutSeries Data="@_profileChartData" CategoryProperty="Category"
+                                                   ValueProperty="Value"
+                                                   Fills="@(new[] { "var(--rz-info)", "var(--rz-danger)" })">
                                     <ChildContent>
-                                        <RadzenSeriesDataLabels Visible="@_showDataLabels" />
+                                        <RadzenSeriesDataLabels Visible="@_showDataLabels"/>
                                     </ChildContent>
                                     <TitleTemplate>
                                         <div class="rz-donut-content">
                                             <div style="font-size: 2rem; font-weight: bold;">@_stats.TotalProfiles</div>
-                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">Total Profiles</div>
+                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">
+                                                Total Profiles
+                                            </div>
                                         </div>
                                     </TitleTemplate>
                                 </RadzenDonutSeries>
@@ -118,16 +130,19 @@
             <RadzenColumn Size="12">
                 <RadzenCard>
                     <RadzenStack Gap="1rem">
-                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Users & Profiles Overview</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Users & Profiles Overview
+                        </RadzenText>
                         <RadzenChart Style="height: 400px;">
-                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category" ValueProperty="Active" Title="Active" Fill="var(--rz-success)" />
-                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category" ValueProperty="Deleted" Title="Deleted" Fill="var(--rz-danger)" />
-                            <RadzenCategoryAxis Padding="20" />
+                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category"
+                                                ValueProperty="Active" Title="Active" Fill="var(--rz-success)"/>
+                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category"
+                                                ValueProperty="Deleted" Title="Deleted" Fill="var(--rz-danger)"/>
+                            <RadzenCategoryAxis Padding="20"/>
                             <RadzenValueAxis>
-                                <RadzenGridLines Visible="true" />
+                                <RadzenGridLines Visible="true"/>
                             </RadzenValueAxis>
-                            <RadzenColumnOptions Radius="5" />
-                            <RadzenLegend Position="LegendPosition.Top" />
+                            <RadzenColumnOptions Radius="5"/>
+                            <RadzenLegend Position="LegendPosition.Top"/>
                         </RadzenChart>
                     </RadzenStack>
                 </RadzenCard>

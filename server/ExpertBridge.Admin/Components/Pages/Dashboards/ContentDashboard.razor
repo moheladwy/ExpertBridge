@@ -5,7 +5,8 @@
 <RadzenStack Gap="1.5rem">
     <RadzenRow>
         <RadzenColumn Size="12">
-            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                         AlignItems="AlignItems.Center">
                 <RadzenStack Gap="0.5rem">
                     <RadzenText TextStyle="TextStyle.H3" class="rz-font-weight-bold">
                         Content Dashboard
@@ -15,7 +16,7 @@
                     </RadzenText>
                 </RadzenStack>
                 <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Large"
-                              Click="@RefreshData" Disabled="@_loading" title="Refresh Data" />
+                              Click="@RefreshData" Disabled="@_loading" title="Refresh Data"/>
             </RadzenStack>
         </RadzenColumn>
     </RadzenRow>
@@ -23,7 +24,8 @@
     @if (_loading)
     {
         <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="padding: 4rem 0;">
-            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                       Size="ProgressBarCircularSize.Large"/>
             <RadzenText TextStyle="TextStyle.Body1" class="rz-color-secondary">Loading content data...</RadzenText>
         </RadzenStack>
     }
@@ -34,9 +36,10 @@
             <RadzenColumn Size="12" SizeMD="4">
                 <RadzenCard Style="height: 100%;">
                     <RadzenStack Gap="0.5rem">
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                     JustifyContent="JustifyContent.SpaceBetween">
                             <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">POSTS</RadzenText>
-                            <RadzenIcon Icon="article" Style="color: var(--rz-success);" />
+                            <RadzenIcon Icon="article" Style="color: var(--rz-success);"/>
                         </RadzenStack>
                         <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.TotalPosts</RadzenText>
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
@@ -49,11 +52,13 @@
             <RadzenColumn Size="12" SizeMD="4">
                 <RadzenCard Style="height: 100%;">
                     <RadzenStack Gap="0.5rem">
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                     JustifyContent="JustifyContent.SpaceBetween">
                             <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">COMMENTS</RadzenText>
-                            <RadzenIcon Icon="chat_bubble" Style="color: var(--rz-info);" />
+                            <RadzenIcon Icon="chat_bubble" Style="color: var(--rz-info);"/>
                         </RadzenStack>
-                        <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.TotalComments</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H4"
+                                    class="rz-font-weight-bold">@_stats.TotalComments</RadzenText>
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
                             @_stats.ActiveComments active • @_stats.DeletedComments deleted
                         </RadzenText>
@@ -64,11 +69,14 @@
             <RadzenColumn Size="12" SizeMD="4">
                 <RadzenCard Style="height: 100%;">
                     <RadzenStack Gap="0.5rem">
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
-                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">JOB POSTINGS</RadzenText>
-                            <RadzenIcon Icon="work" Style="color: var(--rz-warning);" />
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                     JustifyContent="JustifyContent.SpaceBetween">
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">JOB POSTINGS
+                            </RadzenText>
+                            <RadzenIcon Icon="work" Style="color: var(--rz-warning);"/>
                         </RadzenStack>
-                        <RadzenText TextStyle="TextStyle.H4" class="rz-font-weight-bold">@_stats.TotalJobPostings</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H4"
+                                    class="rz-font-weight-bold">@_stats.TotalJobPostings</RadzenText>
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
                             @_stats.ActiveJobPostings active • @_stats.DeletedJobPostings deleted
                         </RadzenText>
@@ -85,15 +93,18 @@
                         <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Post Distribution</RadzenText>
                         <RadzenStack Style="width: 100%; max-width: 400px;">
                             <RadzenChart>
-                                <RadzenDonutSeries Data="@_postChartData" CategoryProperty="Category" ValueProperty="Value"
-                                                 Fills="@(new[] { "var(--rz-success)", "var(--rz-danger)" })">
+                                <RadzenDonutSeries Data="@_postChartData" CategoryProperty="Category"
+                                                   ValueProperty="Value"
+                                                   Fills="@(new[] { "var(--rz-success)", "var(--rz-danger)" })">
                                     <ChildContent>
-                                        <RadzenSeriesDataLabels Visible="@_showDataLabels" />
+                                        <RadzenSeriesDataLabels Visible="@_showDataLabels"/>
                                     </ChildContent>
                                     <TitleTemplate>
                                         <div class="rz-donut-content">
                                             <div style="font-size: 2rem; font-weight: bold;">@_stats.TotalPosts</div>
-                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">Total Posts</div>
+                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">
+                                                Total Posts
+                                            </div>
                                         </div>
                                     </TitleTemplate>
                                 </RadzenDonutSeries>
@@ -106,18 +117,22 @@
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenCard Style="height: 450px;">
                     <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="height: 100%;">
-                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Comment Distribution</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Comment Distribution
+                        </RadzenText>
                         <RadzenStack Style="width: 100%; max-width: 400px;">
                             <RadzenChart>
-                                <RadzenDonutSeries Data="@_commentChartData" CategoryProperty="Category" ValueProperty="Value"
-                                                 Fills="@(new[] { "var(--rz-info)", "var(--rz-danger)" })">
+                                <RadzenDonutSeries Data="@_commentChartData" CategoryProperty="Category"
+                                                   ValueProperty="Value"
+                                                   Fills="@(new[] { "var(--rz-info)", "var(--rz-danger)" })">
                                     <ChildContent>
-                                        <RadzenSeriesDataLabels Visible="@_showDataLabels" />
+                                        <RadzenSeriesDataLabels Visible="@_showDataLabels"/>
                                     </ChildContent>
                                     <TitleTemplate>
                                         <div class="rz-donut-content">
                                             <div style="font-size: 2rem; font-weight: bold;">@_stats.TotalComments</div>
-                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">Total Comments</div>
+                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">
+                                                Total Comments
+                                            </div>
                                         </div>
                                     </TitleTemplate>
                                 </RadzenDonutSeries>
@@ -133,18 +148,23 @@
             <RadzenColumn Size="12" SizeMD="6">
                 <RadzenCard Style="height: 450px;">
                     <RadzenStack AlignItems="AlignItems.Center" Gap="1rem" Style="height: 100%;">
-                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Job Posting Distribution</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Job Posting Distribution
+                        </RadzenText>
                         <RadzenStack Style="width: 100%; max-width: 400px;">
                             <RadzenChart>
-                                <RadzenDonutSeries Data="@_jobPostingChartData" CategoryProperty="Category" ValueProperty="Value"
-                                                 Fills="@(new[] { "var(--rz-warning)", "var(--rz-danger)" })">
+                                <RadzenDonutSeries Data="@_jobPostingChartData" CategoryProperty="Category"
+                                                   ValueProperty="Value"
+                                                   Fills="@(new[] { "var(--rz-warning)", "var(--rz-danger)" })">
                                     <ChildContent>
-                                        <RadzenSeriesDataLabels Visible="@_showDataLabels" />
+                                        <RadzenSeriesDataLabels Visible="@_showDataLabels"/>
                                     </ChildContent>
                                     <TitleTemplate>
                                         <div class="rz-donut-content">
-                                            <div style="font-size: 2rem; font-weight: bold;">@_stats.TotalJobPostings</div>
-                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">Total Job Postings</div>
+                                            <div
+                                                style="font-size: 2rem; font-weight: bold;">@_stats.TotalJobPostings</div>
+                                            <div style="font-size: 0.875rem; color: var(--rz-text-secondary-color);">
+                                                Total Job Postings
+                                            </div>
                                         </div>
                                     </TitleTemplate>
                                 </RadzenDonutSeries>
@@ -161,54 +181,83 @@
                             Content Statistics Summary
                         </RadzenText>
                         <RadzenStack Gap="1rem" Style="padding: 1rem;">
-                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                                    <RadzenIcon Icon="article" Style="color: var(--rz-success);" />
+                            <RadzenStack Orientation="Orientation.Horizontal"
+                                         JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem"
+                                             AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="article" Style="color: var(--rz-success);"/>
                                     <RadzenText TextStyle="TextStyle.Body1">Posts</RadzenText>
                                 </RadzenStack>
-                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@_stats.ActivePosts.ToString()" Shade="Shade.Lighter" />
-                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">active</RadzenText>
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem"
+                                             AlignItems="AlignItems.Center">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@_stats.ActivePosts.ToString()"
+                                                 Shade="Shade.Lighter"/>
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">active
+                                    </RadzenText>
                                 </RadzenStack>
                             </RadzenStack>
 
-                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                                    <RadzenIcon Icon="chat_bubble" Style="color: var(--rz-info);" />
+                            <RadzenStack Orientation="Orientation.Horizontal"
+                                         JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem"
+                                             AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="chat_bubble" Style="color: var(--rz-info);"/>
                                     <RadzenText TextStyle="TextStyle.Body1">Comments</RadzenText>
                                 </RadzenStack>
-                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@_stats.ActiveComments.ToString()" Shade="Shade.Lighter" />
-                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">active</RadzenText>
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem"
+                                             AlignItems="AlignItems.Center">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@_stats.ActiveComments.ToString()"
+                                                 Shade="Shade.Lighter"/>
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">active
+                                    </RadzenText>
                                 </RadzenStack>
                             </RadzenStack>
 
-                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                                    <RadzenIcon Icon="work" Style="color: var(--rz-warning);" />
+                            <RadzenStack Orientation="Orientation.Horizontal"
+                                         JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem"
+                                             AlignItems="AlignItems.Center">
+                                    <RadzenIcon Icon="work" Style="color: var(--rz-warning);"/>
                                     <RadzenText TextStyle="TextStyle.Body1">Job Postings</RadzenText>
                                 </RadzenStack>
-                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-                                    <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@_stats.ActiveJobPostings.ToString()" Shade="Shade.Lighter" />
-                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">active</RadzenText>
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem"
+                                             AlignItems="AlignItems.Center">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Warning"
+                                                 Text="@_stats.ActiveJobPostings.ToString()" Shade="Shade.Lighter"/>
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">active
+                                    </RadzenText>
                                 </RadzenStack>
                             </RadzenStack>
 
                             <div style="border-top: 1px solid var(--rz-border-color); margin: 0.5rem 0;"></div>
 
-                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-                                <RadzenText TextStyle="TextStyle.Body1" class="rz-font-weight-bold">Avg Comments per Post</RadzenText>
-                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@(_stats.ActivePosts > 0 ? (_stats.ActiveComments / (double)_stats.ActivePosts).ToString("F2") : "0")" />
+                            <RadzenStack Orientation="Orientation.Horizontal"
+                                         JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenText TextStyle="TextStyle.Body1" class="rz-font-weight-bold">Avg Comments per
+                                    Post
+                                </RadzenText>
+                                <RadzenBadge BadgeStyle="BadgeStyle.Light"
+                                             Text="@(_stats.ActivePosts > 0 ? (_stats.ActiveComments / (double)_stats.ActivePosts).ToString("F2") : "0")"/>
                             </RadzenStack>
 
-                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-                                <RadzenText TextStyle="TextStyle.Body1" class="rz-font-weight-bold">Total Content Items</RadzenText>
-                                <RadzenBadge BadgeStyle="BadgeStyle.Primary" Text="@((_stats.TotalPosts + _stats.TotalComments + _stats.TotalJobPostings).ToString())" Shade="Shade.Lighter" />
+                            <RadzenStack Orientation="Orientation.Horizontal"
+                                         JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenText TextStyle="TextStyle.Body1" class="rz-font-weight-bold">Total Content
+                                    Items
+                                </RadzenText>
+                                <RadzenBadge BadgeStyle="BadgeStyle.Primary"
+                                             Text="@((_stats.TotalPosts + _stats.TotalComments + _stats.TotalJobPostings).ToString())"
+                                             Shade="Shade.Lighter"/>
                             </RadzenStack>
 
-                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
-                                <RadzenText TextStyle="TextStyle.Body1" class="rz-font-weight-bold">Total Active Content</RadzenText>
-                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@((_stats.ActivePosts + _stats.ActiveComments + _stats.ActiveJobPostings).ToString())" Shade="Shade.Lighter" />
+                            <RadzenStack Orientation="Orientation.Horizontal"
+                                         JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center">
+                                <RadzenText TextStyle="TextStyle.Body1" class="rz-font-weight-bold">Total Active
+                                    Content
+                                </RadzenText>
+                                <RadzenBadge BadgeStyle="BadgeStyle.Success"
+                                             Text="@((_stats.ActivePosts + _stats.ActiveComments + _stats.ActiveJobPostings).ToString())"
+                                             Shade="Shade.Lighter"/>
                             </RadzenStack>
                         </RadzenStack>
                     </RadzenStack>
@@ -221,16 +270,20 @@
             <RadzenColumn Size="12">
                 <RadzenCard>
                     <RadzenStack Gap="1rem">
-                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Content Overview - Active vs Deleted</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" class="rz-font-weight-bold">Content Overview - Active vs
+                            Deleted
+                        </RadzenText>
                         <RadzenChart Style="height: 400px;">
-                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category" ValueProperty="Active" Title="Active" Fill="var(--rz-success)" />
-                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category" ValueProperty="Deleted" Title="Deleted" Fill="var(--rz-danger)" />
-                            <RadzenCategoryAxis Padding="20" />
+                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category"
+                                                ValueProperty="Active" Title="Active" Fill="var(--rz-success)"/>
+                            <RadzenColumnSeries Data="@_overviewChartData" CategoryProperty="Category"
+                                                ValueProperty="Deleted" Title="Deleted" Fill="var(--rz-danger)"/>
+                            <RadzenCategoryAxis Padding="20"/>
                             <RadzenValueAxis>
-                                <RadzenGridLines Visible="true" />
+                                <RadzenGridLines Visible="true"/>
                             </RadzenValueAxis>
-                            <RadzenColumnOptions Radius="5" />
-                            <RadzenLegend Position="LegendPosition.Top" />
+                            <RadzenColumnOptions Radius="5"/>
+                            <RadzenLegend Position="LegendPosition.Top"/>
                         </RadzenChart>
                     </RadzenStack>
                 </RadzenCard>

@@ -8,28 +8,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Api.Controllers
+namespace ExpertBridge.Api.Controllers;
+
+[Route("api/[controller]")]
+[Authorize]
+[ApiController]
+public class TagsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [Authorize]
-    [ApiController]
-    public class TagsController : ControllerBase
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    public TagsController(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
+
+    [HttpGet]
+    public async Task<List<TagResponse>> GetAll()
     {
-        private readonly ExpertBridgeDbContext _dbContext;
+        var tags = await _dbContext.Tags
+            .SelectTagResponseFromTag()
+            .ToListAsync();
 
-        public TagsController(ExpertBridgeDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        [HttpGet]
-        public async Task<List<TagResponse>> GetAll()
-        {
-            var tags = await _dbContext.Tags
-                .SelectTagResponseFromTag()
-                .ToListAsync();
-
-            return tags;
-        }
+        return tags;
     }
 }

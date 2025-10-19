@@ -2,40 +2,111 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Responses;
+using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
-using Polly;
 using Polly.Registry;
+using ResiliencePipeline = Polly.ResiliencePipeline;
 
 namespace ExpertBridge.Application.Services;
 
 /// <summary>
-///     Service responsible for categorizing posts by analyzing their content, title, and existing tags.
-///     Utilizes a GroqLlmProvider to process and generate categorization results.
+/// AI-powered service for automatically generating relevant tags for posts by analyzing content using Groq LLM.
+/// Supports both English and Arabic posts with bilingual tag generation.
 /// </summary>
+/// <remarks>
+/// This service leverages Groq's large language model to perform intelligent content analysis and tag extraction.
+/// It's a critical component of the platform's content discovery and categorization system.
+/// 
+/// **Key Features:**
+/// - Automatic tag generation from post title and content
+/// - Bilingual support (English and Egyptian Arabic)
+/// - Language detection (Arabic, English, Mixed, Other)
+/// - Tag translation and normalization
+/// - Existing tag enhancement and validation
+/// - Structured JSON output with retry resilience
+/// 
+/// **Use Cases:**
+/// - New post creation: Generate initial tags from content
+/// - Post editing: Enhance existing tags with AI suggestions
+/// - Content moderation: Validate tag relevance
+/// - Search optimization: Improve discoverability through quality tags
+/// 
+/// **Groq Integration:**
+/// Uses Groq API (llama3-70b or mixtral model) for:
+/// 1. Content understanding and semantic analysis
+/// 2. Language detection with high accuracy
+/// 3. Relevant tag extraction (3-6 tags per post)
+/// 4. Bilingual tag generation (English + Arabic)
+/// 5. Category classification (Technology, Business, etc.)
+/// 
+/// **Tag Quality Rules:**
+/// - Minimum 3 tags, maximum 6 tags per post
+/// - Tags must be lowercase
+/// - No special characters or numbers
+/// - Space-separated multi-word tags allowed
+/// - Tags must be relevant to post content only
+/// - No duplicate or near-duplicate tags
+/// 
+/// **Resilience:**
+/// Implements Polly resilience pipeline for handling:
+/// - Malformed JSON responses from LLM
+/// - Transient API failures
+/// - Rate limiting
+/// - Automatic retry with exponential backoff
+/// 
+/// Results are returned as PostCategorizerResponse containing detected language and categorized tags.
+/// </remarks>
 public sealed class GroqPostTaggingService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
-    ///     API for generating text-based categorizations in the context of post-analysis.
+    /// The Groq LLM text provider for generating AI-powered text analysis and tag extraction.
     /// </summary>
+    /// <remarks>
+    /// Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
+    /// with parameters optimized for structured output generation.
+    /// </remarks>
     private readonly GroqLlmTextProvider _groqLlmTextProvider;
 
     /// <summary>
-    ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
-    ///     case-insensitive manner,
-    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
+    /// JSON serialization options configured for robust parsing of LLM responses.
     /// </summary>
+    /// <remarks>
+    /// Configured with:
+    /// - PropertyNameCaseInsensitive: Handle inconsistent casing from LLM
+    /// - AllowOutOfOrderMetadataProperties: Parse flexible JSON structures
+    /// - AllowTrailingCommas: Tolerate JSON formatting issues
+    /// 
+    /// These settings improve resilience against minor formatting variations in LLM output.
+    /// </remarks>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
+    /// <summary>
+    /// Polly resilience pipeline for handling transient failures and malformed responses.
+    /// </summary>
+    /// <remarks>
+    /// Uses the MalformedJsonModelResponse pipeline which includes:
+    /// - Retry policy for intermittent failures
+    /// - Circuit breaker for persistent issues
+    /// - Timeout policy for long-running requests
+    /// 
+    /// This ensures reliable tag generation even when LLM responses are occasionally malformed.
+    /// </remarks>
     private readonly ResiliencePipeline _resiliencePipeline;
 
     /// <summary>
-    ///     Service responsible for categorizing posts by analyzing their title, content, and existing tags.
-    ///     Relies on a GroqLlmTextProvider instance for interacting with a language model to generate
-    ///     categorization results.
+    /// Initializes a new instance of the <see cref="GroqPostTaggingService"/> class with Groq LLM provider and resilience configuration.
     /// </summary>
+    /// <param name="groqLlmTextProvider">
+    /// The Groq LLM provider for text generation and analysis.
+    /// </param>
+    /// <param name="resilience">
+    /// The resilience pipeline provider for fault tolerance configuration.
+    /// </param>
+    /// <remarks>
+    /// Configures JSON deserialization options for lenient parsing of LLM responses.
+    /// Retrieves the MalformedJsonModelResponse pipeline for handling structured output issues.
+    /// </remarks>
     public GroqPostTaggingService(
         GroqLlmTextProvider groqLlmTextProvider,
         ResiliencePipelineProvider<string> resilience)
@@ -46,26 +117,87 @@ public sealed class GroqPostTaggingService
         {
             PropertyNameCaseInsensitive = true,
             AllowOutOfOrderMetadataProperties = true,
-            AllowTrailingCommas = true,
+            AllowTrailingCommas = true
         };
     }
 
     /// <summary>
-    ///     Asynchronously categorizes a post by analyzing its title, content, and existing tags.
-    ///     Uses the GroqLlmTextProvider to generate categorization results and processes the
-    ///     response to return a PostCategorizerResponse object, which contains language information
-    ///     and categorized tags.
+    /// Generates relevant tags for a post by analyzing its title, content, and existing tags using Groq LLM.
     /// </summary>
-    /// <param name="title">The title of the post to be categorized. Must not be null or empty.</param>
-    /// <param name="content">The content of the post to be categorized. Must not be null or empty.</param>
-    /// <param name="existingTags">A collection of tags associated with the post. Must not be null.</param>
-    /// <returns>A <see cref="PostCategorizerResponse" /> object containing the language and categorized tags of the post.</returns>
-    /// <exception cref="ArgumentException">Thrown if the title or content is null or empty.</exception>
-    /// <exception cref="ArgumentNullException">Thrown if the existingTags collection is null.</exception>
-    /// <exception cref="InvalidOperationException">
-    ///     Thrown if the deserialization of the categorizer response fails or returns a null result.
+    /// <param name="title">The post title to analyze for tag generation. Must not be null or empty.</param>
+    /// <param name="content">The post content/body to analyze for tag extraction. Must not be null or empty.</param>
+    /// <param name="existingTags">
+    /// Collection of existing tags associated with the post. If provided, the LLM will translate them and generate additional unique tags.
+    /// If empty, the LLM will generate tags from scratch. Must not be null.
+    /// </param>
+    /// <returns>
+    /// A <see cref="PostCategorizerResponse"/> containing:
+    /// - Language: Detected language (Arabic, English, Mixed, Other)
+    /// - Tags: List of generated/translated tags with bilingual names and descriptions
+    /// Returns null if the LLM fails to generate valid output after all retry attempts.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when title or content is null or empty.
     /// </exception>
-    /// <exception cref="JsonException">Thrown if an error occurs while parsing the categorizer response.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when existingTags is null.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the LLM response cannot be deserialized into the expected format.
+    /// This typically indicates a severe issue with the Groq API or model configuration.
+    /// </exception>
+    /// <exception cref="JsonException">
+    /// Thrown when JSON parsing fails after all retry attempts.
+    /// The resilience pipeline should handle most transient JSON issues.
+    /// </exception>
+    /// <remarks>
+    /// **Processing Flow:**
+    /// 1. Validates input parameters (title, content, existingTags)
+    /// 2. Constructs system prompt with tagging rules and guidelines
+    /// 3. Constructs user prompt with post content and instructions
+    /// 4. Sends prompts to Groq LLM via resilience pipeline
+    /// 5. Deserializes JSON response into PostCategorizerResponse
+    /// 6. Returns structured tag data
+    /// 
+    /// **System Prompt Instructions:**
+    /// The LLM is instructed to:
+    /// - Detect post language (Arabic/English/Mixed/Other)
+    /// - Generate 3-6 relevant tags
+    /// - Provide bilingual tag names (English + Egyptian Arabic)
+    /// - Include tag descriptions
+    /// - Translate existing tags without changing meaning
+    /// - Generate additional unique tags beyond existing ones
+    /// - Output in strict JSON format matching PostCategorizationOutputFormat.json schema
+    /// 
+    /// **User Prompt Format:**
+    /// Includes:
+    /// - Post title
+    /// - Post content
+    /// - Existing tags (if any)
+    /// - Output format schema (Pydantic/JSON schema)
+    /// 
+    /// **Example Usage:**
+    /// <code>
+    /// var tags = await groqPostTaggingService.GeneratePostTagsAsync(
+    ///     "How to optimize React performance",
+    ///     "I'm looking for best practices to improve React app performance...",
+    ///     new[] { "react", "javascript" }
+    /// );
+    /// 
+    /// // Result might include:
+    /// // Language: English
+    /// // Tags: ["react", "javascript", "performance optimization", "web development", "frontend"]
+    /// </code>
+    /// 
+    /// **Performance Considerations:**
+    /// - LLM calls are relatively slow (2-5 seconds typical)
+    /// - Should be called asynchronously in background workers
+    /// - Results should be cached to avoid redundant API calls
+    /// - Rate limiting may apply based on Groq API tier
+    /// 
+    /// The resilience pipeline ensures reliable operation even when the LLM occasionally
+    /// returns malformed JSON or experiences transient failures.
+    /// </remarks>
     public async Task<PostCategorizerResponse?> GeneratePostTagsAsync(
         string title,
         string content,
@@ -76,7 +208,7 @@ public sealed class GroqPostTaggingService
         ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
         try
         {
-            PostCategorizerResponse result = null;
+            PostCategorizerResponse? result = null;
 
             // Use the resilience pipeline to handle transient errors and retries
             await _resiliencePipeline.ExecuteAsync(async ct =>
@@ -85,8 +217,8 @@ public sealed class GroqPostTaggingService
                 var userPrompt = GetUserPrompt(title, content, existingTags);
                 var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
                 result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
-                             ?? throw new InvalidOperationException(
-                                 "Failed to deserialize the categorizer response: null result");
+                         ?? throw new InvalidOperationException(
+                             "Failed to deserialize the categorizer response: null result");
 
                 return ValueTask.CompletedTask;
             });
@@ -106,79 +238,86 @@ public sealed class GroqPostTaggingService
     /// <returns>
     ///     A string containing the JSON schema definition for the expected output format.
     /// </returns>
-    private static string GetOutputFormatSchema() => File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
+    private static string GetOutputFormatSchema() =>
+        File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
 
     /// <summary>
-    ///     Generates a predefined system prompt used to instruct the text categorization AI on how to process
-    ///     and categorize posts. The prompt includes detailed guidelines for handling posts in English and
-    ///     Arabic, ensuring proper language detection, tag translation, and generation of structured output.
+    ///     Generates the master system prompt that defines the AI’s core behavior for text categorization tasks.
+    ///     This prompt instructs the AI on language detection, tag translation, tag generation, and output formatting.
+    ///     It enforces schema compliance, linguistic consistency, and structured output rules for bilingual (English–Egyptian Arabic) posts.
     /// </summary>
     /// <returns>
-    ///     A string containing the formatted system prompt with specific instructions for the categorization process.
+    ///     A string containing the complete system prompt with all instructions and output schema definition.
     /// </returns>
     private static string GetSystemPrompt()
     {
         List<string> systemPrompt =
         [
-            "You are an advanced text categorization AI specializing in both English and Egyptian Arabic posts.",
-            "Your task is to analyze a given post, detect its language (Arabic, English, Mixed, or Other), and categorize it with relevant tags.",
-            "For each tag, you must provide both English and Egyptian Arabic names, along with a description.",
-            "If the post already has tags, you must translate them and generate additional unique tags.",
-            "If the post has tags, translate them without changing their meaning or the existing provided tags.",
-            "If the post has no tags, generate new tags from scratch.",
-            "Provide a structured output with at least three and at most six tags.",
-            "You have to extract JSON details from text according to the Pydantic scheme.",
-            "Do not generate any introductory or concluding text.",
-            "Tags Names should be in English and Egyptian Arabic regardless of the post's language.",
-            "Tags should be in lowercase, and separated by space ' '.",
-            "Tags should be relevant to the post problem only.",
-            "Tags should be unique and not repetitive.",
-            "Tags should not contain numbers, or special characters.",
-            "Tags should not contain the language name."
+            "You are an advanced text categorization AI specialized in analyzing posts written in English, Egyptian Arabic, or both.",
+            "Your role is to detect the language of a post, extract or generate appropriate tags, and output the results as structured JSON following the defined schema.",
+
+            "### Core Responsibilities:",
+            "1. Detect the post’s language and classify it as one of: English, Arabic, Mixed, or Other.",
+            "2. Extract existing tags if provided and translate them without altering their meaning.",
+            "3. If no tags exist, generate new relevant tags based on the content.",
+            "4. Each tag must include:",
+            "   - 'english': the English tag name (lowercase, words separated by spaces)",
+            "   - 'egyptian_arabic': the Egyptian Arabic translation (Arabic script, lowercase)",
+            "   - 'description': a concise English explanation of the tag meaning or context.",
+
+            "### Tag Generation Rules:",
+            "5. Always generate between three (3) and six (6) tags in total.",
+            "6. Tags must be relevant to the post’s core topic or problem only.",
+            "7. Tags must be unique, non-repetitive, and semantically distinct.",
+            "8. Tags must not contain numbers, punctuation, or special characters.",
+            "9. Tags must not include language names such as 'english', 'arabic', etc.",
+            "10. Tag names must be entirely lowercase, separated by a single space.",
+
+            "### Output Format and Validation:",
+            "11. The response must strictly conform to the following JSON schema:",
+            "```json",
+            GetOutputFormatSchema(),
+            "```",
+            "12. Do not include any markdown formatting, code fences, explanations, or commentary.",
+            "13. Return only the raw JSON structure as the final output.",
+            "14. Ensure the JSON is syntactically valid and matches all required field names.",
+            "15. The output must represent the detected language and a list of tags as defined above.",
+
+            "### Summary:",
+            "You must always return a structured, well-formatted JSON object with the detected language and 3–6 bilingual tags, each containing an English name, Egyptian Arabic translation, and English description."
         ];
+
         return string.Join("\n", systemPrompt);
     }
 
     /// <summary>
-    ///     Generates a formatted prompt for the categorization task by including the post's title, content,
-    ///     existing tags, and specific instructions for processing. Combines these elements into a structured
-    ///     string to be used as input for the language model.
+    ///     Generates the user prompt that supplies the AI with the specific post details for categorization.
+    ///     This includes the title, content, and any existing tags, which the model will use according to
+    ///     the system prompt instructions.
     /// </summary>
-    /// <param name="title">The title of the post to be categorized.</param>
-    /// <param name="content">The content of the post to be categorized.</param>
-    /// <param name="existingTags">A collection of existing tags associated with the post.</param>
-    /// <returns>A string representing the user prompt, formatted with detailed instructions and relevant data.</returns>
+    /// <param name="title">The title of the post.</param>
+    /// <param name="content">The content or body text of the post.</param>
+    /// <param name="existingTags">The list of existing tags, if any.</param>
+    /// <returns>
+    ///     A formatted string representing the input post data for the categorization task.
+    /// </returns>
     private static string GetUserPrompt(string title, string content, IReadOnlyCollection<string> existingTags)
     {
         List<string> userPrompt =
         [
-            "Categorize the following post based on its content and language.",
-            "1. First, detect whether the post is in English, Arabic, Mixed, or Other.",
-            "2. If the post has existing tags, translate them and generate additional unique tags.",
-            "3. If the post has no tags, generate new tags from scratch.",
-            "4. For each tag, provide both English and Egyptian Arabic names, along with a description.",
-            "5. Tags should be in lowercase, and separated by space ' '.",
-            "6. Tags should not contain numbers, or special characters.",
-            "7. Tags should be unique and not repetitive.",
             "### Post Title:",
-            "```",
             title,
-            "```",
+            "",
             "### Post Content:",
-            "```",
             content,
-            "```",
+            "",
             "### Existing Tags:",
-            "```",
-            existingTags.Count == 0 ? "[]" : $"[{string.Join(", ", existingTags.ToList())}]",
-            "```",
-            "## Pydantic Details:",
-            "```json",
-            GetOutputFormatSchema(),
-            "```",
-            "Return only the raw JSON without any markdown code block formatting."
+            existingTags.Count == 0
+                ? "[]"
+                : $"[{string.Join(", ", existingTags)}]"
         ];
 
         return string.Join("\n", userPrompt);
     }
+
 }

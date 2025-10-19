@@ -8,8 +8,9 @@
 
         @* Search Bar *@
         <RadzenCard>
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-mb-4">
-                <RadzenIcon Icon="search" />
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem"
+                         class="rz-mb-4">
+                <RadzenIcon Icon="search"/>
                 <RadzenTextBox
                     @bind-Value="@searchText"
                     Change="@(args => OnSearchChanged(args))"
@@ -25,7 +26,7 @@
                         Size="ButtonSize.Small"
                         title="Clear search"
                     />
-                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"{filteredCount} results")" />
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"{filteredCount} results")"/>
                 }
             </RadzenStack>
         </RadzenCard>
@@ -34,7 +35,7 @@
         {
             <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
-                    <RadzenIcon Icon="info" />
+                    <RadzenIcon Icon="info"/>
                     <RadzenText>No comments found matching "<strong>@searchText</strong>"</RadzenText>
                 </RadzenStack>
             </RadzenAlert>
@@ -49,26 +50,28 @@
                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
                         @if (comment.Author != null)
                         {
-                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="@($"Author: {comment.Author.Username}")" />
+                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary"
+                                         Text="@($"Author: {comment.Author.Username}")"/>
                             @if (!string.IsNullOrWhiteSpace(comment.Author.FirstName) || !string.IsNullOrWhiteSpace(comment.Author.LastName))
                             {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text="@($"{comment.Author.FirstName} {comment.Author.LastName}")" />
+                                <RadzenBadge BadgeStyle="BadgeStyle.Light"
+                                             Text="@($"{comment.Author.FirstName} {comment.Author.LastName}")"/>
                             }
                         }
 
                         @if (!string.IsNullOrWhiteSpace(comment.PostId))
                         {
-                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"Post: {comment.PostId}")" />
+                            <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"Post: {comment.PostId}")"/>
                         }
 
                         @if (!string.IsNullOrWhiteSpace(comment.JobPostingId))
                         {
-                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Job: {comment.JobPostingId}")" />
+                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Job: {comment.JobPostingId}")"/>
                         }
 
                         @if (comment.Replies != null && comment.Replies.Any())
                         {
-                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@($"{comment.Replies.Count} replies")" />
+                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@($"{comment.Replies.Count} replies")"/>
                         }
                     </RadzenStack>
 
@@ -76,7 +79,8 @@
                         <RadzenText TextStyle="TextStyle.Caption">Created: @comment.CreatedAt.ToString("g")</RadzenText>
                         @if (comment.LastModified.HasValue)
                         {
-                            <RadzenText TextStyle="TextStyle.Caption">Modified: @comment.LastModified.Value.ToString("g")</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Caption">
+                                Modified: @comment.LastModified.Value.ToString("g")</RadzenText>
                         }
                     </RadzenStack>
 

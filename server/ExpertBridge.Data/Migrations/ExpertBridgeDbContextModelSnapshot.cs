@@ -18,7 +18,7 @@ namespace ExpertBridge.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "vector");
@@ -178,6 +178,9 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsProcessed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSafeContent")
                         .HasColumnType("boolean");
 
                     b.Property<string>("JobPostingId")
@@ -380,6 +383,9 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsProcessed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSafeContent")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsTagged")
@@ -1241,6 +1247,9 @@ namespace ExpertBridge.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsProcessed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSafeContent")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsTagged")

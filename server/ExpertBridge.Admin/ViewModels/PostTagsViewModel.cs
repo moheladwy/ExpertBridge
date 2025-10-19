@@ -1,5 +1,3 @@
-using System;
-
 namespace ExpertBridge.Admin.ViewModels;
 
 public class PostTagsViewModel
@@ -15,14 +13,27 @@ public class PostTagsViewModel
     public bool IsUsedInUserInterests => UserInterestCount > 0;
     public bool IsUsedInJobPostings => JobPostingCount > 0;
     public bool IsUsedAnywhere => IsUsedInPosts || IsUsedInUserInterests || IsUsedInJobPostings;
+
     public string UsageLocations
     {
         get
         {
             var locations = new List<string>();
-            if (IsUsedInPosts) locations.Add("Posts");
-            if (IsUsedInUserInterests) locations.Add("User Interests");
-            if (IsUsedInJobPostings) locations.Add("Job Postings");
+            if (IsUsedInPosts)
+            {
+                locations.Add("Posts");
+            }
+
+            if (IsUsedInUserInterests)
+            {
+                locations.Add("User Interests");
+            }
+
+            if (IsUsedInJobPostings)
+            {
+                locations.Add("Job Postings");
+            }
+
             return locations.Any() ? string.Join(", ", locations) : "Not Used";
         }
     }

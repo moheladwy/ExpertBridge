@@ -5,9 +5,20 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExpertBridge.Core.Requests.Jobs;
 
+/// <summary>
+/// Represents a request to respond to a job offer.
+/// </summary>
+/// <remarks>
+/// Workers can accept or decline job offers extended to them by hirers.
+/// </remarks>
 public class RespondToJobOfferRequest
 {
+    /// <summary>
+    /// Gets or sets a value indicating whether the job offer is accepted.
+    /// </summary>
+    /// <remarks>
+    /// Set to true to accept the offer, false to decline.
+    /// </remarks>
     [Required]
     public bool Accept { get; set; }
-
 }
