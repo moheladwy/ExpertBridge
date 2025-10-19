@@ -31,7 +31,7 @@ internal sealed class PostsModerationPeriodicWorkerSetup : IConfigureOptions<Qua
     /// <summary>
     ///     The time interval, in hours, for triggering the Content Moderation periodic worker job.
     /// </summary>
-    private const int TriggerJobIntervalInHours = 24;
+    private const int TriggerJobIntervalInHours = 1;
 
     public void Configure(QuartzOptions options) =>
         options
@@ -46,15 +46,12 @@ internal sealed class PostsModerationPeriodicWorkerSetup : IConfigureOptions<Qua
             .AddTrigger(triggerBuilder =>
             {
                 // Configures the trigger for the job with a simple schedule
-                // to run every 24 hours indefinitely.
+                // to run every 1 hour indefinitely.
                 triggerBuilder.ForJob(JobName, Group);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>
                 {
-                    // scheduleBuilder
-                    //     .WithIntervalInHours(TriggerJobIntervalInHours)
-                    //     .RepeatForever();
                     scheduleBuilder
-                        .WithIntervalInMinutes(1)
+                        .WithIntervalInHours(TriggerJobIntervalInHours)
                         .RepeatForever();
                 });
                 triggerBuilder.WithIdentity(TriggerName, Group);

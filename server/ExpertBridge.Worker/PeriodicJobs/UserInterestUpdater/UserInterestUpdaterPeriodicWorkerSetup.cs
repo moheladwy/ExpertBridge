@@ -31,7 +31,7 @@ internal sealed class UserInterestUpdaterPeriodicWorkerSetup : IConfigureOptions
     /// <summary>
     ///     The time interval, in hours, for triggering.
     /// </summary>
-    private const int TriggerJobIntervalInHours = 24;
+    private const int TriggerJobIntervalInHours = 6;
 
     public void Configure(QuartzOptions options) =>
         options

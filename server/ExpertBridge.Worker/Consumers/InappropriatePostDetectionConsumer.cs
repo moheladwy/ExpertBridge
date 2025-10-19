@@ -16,19 +16,6 @@ using Microsoft.Extensions.Options;
 
 namespace ExpertBridge.Worker.Consumers;
 
-/// <summary>
-///     Consumer that handles <see cref="DetectInappropriatePostMessage" /> messages and runs automated
-///     inappropriate language detection on posts (or job postings) using
-///     <see cref="GroqInappropriateLanguageDetectionService" />.
-/// </summary>
-/// <remarks>
-///     This consumer:
-///     - Calls the detection service to analyse the combined title and content of a post.
-///     - Creates a <see cref="ModerationReport" /> based on detection thresholds.
-///     - Removes the offending content when thresholds are exceeded and notifies interested parties via
-///     <see cref="NotificationFacade" />.
-///     - Persists moderation reports to the <see cref="ExpertBridgeDbContext" />.
-/// </remarks>
 public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappropriatePostMessage>
 {
     /// <summary>
@@ -57,6 +44,14 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     private readonly InappropriateLanguageThresholds _thresholds;
 
     /// <summary>
+    /// The endpoint for publishing messages to the message broker.
+    /// </summary>
+    /// <remarks>
+    /// This is used to publish notification events after inappropriate content detection processing.
+    /// </remarks>
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="InappropriatePostDetectionConsumer" /> class.
     /// </summary>
     /// <param name="logger">The logger instance to log consumer actions and decisions.</param>
@@ -66,6 +61,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     ///     Snapshot of <see cref="InappropriateLanguageThresholds" /> used to decide when to mark content
     ///     as inappropriate.
     /// </param>
+    /// <param name="publishEndpoint">The MassTransit publish endpoint for sending messages.</param>
     /// <param name="notifications">The notification facade used to send deletion/notification messages.</param>
     /// <exception cref="ArgumentNullException">
     ///     Thrown by DI container or callers if any required dependency is missing
@@ -76,13 +72,15 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
         GroqInappropriateLanguageDetectionService detectionService,
         ExpertBridgeDbContext dbContext,
         IOptionsSnapshot<InappropriateLanguageThresholds> thresholds,
-        NotificationFacade notifications)
+        NotificationFacade notifications,
+        IPublishEndpoint publishEndpoint)
     {
         _logger = logger;
         _detectionService = detectionService;
         _dbContext = dbContext;
         _notifications = notifications;
         _thresholds = thresholds.Value;
+        _publishEndpoint = publishEndpoint;
     }
 
     /// <summary>
@@ -198,6 +196,29 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
 
             await _notifications.NotifyPostDeletedAsync(existingPost, report);
             _logger.LogInformation("Notification sent for deleted PostId={PostId}", post.PostId);
+        }
+        else
+        {
+            _logger.LogDebug("Publishing EmbedPostMessage for PostId: {PostId}", post.PostId);
+            await _publishEndpoint.Publish(
+                new TagPostMessage
+                {
+                    PostId = post.PostId,
+                    AuthorId = post.AuthorId,
+                    Content = post.Content,
+                    Title = post.Title,
+                    IsJobPosting = post.IsJobPosting
+                }, context.CancellationToken);
+
+            _logger.LogDebug("Publishing EmbedPostMessage for PostId: {PostId}", post.PostId);
+            await _publishEndpoint.Publish(
+                new EmbedPostMessage
+                {
+                    PostId = post.PostId,
+                    Content = post.Content,
+                    Title = post.Title,
+                    IsJobPosting = post.IsJobPosting
+                }, context.CancellationToken);
         }
 
         await _dbContext.SaveChangesAsync(context.CancellationToken);

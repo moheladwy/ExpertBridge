@@ -11,17 +11,17 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
     /// <summary>
     ///     The group name for the Quartz job and trigger.
     /// </summary>
-    private const string Group = "scheduler";
+    private const string Group = "periodic";
 
     /// <summary>
     ///     The name of the Quartz job for the Content Moderation periodic worker.
     /// </summary>
-    private const string JobName = nameof(JobPostsModerationPeriodicWorker);
+    private const string JobName = $"{nameof(JobPostsModerationPeriodicWorker)}.Job";
 
     /// <summary>
     ///     The name of the Quartz trigger for the Content Moderation periodic worker.
     /// </summary>
-    private const string TriggerName = $"{JobName}.trigger";
+    private const string TriggerName = $"{nameof(JobPostsModerationPeriodicWorker)}.trigger";
 
     /// <summary>
     ///     The description of the Quartz job for the Content Moderation periodic worker.
@@ -31,7 +31,7 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
     /// <summary>
     ///     The time interval, in hours, for triggering the Content Moderation periodic worker job.
     /// </summary>
-    private const int TriggerJobIntervalInHours = 24;
+    private const int TriggerJobIntervalInHours = 1;
 
     public void Configure(QuartzOptions options) =>
         options
@@ -46,8 +46,8 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
             .AddTrigger(triggerBuilder =>
             {
                 // Configures the trigger for the job with a simple schedule
-                // to run every 24 hours indefinitely.
-                triggerBuilder.ForJob(JobName);
+                // to run every 1 hour indefinitely.
+                triggerBuilder.ForJob(JobName, Group);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>
                 {
                     scheduleBuilder

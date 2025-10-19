@@ -31,7 +31,7 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
     /// <summary>
     ///     The time interval, in hours, for triggering the Content Moderation periodic worker job.
     /// </summary>
-    private const int TriggerJobIntervalInHours = 24;
+    private const int TriggerJobIntervalInHours = 36;
 
     public void Configure(QuartzOptions options) =>
         options
@@ -46,7 +46,7 @@ internal sealed class NotificationsCleaningPeriodicWorkerSetup : IConfigureOptio
             .AddTrigger(triggerBuilder =>
             {
                 // Configures the trigger for the job with a simple schedule
-                // to run every 24 hours indefinitely.
+                // to run every 36 hours indefinitely.
                 triggerBuilder.ForJob(JobName, Group);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>
                 {

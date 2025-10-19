@@ -37,27 +37,6 @@ public sealed class PostProcessingPipelineConsumer : IConsumer<PostProcessingPip
                     AuthorId = post.AuthorId
                 }, context.CancellationToken);
 
-            _logger.LogDebug("Publishing TagPostMessage for PostId: {PostId}", post.PostId);
-            await _publishEndpoint.Publish(
-                new TagPostMessage
-                {
-                    PostId = post.PostId,
-                    AuthorId = post.AuthorId,
-                    Content = post.Content,
-                    Title = post.Title,
-                    IsJobPosting = post.IsJobPosting
-                }, context.CancellationToken);
-
-            _logger.LogDebug("Publishing EmbedPostMessage for PostId: {PostId}", post.PostId);
-            await _publishEndpoint.Publish(
-                new EmbedPostMessage
-                {
-                    PostId = post.PostId,
-                    Content = post.Content,
-                    Title = post.Title,
-                    IsJobPosting = post.IsJobPosting
-                }, context.CancellationToken);
-
             _logger.LogDebug("Finished processing PostId: {PostId}", post.PostId);
         }
         catch (Exception e)
