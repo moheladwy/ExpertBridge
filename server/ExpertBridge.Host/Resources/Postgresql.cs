@@ -44,7 +44,7 @@ internal static class Postgresql
                         .WithExternalHttpEndpoints();
                 })
                 .WithOtlpExporter()
-            ;
+                .WithExternalHttpEndpoints();
 
         return postgresql;
     }

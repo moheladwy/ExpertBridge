@@ -15,7 +15,7 @@ internal static class Redis
             .WithPersistence(TimeSpan.FromMinutes(5))
             .WithLifetime(ContainerLifetime.Persistent)
             .WithOtlpExporter()
-            .PublishAsConnectionString();
+            .WithExternalHttpEndpoints();
 
         return redis;
     }

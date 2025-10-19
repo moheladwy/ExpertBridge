@@ -7,39 +7,56 @@
   "containerBuilder": "docker",
   "outputFormat": "compose",
   "privateRegistryEmail": "aspir8@aka.ms",
-  "includeDashboard": true,
+  "includeDashboard": false,
   "secrets": {
-    "salt": "jGzL6HdKOcWWTggG",
-    "hash": "aym/gvP92Mw7/JOwG7tQGoU42xX22Rkv1JBU2vTxSTg=",
+    "salt": "wzYkFKWzdp2iDrkK",
+    "hash": "xccE1q\u002BckEFcHM2MPOlNTW\u002BHzwZHRpTOGJeiWTAe2rs=",
     "secrets": {
       "RabbitMq-Username": {
-        "value": "jGzL6HdKOcWWTggGFr8PQEPWDsCaZZPHKrkcbtF2PHX4"
+        "value": "wzYkFKWzdp2iDrkKZZe4eV32tFl7UuuB1ahxUDIpscxk"
       },
       "RabbitMq-Password": {
-        "value": "jGzL6HdKOcWWTggGFr8PQEPWDsCaZZPHKrkcbtF2PHX4"
+        "value": "wzYkFKWzdp2iDrkKZZe4eV32tFl7UuuB1ahxUDIpscxk"
       },
       "ollama": {
-        "value": "jGzL6HdKOcWWTggG/parWap/aDMxPHUGiFS38NlvNWfhsw=="
+        "value": "wzYkFKWzdp2iDrkKmgq3Fr7Glo4uEZXLzGR6qTowuN59MQ=="
       },
       "Redis": {
-        "value": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//"
+        "value": "wzYkFKWzdp2iDrkKZJwhsGAiBYTgfVhQOnW/Pyc5sNZj"
+      },
+      "Postgres-Username": {
+        "value": "wzYkFKWzdp2iDrkKNKPvAK7odYcGedPrvgvhtSczu8s="
+      },
+      "Postgres-Password": {
+        "value": "wzYkFKWzdp2iDrkKNKPvAK7odYcGedPrvgvhtSczu8s="
       },
       "rabbitmq": {},
       "ollama-snowflake-arctic-embed2": {},
       "Seq": {},
+      "Postgres": {
+        "POSTGRES_PASSWORD": "wzYkFKWzdp2iDrkKNKPvAK7odYcGedPrvgvhtSczu8s="
+      },
       "ExpertBridgeApi": {
-        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
-        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME="
+        "ConnectionStrings__Redis": "wzYkFKWzdp2iDrkK2CD/FGCuN2u48Qv/vQiLHgc5sNZjasB3j4eHxk/gZ8FuKiIFWQqS8DDSivjTxBHJu0lP5SSS56NdkA==",
+        "ConnectionStrings__Seq": "wzYkFKWzdp2iDrkKgeNDBnOQj5Gijyi1SpeTzz0ooM8qf9kX3c\u002BRjh4=",
+        "ConnectionStrings__Postgres": "wzYkFKWzdp2iDrkKlFL7NdDgAE1Eth1b5HCXIB0zp8stAJk3zNnZ012oRNlzLHsNWlbBij3shrvO6jHvymx6uTXdwIlFpyYdMu6LE9l51Q==",
+        "ConnectionStrings__rabbitmq": "wzYkFKWzdp2iDrkKQCxm9TVUOKvZicIpkbSR7zQxpc8qf9kjzdvYwhT0YdNyLAZKDweR2BzykvOVvWu4"
       },
       "ExpertBridgeAdmin": {
-        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
-        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME="
+        "ConnectionStrings__Redis": "wzYkFKWzdp2iDrkK2CD/FGCuN2u48Qv/vQiLHgc5sNZjasB3j4eHxk/gZ8FuKiIFWQqS8DDSivjTxBHJu0lP5SSS56NdkA==",
+        "ConnectionStrings__Seq": "wzYkFKWzdp2iDrkKgeNDBnOQj5Gijyi1SpeTzz0ooM8qf9kX3c\u002BRjh4=",
+        "ConnectionStrings__Postgres": "wzYkFKWzdp2iDrkKlFL7NdDgAE1Eth1b5HCXIB0zp8stAJk3zNnZ012oRNlzLHsNWlbBij3shrvO6jHvymx6uTXdwIlFpyYdMu6LE9l51Q==",
+        "ConnectionStrings__rabbitmq": "wzYkFKWzdp2iDrkKQCxm9TVUOKvZicIpkbSR7zQxpc8qf9kjzdvYwhT0YdNyLAZKDweR2BzykvOVvWu4"
       },
       "ExpertBridgeWorker": {
-        "ConnectionStrings__Redis": "jGzL6HdKOcWWTggGAvNMnsfozC4onwEy4GfggMRmPW//",
-        "ConnectionStrings__rabbitmq": "jGzL6HdKOcWWTggGbjSKvq2YSJmN7hEsByIuI9duKHa2/VxaBH3wfMsIiGAYvJiQTQBEIPqH12SeWOQs",
-        "ConnectionStrings__Seq": "jGzL6HdKOcWWTggGwgsldOWfUDzxYzR8IhWPSN53LXa2/VxuFGm5MME=",
-        "ConnectionStrings__ollama-snowflake-arctic-embed2": "jGzL6HdKOcWWTggGPamDGZr/cSPtAJwgYbjvpdlvNWfhs0hwHnzmZMwck2ocrrSDRwcLKPyJ0jfIQ7ZzA/pxNnzt6C8fGHA="
+        "ConnectionStrings__Redis": "wzYkFKWzdp2iDrkK2CD/FGCuN2u48Qv/vQiLHgc5sNZjasB3j4eHxk/gZ8FuKiIFWQqS8DDSivjTxBHJu0lP5SSS56NdkA==",
+        "ConnectionStrings__rabbitmq": "wzYkFKWzdp2iDrkKQCxm9TVUOKvZicIpkbSR7zQxpc8qf9kjzdvYwhT0YdNyLAZKDweR2BzykvOVvWu4",
+        "ConnectionStrings__Seq": "wzYkFKWzdp2iDrkKgeNDBnOQj5Gijyi1SpeTzz0ooM8qf9kX3c\u002BRjh4=",
+        "ConnectionStrings__ollama-snowflake-arctic-embed2": "wzYkFKWzdp2iDrkKbc4MHrMX2OV/fp/2mYoj5xAysM9/OZgwhdbfwl6pO5luNCpZAwTJgFmr0P2bxjPuknIopS\u002BJ545atToXbevEAsJ/ws84s4hJoka2R68tekl3",
+        "ConnectionStrings__Postgres": "wzYkFKWzdp2iDrkKlFL7NdDgAE1Eth1b5HCXIB0zp8stAJk3zNnZ012oRNlzLHsNWlbBij3shrvO6jHvymx6uTXdwIlFpyYdMu6LE9l51Q=="
+      },
+      "Redis-password": {
+        "value": "wzYkFKWzdp2iDrkK7ccDYEMsKLUDkJWufrrdSmIztf5IHZ91y/Hm9WLEToVkLDFzBSE="
       }
     }
   },

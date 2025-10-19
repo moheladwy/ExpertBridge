@@ -29,7 +29,7 @@ internal static class Ollama
             .WithLifetime(ContainerLifetime.Persistent)
             .WithGPUSupport()
             .WithOtlpExporter()
-            .PublishAsConnectionString()
+            .WithExternalHttpEndpoints()
             .AddModel("snowflake-arctic-embed2:latest");
 
         return ollama;

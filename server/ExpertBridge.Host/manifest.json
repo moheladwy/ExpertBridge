@@ -51,13 +51,23 @@
       }
     },
     "ollama": {
-      "type": "parameter.v0",
-      "connectionString": "{ollama.value}",
-      "value": "{ollama.inputs.value}",
-      "inputs": {
-        "value": {
-          "type": "string",
-          "secret": true
+      "type": "container.v0",
+      "connectionString": "Endpoint={ollama.bindings.http.scheme}://{ollama.bindings.http.host}:{ollama.bindings.http.port}",
+      "image": "docker.io/ollama/ollama:0.11.8",
+      "volumes": [
+        {
+          "name": "expertbridge-ollama-data",
+          "target": "/root/.ollama",
+          "readOnly": false
+        }
+      ],
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 11434,
+          "external": true
         }
       }
     },
@@ -66,13 +76,30 @@
       "connectionString": "{ollama.connectionString};Model=snowflake-arctic-embed2:latest"
     },
     "Redis": {
-      "type": "parameter.v0",
-      "connectionString": "{Redis.value}",
-      "value": "{Redis.inputs.value}",
-      "inputs": {
-        "value": {
-          "type": "string",
-          "secret": true
+      "type": "container.v0",
+      "connectionString": "{Redis.bindings.tcp.host}:{Redis.bindings.tcp.port},password={Redis-password.value}",
+      "image": "docker.io/redis:alpine",
+      "entrypoint": "/bin/sh",
+      "args": [
+        "-c",
+        "redis-server --requirepass $REDIS_PASSWORD --save 300 1"
+      ],
+      "volumes": [
+        {
+          "name": "expertbridge-redis-data",
+          "target": "/data",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "REDIS_PASSWORD": "{Redis-password.value}"
+      },
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "targetPort": 6379
         }
       }
     },
@@ -102,6 +129,50 @@
         }
       }
     },
+    "Postgres-Username": {
+      "type": "parameter.v0",
+      "value": "{Postgres-Username.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "Postgres-Password": {
+      "type": "parameter.v0",
+      "value": "{Postgres-Password.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "Postgres": {
+      "type": "container.v0",
+      "connectionString": "Host={Postgres.bindings.tcp.host};Port={Postgres.bindings.tcp.port};Username={Postgres-Username.value};Password={Postgres-Password.value}",
+      "image": "docker.io/pgvector/pgvector:pg17",
+      "volumes": [
+        {
+          "name": "expertbridge-postgres-data",
+          "target": "/var/lib/postgresql/data",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "POSTGRES_HOST_AUTH_METHOD": "scram-sha-256",
+        "POSTGRES_INITDB_ARGS": "--auth-host=scram-sha-256 --auth-local=scram-sha-256",
+        "POSTGRES_USER": "{Postgres-Username.value}",
+        "POSTGRES_PASSWORD": "{Postgres-Password.value}"
+      },
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "targetPort": 5432
+        }
+      }
+    },
     "ExpertBridgeApi": {
       "type": "project.v0",
       "path": "../ExpertBridge.Api/ExpertBridge.Api.csproj",
@@ -112,7 +183,9 @@
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
         "HTTP_PORTS": "{ExpertBridgeApi.bindings.http.targetPort}",
         "ConnectionStrings__Redis": "{Redis.connectionString}",
-        "ConnectionStrings__Seq": "{Seq.connectionString}"
+        "ConnectionStrings__Seq": "{Seq.connectionString}",
+        "ConnectionStrings__Postgres": "{Postgres.connectionString}",
+        "ConnectionStrings__rabbitmq": "{rabbitmq.connectionString}"
       },
       "bindings": {
         "http": {
@@ -139,7 +212,9 @@
         "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
         "HTTP_PORTS": "{ExpertBridgeAdmin.bindings.http.targetPort}",
         "ConnectionStrings__Redis": "{Redis.connectionString}",
-        "ConnectionStrings__Seq": "{Seq.connectionString}"
+        "ConnectionStrings__Seq": "{Seq.connectionString}",
+        "ConnectionStrings__Postgres": "{Postgres.connectionString}",
+        "ConnectionStrings__rabbitmq": "{rabbitmq.connectionString}"
       },
       "bindings": {
         "http": {
@@ -166,7 +241,24 @@
         "ConnectionStrings__Redis": "{Redis.connectionString}",
         "ConnectionStrings__rabbitmq": "{rabbitmq.connectionString}",
         "ConnectionStrings__Seq": "{Seq.connectionString}",
-        "ConnectionStrings__ollama-snowflake-arctic-embed2": "{ollama-snowflake-arctic-embed2.connectionString}"
+        "ConnectionStrings__ollama-snowflake-arctic-embed2": "{ollama-snowflake-arctic-embed2.connectionString}",
+        "ConnectionStrings__Postgres": "{Postgres.connectionString}"
+      }
+    },
+    "Redis-password": {
+      "type": "parameter.v0",
+      "value": "{Redis-password.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true,
+          "default": {
+            "generate": {
+              "minLength": 22,
+              "special": false
+            }
+          }
+        }
       }
     }
   }
