@@ -31,6 +31,7 @@ internal static class Postgresql
                 .WithPgAdmin(cfg =>
                 {
                     cfg
+                        .WithImage("dpage/pgadmin4", "latest")
                         .WithContainerName("expertbridge-pgadmin")
                         .WithHostPort(5050)
                         .WithLifetime(ContainerLifetime.Persistent)
