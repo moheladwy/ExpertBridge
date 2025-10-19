@@ -14,14 +14,14 @@ namespace ExpertBridge.Worker.Consumers;
 /// </summary>
 /// <remarks>
 ///     This consumer handles messages of type <see cref="TagPostMessage" />. It uses the
-///     <see cref="GroqPostTaggingService" /> to generate tags for the post based on its content and title.
+///     <see cref="AiPostTaggingService" /> to generate tags for the post based on its content and title.
 ///     The generated tags are then added to the post using the <see cref="TaggingService" />.
 ///     Errors that occur during processing are logged with the relevant details.
 /// </remarks>
 public sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
 {
     /// <summary>
-    ///     Instance of <see cref="GroqPostTaggingService" /> used for generating tags for posts based on their content and
+    ///     Instance of <see cref="AiPostTaggingService" /> used for generating tags for posts based on their content and
     ///     title.
     /// </summary>
     /// <remarks>
@@ -29,7 +29,7 @@ public sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
     ///     It processes text data to automatically generate relevant tags for posts using an underlying
     ///     GroqLlmProvider and ensures resilience through specified pipelines.
     /// </remarks>
-    private readonly GroqPostTaggingService _groqPostTaggingService;
+    private readonly AiPostTaggingService _aiPostTaggingService;
 
     /// <summary>
     ///     Logger instance for capturing and recording information, warnings, and errors
@@ -62,11 +62,11 @@ public sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
     /// </remarks>
     public PostTaggingConsumer(
         ILogger<PostTaggingConsumer> logger,
-        GroqPostTaggingService groqPostTaggingService,
+        AiPostTaggingService aiPostTaggingService,
         TaggingService taggingService)
     {
         _logger = logger;
-        _groqPostTaggingService = groqPostTaggingService;
+        _aiPostTaggingService = aiPostTaggingService;
         _taggingService = taggingService;
     }
 
@@ -75,7 +75,7 @@ public sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
         try
         {
             var post = context.Message;
-            var tags = await _groqPostTaggingService
+            var tags = await _aiPostTaggingService
                 .GeneratePostTagsAsync(post.Title, post.Content, new List<string>());
 
             if (tags is null)

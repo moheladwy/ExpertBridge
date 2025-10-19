@@ -49,9 +49,9 @@ public static class Extensions
     /// - MessagingService: Real-time chat and messaging functionality
     /// 
     /// **AI/LLM Services (Groq Integration):**
-    /// - GroqPostTaggingService: Automatic tag generation from post content using Groq LLM
-    /// - GroqTagProcessorService: Tag normalization and validation
-    /// - GroqInappropriateLanguageDetectionService: Content safety analysis using Groq LLM
+    /// - AiPostTaggingService: Automatic tag generation from post content using Groq LLM
+    /// - AiTagProcessorService: Tag normalization and validation
+    /// - NsfwContentDetectionService: Content safety analysis using Groq LLM
     /// 
     /// All services are registered with scoped lifetime for proper database context management and request isolation.
     /// 
@@ -77,9 +77,9 @@ public static class Extensions
             .AddScoped<ProfileService>()
             .AddScoped<JobService>()
             .AddScoped<MessagingService>()
-            .AddScoped<GroqPostTaggingService>()
-            .AddScoped<GroqTagProcessorService>()
-            .AddScoped<GroqInappropriateLanguageDetectionService>()
+            .AddScoped<AiPostTaggingService>()
+            .AddScoped<AiTagProcessorService>()
+            .AddScoped<NsfwContentDetectionService>()
             ;
 
         return services;

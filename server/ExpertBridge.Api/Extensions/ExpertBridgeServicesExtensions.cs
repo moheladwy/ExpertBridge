@@ -46,9 +46,9 @@ public static class ExpertBridgeServicesExtensions
         builder.AddEmbeddingServices();
         builder.AddGroqApiServices();
         builder.Services
-            .AddScoped<GroqPostTaggingService>()
-            .AddScoped<GroqTagProcessorService>()
-            .AddScoped<GroqInappropriateLanguageDetectionService>()
+            .AddScoped<AiPostTaggingService>()
+            .AddScoped<AiTagProcessorService>()
+            .AddScoped<NsfwContentDetectionService>()
             ;
 
         builder.Services.AddDomainServices();

@@ -8,7 +8,7 @@ namespace ExpertBridge.Application.DomainServices;
 /// </summary>
 /// <remarks>
 /// This service is currently a placeholder/stub for future implementation of content moderation features.
-/// 
+///
 /// **Planned Features:**
 /// - Automated inappropriate language detection reporting
 /// - Manual user-submitted content reports
@@ -16,35 +16,35 @@ namespace ExpertBridge.Application.DomainServices;
 /// - Email notifications to administrators for flagged content
 /// - Content flagging and review workflow
 /// - User reputation impact from moderation actions
-/// 
+///
 /// **Architecture Integration:**
 /// Content moderation works in conjunction with:
 /// - Background workers that analyze content asynchronously
 /// - Message broker (MassTransit/RabbitMQ) for queuing moderation tasks
-/// - AI services (GroqPostTaggingService) for detecting inappropriate language
+/// - AI services (AiPostTaggingService) for detecting inappropriate language
 /// - Notification system for alerting moderators and users
-/// 
+///
 /// **Future Implementation Approach:**
-/// 
+///
 /// **1. Automated Detection Flow:**
 /// - Post/Comment created → Published to DetectInappropriateContentMessage
 /// - Background consumer calls Groq API for toxicity analysis
 /// - If flagged: Call ReportPostAsync/ReportCommentAsync with AI results
 /// - Store moderation record in database
 /// - Notify moderators via email/push notification
-/// 
+///
 /// **2. Manual Reporting Flow:**
 /// - User reports content via "Report" button
 /// - Call ReportPostAsync/ReportCommentAsync with user reason
 /// - Create moderation ticket for review
 /// - Notify moderators
-/// 
+///
 /// **3. Moderation Actions:**
 /// - Soft delete flagged content (ISoftDeletable pattern)
 /// - Suspend user accounts temporarily
 /// - Reduce user reputation points
 /// - Send warning notifications to content authors
-/// 
+///
 /// **Database Schema (Planned):**
 /// <code>
 /// public class ContentModerationReport
@@ -61,26 +61,26 @@ namespace ExpertBridge.Application.DomainServices;
 ///     public string ActionTaken { get; set; }
 /// }
 /// </code>
-/// 
+///
 /// **Example Integration:**
 /// <code>
 /// // In background consumer after AI detection
 /// if (toxicityScore > 0.7)
 /// {
 ///     await moderationService.ReportPostAsync(
-///         postId, 
-///         aiDetectionResults, 
+///         postId,
+///         aiDetectionResults,
 ///         isNegative: true
 ///     );
 /// }
-/// 
+///
 /// // User-initiated report
 /// await moderationService.ReportCommentAsync(
-///     commentId, 
+///     commentId,
 ///     "This comment contains hate speech"
 /// );
 /// </code>
-/// 
+///
 /// **Configuration (Future):**
 /// <code>
 /// "ContentModeration": {
@@ -90,7 +90,7 @@ namespace ExpertBridge.Application.DomainServices;
 ///   "EnableAutoModeration": true
 /// }
 /// </code>
-/// 
+///
 /// The service is registered as scoped in the DI container and will be fully implemented
 /// when content moderation requirements are finalized.
 /// </remarks>
@@ -125,10 +125,10 @@ public class ContentModerationService
     /// - Optionally auto-hide content if confidence score is very high
     /// - Update post metadata to mark as flagged/under review
     /// - Send email to administrators for review
-    /// 
+    ///
     /// **Use Case:**
     /// Called by background workers after AI content analysis detects potential violations.
-    /// 
+    ///
     /// **Future Enhancement:**
     /// May integrate with reputation system to automatically penalize repeat offenders.
     /// </remarks>
@@ -144,7 +144,7 @@ public class ContentModerationService
     /// </summary>
     /// <param name="postId">The unique identifier of the post to report.</param>
     /// <param name="reason">
-    /// The user-provided explanation for why the post is being reported 
+    /// The user-provided explanation for why the post is being reported
     /// (e.g., "Spam", "Harassment", "Misinformation").
     /// </param>
     /// <returns>A task representing the asynchronous reporting operation.</returns>
@@ -156,10 +156,10 @@ public class ContentModerationService
     /// - Send confirmation notification to reporting user
     /// - Notify moderators via email/dashboard
     /// - Track reporting user to prevent abuse of reporting system
-    /// 
+    ///
     /// **Use Case:**
     /// Called when users click "Report" button on inappropriate posts.
-    /// 
+    ///
     /// **Anti-Abuse:**
     /// Should implement rate limiting to prevent spam reporting.
     /// </remarks>
@@ -183,10 +183,10 @@ public class ContentModerationService
     /// - Update comment metadata to mark as under review
     /// - Notify comment author of flagged content
     /// - Send email alert to moderators
-    /// 
+    ///
     /// **Use Case:**
     /// Called by background workers after DetectInappropriateCommentMessage is processed.
-    /// 
+    ///
     /// **Integration Point:**
     /// Works with CommentService which publishes DetectInappropriateCommentMessage after comment creation/edit.
     /// </remarks>
@@ -213,10 +213,10 @@ public class ContentModerationService
     /// - Send notification to reporting user confirming receipt
     /// - Alert moderators via email and dashboard notification
     /// - Track reporting patterns to identify malicious reporters
-    /// 
+    ///
     /// **Use Case:**
     /// Called when users report inappropriate comments manually.
-    /// 
+    ///
     /// **Future Enhancement:**
     /// Aggregate multiple reports on same comment to prioritize moderator review.
     /// </remarks>

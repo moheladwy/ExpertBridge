@@ -17,7 +17,7 @@ namespace ExpertBridge.Worker.Consumers;
 /// </summary>
 /// <remarks>
 ///     This class listens for messages of type <see cref="UserInterestsProsessingMessage" /> using MassTransit
-///     and utilizes the <see cref="GroqTagProcessorService" /> for tag translation and categorization.
+///     and utilizes the <see cref="AiTagProcessorService" /> for tag translation and categorization.
 ///     The processed tags and user interests are saved into the database using <see cref="ExpertBridgeDbContext" />.
 /// </remarks>
 public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterestsProsessingMessage>
@@ -40,7 +40,7 @@ public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterest
     ///     This service performs tag processing, including translation and categorization,
     ///     enabling the conversion of raw user interest tag data into structured tags for further use.
     /// </remarks>
-    private readonly GroqTagProcessorService _groqTagProcessorService;
+    private readonly AiTagProcessorService _aiTagProcessorService;
 
     /// <summary>
     ///     Represents a logger instance used to log information, warnings, and errors
@@ -57,15 +57,15 @@ public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterest
     ///     It integrates with the message consuming mechanism to handle user interest tag processing logic.
     /// </summary>
     /// <param name="logger">The logger instance for logging information and errors.</param>
-    /// <param name="groqTagProcessorService">The service used for processing and translating tags.</param>
+    /// <param name="aiTagProcessorService">The service used for processing and translating tags.</param>
     /// <param name="dbContext">The database context for accessing and managing database entities.</param>
     public UserInterestsTagsProcessingConsumer(
         ILogger<UserInterestsTagsProcessingConsumer> logger,
-        GroqTagProcessorService groqTagProcessorService,
+        AiTagProcessorService aiTagProcessorService,
         ExpertBridgeDbContext dbContext)
     {
         _logger = logger;
-        _groqTagProcessorService = groqTagProcessorService;
+        _aiTagProcessorService = aiTagProcessorService;
         _dbContext = dbContext;
     }
 
@@ -76,7 +76,7 @@ public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterest
     /// <param name="context">The consume context containing the message of type <see cref="UserInterestsProsessingMessage" />.</param>
     /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     /// <remarks>
-    ///     This method handles the processing of user interest tags by utilizing the <see cref="GroqTagProcessorService" />
+    ///     This method handles the processing of user interest tags by utilizing the <see cref="AiTagProcessorService" />
     ///     for translation and categorization. The resulting tags and user interests are then persisted into the database
     ///     using the <see cref="ExpertBridgeDbContext" />.
     /// </remarks>
@@ -91,7 +91,7 @@ public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterest
             _logger.LogInformation("Processing user interests tags for user profile {UserProfileId}",
                 message.UserProfileId);
 
-            var results = await _groqTagProcessorService
+            var results = await _aiTagProcessorService
                 .TranslateTagsAsync(message.InterestsTags);
 
             if (results == null)

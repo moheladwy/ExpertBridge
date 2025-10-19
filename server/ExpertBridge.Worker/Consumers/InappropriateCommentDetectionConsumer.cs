@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 namespace ExpertBridge.Worker.Consumers;
 
 /// <summary>
-///     Consumer for detecting inappropriate comments using the GroqInappropriateLanguageDetectionService.
+///     Consumer for detecting inappropriate comments using the NsfwContentDetectionService.
 ///     This class processes messages to analyze comment content, generate moderation reports, and handle comment removal
 ///     and notifications.
 /// </summary>
@@ -27,12 +27,12 @@ public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInap
     private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
-    ///     An instance of <see cref="GroqInappropriateLanguageDetectionService" /> responsible for detecting
+    ///     An instance of <see cref="NsfwContentDetectionService" /> responsible for detecting
     ///     inappropriate language in comments by utilizing defined detection algorithms and strategies.
     ///     This service is used within the <see cref="InappropriateCommentDetectionConsumer" /> class
     ///     to analyze content for moderation purposes.
     /// </summary>
-    private readonly GroqInappropriateLanguageDetectionService _detectionService;
+    private readonly NsfwContentDetectionService _detectionService;
 
     /// <summary>
     ///     An instance of <see cref="ILogger{TCategoryName}" /> used for logging events, errors, and debugging information
@@ -72,7 +72,7 @@ public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInap
     /// <exception cref="ArgumentNullException">Thrown if any dependency is null.</exception>
     public InappropriateCommentDetectionConsumer(
         ILogger<InappropriateCommentDetectionConsumer> logger,
-        GroqInappropriateLanguageDetectionService detectionService,
+        NsfwContentDetectionService detectionService,
         IOptionsSnapshot<InappropriateLanguageThresholds> thresholds,
         ExpertBridgeDbContext dbContext,
         NotificationFacade notifications)

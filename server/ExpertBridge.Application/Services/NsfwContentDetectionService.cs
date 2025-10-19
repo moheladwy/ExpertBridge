@@ -12,7 +12,7 @@ namespace ExpertBridge.Application.Services;
 ///     This service provides functionality to analyze text and return NSFW detection results categorized
 ///     into various predefined metrics.
 /// </summary>
-public sealed class GroqInappropriateLanguageDetectionService
+public sealed class NsfwContentDetectionService
 {
     /// <summary>
     ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
@@ -37,7 +37,7 @@ public sealed class GroqInappropriateLanguageDetectionService
     ///     Service for detecting NSFW (Not Safe for Work) content using Groq Large Language Model (LLM) API.
     ///     Handles interactions with the <see cref="GroqLlmTextProvider" /> for analyzing and generating text-related tasks.
     /// </summary>
-    public GroqInappropriateLanguageDetectionService(
+    public NsfwContentDetectionService(
         GroqLlmTextProvider groqLlmTextProvider,
         ResiliencePipelineProvider<string> resilience)
     {

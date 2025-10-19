@@ -26,7 +26,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     /// <summary>
     ///     Service that performs inappropriate language detection using the Groq provider.
     /// </summary>
-    private readonly GroqInappropriateLanguageDetectionService _detectionService;
+    private readonly NsfwContentDetectionService _detectionService;
 
     /// <summary>
     ///     Logger for emitting information, warning and error messages during the consume flow.
@@ -69,7 +69,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     /// </exception>
     public InappropriatePostDetectionConsumer(
         ILogger<InappropriatePostDetectionConsumer> logger,
-        GroqInappropriateLanguageDetectionService detectionService,
+        NsfwContentDetectionService detectionService,
         ExpertBridgeDbContext dbContext,
         IOptionsSnapshot<InappropriateLanguageThresholds> thresholds,
         NotificationFacade notifications,
