@@ -76,7 +76,7 @@ public class GroqTagProcessorService
         ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
         try
         {
-            TranslateTagsResponse result = null!;
+            TranslateTagsResponse? result = null;
             await _resiliencePipeline.ExecuteAsync(async ct =>
             {
                 var systemPrompt = GetSystemPrompt();
