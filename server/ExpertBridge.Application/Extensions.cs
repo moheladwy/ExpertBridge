@@ -16,13 +16,50 @@ using Microsoft.Extensions.Hosting;
 
 namespace ExpertBridge.Application;
 
+/// <summary>
+/// Provides extension methods for configuring ExpertBridge application services and settings.
+/// </summary>
 public static class Extensions
 {
     /// <summary>
-    ///     Registers domain services and dependencies for the application into the provided <see cref="IServiceCollection" />.
+    /// Registers all domain services, validators, and application dependencies into the service collection.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection" /> to add the domain services to.</param>
-    /// <returns>The <see cref="IServiceCollection" /> with domain services registered.</returns>
+    /// <param name="services">The service collection to add the domain services to.</param>
+    /// <returns>The service collection with all domain services registered for method chaining.</returns>
+    /// <remarks>
+    /// This extension method configures the complete application layer including:
+    /// 
+    /// **Validators:**
+    /// - FluentValidation validators from Core.Requests assembly (e.g., RegisterUserRequestValidator)
+    /// 
+    /// **Infrastructure Services:**
+    /// - Notification system (SignalR, background workers, channel pipeline)
+    /// - S3Service: AWS S3 integration for file storage and media management
+    /// - IEmbeddingService: Ollama-based vector embedding generation for AI-powered search
+    /// 
+    /// **Domain Services:**
+    /// - CommentService: Comment creation, editing, deletion, and vote management
+    /// - ContentModerationService: AI-powered content moderation using Groq LLM
+    /// - MediaAttachmentService: Media upload, validation, and S3 storage
+    /// - TaggingService: Tag extraction and management for posts and profiles
+    /// - PostService: Post CRUD operations and recommendation algorithms
+    /// - JobPostingService: Job posting management and matching
+    /// - ProfileService: User profile management and skill tracking
+    /// - JobService: Job application and offer workflow
+    /// - MessagingService: Real-time chat and messaging functionality
+    /// 
+    /// **AI/LLM Services (Groq Integration):**
+    /// - GroqPostTaggingService: Automatic tag generation from post content using Groq LLM
+    /// - GroqTagProcessorService: Tag normalization and validation
+    /// - GroqInappropriateLanguageDetectionService: Content safety analysis using Groq LLM
+    /// 
+    /// All services are registered with scoped lifetime for proper database context management and request isolation.
+    /// 
+    /// Typical usage in Program.cs:
+    /// <code>
+    /// builder.Services.AddDomainServices();
+    /// </code>
+    /// </remarks>
     public static IServiceCollection AddDomainServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
@@ -49,10 +86,46 @@ public static class Extensions
     }
 
     /// <summary>
-    ///     Configures the settings required by the ExpertBridge application.
+    /// Configures all application settings from appsettings.json into strongly-typed configuration objects.
     /// </summary>
-    /// <param name="builder">The WebApplicationBuilder instance to configure.</param>
-    /// <returns>The modified WebApplicationBuilder with the configured application settings.</returns>
+    /// <typeparam name="TBuilder">The host application builder type (WebApplicationBuilder, HostApplicationBuilder, etc.).</typeparam>
+    /// <param name="builder">The host application builder instance to configure.</param>
+    /// <returns>The modified builder with all application settings configured for method chaining.</returns>
+    /// <remarks>
+    /// This extension method binds configuration sections to strongly-typed settings classes using the Options pattern.
+    /// All settings are registered with IOptions&lt;T&gt; for dependency injection.
+    /// 
+    /// **Configured Settings:**
+    /// 
+    /// **Database:**
+    /// - ConnectionStrings: PostgreSQL connection strings for main database and read replicas
+    /// 
+    /// **Authentication:**
+    /// - FirebaseSettings: Firebase project configuration (ApiKey, ProjectId, AuthDomain)
+    /// - FirebaseAuthSettings: Firebase authentication settings and JWT validation
+    /// 
+    /// **Cloud Storage:**
+    /// - AwsSettings: AWS credentials, region, and S3 bucket configuration for media storage
+    /// 
+    /// **AI/Machine Learning:**
+    /// - AiSettings: Ollama embedding service configuration (base URL, model selection)
+    /// - GroqSettings: Groq LLM API settings (API key, model selection, temperature, max tokens)
+    /// - InappropriateLanguageThresholds: Content moderation sensitivity thresholds for different categories
+    /// 
+    /// **Logging:**
+    /// - SerilogSettings: Structured logging configuration (log levels, sinks, enrichment)
+    /// 
+    /// **Rate Limiting:**
+    /// - ExpertBridgeRateLimitSettings: API rate limiting policies (requests per minute, burst limits)
+    /// 
+    /// Each settings class defines its own Section constant for configuration binding.
+    /// Settings are validated at startup through data annotations and custom validators.
+    /// 
+    /// Typical usage in Program.cs:
+    /// <code>
+    /// builder.ConfigureExpertBridgeSettings();
+    /// </code>
+    /// </remarks>
     public static TBuilder ConfigureExpertBridgeSettings<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
