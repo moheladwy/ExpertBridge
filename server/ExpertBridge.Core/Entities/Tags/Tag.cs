@@ -19,7 +19,7 @@ public class Tag : BaseModel
     /// <summary>
     /// Gets or sets the English name of the tag.
     /// </summary>
-    public string EnglishName { get; set; } = null!;
+    public string EnglishName { get; set; }
 
     /// <summary>
     /// Gets or sets the Arabic name of the tag.
@@ -32,7 +32,7 @@ public class Tag : BaseModel
     /// <summary>
     /// Gets or sets a description explaining what the tag represents.
     /// </summary>
-    public string Description { get; set; } = null!;
+    public string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of user interest relationships with this tag.

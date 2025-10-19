@@ -23,17 +23,17 @@ public class ModerationReport : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the unique identifier of the content being reported.
     /// </summary>
-    public string ContentId { get; set; } = null!;
+    public string ContentId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the content author.
     /// </summary>
-    public string AuthorId { get; set; } = null!;
+    public string AuthorId { get; set; }
 
     /// <summary>
     /// Gets or sets the reason or description for the moderation report.
     /// </summary>
-    public string Reason { get; set; } = null!;
+    public string Reason { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the report has been reviewed and resolved by a moderator.

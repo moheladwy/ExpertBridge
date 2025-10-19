@@ -34,7 +34,7 @@ public class Post : BaseModel, ISoftDeletable, IRecommendableContent, ISafeConte
     /// <summary>
     /// Gets or sets the profile of the user who authored the post.
     /// </summary>
-    public Profile Author { get; set; } = null!;
+    public Profile Author { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of media attachments associated with the post.

@@ -17,7 +17,7 @@ public class Notification : BaseModel
     /// <summary>
     /// Gets or sets the unique identifier of the notification recipient.
     /// </summary>
-    public string RecipientId { get; set; } = null!;
+    public string RecipientId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the user who triggered the notification.
@@ -30,7 +30,7 @@ public class Notification : BaseModel
     /// <summary>
     /// Gets or sets the notification message text.
     /// </summary>
-    public string Message { get; set; } = null!;
+    public string Message { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the notification has been read by the recipient.

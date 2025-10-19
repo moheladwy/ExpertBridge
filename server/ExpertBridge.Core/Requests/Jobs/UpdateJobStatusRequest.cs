@@ -17,5 +17,5 @@ public class UpdateJobStatusRequest
     /// <remarks>
     /// Should be a valid value from the JobStatusEnum enumeration.
     /// </remarks>
-    public string Status { get; set; } = null!;
+    public string Status { get; set; }
 }

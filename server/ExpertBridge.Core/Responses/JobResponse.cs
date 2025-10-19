@@ -17,7 +17,7 @@ public class JobResponse
     /// <summary>
     /// Gets or sets the unique identifier of the job.
     /// </summary>
-    public string Id { get; set; } = null!;
+    public string Id { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the job.
@@ -32,7 +32,7 @@ public class JobResponse
     /// <summary>
     /// Gets or sets the unique identifier of the associated chat conversation.
     /// </summary>
-    public string ChatId { get; set; } = null!;
+    public string ChatId { get; set; }
 
     /// <summary>
     /// Gets or sets the actual cost agreed upon for the job.
@@ -42,7 +42,7 @@ public class JobResponse
     /// <summary>
     /// Gets or sets the geographical area or work location for the job.
     /// </summary>
-    public string Area { get; set; } = null!;
+    public string Area { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the job was started.
@@ -90,10 +90,10 @@ public class JobResponse
     /// <summary>
     /// Gets or sets the author (hirer) information.
     /// </summary>
-    public AuthorResponse Author { get; set; } = null!;
+    public AuthorResponse Author { get; set; }
 
     /// <summary>
     /// Gets or sets the worker information.
     /// </summary>
-    public AuthorResponse Worker { get; set; } = null!;
+    public AuthorResponse Worker { get; set; }
 }

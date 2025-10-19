@@ -18,20 +18,20 @@ public class ProfileBadge
     /// <summary>
     /// Gets or sets the unique identifier of the profile.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the profile that earned the badge.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the badge.
     /// </summary>
-    public string BadgeId { get; set; } = null!;
+    public string BadgeId { get; set; }
 
     /// <summary>
     /// Gets or sets the badge earned by the profile.
     /// </summary>
-    public Badge Badge { get; set; } = null!;
+    public Badge Badge { get; set; }
 }

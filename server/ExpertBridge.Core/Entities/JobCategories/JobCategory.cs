@@ -21,12 +21,12 @@ public class JobCategory
     /// <summary>
     /// Gets or sets the name of the job category.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets or sets the description of the job category.
     /// </summary>
-    public string Description { get; set; } = null!;
+    public string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of job postings in this category.

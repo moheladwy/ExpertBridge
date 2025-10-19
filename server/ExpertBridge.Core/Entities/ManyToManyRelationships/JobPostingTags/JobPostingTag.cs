@@ -18,21 +18,21 @@ public class JobPostingTag
     /// <summary>
     /// Gets or sets the unique identifier of the job posting.
     /// </summary>
-    public string JobPostingId { get; set; } = null!;
+    public string JobPostingId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the tag.
     /// </summary>
-    public string TagId { get; set; } = null!;
+    public string TagId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the job posting being tagged.
     /// </summary>
-    public JobPosting JobPosting { get; set; } = null!;
+    public JobPosting JobPosting { get; set; }
 
     /// <summary>
     /// Gets or sets the tag applied to the job posting.
     /// </summary>
-    public Tag Tag { get; set; } = null!;
+    public Tag Tag { get; set; }
 }

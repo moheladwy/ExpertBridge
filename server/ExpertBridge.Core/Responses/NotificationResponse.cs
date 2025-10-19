@@ -15,7 +15,7 @@ public class NotificationResponse
     /// <summary>
     /// Gets or sets the unique identifier of the notification.
     /// </summary>
-    public string Id { get; set; } = null!;
+    public string Id { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the notification was created.
@@ -25,12 +25,12 @@ public class NotificationResponse
     /// <summary>
     /// Gets or sets the unique identifier of the recipient profile.
     /// </summary>
-    public string RecipientId { get; set; } = null!;
+    public string RecipientId { get; set; }
 
     /// <summary>
     /// Gets or sets the notification message text.
     /// </summary>
-    public string Message { get; set; } = null!;
+    public string Message { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the notification has been read by the recipient.

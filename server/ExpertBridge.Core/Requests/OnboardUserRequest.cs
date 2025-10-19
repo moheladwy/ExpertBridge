@@ -15,5 +15,5 @@ public class OnboardUserRequest
     /// <summary>
     /// Gets or sets the collection of tag IDs representing the user's professional interests.
     /// </summary>
-    public List<string> Tags { get; set; } = null!;
+    public List<string> Tags { get; set; }
 }

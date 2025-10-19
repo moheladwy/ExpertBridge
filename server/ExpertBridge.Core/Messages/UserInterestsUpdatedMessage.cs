@@ -15,5 +15,5 @@ public class UserInterestsUpdatedMessage
     /// <summary>
     /// Gets or sets the unique identifier of the user profile that was updated.
     /// </summary>
-    public string UserProfileId { get; set; } = null!;
+    public string UserProfileId { get; set; }
 }

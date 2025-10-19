@@ -18,27 +18,27 @@ public class ProfileExperience : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the unique identifier of the profile this experience belongs to.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the job title held during this experience.
     /// </summary>
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
 
     /// <summary>
     /// Gets or sets the description of responsibilities and achievements.
     /// </summary>
-    public string Description { get; set; } = null!;
+    public string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the company or organization name.
     /// </summary>
-    public string Company { get; set; } = null!;
+    public string Company { get; set; }
 
     /// <summary>
     /// Gets or sets the location where the work was performed.
     /// </summary>
-    public string Location { get; set; } = null!;
+    public string Location { get; set; }
 
     /// <summary>
     /// Gets or sets the start date of this employment.
@@ -54,7 +54,7 @@ public class ProfileExperience : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the profile this experience belongs to.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of media attachments for this experience entry.

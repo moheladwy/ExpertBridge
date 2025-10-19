@@ -17,11 +17,11 @@ public class ProfileMedia : MediaObject
     /// <summary>
     /// Gets or sets the unique identifier of the profile this media belongs to.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the profile this media is attached to.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 }

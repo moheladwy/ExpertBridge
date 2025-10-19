@@ -15,10 +15,10 @@ public class PostsCursorPaginatedResponse
     /// <summary>
     /// Gets or sets the collection of posts for the current page.
     /// </summary>
-    public List<PostResponse> Posts { get; set; } = null!;
+    public List<PostResponse> Posts { get; set; }
 
     /// <summary>
     /// Gets or sets the pagination metadata including cursors and page availability.
     /// </summary>
-    public PageInfoResponse PageInfo { get; set; } = null!;
+    public PageInfoResponse PageInfo { get; set; }
 }

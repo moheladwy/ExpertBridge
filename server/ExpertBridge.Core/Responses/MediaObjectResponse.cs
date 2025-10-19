@@ -15,7 +15,7 @@ public class MediaObjectResponse
     /// <summary>
     /// Gets or sets the unique identifier of the media object.
     /// </summary>
-    public string Id { get; set; } = null!;
+    public string Id { get; set; }
 
     /// <summary>
     /// Gets or sets the name or filename of the media object.

@@ -15,7 +15,7 @@ public record PostResponse
     /// <summary>
     /// Gets or sets the unique identifier of the post.
     /// </summary>
-    public string Id { get; set; } = null!;
+    public string Id { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the post.

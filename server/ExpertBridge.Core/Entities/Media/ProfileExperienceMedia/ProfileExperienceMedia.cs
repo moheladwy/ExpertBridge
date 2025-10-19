@@ -18,11 +18,11 @@ public class ProfileExperienceMedia : MediaObject
     /// <summary>
     /// Gets or sets the unique identifier of the profile experience this media belongs to.
     /// </summary>
-    public string ProfileExperienceId { get; set; } = null!;
+    public string ProfileExperienceId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the profile experience this media is attached to.
     /// </summary>
-    public ProfileExperience ProfileExperience { get; set; } = null!;
+    public ProfileExperience ProfileExperience { get; set; }
 }

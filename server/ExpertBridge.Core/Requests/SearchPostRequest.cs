@@ -19,7 +19,7 @@ public class SearchPostRequest
     /// The query is converted to an embedding vector and compared against post embeddings
     /// using cosine similarity to find the most relevant posts.
     /// </remarks>
-    public string Query { get; set; } = null!;
+    public string Query { get; set; }
 
     /// <summary>
     /// Gets or sets the maximum number of search results to return.

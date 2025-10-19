@@ -39,12 +39,12 @@ public class JobApplication : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the profile of the applicant.
     /// </summary>
-    public Profile Applicant { get; set; } = null!;
+    public Profile Applicant { get; set; }
 
     /// <summary>
     /// Gets or sets the job posting this application is for.
     /// </summary>
-    public JobPosting JobPosting { get; set; } = null!;
+    public JobPosting JobPosting { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the application is marked as deleted.

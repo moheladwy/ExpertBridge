@@ -15,20 +15,20 @@ public class TagResponse
     /// <summary>
     /// Gets or sets the unique identifier of the tag.
     /// </summary>
-    public string TagId { get; set; } = null!;
+    public string TagId { get; set; }
 
     /// <summary>
     /// Gets or sets the English name of the tag.
     /// </summary>
-    public string EnglishName { get; set; } = null!;
+    public string EnglishName { get; set; }
 
     /// <summary>
     /// Gets or sets the Arabic name of the tag.
     /// </summary>
-    public string ArabicName { get; set; } = null!;
+    public string ArabicName { get; set; }
 
     /// <summary>
     /// Gets or sets the description of the tag.
     /// </summary>
-    public string Description { get; set; } = null!;
+    public string Description { get; set; }
 }

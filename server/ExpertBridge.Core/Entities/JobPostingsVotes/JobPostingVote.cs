@@ -24,21 +24,21 @@ public class JobPostingVote : BaseModel
     /// <summary>
     /// Gets or sets the unique identifier of the profile that cast the vote.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the job posting being voted on.
     /// </summary>
-    public string JobPostingId { get; set; } = null!;
+    public string JobPostingId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the profile that cast this vote.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the job posting that received this vote.
     /// </summary>
-    public JobPosting JobPosting { get; set; } = null!;
+    public JobPosting JobPosting { get; set; }
 }

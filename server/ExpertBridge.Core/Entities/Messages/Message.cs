@@ -43,12 +43,12 @@ public class Message : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the profile of the message sender.
     /// </summary>
-    public Profile Sender { get; set; } = null!;
+    public Profile Sender { get; set; }
 
     /// <summary>
     /// Gets or sets the chat conversation this message belongs to.
     /// </summary>
-    public Chat Chat { get; set; } = null!;
+    public Chat Chat { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the message is marked as deleted.

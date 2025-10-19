@@ -24,21 +24,21 @@ public class PostVote : BaseModel
     /// <summary>
     /// Gets or sets the unique identifier of the profile that cast the vote.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the post being voted on.
     /// </summary>
-    public string PostId { get; set; } = null!;
+    public string PostId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the profile that cast this vote.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the post that received this vote.
     /// </summary>
-    public Post Post { get; set; } = null!;
+    public Post Post { get; set; }
 }

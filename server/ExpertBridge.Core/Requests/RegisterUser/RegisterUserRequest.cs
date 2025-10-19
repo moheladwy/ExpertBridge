@@ -18,12 +18,12 @@ public class RegisterUserRequest
     /// <remarks>
     /// This should be the unique Firebase user ID (UID) from Firebase Authentication.
     /// </remarks>
-    public string ProviderId { get; set; } = null!;
+    public string ProviderId { get; set; }
 
     /// <summary>
     /// Gets or sets the user's email address.
     /// </summary>
-    public string Email { get; set; } = null!;
+    public string Email { get; set; }
 
     /// <summary>
     /// Gets or sets the user's desired username.
@@ -31,15 +31,15 @@ public class RegisterUserRequest
     /// <remarks>
     /// Usernames must be unique across the platform.
     /// </remarks>
-    public string Username { get; set; } = null!;
+    public string Username { get; set; }
 
     /// <summary>
     /// Gets or sets the user's first name.
     /// </summary>
-    public string FirstName { get; set; } = null!;
+    public string FirstName { get; set; }
 
     /// <summary>
     /// Gets or sets the user's last name.
     /// </summary>
-    public string LastName { get; set; } = null!;
+    public string LastName { get; set; }
 }

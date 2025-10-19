@@ -15,22 +15,22 @@ public class TagPostMessage
     /// <summary>
     /// Gets or sets the unique identifier of the post to tag.
     /// </summary>
-    public string PostId { get; set; } = null!;
+    public string PostId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the user who created the post.
     /// </summary>
-    public string AuthorId { get; set; } = null!;
+    public string AuthorId { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the post.
     /// </summary>
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
 
     /// <summary>
     /// Gets or sets the content of the post.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string Content { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this is a job posting.

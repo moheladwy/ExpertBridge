@@ -19,21 +19,21 @@ public class PostTag
     /// <summary>
     /// Gets or sets the unique identifier of the post.
     /// </summary>
-    public string PostId { get; set; } = null!;
+    public string PostId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the tag.
     /// </summary>
-    public string TagId { get; set; } = null!;
+    public string TagId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the post being tagged.
     /// </summary>
-    public Post Post { get; set; } = null!;
+    public Post Post { get; set; }
 
     /// <summary>
     /// Gets or sets the tag applied to the post.
     /// </summary>
-    public Tag Tag { get; set; } = null!;
+    public Tag Tag { get; set; }
 }

@@ -18,21 +18,21 @@ public class ProfileSkill
     /// <summary>
     /// Gets or sets the unique identifier of the profile.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the skill.
     /// </summary>
-    public string SkillId { get; set; } = null!;
+    public string SkillId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the profile that possesses the skill.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the skill associated with the profile.
     /// </summary>
-    public Skill Skill { get; set; } = null!;
+    public Skill Skill { get; set; }
 }

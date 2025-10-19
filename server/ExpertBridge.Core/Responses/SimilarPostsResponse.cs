@@ -15,22 +15,22 @@ public class SimilarPostsResponse
     /// <summary>
     /// Gets or sets the unique identifier of the similar post.
     /// </summary>
-    public string PostId { get; set; } = null!;
+    public string PostId { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the similar post.
     /// </summary>
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
 
     /// <summary>
     /// Gets or sets the content of the similar post.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string Content { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the post author.
     /// </summary>
-    public string AuthorName { get; set; } = null!;
+    public string AuthorName { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the post was created.

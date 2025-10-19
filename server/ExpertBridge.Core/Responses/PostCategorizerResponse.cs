@@ -18,12 +18,12 @@ public class PostCategorizerResponse
     /// <remarks>
     /// Supports multilingual content with values like "en" for English, "ar" for Arabic, etc.
     /// </remarks>
-    public string Language { get; set; } = null!;
+    public string Language { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of AI-generated tags categorizing the content.
     /// </summary>
-    public List<CategorizerTagResponse> Tags { get; set; } = null!;
+    public List<CategorizerTagResponse> Tags { get; set; }
 }
 
 /// <summary>
@@ -37,15 +37,15 @@ public class CategorizerTagResponse
     /// <summary>
     /// Gets or sets the Arabic name of the tag.
     /// </summary>
-    public string ArabicName { get; set; } = null!;
+    public string ArabicName { get; set; }
 
     /// <summary>
     /// Gets or sets the English name of the tag.
     /// </summary>
-    public string EnglishName { get; set; } = null!;
+    public string EnglishName { get; set; }
 
     /// <summary>
     /// Gets or sets the description of the tag.
     /// </summary>
-    public string Description { get; set; } = null!;
+    public string Description { get; set; }
 }

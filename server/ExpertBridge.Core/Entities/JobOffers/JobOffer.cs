@@ -51,22 +51,22 @@ public class JobOffer : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the unique identifier of the job offer author (hirer).
     /// </summary>
-    public string AuthorId { get; set; } = null!;
+    public string AuthorId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the worker receiving the offer.
     /// </summary>
-    public string WorkerId { get; set; } = null!;
+    public string WorkerId { get; set; }
 
     /// <summary>
     /// Gets or sets the profile of the offer author (hirer).
     /// </summary>
-    public Profile Author { get; set; } = null!;
+    public Profile Author { get; set; }
 
     /// <summary>
     /// Gets or sets the profile of the worker receiving the offer.
     /// </summary>
-    public Profile Worker { get; set; } = null!;
+    public Profile Worker { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the offer is marked as deleted.

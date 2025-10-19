@@ -15,7 +15,7 @@ public class JobPostingResponse
     /// <summary>
     /// Gets or sets the unique identifier of the job posting.
     /// </summary>
-    public string Id { get; set; } = null!;
+    public string Id { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the job posting.
@@ -93,7 +93,7 @@ public class JobPostingResponse
     /// <summary>
     /// Gets or sets the geographical area or work location for the job.
     /// </summary>
-    public string Area { get; set; } = null!;
+    public string Area { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of AI-generated tags categorizing the job posting.

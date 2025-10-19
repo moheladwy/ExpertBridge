@@ -18,7 +18,7 @@ public class PresignedUrlResponse
     /// <remarks>
     /// This URL includes authentication parameters and can be used directly with an HTTP PUT request.
     /// </remarks>
-    public string Url { get; set; } = null!;
+    public string Url { get; set; }
 
     /// <summary>
     /// Gets or sets the S3 object key (path) where the file will be stored.
@@ -26,5 +26,5 @@ public class PresignedUrlResponse
     /// <remarks>
     /// This key should be used to reference the uploaded file after the upload completes.
     /// </remarks>
-    public string Key { get; set; } = null!;
+    public string Key { get; set; }
 }

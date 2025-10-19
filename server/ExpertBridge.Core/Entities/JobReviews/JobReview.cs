@@ -18,7 +18,7 @@ public class JobReview : BaseModel
     /// <summary>
     /// Gets or sets the review text content.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string Content { get; set; }
 
     /// <summary>
     /// Gets or sets the rating given (typically 0-5 stars).
@@ -34,31 +34,31 @@ public class JobReview : BaseModel
     /// <summary>
     /// Gets or sets the unique identifier of the worker being reviewed.
     /// </summary>
-    public string WorkerId { get; set; } = null!;
+    public string WorkerId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the customer (hirer) who wrote the review.
     /// </summary>
-    public string CustomerId { get; set; } = null!;
+    public string CustomerId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the job being reviewed.
     /// </summary>
-    public string JobId { get; set; } = null!;
+    public string JobId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the worker profile being reviewed.
     /// </summary>
-    public Profile Worker { get; set; } = null!;
+    public Profile Worker { get; set; }
 
     /// <summary>
     /// Gets or sets the customer profile who wrote the review.
     /// </summary>
-    public Profile Customer { get; set; } = null!;
+    public Profile Customer { get; set; }
 
     /// <summary>
     /// Gets or sets the job contract this review is about.
     /// </summary>
-    public Job Job { get; set; } = null!;
+    public Job Job { get; set; }
 }

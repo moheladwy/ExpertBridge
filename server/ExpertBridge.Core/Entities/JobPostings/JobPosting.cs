@@ -30,7 +30,7 @@ public class JobPosting : BaseModel, ISoftDeletable, IRecommendableContent, ISaf
     /// <summary>
     /// Gets or sets the geographic area or location for the job.
     /// </summary>
-    public string Area { get; set; } = null!;
+    public string Area { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the author last updated the job posting.
@@ -43,7 +43,7 @@ public class JobPosting : BaseModel, ISoftDeletable, IRecommendableContent, ISaf
     /// <summary>
     /// Gets or sets the profile of the user who created the job posting.
     /// </summary>
-    public Profile Author { get; set; } = null!;
+    public Profile Author { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of media attachments associated with the job posting.
@@ -78,17 +78,17 @@ public class JobPosting : BaseModel, ISoftDeletable, IRecommendableContent, ISaf
     /// <summary>
     /// Gets or sets the title of the job posting.
     /// </summary>
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
 
     /// <summary>
     /// Gets or sets the detailed description and requirements of the job.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string Content { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the job posting author.
     /// </summary>
-    public string AuthorId { get; set; } = null!;
+    public string AuthorId { get; set; }
 
     /// <summary>
     /// Gets or sets the detected language of the job posting content.

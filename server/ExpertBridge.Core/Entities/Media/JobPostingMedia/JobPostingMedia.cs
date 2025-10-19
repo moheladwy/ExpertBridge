@@ -17,11 +17,11 @@ public class JobPostingMedia : MediaObject
     /// <summary>
     /// Gets or sets the unique identifier of the job posting this media belongs to.
     /// </summary>
-    public string JobPostingId { get; set; } = null!;
+    public string JobPostingId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the job posting this media is attached to.
     /// </summary>
-    public JobPosting JobPosting { get; set; } = null!;
+    public JobPosting JobPosting { get; set; }
 }

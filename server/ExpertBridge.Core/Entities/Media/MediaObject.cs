@@ -17,7 +17,7 @@ public abstract class MediaObject : BaseModel, ISoftDeletable
     /// <summary>
     /// Gets or sets the original file name of the media.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets or sets the S3 object key where the media file is stored.

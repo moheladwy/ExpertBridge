@@ -15,22 +15,22 @@ public class SimilarJobsResponse
     /// <summary>
     /// Gets or sets the unique identifier of the similar job posting.
     /// </summary>
-    public string JobPostingId { get; set; } = null!;
+    public string JobPostingId { get; set; }
 
     /// <summary>
     /// Gets or sets the title of the similar job posting.
     /// </summary>
-    public string Title { get; set; } = null!;
+    public string Title { get; set; }
 
     /// <summary>
     /// Gets or sets the content of the similar job posting.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string Content { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the job posting author (hirer).
     /// </summary>
-    public string AuthorName { get; set; } = null!;
+    public string AuthorName { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the job posting was created.
@@ -45,7 +45,7 @@ public class SimilarJobsResponse
     /// <summary>
     /// Gets or sets the geographical area or work location for the job.
     /// </summary>
-    public string Area { get; set; } = null!;
+    public string Area { get; set; }
 
     /// <summary>
     /// Gets or sets the semantic similarity score to the reference job posting.

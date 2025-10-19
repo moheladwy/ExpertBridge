@@ -68,7 +68,7 @@ public class User : BaseModel, ISoftDeletable
     /// This navigation property establishes a one-to-one relationship with the <see cref="Profile"/> entity.
     /// </remarks>
     [JsonIgnore]
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the user account is marked as deleted.

@@ -15,10 +15,10 @@ public class UserInterestsProsessingMessage
     /// <summary>
     /// Gets or sets the unique identifier of the user profile.
     /// </summary>
-    public string UserProfileId { get; set; } = null!;
+    public string UserProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the list of interest tags to process.
     /// </summary>
-    public List<string> InterestsTags { get; set; } = null!;
+    public List<string> InterestsTags { get; set; }
 }

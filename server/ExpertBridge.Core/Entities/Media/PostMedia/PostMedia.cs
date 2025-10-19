@@ -17,11 +17,11 @@ public class PostMedia : MediaObject
     /// <summary>
     /// Gets or sets the unique identifier of the post this media belongs to.
     /// </summary>
-    public string PostId { get; set; } = null!;
+    public string PostId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the post this media is attached to.
     /// </summary>
-    public Post Post { get; set; } = null!;
+    public Post Post { get; set; }
 }

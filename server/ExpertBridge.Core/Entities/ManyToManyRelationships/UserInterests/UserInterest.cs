@@ -19,21 +19,21 @@ public class UserInterest
     /// <summary>
     /// Gets or sets the unique identifier of the profile.
     /// </summary>
-    public string ProfileId { get; set; } = null!;
+    public string ProfileId { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the tag representing the interest.
     /// </summary>
-    public string TagId { get; set; } = null!;
+    public string TagId { get; set; }
 
     // Navigation properties
     /// <summary>
     /// Gets or sets the profile that has this interest.
     /// </summary>
-    public Profile Profile { get; set; } = null!;
+    public Profile Profile { get; set; }
 
     /// <summary>
     /// Gets or sets the tag representing the user's interest.
     /// </summary>
-    public Tag Tag { get; set; } = null!;
+    public Tag Tag { get; set; }
 }
