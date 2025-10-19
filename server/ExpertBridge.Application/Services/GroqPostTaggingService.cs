@@ -242,76 +242,82 @@ public sealed class GroqPostTaggingService
         File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
 
     /// <summary>
-    ///     Generates a predefined system prompt used to instruct the text categorization AI on how to process
-    ///     and categorize posts. The prompt includes detailed guidelines for handling posts in English and
-    ///     Arabic, ensuring proper language detection, tag translation, and generation of structured output.
+    ///     Generates the master system prompt that defines the AI’s core behavior for text categorization tasks.
+    ///     This prompt instructs the AI on language detection, tag translation, tag generation, and output formatting.
+    ///     It enforces schema compliance, linguistic consistency, and structured output rules for bilingual (English–Egyptian Arabic) posts.
     /// </summary>
     /// <returns>
-    ///     A string containing the formatted system prompt with specific instructions for the categorization process.
+    ///     A string containing the complete system prompt with all instructions and output schema definition.
     /// </returns>
     private static string GetSystemPrompt()
     {
         List<string> systemPrompt =
         [
-            "You are an advanced text categorization AI specializing in both English and Egyptian Arabic posts.",
-            "Your task is to analyze a given post, detect its language (Arabic, English, Mixed, or Other), and categorize it with relevant tags.",
-            "For each tag, you must provide both English and Egyptian Arabic names, along with a description.",
-            "If the post already has tags, you must translate them and generate additional unique tags.",
-            "If the post has tags, translate them without changing their meaning or the existing provided tags.",
-            "If the post has no tags, generate new tags from scratch.",
-            "Provide a structured output with at least three and at most six tags.",
-            "You have to extract JSON details from text according to the Pydantic scheme.",
-            "Do not generate any introductory or concluding text.",
-            "Tags Names should be in English and Egyptian Arabic regardless of the post's language.",
-            "Tags should be in lowercase, and separated by space ' '.",
-            "Tags should be relevant to the post problem only.",
-            "Tags should be unique and not repetitive.",
-            "Tags should not contain numbers, or special characters.",
-            "Tags should not contain the language name."
+            "You are an advanced text categorization AI specialized in analyzing posts written in English, Egyptian Arabic, or both.",
+            "Your role is to detect the language of a post, extract or generate appropriate tags, and output the results as structured JSON following the defined schema.",
+
+            "### Core Responsibilities:",
+            "1. Detect the post’s language and classify it as one of: English, Arabic, Mixed, or Other.",
+            "2. Extract existing tags if provided and translate them without altering their meaning.",
+            "3. If no tags exist, generate new relevant tags based on the content.",
+            "4. Each tag must include:",
+            "   - 'english': the English tag name (lowercase, words separated by spaces)",
+            "   - 'egyptian_arabic': the Egyptian Arabic translation (Arabic script, lowercase)",
+            "   - 'description': a concise English explanation of the tag meaning or context.",
+
+            "### Tag Generation Rules:",
+            "5. Always generate between three (3) and six (6) tags in total.",
+            "6. Tags must be relevant to the post’s core topic or problem only.",
+            "7. Tags must be unique, non-repetitive, and semantically distinct.",
+            "8. Tags must not contain numbers, punctuation, or special characters.",
+            "9. Tags must not include language names such as 'english', 'arabic', etc.",
+            "10. Tag names must be entirely lowercase, separated by a single space.",
+
+            "### Output Format and Validation:",
+            "11. The response must strictly conform to the following JSON schema:",
+            "```json",
+            GetOutputFormatSchema(),
+            "```",
+            "12. Do not include any markdown formatting, code fences, explanations, or commentary.",
+            "13. Return only the raw JSON structure as the final output.",
+            "14. Ensure the JSON is syntactically valid and matches all required field names.",
+            "15. The output must represent the detected language and a list of tags as defined above.",
+
+            "### Summary:",
+            "You must always return a structured, well-formatted JSON object with the detected language and 3–6 bilingual tags, each containing an English name, Egyptian Arabic translation, and English description."
         ];
+
         return string.Join("\n", systemPrompt);
     }
 
     /// <summary>
-    ///     Generates a formatted prompt for the categorization task by including the post's title, content,
-    ///     existing tags, and specific instructions for processing. Combines these elements into a structured
-    ///     string to be used as input for the language model.
+    ///     Generates the user prompt that supplies the AI with the specific post details for categorization.
+    ///     This includes the title, content, and any existing tags, which the model will use according to
+    ///     the system prompt instructions.
     /// </summary>
-    /// <param name="title">The title of the post to be categorized.</param>
-    /// <param name="content">The content of the post to be categorized.</param>
-    /// <param name="existingTags">A collection of existing tags associated with the post.</param>
-    /// <returns>A string representing the user prompt, formatted with detailed instructions and relevant data.</returns>
+    /// <param name="title">The title of the post.</param>
+    /// <param name="content">The content or body text of the post.</param>
+    /// <param name="existingTags">The list of existing tags, if any.</param>
+    /// <returns>
+    ///     A formatted string representing the input post data for the categorization task.
+    /// </returns>
     private static string GetUserPrompt(string title, string content, IReadOnlyCollection<string> existingTags)
     {
         List<string> userPrompt =
         [
-            "Categorize the following post based on its content and language.",
-            "1. First, detect whether the post is in English, Arabic, Mixed, or Other.",
-            "2. If the post has existing tags, translate them and generate additional unique tags.",
-            "3. If the post has no tags, generate new tags from scratch.",
-            "4. For each tag, provide both English and Egyptian Arabic names, along with a description.",
-            "5. Tags should be in lowercase, and separated by space ' '.",
-            "6. Tags should not contain numbers, or special characters.",
-            "7. Tags should be unique and not repetitive.",
             "### Post Title:",
-            "```",
             title,
-            "```",
+            "",
             "### Post Content:",
-            "```",
             content,
-            "```",
+            "",
             "### Existing Tags:",
-            "```",
-            existingTags.Count == 0 ? "[]" : $"[{string.Join(", ", existingTags.ToList())}]",
-            "```",
-            "## Pydantic Details:",
-            "```json",
-            GetOutputFormatSchema(),
-            "```",
-            "Return only the raw JSON without any markdown code block formatting."
+            existingTags.Count == 0
+                ? "[]"
+                : $"[{string.Join(", ", existingTags)}]"
         ];
 
         return string.Join("\n", userPrompt);
     }
+
 }
