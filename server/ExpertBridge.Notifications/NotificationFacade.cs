@@ -56,8 +56,10 @@ public class NotificationFacade
     /// </summary>
     /// <param name="channel">The unbounded channel for queuing notification requests to the background worker.</param>
     public NotificationFacade(
-        Channel<SendNotificationsRequestMessage> channel) =>
+        Channel<SendNotificationsRequestMessage> channel)
+    {
         _channel = channel;
+    }
 
     /// <summary>
     /// Creates and queues a notification for a new comment on a post or job posting.
@@ -215,13 +217,15 @@ public class NotificationFacade
     /// Includes the moderation reason and a preview of the deleted comment content.
     /// Links to the user's profile page. Part of the AI-assisted content moderation system using Groq API.
     /// </remarks>
-    public async Task NotifyCommentDeletedAsync(Comment comment, ModerationReport report) =>
+    public async Task NotifyCommentDeletedAsync(Comment comment, ModerationReport report)
+    {
         await NotifyInternalAsync(new Notification
         {
             RecipientId = comment.AuthorId,
             Message = $"Your comment was removed: {report.Reason}.\nComment: {comment.Content}",
             ActionUrl = "/profile"
         });
+    }
 
     /// <summary>
     /// Creates and queues a notification when a post or job posting is deleted by content moderation.
@@ -234,13 +238,15 @@ public class NotificationFacade
     /// Includes the moderation reason and the post/job title.
     /// Links to the user's profile page. Part of the AI-assisted content moderation system using Groq API.
     /// </remarks>
-    public async Task NotifyPostDeletedAsync(IRecommendableContent post, ModerationReport report) =>
+    public async Task NotifyPostDeletedAsync(IRecommendableContent post, ModerationReport report)
+    {
         await NotifyInternalAsync(new Notification
         {
             RecipientId = post.AuthorId,
             Message = $"Your post was removed: {report.Reason}.\nPost: {post.Title}",
             ActionUrl = "/profile"
         });
+    }
 
     /// <summary>
     /// Creates and queues bulk notifications to multiple candidates when a new job posting matches their profiles.
@@ -287,7 +293,8 @@ public class NotificationFacade
     /// Includes the applicant's name, job title, and a deep link to the job applications page.
     /// The notification icon uses the applicant's profile picture.
     /// </remarks>
-    public async Task NotifyJobApplicationSubmittedAsync(JobApplication jobApplication) =>
+    public async Task NotifyJobApplicationSubmittedAsync(JobApplication jobApplication)
+    {
         await NotifyInternalAsync(new Notification
         {
             RecipientId = jobApplication.JobPosting.AuthorId,
@@ -298,6 +305,7 @@ public class NotificationFacade
             IconActionUrl = $"/profile/{jobApplication.ApplicantId}",
             SenderId = jobApplication.ApplicantId
         });
+    }
 
     /// <summary>
     /// Creates and queues a notification when a client creates a job offer for an expert.
@@ -309,7 +317,8 @@ public class NotificationFacade
     /// Includes the client's name, offer title, and a deep link to the offers page.
     /// The notification icon uses the client's profile picture.
     /// </remarks>
-    public async Task NotifyJobOfferCreatedAsync(JobOffer offer) =>
+    public async Task NotifyJobOfferCreatedAsync(JobOffer offer)
+    {
         await NotifyInternalAsync(new Notification
         {
             RecipientId = offer.WorkerId,
@@ -319,6 +328,7 @@ public class NotificationFacade
             IconActionUrl = $"/profile/{offer.AuthorId}",
             SenderId = offer.AuthorId
         });
+    }
 
     /// <summary>
     /// Creates and queues a notification when a user receives a new chat message.
@@ -332,7 +342,8 @@ public class NotificationFacade
     /// Includes the sender's name, message preview, and a deep link to the chat within the job context.
     /// The notification icon uses the sender's profile picture.
     /// </remarks>
-    public async Task NotifyNewMessageReceivedAsync(Message message, string receiverId, string jobId) =>
+    public async Task NotifyNewMessageReceivedAsync(Message message, string receiverId, string jobId)
+    {
         await NotifyInternalAsync(new Notification
         {
             RecipientId = receiverId,
@@ -342,6 +353,7 @@ public class NotificationFacade
             IconActionUrl = $"/profile/{message.SenderId}",
             SenderId = message.SenderId
         });
+    }
 
     /// <summary>
     /// Internal method that filters notifications to prevent self-notification and writes them to the Channel for asynchronous processing.

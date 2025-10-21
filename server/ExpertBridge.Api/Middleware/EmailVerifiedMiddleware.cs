@@ -10,7 +10,10 @@ public class EmailVerifiedMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public EmailVerifiedMiddleware(RequestDelegate next) => _next = next;
+    public EmailVerifiedMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
 
     public async Task InvokeAsync(HttpContext context)
     {

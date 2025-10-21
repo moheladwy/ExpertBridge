@@ -183,7 +183,10 @@ public static class Generator
     /// 
     /// **Warning:** Random vectors have NO semantic meaning and will produce random similarity results.
     /// </remarks>
-    public static Vector GenerateRandomVector(int dimensions) => new(GenerateRandomVectorArray(dimensions));
+    public static Vector GenerateRandomVector(int dimensions)
+    {
+        return new Vector(GenerateRandomVectorArray(dimensions));
+    }
 
     /// <summary>
     /// Generates a random float array with specified dimensions for vector embeddings.

@@ -22,6 +22,8 @@ public static class ChatQueries
     /// <remarks>
     /// This is essential for security to ensure users can only access chats they are part of.
     /// </remarks>
-    public static IQueryable<Chat> WhereProfileIsChatParticipant(this IQueryable<Chat> query, string profileId) =>
-        query.Where(c => c.WorkerId == profileId || c.HirerId == profileId);
+    public static IQueryable<Chat> WhereProfileIsChatParticipant(this IQueryable<Chat> query, string profileId)
+    {
+        return query.Where(c => c.WorkerId == profileId || c.HirerId == profileId);
+    }
 }

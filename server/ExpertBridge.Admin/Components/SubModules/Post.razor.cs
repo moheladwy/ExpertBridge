@@ -19,7 +19,10 @@ public partial class Post : ComponentBase
     private bool _loadingComments;
     private bool _showComments;
 
-    public Post(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
+    public Post(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     /// <summary>
     ///     The post-data to be displayed in the component.

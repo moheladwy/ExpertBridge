@@ -28,8 +28,15 @@ public partial class PostTags
         postTags = [];
     }
 
-    public int TotalActiveTags => postTags.Count(pt => pt.IsUsedAnywhere);
-    public int TotalInactiveTags => postTags.Count(pt => !pt.IsUsedAnywhere);
+    public int TotalActiveTags
+    {
+        get { return postTags.Count(pt => pt.IsUsedAnywhere); }
+    }
+
+    public int TotalInactiveTags
+    {
+        get { return postTags.Count(pt => !pt.IsUsedAnywhere); }
+    }
 
     protected override async Task OnInitializedAsync()
     {

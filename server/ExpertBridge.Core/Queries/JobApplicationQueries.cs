@@ -20,17 +20,20 @@ public static class JobApplicationQueries
     /// <param name="query">The source queryable of job applications.</param>
     /// <returns>A queryable of JobApplicationResponse objects with applicant details and reputation.</returns>
     public static IQueryable<JobApplicationResponse> SelectJobApplicationResponseFromEntity(
-        this IQueryable<JobApplication> query) =>
-        query
+        this IQueryable<JobApplication> query)
+    {
+        return query
             .Select(j => SelectJobApplicationResponseFromEntity(j));
+    }
 
     /// <summary>
     /// Projects a single JobApplication entity to a JobApplicationResponse DTO with applicant profile.
     /// </summary>
     /// <param name="j">The job application entity to project.</param>
     /// <returns>A JobApplicationResponse object with applicant details, cover letter, and offered cost.</returns>
-    public static JobApplicationResponse SelectJobApplicationResponseFromEntity(this JobApplication j) =>
-        new()
+    public static JobApplicationResponse SelectJobApplicationResponseFromEntity(this JobApplication j)
+    {
+        return new JobApplicationResponse
         {
             Id = j.Id,
             Applicant = j.Applicant.SelectApplicantResponseFromProfile(),
@@ -40,4 +43,5 @@ public static class JobApplicationQueries
             AppliedAt = j.CreatedAt!.Value,
             CoverLetter = j.CoverLetter
         };
+    }
 }

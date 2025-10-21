@@ -43,8 +43,10 @@ public sealed class GroqApiVisionClient
     /// <param name="httpClient">
     ///     The <see cref="HttpClient" /> instance used for HTTP communication with the Groq API.
     /// </param>
-    public GroqApiVisionClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient) =>
+    public GroqApiVisionClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
+    {
         _chatCompletionClient = groqApiChatCompletionClient;
+    }
 
     /// <summary>
     ///     Base method for creating vision-based completions using the Groq API.

@@ -19,17 +19,20 @@ public static class MessageQueries
     /// </summary>
     /// <param name="query">The source queryable of messages.</param>
     /// <returns>A queryable of MessageResponse objects with message content and metadata.</returns>
-    public static IQueryable<MessageResponse> SelectMessageResponseFromFullMessage(this IQueryable<Message> query) =>
-        query
+    public static IQueryable<MessageResponse> SelectMessageResponseFromFullMessage(this IQueryable<Message> query)
+    {
+        return query
             .Select(m => SelectMessageResponseFromFullMessage(m));
+    }
 
     /// <summary>
     /// Projects a single Message entity to a MessageResponse DTO for SignalR delivery.
     /// </summary>
     /// <param name="m">The message entity to project.</param>
     /// <returns>A MessageResponse object with message content and metadata.</returns>
-    public static MessageResponse SelectMessageResponseFromFullMessage(this Message m) =>
-        new()
+    public static MessageResponse SelectMessageResponseFromFullMessage(this Message m)
+    {
+        return new MessageResponse
         {
             ChatId = m.ChatId,
             Content = m.Content,
@@ -37,4 +40,5 @@ public static class MessageQueries
             SenderId = m.SenderId,
             IsConfirmationMessage = m.IsConfirmationMessage
         };
+    }
 }

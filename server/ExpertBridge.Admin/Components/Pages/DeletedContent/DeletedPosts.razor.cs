@@ -33,10 +33,19 @@ public sealed partial class DeletedPosts : ComponentBase
         pagedPosts = [];
     }
 
-    private int displayedPostCount => string.IsNullOrWhiteSpace(searchText) ? reportedPosts?.Count ?? 0 : filteredCount;
+    private int displayedPostCount
+    {
+        get { return string.IsNullOrWhiteSpace(searchText) ? reportedPosts?.Count ?? 0 : filteredCount; }
+    }
 
-    private string pagingSummaryFormat =>
-        $"Displaying page {{0}} of {{1}} (total {{2}} {(string.IsNullOrWhiteSpace(searchText) ? "deleted posts" : "results")})";
+    private string pagingSummaryFormat
+    {
+        get
+        {
+            return
+                $"Displaying page {{0}} of {{1}} (total {{2}} {(string.IsNullOrWhiteSpace(searchText) ? "deleted posts" : "results")})";
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,7 +63,10 @@ public sealed partial class DeletedPosts : ComponentBase
         await base.OnInitializedAsync();
     }
 
-    private void OnPageChanged(PagerEventArgs args) => UpdatePagedPosts(args.Skip, args.Top);
+    private void OnPageChanged(PagerEventArgs args)
+    {
+        UpdatePagedPosts(args.Skip, args.Top);
+    }
 
     private List<PostResponse> GetFilteredPosts()
     {

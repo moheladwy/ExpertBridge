@@ -25,8 +25,9 @@ public static class JobPostingQueries
     /// <remarks>
     /// Uses AsNoTracking for read-only queries. Includes: Author, Votes, Medias, Comments, JobApplications, JobPostingTags with Tags.
     /// </remarks>
-    public static IQueryable<JobPosting> FullyPopulatedJobPostingQuery(this IQueryable<JobPosting> query) =>
-        query
+    public static IQueryable<JobPosting> FullyPopulatedJobPostingQuery(this IQueryable<JobPosting> query)
+    {
+        return query
             .AsNoTracking()
             .Include(p => p.Author)
             .Include(p => p.Votes)
@@ -35,6 +36,7 @@ public static class JobPostingQueries
             .Include(p => p.JobApplications)
             .Include(p => p.JobPostingTags)
             .ThenInclude(t => t.Tag);
+    }
 
     //.ThenInclude(c => c.Author)
     //.Include(p => p.Comments)
@@ -47,10 +49,12 @@ public static class JobPostingQueries
     /// <param name="predicate">The filter expression to apply.</param>
     /// <returns>A filtered queryable with all navigation properties included.</returns>
     public static IQueryable<JobPosting> FullyPopulatedJobPostingQuery(this IQueryable<JobPosting> query,
-        Expression<Func<JobPosting, bool>> predicate) =>
-        query
+        Expression<Func<JobPosting, bool>> predicate)
+    {
+        return query
             .FullyPopulatedJobPostingQuery()
             .Where(predicate);
+    }
 
     /// <summary>
     /// Projects a queryable of JobPosting entities to JobPostingResponse DTOs with user-specific vote and application information.
@@ -60,9 +64,11 @@ public static class JobPostingQueries
     /// <returns>A queryable of JobPostingResponse objects with vote counts, tags, media, and application status.</returns>
     public static IQueryable<JobPostingResponse> SelectJopPostingResponseFromFullJobPosting(
         this IQueryable<JobPosting> query,
-        string? userProfileId) =>
-        query
+        string? userProfileId)
+    {
+        return query
             .Select(p => SelectJopPostingResponseFromFullJobPosting(p, userProfileId));
+    }
 
     /// <summary>
     /// Projects a single JobPosting entity to a JobPostingResponse DTO with user-specific vote and application information.
@@ -72,8 +78,9 @@ public static class JobPostingQueries
     /// <returns>A JobPostingResponse object with vote counts, tags, media, whether the user has voted, and whether they have applied.</returns>
     public static JobPostingResponse SelectJopPostingResponseFromFullJobPosting(
         this JobPosting p,
-        string? userProfileId) =>
-        new()
+        string? userProfileId)
+    {
+        return new JobPostingResponse
         {
             IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
             IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
@@ -94,4 +101,5 @@ public static class JobPostingQueries
             IsAppliedFor = p.JobApplications.Any(ja => ja.ApplicantId == userProfileId),
             Medias = p.Medias.AsQueryable().SelectMediaObjectResponse().ToList()
         };
+    }
 }

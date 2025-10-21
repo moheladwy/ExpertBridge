@@ -28,7 +28,10 @@ public partial class Home : ComponentBase
         _overviewChartData = [];
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshData();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
 
     private async Task RefreshData()
     {

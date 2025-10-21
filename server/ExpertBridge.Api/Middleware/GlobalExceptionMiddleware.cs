@@ -8,15 +8,22 @@ using Serilog.Context;
 
 namespace ExpertBridge.Api.Middleware;
 
-internal class GlobalExceptionMiddleware(RequestDelegate next)
+internal class GlobalExceptionMiddleware
 {
+    private readonly RequestDelegate _next;
+
+    public GlobalExceptionMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
     public async Task InvokeAsync(HttpContext httpContext)
     {
         try
         {
             using (LogContext.PushProperty("CorrelationId", httpContext.TraceIdentifier))
             {
-                await next(httpContext);
+                await _next(httpContext);
                 Log.Information(
                     "Request {Endpoint} with TraceId: {TraceId} has been processed successfully.",
                     httpContext.GetEndpoint()?.DisplayName,

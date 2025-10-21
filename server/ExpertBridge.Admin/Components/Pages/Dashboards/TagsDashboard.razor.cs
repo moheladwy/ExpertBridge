@@ -24,7 +24,10 @@ public partial class TagsDashboard : ComponentBase
         _tagUsageChartData = [];
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshData();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
 
     private async Task RefreshData()
     {

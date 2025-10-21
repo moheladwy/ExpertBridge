@@ -33,7 +33,8 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
     /// </summary>
     private const int TriggerJobIntervalInHours = 1;
 
-    public void Configure(QuartzOptions options) =>
+    public void Configure(QuartzOptions options)
+    {
         options
             .AddJob<JobPostsModerationPeriodicWorker>(jobBuilder =>
             {
@@ -56,4 +57,5 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
                 });
                 triggerBuilder.WithIdentity(TriggerName, Group);
             });
+    }
 }

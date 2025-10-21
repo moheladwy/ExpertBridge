@@ -26,8 +26,9 @@ public static class CommentQueries
     /// Filters to only top-level comments (ParentCommentId == null).
     /// Uses AsNoTracking for read-only queries. Includes: Votes, Author, Medias, Replies with Authors.
     /// </remarks>
-    public static IQueryable<Comment> FullyPopulatedCommentQuery(this IQueryable<Comment> query) =>
-        query
+    public static IQueryable<Comment> FullyPopulatedCommentQuery(this IQueryable<Comment> query)
+    {
+        return query
             .AsNoTracking()
             .Where(c => c.ParentCommentId == null)
             .Include(c => c.Votes)
@@ -35,6 +36,7 @@ public static class CommentQueries
             .Include(c => c.Medias)
             .Include(c => c.Replies)
             .ThenInclude(r => r.Author);
+    }
 
     /// <summary>
     /// Eagerly loads all related data for comments and filters by the specified predicate.
@@ -44,10 +46,12 @@ public static class CommentQueries
     /// <returns>A filtered queryable with all navigation properties included.</returns>
     public static IQueryable<Comment> FullyPopulatedCommentQuery(
         this IQueryable<Comment> query,
-        Expression<Func<Comment, bool>> predicate) =>
-        query
+        Expression<Func<Comment, bool>> predicate)
+    {
+        return query
             .FullyPopulatedCommentQuery()
             .Where(predicate);
+    }
 
     /// <summary>
     /// Projects a queryable of comments to CommentResponse DTOs with user-specific vote information.
@@ -73,8 +77,9 @@ public static class CommentQueries
     /// <returns>A CommentResponse object with calculated vote counts, user vote states, and recursively projected replies.</returns>
     public static CommentResponse SelectCommentResponseFromFullComment(
         this Comment c,
-        string? userProfileId) =>
-        new()
+        string? userProfileId)
+    {
+        return new CommentResponse
         {
             Id = c.Id,
             Content = c.Content,
@@ -96,4 +101,5 @@ public static class CommentQueries
                 .SelectCommentResponseFromFullComment(userProfileId)
                 .ToList()
         };
+    }
 }

@@ -80,7 +80,10 @@ public class FirebaseAuthService
     /// });
     /// </code>
     /// </remarks>
-    public FirebaseAuthService(HttpClient httpClient) => _httpClient = httpClient;
+    public FirebaseAuthService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
 
     /// <summary>
     /// Asynchronously registers a new user in Firebase Authentication and returns the unique user identifier.

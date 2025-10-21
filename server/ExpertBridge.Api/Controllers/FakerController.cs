@@ -7,11 +7,15 @@ namespace ExpertBridge.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FakerController(
-    ExpertBridgeDbContext _dbContext
-)
-    : ControllerBase
+public class FakerController : ControllerBase
 {
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    public FakerController(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
     [HttpGet("generate")]
     [AllowAnonymous]
     public IActionResult Index()

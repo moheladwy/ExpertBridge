@@ -16,7 +16,10 @@ public partial class ProfileCard : ComponentBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
 
-    public ProfileCard(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
+    public ProfileCard(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     /// <summary>
     ///     The profile data to be displayed in the component.

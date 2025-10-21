@@ -238,8 +238,10 @@ public sealed class AiPostTaggingService
     /// <returns>
     ///     A string containing the JSON schema definition for the expected output format.
     /// </returns>
-    private static string GetOutputFormatSchema() =>
-        File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
+    private static string GetOutputFormatSchema()
+    {
+        return File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
+    }
 
     /// <summary>
     ///     Generates the master system prompt that defines the AI’s core behavior for text categorization tasks.

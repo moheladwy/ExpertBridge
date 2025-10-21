@@ -117,7 +117,10 @@ public class UserService
     /// <param name="authHelper">
     /// The authorization helper providing authentication context and user retrieval capabilities.
     /// </param>
-    public UserService(AuthorizationHelper authHelper) => _authHelper = authHelper;
+    public UserService(AuthorizationHelper authHelper)
+    {
+        _authHelper = authHelper;
+    }
 
     /// <summary>
     /// Retrieves the fully populated User entity for the currently authenticated user, including their Profile.
@@ -164,7 +167,10 @@ public class UserService
     /// 
     /// This method never throws exceptions - returns null for unauthenticated requests.
     /// </remarks>
-    public async Task<User?> GetCurrentUserPopulatedModelAsync() => await _authHelper.GetCurrentUserAsync();
+    public async Task<User?> GetCurrentUserPopulatedModelAsync()
+    {
+        return await _authHelper.GetCurrentUserAsync();
+    }
 
     /// <summary>
     /// Retrieves the Profile ID of the currently authenticated user, or empty string if not authenticated.

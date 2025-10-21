@@ -12,5 +12,8 @@ public partial class Comment : ComponentBase
 
     [Parameter] public CommentResponse CommentResponse { get; set; }
 
-    private void ToggleReplies() => _showReplies = !_showReplies;
+    private void ToggleReplies()
+    {
+        _showReplies = !_showReplies;
+    }
 }

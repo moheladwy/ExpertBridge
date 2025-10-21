@@ -498,11 +498,13 @@ public class PostService
     /// **Use Cases:** Admin dashboards, analytics, data exports.
     /// Includes full eager loading of all navigation properties.
     /// </remarks>
-    public async Task<List<PostResponse>> GetAllPostsAsync(string? currentMaybeUserProfileId) =>
-        await _dbContext.Posts
+    public async Task<List<PostResponse>> GetAllPostsAsync(string? currentMaybeUserProfileId)
+    {
+        return await _dbContext.Posts
             .FullyPopulatedPostQuery()
             .SelectPostResponseFromFullPost(currentMaybeUserProfileId)
             .ToListAsync();
+    }
 
     /// <summary>
     /// Retrieves AI-recommended posts using cursor-based pagination (stateless, scalable).

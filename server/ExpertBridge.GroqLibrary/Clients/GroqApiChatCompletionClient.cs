@@ -28,7 +28,10 @@ public sealed class GroqApiChatCompletionClient
     ///     Initializes a new instance of the GroqApiChatCompletionClient with a provided HttpClient.
     /// </summary>
     /// <param name="httpClient">The HttpClient instance to use for API requests.</param>
-    public GroqApiChatCompletionClient(HttpClient httpClient) => _httpClient = httpClient;
+    public GroqApiChatCompletionClient(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
 
     /// <summary>
     ///     Creates a chat completion using the Groq API.

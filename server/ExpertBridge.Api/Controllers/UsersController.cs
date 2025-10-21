@@ -21,11 +21,18 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public sealed class UsersController(
-    //IUsersService userService,
-    ExpertBridgeDbContext _dbContext
-) : ControllerBase
+public sealed class UsersController : ControllerBase
 {
+    private readonly ExpertBridgeDbContext _dbContext;
+
+    /// <summary>
+    /// Provides API endpoints for user account management and authentication.
+    /// </summary>
+    public UsersController(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
     /// <summary>
     /// Retrieves a user by their Firebase Authentication identity provider ID.
     /// </summary>
@@ -34,10 +41,10 @@ public sealed class UsersController(
     /// <exception cref="UserNotFoundException">Thrown when the user with the specified provider ID cannot be found.</exception>
     /// <exception cref="NotImplementedException">This endpoint is currently not implemented.</exception>
     [HttpGet("get/{identityProviderId}")]
-    public async Task<UserResponse> GetUserByIdentityProviderId([FromRoute] string identityProviderId) => throw
-        //ArgumentException.ThrowIfNullOrEmpty(identityProviderId);
-        //return await userService.GetUserByIdentityProviderId(identityProviderId);
-        new NotImplementedException();
+    public async Task<UserResponse> GetUserByIdentityProviderId([FromRoute] string identityProviderId)
+    {
+        throw new NotImplementedException();
+    }
 
 
     /// <summary>

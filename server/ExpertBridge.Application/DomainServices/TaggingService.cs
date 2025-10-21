@@ -435,8 +435,10 @@ public sealed class TaggingService
     /// This overload accepts Tag entities and delegates to the primary method with tag IDs.
     /// Used when tags are already loaded (e.g., from post.PostTags.Select(pt => pt.Tag)).
     /// </remarks>
-    public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags) =>
+    public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags)
+    {
         await AddTagsToUserProfileAsync(profileId, tags.Select(t => t.Id));
+    }
 
     /// <summary>
     /// Associates tag IDs with a user profile and triggers embedding regeneration.

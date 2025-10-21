@@ -20,8 +20,9 @@ public static class NotificationQueries
     /// <param name="query">The source queryable of notifications.</param>
     /// <returns>A queryable of NotificationResponse objects.</returns>
     public static IQueryable<NotificationResponse> SelectNotificationResopnse(
-        this IQueryable<Notification> query) =>
-        query
+        this IQueryable<Notification> query)
+    {
+        return query
             .Select(n => new NotificationResponse
             {
                 Id = n.Id,
@@ -33,4 +34,5 @@ public static class NotificationQueries
                 CreatedAt = n.CreatedAt ?? DateTime.UtcNow,
                 RecipientId = n.RecipientId
             });
+    }
 }

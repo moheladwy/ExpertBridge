@@ -17,7 +17,10 @@ public class TagsController : ControllerBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
 
-    public TagsController(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
+    public TagsController(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     [HttpGet]
     public async Task<List<TagResponse>> GetAll()

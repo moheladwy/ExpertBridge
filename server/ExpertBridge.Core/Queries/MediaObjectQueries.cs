@@ -25,8 +25,9 @@ public static class MediaObjectQueries
     /// Consider moving this to configuration to improve maintainability.
     /// </remarks>
     public static IQueryable<MediaObjectResponse> SelectMediaObjectResponse(
-        this IQueryable<MediaObject> query) =>
-        query
+        this IQueryable<MediaObject> query)
+    {
+        return query
             .AsNoTracking()
             .Select(m => new MediaObjectResponse
             {
@@ -35,4 +36,5 @@ public static class MediaObjectQueries
                 Type = m.Type,
                 Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
             });
+    }
 }

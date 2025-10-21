@@ -59,7 +59,10 @@ public class NotificationsHub : Hub<INotificationClient>
     /// Can be overridden to implement custom connection logic (e.g., presence tracking, user mapping).
     /// </summary>
     /// <returns>A task representing the asynchronous connection establishment.</returns>
-    public override async Task OnConnectedAsync() => await base.OnConnectedAsync();
+    public override async Task OnConnectedAsync()
+    {
+        await base.OnConnectedAsync();
+    }
 
     /// <summary>
     /// Invoked when a client disconnects from the SignalR hub either gracefully or due to connection failure.
@@ -67,7 +70,10 @@ public class NotificationsHub : Hub<INotificationClient>
     /// </summary>
     /// <param name="exception">The exception that caused the disconnection, or null for graceful disconnection.</param>
     /// <returns>A task representing the asynchronous disconnection handling.</returns>
-    public override async Task OnDisconnectedAsync(Exception? exception) => await base.OnDisconnectedAsync(exception);
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        await base.OnDisconnectedAsync(exception);
+    }
 
     /// <summary>
     /// Remotely callable method that returns the unique SignalR connection ID for the current client.
@@ -81,5 +87,8 @@ public class NotificationsHub : Hub<INotificationClient>
     /// Example client usage (JavaScript):
     /// const connectionId = await connection.invoke("GetConnectionId");
     /// </remarks>
-    public string GetConnectionId() => Context.ConnectionId;
+    public string GetConnectionId()
+    {
+        return Context.ConnectionId;
+    }
 }

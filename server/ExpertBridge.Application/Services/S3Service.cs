@@ -153,7 +153,10 @@ public sealed class S3Service
     ///     A string containing the URL of the object in the S3-compatible storage system,
     ///     formatted according to the bucket name and key.
     /// </returns>
-    public string GetObjectUrl(string key) => $"https://{_awsSettings.BucketName}.s3.amazonaws.com/{key}";
+    public string GetObjectUrl(string key)
+    {
+        return $"https://{_awsSettings.BucketName}.s3.amazonaws.com/{key}";
+    }
 
     //public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)
     //{

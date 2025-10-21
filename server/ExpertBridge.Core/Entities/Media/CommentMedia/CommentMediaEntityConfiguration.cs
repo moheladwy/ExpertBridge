@@ -15,5 +15,8 @@ public class CommentMediaEntityConfiguration : IEntityTypeConfiguration<CommentM
     /// Configures the entity mapping using shared media object configuration.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
-    public void Configure(EntityTypeBuilder<CommentMedia> builder) => builder.ConfigureAbstractMedia();
+    public void Configure(EntityTypeBuilder<CommentMedia> builder)
+    {
+        builder.ConfigureAbstractMedia();
+    }
 }

@@ -19,15 +19,22 @@ public static class TagQueries
     /// </summary>
     /// <param name="query">The source queryable of tags.</param>
     /// <returns>A queryable of TagResponse objects with English and Arabic translations.</returns>
-    public static IQueryable<TagResponse> SelectTagResponseFromTag(this IQueryable<Tag> query) =>
-        query
+    public static IQueryable<TagResponse> SelectTagResponseFromTag(this IQueryable<Tag> query)
+    {
+        return query
             .Select(t => SelectTagResponseFromTag(t));
+    }
 
     /// <summary>
     /// Projects a single Tag entity to a TagResponse DTO with multilingual names.
     /// </summary>
     /// <param name="t">The tag entity to project.</param>
     /// <returns>A TagResponse object with English and Arabic translations.</returns>
-    public static TagResponse SelectTagResponseFromTag(this Tag t) =>
-        new() { TagId = t.Id, EnglishName = t.EnglishName, ArabicName = t.ArabicName, Description = t.Description };
+    public static TagResponse SelectTagResponseFromTag(this Tag t)
+    {
+        return new TagResponse
+        {
+            TagId = t.Id, EnglishName = t.EnglishName, ArabicName = t.ArabicName, Description = t.Description
+        };
+    }
 }

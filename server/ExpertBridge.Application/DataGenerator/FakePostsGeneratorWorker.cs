@@ -102,8 +102,10 @@ public class FakePostsGeneratorWorker : BackgroundService
     private readonly IServiceProvider _services;
 
     public FakePostsGeneratorWorker(
-        IServiceProvider services) =>
+        IServiceProvider services)
+    {
         _services = services;
+    }
 
     /// <summary>
     /// Main execution loop for the background service (currently disabled).

@@ -19,17 +19,20 @@ public static class JobQueries
     /// </summary>
     /// <param name="query">The source queryable of jobs.</param>
     /// <returns>A queryable of JobResponse objects with populated profile information.</returns>
-    public static IQueryable<JobResponse> SelectJobResponseFromFullJob(this IQueryable<Job> query) =>
-        query
+    public static IQueryable<JobResponse> SelectJobResponseFromFullJob(this IQueryable<Job> query)
+    {
+        return query
             .Select(j => SelectJobResponseFromFullJob(j));
+    }
 
     /// <summary>
     /// Projects a single Job entity to a JobResponse DTO with author and worker profiles.
     /// </summary>
     /// <param name="j">The job entity to project.</param>
     /// <returns>A JobResponse object with all job contract details and participant profiles.</returns>
-    public static JobResponse SelectJobResponseFromFullJob(this Job j) =>
-        new()
+    public static JobResponse SelectJobResponseFromFullJob(this Job j)
+    {
+        return new JobResponse
         {
             Id = j.Id,
             Description = j.Description,
@@ -47,4 +50,5 @@ public static class JobQueries
             Author = j.Author.SelectAuthorResponseFromProfile(),
             Worker = j.Worker.SelectAuthorResponseFromProfile()
         };
+    }
 }

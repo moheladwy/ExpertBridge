@@ -102,10 +102,12 @@ public class ContentModerationService
     /// Initializes a new instance of the <see cref="ContentModerationService"/> class.
     /// </summary>
     /// <param name="dbContext">The database context for accessing content and moderation data.</param>
-    public ContentModerationService(ExpertBridgeDbContext dbContext) =>
+    public ContentModerationService(ExpertBridgeDbContext dbContext)
+    {
         // Get a channel to an email sending service
         // to delegate email sending to it.
         _dbContext = dbContext;
+    }
 
     /// <summary>
     /// Reports a post based on automated inappropriate language detection results.
