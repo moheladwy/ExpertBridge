@@ -15,6 +15,7 @@ using ExpertBridge.Core.Requests.MediaObject;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -139,8 +140,11 @@ namespace ExpertBridge.Application.DomainServices;
 /// </remarks>
 public class JobPostingService
 {
+    private readonly IValidator<ApplyToJobPostingRequest> _applyToJobPostingValidator;
     private readonly HybridCache _cache;
+    private readonly IValidator<CreateJobPostingRequest> _createJobPostingValidator;
     private readonly ExpertBridgeDbContext _dbContext;
+    private readonly IValidator<EditJobPostingRequest> _editJobPostingValidator;
     private readonly ILogger<JobPostingService> _logger;
     private readonly MediaAttachmentService _mediaService;
     private readonly NotificationFacade _notificationFacade;
@@ -154,7 +158,10 @@ public class JobPostingService
         NotificationFacade notificationFacade,
         HybridCache cache,
         ILogger<JobPostingService> logger,
-        IPublishEndpoint publishEndpoint)
+        IPublishEndpoint publishEndpoint,
+        IValidator<CreateJobPostingRequest> createJobPostingValidator,
+        IValidator<EditJobPostingRequest> editJobPostingValidator,
+        IValidator<ApplyToJobPostingRequest> applyToJobPostingValidator)
     {
         _dbContext = dbContext;
         _mediaService = mediaService;
@@ -163,6 +170,9 @@ public class JobPostingService
         _cache = cache;
         _logger = logger;
         _publishEndpoint = publishEndpoint;
+        _createJobPostingValidator = createJobPostingValidator;
+        _editJobPostingValidator = editJobPostingValidator;
+        _applyToJobPostingValidator = applyToJobPostingValidator;
     }
 
     // <summary>
@@ -291,11 +301,12 @@ public class JobPostingService
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(authorProfile);
-        // Your controller already checks for empty title/content, but service can re-validate
-        if (string.IsNullOrWhiteSpace(request.Title) || string.IsNullOrWhiteSpace(request.Content))
+        
+        // Validate request using FluentValidation
+        var validationResult = await _createJobPostingValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
         {
-            throw new BadHttpRequestException(
-                "Title and Content are required."); // Or a more specific ArgumentException
+            throw new ValidationException(validationResult.Errors);
         }
 
         var posting = new JobPosting
@@ -420,7 +431,8 @@ public class JobPostingService
                 }).ToList(),
             PageInfo = new PageInfoResponse
             {
-                HasNextPage = hasNextPage, Embedding = randomEmbedding ?? request.Embedding
+                HasNextPage = hasNextPage,
+                Embedding = randomEmbedding ?? request.Embedding
             }
         };
     }
@@ -558,6 +570,13 @@ public class JobPostingService
         ArgumentNullException.ThrowIfNull(request);
         ArgumentException.ThrowIfNullOrEmpty(postingId);
         ArgumentNullException.ThrowIfNull(editorProfile);
+
+        // Validate request using FluentValidation
+        var validationResult = await _editJobPostingValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
 
         var jobPosting = await _dbContext.JobPostings.FindAsync(postingId);
         if (jobPosting == null)
@@ -758,6 +777,13 @@ public class JobPostingService
         ArgumentException.ThrowIfNullOrEmpty(postingId);
         ArgumentNullException.ThrowIfNull(applicantProfile);
         ArgumentNullException.ThrowIfNull(request);
+
+        // Validate request using FluentValidation
+        var validationResult = await _applyToJobPostingValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
 
         var jobPosting = await _dbContext.JobPostings
             .Include(p => p.Author) // For notification to post author

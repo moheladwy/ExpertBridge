@@ -11,6 +11,7 @@ using ExpertBridge.Core.Requests.MediaObject;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -109,7 +110,9 @@ namespace ExpertBridge.Application.DomainServices;
 /// </remarks>
 public class CommentService
 {
+    private readonly IValidator<CreateCommentRequest> _createCommentValidator;
     private readonly ExpertBridgeDbContext _dbContext;
+    private readonly IValidator<EditCommentRequest> _editCommentValidator;
     private readonly ILogger<CommentService> _logger;
     private readonly MediaAttachmentService _mediaService;
     private readonly NotificationFacade _notificationFacade;
@@ -122,7 +125,9 @@ public class CommentService
         NotificationFacade notificationFacade,
         TaggingService taggingService,
         ILogger<CommentService> logger,
-        IPublishEndpoint publishEndpoint)
+        IPublishEndpoint publishEndpoint,
+        IValidator<CreateCommentRequest> createCommentValidator,
+        IValidator<EditCommentRequest> editCommentValidator)
     {
         _dbContext = dbContext;
         _mediaService = mediaService;
@@ -130,6 +135,8 @@ public class CommentService
         _taggingService = taggingService;
         _logger = logger;
         _publishEndpoint = publishEndpoint;
+        _createCommentValidator = createCommentValidator;
+        _editCommentValidator = editCommentValidator;
     }
 
     /// <summary>
@@ -248,7 +255,14 @@ public class CommentService
         Profile authorProfile)
     {
         ArgumentNullException.ThrowIfNull(request);
-        ArgumentException.ThrowIfNullOrEmpty(request.Content, nameof(request.Content));
+        ArgumentNullException.ThrowIfNull(authorProfile);
+
+        // Validate request using FluentValidation
+        var validationResult = await _createCommentValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
 
         var post = await _dbContext.Posts
             .Include(p => p.PostTags)
@@ -659,6 +673,13 @@ public class CommentService
         ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
         ArgumentNullException.ThrowIfNull(editorProfile, nameof(editorProfile));
 
+        // Validate request using FluentValidation
+        var validationResult = await _editCommentValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
         var comment = await _dbContext.Comments
             // Include author to ensure we can map to CommentResponse, or FullyPopulatedCommentQuery does it.
             // .Include(c => c.Author)
@@ -692,7 +713,9 @@ public class CommentService
             // Offload to inappropriate content detection
             await _publishEndpoint.Publish(new DetectInappropriateCommentMessage
             {
-                CommentId = comment.Id, Content = comment.Content, AuthorId = comment.AuthorId
+                CommentId = comment.Id,
+                Content = comment.Content,
+                AuthorId = comment.AuthorId
             });
         }
 
@@ -800,7 +823,7 @@ public class CommentService
         // Fetch comment with necessary includes for vote processing and notification
         var comment = await _dbContext.Comments
             .Include(c => c.Author) // Needed for notification recipient
-            // .Include(c => c.Votes) // Not strictly needed here if we query CommentVotes separately
+                                    // .Include(c => c.Votes) // Not strictly needed here if we query CommentVotes separately
             .FirstOrDefaultAsync(c => c.Id == commentId);
 
         if (comment == null)

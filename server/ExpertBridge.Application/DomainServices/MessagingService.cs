@@ -6,6 +6,7 @@ using ExpertBridge.Core.Requests.CreateMessage;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using FluentValidation;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -114,6 +115,7 @@ namespace ExpertBridge.Application.DomainServices;
 /// </remarks>
 public class MessagingService
 {
+    private readonly IValidator<CreateMessageRequest> _createMessageValidator;
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly IHubContext<NotificationsHub, INotificationClient> _hubContext;
     private readonly ILogger<MessagingService> _logger;
@@ -126,16 +128,19 @@ public class MessagingService
     /// <param name="hubContext">The SignalR hub context for real-time message delivery.</param>
     /// <param name="notifications">The notification facade for push notifications.</param>
     /// <param name="logger">The logger for diagnostic information.</param>
+    /// <param name="createMessageValidator">The validator for message creation requests.</param>
     public MessagingService(
         ExpertBridgeDbContext dbContext,
         IHubContext<NotificationsHub, INotificationClient> hubContext,
         NotificationFacade notifications,
-        ILogger<MessagingService> logger)
+        ILogger<MessagingService> logger,
+        IValidator<CreateMessageRequest> createMessageValidator)
     {
         _dbContext = dbContext;
         _hubContext = hubContext;
         _notifications = notifications;
         _logger = logger;
+        _createMessageValidator = createMessageValidator;
     }
 
     /// <summary>
@@ -224,6 +229,13 @@ public class MessagingService
     {
         ArgumentNullException.ThrowIfNull(userProfile);
         ArgumentNullException.ThrowIfNull(request);
+
+        // Validate request using FluentValidation
+        var validationResult = await _createMessageValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
 
         // WARNING!
         // Do NOT trust the chat id coming from the client.

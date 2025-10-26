@@ -9,6 +9,7 @@ using ExpertBridge.Core.Requests.UpdateJobStatus;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -95,9 +96,11 @@ namespace ExpertBridge.Application.DomainServices;
 /// </remarks>
 public class JobService
 {
+    private readonly IValidator<CreateJobOfferRequest> _createJobOfferValidator;
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly ILogger<JobService> _logger;
     private readonly NotificationFacade _notifications;
+    private readonly IValidator<UpdateJobStatusRequest> _updateJobStatusValidator;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="JobService" /> class.
@@ -105,14 +108,20 @@ public class JobService
     /// <param name="dbContext">The database context for job and related entity operations.</param>
     /// <param name="notifications">The notification facade for real-time alerts.</param>
     /// <param name="logger">The logger for diagnostic information.</param>
+    /// <param name="createJobOfferValidator">The validator for job offer creation requests.</param>
+    /// <param name="updateJobStatusValidator">The validator for job status update requests.</param>
     public JobService(
         ExpertBridgeDbContext dbContext,
         NotificationFacade notifications,
-        ILogger<JobService> logger)
+        ILogger<JobService> logger,
+        IValidator<CreateJobOfferRequest> createJobOfferValidator,
+        IValidator<UpdateJobStatusRequest> updateJobStatusValidator)
     {
         _dbContext = dbContext;
         _notifications = notifications;
         _logger = logger;
+        _createJobOfferValidator = createJobOfferValidator;
+        _updateJobStatusValidator = updateJobStatusValidator;
     }
 
     /// <summary>
@@ -235,6 +244,14 @@ public class JobService
         CreateJobOfferRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(clientProfile);
+
+        // Validate request using FluentValidation
+        var validationResult = await _createJobOfferValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
 
         var contractorProfile = await _dbContext.Profiles
             .Include(p => p.User)
@@ -362,6 +379,15 @@ public class JobService
         UpdateJobStatusRequest request)
     {
         ArgumentException.ThrowIfNullOrEmpty(jobOfferId);
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(worker);
+
+        // Validate request using FluentValidation
+        var validationResult = await _updateJobStatusValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
 
         var offer = await _dbContext.JobOffers
             .FirstOrDefaultAsync(o => o.Id == jobOfferId && o.WorkerId == worker.Id);
