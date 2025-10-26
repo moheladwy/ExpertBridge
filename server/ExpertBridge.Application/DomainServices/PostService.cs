@@ -9,6 +9,8 @@ using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
+using ExpertBridge.Core.Requests.MediaObject;
+using ExpertBridge.Core.Requests.PostsCursor;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;

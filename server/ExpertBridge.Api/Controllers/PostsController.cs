@@ -4,6 +4,7 @@ using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
+using ExpertBridge.Core.Requests.PostsCursor;
 using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

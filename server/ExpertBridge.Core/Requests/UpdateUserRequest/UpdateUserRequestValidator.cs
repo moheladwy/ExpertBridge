@@ -11,7 +11,8 @@ namespace ExpertBridge.Core.Requests.UpdateUserRequest;
 /// Validates UpdateUserRequest to ensure all user update fields meet constraints.
 /// </summary>
 /// <remarks>
-/// Validates ProviderId, Email, FirstName, LastName, and PhoneNumber against entity constraints.
+/// Validates ProviderId, Email (both required), and optional FirstName, LastName, and PhoneNumber
+/// against entity constraints when provided.
 /// Phone number validation includes format checking with regex pattern for international numbers.
 /// </remarks>
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
@@ -22,40 +23,41 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
     public UpdateUserRequestValidator()
     {
         RuleFor(x => x.ProviderId)
-            .NotNull().WithMessage("Provider ID is required")
-            .NotEmpty().WithMessage("Provider ID can not be empty")
+            .NotNull().WithMessage("Provider ID cannot be null")
+            .NotEmpty().WithMessage("Provider ID cannot be empty")
             .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
-            .WithMessage($"Provider ID must be less than {GlobalEntitiesConstraints.MaxIdLength} characters");
+            .WithMessage($"Provider ID cannot be longer than {GlobalEntitiesConstraints.MaxIdLength} characters");
 
         RuleFor(x => x.Email)
-            .NotNull().WithMessage("Email is required")
-            .NotEmpty().WithMessage("Email can not be empty")
+            .NotNull().WithMessage("Email cannot be null")
+            .NotEmpty().WithMessage("Email cannot be empty")
             .MaximumLength(UserEntityConstraints.MaxEmailLength)
-            .WithMessage($"Email must be less than {UserEntityConstraints.MaxEmailLength} characters")
+            .WithMessage($"Email cannot be longer than {UserEntityConstraints.MaxEmailLength} characters")
             .EmailAddress().WithMessage("Email must be a valid email address");
 
-        //RuleFor(x => x.Username)
-        //    .NotNull().WithMessage("Username is required")
-        //    .NotEmpty().WithMessage("Username can not be empty")
-        //    .MaximumLength(UserEntityConstraints.MaxUsernameLength)
-        //    .WithMessage($"Username must be less than {UserEntityConstraints.MaxUsernameLength} characters");
+        When(x => x.FirstName != null, () =>
+        {
+            RuleFor(x => x.FirstName)
+                .NotEmpty().WithMessage("First name cannot be empty when provided")
+                .MaximumLength(UserEntityConstraints.MaxNameLength)
+                .WithMessage($"First name cannot be longer than {UserEntityConstraints.MaxNameLength} characters");
+        });
 
-        RuleFor(x => x.FirstName)
-            .NotNull().WithMessage("First name is required")
-            .NotEmpty().WithMessage("First name can not be empty")
-            .MaximumLength(UserEntityConstraints.MaxNameLength)
-            .WithMessage($"First name must be less than {UserEntityConstraints.MaxNameLength} characters");
+        When(x => x.LastName != null, () =>
+        {
+            RuleFor(x => x.LastName)
+                .NotEmpty().WithMessage("Last name cannot be empty when provided")
+                .MaximumLength(UserEntityConstraints.MaxNameLength)
+                .WithMessage($"Last name cannot be longer than {UserEntityConstraints.MaxNameLength} characters");
+        });
 
-        RuleFor(x => x.LastName)
-            .NotNull().WithMessage("Last name is required")
-            .NotEmpty().WithMessage("Last name can not be empty")
-            .MaximumLength(UserEntityConstraints.MaxNameLength)
-            .WithMessage($"Last name must be less than {UserEntityConstraints.MaxNameLength} characters");
-
-        RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("PhoneNumber is required")
-            .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength).WithMessage(
-                $"PhoneNumber must be less than {UserEntityConstraints.MaxPhoneNumberLength} characters")
-            .Matches(@"^\+?[0-9]\d{9,20}$").WithMessage("PhoneNumber is not valid");
+        When(x => x.PhoneNumber != null, () =>
+        {
+            RuleFor(x => x.PhoneNumber)
+                .NotEmpty().WithMessage("PhoneNumber cannot be empty when provided")
+                .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength)
+                .WithMessage($"PhoneNumber cannot be longer than {UserEntityConstraints.MaxPhoneNumberLength} characters")
+                .Matches(@"^\+?[0-9]\d{9,17}$").WithMessage("PhoneNumber is not valid");
+        });
     }
 }

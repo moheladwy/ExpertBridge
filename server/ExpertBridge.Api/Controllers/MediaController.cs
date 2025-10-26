@@ -1,6 +1,7 @@
 using ExpertBridge.Application.Services;
 using ExpertBridge.Core.Entities.Media.MediaGrants;
 using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Requests.GeneratePresignedUrls;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;

@@ -1,7 +1,10 @@
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Requests;
-using ExpertBridge.Core.Requests.JobPostings;
+using ExpertBridge.Core.Requests.ApplyToJobPosting;
+using ExpertBridge.Core.Requests.CreateJobPosting;
+using ExpertBridge.Core.Requests.EditJobPosting;
+using ExpertBridge.Core.Requests.JobPostingsPagination;
 using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

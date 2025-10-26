@@ -1,5 +1,6 @@
 ﻿using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Requests.MediaObject;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 

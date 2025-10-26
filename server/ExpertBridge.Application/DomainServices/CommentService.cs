@@ -8,6 +8,7 @@ using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreateComment;
 using ExpertBridge.Core.Requests.EditComment;
+using ExpertBridge.Core.Requests.MediaObject;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;

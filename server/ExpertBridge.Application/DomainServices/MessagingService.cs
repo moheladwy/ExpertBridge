@@ -3,6 +3,7 @@ using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Requests.CreateMessage;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
