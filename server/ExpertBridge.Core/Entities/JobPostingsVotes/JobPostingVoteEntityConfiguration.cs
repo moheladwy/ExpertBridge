@@ -7,13 +7,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.JobPostingsVotes;
 
 /// <summary>
-/// Configures the entity mapping for the <see cref="JobPostingVote"/> entity.
-/// Defines the database schema for job posting votes including primary key, timestamps, relationships with profiles and job postings, and the upvote/downvote flag.
+///     Configures the entity mapping for the <see cref="JobPostingVote" /> entity.
+///     Defines the database schema for job posting votes including primary key, timestamps, relationships with profiles
+///     and job postings, and the upvote/downvote flag.
 /// </summary>
 public class JobPostingVoteEntityConfiguration : IEntityTypeConfiguration<JobPostingVote>
 {
     /// <summary>
-    /// Configures the entity type for JobPostingVote, including primary key, vote type property, relationships with Profile and JobPosting entities, and cascade delete behaviors.
+    ///     Configures the entity type for JobPostingVote, including primary key, vote type property, relationships with
+    ///     Profile and JobPosting entities, and cascade delete behaviors.
     /// </summary>
     /// <param name="builder">The builder to be used to configure the JobPostingVote entity.</param>
     public void Configure(EntityTypeBuilder<JobPostingVote> builder)

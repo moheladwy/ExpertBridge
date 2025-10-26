@@ -9,21 +9,21 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Core.Queries;
 
 /// <summary>
-/// Provides extension methods for querying and projecting Profile entities.
+///     Provides extension methods for querying and projecting Profile entities.
 /// </summary>
 /// <remarks>
-/// These query extensions support loading related user data, skills, comments, and votes,
-/// and projecting to various response DTOs including ProfileResponse, AuthorResponse, and ApplicantResponse.
+///     These query extensions support loading related user data, skills, comments, and votes,
+///     and projecting to various response DTOs including ProfileResponse, AuthorResponse, and ApplicantResponse.
 /// </remarks>
 public static class ProfileQueries
 {
     /// <summary>
-    /// Eagerly loads all related data for profiles including user, skills, comments, and votes.
+    ///     Eagerly loads all related data for profiles including user, skills, comments, and votes.
     /// </summary>
     /// <param name="query">The source queryable of profiles.</param>
     /// <returns>A queryable of profiles with all navigation properties included.</returns>
     /// <remarks>
-    /// Uses AsNoTracking for read-only queries. Includes: User, ProfileSkills with Skills, Comments with Votes.
+    ///     Uses AsNoTracking for read-only queries. Includes: User, ProfileSkills with Skills, Comments with Votes.
     /// </remarks>
     public static IQueryable<Profile> FullyPopulatedProfileQuery(this IQueryable<Profile> query)
     {
@@ -37,7 +37,7 @@ public static class ProfileQueries
     }
 
     /// <summary>
-    /// Eagerly loads all related data for profiles and filters by the specified predicate.
+    ///     Eagerly loads all related data for profiles and filters by the specified predicate.
     /// </summary>
     /// <param name="query">The source queryable of profiles.</param>
     /// <param name="predicate">The filter expression to apply.</param>
@@ -52,7 +52,7 @@ public static class ProfileQueries
     }
 
     /// <summary>
-    /// Projects a queryable of Profile entities to ProfileResponse DTOs with calculated reputation.
+    ///     Projects a queryable of Profile entities to ProfileResponse DTOs with calculated reputation.
     /// </summary>
     /// <param name="query">The source queryable of profiles.</param>
     /// <returns>A queryable of ProfileResponse objects with skills, ratings, and reputation scores.</returns>
@@ -84,7 +84,7 @@ public static class ProfileQueries
     }
 
     /// <summary>
-    /// Projects a Profile entity to an AuthorResponse DTO for use in posts and comments.
+    ///     Projects a Profile entity to an AuthorResponse DTO for use in posts and comments.
     /// </summary>
     /// <param name="profile">The profile entity to project, or null.</param>
     /// <returns>An AuthorResponse object with basic profile information, or null if the input is null.</returns>
@@ -105,7 +105,7 @@ public static class ProfileQueries
     }
 
     /// <summary>
-    /// Extracts the list of skill names from a profile's ProfileSkills collection.
+    ///     Extracts the list of skill names from a profile's ProfileSkills collection.
     /// </summary>
     /// <param name="profile">The profile entity to extract skills from.</param>
     /// <returns>A list of skill names, or an empty list if profile is null or has no skills.</returns>
@@ -117,7 +117,7 @@ public static class ProfileQueries
     }
 
     /// <summary>
-    /// Projects a Profile entity to an ApplicantResponse DTO with reputation score for job applications.
+    ///     Projects a Profile entity to an ApplicantResponse DTO with reputation score for job applications.
     /// </summary>
     /// <param name="profile">The profile entity to project, or null.</param>
     /// <returns>An ApplicantResponse object with profile information and reputation, or null if the input is null.</returns>
@@ -139,7 +139,7 @@ public static class ProfileQueries
     }
 
     /// <summary>
-    /// Calculates the reputation score for a profile based on comment votes.
+    ///     Calculates the reputation score for a profile based on comment votes.
     /// </summary>
     /// <param name="profile">The profile entity to calculate reputation for.</param>
     /// <returns>The reputation score (upvotes minus downvotes).</returns>

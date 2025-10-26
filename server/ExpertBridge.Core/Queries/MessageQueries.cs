@@ -7,15 +7,15 @@ using ExpertBridge.Core.Responses;
 namespace ExpertBridge.Core.Queries;
 
 /// <summary>
-/// Provides extension methods for querying and projecting Message entities.
+///     Provides extension methods for querying and projecting Message entities.
 /// </summary>
 /// <remarks>
-/// These query extensions project chat messages to response DTOs for real-time messaging via SignalR.
+///     These query extensions project chat messages to response DTOs for real-time messaging via SignalR.
 /// </remarks>
 public static class MessageQueries
 {
     /// <summary>
-    /// Projects a queryable of Message entities to MessageResponse DTOs for SignalR delivery.
+    ///     Projects a queryable of Message entities to MessageResponse DTOs for SignalR delivery.
     /// </summary>
     /// <param name="query">The source queryable of messages.</param>
     /// <returns>A queryable of MessageResponse objects with message content and metadata.</returns>
@@ -26,7 +26,7 @@ public static class MessageQueries
     }
 
     /// <summary>
-    /// Projects a single Message entity to a MessageResponse DTO for SignalR delivery.
+    ///     Projects a single Message entity to a MessageResponse DTO for SignalR delivery.
     /// </summary>
     /// <param name="m">The message entity to project.</param>
     /// <returns>A MessageResponse object with message content and metadata.</returns>

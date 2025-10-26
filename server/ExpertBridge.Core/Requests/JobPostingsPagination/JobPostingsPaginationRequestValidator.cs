@@ -7,38 +7,38 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.JobPostingsPagination;
 
 /// <summary>
-/// Validates JobPostingsPaginationRequest to ensure pagination parameters are valid.
+///     Validates JobPostingsPaginationRequest to ensure pagination parameters are valid.
 /// </summary>
 /// <remarks>
-/// Validates PageSize, Page, and optional cursor fields for job posting pagination.
+///     Validates PageSize, Page, and optional cursor fields for job posting pagination.
 /// </remarks>
 public class JobPostingsPaginationRequestValidator : AbstractValidator<JobPostingsPaginationRequest>
 {
-  /// <summary>
-  /// Initializes a new instance of the JobPostingsPaginationRequestValidator with validation rules.
-  /// </summary>
-  public JobPostingsPaginationRequestValidator()
-  {
-    RuleFor(x => x.PageSize)
-        .GreaterThan(0).WithMessage("PageSize must be greater than 0")
-        .LessThanOrEqualTo(100).WithMessage("PageSize cannot exceed 100");
-
-    RuleFor(x => x.Page)
-        .GreaterThan(0).WithMessage("Page must be greater than 0");
-
-    When(x => x.After.HasValue, () =>
+    /// <summary>
+    ///     Initializes a new instance of the JobPostingsPaginationRequestValidator with validation rules.
+    /// </summary>
+    public JobPostingsPaginationRequestValidator()
     {
-      RuleFor(x => x.After)
-              .GreaterThanOrEqualTo(0).WithMessage("After must be greater than or equal to 0")
-              .LessThanOrEqualTo(1).WithMessage("After must be less than or equal to 1");
-    });
+        RuleFor(x => x.PageSize)
+            .GreaterThan(0).WithMessage("PageSize must be greater than 0")
+            .LessThanOrEqualTo(100).WithMessage("PageSize cannot exceed 100");
 
-    When(x => x.LastIdCursor != null, () =>
-    {
-      RuleFor(x => x.LastIdCursor)
-              .NotEmpty().WithMessage("LastIdCursor cannot be empty when provided")
-              .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
-              .WithMessage($"LastIdCursor cannot be longer than {GlobalEntitiesConstraints.MaxIdLength} characters");
-    });
-  }
+        RuleFor(x => x.Page)
+            .GreaterThan(0).WithMessage("Page must be greater than 0");
+
+        When(x => x.After.HasValue, () =>
+        {
+            RuleFor(x => x.After)
+                .GreaterThanOrEqualTo(0).WithMessage("After must be greater than or equal to 0")
+                .LessThanOrEqualTo(1).WithMessage("After must be less than or equal to 1");
+        });
+
+        When(x => x.LastIdCursor != null, () =>
+        {
+            RuleFor(x => x.LastIdCursor)
+                .NotEmpty().WithMessage("LastIdCursor cannot be empty when provided")
+                .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+                .WithMessage($"LastIdCursor cannot be longer than {GlobalEntitiesConstraints.MaxIdLength} characters");
+        });
+    }
 }

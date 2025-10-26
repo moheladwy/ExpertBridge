@@ -9,9 +9,9 @@ namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
 public partial class ContentDashboard : ComponentBase
 {
+    private readonly ExpertBridgeDbContext _dbContext;
     private readonly bool _showDataLabels;
     private readonly ContentStats _stats;
-    private readonly ExpertBridgeDbContext _dbContext;
     private List<ChartDataItem> _commentChartData;
     private List<ChartDataItem> _jobPostingChartData;
     private bool _loading;

@@ -7,16 +7,16 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.OnboardUser;
 
 /// <summary>
-/// Validates OnboardUserRequest to ensure user interests are properly provided.
+///     Validates OnboardUserRequest to ensure user interests are properly provided.
 /// </summary>
 /// <remarks>
-/// Validates that Tags collection is provided and contains valid tag identifiers
-/// for user onboarding process.
+///     Validates that Tags collection is provided and contains valid tag identifiers
+///     for user onboarding process.
 /// </remarks>
 public class OnboardUserRequestValidator : AbstractValidator<OnboardUserRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the OnboardUserRequestValidator with validation rules.
+    ///     Initializes a new instance of the OnboardUserRequestValidator with validation rules.
     /// </summary>
     public OnboardUserRequestValidator()
     {

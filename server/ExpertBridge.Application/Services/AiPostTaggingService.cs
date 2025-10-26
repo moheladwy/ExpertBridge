@@ -11,101 +11,94 @@ using ResiliencePipeline = Polly.ResiliencePipeline;
 namespace ExpertBridge.Application.Services;
 
 /// <summary>
-/// AI-powered service for automatically generating relevant tags for posts by analyzing content using Groq LLM.
-/// Supports both English and Arabic posts with bilingual tag generation.
+///     AI-powered service for automatically generating relevant tags for posts by analyzing content using Groq LLM.
+///     Supports both English and Arabic posts with bilingual tag generation.
 /// </summary>
 /// <remarks>
-/// This service leverages Groq's large language model to perform intelligent content analysis and tag extraction.
-/// It's a critical component of the platform's content discovery and categorization system.
-///
-/// **Key Features:**
-/// - Automatic tag generation from post title and content
-/// - Bilingual support (English and Egyptian Arabic)
-/// - Language detection (Arabic, English, Mixed, Other)
-/// - Tag translation and normalization
-/// - Existing tag enhancement and validation
-/// - Structured JSON output with retry resilience
-///
-/// **Use Cases:**
-/// - New post creation: Generate initial tags from content
-/// - Post editing: Enhance existing tags with AI suggestions
-/// - Content moderation: Validate tag relevance
-/// - Search optimization: Improve discoverability through quality tags
-///
-/// **Groq Integration:**
-/// Uses Groq API (llama3-70b or mixtral model) for:
-/// 1. Content understanding and semantic analysis
-/// 2. Language detection with high accuracy
-/// 3. Relevant tag extraction (3-6 tags per post)
-/// 4. Bilingual tag generation (English + Arabic)
-/// 5. Category classification (Technology, Business, etc.)
-///
-/// **Tag Quality Rules:**
-/// - Minimum 3 tags, maximum 6 tags per post
-/// - Tags must be lowercase
-/// - No special characters or numbers
-/// - Space-separated multi-word tags allowed
-/// - Tags must be relevant to post content only
-/// - No duplicate or near-duplicate tags
-///
-/// **Resilience:**
-/// Implements Polly resilience pipeline for handling:
-/// - Malformed JSON responses from LLM
-/// - Transient API failures
-/// - Rate limiting
-/// - Automatic retry with exponential backoff
-///
-/// Results are returned as PostCategorizerResponse containing detected language and categorized tags.
+///     This service leverages Groq's large language model to perform intelligent content analysis and tag extraction.
+///     It's a critical component of the platform's content discovery and categorization system.
+///     **Key Features:**
+///     - Automatic tag generation from post title and content
+///     - Bilingual support (English and Egyptian Arabic)
+///     - Language detection (Arabic, English, Mixed, Other)
+///     - Tag translation and normalization
+///     - Existing tag enhancement and validation
+///     - Structured JSON output with retry resilience
+///     **Use Cases:**
+///     - New post creation: Generate initial tags from content
+///     - Post editing: Enhance existing tags with AI suggestions
+///     - Content moderation: Validate tag relevance
+///     - Search optimization: Improve discoverability through quality tags
+///     **Groq Integration:**
+///     Uses Groq API (llama3-70b or mixtral model) for:
+///     1. Content understanding and semantic analysis
+///     2. Language detection with high accuracy
+///     3. Relevant tag extraction (3-6 tags per post)
+///     4. Bilingual tag generation (English + Arabic)
+///     5. Category classification (Technology, Business, etc.)
+///     **Tag Quality Rules:**
+///     - Minimum 3 tags, maximum 6 tags per post
+///     - Tags must be lowercase
+///     - No special characters or numbers
+///     - Space-separated multi-word tags allowed
+///     - Tags must be relevant to post content only
+///     - No duplicate or near-duplicate tags
+///     **Resilience:**
+///     Implements Polly resilience pipeline for handling:
+///     - Malformed JSON responses from LLM
+///     - Transient API failures
+///     - Rate limiting
+///     - Automatic retry with exponential backoff
+///     Results are returned as PostCategorizerResponse containing detected language and categorized tags.
 /// </remarks>
 public sealed class AiPostTaggingService
 {
     /// <summary>
-    /// The Groq LLM text provider for generating AI-powered text analysis and tag extraction.
+    ///     The Groq LLM text provider for generating AI-powered text analysis and tag extraction.
     /// </summary>
     /// <remarks>
-    /// Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
-    /// with parameters optimized for structured output generation.
+    ///     Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
+    ///     with parameters optimized for structured output generation.
     /// </remarks>
     private readonly GroqLlmTextProvider _groqLlmTextProvider;
 
     /// <summary>
-    /// JSON serialization options configured for robust parsing of LLM responses.
+    ///     JSON serialization options configured for robust parsing of LLM responses.
     /// </summary>
     /// <remarks>
-    /// Configured with:
-    /// - PropertyNameCaseInsensitive: Handle inconsistent casing from LLM
-    /// - AllowOutOfOrderMetadataProperties: Parse flexible JSON structures
-    /// - AllowTrailingCommas: Tolerate JSON formatting issues
-    ///
-    /// These settings improve resilience against minor formatting variations in LLM output.
+    ///     Configured with:
+    ///     - PropertyNameCaseInsensitive: Handle inconsistent casing from LLM
+    ///     - AllowOutOfOrderMetadataProperties: Parse flexible JSON structures
+    ///     - AllowTrailingCommas: Tolerate JSON formatting issues
+    ///     These settings improve resilience against minor formatting variations in LLM output.
     /// </remarks>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
     /// <summary>
-    /// Polly resilience pipeline for handling transient failures and malformed responses.
+    ///     Polly resilience pipeline for handling transient failures and malformed responses.
     /// </summary>
     /// <remarks>
-    /// Uses the MalformedJsonModelResponse pipeline which includes:
-    /// - Retry policy for intermittent failures
-    /// - Circuit breaker for persistent issues
-    /// - Timeout policy for long-running requests
-    ///
-    /// This ensures reliable tag generation even when LLM responses are occasionally malformed.
+    ///     Uses the MalformedJsonModelResponse pipeline which includes:
+    ///     - Retry policy for intermittent failures
+    ///     - Circuit breaker for persistent issues
+    ///     - Timeout policy for long-running requests
+    ///     This ensures reliable tag generation even when LLM responses are occasionally malformed.
     /// </remarks>
     private readonly ResiliencePipeline _resiliencePipeline;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AiPostTaggingService"/> class with Groq LLM provider and resilience configuration.
+    ///     Initializes a new instance of the <see cref="AiPostTaggingService" /> class with Groq LLM provider and resilience
+    ///     configuration.
     /// </summary>
     /// <param name="groqLlmTextProvider">
-    /// The Groq LLM provider for text generation and analysis.
+    ///     The Groq LLM provider for text generation and analysis.
     /// </param>
     /// <param name="resilience">
-    /// The resilience pipeline provider for fault tolerance configuration.
+    ///     The resilience pipeline provider for fault tolerance configuration.
     /// </param>
     /// <remarks>
-    /// Configures JSON deserialization options for lenient parsing of LLM responses.
-    /// Retrieves the MalformedJsonModelResponse pipeline for handling structured output issues.
+    ///     Configures JSON deserialization options for lenient parsing of LLM responses.
+    ///     Retrieves the MalformedJsonModelResponse pipeline for handling structured output issues.
     /// </remarks>
     public AiPostTaggingService(
         GroqLlmTextProvider groqLlmTextProvider,
@@ -115,69 +108,65 @@ public sealed class AiPostTaggingService
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true,
-            AllowOutOfOrderMetadataProperties = true,
-            AllowTrailingCommas = true
+            PropertyNameCaseInsensitive = true, AllowOutOfOrderMetadataProperties = true, AllowTrailingCommas = true
         };
     }
 
     /// <summary>
-    /// Generates relevant tags for a post by analyzing its title, content, and existing tags using Groq LLM.
+    ///     Generates relevant tags for a post by analyzing its title, content, and existing tags using Groq LLM.
     /// </summary>
     /// <param name="title">The post title to analyze for tag generation. Must not be null or empty.</param>
     /// <param name="content">The post content/body to analyze for tag extraction. Must not be null or empty.</param>
     /// <param name="existingTags">
-    /// Collection of existing tags associated with the post. If provided, the LLM will translate them and generate additional unique tags.
-    /// If empty, the LLM will generate tags from scratch. Must not be null.
+    ///     Collection of existing tags associated with the post. If provided, the LLM will translate them and generate
+    ///     additional unique tags.
+    ///     If empty, the LLM will generate tags from scratch. Must not be null.
     /// </param>
     /// <returns>
-    /// A <see cref="PostCategorizerResponse"/> containing:
-    /// - Language: Detected language (Arabic, English, Mixed, Other)
-    /// - Tags: List of generated/translated tags with bilingual names and descriptions
-    /// Returns null if the LLM fails to generate valid output after all retry attempts.
+    ///     A <see cref="PostCategorizerResponse" /> containing:
+    ///     - Language: Detected language (Arabic, English, Mixed, Other)
+    ///     - Tags: List of generated/translated tags with bilingual names and descriptions
+    ///     Returns null if the LLM fails to generate valid output after all retry attempts.
     /// </returns>
     /// <exception cref="ArgumentException">
-    /// Thrown when title or content is null or empty.
+    ///     Thrown when title or content is null or empty.
     /// </exception>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when existingTags is null.
+    ///     Thrown when existingTags is null.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the LLM response cannot be deserialized into the expected format.
-    /// This typically indicates a severe issue with the Groq API or model configuration.
+    ///     Thrown when the LLM response cannot be deserialized into the expected format.
+    ///     This typically indicates a severe issue with the Groq API or model configuration.
     /// </exception>
     /// <exception cref="JsonException">
-    /// Thrown when JSON parsing fails after all retry attempts.
-    /// The resilience pipeline should handle most transient JSON issues.
+    ///     Thrown when JSON parsing fails after all retry attempts.
+    ///     The resilience pipeline should handle most transient JSON issues.
     /// </exception>
     /// <remarks>
-    /// **Processing Flow:**
-    /// 1. Validates input parameters (title, content, existingTags)
-    /// 2. Constructs system prompt with tagging rules and guidelines
-    /// 3. Constructs user prompt with post content and instructions
-    /// 4. Sends prompts to Groq LLM via resilience pipeline
-    /// 5. Deserializes JSON response into PostCategorizerResponse
-    /// 6. Returns structured tag data
-    ///
-    /// **System Prompt Instructions:**
-    /// The LLM is instructed to:
-    /// - Detect post language (Arabic/English/Mixed/Other)
-    /// - Generate 3-6 relevant tags
-    /// - Provide bilingual tag names (English + Egyptian Arabic)
-    /// - Include tag descriptions
-    /// - Translate existing tags without changing meaning
-    /// - Generate additional unique tags beyond existing ones
-    /// - Output in strict JSON format matching PostCategorizationOutputFormat.json schema
-    ///
-    /// **User Prompt Format:**
-    /// Includes:
-    /// - Post title
-    /// - Post content
-    /// - Existing tags (if any)
-    /// - Output format schema (Pydantic/JSON schema)
-    ///
-    /// **Example Usage:**
-    /// <code>
+    ///     **Processing Flow:**
+    ///     1. Validates input parameters (title, content, existingTags)
+    ///     2. Constructs system prompt with tagging rules and guidelines
+    ///     3. Constructs user prompt with post content and instructions
+    ///     4. Sends prompts to Groq LLM via resilience pipeline
+    ///     5. Deserializes JSON response into PostCategorizerResponse
+    ///     6. Returns structured tag data
+    ///     **System Prompt Instructions:**
+    ///     The LLM is instructed to:
+    ///     - Detect post language (Arabic/English/Mixed/Other)
+    ///     - Generate 3-6 relevant tags
+    ///     - Provide bilingual tag names (English + Egyptian Arabic)
+    ///     - Include tag descriptions
+    ///     - Translate existing tags without changing meaning
+    ///     - Generate additional unique tags beyond existing ones
+    ///     - Output in strict JSON format matching PostCategorizationOutputFormat.json schema
+    ///     **User Prompt Format:**
+    ///     Includes:
+    ///     - Post title
+    ///     - Post content
+    ///     - Existing tags (if any)
+    ///     - Output format schema (Pydantic/JSON schema)
+    ///     **Example Usage:**
+    ///     <code>
     /// var tags = await groqPostTaggingService.GeneratePostTagsAsync(
     ///     "How to optimize React performance",
     ///     "I'm looking for best practices to improve React app performance...",
@@ -188,15 +177,13 @@ public sealed class AiPostTaggingService
     /// // Language: English
     /// // Tags: ["react", "javascript", "performance optimization", "web development", "frontend"]
     /// </code>
-    ///
-    /// **Performance Considerations:**
-    /// - LLM calls are relatively slow (2-5 seconds typical)
-    /// - Should be called asynchronously in background workers
-    /// - Results should be cached to avoid redundant API calls
-    /// - Rate limiting may apply based on Groq API tier
-    ///
-    /// The resilience pipeline ensures reliable operation even when the LLM occasionally
-    /// returns malformed JSON or experiences transient failures.
+    ///     **Performance Considerations:**
+    ///     - LLM calls are relatively slow (2-5 seconds typical)
+    ///     - Should be called asynchronously in background workers
+    ///     - Results should be cached to avoid redundant API calls
+    ///     - Rate limiting may apply based on Groq API tier
+    ///     The resilience pipeline ensures reliable operation even when the LLM occasionally
+    ///     returns malformed JSON or experiences transient failures.
     /// </remarks>
     public async Task<PostCategorizerResponse?> GeneratePostTagsAsync(
         string title,
@@ -246,7 +233,8 @@ public sealed class AiPostTaggingService
     /// <summary>
     ///     Generates the master system prompt that defines the AI’s core behavior for text categorization tasks.
     ///     This prompt instructs the AI on language detection, tag translation, tag generation, and output formatting.
-    ///     It enforces schema compliance, linguistic consistency, and structured output rules for bilingual (English–Egyptian Arabic) posts.
+    ///     It enforces schema compliance, linguistic consistency, and structured output rules for bilingual (English–Egyptian
+    ///     Arabic) posts.
     /// </summary>
     /// <returns>
     ///     A string containing the complete system prompt with all instructions and output schema definition.
@@ -321,5 +309,4 @@ public sealed class AiPostTaggingService
 
         return string.Join("\n", userPrompt);
     }
-
 }

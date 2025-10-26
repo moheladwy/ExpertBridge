@@ -7,15 +7,15 @@ using ExpertBridge.Core.Responses;
 namespace ExpertBridge.Core.Queries;
 
 /// <summary>
-/// Provides extension methods for querying and projecting Job entities.
+///     Provides extension methods for querying and projecting Job entities.
 /// </summary>
 /// <remarks>
-/// These query extensions project active job contracts to response DTOs with author and worker information.
+///     These query extensions project active job contracts to response DTOs with author and worker information.
 /// </remarks>
 public static class JobQueries
 {
     /// <summary>
-    /// Projects a queryable of Job entities to JobResponse DTOs with author and worker profiles.
+    ///     Projects a queryable of Job entities to JobResponse DTOs with author and worker profiles.
     /// </summary>
     /// <param name="query">The source queryable of jobs.</param>
     /// <returns>A queryable of JobResponse objects with populated profile information.</returns>
@@ -26,7 +26,7 @@ public static class JobQueries
     }
 
     /// <summary>
-    /// Projects a single Job entity to a JobResponse DTO with author and worker profiles.
+    ///     Projects a single Job entity to a JobResponse DTO with author and worker profiles.
     /// </summary>
     /// <param name="j">The job entity to project.</param>
     /// <returns>A JobResponse object with all job contract details and participant profiles.</returns>

@@ -9,22 +9,22 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Core.Queries;
 
 /// <summary>
-/// Provides extension methods for querying and projecting Comment entities.
+///     Provides extension methods for querying and projecting Comment entities.
 /// </summary>
 /// <remarks>
-/// These query extensions enable reusable patterns for loading related data including nested replies
-/// and projecting to response DTOs with user-specific vote states.
+///     These query extensions enable reusable patterns for loading related data including nested replies
+///     and projecting to response DTOs with user-specific vote states.
 /// </remarks>
 public static class CommentQueries
 {
     /// <summary>
-    /// Eagerly loads all related data for top-level comments including author, votes, media, and nested replies.
+    ///     Eagerly loads all related data for top-level comments including author, votes, media, and nested replies.
     /// </summary>
     /// <param name="query">The source queryable of comments.</param>
     /// <returns>A queryable of top-level comments with all navigation properties included.</returns>
     /// <remarks>
-    /// Filters to only top-level comments (ParentCommentId == null).
-    /// Uses AsNoTracking for read-only queries. Includes: Votes, Author, Medias, Replies with Authors.
+    ///     Filters to only top-level comments (ParentCommentId == null).
+    ///     Uses AsNoTracking for read-only queries. Includes: Votes, Author, Medias, Replies with Authors.
     /// </remarks>
     public static IQueryable<Comment> FullyPopulatedCommentQuery(this IQueryable<Comment> query)
     {
@@ -39,7 +39,7 @@ public static class CommentQueries
     }
 
     /// <summary>
-    /// Eagerly loads all related data for comments and filters by the specified predicate.
+    ///     Eagerly loads all related data for comments and filters by the specified predicate.
     /// </summary>
     /// <param name="query">The source queryable of comments.</param>
     /// <param name="predicate">The filter expression to apply.</param>
@@ -54,7 +54,7 @@ public static class CommentQueries
     }
 
     /// <summary>
-    /// Projects a queryable of comments to CommentResponse DTOs with user-specific vote information.
+    ///     Projects a queryable of comments to CommentResponse DTOs with user-specific vote information.
     /// </summary>
     /// <param name="query">The source queryable of comments.</param>
     /// <param name="userProfileId">The ID of the current user for determining vote states.</param>
@@ -70,7 +70,7 @@ public static class CommentQueries
     }
 
     /// <summary>
-    /// Projects a single comment entity to a CommentResponse DTO with user-specific vote information and nested replies.
+    ///     Projects a single comment entity to a CommentResponse DTO with user-specific vote information and nested replies.
     /// </summary>
     /// <param name="c">The comment entity to project.</param>
     /// <param name="userProfileId">The ID of the current user for determining vote states.</param>

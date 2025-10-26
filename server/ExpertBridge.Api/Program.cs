@@ -62,10 +62,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
             TraceId = context.HttpContext.TraceIdentifier
         };
 
-        return new BadRequestObjectResult(result)
-        {
-            StatusCode = StatusCodes.Status400BadRequest
-        };
+        return new BadRequestObjectResult(result) { StatusCode = StatusCodes.Status400BadRequest };
     };
 });
 

@@ -9,18 +9,18 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.UpdateProfileRequest;
 
 /// <summary>
-/// Validates UpdateProfileRequest to ensure profile update data meets requirements.
+///     Validates UpdateProfileRequest to ensure profile update data meets requirements.
 /// </summary>
 /// <remarks>
-/// Validates optional fields including JobTitle, Bio, FirstName, LastName, Username, PhoneNumber, and Skills.
-/// All validations use .When() to only validate when fields are provided (conditional validation).
-/// Username includes regex validation for allowed characters. PhoneNumber uses international format validation.
-/// Skills collection ensures each skill ID meets length constraints.
+///     Validates optional fields including JobTitle, Bio, FirstName, LastName, Username, PhoneNumber, and Skills.
+///     All validations use .When() to only validate when fields are provided (conditional validation).
+///     Username includes regex validation for allowed characters. PhoneNumber uses international format validation.
+///     Skills collection ensures each skill ID meets length constraints.
 /// </remarks>
 public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the ValidateUpdateProfileRequest with conditional validation rules.
+    ///     Initializes a new instance of the ValidateUpdateProfileRequest with conditional validation rules.
     /// </summary>
     public UpdateProfileRequestValidator()
     {
@@ -29,7 +29,8 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
             RuleFor(x => x.JobTitle)
                 .NotEmpty().WithMessage("Job title cannot be empty when provided")
                 .MaximumLength(ProfileEntityConstraints.JobTitleMaxLength)
-                .WithMessage($"Job title cannot be longer than {ProfileEntityConstraints.JobTitleMaxLength} characters");
+                .WithMessage(
+                    $"Job title cannot be longer than {ProfileEntityConstraints.JobTitleMaxLength} characters");
         });
 
         When(x => x.Bio != null, () =>
@@ -71,7 +72,8 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty().WithMessage("Phone number cannot be empty when provided")
                 .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength)
-                .WithMessage($"Phone number cannot be longer than {UserEntityConstraints.MaxPhoneNumberLength} characters")
+                .WithMessage(
+                    $"Phone number cannot be longer than {UserEntityConstraints.MaxPhoneNumberLength} characters")
                 .Matches(@"^\+?[0-9]\d{9,17}$")
                 .WithMessage("Phone number must be in a valid international format");
         });

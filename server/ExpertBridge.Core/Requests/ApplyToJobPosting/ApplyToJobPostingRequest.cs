@@ -6,32 +6,32 @@ using System.ComponentModel.DataAnnotations;
 namespace ExpertBridge.Core.Requests.ApplyToJobPosting;
 
 /// <summary>
-/// Represents a request to apply for a job posting.
+///     Represents a request to apply for a job posting.
 /// </summary>
 /// <remarks>
-/// Workers submit applications with their proposed cost and an optional cover letter
-/// to express interest in a job posting.
+///     Workers submit applications with their proposed cost and an optional cover letter
+///     to express interest in a job posting.
 /// </remarks>
 public class ApplyToJobPostingRequest
 {
     /// <summary>
-    /// Gets or sets the unique identifier of the job posting to apply for.
+    ///     Gets or sets the unique identifier of the job posting to apply for.
     /// </summary>
     public required string JobPostingId { get; set; }
 
     /// <summary>
-    /// Gets or sets the cover letter for the application.
+    ///     Gets or sets the cover letter for the application.
     /// </summary>
     /// <remarks>
-    /// Optional but recommended to explain qualifications and interest.
+    ///     Optional but recommended to explain qualifications and interest.
     /// </remarks>
     public string? CoverLetter { get; set; }
 
     /// <summary>
-    /// Gets or sets the cost proposed by the applicant for completing the job.
+    ///     Gets or sets the cost proposed by the applicant for completing the job.
     /// </summary>
     /// <remarks>
-    /// Must be a non-negative value.
+    ///     Must be a non-negative value.
     /// </remarks>
     [Range(0, double.MaxValue, ErrorMessage = "OfferedCost must be non-negative.")]
     public required decimal OfferedCost { get; set; }

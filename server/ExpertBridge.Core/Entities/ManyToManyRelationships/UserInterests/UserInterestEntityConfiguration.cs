@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="UserInterest"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="UserInterest" /> entity.
 /// </summary>
 public class UserInterestEntityConfiguration : IEntityTypeConfiguration<UserInterest>
 {
     /// <summary>
-    /// Configures the entity mapping, composite key, and relationships for user interests.
+    ///     Configures the entity mapping, composite key, and relationships for user interests.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<UserInterest> builder)

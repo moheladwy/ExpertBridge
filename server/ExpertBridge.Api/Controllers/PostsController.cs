@@ -1,7 +1,6 @@
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Requests.PostsCursor;

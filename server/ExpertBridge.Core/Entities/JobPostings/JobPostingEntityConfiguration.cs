@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.JobPostings;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="JobPosting"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="JobPosting" /> entity.
 /// </summary>
 public class JobPostingEntityConfiguration : IEntityTypeConfiguration<JobPosting>
 {
     /// <summary>
-    /// Configures the entity mapping, relationships, indexes, and database constraints for job postings.
+    ///     Configures the entity mapping, relationships, indexes, and database constraints for job postings.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<JobPosting> builder)

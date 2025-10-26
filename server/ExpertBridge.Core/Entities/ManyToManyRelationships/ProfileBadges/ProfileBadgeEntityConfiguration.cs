@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="ProfileBadge"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="ProfileBadge" /> entity.
 /// </summary>
 public class ProfileBadgeEntityConfiguration : IEntityTypeConfiguration<ProfileBadge>
 {
     /// <summary>
-    /// Configures the entity mapping, composite key, and relationships for profile badges.
+    ///     Configures the entity mapping, composite key, and relationships for profile badges.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<ProfileBadge> builder)

@@ -52,9 +52,7 @@ public class AiTagProcessorService
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true,
-            AllowOutOfOrderMetadataProperties = true,
-            AllowTrailingCommas = true
+            PropertyNameCaseInsensitive = true, AllowOutOfOrderMetadataProperties = true, AllowTrailingCommas = true
         };
     }
 

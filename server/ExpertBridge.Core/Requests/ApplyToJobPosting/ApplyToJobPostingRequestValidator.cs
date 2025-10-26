@@ -7,16 +7,16 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.ApplyToJobPosting;
 
 /// <summary>
-/// Validates ApplyToJobPostingRequest to ensure all required application fields meet constraints.
+///     Validates ApplyToJobPostingRequest to ensure all required application fields meet constraints.
 /// </summary>
 /// <remarks>
-/// Validates JobPostingId, OfferedCost, and optional CoverLetter against entity constraints
-/// from JobApplication entity to ensure data integrity during application submission.
+///     Validates JobPostingId, OfferedCost, and optional CoverLetter against entity constraints
+///     from JobApplication entity to ensure data integrity during application submission.
 /// </remarks>
 public class ApplyToJobPostingRequestValidator : AbstractValidator<ApplyToJobPostingRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the ApplyToJobPostingRequestValidator with validation rules.
+    ///     Initializes a new instance of the ApplyToJobPostingRequestValidator with validation rules.
     /// </summary>
     public ApplyToJobPostingRequestValidator()
     {
@@ -34,7 +34,8 @@ public class ApplyToJobPostingRequestValidator : AbstractValidator<ApplyToJobPos
         {
             RuleFor(x => x.CoverLetter)
                 .MaximumLength(GlobalEntitiesConstraints.MaxCoverLetterLength)
-                .WithMessage($"CoverLetter cannot be longer than {GlobalEntitiesConstraints.MaxCoverLetterLength} characters");
+                .WithMessage(
+                    $"CoverLetter cannot be longer than {GlobalEntitiesConstraints.MaxCoverLetterLength} characters");
         });
     }
 }

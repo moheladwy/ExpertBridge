@@ -7,7 +7,6 @@ using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Messages;
 using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.ApplyToJobPosting;
 using ExpertBridge.Core.Requests.CreateJobPosting;
 using ExpertBridge.Core.Requests.EditJobPosting;
@@ -26,24 +25,23 @@ using Pgvector.EntityFrameworkCore;
 namespace ExpertBridge.Application.DomainServices;
 
 /// <summary>
-/// Provides comprehensive job posting management with AI-powered matching, recommendations, and application processing.
+///     Provides comprehensive job posting management with AI-powered matching, recommendations, and application
+///     processing.
 /// </summary>
 /// <remarks>
-/// This service manages the complete lifecycle of job postings in ExpertBridge's marketplace, from creation through
-/// application processing, leveraging vector embeddings for intelligent contractor-job matching.
-/// 
-/// **Core Features:**
-/// - Job posting CRUD with media attachments
-/// - AI-powered job recommendations using vector similarity
-/// - Semantic job search with cosine distance
-/// - Personalized job suggestions based on user interests
-/// - Application submission and tracking
-/// - Voting to express interest
-/// - Tag-based skill matching
-/// - HybridCache for performance
-/// 
-/// **AI Recommendation Architecture:**
-/// <code>
+///     This service manages the complete lifecycle of job postings in ExpertBridge's marketplace, from creation through
+///     application processing, leveraging vector embeddings for intelligent contractor-job matching.
+///     **Core Features:**
+///     - Job posting CRUD with media attachments
+///     - AI-powered job recommendations using vector similarity
+///     - Semantic job search with cosine distance
+///     - Personalized job suggestions based on user interests
+///     - Application submission and tracking
+///     - Voting to express interest
+///     - Tag-based skill matching
+///     - HybridCache for performance
+///     **AI Recommendation Architecture:**
+///     <code>
 /// Job Posting Created
 ///     ↓
 /// PostProcessingPipelineMessage published
@@ -58,32 +56,28 @@ namespace ExpertBridge.Application.DomainServices;
 ///     ↓
 /// Ordered by similarity score (distance closest to 0 = best match)
 /// </code>
-/// 
-/// **Matching Algorithm:**
-/// Uses pgvector extension for high-performance similarity search:
-/// <code>
+///     **Matching Algorithm:**
+///     Uses pgvector extension for high-performance similarity search:
+///     <code>
 /// SELECT * FROM job_postings
 /// WHERE job_description_embedding IS NOT NULL
 /// ORDER BY job_description_embedding &lt;=&gt; user_interest_embedding
 /// LIMIT 20
 /// </code>
-/// Cosine distance operator `&lt;=&gt;` returns values 0-2 (0 = identical, 2 = opposite).
-/// 
-/// **Tag-Based Skill Matching:**
-/// - Job postings tagged with required skills (e.g., "C#", "Azure", "Docker")
-/// - Contractor profiles have UserInterests from previous interactions
-/// - Voting on job adds tags to voter's UserInterests (skill discovery)
-/// - Tag overlap boosts recommendation relevance
-/// 
-/// **Caching Strategy:**
-/// HybridCache with two-tier architecture:
-/// - **L1 Cache**: In-memory for ultra-fast repeated queries
-/// - **L2 Cache**: Redis for distributed consistency
-/// - **Similar Jobs**: Cached by job ID with sliding expiration
-/// - **Suggested Jobs**: Cached by profile ID for personalized results
-/// 
-/// **Application Workflow:**
-/// <code>
+///     Cosine distance operator `&lt;=&gt;` returns values 0-2 (0 = identical, 2 = opposite).
+///     **Tag-Based Skill Matching:**
+///     - Job postings tagged with required skills (e.g., "C#", "Azure", "Docker")
+///     - Contractor profiles have UserInterests from previous interactions
+///     - Voting on job adds tags to voter's UserInterests (skill discovery)
+///     - Tag overlap boosts recommendation relevance
+///     **Caching Strategy:**
+///     HybridCache with two-tier architecture:
+///     - **L1 Cache**: In-memory for ultra-fast repeated queries
+///     - **L2 Cache**: Redis for distributed consistency
+///     - **Similar Jobs**: Cached by job ID with sliding expiration
+///     - **Suggested Jobs**: Cached by profile ID for personalized results
+///     **Application Workflow:**
+///     <code>
 /// Contractor finds job → Reviews requirements
 ///     ↓
 /// Applies with cover letter
@@ -98,58 +92,50 @@ namespace ExpertBridge.Application.DomainServices;
 ///     ↓
 /// Job + Chat created, JobPosting marked as filled
 /// </code>
-/// 
-/// **Voting Mechanism:**
-/// - Contractors upvote jobs they're interested in
-/// - Job tags automatically added to voter's UserInterests
-/// - Improves future job recommendations
-/// - Signal to job author (high vote count = attractive opportunity)
-/// 
-/// **Job Posting Lifecycle:**
-/// 1. **Created**: Author creates with title, content, budget, area, optional media
-/// 2. **Tagged**: Background worker adds AI-generated tags
-/// 3. **Embedded**: Background worker generates description embedding
-/// 4. **Discoverable**: Appears in recommendations, search, similar jobs
-/// 5. **Applications**: Contractors apply
-/// 6. **Accepted**: Author accepts application (handled by JobService)
-/// 7. **Archived**: Job marked as filled, removed from active listings
-/// 
-/// **Media Attachments:**
-/// - Images, PDFs for detailed requirements
-/// - S3 storage with presigned URLs
-/// - 15-day upload grant activation
-/// - Managed via MediaAttachmentService
-/// 
-/// **Notification Integration:**
-/// Real-time notifications via SignalR for:
-/// - New applications on your job posting
-/// - Upvotes on your job posting
-/// - Job recommendations matching your skills
-/// 
-/// **Performance Optimizations:**
-/// - Eager loading with Include/ThenInclude
-/// - AsNoTracking for read-only queries
-/// - Projection to response DTOs
-/// - Vector index on JobDescriptionEmbedding column
-/// - HybridCache for expensive similarity queries
-/// - Background processing for embedding generation
-/// 
-/// **Authorization Rules:**
-/// - Create: Any authenticated user can post jobs
-/// - Edit: Only job author
-/// - Delete: Only job author
-/// - Apply: Any contractor (future: prevent self-application)
-/// - View Applications: Only job author
-/// - Vote: Any authenticated user except author
-/// 
-/// **Use Cases:**
-/// - Clients post freelance/contract opportunities
-/// - Contractors discover relevant jobs
-/// - AI matches jobs to contractor expertise
-/// - Skills-based marketplace
-/// - Project-based work management
-/// 
-/// Registered as scoped service for per-request lifetime and DbContext transaction management.
+///     **Voting Mechanism:**
+///     - Contractors upvote jobs they're interested in
+///     - Job tags automatically added to voter's UserInterests
+///     - Improves future job recommendations
+///     - Signal to job author (high vote count = attractive opportunity)
+///     **Job Posting Lifecycle:**
+///     1. **Created**: Author creates with title, content, budget, area, optional media
+///     2. **Tagged**: Background worker adds AI-generated tags
+///     3. **Embedded**: Background worker generates description embedding
+///     4. **Discoverable**: Appears in recommendations, search, similar jobs
+///     5. **Applications**: Contractors apply
+///     6. **Accepted**: Author accepts application (handled by JobService)
+///     7. **Archived**: Job marked as filled, removed from active listings
+///     **Media Attachments:**
+///     - Images, PDFs for detailed requirements
+///     - S3 storage with presigned URLs
+///     - 15-day upload grant activation
+///     - Managed via MediaAttachmentService
+///     **Notification Integration:**
+///     Real-time notifications via SignalR for:
+///     - New applications on your job posting
+///     - Upvotes on your job posting
+///     - Job recommendations matching your skills
+///     **Performance Optimizations:**
+///     - Eager loading with Include/ThenInclude
+///     - AsNoTracking for read-only queries
+///     - Projection to response DTOs
+///     - Vector index on JobDescriptionEmbedding column
+///     - HybridCache for expensive similarity queries
+///     - Background processing for embedding generation
+///     **Authorization Rules:**
+///     - Create: Any authenticated user can post jobs
+///     - Edit: Only job author
+///     - Delete: Only job author
+///     - Apply: Any contractor (future: prevent self-application)
+///     - View Applications: Only job author
+///     - Vote: Any authenticated user except author
+///     **Use Cases:**
+///     - Clients post freelance/contract opportunities
+///     - Contractors discover relevant jobs
+///     - AI matches jobs to contractor expertise
+///     - Skills-based marketplace
+///     - Project-based work management
+///     Registered as scoped service for per-request lifetime and DbContext transaction management.
 /// </remarks>
 public class JobPostingService
 {
@@ -179,8 +165,8 @@ public class JobPostingService
         _publishEndpoint = publishEndpoint;
     }
 
-    /// <summary>
-    /// Creates a new job posting with optional media attachments and initiates AI processing pipeline.
+    // <summary>
+    ///     Creates a new job posting with optional media attachments and initiates AI processing pipeline.
     /// </summary>
     /// <param name="request">The job posting creation request containing title, content, budget, area, and media.</param>
     /// <param name="authorProfile">The authenticated user profile creating the job posting (client).</param>
@@ -188,15 +174,13 @@ public class JobPostingService
     /// <exception cref="ArgumentNullException">Thrown when request or authorProfile is null.</exception>
     /// <exception cref="BadHttpRequestException">Thrown when title or content is empty.</exception>
     /// <remarks>
-    /// **Complete Creation Workflow:**
-    /// 
-    /// **1. Validation:**
-    /// - Validates title and content not empty (trimmed)
-    /// - Validates authorProfile exists
-    /// - Budget and area required fields
-    /// 
-    /// **2. Job Posting Entity Creation:**
-    /// <code>
+    ///     **Complete Creation Workflow:**
+    ///     **1. Validation:**
+    ///     - Validates title and content not empty (trimmed)
+    ///     - Validates authorProfile exists
+    ///     - Budget and area required fields
+    ///     **2. Job Posting Entity Creation:**
+    ///     <code>
     /// JobPosting {
     ///     Title: "Senior .NET Developer",
     ///     Content: "Looking for experienced developer...",
@@ -205,23 +189,20 @@ public class JobPostingService
     ///     AuthorId: clientProfile.Id
     /// }
     /// </code>
-    /// 
-    /// **3. Media Attachment Processing:**
-    /// If media provided:
-    /// - Creates JobPostingMedia entities
-    /// - Processes via MediaAttachmentService
-    /// - S3 grants activated for upload (15-day expiration)
-    /// - Sanitized filenames
-    /// 
-    /// **4. Tag Inheritance:**
-    /// Adds job's tags to author's UserInterests:
-    /// - Builds interest profile for job posters
-    /// - Enables "jobs similar to ones you've posted" recommendations
-    /// - Publishes UserInterestsUpdatedMessage
-    /// 
-    /// **5. Background Processing Pipeline:**
-    /// Publishes PostProcessingPipelineMessage:
-    /// <code>
+    ///     **3. Media Attachment Processing:**
+    ///     If media provided:
+    ///     - Creates JobPostingMedia entities
+    ///     - Processes via MediaAttachmentService
+    ///     - S3 grants activated for upload (15-day expiration)
+    ///     - Sanitized filenames
+    ///     **4. Tag Inheritance:**
+    ///     Adds job's tags to author's UserInterests:
+    ///     - Builds interest profile for job posters
+    ///     - Enables "jobs similar to ones you've posted" recommendations
+    ///     - Publishes UserInterestsUpdatedMessage
+    ///     **5. Background Processing Pipeline:**
+    ///     Publishes PostProcessingPipelineMessage:
+    ///     <code>
     /// PostProcessingPipelineMessage {
     ///     ItemId: jobPosting.Id,
     ///     ItemType: PostProcessingItemType.JobPosting,
@@ -229,25 +210,21 @@ public class JobPostingService
     ///     Title: jobPosting.Title
     /// }
     /// </code>
-    /// 
-    /// Background worker handles:
-    /// - **Groq AI**: Analyzes content, generates tags (bilingual: English + Arabic)
-    /// - **Ollama**: Creates 1024-dimension embedding vector from description
-    /// - **TaggingService**: Associates tags with job posting
-    /// - **Database Update**: Stores embedding in JobDescriptionEmbedding column
-    /// 
-    /// **6. Notification Delivery:**
-    /// - Notifies job author (confirmation)
-    /// - Notifies relevant contractors (optional: matching their interests)
-    /// - Real-time via SignalR
-    /// 
-    /// **7. Response Projection:**
-    /// - Re-queries with full navigation properties
-    /// - Projects to JobPostingResponse DTO
-    /// - Includes author, media, tags, vote counts
-    /// 
-    /// **Example Usage:**
-    /// <code>
+    ///     Background worker handles:
+    ///     - **Groq AI**: Analyzes content, generates tags (bilingual: English + Arabic)
+    ///     - **Ollama**: Creates 1024-dimension embedding vector from description
+    ///     - **TaggingService**: Associates tags with job posting
+    ///     - **Database Update**: Stores embedding in JobDescriptionEmbedding column
+    ///     **6. Notification Delivery:**
+    ///     - Notifies job author (confirmation)
+    ///     - Notifies relevant contractors (optional: matching their interests)
+    ///     - Real-time via SignalR
+    ///     **7. Response Projection:**
+    ///     - Re-queries with full navigation properties
+    ///     - Projects to JobPostingResponse DTO
+    ///     - Includes author, media, tags, vote counts
+    ///     **Example Usage:**
+    ///     <code>
     /// var request = new CreateJobPostingRequest {
     ///     Title = "React Native Mobile App Development",
     ///     Content = "Need experienced React Native developer for iOS/Android app...",
@@ -264,9 +241,8 @@ public class JobPostingService
     /// // After ~30 seconds: tags and embedding ready
     /// // Job appears in contractor recommendations
     /// </code>
-    /// 
-    /// **AI Processing Pipeline:**
-    /// <code>
+    ///     **AI Processing Pipeline:**
+    ///     <code>
     /// Job Created → Message Published
     ///     ↓
     /// Background Consumer receives message
@@ -281,9 +257,8 @@ public class JobPostingService
     ///     ↓
     /// Job now discoverable via similarity search
     /// </code>
-    /// 
-    /// **Media Upload Flow:**
-    /// <code>
+    ///     **Media Upload Flow:**
+    ///     <code>
     /// Client creates job with media
     ///     ↓
     /// JobPostingMedia records created
@@ -294,25 +269,21 @@ public class JobPostingService
     ///     ↓
     /// Media accessible via FileName + ContentType
     /// </code>
-    /// 
-    /// **Budget and Area:**
-    /// - Budget: Decimal representing total project budget or hourly rate
-    /// - Area: Category/domain (e.g., "Web Development", "Data Science", "Graphic Design")
-    /// - Used for filtering and grouping
-    /// - Not validated against predefined list (flexible taxonomy)
-    /// 
-    /// **Performance:**
-    /// - Single database transaction
-    /// - Async background processing (non-blocking)
-    /// - Media processing parallelizable
-    /// - Instant response to client (processing continues asynchronously)
-    /// 
-    /// **Discoverability Timeline:**
-    /// - **Immediate**: Visible in "All Jobs" listing
-    /// - **After Tagging** (~10s): Appears in tag-based search
-    /// - **After Embedding** (~30s): Appears in AI recommendations
-    /// 
-    /// This is the primary entry point for job posting creation in the marketplace.
+    ///     **Budget and Area:**
+    ///     - Budget: Decimal representing total project budget or hourly rate
+    ///     - Area: Category/domain (e.g., "Web Development", "Data Science", "Graphic Design")
+    ///     - Used for filtering and grouping
+    ///     - Not validated against predefined list (flexible taxonomy)
+    ///     **Performance:**
+    ///     - Single database transaction
+    ///     - Async background processing (non-blocking)
+    ///     - Media processing parallelizable
+    ///     - Instant response to client (processing continues asynchronously)
+    ///     **Discoverability Timeline:**
+    ///     - **Immediate**: Visible in "All Jobs" listing
+    ///     - **After Tagging** (~10s): Appears in tag-based search
+    ///     - **After Embedding** (~30s): Appears in AI recommendations
+    ///     This is the primary entry point for job posting creation in the marketplace.
     /// </remarks>
     public async Task<JobPostingResponse> CreateAsync(
         CreateJobPostingRequest request,
@@ -381,15 +352,15 @@ public class JobPostingService
     }
 
     /// <summary>
-    /// Retrieves AI-recommended job postings using vector similarity with offset-based pagination.
+    ///     Retrieves AI-recommended job postings using vector similarity with offset-based pagination.
     /// </summary>
     /// <param name="userProfile">Optional user profile for personalized recommendations based on UserInterestEmbedding.</param>
     /// <param name="pageNumber">The page number (1-indexed).</param>
     /// <param name="pageSize">Number of items per page.</param>
     /// <returns>Paginated response with job postings ordered by relevance score (cosine distance).</returns>
     /// <remarks>
-    /// Uses pgvector cosine distance to match job_description_embedding against user_interest_embedding.
-    /// If userProfile null or no embedding, returns random sample. Includes distance score in response.
+    ///     Uses pgvector cosine distance to match job_description_embedding against user_interest_embedding.
+    ///     If userProfile null or no embedding, returns random sample. Includes distance score in response.
     /// </remarks>
     public async Task<JobPostingsPaginatedResponse> GetRecommendedJobsOffsetPageAsync(
         Profile? userProfile,
@@ -449,14 +420,13 @@ public class JobPostingService
                 }).ToList(),
             PageInfo = new PageInfoResponse
             {
-                HasNextPage = hasNextPage,
-                Embedding = randomEmbedding ?? request.Embedding
+                HasNextPage = hasNextPage, Embedding = randomEmbedding ?? request.Embedding
             }
         };
     }
 
     /// <summary>
-    /// Retrieves a single job posting by ID with full metadata including author, media, tags, and vote counts.
+    ///     Retrieves a single job posting by ID with full metadata including author, media, tags, and vote counts.
     /// </summary>
     /// <param name="jobPostingId">The job posting ID.</param>
     /// <param name="profileId">Optional profile ID to include current user's vote status.</param>
@@ -524,14 +494,14 @@ public class JobPostingService
     }
 
     /// <summary>
-    /// Retrieves personalized job suggestions based on user's interest embedding (cached).
+    ///     Retrieves personalized job suggestions based on user's interest embedding (cached).
     /// </summary>
     /// <param name="profileId">The user profile ID for personalized suggestions.</param>
     /// <param name="take">Number of suggestions to return (default 10).</param>
     /// <returns>List of suggested jobs with relevance scores, ordered by match quality.</returns>
     /// <remarks>
-    /// Uses HybridCache with profile-specific key. Compares user_interest_embedding against job_description_embedding.
-    /// Returns empty list if user has no embedding. Cache expires after 30 minutes.
+    ///     Uses HybridCache with profile-specific key. Compares user_interest_embedding against job_description_embedding.
+    ///     Returns empty list if user has no embedding. Cache expires after 30 minutes.
     /// </remarks>
     public async Task<List<SimilarJobsResponse>> GetSuggestedJobsAsync(
         Profile? userProfile,
@@ -695,7 +665,7 @@ public class JobPostingService
     }
 
     /// <summary>
-    /// Processes upvote/downvote on a job posting with toggle mechanics and tag inheritance.
+    ///     Processes upvote/downvote on a job posting with toggle mechanics and tag inheritance.
     /// </summary>
     /// <param name="postingId">The job posting ID to vote on.</param>
     /// <param name="voterProfile">The user casting the vote.</param>
@@ -703,8 +673,8 @@ public class JobPostingService
     /// <returns>Updated JobPostingResponse with new vote counts.</returns>
     /// <exception cref="JobPostingNotFoundException">If posting not found.</exception>
     /// <remarks>
-    /// Toggle voting: same vote removes it, opposite vote flips it. Voting adds job's tags to voter's
-    /// UserInterests (skill discovery). Sends notification to author on upvote. Cannot vote on own posting.
+    ///     Toggle voting: same vote removes it, opposite vote flips it. Voting adds job's tags to voter's
+    ///     UserInterests (skill discovery). Sends notification to author on upvote. Cannot vote on own posting.
     /// </remarks>
     public async Task<JobPostingResponse> VoteJobPostingAsync(
         string postingId,
@@ -832,7 +802,7 @@ public class JobPostingService
     }
 
     /// <summary>
-    /// Retrieves all applications for a job posting (authorization: job author only).
+    ///     Retrieves all applications for a job posting (authorization: job author only).
     /// </summary>
     /// <param name="jobPostingId">The job posting ID.</param>
     /// <param name="userProfile">The requesting user profile.</param>
@@ -840,8 +810,8 @@ public class JobPostingService
     /// <exception cref="JobPostingNotFoundException">If job posting not found.</exception>
     /// <exception cref="UnauthorizedException">If requester is not the job author.</exception>
     /// <remarks>
-    /// Only job author can view applications. Returns list ordered by application creation date.
-    /// Includes applicant profile, cover letter, expected budget, application status.
+    ///     Only job author can view applications. Returns list ordered by application creation date.
+    ///     Includes applicant profile, cover letter, expected budget, application status.
     /// </remarks>
     public async Task<List<JobApplicationResponse>> GetJobApplicationsAsync(string jobPostingId, Profile userProfile)
     {

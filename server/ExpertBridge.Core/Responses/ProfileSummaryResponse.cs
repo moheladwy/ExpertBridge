@@ -4,31 +4,31 @@
 namespace ExpertBridge.Core.Responses;
 
 /// <summary>
-/// Represents the response DTO for minimal profile summary information.
+///     Represents the response DTO for minimal profile summary information.
 /// </summary>
 /// <remarks>
-/// This lightweight DTO is used in contexts where only basic profile identification
-/// and display information is needed, such as in lists or compact views.
+///     This lightweight DTO is used in contexts where only basic profile identification
+///     and display information is needed, such as in lists or compact views.
 /// </remarks>
 public class ProfileSummaryResponse
 {
     /// <summary>
-    /// Gets or sets the unique identifier of the profile.
+    ///     Gets or sets the unique identifier of the profile.
     /// </summary>
     public string ProfileId { get; set; }
 
     /// <summary>
-    /// Gets or sets the user's first name.
+    ///     Gets or sets the user's first name.
     /// </summary>
     public string? FirstName { get; set; }
 
     /// <summary>
-    /// Gets or sets the user's last name.
+    ///     Gets or sets the user's last name.
     /// </summary>
     public string? LastName { get; set; }
 
     /// <summary>
-    /// Gets or sets the URL of the user's profile picture.
+    ///     Gets or sets the URL of the user's profile picture.
     /// </summary>
     public string? ProfilePictureUrl { get; set; }
 }

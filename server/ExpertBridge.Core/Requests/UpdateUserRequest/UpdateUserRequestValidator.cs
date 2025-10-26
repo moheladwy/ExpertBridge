@@ -8,17 +8,17 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.UpdateUserRequest;
 
 /// <summary>
-/// Validates UpdateUserRequest to ensure all user update fields meet constraints.
+///     Validates UpdateUserRequest to ensure all user update fields meet constraints.
 /// </summary>
 /// <remarks>
-/// Validates ProviderId, Email (both required), and optional FirstName, LastName, and PhoneNumber
-/// against entity constraints when provided.
-/// Phone number validation includes format checking with regex pattern for international numbers.
+///     Validates ProviderId, Email (both required), and optional FirstName, LastName, and PhoneNumber
+///     against entity constraints when provided.
+///     Phone number validation includes format checking with regex pattern for international numbers.
 /// </remarks>
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the UpdateUserRequestValidator with validation rules.
+    ///     Initializes a new instance of the UpdateUserRequestValidator with validation rules.
     /// </summary>
     public UpdateUserRequestValidator()
     {
@@ -56,7 +56,8 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty().WithMessage("PhoneNumber cannot be empty when provided")
                 .MaximumLength(UserEntityConstraints.MaxPhoneNumberLength)
-                .WithMessage($"PhoneNumber cannot be longer than {UserEntityConstraints.MaxPhoneNumberLength} characters")
+                .WithMessage(
+                    $"PhoneNumber cannot be longer than {UserEntityConstraints.MaxPhoneNumberLength} characters")
                 .Matches(@"^\+?[0-9]\d{9,17}$").WithMessage("PhoneNumber is not valid");
         });
     }

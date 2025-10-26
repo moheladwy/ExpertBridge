@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.Areas;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="Area"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="Area" /> entity.
 /// </summary>
 public class AreaEntityConfiguration : IEntityTypeConfiguration<Area>
 {
     /// <summary>
-    /// Configures the entity mapping, relationships, and database constraints for areas.
+    ///     Configures the entity mapping, relationships, and database constraints for areas.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Area> builder)

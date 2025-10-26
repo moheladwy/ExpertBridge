@@ -1,5 +1,4 @@
 ﻿using ExpertBridge.Application.DomainServices;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreateMessage;
 using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Authorization;

@@ -68,10 +68,7 @@ internal class GlobalExceptionMiddleware
                     errors,
                     title: "Validation Failed",
                     statusCode: StatusCodes.Status400BadRequest,
-                    extensions: new Dictionary<string, object?>
-                    {
-                        { "traceId", httpContext.TraceIdentifier }
-                    }
+                    extensions: new Dictionary<string, object?> { { "traceId", httpContext.TraceIdentifier } }
                 )
                 .ExecuteAsync(httpContext);
         }

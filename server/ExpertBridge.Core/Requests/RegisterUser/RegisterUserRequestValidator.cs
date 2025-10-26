@@ -8,16 +8,16 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.RegisterUser;
 
 /// <summary>
-/// Validates RegisterUserRequest to ensure all required user registration fields meet constraints.
+///     Validates RegisterUserRequest to ensure all required user registration fields meet constraints.
 /// </summary>
 /// <remarks>
-/// Validates ProviderId, Email, Username, FirstName, and LastName against entity constraints
-/// to ensure data integrity during user registration with Firebase authentication.
+///     Validates ProviderId, Email, Username, FirstName, and LastName against entity constraints
+///     to ensure data integrity during user registration with Firebase authentication.
 /// </remarks>
 public class RegisterUserRequestValidator : AbstractValidator<RegisterUserRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the RegisterUserRequestValidator with validation rules.
+    ///     Initializes a new instance of the RegisterUserRequestValidator with validation rules.
     /// </summary>
     public RegisterUserRequestValidator()
     {

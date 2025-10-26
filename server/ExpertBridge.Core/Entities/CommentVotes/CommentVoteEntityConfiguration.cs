@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.CommentVotes;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="CommentVote"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="CommentVote" /> entity.
 /// </summary>
 public class CommentVoteEntityConfiguration : IEntityTypeConfiguration<CommentVote>
 {
     /// <summary>
-    /// Configures the entity mapping, relationships, and database constraints for comment votes.
+    ///     Configures the entity mapping, relationships, and database constraints for comment votes.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<CommentVote> builder)

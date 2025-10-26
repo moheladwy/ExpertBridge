@@ -39,17 +39,17 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     private readonly NotificationFacade _notifications;
 
     /// <summary>
+    ///     The endpoint for publishing messages to the message broker.
+    /// </summary>
+    /// <remarks>
+    ///     This is used to publish notification events after inappropriate content detection processing.
+    /// </remarks>
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    /// <summary>
     ///     Thresholds used to determine when detection scores are considered violations.
     /// </summary>
     private readonly InappropriateLanguageThresholds _thresholds;
-
-    /// <summary>
-    /// The endpoint for publishing messages to the message broker.
-    /// </summary>
-    /// <remarks>
-    /// This is used to publish notification events after inappropriate content detection processing.
-    /// </remarks>
-    private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="InappropriatePostDetectionConsumer" /> class.

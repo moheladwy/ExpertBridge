@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.Media.JobPostingMedia;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="JobPostingMedia"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="JobPostingMedia" /> entity.
 /// </summary>
 public class JobPostingMediaEntityConfiguration : IEntityTypeConfiguration<JobPostingMedia>
 {
     /// <summary>
-    /// Configures the entity mapping using shared media object configuration.
+    ///     Configures the entity mapping using shared media object configuration.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<JobPostingMedia> builder)

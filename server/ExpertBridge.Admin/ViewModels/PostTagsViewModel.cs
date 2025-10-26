@@ -9,6 +9,7 @@ public class PostTagsViewModel
     public int PostCount { get; set; }
     public int UserInterestCount { get; set; }
     public int JobPostingCount { get; set; }
+
     public bool IsUsedInPosts
     {
         get { return PostCount > 0; }

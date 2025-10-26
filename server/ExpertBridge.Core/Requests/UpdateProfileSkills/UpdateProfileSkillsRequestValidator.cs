@@ -7,25 +7,25 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.UpdateProfileSkills;
 
 /// <summary>
-/// Validates UpdateProfileSkillsRequest to ensure skill IDs are valid.
+///     Validates UpdateProfileSkillsRequest to ensure skill IDs are valid.
 /// </summary>
 /// <remarks>
-/// Validates that Skills collection is provided and each skill ID meets constraints.
+///     Validates that Skills collection is provided and each skill ID meets constraints.
 /// </remarks>
 public class UpdateProfileSkillsRequestValidator : AbstractValidator<UpdateProfileSkillsRequest>
 {
-  /// <summary>
-  /// Initializes a new instance of the UpdateProfileSkillsRequestValidator with validation rules.
-  /// </summary>
-  public UpdateProfileSkillsRequestValidator()
-  {
-    RuleFor(x => x.Skills)
-        .NotNull().WithMessage("Skills cannot be null");
+    /// <summary>
+    ///     Initializes a new instance of the UpdateProfileSkillsRequestValidator with validation rules.
+    /// </summary>
+    public UpdateProfileSkillsRequestValidator()
+    {
+        RuleFor(x => x.Skills)
+            .NotNull().WithMessage("Skills cannot be null");
 
-    RuleForEach(x => x.Skills)
-        .NotNull().WithMessage("Skill ID cannot be null")
-        .NotEmpty().WithMessage("Skill ID cannot be empty")
-        .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
-        .WithMessage($"Skill ID cannot be longer than {GlobalEntitiesConstraints.MaxIdLength} characters");
-  }
+        RuleForEach(x => x.Skills)
+            .NotNull().WithMessage("Skill ID cannot be null")
+            .NotEmpty().WithMessage("Skill ID cannot be empty")
+            .MaximumLength(GlobalEntitiesConstraints.MaxIdLength)
+            .WithMessage($"Skill ID cannot be longer than {GlobalEntitiesConstraints.MaxIdLength} characters");
+    }
 }

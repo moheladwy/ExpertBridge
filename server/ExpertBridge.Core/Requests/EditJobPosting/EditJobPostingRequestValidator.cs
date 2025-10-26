@@ -8,16 +8,16 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.EditJobPosting;
 
 /// <summary>
-/// Validates EditJobPostingRequest to ensure optional fields meet constraints when provided.
+///     Validates EditJobPostingRequest to ensure optional fields meet constraints when provided.
 /// </summary>
 /// <remarks>
-/// All fields are optional. Validates Title, Content, Budget, and Area when provided
-/// against entity constraints from JobPosting entity.
+///     All fields are optional. Validates Title, Content, Budget, and Area when provided
+///     against entity constraints from JobPosting entity.
 /// </remarks>
 public class EditJobPostingRequestValidator : AbstractValidator<EditJobPostingRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the EditJobPostingRequestValidator with validation rules.
+    ///     Initializes a new instance of the EditJobPostingRequestValidator with validation rules.
     /// </summary>
     public EditJobPostingRequestValidator()
     {
@@ -34,7 +34,8 @@ public class EditJobPostingRequestValidator : AbstractValidator<EditJobPostingRe
             RuleFor(x => x.Content)
                 .NotEmpty().WithMessage("Content cannot be empty when provided")
                 .MaximumLength(JobPostingEntityConstraints.MaxContentLength)
-                .WithMessage($"Content cannot be longer than {JobPostingEntityConstraints.MaxContentLength} characters");
+                .WithMessage(
+                    $"Content cannot be longer than {JobPostingEntityConstraints.MaxContentLength} characters");
         });
 
         When(x => x.Budget != null, () =>

@@ -4,16 +4,16 @@
 namespace ExpertBridge.Core.Requests.OnboardUser;
 
 /// <summary>
-/// Represents a request to onboard a new user with their interests.
+///     Represents a request to onboard a new user with their interests.
 /// </summary>
 /// <remarks>
-/// During onboarding, users select tags representing their professional interests.
-/// These tags are used to generate personalized content recommendations.
+///     During onboarding, users select tags representing their professional interests.
+///     These tags are used to generate personalized content recommendations.
 /// </remarks>
 public class OnboardUserRequest
 {
     /// <summary>
-    /// Gets or sets the collection of tag IDs representing the user's professional interests.
+    ///     Gets or sets the collection of tag IDs representing the user's professional interests.
     /// </summary>
     public List<string> Tags { get; set; }
 }

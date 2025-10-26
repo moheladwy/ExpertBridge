@@ -8,16 +8,16 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.CreateJobPosting;
 
 /// <summary>
-/// Validates CreateJobPostingRequest to ensure all required job posting fields meet constraints.
+///     Validates CreateJobPostingRequest to ensure all required job posting fields meet constraints.
 /// </summary>
 /// <remarks>
-/// Validates Area, Title, Content, and Budget against entity constraints from JobPosting entity
-/// to ensure data integrity during job posting creation.
+///     Validates Area, Title, Content, and Budget against entity constraints from JobPosting entity
+///     to ensure data integrity during job posting creation.
 /// </remarks>
 public class CreateJobPostingRequestValidator : AbstractValidator<CreateJobPostingRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the CreateJobPostingRequestValidator with validation rules.
+    ///     Initializes a new instance of the CreateJobPostingRequestValidator with validation rules.
     /// </summary>
     public CreateJobPostingRequestValidator()
     {

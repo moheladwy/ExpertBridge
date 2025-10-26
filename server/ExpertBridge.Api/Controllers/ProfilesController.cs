@@ -6,7 +6,6 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Messages;
 using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.OnboardUser;
 using ExpertBridge.Core.Requests.UpdateProfileRequest;
 using ExpertBridge.Core.Responses;

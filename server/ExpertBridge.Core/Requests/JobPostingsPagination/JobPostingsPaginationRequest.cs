@@ -4,47 +4,47 @@
 namespace ExpertBridge.Core.Requests.JobPostingsPagination;
 
 /// <summary>
-/// Represents a cursor-based pagination request for job posting listings.
+///     Represents a cursor-based pagination request for job posting listings.
 /// </summary>
 /// <remarks>
-/// Supports both standard chronological pagination and semantic similarity-based pagination
-/// using vector embeddings for personalized job matching.
+///     Supports both standard chronological pagination and semantic similarity-based pagination
+///     using vector embeddings for personalized job matching.
 /// </remarks>
 public class JobPostingsPaginationRequest
 {
     /// <summary>
-    /// Gets or sets the number of job postings to return per page.
+    ///     Gets or sets the number of job postings to return per page.
     /// </summary>
     public int PageSize { get; set; }
 
     /// <summary>
-    /// Gets or sets the page number (1-based).
+    ///     Gets or sets the page number (1-based).
     /// </summary>
     public int Page { get; set; }
 
     /// <summary>
-    /// Gets or sets the similarity score cursor for continuing semantic search pagination.
+    ///     Gets or sets the similarity score cursor for continuing semantic search pagination.
     /// </summary>
     /// <remarks>
-    /// This represents the lowest similarity score from the previous page and is used
-    /// when paginating through embedding-based search results.
+    ///     This represents the lowest similarity score from the previous page and is used
+    ///     when paginating through embedding-based search results.
     /// </remarks>
     public double? After { get; set; }
 
     /// <summary>
-    /// Gets or sets the ID cursor for continuing standard pagination.
+    ///     Gets or sets the ID cursor for continuing standard pagination.
     /// </summary>
     /// <remarks>
-    /// This represents the ID of the last job posting from the previous page.
+    ///     This represents the ID of the last job posting from the previous page.
     /// </remarks>
     public string? LastIdCursor { get; set; }
 
     /// <summary>
-    /// Gets or sets the base64-encoded embedding vector for semantic similarity searches.
+    ///     Gets or sets the base64-encoded embedding vector for semantic similarity searches.
     /// </summary>
     /// <remarks>
-    /// When provided, job postings are ordered by semantic similarity to this embedding
-    /// rather than chronologically. This is used for personalized job recommendations.
+    ///     When provided, job postings are ordered by semantic similarity to this embedding
+    ///     rather than chronologically. This is used for personalized job recommendations.
     /// </remarks>
     public string? Embedding { get; set; }
 }

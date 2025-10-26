@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.PostVotes;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="PostVote"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="PostVote" /> entity.
 /// </summary>
 public class PostVoteEntityConfiguration : IEntityTypeConfiguration<PostVote>
 {
     /// <summary>
-    /// Configures the entity mapping, relationships, and database constraints for post votes.
+    ///     Configures the entity mapping, relationships, and database constraints for post votes.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<PostVote> builder)

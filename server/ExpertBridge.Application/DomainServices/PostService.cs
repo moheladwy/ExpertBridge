@@ -6,7 +6,6 @@ using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Messages;
 using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
 using ExpertBridge.Core.Requests.MediaObject;
@@ -29,24 +28,24 @@ using Pgvector.EntityFrameworkCore;
 namespace ExpertBridge.Application.DomainServices;
 
 /// <summary>
-/// Provides comprehensive content management with AI-powered recommendations, similarity search, and social engagement features.
+///     Provides comprehensive content management with AI-powered recommendations, similarity search, and social engagement
+///     features.
 /// </summary>
 /// <remarks>
-/// This is the most sophisticated service in ExpertBridge, managing the complete post lifecycle with extensive AI/ML integration,
-/// multiple caching strategies, diverse pagination approaches, and advanced recommendation algorithms.
-/// 
-/// **Core Features:**
-/// - Post CRUD with media attachments
-/// - AI-powered personalized recommendations (vector embeddings)
-/// - Semantic similarity search using pgvector
-/// - Multiple pagination strategies (cursor-based, offset-based)
-/// - Voting system with tag inheritance for interest tracking
-/// - Suggested content based on user profile analysis
-/// - Multi-tier caching (L1 in-memory, L2 Redis)
-/// - Background processing for embeddings and tagging
-/// 
-/// **AI Recommendation Architecture:**
-/// <code>
+///     This is the most sophisticated service in ExpertBridge, managing the complete post lifecycle with extensive AI/ML
+///     integration,
+///     multiple caching strategies, diverse pagination approaches, and advanced recommendation algorithms.
+///     **Core Features:**
+///     - Post CRUD with media attachments
+///     - AI-powered personalized recommendations (vector embeddings)
+///     - Semantic similarity search using pgvector
+///     - Multiple pagination strategies (cursor-based, offset-based)
+///     - Voting system with tag inheritance for interest tracking
+///     - Suggested content based on user profile analysis
+///     - Multi-tier caching (L1 in-memory, L2 Redis)
+///     - Background processing for embeddings and tagging
+///     **AI Recommendation Architecture:**
+///     <code>
 /// Post Created
 ///     ↓
 /// PostProcessingPipelineMessage published
@@ -69,54 +68,46 @@ namespace ExpertBridge.Application.DomainServices;
 ///   - Cosine similarity: Post.Embedding ↔ Profile.UserInterestEmbedding
 ///   - Results ordered by distance (0 = perfect match, 2 = opposite)
 /// </code>
-/// 
-/// **Vector Similarity Mathematics:**
-/// Uses pgvector's cosine distance operator `<=>`:
-/// - **Distance = 0**: Identical vectors (perfect match)
-/// - **Distance < 0.5**: Highly similar content
-/// - **Distance 0.5-1.0**: Moderately similar
-/// - **Distance > 1.5**: Dissimilar content
-/// - **Distance = 2**: Completely opposite vectors
-/// 
-/// **Caching Strategy (Most Sophisticated in Solution):**
-/// 
-/// **Similar Posts Cache:**
-/// - Key: `SimilarPosts_{postId}_{limit}`
-/// - TTL: 30 minutes (sliding)
-/// - Invalidation: Manual on post edit/delete
-/// 
-/// **Suggested Posts Cache:**
-/// - Key: `SuggestedPosts_{profileId}_{limit}`
-/// - TTL: 30 minutes
-/// - Personalized per user
-/// - Invalidation: On UserInterestsUpdatedMessage
-/// 
-/// **HybridCache Architecture:**
-/// - **L1 (In-Memory)**: Ultra-fast repeated queries (same process)
-/// - **L2 (Redis)**: Distributed cache across instances
-/// - **Cache-Aside Pattern**: Generate on miss, store for future hits
-/// 
-/// **Pagination Strategies:**
-/// 
-/// **1. Cursor-Based (GetRecommendedPostsAsync):**
-/// - Stateless, efficient for large datasets
-/// - Cursor = last item's distance + ID (tie-breaker)
-/// - Prevents duplicate/missing items on concurrent updates
-/// - Ideal for infinite scroll
-/// 
-/// **2. Offset-Based (GetRecommendedPostsOffsetPageAsync):**
-/// - Traditional page numbers
-/// - Skip/Take pattern
-/// - Simpler client implementation
-/// - May have consistency issues on updates
-/// 
-/// **3. No Pagination (GetAllPostsAsync):**
-/// - Returns entire dataset
-/// - For admin dashboards, analytics
-/// - Performance concern for large datasets
-/// 
-/// **Voting System with Tag Inheritance:**
-/// <code>
+///     **Vector Similarity Mathematics:**
+///     Uses pgvector's cosine distance operator `<=>`:
+///     - **Distance = 0**: Identical vectors (perfect match)
+///     - **Distance
+///     < 0.5**: Highly similar content
+///         - ** Distance 0.5-1.0** : Moderately similar
+///         - ** Distance>
+///         1.5**: Dissimilar content
+///         - **Distance = 2**: Completely opposite vectors
+///         **Caching Strategy (Most Sophisticated in Solution):**
+///         **Similar Posts Cache:**
+///         - Key: `SimilarPosts_{postId}_{limit}`
+///         - TTL: 30 minutes (sliding)
+///         - Invalidation: Manual on post edit/delete
+///         **Suggested Posts Cache:**
+///         - Key: `SuggestedPosts_{profileId}_{limit}`
+///         - TTL: 30 minutes
+///         - Personalized per user
+///         - Invalidation: On UserInterestsUpdatedMessage
+///         **HybridCache Architecture:**
+///         - **L1 (In-Memory)**: Ultra-fast repeated queries (same process)
+///         - **L2 (Redis)**: Distributed cache across instances
+///         - **Cache-Aside Pattern**: Generate on miss, store for future hits
+///         **Pagination Strategies:**
+///         **1. Cursor-Based (GetRecommendedPostsAsync):**
+///         - Stateless, efficient for large datasets
+///         - Cursor = last item's distance + ID (tie-breaker)
+///         - Prevents duplicate/missing items on concurrent updates
+///         - Ideal for infinite scroll
+///         **2. Offset-Based (GetRecommendedPostsOffsetPageAsync):**
+///         - Traditional page numbers
+///         - Skip/Take pattern
+///         - Simpler client implementation
+///         - May have consistency issues on updates
+///         **3. No Pagination (GetAllPostsAsync):**
+///         - Returns entire dataset
+///         - For admin dashboards, analytics
+///         - Performance concern for large datasets
+///         **Voting System with Tag Inheritance:**
+///         <code>
 /// User upvotes post about "C#" and "Azure"
 ///     ↓
 /// PostVote created (IsUpvote=true)
@@ -129,83 +120,70 @@ namespace ExpertBridge.Application.DomainServices;
 ///     ↓
 /// Future recommendations include more C#/Azure content
 /// </code>
-/// 
-/// **Toggle Voting Mechanics:**
-/// - Click upvote → Create vote
-/// - Click upvote again → Remove vote
-/// - Click downvote after upvote → Switch to downvote
-/// 
-/// **Content Discovery Flow:**
-/// 
-/// **For Authenticated Users:**
-/// 1. User creates/votes on posts → Tags added to UserInterests
-/// 2. Background worker generates UserInterestEmbedding
-/// 3. GetRecommendedPostsAsync returns posts similar to user interests
-/// 4. Personalized feed adapts to user behavior
-/// 
-/// **For Anonymous Users:**
-/// 1. No UserInterestEmbedding available
-/// 2. Generate random 1024-dim vector (exploration)
-/// 3. Different random vector each session = diverse content
-/// 4. Encourages account creation for personalization
-/// 
-/// **Media Attachments:**
-/// - Images, videos, documents
-/// - S3 storage with presigned URLs
-/// - 15-day upload grant activation
-/// - Processed via MediaAttachmentService
-/// - Sanitized filenames for security
-/// 
-/// **Background Processing Pipeline:**
-/// PostProcessingPipelineMessage triggers:
-/// - **Tag Generation**: Groq LLM analyzes content → categories
-/// - **Embedding Creation**: Ollama generates semantic vector
-/// - **Tag Association**: Links tags to post and author profile
-/// - **Interest Update**: Refreshes user interest embeddings
-/// - **Cache Invalidation**: Clears affected cached recommendations
-/// 
-/// **Notification Integration:**
-/// Real-time notifications via SignalR for:
-/// - Upvotes on your posts
-/// - Comments on your posts
-/// - Posts matching your interests
-/// 
-/// **Performance Optimizations:**
-/// - AsNoTracking for read-only queries (no change tracking overhead)
-/// - Eager loading with Include/ThenInclude (minimize round trips)
-/// - Projection to DTOs (select only needed columns)
-/// - Vector indexes on Embedding columns (pgvector HNSW)
-/// - HybridCache reduces database load
-/// - Background processing (non-blocking post creation)
-/// 
-/// **Query Extensions (Reusable Patterns):**
-/// - FullyPopulatedPostQuery: Standard eager loading
-/// - SelectPostResponseFromFullPost: Consistent DTO projection
-/// 
-/// **Authorization Rules:**
-/// - Create: Any authenticated user
-/// - Edit: Only post author
-/// - Delete: Only post author (cascade to comments, votes, media)
-/// - Vote: Any authenticated user except author
-/// - View: Public (all users including anonymous)
-/// 
-/// **Use Cases:**
-/// - Expert knowledge sharing
-/// - Technical articles and tutorials
-/// - Community discussions
-/// - Professional networking content
-/// - Skills showcase and portfolio
-/// - AI-powered content discovery
-/// - Personalized learning feeds
-/// 
-/// **Scalability Considerations:**
-/// - Vector similarity queries scale with pgvector indexes
-/// - HybridCache reduces database load
-/// - Background processing decouples expensive operations
-/// - Stateless design enables horizontal scaling
-/// - Redis for distributed cache consistency
-/// 
-/// Registered as scoped service for per-request lifetime and DbContext transaction management.
+///         **Toggle Voting Mechanics:**
+///         - Click upvote → Create vote
+///         - Click upvote again → Remove vote
+///         - Click downvote after upvote → Switch to downvote
+///         **Content Discovery Flow:**
+///         **For Authenticated Users:**
+///         1. User creates/votes on posts → Tags added to UserInterests
+///         2. Background worker generates UserInterestEmbedding
+///         3. GetRecommendedPostsAsync returns posts similar to user interests
+///         4. Personalized feed adapts to user behavior
+///         **For Anonymous Users:**
+///         1. No UserInterestEmbedding available
+///         2. Generate random 1024-dim vector (exploration)
+///         3. Different random vector each session = diverse content
+///         4. Encourages account creation for personalization
+///         **Media Attachments:**
+///         - Images, videos, documents
+///         - S3 storage with presigned URLs
+///         - 15-day upload grant activation
+///         - Processed via MediaAttachmentService
+///         - Sanitized filenames for security
+///         **Background Processing Pipeline:**
+///         PostProcessingPipelineMessage triggers:
+///         - **Tag Generation**: Groq LLM analyzes content → categories
+///         - **Embedding Creation**: Ollama generates semantic vector
+///         - **Tag Association**: Links tags to post and author profile
+///         - **Interest Update**: Refreshes user interest embeddings
+///         - **Cache Invalidation**: Clears affected cached recommendations
+///         **Notification Integration:**
+///         Real-time notifications via SignalR for:
+///         - Upvotes on your posts
+///         - Comments on your posts
+///         - Posts matching your interests
+///         **Performance Optimizations:**
+///         - AsNoTracking for read-only queries (no change tracking overhead)
+///         - Eager loading with Include/ThenInclude (minimize round trips)
+///         - Projection to DTOs (select only needed columns)
+///         - Vector indexes on Embedding columns (pgvector HNSW)
+///         - HybridCache reduces database load
+///         - Background processing (non-blocking post creation)
+///         **Query Extensions (Reusable Patterns):**
+///         - FullyPopulatedPostQuery: Standard eager loading
+///         - SelectPostResponseFromFullPost: Consistent DTO projection
+///         **Authorization Rules:**
+///         - Create: Any authenticated user
+///         - Edit: Only post author
+///         - Delete: Only post author (cascade to comments, votes, media)
+///         - Vote: Any authenticated user except author
+///         - View: Public (all users including anonymous)
+///         **Use Cases:**
+///         - Expert knowledge sharing
+///         - Technical articles and tutorials
+///         - Community discussions
+///         - Professional networking content
+///         - Skills showcase and portfolio
+///         - AI-powered content discovery
+///         - Personalized learning feeds
+///         **Scalability Considerations:**
+///         - Vector similarity queries scale with pgvector indexes
+///         - HybridCache reduces database load
+///         - Background processing decouples expensive operations
+///         - Stateless design enables horizontal scaling
+///         - Redis for distributed cache consistency
+///         Registered as scoped service for per-request lifetime and DbContext transaction management.
 /// </remarks>
 public class PostService
 {
@@ -236,7 +214,7 @@ public class PostService
     }
 
     /// <summary>
-    /// Creates a new post with optional media attachments and initiates AI processing pipeline.
+    ///     Creates a new post with optional media attachments and initiates AI processing pipeline.
     /// </summary>
     /// <param name="request">The post creation request containing title, content, and optional media.</param>
     /// <param name="authorProfile">The authenticated user profile creating the post.</param>
@@ -244,29 +222,25 @@ public class PostService
     /// <exception cref="ArgumentNullException">Thrown when request or authorProfile is null.</exception>
     /// <exception cref="BadHttpRequestException">Thrown when title or content is empty.</exception>
     /// <remarks>
-    /// **Complete Creation Workflow:**
-    /// 
-    /// 1. **Validation** - Title and content required (trimmed)
-    /// 2. **Post Entity Creation** - Creates Post with author association and UTC timestamp
-    /// 3. **Media Processing** - If media provided, processes via MediaAttachmentService with S3 grants
-    /// 4. **Database Save** - Commits post and media (generates post.Id for subsequent operations)
-    /// 5. **Background Pipeline** - Publishes PostProcessingPipelineMessage for AI tagging and embedding
-    /// 6. **Response Projection** - Maps to PostResponse DTO with author perspective
-    /// 
-    /// **AI Processing Pipeline (Async):**
-    /// After post creation, background worker:
-    /// - **Groq LLM**: Analyzes content → Generates bilingual tags (English + Arabic)
-    /// - **Ollama**: Creates 1024-dimension semantic embedding vector
-    /// - **TaggingService**: Associates tags with post and author's UserInterests
-    /// - **Database Update**: Stores embedding, sets IsTagged=true
-    /// - **Discoverability**: Post now appears in AI-powered recommendations
-    /// 
-    /// **Media Upload Flow:**
-    /// Client creates post → PostMedia records created → S3 grants activated (15-day expiration)
-    /// → Client uploads to presigned URLs → Media accessible via FileName + ContentType
-    /// 
-    /// **Performance:** Single transaction for post+media. Background processing non-blocking (instant response).
-    /// Post immediately visible in listings, AI recommendations available after ~30 seconds.
+    ///     **Complete Creation Workflow:**
+    ///     1. **Validation** - Title and content required (trimmed)
+    ///     2. **Post Entity Creation** - Creates Post with author association and UTC timestamp
+    ///     3. **Media Processing** - If media provided, processes via MediaAttachmentService with S3 grants
+    ///     4. **Database Save** - Commits post and media (generates post.Id for subsequent operations)
+    ///     5. **Background Pipeline** - Publishes PostProcessingPipelineMessage for AI tagging and embedding
+    ///     6. **Response Projection** - Maps to PostResponse DTO with author perspective
+    ///     **AI Processing Pipeline (Async):**
+    ///     After post creation, background worker:
+    ///     - **Groq LLM**: Analyzes content → Generates bilingual tags (English + Arabic)
+    ///     - **Ollama**: Creates 1024-dimension semantic embedding vector
+    ///     - **TaggingService**: Associates tags with post and author's UserInterests
+    ///     - **Database Update**: Stores embedding, sets IsTagged=true
+    ///     - **Discoverability**: Post now appears in AI-powered recommendations
+    ///     **Media Upload Flow:**
+    ///     Client creates post → PostMedia records created → S3 grants activated (15-day expiration)
+    ///     → Client uploads to presigned URLs → Media accessible via FileName + ContentType
+    ///     **Performance:** Single transaction for post+media. Background processing non-blocking (instant response).
+    ///     Post immediately visible in listings, AI recommendations available after ~30 seconds.
     /// </remarks>
     public async Task<PostResponse> CreatePostAsync(CreatePostRequest request, Profile authorProfile)
     {
@@ -350,14 +324,14 @@ public class PostService
     }
 
     /// <summary>
-    /// Retrieves a single post by ID with full metadata including author, media, tags, comments, and vote counts.
+    ///     Retrieves a single post by ID with full metadata including author, media, tags, comments, and vote counts.
     /// </summary>
     /// <param name="postId">The unique identifier of the post to retrieve.</param>
     /// <param name="currentMaybeUserProfileId">Optional profile ID to include current user's vote status.</param>
     /// <returns>PostResponse or null if not found.</returns>
     /// <remarks>
-    /// Uses FullyPopulatedPostQuery for eager loading (Author, PostMedia, PostTags, PostVotes).
-    /// Projects to DTO with AsNoTracking for read-only performance. Null return handled by controller as 404.
+    ///     Uses FullyPopulatedPostQuery for eager loading (Author, PostMedia, PostTags, PostVotes).
+    ///     Projects to DTO with AsNoTracking for read-only performance. Null return handled by controller as 404.
     /// </remarks>
     public async Task<PostResponse?> GetPostByIdAsync(string postId, string? currentMaybeUserProfileId)
     {
@@ -372,18 +346,18 @@ public class PostService
     }
 
     /// <summary>
-    /// Retrieves posts similar to a given post using vector similarity search (cached).
+    ///     Retrieves posts similar to a given post using vector similarity search (cached).
     /// </summary>
     /// <param name="postId">The post ID to find similar posts for.</param>
     /// <param name="limit">Number of similar posts to return (default 5).</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>List of similar posts with relevance scores, ordered by cosine distance.</returns>
     /// <remarks>
-    /// **Caching:** HybridCache key `SimilarPosts_{postId}_{limit}` with 30-minute TTL.
-    /// **Algorithm:** Compares post.Embedding vectors using pgvector cosine distance.
-    /// **Exclusion:** Source post excluded from results.
-    /// **Use Case:** "Related articles" section, content discovery.
-    /// Returns empty list if source post has no embedding.
+    ///     **Caching:** HybridCache key `SimilarPosts_{postId}_{limit}` with 30-minute TTL.
+    ///     **Algorithm:** Compares post.Embedding vectors using pgvector cosine distance.
+    ///     **Exclusion:** Source post excluded from results.
+    ///     **Use Case:** "Related articles" section, content discovery.
+    ///     Returns empty list if source post has no embedding.
     /// </remarks>
     public async Task<List<SimilarPostsResponse>> GetSimilarPostsAsync(
         string postId,
@@ -432,18 +406,18 @@ public class PostService
     }
 
     /// <summary>
-    /// Retrieves personalized post suggestions based on user's interest embedding (cached).
+    ///     Retrieves personalized post suggestions based on user's interest embedding (cached).
     /// </summary>
     /// <param name="userProfile">Optional user profile for personalized suggestions. If null, uses random vector.</param>
     /// <param name="limit">Number of suggestions to return.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>List of suggested posts with relevance scores, ordered by match quality.</returns>
     /// <remarks>
-    /// **Caching:** HybridCache key `SuggestedPosts_{profileId}_{limit}` with 30-minute TTL.
-    /// **Personalization:** Compares user_interest_embedding against post.Embedding vectors.
-    /// **Anonymous Users:** Random 1024-dim vector for exploration (different each session).
-    /// **Exclusion:** User's own posts excluded.
-    /// **Use Case:** "Recommended for you" feed, personalized homepage.
+    ///     **Caching:** HybridCache key `SuggestedPosts_{profileId}_{limit}` with 30-minute TTL.
+    ///     **Personalization:** Compares user_interest_embedding against post.Embedding vectors.
+    ///     **Anonymous Users:** Random 1024-dim vector for exploration (different each session).
+    ///     **Exclusion:** User's own posts excluded.
+    ///     **Use Case:** "Recommended for you" feed, personalized homepage.
     /// </remarks>
     public async Task<List<SimilarPostsResponse>> GetSuggestedPostsAsync(
         Profile? userProfile,
@@ -491,14 +465,14 @@ public class PostService
     }
 
     /// <summary>
-    /// Retrieves all posts with full metadata (no pagination).
+    ///     Retrieves all posts with full metadata (no pagination).
     /// </summary>
     /// <param name="currentMaybeUserProfileId">Optional profile ID for vote status.</param>
     /// <returns>Complete list of all posts ordered by creation date.</returns>
     /// <remarks>
-    /// **Warning:** Performance concern for large datasets. Use pagination methods for production.
-    /// **Use Cases:** Admin dashboards, analytics, data exports.
-    /// Includes full eager loading of all navigation properties.
+    ///     **Warning:** Performance concern for large datasets. Use pagination methods for production.
+    ///     **Use Cases:** Admin dashboards, analytics, data exports.
+    ///     Includes full eager loading of all navigation properties.
     /// </remarks>
     public async Task<List<PostResponse>> GetAllPostsAsync(string? currentMaybeUserProfileId)
     {
@@ -509,24 +483,22 @@ public class PostService
     }
 
     /// <summary>
-    /// Retrieves AI-recommended posts using cursor-based pagination (stateless, scalable).
+    ///     Retrieves AI-recommended posts using cursor-based pagination (stateless, scalable).
     /// </summary>
     /// <param name="userProfile">Optional user profile for personalized recommendations.</param>
     /// <param name="request">Cursor pagination request with After cursor, PageSize, and optional Embedding.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>Paginated response with posts, cursor for next page, and hasNextPage indicator.</returns>
     /// <remarks>
-    /// **Pagination Strategy:** Cursor-based using cosine distance + post ID (tie-breaker).
-    /// **Cursor Format:** Last item's distance value (double) for stateless pagination.
-    /// **Advantages:** No duplicate/missing items on concurrent updates, efficient for large datasets.
-    /// **Ideal For:** Infinite scroll, mobile apps, real-time feeds.
-    /// 
-    /// **Personalization:**
-    /// - Authenticated with embedding: Uses user_interest_embedding
-    /// - Request provides embedding: Uses provided vector
-    /// - Neither: Generates random 1024-dim vector (exploration)
-    /// 
-    /// **Performance:** Fetches PageSize+1 items to determine hasNextPage without extra query.
+    ///     **Pagination Strategy:** Cursor-based using cosine distance + post ID (tie-breaker).
+    ///     **Cursor Format:** Last item's distance value (double) for stateless pagination.
+    ///     **Advantages:** No duplicate/missing items on concurrent updates, efficient for large datasets.
+    ///     **Ideal For:** Infinite scroll, mobile apps, real-time feeds.
+    ///     **Personalization:**
+    ///     - Authenticated with embedding: Uses user_interest_embedding
+    ///     - Request provides embedding: Uses provided vector
+    ///     - Neither: Generates random 1024-dim vector (exploration)
+    ///     **Performance:** Fetches PageSize+1 items to determine hasNextPage without extra query.
     /// </remarks>
     public async Task<PostsCursorPaginatedResponse> GetRecommendedPostsAsync(
         Profile? userProfile,
@@ -628,22 +600,21 @@ public class PostService
         };
     }
 
-    /// <summary>
-    /// Retrieves AI-recommended posts using offset-based pagination (traditional page numbers).
+    // <summary>
+    ///     Retrieves AI-recommended posts using offset-based pagination (traditional page numbers).
     /// </summary>
     /// <param name="userProfile">Optional user profile for personalized recommendations.</param>
     /// <param name="request">Pagination request with Page number, PageSize, and optional Embedding.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>Paginated response with posts, relevance scores, and hasNextPage indicator.</returns>
     /// <remarks>
-    /// **Pagination Strategy:** Offset-based using Skip/Take pattern.
-    /// **Advantages:** Simple client implementation, explicit page numbers.
-    /// **Disadvantages:** May have consistency issues on concurrent updates (page drift).
-    /// **Ideal For:** Traditional page navigation, UIs with explicit page numbers.
-    /// 
-    /// **Personalization:** Same as cursor-based (user embedding, provided embedding, or random).
-    /// **Relevance Scores:** Included in response for debugging/UI display.
-    /// Returns stored or generated random embedding in response for subsequent requests.
+    ///     **Pagination Strategy:** Offset-based using Skip/Take pattern.
+    ///     **Advantages:** Simple client implementation, explicit page numbers.
+    ///     **Disadvantages:** May have consistency issues on concurrent updates (page drift).
+    ///     **Ideal For:** Traditional page navigation, UIs with explicit page numbers.
+    ///     **Personalization:** Same as cursor-based (user embedding, provided embedding, or random).
+    ///     **Relevance Scores:** Included in response for debugging/UI display.
+    ///     Returns stored or generated random embedding in response for subsequent requests.
     /// </remarks>
     public async Task<PostsCursorPaginatedResponse> GetRecommendedPostsOffsetPageAsync(
         Profile? userProfile,
@@ -709,16 +680,16 @@ public class PostService
     }
 
     /// <summary>
-    /// Retrieves all posts authored by a specific user profile.
+    ///     Retrieves all posts authored by a specific user profile.
     /// </summary>
     /// <param name="profileId">The user profile ID whose posts to retrieve.</param>
     /// <param name="currentMaybeUserProfileId">Optional profile ID for vote status perspective.</param>
     /// <returns>List of posts by the specified author.</returns>
     /// <exception cref="ProfileNotFoundException">Thrown when profile doesn't exist.</exception>
     /// <remarks>
-    /// **Validation:** Checks profile exists before querying posts.
-    /// **Use Cases:** User profile page, author's post history, portfolio.
-    /// Ordered by creation date with full eager loading.
+    ///     **Validation:** Checks profile exists before querying posts.
+    ///     **Use Cases:** User profile page, author's post history, portfolio.
+    ///     Ordered by creation date with full eager loading.
     /// </remarks>
     public async Task<List<PostResponse>> GetPostsByProfileIdAsync(string profileId, string? currentMaybeUserProfileId)
     {
@@ -738,7 +709,7 @@ public class PostService
     }
 
     /// <summary>
-    /// Edits a post's title and/or content with authorization checks and AI reprocessing.
+    ///     Edits a post's title and/or content with authorization checks and AI reprocessing.
     /// </summary>
     /// <param name="postId">The post ID to edit.</param>
     /// <param name="request">Edit request with optional title and/or content updates.</param>
@@ -747,12 +718,12 @@ public class PostService
     /// <exception cref="PostNotFoundException">Thrown when post doesn't exist.</exception>
     /// <exception cref="ForbiddenAccessException">Thrown when editor is not the author.</exception>
     /// <remarks>
-    /// **Authorization:** Only post author can edit their own posts.
-    /// **Partial Updates:** Only provided fields are updated (title and/or content).
-    /// **Timestamps:** UpdatedAt set to UTC now on changes.
-    /// **AI Reprocessing:** If content changed, publishes PostProcessingPipelineMessage to regenerate tags and embedding.
-    /// **Cache Invalidation:** Should invalidate similar/suggested post caches (implementation consideration).
-    /// **Security:** Logs unauthorized edit attempts with warning level.
+    ///     **Authorization:** Only post author can edit their own posts.
+    ///     **Partial Updates:** Only provided fields are updated (title and/or content).
+    ///     **Timestamps:** UpdatedAt set to UTC now on changes.
+    ///     **AI Reprocessing:** If content changed, publishes PostProcessingPipelineMessage to regenerate tags and embedding.
+    ///     **Cache Invalidation:** Should invalidate similar/suggested post caches (implementation consideration).
+    ///     **Security:** Logs unauthorized edit attempts with warning level.
     /// </remarks>
     public async Task<PostResponse> EditPostAsync(string postId, EditPostRequest request, Profile editorProfile)
     {
@@ -817,18 +788,18 @@ public class PostService
     }
 
     /// <summary>
-    /// Deletes a post with authorization checks and cascade handling (idempotent).
+    ///     Deletes a post with authorization checks and cascade handling (idempotent).
     /// </summary>
     /// <param name="postId">The post ID to delete.</param>
     /// <param name="deleterProfile">The user attempting deletion.</param>
     /// <returns>True if deleted or already gone (idempotent DELETE semantics).</returns>
     /// <exception cref="ForbiddenAccessException">Thrown when deleter is not the author.</exception>
     /// <remarks>
-    /// **Authorization:** Only post author can delete their own posts.
-    /// **Cascade Deletion:** EF Core cascade deletes PostMedia, PostVotes, Comments, PostTags.
-    /// **Idempotency:** Returns true if post not found (HTTP 204 success state for DELETE).
-    /// **Security:** Logs unauthorized deletion attempts.
-    /// **Future Enhancement:** Soft delete pattern, moderator deletion, restore within time window.
+    ///     **Authorization:** Only post author can delete their own posts.
+    ///     **Cascade Deletion:** EF Core cascade deletes PostMedia, PostVotes, Comments, PostTags.
+    ///     **Idempotency:** Returns true if post not found (HTTP 204 success state for DELETE).
+    ///     **Security:** Logs unauthorized deletion attempts.
+    ///     **Future Enhancement:** Soft delete pattern, moderator deletion, restore within time window.
     /// </remarks>
     public async Task<bool> DeletePostAsync(string postId, Profile deleterProfile)
     {
@@ -860,7 +831,7 @@ public class PostService
     }
 
     /// <summary>
-    /// Processes upvote/downvote on a post with toggle mechanics, tag inheritance, and notification delivery.
+    ///     Processes upvote/downvote on a post with toggle mechanics, tag inheritance, and notification delivery.
     /// </summary>
     /// <param name="postId">The post ID to vote on.</param>
     /// <param name="voterProfile">The user casting the vote.</param>
@@ -868,23 +839,20 @@ public class PostService
     /// <returns>Updated PostResponse with new vote counts and current user's vote status.</returns>
     /// <exception cref="PostNotFoundException">Thrown when post doesn't exist.</exception>
     /// <remarks>
-    /// **Toggle Voting Mechanics:**
-    /// - Same vote clicked again → Remove vote (toggle off)
-    /// - Opposite vote clicked → Switch vote type (upvote ↔ downvote)
-    /// - New vote → Create PostVote record
-    /// 
-    /// **Tag Inheritance for Interest Tracking:**
-    /// When user votes on a post, post's tags added to voter's UserInterests.
-    /// This builds user's interest profile for improved recommendations.
-    /// 
-    /// **Notification Delivery:**
-    /// On upvote (not removal or downvote), sends notification to post author via SignalR.
-    /// Real-time notification includes voter details and post context.
-    /// 
-    /// **Post Tags Eager Loading:**
-    /// Loads PostTags with Tags for interest tracking without additional query.
-    /// 
-    /// **Performance:** Single transaction for vote changes, async notification delivery, re-fetch with full navigation for accurate response.
+    ///     **Toggle Voting Mechanics:**
+    ///     - Same vote clicked again → Remove vote (toggle off)
+    ///     - Opposite vote clicked → Switch vote type (upvote ↔ downvote)
+    ///     - New vote → Create PostVote record
+    ///     **Tag Inheritance for Interest Tracking:**
+    ///     When user votes on a post, post's tags added to voter's UserInterests.
+    ///     This builds user's interest profile for improved recommendations.
+    ///     **Notification Delivery:**
+    ///     On upvote (not removal or downvote), sends notification to post author via SignalR.
+    ///     Real-time notification includes voter details and post context.
+    ///     **Post Tags Eager Loading:**
+    ///     Loads PostTags with Tags for interest tracking without additional query.
+    ///     **Performance:** Single transaction for vote changes, async notification delivery, re-fetch with full navigation
+    ///     for accurate response.
     /// </remarks>
     public async Task<PostResponse> VotePostAsync(
         string postId, Profile voterProfile,

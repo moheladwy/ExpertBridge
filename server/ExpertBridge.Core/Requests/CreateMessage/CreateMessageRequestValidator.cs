@@ -7,16 +7,16 @@ using FluentValidation;
 namespace ExpertBridge.Core.Requests.CreateMessage;
 
 /// <summary>
-/// Validates CreateMessageRequest to ensure all required message fields meet constraints.
+///     Validates CreateMessageRequest to ensure all required message fields meet constraints.
 /// </summary>
 /// <remarks>
-/// Validates ChatId and Content against entity constraints from Message entity configuration
-/// to ensure data integrity during message creation.
+///     Validates ChatId and Content against entity constraints from Message entity configuration
+///     to ensure data integrity during message creation.
 /// </remarks>
 public class CreateMessageRequestValidator : AbstractValidator<CreateMessageRequest>
 {
     /// <summary>
-    /// Initializes a new instance of the CreateMessageRequestValidator with validation rules.
+    ///     Initializes a new instance of the CreateMessageRequestValidator with validation rules.
     /// </summary>
     public CreateMessageRequestValidator()
     {
@@ -30,6 +30,7 @@ public class CreateMessageRequestValidator : AbstractValidator<CreateMessageRequ
             .NotNull().WithMessage("Content cannot be null")
             .NotEmpty().WithMessage("Content cannot be empty")
             .MaximumLength(GlobalEntitiesConstraints.MaxContentLetterLength)
-            .WithMessage($"Content cannot be longer than {GlobalEntitiesConstraints.MaxContentLetterLength} characters");
+            .WithMessage(
+                $"Content cannot be longer than {GlobalEntitiesConstraints.MaxContentLetterLength} characters");
     }
 }

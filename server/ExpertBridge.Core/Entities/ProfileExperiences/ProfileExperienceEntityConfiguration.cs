@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.ProfileExperiences;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="ProfileExperience"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="ProfileExperience" /> entity.
 /// </summary>
 public class ProfileExperienceEntityConfiguration : IEntityTypeConfiguration<ProfileExperience>
 {
     /// <summary>
-    /// Configures the entity mapping, relationships, and database constraints for profile experiences.
+    ///     Configures the entity mapping, relationships, and database constraints for profile experiences.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<ProfileExperience> builder)

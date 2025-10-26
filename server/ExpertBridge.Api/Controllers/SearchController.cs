@@ -2,7 +2,6 @@ using System.Globalization;
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.SearchJobPosts;
 using ExpertBridge.Core.Requests.SearchPost;
 using ExpertBridge.Core.Requests.SearchUser;

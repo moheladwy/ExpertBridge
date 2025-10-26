@@ -33,6 +33,7 @@ public partial class DeletedComments : ComponentBase
     }
 
     public List<CommentResponse> Comments { get; set; }
+
     private int displayedCommentCount
     {
         get { return string.IsNullOrWhiteSpace(searchText) ? Comments.Count : filteredCount; }

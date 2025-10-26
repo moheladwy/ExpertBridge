@@ -4,34 +4,34 @@
 namespace ExpertBridge.Core.Responses;
 
 /// <summary>
-/// Represents the response DTO for media attachment information.
+///     Represents the response DTO for media attachment information.
 /// </summary>
 /// <remarks>
-/// Media objects can be attached to posts, comments, and job postings.
-/// Supported types include images, videos, and documents.
+///     Media objects can be attached to posts, comments, and job postings.
+///     Supported types include images, videos, and documents.
 /// </remarks>
 public class MediaObjectResponse
 {
     /// <summary>
-    /// Gets or sets the unique identifier of the media object.
+    ///     Gets or sets the unique identifier of the media object.
     /// </summary>
     public string Id { get; set; }
 
     /// <summary>
-    /// Gets or sets the name or filename of the media object.
+    ///     Gets or sets the name or filename of the media object.
     /// </summary>
     public required string Name { get; set; }
 
     /// <summary>
-    /// Gets or sets the MIME type of the media object.
+    ///     Gets or sets the MIME type of the media object.
     /// </summary>
     /// <remarks>
-    /// Examples include "image/jpeg", "video/mp4", "application/pdf", etc.
+    ///     Examples include "image/jpeg", "video/mp4", "application/pdf", etc.
     /// </remarks>
     public required string Type { get; set; }
 
     /// <summary>
-    /// Gets or sets the URL where the media object can be accessed.
+    ///     Gets or sets the URL where the media object can be accessed.
     /// </summary>
     public required string Url { get; set; }
 }

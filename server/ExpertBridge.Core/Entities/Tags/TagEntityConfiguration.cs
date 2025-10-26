@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.Tags;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="Tag"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="Tag" /> entity.
 /// </summary>
 public class TagEntityConfiguration : IEntityTypeConfiguration<Tag>
 {
     /// <summary>
-    /// Configures the entity mapping, relationships, and database constraints for tags.
+    ///     Configures the entity mapping, relationships, and database constraints for tags.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Tag> builder)
