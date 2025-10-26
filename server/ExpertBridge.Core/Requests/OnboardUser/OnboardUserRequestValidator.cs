@@ -22,7 +22,9 @@ public class OnboardUserRequestValidator : AbstractValidator<OnboardUserRequest>
     {
         RuleFor(x => x.Tags)
             .NotNull().WithMessage("Tags cannot be null")
-            .NotEmpty().WithMessage("At least one tag must be selected");
+            .NotEmpty().WithMessage("At least one tag must be selected")
+            .Must(tags => tags.Count <= 20)
+            .WithMessage("Cannot select more than 20 tags");
 
         RuleForEach(x => x.Tags)
             .NotNull().WithMessage("Tag ID cannot be null")

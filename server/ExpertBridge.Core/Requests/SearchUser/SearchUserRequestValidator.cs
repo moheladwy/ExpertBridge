@@ -20,7 +20,9 @@ public class SearchUserRequestValidator : AbstractValidator<SearchUserRequest>
     {
         RuleFor(x => x.Query)
             .NotNull().WithMessage("Query cannot be null")
-            .NotEmpty().WithMessage("Query cannot be empty");
+            .NotEmpty().WithMessage("Query cannot be empty")
+            .MinimumLength(2).WithMessage("Query must be at least 2 characters long")
+            .MaximumLength(200).WithMessage("Query cannot exceed 200 characters");
 
         When(x => x.Limit.HasValue, () =>
         {

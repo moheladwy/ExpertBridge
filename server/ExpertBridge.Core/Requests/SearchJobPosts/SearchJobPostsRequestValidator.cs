@@ -20,7 +20,9 @@ public class SearchJobPostsRequestValidator : AbstractValidator<SearchJobPostsRe
     {
         RuleFor(x => x.Query)
             .NotNull().WithMessage("Query cannot be null")
-            .NotEmpty().WithMessage("Query cannot be empty");
+            .NotEmpty().WithMessage("Query cannot be empty")
+            .MinimumLength(2).WithMessage("Query must be at least 2 characters long")
+            .MaximumLength(200).WithMessage("Query cannot exceed 200 characters");
 
         When(x => x.Limit.HasValue, () =>
         {
@@ -32,13 +34,15 @@ public class SearchJobPostsRequestValidator : AbstractValidator<SearchJobPostsRe
         When(x => x.MinBudget.HasValue, () =>
         {
             RuleFor(x => x.MinBudget)
-                .GreaterThanOrEqualTo(0).WithMessage("MinBudget must be greater than or equal to 0");
+                .GreaterThanOrEqualTo(0).WithMessage("MinBudget must be greater than or equal to 0")
+                .LessThanOrEqualTo(1000000m).WithMessage("MinBudget cannot exceed 1,000,000");
         });
 
         When(x => x.MaxBudget.HasValue, () =>
         {
             RuleFor(x => x.MaxBudget)
-                .GreaterThanOrEqualTo(0).WithMessage("MaxBudget must be greater than or equal to 0");
+                .GreaterThanOrEqualTo(0).WithMessage("MaxBudget must be greater than or equal to 0")
+                .LessThanOrEqualTo(1000000m).WithMessage("MaxBudget cannot exceed 1,000,000");
         });
 
         When(x => x.MinBudget.HasValue && x.MaxBudget.HasValue, () =>
