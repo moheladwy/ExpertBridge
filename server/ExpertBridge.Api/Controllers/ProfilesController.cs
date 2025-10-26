@@ -10,7 +10,6 @@ using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.UpdateProfileRequest;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,21 +25,18 @@ public class ProfilesController : ControllerBase
     private readonly ChannelWriter<UserInterestsProsessingMessage> _channelWriter;
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly ProfileService _profileService;
-    private readonly IValidator<UpdateProfileRequest> _updateProfileRequestValidator;
     private readonly UserService _userService;
 
     public ProfilesController(
         ExpertBridgeDbContext dbContext,
         AuthorizationHelper authHelper,
         Channel<UserInterestsProsessingMessage> channel,
-        IValidator<UpdateProfileRequest> updateProfileRequestValidator,
         UserService userService,
         ProfileService profileService)
     {
         _dbContext = dbContext;
         _authHelper = authHelper;
         _channelWriter = channel.Writer;
-        _updateProfileRequestValidator = updateProfileRequestValidator;
         _userService = userService;
         _profileService = profileService;
     }
