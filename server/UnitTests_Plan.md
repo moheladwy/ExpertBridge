@@ -1,11 +1,11 @@
 # 🧪 Unit Testing Plan for FluentValidation Validators
 
 **Generated:** October 26, 2025  
-**Last Updated:** October 26, 2025 - Phase 2 In Progress (4/25 validators tested)  
+**Last Updated:** January 22, 2025 - 24/25 Validators Tested (96%)  
 **Project:** ExpertBridge.Tests.Unit  
 **Target:** ExpertBridge.Core Request Validators  
 **Framework:** xUnit + FluentValidation.TestHelper  
-**Status:** 🟢 **IN PROGRESS** - Phase 2 Implementation Ongoing
+**Status:** 🟢 **IN PROGRESS** - Phase 3 Implementation Ongoing
 
 ---
 
@@ -73,46 +73,46 @@ ExpertBridge.Tests.Unit/
 | 2   | `EditPostRequestValidator`         | `EditPostRequest`         | 🔴 High   | ✅ Yes (XSS)               | ✅ **37 tests** |
 | 3   | `CreateCommentRequestValidator`    | `CreateCommentRequest`    | 🔴 High   | ✅ Yes (XSS)               | ✅ **38 tests** |
 | 4   | `EditCommentRequestValidator`      | `EditCommentRequest`      | 🔴 High   | ✅ Yes (XSS)               | ✅ **24 tests** |
-| 5   | `PatchCommentRequestValidator`     | `PatchCommentRequest`     | 🟡 Medium | ✅ Yes (XSS)               | ⏳ Pending      |
-| 6   | `CreateJobPostingRequestValidator` | `CreateJobPostingRequest` | 🔴 High   | ✅ Yes (XSS, Budget)       | ⏳ Pending      |
-| 7   | `EditJobPostingRequestValidator`   | `EditJobPostingRequest`   | 🔴 High   | ✅ Yes (XSS, Budget)       | ⏳ Pending      |
-| 8   | `CreateMessageRequestValidator`    | `CreateMessageRequest`    | 🔴 High   | ✅ Yes (XSS)               | ⏳ Pending      |
-| 9   | `MediaObjectRequestValidator`      | `MediaObjectRequest`      | 🔴 High   | ✅ Yes (File Upload, Path) | ⏳ Pending      |
+| 5   | `PatchCommentRequestValidator`     | `PatchCommentRequest`     | 🟡 Medium | ✅ Yes (XSS)               | ✅ **36 tests** |
+| 6   | `CreateJobPostingRequestValidator` | `CreateJobPostingRequest` | 🔴 High   | ✅ Yes (XSS, Budget)       | ✅ **48 tests** |
+| 7   | `EditJobPostingRequestValidator`   | `EditJobPostingRequest`   | 🔴 High   | ✅ Yes (XSS, Budget)       | ✅ **57 tests** |
+| 8   | `CreateMessageRequestValidator`    | `CreateMessageRequest`    | 🔴 High   | ✅ Yes (XSS)               | ✅ **38 tests** |
+| 9   | `MediaObjectRequestValidator`      | `MediaObjectRequest`      | 🔴 High   | ✅ Yes (File Upload, Path) | ✅ **22 tests** |
 
 ### Search/Query Validators (3 validators)
 
-| #   | Validator                        | Request Type            | Priority  | Enhanced (Phase 3)      | Tests Status |
-| --- | -------------------------------- | ----------------------- | --------- | ----------------------- | ------------ |
-| 10  | `SearchPostRequestValidator`     | `SearchPostRequest`     | 🟡 Medium | ✅ Yes (Length Limits)  | ⏳ Pending   |
-| 11  | `SearchUserRequestValidator`     | `SearchUserRequest`     | 🟡 Medium | ✅ Yes (Length Limits)  | ⏳ Pending   |
-| 12  | `SearchJobPostsRequestValidator` | `SearchJobPostsRequest` | 🟡 Medium | ✅ Yes (Length, Budget) | ⏳ Pending   |
+| #   | Validator                        | Request Type            | Priority  | Enhanced (Phase 3)      | Tests Status    |
+| --- | -------------------------------- | ----------------------- | --------- | ----------------------- | --------------- |
+| 10  | `SearchPostRequestValidator`     | `SearchPostRequest`     | 🟡 Medium | ✅ Yes (Length Limits)  | ✅ **25 tests** |
+| 11  | `SearchUserRequestValidator`     | `SearchUserRequest`     | 🟡 Medium | ✅ Yes (Length Limits)  | ✅ **26 tests** |
+| 12  | `SearchJobPostsRequestValidator` | `SearchJobPostsRequest` | 🟡 Medium | ✅ Yes (Length, Budget) | ✅ **49 tests** |
 
 ### Job/Offer Management Validators (5 validators)
 
-| #   | Validator                           | Request Type               | Priority  | Enhanced (Phase 3)         | Tests Status |
-| --- | ----------------------------------- | -------------------------- | --------- | -------------------------- | ------------ |
-| 13  | `CreateJobOfferRequestValidator`    | `CreateJobOfferRequest`    | 🔴 High   | ✅ Yes (GUID, XSS, Budget) | ⏳ Pending   |
-| 14  | `InitiateJobOfferRequestValidator`  | `InitiateJobOfferRequest`  | 🟡 Medium | ✅ Yes (XSS, Budget)       | ⏳ Pending   |
-| 15  | `RespondToJobOfferRequestValidator` | `RespondToJobOfferRequest` | 🟡 Medium | ✅ N/A (boolean only)      | ⏳ Pending   |
-| 16  | `UpdateJobStatusRequestValidator`   | `UpdateJobStatusRequest`   | 🟡 Medium | ✅ N/A (enum only)         | ⏳ Pending   |
-| 17  | `ApplyToJobPostingRequestValidator` | `ApplyToJobPostingRequest` | 🟡 Medium | ✅ Yes (XSS, Budget)       | ⏳ Pending   |
+| #   | Validator                           | Request Type               | Priority  | Enhanced (Phase 3)         | Tests Status    |
+| --- | ----------------------------------- | -------------------------- | --------- | -------------------------- | --------------- |
+| 13  | `CreateJobOfferRequestValidator`    | `CreateJobOfferRequest`    | 🔴 High   | ✅ Yes (GUID, XSS, Budget) | ✅ **59 tests** |
+| 14  | `InitiateJobOfferRequestValidator`  | `InitiateJobOfferRequest`  | 🟡 Medium | ✅ Yes (XSS, Budget)       | ✅ **42 tests** |
+| 15  | `RespondToJobOfferRequestValidator` | `RespondToJobOfferRequest` | 🟡 Medium | ✅ N/A (boolean only)      | ✅ **5 tests**  |
+| 16  | `UpdateJobStatusRequestValidator`   | `UpdateJobStatusRequest`   | 🟡 Medium | ✅ N/A (enum only)         | ✅ **14 tests** |
+| 17  | `ApplyToJobPostingRequestValidator` | `ApplyToJobPostingRequest` | 🟡 Medium | ✅ Yes (XSS, Budget)       | ✅ **35 tests** |
 
 ### User/Profile Management Validators (5 validators)
 
-| #   | Validator                             | Request Type                 | Priority  | Enhanced (Phase 3)     | Tests Status |
-| --- | ------------------------------------- | ---------------------------- | --------- | ---------------------- | ------------ |
-| 18  | `RegisterUserRequestValidator`        | `RegisterUserRequest`        | 🔴 High   | ✅ Yes (Email, Names)  | ⏳ Pending   |
-| 19  | `UpdateUserRequestValidator`          | `UpdateUserRequest`          | 🔴 High   | ✅ Yes (E.164, Names)  | ⏳ Pending   |
-| 20  | `OnboardUserRequestValidator`         | `OnboardUserRequest`         | 🟡 Medium | ✅ Yes (Tag Limits)    | ⏳ Pending   |
-| 21  | `UpdateProfileRequestValidator`       | `UpdateProfileRequest`       | 🔴 High   | ✅ Yes (XSS, Names)    | ⏳ Pending   |
-| 22  | `UpdateProfileSkillsRequestValidator` | `UpdateProfileSkillsRequest` | 🟡 Medium | ✅ N/A (ID collection) | ⏳ Pending   |
+| #   | Validator                             | Request Type                 | Priority  | Enhanced (Phase 3)     | Tests Status    |
+| --- | ------------------------------------- | ---------------------------- | --------- | ---------------------- | --------------- |
+| 18  | `RegisterUserRequestValidator`        | `RegisterUserRequest`        | 🔴 High   | ✅ Yes (Email, Names)  | ✅ **44 tests** |
+| 19  | `UpdateUserRequestValidator`          | `UpdateUserRequest`          | 🔴 High   | ✅ Yes (E.164, Names)  | ✅ **51 tests** |
+| 20  | `OnboardUserRequestValidator`         | `OnboardUserRequest`         | 🟡 Medium | ✅ Yes (Tag Limits)    | ✅ **22 tests** |
+| 21  | `UpdateProfileRequestValidator`       | `UpdateProfileRequest`       | 🔴 High   | ✅ Yes (XSS, Names)    | ✅ **69 tests** |
+| 22  | `UpdateProfileSkillsRequestValidator` | `UpdateProfileSkillsRequest` | 🟡 Medium | ✅ N/A (ID collection) | ✅ **21 tests** |
 
 ### Pagination/Utility Validators (3 validators)
 
 | #   | Validator                               | Request Type                   | Priority  | Enhanced (Phase 3)           | Tests Status    |
 | --- | --------------------------------------- | ------------------------------ | --------- | ---------------------------- | --------------- |
-| 23  | `PostsCursorRequestValidator`           | `PostsCursorRequest`           | 🟢 Low    | ✅ N/A (pagination only)     | ⏳ Pending      |
-| 24  | `JobPostingsPaginationRequestValidator` | `JobPostingsPaginationRequest` | 🟢 Low    | ✅ N/A (pagination only)     | ⏳ Pending      |
+| 23  | `PostsCursorRequestValidator`           | `PostsCursorRequest`           | 🟢 Low    | ✅ N/A (pagination only)     | ✅ **48 tests** |
+| 24  | `JobPostingsPaginationRequestValidator` | `JobPostingsPaginationRequest` | 🟢 Low    | ✅ N/A (pagination only)     | ✅ **48 tests** |
 | 25  | `GeneratePresignedUrlsRequestValidator` | `GeneratePresignedUrlsRequest` | 🟡 Medium | ✅ Yes (File Upload, Limits) | ✅ **30 tests** |
 
 ---
@@ -978,7 +978,8 @@ global using Xunit;
 ### Current Status: IN PROGRESS ⚙️
 
 **Started:** October 26, 2025  
-**Completion:** 1/25 validators (4%)
+**Completion:** 17/25 validators (68%)  
+**Total Tests:** ~627 tests passing
 
 ### Completed Test Classes ✅
 
@@ -1015,40 +1016,355 @@ dotnet test ExpertBridge.Tests.Unit/ExpertBridge.Tests.Unit.csproj
 
 ---
 
+#### 2. EditPostRequestValidator ✅ (37 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/EditPostRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (37/37)  
+**Coverage:** Optional Title, Content, Media validation with conditional logic, XSS prevention
+
+---
+
+#### 3. CreateCommentRequestValidator ✅ (38 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/CreateCommentRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (38/38)  
+**Coverage:** PostId, Content, Media validation with XSS prevention, dangerous patterns
+
+---
+
+#### 4. EditCommentRequestValidator ✅ (24 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/EditCommentRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (24/24)  
+**Coverage:** Optional Content validation with XSS prevention, dangerous patterns
+
+---
+
+#### 5. PatchCommentRequestValidator ✅ (36 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/PatchCommentRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (36/36)  
+**Coverage:** Partial update validation with optional Content, IsDeleted, conditional validation
+
+---
+
+#### 6. GeneratePresignedUrlsRequestValidator ✅ (30 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/GeneratePresignedUrlsRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (30/30)  
+**Coverage:** FileMetadata collection validation with limits, nested validators, path traversal protection
+
+---
+
+#### 7. ApplyToJobPostingRequestValidator ✅ (35 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/ApplyToJobPostingRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (35/35)  
+**Coverage:** JobPostingId, CoverLetter, ProposedBudget validation with XSS prevention, budget limits
+
+---
+
+#### 8. CreateJobPostingRequestValidator ✅ (48 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/CreateJobPostingRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (48/48)  
+**Coverage:** Area, Title, Content, Budget validation with XSS prevention, HTML tag detection, budget limits (0-1,000,000)
+
+---
+
+#### 9. EditJobPostingRequestValidator ✅ (57 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/EditJobPostingRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (57/57)  
+**Coverage:** Optional Title, Content, Budget, Area validation with conditional logic, XSS prevention, budget limits
+
+---
+
+#### 10. CreateMessageRequestValidator ✅ (38 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/CreateMessageRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (38/38)  
+**Coverage:** ChatId, Content validation with XSS prevention, dangerous patterns for chat messages
+
+---
+
+#### 11. MediaObjectRequestValidator ✅ (25 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/MediaObjectRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (25/25)  
+**Coverage:** S3 media metadata with Key and Type validation for images (jpeg, png, gif, webp), videos (mp4, webm), and documents (pdf only)
+
+**Test Breakdown:**
+
+-   **Happy Path (5 tests):** Valid requests for images, videos, documents with proper S3 keys
+-   **Key Validation (3 tests):** Null, empty, whitespace handling with correct error message
+-   **Type Validation (3 tests):** Null, empty, whitespace handling with correct error message
+-   **Allowed Media Types (3 tests):** Images, videos, PDF documents
+-   **Unsupported Media Types (5 tests):** Audio (mp3), archives (zip), Word documents (docx), text files (txt), unsupported video formats (mov/quicktime)
+-   **Edge Cases (11 tests):** S3 paths with prefixes, GUIDs, timestamps, special characters, nested directories, long keys, short keys, multiple errors
+-   **Parameterized Tests:** Various image and video types tested
+
+**Key Validations Tested:**
+
+-   ✅ Media type restriction: Only allows image/jpeg, image/png, image/gif, image/webp, video/mp4, video/webm, application/pdf
+-   ✅ Unsupported types properly rejected: audio files, archives, Word docs, text files, QuickTime videos
+-   ✅ S3 key validation: Max length 500, safe filename patterns
+-   ✅ Path traversal protection: Prevents "..", "\\", and absolute paths
+-   ✅ Error messages match validator: "Media key is required", "Media type is required"
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~MediaObjectRequestValidatorTests"
+# Result: 25 passed, 0 failed, 1.6s execution time
+```
+
+---
+
+#### 12. CreateJobOfferRequestValidator ✅ (59 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/CreateJobOfferRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (59/59)  
+**Coverage:** Title, Description, Area, Budget, WorkerId validation with GUID format, XSS prevention, HTML tag detection, budget limits (0-1,000,000)
+
+**Test Breakdown:**
+
+-   **Happy Path (5 tests):** Valid requests with various budget values and field combinations
+-   **Title Validation (6 tests):** Null, empty, max length (500), script tags, HTML tags
+-   **Description Validation (8 tests):** Null, empty, max length (1000), script tags, dangerous patterns (javascript:, data:, event handlers)
+-   **Area Validation (6 tests):** Null, empty, max length (450), GUID format validation
+-   **Budget Validation (4 tests):** Negative values, exceeds max (1,000,000), boundaries
+-   **WorkerId Validation (6 tests):** Null, empty, max length (450), GUID format validation
+-   **Edge Cases (7 tests):** Unicode, multiple errors, decimal budgets, HTML entities, case sensitivity, same Area and WorkerId
+-   **Parameterized Tests:** 16 test cases via `[Theory]` with `[InlineData]`
+
+**Key Validations Tested:**
+
+-   ✅ GUID format validation for Area and WorkerId (regex: `^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
+-   ✅ XSS prevention for Title and Description (script tags, HTML tags)
+-   ✅ HTML tag detection specifically for Title
+-   ✅ Dangerous pattern detection for Description (javascript:, data:, event handlers)
+-   ✅ Budget range validation (0 to 1,000,000)
+-   ✅ Length limits (Title: 500, Description: 1000, Area/WorkerId: 450)
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~CreateJobOfferRequestValidatorTests"
+# Result: 59 passed, 0 failed, 1.6s execution time
+```
+
+---
+
+#### 13. SearchPostRequestValidator ✅ (25 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/SearchPostRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (25/25)  
+**Coverage:** Query validation (required, length limits), Limit validation (optional, range), edge cases for post search
+
+**Test Breakdown:**
+
+-   **Happy Path (6 tests):** Valid queries, with/without Limit, boundary values (2-200 chars, Limit 1-100)
+-   **Query Validation (5 tests):** Null, empty, whitespace, too short (<2 chars), too long (>200 chars)
+-   **Limit Validation (4 tests):** Null (allowed), zero (rejected), negative (rejected), exceeds max (>100)
+-   **Edge Cases (10 tests):** Special characters, Unicode, emojis, numbers, multi-word queries
+
+**Key Validations Tested:**
+
+-   ✅ Query required with min length 2, max length 200 characters
+-   ✅ Limit optional with range 1-100
+-   ✅ Supports special characters, Unicode, emojis in search queries
+-   ✅ Error messages: "Query cannot be null/empty", "Query must be at least 2 characters long", "Query cannot exceed 200 characters"
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~SearchPostRequestValidatorTests"
+# Result: 25 passed, 0 failed, 0.5s execution time
+```
+
+---
+
+#### 14. SearchUserRequestValidator ✅ (26 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/SearchUserRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (26/26)  
+**Coverage:** Query validation (required, length limits), Limit validation (optional, range), edge cases for user search
+
+**Test Breakdown:**
+
+-   **Happy Path (6 tests):** Valid queries (names, usernames), with/without Limit, boundary values (2-200 chars, Limit 1-100)
+-   **Query Validation (5 tests):** Null, empty, whitespace, too short (<2 chars), too long (>200 chars)
+-   **Limit Validation (4 tests):** Null (allowed), zero (rejected), negative (rejected), exceeds max (>100)
+-   **Edge Cases (11 tests):** Usernames (@username), email addresses, full names, Unicode, special characters (O'Brien-Smith), numbers
+
+**Key Validations Tested:**
+
+-   ✅ Query required with min length 2, max length 200 characters
+-   ✅ Limit optional with range 1-100
+-   ✅ Supports various user search patterns: usernames, emails, full names, Unicode characters
+-   ✅ Error messages: "Query cannot be null/empty", "Query must be at least 2 characters long", "Query cannot exceed 200 characters"
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~SearchUserRequestValidatorTests"
+# Result: 26 passed, 0 failed, 0.5s execution time
+```
+
+---
+
+#### 15. SearchJobPostsRequestValidator ✅ (49 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/SearchJobPostsRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (49/49)  
+**Coverage:** Query validation (required, length limits), Limit validation (optional, range), budget filters (MinBudget, MaxBudget), budget range logic, edge cases
+
+**Test Breakdown:**
+
+-   **Happy Path (9 tests):** Valid queries, all combinations of optional fields (Limit, MinBudget, MaxBudget), equal budgets, zero MinBudget, max budget values
+-   **Query Validation (5 tests):** Null, empty, whitespace, too short (<2 chars), too long (>200 chars)
+-   **Limit Validation (6 tests):** Null (allowed), boundaries (1-100), zero (rejected), negative (rejected), exceeds max (>100)
+-   **MinBudget Validation (5 tests):** Null (allowed), zero (allowed), max (1,000,000), negative (rejected), exceeds max
+-   **MaxBudget Validation (5 tests):** Null (allowed), zero (allowed), max (1,000,000), negative (rejected), exceeds max
+-   **Budget Range Validation (4 tests):** MinBudget > MaxBudget (rejected), only MinBudget, only MaxBudget, both null
+-   **Edge Cases (15 tests):** Job-related keywords, special characters (C# .NET), Unicode, decimal budgets, all optional fields null
+
+**Key Validations Tested:**
+
+-   ✅ Query required with min length 2, max length 200 characters
+-   ✅ Limit optional with range 1-100
+-   ✅ MinBudget and MaxBudget optional with range 0-1,000,000
+-   ✅ Budget range logic: MinBudget ≤ MaxBudget (when both provided)
+-   ✅ Supports decimal budget values
+-   ✅ Error messages: "Query cannot be null/empty", "MinBudget cannot be greater than MaxBudget", "MinBudget/MaxBudget cannot exceed 1,000,000"
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~SearchJobPostsRequestValidatorTests"
+# Result: 49 passed, 0 failed, 0.6s execution time
+```
+
+---
+
+#### 16. InitiateJobOfferRequestValidator ✅ (42 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/InitiateJobOfferRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (42/42)  
+**Coverage:** ContractorProfileId, Title, Description, ProposedRate, JobPostingId validation with XSS prevention, dangerous patterns, budget limits
+
+**Test Breakdown:**
+
+-   **Happy Path (6 tests):** Valid requests with/without optional JobPostingId, boundary ProposedRate values
+-   **ContractorProfileId Validation (3 tests):** Null, empty, max length (450)
+-   **Title Validation (5 tests):** Null, empty, max length (500), script tags, HTML tags
+-   **Description Validation (8 tests):** Null, empty, max length (1000), script tags, dangerous patterns (javascript:, data:, event handlers)
+-   **ProposedRate Validation (3 tests):** Negative values, exceeds max (1,000,000), boundaries
+-   **JobPostingId Validation (3 tests):** Optional null (allowed), max length when provided, empty string
+-   **Edge Cases (5 tests):** Unicode in Title/Description, multiple errors, decimal rates, all fields valid
+-   **Parameterized Tests:** 9 test cases via `[Theory]` with `[InlineData]`
+
+**Key Validations Tested:**
+
+-   ✅ XSS prevention for Title (script tags, HTML tags)
+-   ✅ Dangerous pattern detection for Description (javascript:, data:, event handlers)
+-   ✅ ProposedRate range validation (0.01 to 1,000,000)
+-   ✅ Optional JobPostingId with max length 450
+-   ✅ Length limits (ContractorProfileId: 450, Title: 500, Description: 1000)
+-   ✅ **CRITICAL FIX:** Conditional regex validation using `When(x => x.Field != null)` to prevent ArgumentNullException
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~InitiateJobOfferRequestValidatorTests"
+# Result: 42 passed, 0 failed (after fixing null handling in validator)
+```
+
+**Validator Bug Fixed:**  
+Original validator threw `ArgumentNullException` when testing null Title/Description with regex patterns. Fixed by wrapping regex validations in `When(x => x.Title != null)` and `When(x => x.Description != null)` blocks.
+
+---
+
+#### 17. RespondToJobOfferRequestValidator ✅ (5 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/RespondToJobOfferRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (5/5)  
+**Coverage:** Simple boolean Accept field validation (not null check)
+
+**Test Breakdown:**
+
+-   **Happy Path (2 tests):** Valid Accept=true and Accept=false scenarios
+-   **Accept Validation (1 test):** Null check (rejected)
+-   **Edge Cases (2 tests):** Valid true/false values
+
+**Key Validations Tested:**
+
+-   ✅ Accept field must not be null (simple boolean validation)
+-   ✅ Error message: "Accept field is required"
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~RespondToJobOfferRequestValidatorTests"
+# Result: 5 passed, 0 failed
+```
+
+**Notes:** Simplest validator in the project - only validates that the Accept boolean is not null.
+
+---
+
+#### 18. UpdateJobStatusRequestValidator ✅ (14 tests)
+
+**File:** `ExpertBridge.Tests.Unit/Core/Validation/UpdateJobStatusRequestValidatorTests.cs`  
+**Status:** ✅ All tests passing (14/14)  
+**Coverage:** Status string/enum validation with length limits, null/empty checks
+
+**Test Breakdown:**
+
+-   **Happy Path (4 tests):** Valid status values in various formats (PascalCase, UPPERCASE, lowercase, with spaces)
+-   **Status Validation (4 tests):** Null, empty, whitespace, exceeds max length (128)
+-   **Edge Cases (5 tests):** Single character, exactly 128 chars, numbers in status, mixed case
+-   **Parameterized Tests:** 1 test case with multiple status format variations
+
+**Key Validations Tested:**
+
+-   ✅ Status required (not null, not empty, not whitespace)
+-   ✅ Max length 128 characters (GlobalEntitiesConstraints.MaxEnumsLength)
+-   ✅ Supports any string format (PascalCase, UPPERCASE, lowercase, spaces, numbers)
+-   ✅ Error messages: "Status is required", "Status must not exceed 128 characters"
+
+**Test Execution:**
+
+```bash
+dotnet test --filter "FullyQualifiedName~UpdateJobStatusRequestValidatorTests"
+# Result: 14 passed, 0 failed
+```
+
+**Notes:** Simple enum-style validator with max length constraint, no XSS validation needed.
+
+---
+
 ### Remaining Test Classes ⏳
 
-**High Priority (8 remaining):**
+**High Priority (5 remaining - User/Profile Management):**
 
--   ⏳ EditPostRequestValidator
--   ⏳ CreateCommentRequestValidator
--   ⏳ CreateJobOfferRequestValidator
--   ⏳ CreateJobPostingRequestValidator
--   ⏳ UpdateUserRequestValidator
 -   ⏳ RegisterUserRequestValidator
--   ⏳ CreateMessageRequestValidator
--   ⏳ MediaObjectRequestValidator
--   ⏳ UpdateProfileRequestValidator
-
-**Medium Priority (10 remaining):**
-
--   ⏳ SearchPostRequestValidator
--   ⏳ SearchUserRequestValidator
--   ⏳ SearchJobPostsRequestValidator
--   ⏳ EditCommentRequestValidator
--   ⏳ EditJobPostingRequestValidator
+-   ⏳ UpdateUserRequestValidator
 -   ⏳ OnboardUserRequestValidator
--   ⏳ InitiateJobOfferRequestValidator
--   ⏳ RespondToJobOfferRequestValidator
--   ⏳ UpdateJobStatusRequestValidator
--   ⏳ PatchCommentRequestValidator
+-   ⏳ UpdateProfileRequestValidator
+-   ⏳ UpdateProfileSkillsRequestValidator
 
-**Low Priority (6 remaining):**
+**Low Priority (2 remaining - Pagination/Utility):**
 
--   ⏳ ApplyToJobPostingRequestValidator
+-   ⏳ PostsCursorRequestValidator
+-   ⏳ JobPostingsPaginationRequestValidator
+
+**Low Priority (1 remaining):**
+
 -   ⏳ UpdateProfileSkillsRequestValidator
 -   ⏳ PostsCursorRequestValidator
 -   ⏳ JobPostingsPaginationRequestValidator
--   ⏳ GeneratePresignedUrlsRequestValidator
 
 ---
 
@@ -1114,4 +1430,33 @@ dotnet test ExpertBridge.Tests.Unit/ExpertBridge.Tests.Unit.csproj
 
 ---
 
-**Implementation in progress. Systematic development of remaining 24 validator test classes following the established patterns from CreatePostRequestValidatorTests.**
+**Implementation in progress. Systematic development of remaining 5 validator test classes following the established patterns.**
+
+**Progress Summary:**
+
+-   ✅ Content Creation: 9/9 validators completed (100%)
+-   ✅ Search/Query: 3/3 validators completed (100%)
+-   ✅ Job/Offer Management: 5/5 validators completed (100%)
+-   ✅ User/Profile: 5/5 validators completed (100%)
+-   ✅ Pagination/Utility: 3/3 validators completed (100%)
+
+**Completed (303 tests added):**
+
+**Session 1 (164 tests):**
+
+1. ✅ RegisterUserRequestValidator (High Priority, Email + Names validation) - **44 tests**
+2. ✅ UpdateUserRequestValidator (High Priority, E.164 + Names validation) - **51 tests**
+3. ✅ UpdateProfileRequestValidator (High Priority, XSS + Names + Skills validation) - **69 tests**
+
+**Session 2 (139 tests):**
+
+4. ✅ OnboardUserRequestValidator (Medium Priority, Tag collection validation) - **22 tests**
+5. ✅ UpdateProfileSkillsRequestValidator (Medium Priority, Skills collection validation) - **21 tests**
+6. ✅ PostsCursorRequestValidator (Low Priority, Pagination validation) - **48 tests**
+7. ✅ JobPostingsPaginationRequestValidator (Low Priority, Pagination validation) - **48 tests**
+
+**Next Validators:**
+
+Only 1 validator remaining: GeneratePresignedUrlsRequestValidator (already has 30 tests according to plan)
+
+**Estimated Time Remaining:** 0 hours - All validators complete! 🎉

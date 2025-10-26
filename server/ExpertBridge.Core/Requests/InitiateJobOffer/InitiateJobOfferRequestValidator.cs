@@ -33,22 +33,32 @@ public partial class InitiateJobOfferRequestValidator : AbstractValidator<Initia
             .NotNull().WithMessage("Title cannot be null")
             .NotEmpty().WithMessage("Title cannot be empty")
             .MaximumLength(GlobalEntitiesConstraints.MaxTitleLength)
-            .WithMessage($"Title cannot be longer than {GlobalEntitiesConstraints.MaxTitleLength} characters")
-            .Must(title => !ScriptTagRegex().IsMatch(title))
-            .WithMessage("Title cannot contain script tags")
-            .Must(title => !HtmlTagRegex().IsMatch(title))
-            .WithMessage("Title cannot contain HTML tags");
+            .WithMessage($"Title cannot be longer than {GlobalEntitiesConstraints.MaxTitleLength} characters");
+
+        When(x => x.Title != null, () =>
+        {
+            RuleFor(x => x.Title)
+                .Must(title => !ScriptTagRegex().IsMatch(title))
+                .WithMessage("Title cannot contain script tags")
+                .Must(title => !HtmlTagRegex().IsMatch(title))
+                .WithMessage("Title cannot contain HTML tags");
+        });
 
         RuleFor(x => x.Description)
             .NotNull().WithMessage("Description cannot be null")
             .NotEmpty().WithMessage("Description cannot be empty")
             .MaximumLength(GlobalEntitiesConstraints.MaxDescriptionLength)
             .WithMessage(
-                $"Description cannot be longer than {GlobalEntitiesConstraints.MaxDescriptionLength} characters")
-            .Must(description => !ScriptTagRegex().IsMatch(description))
-            .WithMessage("Description cannot contain script tags")
-            .Must(description => !DangerousPatternsRegex().IsMatch(description))
-            .WithMessage("Description contains potentially dangerous content");
+                $"Description cannot be longer than {GlobalEntitiesConstraints.MaxDescriptionLength} characters");
+
+        When(x => x.Description != null, () =>
+        {
+            RuleFor(x => x.Description)
+                .Must(description => !ScriptTagRegex().IsMatch(description))
+                .WithMessage("Description cannot contain script tags")
+                .Must(description => !DangerousPatternsRegex().IsMatch(description))
+                .WithMessage("Description contains potentially dangerous content");
+        });
 
         RuleFor(x => x.ProposedRate)
             .GreaterThan(0)

@@ -32,11 +32,20 @@ public partial class RegisterUserRequestValidator : AbstractValidator<RegisterUs
         RuleFor(x => x.Email)
             .NotNull().WithMessage("Email cannot be null")
             .NotEmpty().WithMessage("Email cannot be empty")
-            .EmailAddress().WithMessage("Email must be a valid email address")
             .MaximumLength(UserEntityConstraints.MaxEmailLength)
-            .WithMessage($"Email cannot be longer than {UserEntityConstraints.MaxEmailLength} characters")
-            .Must(email => !email.Contains("..", StringComparison.Ordinal) && !email.StartsWith('.') && !email.EndsWith('.'))
-            .WithMessage("Email contains invalid character sequences");
+            .WithMessage($"Email cannot be longer than {UserEntityConstraints.MaxEmailLength} characters");
+
+        When(x => x.Email != null, () =>
+        {
+            RuleFor(x => x.Email)
+                .EmailAddress().WithMessage("Email must be a valid email address")
+                .Must(email => !email.Contains("..", StringComparison.Ordinal))
+                .WithMessage("Email cannot contain consecutive dots")
+                .Must(email => !email.StartsWith('.'))
+                .WithMessage("Email cannot start with a dot")
+                .Must(email => !email.EndsWith('.'))
+                .WithMessage("Email cannot end with a dot");
+        });
 
         RuleFor(x => x.Username)
             .NotNull().WithMessage("Username cannot be null")
@@ -48,17 +57,27 @@ public partial class RegisterUserRequestValidator : AbstractValidator<RegisterUs
             .NotNull().WithMessage("FirstName cannot be null")
             .NotEmpty().WithMessage("FirstName cannot be empty")
             .MaximumLength(UserEntityConstraints.MaxNameLength)
-            .WithMessage($"FirstName cannot be longer than {UserEntityConstraints.MaxNameLength} characters")
-            .Must(name => ValidNameRegex().IsMatch(name))
-            .WithMessage("FirstName can only contain letters, spaces, hyphens, and apostrophes");
+            .WithMessage($"FirstName cannot be longer than {UserEntityConstraints.MaxNameLength} characters");
+
+        When(x => x.FirstName != null, () =>
+        {
+            RuleFor(x => x.FirstName)
+                .Must(name => ValidNameRegex().IsMatch(name))
+                .WithMessage("FirstName can only contain letters, spaces, hyphens, and apostrophes");
+        });
 
         RuleFor(x => x.LastName)
             .NotNull().WithMessage("LastName cannot be null")
             .NotEmpty().WithMessage("LastName cannot be empty")
             .MaximumLength(UserEntityConstraints.MaxNameLength)
-            .WithMessage($"LastName cannot be longer than {UserEntityConstraints.MaxNameLength} characters")
-            .Must(name => ValidNameRegex().IsMatch(name))
-            .WithMessage("LastName can only contain letters, spaces, hyphens, and apostrophes");
+            .WithMessage($"LastName cannot be longer than {UserEntityConstraints.MaxNameLength} characters");
+
+        When(x => x.LastName != null, () =>
+        {
+            RuleFor(x => x.LastName)
+                .Must(name => ValidNameRegex().IsMatch(name))
+                .WithMessage("LastName can only contain letters, spaces, hyphens, and apostrophes");
+        });
     }
 
     /// <summary>

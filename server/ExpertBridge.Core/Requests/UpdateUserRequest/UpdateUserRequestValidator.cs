@@ -34,10 +34,19 @@ public partial class UpdateUserRequestValidator : AbstractValidator<UpdateUserRe
             .NotNull().WithMessage("Email cannot be null")
             .NotEmpty().WithMessage("Email cannot be empty")
             .MaximumLength(UserEntityConstraints.MaxEmailLength)
-            .WithMessage($"Email cannot be longer than {UserEntityConstraints.MaxEmailLength} characters")
-            .EmailAddress().WithMessage("Email must be a valid email address")
-            .Must(email => !email.Contains("..", StringComparison.Ordinal) && !email.StartsWith('.') && !email.EndsWith('.'))
-            .WithMessage("Email contains invalid character sequences");
+            .WithMessage($"Email cannot be longer than {UserEntityConstraints.MaxEmailLength} characters");
+
+        When(x => x.Email != null, () =>
+        {
+            RuleFor(x => x.Email)
+                .EmailAddress().WithMessage("Email must be a valid email address")
+                .Must(email => !email.Contains("..", StringComparison.Ordinal))
+                .WithMessage("Email cannot contain consecutive dots")
+                .Must(email => !email.StartsWith('.'))
+                .WithMessage("Email cannot start with a dot")
+                .Must(email => !email.EndsWith('.'))
+                .WithMessage("Email cannot end with a dot");
+        });
 
         When(x => x.FirstName != null, () =>
         {
