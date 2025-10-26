@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace ExpertBridge.Core.Entities.Chats;
 
 /// <summary>
-/// Configures the Entity Framework Core mapping for the <see cref="Chat"/> entity.
+///     Configures the Entity Framework Core mapping for the <see cref="Chat" /> entity.
 /// </summary>
 public class ChatEntityConfiguration : IEntityTypeConfiguration<Chat>
 {
     /// <summary>
-    /// Configures the entity mapping, relationships, and database constraints for chats.
+    ///     Configures the entity mapping, relationships, and database constraints for chats.
     /// </summary>
     /// <param name="builder">The entity type builder used to configure the entity.</param>
     public void Configure(EntityTypeBuilder<Chat> builder)

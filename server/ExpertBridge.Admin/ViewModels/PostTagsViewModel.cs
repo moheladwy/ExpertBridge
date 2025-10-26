@@ -9,10 +9,26 @@ public class PostTagsViewModel
     public int PostCount { get; set; }
     public int UserInterestCount { get; set; }
     public int JobPostingCount { get; set; }
-    public bool IsUsedInPosts => PostCount > 0;
-    public bool IsUsedInUserInterests => UserInterestCount > 0;
-    public bool IsUsedInJobPostings => JobPostingCount > 0;
-    public bool IsUsedAnywhere => IsUsedInPosts || IsUsedInUserInterests || IsUsedInJobPostings;
+
+    public bool IsUsedInPosts
+    {
+        get { return PostCount > 0; }
+    }
+
+    public bool IsUsedInUserInterests
+    {
+        get { return UserInterestCount > 0; }
+    }
+
+    public bool IsUsedInJobPostings
+    {
+        get { return JobPostingCount > 0; }
+    }
+
+    public bool IsUsedAnywhere
+    {
+        get { return IsUsedInPosts || IsUsedInUserInterests || IsUsedInJobPostings; }
+    }
 
     public string UsageLocations
     {

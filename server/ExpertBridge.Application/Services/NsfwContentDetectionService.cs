@@ -95,7 +95,10 @@ public sealed class NsfwContentDetectionService
     /// <returns>
     ///     A string containing the contents of the NSFW detection output format schema file.
     /// </returns>
-    private static string GetOutputFormatSchema() => File.ReadAllText("LlmOutputFormat/NSFWDetectionOutputFormat.json");
+    private static string GetOutputFormatSchema()
+    {
+        return File.ReadAllText("LlmOutputFormat/NSFWDetectionOutputFormat.json");
+    }
 
     /// <summary>
     ///     Generates the predefined system prompt used for interactions with the Groq LLM API.

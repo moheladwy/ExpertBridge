@@ -28,13 +28,25 @@ public partial class Comments : ComponentBase
 
     [Inject] private HybridCache Cache { get; set; } = default!;
 
-    private int displayedCount => string.IsNullOrWhiteSpace(searchText) ? count : filteredCount;
+    private int displayedCount
+    {
+        get { return string.IsNullOrWhiteSpace(searchText) ? count : filteredCount; }
+    }
 
-    private string pagingSummaryFormat => string.IsNullOrWhiteSpace(searchText)
-        ? "Displaying page {0} of {1} <b>(total {2} comments)</b>"
-        : "Displaying page {0} of {1} <b>({2} comments found, {3} total)</b>";
+    private string pagingSummaryFormat
+    {
+        get
+        {
+            return string.IsNullOrWhiteSpace(searchText)
+                ? "Displaying page {0} of {1} <b>(total {2} comments)</b>"
+                : "Displaying page {0} of {1} <b>({2} comments found, {3} total)</b>";
+        }
+    }
 
-    protected override async Task OnInitializedAsync() => await LoadCommentsAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCommentsAsync();
+    }
 
     private async Task LoadCommentsAsync()
     {
@@ -62,7 +74,10 @@ public partial class Comments : ComponentBase
             .ToList();
     }
 
-    private void PageChanged(PagerEventArgs args) => UpdatePaged(args.Skip, args.Top);
+    private void PageChanged(PagerEventArgs args)
+    {
+        UpdatePaged(args.Skip, args.Top);
+    }
 
     private List<CommentResponse> GetFilteredComments()
     {
@@ -91,14 +106,16 @@ public partial class Comments : ComponentBase
         return false;
     }
 
-    private static bool CommentFieldsMatch(CommentResponse comment, string searchTerm) =>
-        (comment.Id?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (comment.Content?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (comment.Author?.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (comment.Author?.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (comment.Author?.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (comment.PostId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
-        (comment.JobPostingId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false);
+    private static bool CommentFieldsMatch(CommentResponse comment, string searchTerm)
+    {
+        return (comment.Id?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (comment.Content?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (comment.Author?.Username?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (comment.Author?.FirstName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (comment.Author?.LastName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (comment.PostId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+               (comment.JobPostingId?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false);
+    }
 
     private void OnSearchChanged(string value)
     {

@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Responses;
@@ -17,7 +17,10 @@ public class TagsController : ControllerBase
 {
     private readonly ExpertBridgeDbContext _dbContext;
 
-    public TagsController(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
+    public TagsController(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     [HttpGet]
     public async Task<List<TagResponse>> GetAll()

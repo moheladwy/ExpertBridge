@@ -1,26 +1,27 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Host.Resources;
 
 /// <summary>
-/// Provides functionality for configuring and retrieving RabbitMQ server resources
-/// within a distributed application context.
+///     Provides functionality for configuring and retrieving RabbitMQ server resources
+///     within a distributed application context.
 /// </summary>
 internal static class RabbitMq
 {
     /// <summary>
-    /// Configures and retrieves the RabbitMQ server resource for a distributed application.
-    /// This method sets up RabbitMQ with predefined username and password parameters,
-    /// default port, data volume, management plugin, and telemetry exporter.
+    ///     Configures and retrieves the RabbitMQ server resource for a distributed application.
+    ///     This method sets up RabbitMQ with predefined username and password parameters,
+    ///     default port, data volume, management plugin, and telemetry exporter.
     /// </summary>
     /// <param name="builder">
-    /// The <see cref="IDistributedApplicationBuilder"/> used to configure the application and manage its resources.
+    ///     The <see cref="IDistributedApplicationBuilder" /> used to configure the application and manage its resources.
     /// </param>
     /// <returns>
-    /// An <see cref="IResourceBuilder{RabbitMQServerResource}"/> representing the configured RabbitMQ server resource.
+    ///     An <see cref="IResourceBuilder{RabbitMQServerResource}" /> representing the configured RabbitMQ server resource.
     /// </returns>
-    public static IResourceBuilder<RabbitMQServerResource> GetRabbitMqResource(this IDistributedApplicationBuilder builder)
+    public static IResourceBuilder<RabbitMQServerResource> GetRabbitMqResource(
+        this IDistributedApplicationBuilder builder)
     {
         var userName = builder
             .AddParameterFromConfiguration("RabbitMq-Username", "RabbitMQ:Username");

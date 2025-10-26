@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.Extensions.Options;
 using Quartz;
@@ -33,7 +33,8 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
     /// </summary>
     private const int TriggerJobIntervalInHours = 1;
 
-    public void Configure(QuartzOptions options) =>
+    public void Configure(QuartzOptions options)
+    {
         options
             .AddJob<JobPostsModerationPeriodicWorker>(jobBuilder =>
             {
@@ -56,4 +57,5 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
                 });
                 triggerBuilder.WithIdentity(TriggerName, Group);
             });
+    }
 }

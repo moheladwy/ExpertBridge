@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
@@ -29,9 +29,20 @@ public partial class UserProfiles : ComponentBase
     private string searchText = string.Empty;
     private int totalProfiles;
 
-    public UserProfiles(ExpertBridgeDbContext dbContext) => DbContext = dbContext;
-    private int displayedProfileCount => string.IsNullOrWhiteSpace(searchText) ? totalProfiles : filteredCount;
-    private int totalPages => (int)Math.Ceiling((double)displayedProfileCount / pageSize);
+    public UserProfiles(ExpertBridgeDbContext dbContext)
+    {
+        DbContext = dbContext;
+    }
+
+    private int displayedProfileCount
+    {
+        get { return string.IsNullOrWhiteSpace(searchText) ? totalProfiles : filteredCount; }
+    }
+
+    private int totalPages
+    {
+        get { return (int)Math.Ceiling((double)displayedProfileCount / pageSize); }
+    }
 
     [Inject] public ExpertBridgeDbContext DbContext { get; init; }
 

@@ -6,21 +6,21 @@ services:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
     volumes:
-    - "expertbridge-rabbitmq-data:/var/lib/rabbitmq"
+      - "expertbridge-rabbitmq-data:/var/lib/rabbitmq"
     ports:
-    - target: 5672
-      published: 5672
-    - target: 15672
-      published: 15672
+      - target: 5672
+        published: 5672
+      - target: 15672
+        published: 15672
     restart: unless-stopped
   ollama:
     container_name: "ollama"
     image: "docker.io/ollama/ollama:0.11.8"
     volumes:
-    - "expertbridge-ollama-data:/root/.ollama"
+      - "expertbridge-ollama-data:/root/.ollama"
     ports:
-    - target: 11434
-      published: 11434
+      - target: 11434
+        published: 11434
     restart: unless-stopped
   Redis:
     container_name: "Redis"
@@ -28,14 +28,14 @@ services:
     environment:
       REDIS_PASSWORD: "7oaAXMi1sOMCLWZ3etwKkD"
     volumes:
-    - "expertbridge-redis-data:/data"
+      - "expertbridge-redis-data:/data"
     ports:
-    - target: 6379
-      published: 6379
+      - target: 6379
+        published: 6379
     command:
-    - "-c"
-    - "redis-server --requirepass $REDIS_PASSWORD --save 300 1"
-    - "/bin/sh"
+      - "-c"
+      - "redis-server --requirepass $REDIS_PASSWORD --save 300 1"
+      - "/bin/sh"
     restart: unless-stopped
   Seq:
     container_name: "Seq"
@@ -44,10 +44,10 @@ services:
       ACCEPT_EULA: "Y"
       SEQ_FIRSTRUN_NOAUTHENTICATION: "True"
     volumes:
-    - "expertbridge-seq-data:/data"
+      - "expertbridge-seq-data:/data"
     ports:
-    - target: 80
-      published: 4002
+      - target: 80
+        published: 4002
     restart: unless-stopped
   Postgres:
     container_name: "Postgres"
@@ -58,10 +58,10 @@ services:
       POSTGRES_USER: "root"
       POSTGRES_PASSWORD: "root"
     volumes:
-    - "expertbridge-postgres-data:/var/lib/postgresql/data"
+      - "expertbridge-postgres-data:/var/lib/postgresql/data"
     ports:
-    - target: 5432
-      published: 5432
+      - target: 5432
+        published: 5432
     restart: unless-stopped
   Pgadmin:
     image: dpage/pgadmin4:latest
@@ -95,10 +95,10 @@ services:
       ConnectionStrings__Postgres: "Host=Postgres;Port=5432;Username=root;Password=root"
       ConnectionStrings__rabbitmq: "amqp://guest:guest@rabbitmq:5672"
     ports:
-    - target: 8080
-      published: 10000
-    - target: 8443
-      published: 10001
+      - target: 8080
+        published: 10000
+      - target: 8443
+        published: 10001
     restart: unless-stopped
   ExpertBridgeAdmin:
     container_name: "ExpertBridgeAdmin"
@@ -114,10 +114,10 @@ services:
       ConnectionStrings__Postgres: "Host=Postgres;Port=5432;Username=root;Password=root"
       ConnectionStrings__rabbitmq: "amqp://guest:guest@rabbitmq:5672"
     ports:
-    - target: 8080
-      published: 10002
-    - target: 8443
-      published: 10003
+      - target: 8080
+        published: 10002
+      - target: 8443
+        published: 10003
     restart: unless-stopped
   ExpertBridgeWorker:
     container_name: "ExpertBridgeWorker"
@@ -133,9 +133,9 @@ services:
       ConnectionStrings__Postgres: "Host=Postgres;Port=5432;Username=root;Password=root"
     restart: unless-stopped
 volumes:
-  expertbridge-rabbitmq-data: {}
-  expertbridge-ollama-data: {}
-  expertbridge-redis-data: {}
-  expertbridge-seq-data: {}
-  expertbridge-postgres-data: {}
-  expertbridge-pgadmin-data: {}
+  expertbridge-rabbitmq-data: { }
+  expertbridge-ollama-data: { }
+  expertbridge-redis-data: { }
+  expertbridge-seq-data: { }
+  expertbridge-postgres-data: { }
+  expertbridge-pgadmin-data: { }

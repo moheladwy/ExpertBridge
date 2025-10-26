@@ -28,13 +28,25 @@ public partial class Posts : ComponentBase
 
     [Inject] private HybridCache Cache { get; set; } = default!;
 
-    private int displayedCount => string.IsNullOrWhiteSpace(searchText) ? count : filteredCount;
+    private int displayedCount
+    {
+        get { return string.IsNullOrWhiteSpace(searchText) ? count : filteredCount; }
+    }
 
-    private string pagingSummaryFormat => string.IsNullOrWhiteSpace(searchText)
-        ? "Displaying page {0} of {1} <b>(total {2} posts)</b>"
-        : "Displaying page {0} of {1} <b>({2} posts found, {3} total)</b>";
+    private string pagingSummaryFormat
+    {
+        get
+        {
+            return string.IsNullOrWhiteSpace(searchText)
+                ? "Displaying page {0} of {1} <b>(total {2} posts)</b>"
+                : "Displaying page {0} of {1} <b>({2} posts found, {3} total)</b>";
+        }
+    }
 
-    protected override async Task OnInitializedAsync() => await LoadPostsAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPostsAsync();
+    }
 
     private async Task LoadPostsAsync()
     {
@@ -61,7 +73,10 @@ public partial class Posts : ComponentBase
             .ToList();
     }
 
-    private void PageChanged(PagerEventArgs args) => UpdatePaged(args.Skip, args.Top);
+    private void PageChanged(PagerEventArgs args)
+    {
+        UpdatePaged(args.Skip, args.Top);
+    }
 
     private List<PostResponse> GetFilteredPosts()
     {

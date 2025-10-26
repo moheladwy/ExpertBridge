@@ -1,22 +1,30 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
 using ExpertBridge.Core.Exceptions;
+using FluentValidation;
 using Serilog;
 using Serilog.Context;
 
 namespace ExpertBridge.Api.Middleware;
 
-internal class GlobalExceptionMiddleware(RequestDelegate next)
+internal class GlobalExceptionMiddleware
 {
+    private readonly RequestDelegate _next;
+
+    public GlobalExceptionMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
     public async Task InvokeAsync(HttpContext httpContext)
     {
         try
         {
             using (LogContext.PushProperty("CorrelationId", httpContext.TraceIdentifier))
             {
-                await next(httpContext);
+                await _next(httpContext);
                 Log.Information(
                     "Request {Endpoint} with TraceId: {TraceId} has been processed successfully.",
                     httpContext.GetEndpoint()?.DisplayName,
@@ -45,6 +53,23 @@ internal class GlobalExceptionMiddleware(RequestDelegate next)
         catch (ForbiddenAccessException ex)
         {
             await Results.Forbid()
+                .ExecuteAsync(httpContext);
+        }
+        catch (ValidationException validationEx)
+        {
+            var errors = validationEx.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            await Results.ValidationProblem(
+                    errors,
+                    title: "Validation Failed",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    extensions: new Dictionary<string, object?> { { "traceId", httpContext.TraceIdentifier } }
+                )
                 .ExecuteAsync(httpContext);
         }
         catch (Exception ex)

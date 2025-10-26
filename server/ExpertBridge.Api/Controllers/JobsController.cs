@@ -1,7 +1,7 @@
 using ExpertBridge.Application.DomainServices;
-using ExpertBridge.Core.Requests.Jobs;
+using ExpertBridge.Core.Requests.CreateJobOffer;
+using ExpertBridge.Core.Requests.UpdateJobStatus;
 using ExpertBridge.Core.Responses;
-using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,16 +12,13 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 public class JobsController : ControllerBase
 {
-    private readonly ExpertBridgeDbContext _dbContext;
     private readonly JobService _jobService;
     private readonly UserService _userService;
 
     public JobsController(
-        ExpertBridgeDbContext dbContext,
         UserService userService,
         JobService jobService)
     {
-        _dbContext = dbContext;
         _userService = userService;
         _jobService = jobService;
     }

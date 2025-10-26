@@ -76,5 +76,8 @@ public partial class EditTagDialog
         }
     }
 
-    private void Cancel() => DialogService.Close(false);
+    private void Cancel()
+    {
+        DialogService.Close(false);
+    }
 }

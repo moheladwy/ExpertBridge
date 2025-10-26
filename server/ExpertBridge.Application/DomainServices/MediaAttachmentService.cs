@@ -1,26 +1,23 @@
 ﻿using ExpertBridge.Core.Entities.Media;
-using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Requests.MediaObject;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Application.DomainServices;
 
 /// <summary>
-/// Provides reusable media attachment processing services for posts, comments, and job postings.
+///     Provides reusable media attachment processing services for posts, comments, and job postings.
 /// </summary>
 /// <remarks>
-/// This service abstracts the complex logic of attaching media files to content entities,
-/// managing S3 object grants, and ensuring proper entity relationships.
-/// 
-/// **Architecture Role:**
-/// MediaAttachmentService is a utility service that prevents code duplication across
-/// PostService, CommentService, and JobPostingService. It follows the DRY principle
-/// by centralizing media attachment logic in one location.
-/// 
-/// **Media Attachment Flow:**
-/// 
-/// **1. Client Upload Process:**
-/// <code>
+///     This service abstracts the complex logic of attaching media files to content entities,
+///     managing S3 object grants, and ensuring proper entity relationships.
+///     **Architecture Role:**
+///     MediaAttachmentService is a utility service that prevents code duplication across
+///     PostService, CommentService, and JobPostingService. It follows the DRY principle
+///     by centralizing media attachment logic in one location.
+///     **Media Attachment Flow:**
+///     **1. Client Upload Process:**
+///     <code>
 /// // Client requests presigned URL
 /// POST /api/media/presigned-url
 /// {
@@ -42,34 +39,28 @@ namespace ExpertBridge.Application.DomainServices;
 ///   "media": [{ "key": "media/abc-123.jpg", "type": "Image" }]
 /// }
 /// </code>
-/// 
-/// **2. Server-Side Activation:**
-/// This service activates grants when content is created:
-/// - Changes OnHold=false, IsActive=true
-/// - Sets ActivatedAt timestamp
-/// - Creates media entity (PostMedia, CommentMedia, JobPostingMedia)
-/// - Prevents orphaned S3 objects
-/// 
-/// **Architecture Benefits:**
-/// 
-/// **Generic Design:**
-/// - Works with any content type (TEntity)
-/// - Works with any media type (TMedia)
-/// - Factory pattern for media entity creation
-/// - Type-safe through generic constraints
-/// 
-/// **Transaction Safety:**
-/// - Does not call SaveChanges internally
-/// - Integrates with parent service's Unit of Work
-/// - All changes committed together atomically
-/// 
-/// **S3 Grant Management:**
-/// - Activates media grants atomically with content creation
-/// - Prevents orphaned S3 objects from abandoned uploads
-/// - Cleanup workers can delete inactive grants after expiry
-/// 
-/// **Database Schema:**
-/// <code>
+///     **2. Server-Side Activation:**
+///     This service activates grants when content is created:
+///     - Changes OnHold=false, IsActive=true
+///     - Sets ActivatedAt timestamp
+///     - Creates media entity (PostMedia, CommentMedia, JobPostingMedia)
+///     - Prevents orphaned S3 objects
+///     **Architecture Benefits:**
+///     **Generic Design:**
+///     - Works with any content type (TEntity)
+///     - Works with any media type (TMedia)
+///     - Factory pattern for media entity creation
+///     - Type-safe through generic constraints
+///     **Transaction Safety:**
+///     - Does not call SaveChanges internally
+///     - Integrates with parent service's Unit of Work
+///     - All changes committed together atomically
+///     **S3 Grant Management:**
+///     - Activates media grants atomically with content creation
+///     - Prevents orphaned S3 objects from abandoned uploads
+///     - Cleanup workers can delete inactive grants after expiry
+///     **Database Schema:**
+///     <code>
 /// MediaGrant:
 ///   Key: "media/abc-123.jpg" (S3 object key)
 ///   OnHold: true → false (when activated)
@@ -83,11 +74,9 @@ namespace ExpertBridge.Application.DomainServices;
 ///   Type: Image/Video/Document
 ///   ParentEntityId: References Post/Comment/JobPosting
 /// </code>
-/// 
-/// **Usage Pattern:**
-/// 
-/// **In PostService.CreatePostAsync:**
-/// <code>
+///     **Usage Pattern:**
+///     **In PostService.CreatePostAsync:**
+///     <code>
 /// if (request.Media?.Count > 0)
 /// {
 ///     PostMedia createMediaFunc(MediaObjectRequest req, Post post)
@@ -111,34 +100,29 @@ namespace ExpertBridge.Application.DomainServices;
 /// 
 /// await _dbContext.SaveChangesAsync(); // Commits post, media, and grant updates
 /// </code>
-/// 
-/// **Security Considerations:**
-/// - Only client-provided Keys are activated (no arbitrary S3 access)
-/// - Grants must pre-exist (created during presigned URL request)
-/// - Expired grants are ignored (handled by cleanup worker)
-/// - Media types validated by caller (not this service's responsibility)
-/// 
-/// **Performance:**
-/// - Minimal database queries (AddRange, bulk update)
-/// - No file system or S3 operations (media already uploaded)
-/// - Efficient for multiple media attachments
-/// 
-/// **Cleanup Integration:**
-/// Background workers use MediaGrant status for cleanup:
-/// <code>
+///     **Security Considerations:**
+///     - Only client-provided Keys are activated (no arbitrary S3 access)
+///     - Grants must pre-exist (created during presigned URL request)
+///     - Expired grants are ignored (handled by cleanup worker)
+///     - Media types validated by caller (not this service's responsibility)
+///     **Performance:**
+///     - Minimal database queries (AddRange, bulk update)
+///     - No file system or S3 operations (media already uploaded)
+///     - Efficient for multiple media attachments
+///     **Cleanup Integration:**
+///     Background workers use MediaGrant status for cleanup:
+///     <code>
 /// // Cleanup abandoned uploads (OnHold after 24 hours)
 /// var expiredGrants = await dbContext.MediaGrants
 ///     .Where(g => g.OnHold && g.ExpiresAt < DateTime.UtcNow)
-///     .ToListAsync();
-///     
-/// foreach (var grant in expiredGrants)
-/// {
-///     await s3Client.DeleteObjectAsync(bucketName, grant.Key);
-///     dbContext.MediaGrants.Remove(grant);
+///                                             . ToListAsync();
+///                                             foreach ( var grant in expiredGrants)
+///                                             {
+///                                             await s3Client.DeleteObjectAsync( bucketName, grant.Key);
+///                                             dbContext.MediaGrants.Remove( grant);
 /// }
 /// </code>
-/// 
-/// The service is stateless and registered as scoped, aligning with Entity Framework's DbContext lifetime.
+///     The service is stateless and registered as scoped, aligning with Entity Framework's DbContext lifetime.
 /// </remarks>
 public class MediaAttachmentService
 {
@@ -146,67 +130,61 @@ public class MediaAttachmentService
     // which aligns better with the service being stateless regarding the UoW context.
 
     /// <summary>
-    /// Processes media requests, creates media entities, and activates S3 object grants within a transaction.
+    ///     Processes media requests, creates media entities, and activates S3 object grants within a transaction.
     /// </summary>
     /// <typeparam name="TEntity">
-    /// The type of the parent content entity (Post, Comment, JobPosting) to which media will be attached.
-    /// Must be a reference type.
+    ///     The type of the parent content entity (Post, Comment, JobPosting) to which media will be attached.
+    ///     Must be a reference type.
     /// </typeparam>
     /// <typeparam name="TMedia">
-    /// The type of media entity to create (PostMedia, CommentMedia, JobPostingMedia).
-    /// Must inherit from <see cref="MediaObject"/>.
+    ///     The type of media entity to create (PostMedia, CommentMedia, JobPostingMedia).
+    ///     Must inherit from <see cref="MediaObject" />.
     /// </typeparam>
     /// <param name="mediaRequests">
-    /// Collection of media object requests from the client, containing S3 Keys and media types.
-    /// Can be null or empty, in which case an empty list is returned.
+    ///     Collection of media object requests from the client, containing S3 Keys and media types.
+    ///     Can be null or empty, in which case an empty list is returned.
     /// </param>
     /// <param name="parentEntity">
-    /// The parent content entity (Post, Comment, JobPosting) to associate media with.
+    ///     The parent content entity (Post, Comment, JobPosting) to associate media with.
     /// </param>
     /// <param name="createMediaEntityFunc">
-    /// Factory function that creates the appropriate media entity type from a request and parent entity.
-    /// Allows caller to configure entity-specific properties and relationships.
+    ///     Factory function that creates the appropriate media entity type from a request and parent entity.
+    ///     Allows caller to configure entity-specific properties and relationships.
     /// </param>
     /// <param name="dbContext">
-    /// The database context to use for entity tracking. Does NOT call SaveChanges - caller is responsible.
+    ///     The database context to use for entity tracking. Does NOT call SaveChanges - caller is responsible.
     /// </param>
     /// <returns>
-    /// A task representing the asynchronous operation, containing a list of created media entities.
-    /// Returns empty list if no media requests provided.
+    ///     A task representing the asynchronous operation, containing a list of created media entities.
+    ///     Returns empty list if no media requests provided.
     /// </returns>
     /// <remarks>
-    /// **Processing Steps:**
-    /// 
-    /// **1. Validate Input:**
-    /// - Return empty list if mediaRequests is null or empty
-    /// - No exceptions thrown for missing media (optional feature)
-    /// 
-    /// **2. Create Media Entities:**
-    /// - Iterate through mediaRequests
-    /// - Call factory function to create typed media entity
-    /// - Add to tracking collection
-    /// 
-    /// **3. Track in DbContext:**
-    /// - Add all media entities to appropriate DbSet&lt;TMedia&gt;
-    /// - Entities are now tracked but not yet committed
-    /// - Foreign keys established through navigation properties
-    /// 
-    /// **4. Activate Media Grants:**
-    /// - Extract Keys from all media entities
-    /// - Query matching MediaGrants from database
-    /// - Update grant status:
-    ///   - IsActive = true (media now attached to content)
-    ///   - OnHold = false (upload confirmed)
-    ///   - ActivatedAt = DateTime.UtcNow (audit timestamp)
-    /// - EF tracks changes, will update on SaveChanges
-    /// 
-    /// **5. Return Entities:**
-    /// - Return list of created media entities
-    /// - Caller can assign to parent entity's navigation property
-    /// - All changes committed together when caller calls SaveChanges
-    /// 
-    /// **Example Usage in PostService:**
-    /// <code>
+    ///     **Processing Steps:**
+    ///     **1. Validate Input:**
+    ///     - Return empty list if mediaRequests is null or empty
+    ///     - No exceptions thrown for missing media (optional feature)
+    ///     **2. Create Media Entities:**
+    ///     - Iterate through mediaRequests
+    ///     - Call factory function to create typed media entity
+    ///     - Add to tracking collection
+    ///     **3. Track in DbContext:**
+    ///     - Add all media entities to appropriate DbSet&lt;TMedia&gt;
+    ///     - Entities are now tracked but not yet committed
+    ///     - Foreign keys established through navigation properties
+    ///     **4. Activate Media Grants:**
+    ///     - Extract Keys from all media entities
+    ///     - Query matching MediaGrants from database
+    ///     - Update grant status:
+    ///     - IsActive = true (media now attached to content)
+    ///     - OnHold = false (upload confirmed)
+    ///     - ActivatedAt = DateTime.UtcNow (audit timestamp)
+    ///     - EF tracks changes, will update on SaveChanges
+    ///     **5. Return Entities:**
+    ///     - Return list of created media entities
+    ///     - Caller can assign to parent entity's navigation property
+    ///     - All changes committed together when caller calls SaveChanges
+    ///     **Example Usage in PostService:**
+    ///     <code>
     /// PostMedia CreatePostMediaEntity(MediaObjectRequest mediaReq, Post post)
     /// {
     ///     return new PostMedia
@@ -229,9 +207,8 @@ public class MediaAttachmentService
     /// post.Medias = mediaEntities; // Set navigation property
     /// await _dbContext.SaveChangesAsync(); // Commit all changes atomically
     /// </code>
-    /// 
-    /// **Example Usage in CommentService:**
-    /// <code>
+    ///     **Example Usage in CommentService:**
+    ///     <code>
     /// CommentMedia CreateCommentMediaEntity(MediaObjectRequest req, Comment comment)
     /// {
     ///     return new CommentMedia
@@ -250,16 +227,14 @@ public class MediaAttachmentService
     ///     _dbContext
     /// );
     /// </code>
-    /// 
-    /// **Transaction Guarantees:**
-    /// - All operations tracked in single DbContext
-    /// - No SaveChanges called internally
-    /// - Atomic commit when caller saves
-    /// - Rollback on any failure preserves consistency
-    /// 
-    /// **Grant Activation Logic:**
-    /// The grant activation prevents orphaned S3 objects:
-    /// <code>
+    ///     **Transaction Guarantees:**
+    ///     - All operations tracked in single DbContext
+    ///     - No SaveChanges called internally
+    ///     - Atomic commit when caller saves
+    ///     - Rollback on any failure preserves consistency
+    ///     **Grant Activation Logic:**
+    ///     The grant activation prevents orphaned S3 objects:
+    ///     <code>
     /// MediaGrant State Transitions:
     /// 
     /// Created (presigned URL request):
@@ -274,23 +249,20 @@ public class MediaAttachmentService
     /// 
     /// Cleanup (grant never activated):
     ///   If OnHold && ExpiresAt < Now:
-    ///     Delete S3 object
-    ///     Delete MediaGrant
+    ///                              Delete S3 object
+    ///                              Delete MediaGrant
     /// </code>
-    /// 
-    /// **Error Scenarios:**
-    /// - Missing grant for Key: Grant not updated, but media entity still created
-    /// - Duplicate Keys: Multiple media reference same S3 object (allowed)
-    /// - SaveChanges failure: All changes rolled back (transaction safety)
-    /// 
-    /// **Performance:**
-    /// - Single query for all grants (WHERE IN clause)
-    /// - Bulk AddRange for media entities
-    /// - Minimal memory allocation
-    /// - Efficient for 1-10 media attachments per content
-    /// 
-    /// The method integrates seamlessly with Entity Framework's Unit of Work pattern,
-    /// allowing callers to maintain full control over transaction boundaries.
+    ///     **Error Scenarios:**
+    ///     - Missing grant for Key: Grant not updated, but media entity still created
+    ///     - Duplicate Keys: Multiple media reference same S3 object (allowed)
+    ///     - SaveChanges failure: All changes rolled back (transaction safety)
+    ///     **Performance:**
+    ///     - Single query for all grants (WHERE IN clause)
+    ///     - Bulk AddRange for media entities
+    ///     - Minimal memory allocation
+    ///     - Efficient for 1-10 media attachments per content
+    ///     The method integrates seamlessly with Entity Framework's Unit of Work pattern,
+    ///     allowing callers to maintain full control over transaction boundaries.
     /// </remarks>
     public async Task<List<TMedia>> ProcessAndAttachMediaAsync<TEntity, TMedia>(
         ICollection<MediaObjectRequest> mediaRequests,
@@ -335,34 +307,32 @@ public class MediaAttachmentService
     }
 
     /// <summary>
-    /// Sanitizes a content hint string to create a safe, valid media filename.
+    ///     Sanitizes a content hint string to create a safe, valid media filename.
     /// </summary>
     /// <param name="contentHint">
-    /// A hint string derived from content (post title, comment text) to use as the media name.
-    /// Can be null, empty, or contain special characters.
+    ///     A hint string derived from content (post title, comment text) to use as the media name.
+    ///     Can be null, empty, or contain special characters.
     /// </param>
     /// <param name="maxLength">
-    /// The maximum length for the sanitized name. Defaults to 50 characters.
+    ///     The maximum length for the sanitized name. Defaults to 50 characters.
     /// </param>
     /// <returns>
-    /// A sanitized string suitable for use as a media filename, trimmed and length-limited.
-    /// Returns "UntitledMedia" if contentHint is null or whitespace.
+    ///     A sanitized string suitable for use as a media filename, trimmed and length-limited.
+    ///     Returns "UntitledMedia" if contentHint is null or whitespace.
     /// </returns>
     /// <remarks>
-    /// **Sanitization Rules:**
-    /// 1. Null/empty/whitespace input → "UntitledMedia"
-    /// 2. Trim leading/trailing whitespace
-    /// 3. Truncate to maxLength if longer
-    /// 4. Preserve original characters (no encoding/replacement)
-    /// 
-    /// **Use Cases:**
-    /// - Post media: Use post title as hint
-    /// - Comment media: Use first 50 chars of comment content
-    /// - Profile pictures: Use username or "ProfilePicture"
-    /// - Job posting attachments: Use job title
-    /// 
-    /// **Example Transformations:**
-    /// <code>
+    ///     **Sanitization Rules:**
+    ///     1. Null/empty/whitespace input → "UntitledMedia"
+    ///     2. Trim leading/trailing whitespace
+    ///     3. Truncate to maxLength if longer
+    ///     4. Preserve original characters (no encoding/replacement)
+    ///     **Use Cases:**
+    ///     - Post media: Use post title as hint
+    ///     - Comment media: Use first 50 chars of comment content
+    ///     - Profile pictures: Use username or "ProfilePicture"
+    ///     - Job posting attachments: Use job title
+    ///     **Example Transformations:**
+    ///     <code>
     /// SanitizeMediaName("My Amazing Post About AI")
     /// → "My Amazing Post About AI"
     /// 
@@ -378,18 +348,16 @@ public class MediaAttachmentService
     /// SanitizeMediaName("Short", maxLength: 3)
     /// → "Sho"
     /// </code>
-    /// 
-    /// **Database Storage:**
-    /// The sanitized name is stored in media entities:
-    /// <code>
+    ///     **Database Storage:**
+    ///     The sanitized name is stored in media entities:
+    ///     <code>
     /// PostMedia:
     ///   Name: "My Amazing Post About AI"
     ///   Key: "media/abc-123-def-456.jpg"
     ///   Type: Image
     /// </code>
-    /// 
-    /// **Display Usage:**
-    /// <code>
+    ///     **Display Usage:**
+    ///     <code>
     /// // In UI, show meaningful name instead of UUID
     /// &lt;img src="{media.Url}" alt="{media.Name}" /&gt;
     /// 
@@ -398,25 +366,21 @@ public class MediaAttachmentService
     ///   Download {media.Name}
     /// &lt;/a&gt;
     /// </code>
-    /// 
-    /// **Security Notes:**
-    /// - No path traversal prevention (not used in file paths)
-    /// - No XSS prevention (caller responsible for HTML encoding)
-    /// - Special characters preserved (names are descriptive, not functional)
-    /// 
-    /// **Performance:**
-    /// - Simple string operations (trim, substring)
-    /// - No regex or complex parsing
-    /// - Minimal allocations
-    /// 
-    /// **Future Enhancements:**
-    /// Consider adding:
-    /// - Special character removal/replacement
-    /// - Unicode normalization
-    /// - Extension preservation (.jpg, .pdf)
-    /// - Uniqueness suffix if needed
-    /// 
-    /// The method is deterministic and safe for concurrent use.
+    ///     **Security Notes:**
+    ///     - No path traversal prevention (not used in file paths)
+    ///     - No XSS prevention (caller responsible for HTML encoding)
+    ///     - Special characters preserved (names are descriptive, not functional)
+    ///     **Performance:**
+    ///     - Simple string operations (trim, substring)
+    ///     - No regex or complex parsing
+    ///     - Minimal allocations
+    ///     **Future Enhancements:**
+    ///     Consider adding:
+    ///     - Special character removal/replacement
+    ///     - Unicode normalization
+    ///     - Extension preservation (.jpg, .pdf)
+    ///     - Uniqueness suffix if needed
+    ///     The method is deterministic and safe for concurrent use.
     /// </remarks>
     public string SanitizeMediaName(string contentHint, int maxLength = 50) // Shared helper
     {

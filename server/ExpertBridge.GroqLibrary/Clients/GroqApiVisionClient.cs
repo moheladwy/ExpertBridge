@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -43,8 +43,10 @@ public sealed class GroqApiVisionClient
     /// <param name="httpClient">
     ///     The <see cref="HttpClient" /> instance used for HTTP communication with the Groq API.
     /// </param>
-    public GroqApiVisionClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient) =>
+    public GroqApiVisionClient(GroqApiChatCompletionClient groqApiChatCompletionClient, HttpClient httpClient)
+    {
         _chatCompletionClient = groqApiChatCompletionClient;
+    }
 
     /// <summary>
     ///     Base method for creating vision-based completions using the Groq API.

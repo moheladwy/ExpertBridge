@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using AppAny.Quartz.EntityFrameworkCore.Migrations;
 using AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL;
@@ -7,9 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Worker.QuartzDatabase;
 
-internal sealed class ExpertBridgeQuartzDbContext(DbContextOptions<ExpertBridgeQuartzDbContext> options)
-    : DbContext(options)
+internal sealed class ExpertBridgeQuartzDbContext : DbContext
 {
+    public ExpertBridgeQuartzDbContext(DbContextOptions<ExpertBridgeQuartzDbContext> options) : base(options)
+    {
+    }
+
     /// <summary>
     ///     The OnModelCreating method that is called when the model is being created.
     /// </summary>

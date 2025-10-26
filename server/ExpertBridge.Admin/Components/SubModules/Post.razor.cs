@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Queries;
 using ExpertBridge.Core.Responses;
@@ -19,7 +19,10 @@ public partial class Post : ComponentBase
     private bool _loadingComments;
     private bool _showComments;
 
-    public Post(ExpertBridgeDbContext dbContext) => _dbContext = dbContext;
+    public Post(ExpertBridgeDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     /// <summary>
     ///     The post-data to be displayed in the component.

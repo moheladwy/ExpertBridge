@@ -14,10 +14,12 @@ builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
     .WithReference(seq)
     .WithReference(postgresql)
     .WithReference(rabbitMq)
+    .WithReference(ollama)
     .WaitFor(rabbitMq)
     .WaitFor(redis)
     .WaitFor(seq)
     .WaitFor(rabbitMq)
+    .WaitFor(ollama)
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 

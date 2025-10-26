@@ -30,7 +30,7 @@ public class NotificationsController : ControllerBase
     {
         var user = await _authHelper.GetCurrentUserAsync();
 
-        if (user == null || user.Profile == null)
+        if (user?.Profile == null)
         {
             throw new UnauthorizedException();
         }
@@ -48,7 +48,7 @@ public class NotificationsController : ControllerBase
     {
         var user = await _authHelper.GetCurrentUserAsync();
 
-        if (user == null || user.Profile == null)
+        if (user?.Profile == null)
         {
             throw new UnauthorizedException();
         }

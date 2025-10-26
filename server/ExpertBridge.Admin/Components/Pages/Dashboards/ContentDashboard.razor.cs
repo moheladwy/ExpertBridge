@@ -9,9 +9,9 @@ namespace ExpertBridge.Admin.Components.Pages.Dashboards;
 
 public partial class ContentDashboard : ComponentBase
 {
+    private readonly ExpertBridgeDbContext _dbContext;
     private readonly bool _showDataLabels;
     private readonly ContentStats _stats;
-    private readonly ExpertBridgeDbContext DbContext;
     private List<ChartDataItem> _commentChartData;
     private List<ChartDataItem> _jobPostingChartData;
     private bool _loading;
@@ -20,7 +20,7 @@ public partial class ContentDashboard : ComponentBase
 
     public ContentDashboard(ExpertBridgeDbContext dbContext)
     {
-        DbContext = dbContext;
+        _dbContext = dbContext;
         _loading = true;
         _showDataLabels = true;
         _stats = new ContentStats();
@@ -30,7 +30,10 @@ public partial class ContentDashboard : ComponentBase
         _overviewChartData = [];
     }
 
-    protected override async Task OnInitializedAsync() => await RefreshData();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
 
     private async Task RefreshData()
     {
@@ -52,30 +55,30 @@ public partial class ContentDashboard : ComponentBase
     private async Task LoadContentStatsAsync()
     {
         // Load Posts statistics
-        _stats.ActivePosts = await DbContext.Posts
+        _stats.ActivePosts = await _dbContext.Posts
             .AsNoTracking()
             .CountAsync();
-        _stats.DeletedPosts = await DbContext.Posts
+        _stats.DeletedPosts = await _dbContext.Posts
             .AsNoTracking()
             .IgnoreQueryFilters()
             .CountAsync(p => p.IsDeleted);
         _stats.TotalPosts = _stats.ActivePosts + _stats.DeletedPosts;
 
         // Load Comments statistics
-        _stats.ActiveComments = await DbContext.Comments
+        _stats.ActiveComments = await _dbContext.Comments
             .AsNoTracking()
             .CountAsync();
-        _stats.DeletedComments = await DbContext.Comments
+        _stats.DeletedComments = await _dbContext.Comments
             .AsNoTracking()
             .IgnoreQueryFilters()
             .CountAsync(c => c.IsDeleted);
         _stats.TotalComments = _stats.ActiveComments + _stats.DeletedComments;
 
         // Load Job Postings statistics
-        _stats.ActiveJobPostings = await DbContext.JobPostings
+        _stats.ActiveJobPostings = await _dbContext.JobPostings
             .AsNoTracking()
             .CountAsync();
-        _stats.DeletedJobPostings = await DbContext.JobPostings
+        _stats.DeletedJobPostings = await _dbContext.JobPostings
             .AsNoTracking()
             .IgnoreQueryFilters()
             .CountAsync(jp => jp.IsDeleted);

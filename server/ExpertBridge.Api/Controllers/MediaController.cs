@@ -1,6 +1,6 @@
 using ExpertBridge.Application.Services;
 using ExpertBridge.Core.Entities.Media.MediaGrants;
-using ExpertBridge.Core.Requests;
+using ExpertBridge.Core.Requests.GeneratePresignedUrls;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
@@ -12,9 +12,6 @@ namespace ExpertBridge.Api.Controllers;
 ///     This controller is used to handle media operations like uploading, downloading, and deleting objects from the s3
 ///     bucket.
 /// </summary>
-/// <param name="objectStorageService">
-///     The service that handles the operations on the s3 bucket.
-/// </param>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -32,7 +29,7 @@ public class MediaController : ControllerBase
     [HttpPost("generate-urls")] // generate-url?count=3
     public async Task<List<PresignedUrlResponse>> GenerateUrls([FromBody] GeneratePresignedUrlsRequest request)
     {
-        if (request == null || request.Files == null || request.Files.Count == 0)
+        if (request?.Files == null || request.Files.Count == 0)
         {
             throw new ArgumentException("Files cannot be null or empty", nameof(request));
         }
@@ -54,73 +51,4 @@ public class MediaController : ControllerBase
 
         return urls;
     }
-
-    /// <summary>
-    ///     This endpoint is used to download an object from the s3 bucket.
-    /// </summary>
-    /// <param name="key">
-    ///     The key of the object to download.
-    /// </param>
-    /// <returns>
-    ///     The object itself as a file.
-    /// </returns>
-    //[HttpGet("download/{key}")]
-    //public async Task<IActionResult> DownloadObjectAsync([FromRoute] string key)
-    //{
-    //    ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
-    //    var response = await objectStorageService.GetObjectAsync(key);
-    //    return File(response.ResponseStream, response.ContentType, response.FileName);
-    //}
-
-    /// <summary>
-    ///     This endpoint is used to get the url of an object in the s3 bucket.
-    /// </summary>
-    /// <param name="key">
-    ///     The key of the object to get the url of.
-    /// </param>
-    /// <returns>
-    ///     The url of the object in the s3 bucket to download it from the client side.
-    /// </returns>
-    //[HttpGet("url/{key}")]
-    //public async Task<GetMediaUrlResponse> GetObjectUrlAsync([FromRoute] string key)
-    //{
-    //    ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
-    //    return await objectStorageService.GetObjectUrlAsync(key);
-    //}
-
-    /// <summary>
-    ///     This endpoint is used to upload an object to the s3 bucket.
-    /// </summary>
-    /// <param name="file">
-    ///     The file to upload to the s3 bucket.
-    /// </param>
-    /// <returns>
-    ///     A message indicating that the file was uploaded successfully.
-    /// </returns>
-    //[HttpPost("upload")]
-    //public async Task<UploadFileResponse> UploadObjectAsync(IFormFile file)
-    //{
-    //    ArgumentNullException.ThrowIfNull(file, nameof(file));
-    //    if (file.Length == 0) throw new ArgumentException("File is empty", nameof(file));
-
-    //    var s3ObjectRequest = await file.ToPutObjectRequestAsync();
-    //    return await objectStorageService.UploadObjectAsync(s3ObjectRequest);
-    //}
-
-    /// <summary>
-    ///     This endpoint is used to delete an object from the s3 bucket.
-    /// </summary>
-    /// <param name="key">
-    ///     The key of the object to delete.
-    /// </param>
-    /// <returns>
-    ///     A message indicating that the file was deleted successfully.
-    /// </returns>
-    //[HttpDelete("delete/{key}")]
-    //public async Task<IActionResult> DeleteObjectAsync([FromRoute] string key)
-    //{
-    //    ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
-    //    await objectStorageService.DeleteObjectAsync(key);
-    //    return Ok("File deleted successfully");
-    //}
 }

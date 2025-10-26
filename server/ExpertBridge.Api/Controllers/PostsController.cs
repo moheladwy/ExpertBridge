@@ -1,9 +1,9 @@
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.CreatePost;
 using ExpertBridge.Core.Requests.EditPost;
+using ExpertBridge.Core.Requests.PostsCursor;
 using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -143,26 +143,6 @@ public class PostsController : ControllerBase
         return suggestedPosts;
     }
 
-    /// <summary>
-    ///     Get all posts.
-    /// </summary>
-    /// <returns>
-    ///     The list of post responses.
-    /// </returns>
-    //[AllowAnonymous]
-    //[HttpGet]
-    //public async Task<ActionResult<List<PostResponse>>> GetAll()
-    //{
-    //    _logger.LogInformation("User from HTTP Context (GetAllPosts): {FindFirstValue}", HttpContext.User.FindFirstValue(ClaimTypes.Email)); // Keep Serilog if desired
-
-    //    // var user = await _authHelper.GetCurrentUserAsync();
-    //    // var userProfileId = user?.Profile?.Id ?? string.Empty;
-    //    var user = await _userService.GetCurrentUserPopulatedModelAsync();
-    //    string? userProfileId = user?.Profile?.Id;
-
-    //    var posts = await _postService.GetAllPostsAsync(userProfileId);
-    //    return posts;
-    //}
     [AllowAnonymous]
     [HttpPost("feed")]
     [ResponseCache(NoStore = true)]
@@ -170,7 +150,6 @@ public class PostsController : ControllerBase
         [FromBody] PostsCursorRequest request)
     {
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
-        //var posts = await _postService.GetRecommendedPostsAsync(user?.Profile, request);
 
         var posts = await _postService.GetRecommendedPostsOffsetPageAsync(user?.Profile, request);
 
@@ -182,11 +161,6 @@ public class PostsController : ControllerBase
     [Route("/api/profiles/{profileId}/posts")]
     public async Task<ActionResult<List<PostResponse>>> GetAllByProfileId([FromRoute] string profileId)
     {
-        // ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId)); // Service handles
-
-        // var profile = await _dbContext.Profiles... // Service handles profile existence check
-
-        // string? requestingUserProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync(); // Or however you get it
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
         var requestingUserProfileId = user?.Profile?.Id;
 
@@ -257,6 +231,9 @@ public class PostsController : ControllerBase
     /// <summary>
     ///     Edit a post. Only the fields that are provided in the request will be updated.
     /// </summary>
+    /// <param name="postId">
+    ///     The ID of the post to edit.
+    /// </param>
     /// <param name="request">
     ///     The request containing the fields to update.
     /// </param>
@@ -326,11 +303,4 @@ public class PostsController : ControllerBase
             return NoContent();
         }
     }
-
-    // BEWARE!
-    // In an HTTP DELETE, you always want to return 204 no content.
-    // No matter what happens. The only exception is if the auth middleware
-    // refused the request from the beginning, else you do not return anything
-    // other than no content.
-    // https://stackoverflow.com/questions/6439416/status-code-when-deleting-a-resource-using-http-delete-for-the-second-time#comment33002038_6440374
 }

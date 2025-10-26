@@ -12,26 +12,23 @@ using Microsoft.EntityFrameworkCore;
 namespace ExpertBridge.Application.DomainServices;
 
 /// <summary>
-/// Provides intelligent tag management and content categorization using AI-powered analysis.
+///     Provides intelligent tag management and content categorization using AI-powered analysis.
 /// </summary>
 /// <remarks>
-/// This service orchestrates the complete tagging lifecycle from AI-generated tag creation
-/// through association with posts, job postings, and user profiles for personalized recommendations.
-/// 
-/// **Core Responsibilities:**
-/// - AI-powered content categorization (via Groq LLM)
-/// - Bilingual tag management (English/Arabic)
-/// - Post and job posting tagging
-/// - User interest profiling through tag aggregation
-/// - Tag-based recommendation system foundation
-/// 
-/// **Architecture Integration:**
-/// - Groq LLM: Analyzes content and generates semantic tags
-/// - MassTransit: Publishes UserInterestsUpdatedMessage for embedding generation
-/// - TaggingService → Background Worker → Embedding Generation → Recommendations
-/// 
-/// **AI Tag Generation Flow:**
-/// <code>
+///     This service orchestrates the complete tagging lifecycle from AI-generated tag creation
+///     through association with posts, job postings, and user profiles for personalized recommendations.
+///     **Core Responsibilities:**
+///     - AI-powered content categorization (via Groq LLM)
+///     - Bilingual tag management (English/Arabic)
+///     - Post and job posting tagging
+///     - User interest profiling through tag aggregation
+///     - Tag-based recommendation system foundation
+///     **Architecture Integration:**
+///     - Groq LLM: Analyzes content and generates semantic tags
+///     - MassTransit: Publishes UserInterestsUpdatedMessage for embedding generation
+///     - TaggingService → Background Worker → Embedding Generation → Recommendations
+///     **AI Tag Generation Flow:**
+///     <code>
 /// Post Created
 ///     ↓
 /// PostProcessingPipelineMessage published
@@ -52,56 +49,48 @@ namespace ExpertBridge.Application.DomainServices;
 ///     ↓
 /// Background Worker generates user embedding vector
 /// </code>
-/// 
-/// **Bilingual Tag System:**
-/// Tags maintain both English and Arabic names:
-/// <code>
+///     **Bilingual Tag System:**
+///     Tags maintain both English and Arabic names:
+///     <code>
 /// Tag {
 ///     EnglishName: "machine learning",
 ///     ArabicName: "تعلم الآلة",
 ///     Description: "AI/ML and neural networks"
 /// }
 /// </code>
-/// 
-/// **Tag Association Tables:**
-/// - **PostTags**: Many-to-many Post ↔ Tag
-/// - **JobPostingTags**: Many-to-many JobPosting ↔ Tag
-/// - **UserInterests**: Many-to-many Profile ↔ Tag (aggregated from interactions)
-/// 
-/// **User Interest Tracking:**
-/// User interests automatically accumulated from:
-/// - Posts they create (post tags → user interests)
-/// - Posts they upvote (post tags → user interests)
-/// - Comments they write (parent post tags → user interests)
-/// - Job postings they create or vote on
-/// - Job applications they submit
-/// 
-/// **Recommendation Algorithm:**
-/// 1. User creates/votes content → Tags associated with their profile
-/// 2. UserInterestsUpdatedMessage triggers embedding generation
-/// 3. Background worker aggregates tag vectors → User embedding
-/// 4. Recommendations based on cosine similarity of user embeddings
-/// 
-/// **Tag Normalization:**
-/// - Duplicate prevention (checks English + Arabic names)
-/// - Case-sensitive matching for proper nouns
-/// - Automatic language detection
-/// - Description generation for context
-/// 
-/// **Performance Optimization:**
-/// - Bulk tag creation (AddRangeAsync)
-/// - Deduplication before DB insertion
-/// - Incremental tag associations (only new relationships)
-/// - Asynchronous embedding generation
-/// 
-/// **Use Cases:**
-/// - Content discovery ("Show posts about machine learning")
-/// - Expert matching ("Find profiles with C# and Azure skills")
-/// - Job recommendations ("Jobs matching my interests")
-/// - Skill taxonomy building
-/// - Content moderation (inappropriate content categories)
-/// 
-/// Registered as scoped service for per-request lifetime and DbContext alignment.
+///     **Tag Association Tables:**
+///     - **PostTags**: Many-to-many Post ↔ Tag
+///     - **JobPostingTags**: Many-to-many JobPosting ↔ Tag
+///     - **UserInterests**: Many-to-many Profile ↔ Tag (aggregated from interactions)
+///     **User Interest Tracking:**
+///     User interests automatically accumulated from:
+///     - Posts they create (post tags → user interests)
+///     - Posts they upvote (post tags → user interests)
+///     - Comments they write (parent post tags → user interests)
+///     - Job postings they create or vote on
+///     - Job applications they submit
+///     **Recommendation Algorithm:**
+///     1. User creates/votes content → Tags associated with their profile
+///     2. UserInterestsUpdatedMessage triggers embedding generation
+///     3. Background worker aggregates tag vectors → User embedding
+///     4. Recommendations based on cosine similarity of user embeddings
+///     **Tag Normalization:**
+///     - Duplicate prevention (checks English + Arabic names)
+///     - Case-sensitive matching for proper nouns
+///     - Automatic language detection
+///     - Description generation for context
+///     **Performance Optimization:**
+///     - Bulk tag creation (AddRangeAsync)
+///     - Deduplication before DB insertion
+///     - Incremental tag associations (only new relationships)
+///     - Asynchronous embedding generation
+///     **Use Cases:**
+///     - Content discovery ("Show posts about machine learning")
+///     - Expert matching ("Find profiles with C# and Azure skills")
+///     - Job recommendations ("Jobs matching my interests")
+///     - Skill taxonomy building
+///     - Content moderation (inappropriate content categories)
+///     Registered as scoped service for per-request lifetime and DbContext alignment.
 /// </remarks>
 public sealed class TaggingService
 {
@@ -131,46 +120,40 @@ public sealed class TaggingService
 
 
     /// <summary>
-    /// Processes AI-generated tags and associates them with a post and the author's profile.
+    ///     Processes AI-generated tags and associates them with a post and the author's profile.
     /// </summary>
     /// <param name="postId">The unique identifier of the post to tag.</param>
     /// <param name="authorId">The unique identifier of the post author whose interests will be updated.</param>
     /// <param name="isJobPosting">True if tagging a job posting; false for regular post.</param>
     /// <param name="tags">
-    /// The AI-generated categorization response containing bilingual tags, descriptions, and detected language.
+    ///     The AI-generated categorization response containing bilingual tags, descriptions, and detected language.
     /// </param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>A task representing the asynchronous tagging operation.</returns>
     /// <remarks>
-    /// **Complete Tagging Workflow:**
-    /// 
-    /// **1. Tag Creation:**
-    /// - Calls CreateTagsInDatabaseAsync to create missing tags
-    /// - Checks for existing tags by English OR Arabic name
-    /// - Creates new Tag entities for novel categories
-    /// - Saves to generate Tag IDs
-    /// 
-    /// **2. Post Association:**
-    /// - Routes to AddTagsToPostInternalAsync or AddTagsToJobPostingInternalAsync
-    /// - Creates PostTag/JobPostingTag junction records
-    /// - Avoids duplicate associations
-    /// 
-    /// **3. Author Interest Update:**
-    /// - Calls AddTagsToUserProfileInternalAsync
-    /// - Creates UserInterest junction records
-    /// - Builds interest profile for recommendations
-    /// 
-    /// **4. Content Metadata:**
-    /// - Sets post.Language (detected by AI: "en", "ar", etc.)
-    /// - Sets post.IsTagged = true (marks as processed)
-    /// 
-    /// **5. Embedding Generation Trigger:**
-    /// - Publishes UserInterestsUpdatedMessage
-    /// - Background worker aggregates user tags into embedding vector
-    /// - Vector used for personalized recommendations
-    /// 
-    /// **AI Tag Format:**
-    /// <code>
+    ///     **Complete Tagging Workflow:**
+    ///     **1. Tag Creation:**
+    ///     - Calls CreateTagsInDatabaseAsync to create missing tags
+    ///     - Checks for existing tags by English OR Arabic name
+    ///     - Creates new Tag entities for novel categories
+    ///     - Saves to generate Tag IDs
+    ///     **2. Post Association:**
+    ///     - Routes to AddTagsToPostInternalAsync or AddTagsToJobPostingInternalAsync
+    ///     - Creates PostTag/JobPostingTag junction records
+    ///     - Avoids duplicate associations
+    ///     **3. Author Interest Update:**
+    ///     - Calls AddTagsToUserProfileInternalAsync
+    ///     - Creates UserInterest junction records
+    ///     - Builds interest profile for recommendations
+    ///     **4. Content Metadata:**
+    ///     - Sets post.Language (detected by AI: "en", "ar", etc.)
+    ///     - Sets post.IsTagged = true (marks as processed)
+    ///     **5. Embedding Generation Trigger:**
+    ///     - Publishes UserInterestsUpdatedMessage
+    ///     - Background worker aggregates user tags into embedding vector
+    ///     - Vector used for personalized recommendations
+    ///     **AI Tag Format:**
+    ///     <code>
     /// PostCategorizerResponse {
     ///     Language: "en",
     ///     Tags: [
@@ -179,16 +162,14 @@ public sealed class TaggingService
     ///     ]
     /// }
     /// </code>
-    /// 
-    /// **Database Changes:**
-    /// - Inserts new Tags (if any)
-    /// - Inserts PostTags/JobPostingTags
-    /// - Inserts UserInterests
-    /// - Updates Post metadata
-    /// - All committed atomically in single transaction
-    /// 
-    /// **Example Usage:**
-    /// <code>
+    ///     **Database Changes:**
+    ///     - Inserts new Tags (if any)
+    ///     - Inserts PostTags/JobPostingTags
+    ///     - Inserts UserInterests
+    ///     - Updates Post metadata
+    ///     - All committed atomically in single transaction
+    ///     **Example Usage:**
+    ///     <code>
     /// // In background consumer after Groq analysis
     /// var tags = await groqService.CategorizePostAsync(post.Content);
     /// await taggingService.AddRawTagsToPostAsync(
@@ -198,14 +179,12 @@ public sealed class TaggingService
     ///     tags
     /// );
     /// </code>
-    /// 
-    /// **Performance:**
-    /// - Bulk operations for tag creation
-    /// - Incremental associations (only new relationships)
-    /// - Single SaveChangesAsync call
-    /// - Asynchronous message publishing
-    /// 
-    /// This is the main entry point for AI-powered content tagging called by background workers.
+    ///     **Performance:**
+    ///     - Bulk operations for tag creation
+    ///     - Incremental associations (only new relationships)
+    ///     - Single SaveChangesAsync call
+    ///     - Asynchronous message publishing
+    ///     This is the main entry point for AI-powered content tagging called by background workers.
     /// </remarks>
     public async Task AddRawTagsToPostAsync(
         string postId,
@@ -244,21 +223,20 @@ public sealed class TaggingService
     }
 
     /// <summary>
-    /// Internal method that creates new tags in the database while avoiding duplicates.
+    ///     Internal method that creates new tags in the database while avoiding duplicates.
     /// </summary>
     /// <param name="tags">The AI-generated tag categorization response.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>
-    /// A task containing an enumerable of all tags (existing + newly created) ready for association.
+    ///     A task containing an enumerable of all tags (existing + newly created) ready for association.
     /// </returns>
     /// <remarks>
-    /// **Deduplication Strategy:**
-    /// - Queries existing tags matching ANY English OR Arabic name
-    /// - Compares AI tags against existing to find novel entries
-    /// - Creates only truly new tags
-    /// 
-    /// **Bilingual Matching:**
-    /// <code>
+    ///     **Deduplication Strategy:**
+    ///     - Queries existing tags matching ANY English OR Arabic name
+    ///     - Compares AI tags against existing to find novel entries
+    ///     - Creates only truly new tags
+    ///     **Bilingual Matching:**
+    ///     <code>
     /// Existing: { EnglishName: "machine learning", ArabicName: "تعلم الآلة" }
     /// AI Generates: { EnglishName: "machine learning", ArabicName: "تعلم آلي" }
     /// Result: Matched (English name exists), reuse existing tag
@@ -266,18 +244,15 @@ public sealed class TaggingService
     /// AI Generates: { EnglishName: "deep learning", ArabicName: "تعلم عميق" }
     /// Result: Not found, create new tag
     /// </code>
-    /// 
-    /// **Tag Creation:**
-    /// - New tags inserted with AddRangeAsync
-    /// - SaveChangesAsync called to generate IDs
-    /// - Returned collection includes both existing and new tags
-    /// 
-    /// **Why Separate Method:**
-    /// - Reusable for different post types
-    /// - Encapsulates deduplication logic
-    /// - Single responsibility (tag creation only)
-    /// 
-    /// This method ensures tag taxonomy remains consistent and duplicate-free.
+    ///     **Tag Creation:**
+    ///     - New tags inserted with AddRangeAsync
+    ///     - SaveChangesAsync called to generate IDs
+    ///     - Returned collection includes both existing and new tags
+    ///     **Why Separate Method:**
+    ///     - Reusable for different post types
+    ///     - Encapsulates deduplication logic
+    ///     - Single responsibility (tag creation only)
+    ///     This method ensures tag taxonomy remains consistent and duplicate-free.
     /// </remarks>
     private async Task<IEnumerable<Tag?>> CreateTagsInDatabaseAsync(
         PostCategorizerResponse tags,
@@ -300,9 +275,7 @@ public sealed class TaggingService
 
         var newTags = newRawTags.Select(tag => new Tag
         {
-            EnglishName = tag.EnglishName,
-            ArabicName = tag.ArabicName,
-            Description = tag.Description
+            EnglishName = tag.EnglishName, ArabicName = tag.ArabicName, Description = tag.Description
         }).ToList();
 
         await _dbContext.AddRangeAsync(newTags, cancellationToken);
@@ -373,25 +346,23 @@ public sealed class TaggingService
     }
 
     /// <summary>
-    /// Public method to associate tags with a post, committing changes immediately.
+    ///     Public method to associate tags with a post, committing changes immediately.
     /// </summary>
     /// <param name="postId">The identifier of the post to tag.</param>
     /// <param name="tags">Collection of Tag entities to associate.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <remarks>
-    /// **Use Case:**
-    /// Manual tagging or tag updates outside the AI pipeline.
-    /// 
-    /// **Example:**
-    /// <code>
+    ///     **Use Case:**
+    ///     Manual tagging or tag updates outside the AI pipeline.
+    ///     **Example:**
+    ///     <code>
     /// var tags = await dbContext.Tags
     ///     .Where(t => new[] { "csharp", "dotnet" }.Contains(t.EnglishName))
     ///     .ToListAsync();
     /// await taggingService.AddTagsToPostAsync(postId, tags);
     /// </code>
-    /// 
-    /// Unlike AddRawTagsToPostAsync, this doesn't update user interests or trigger embedding generation.
-    /// Use for administrative tag corrections or bulk operations.
+    ///     Unlike AddRawTagsToPostAsync, this doesn't update user interests or trigger embedding generation.
+    ///     Use for administrative tag corrections or bulk operations.
     /// </remarks>
     public async Task AddTagsToPostAsync(string postId, IEnumerable<Tag> tags)
     {
@@ -426,39 +397,39 @@ public sealed class TaggingService
     }
 
     /// <summary>
-    /// Associates tags with a user profile for interest tracking (convenience overload).
+    ///     Associates tags with a user profile for interest tracking (convenience overload).
     /// </summary>
     /// <param name="profileId">The user profile identifier.</param>
     /// <param name="tags">Collection of Tag entities to associate.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <remarks>
-    /// This overload accepts Tag entities and delegates to the primary method with tag IDs.
-    /// Used when tags are already loaded (e.g., from post.PostTags.Select(pt => pt.Tag)).
+    ///     This overload accepts Tag entities and delegates to the primary method with tag IDs.
+    ///     Used when tags are already loaded (e.g., from post.PostTags.Select(pt => pt.Tag)).
     /// </remarks>
-    public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags) =>
+    public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<Tag> tags)
+    {
         await AddTagsToUserProfileAsync(profileId, tags.Select(t => t.Id));
+    }
 
     /// <summary>
-    /// Associates tag IDs with a user profile and triggers embedding regeneration.
+    ///     Associates tag IDs with a user profile and triggers embedding regeneration.
     /// </summary>
     /// <param name="profileId">The user profile identifier.</param>
     /// <param name="tagIds">Collection of tag IDs to associate with the profile.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <remarks>
-    /// **Primary Method:**
-    /// This is the main entry point for user interest updates, called from multiple sources:
-    /// - Post creation (author's interests updated with post tags)
-    /// - Post voting (voter's interests updated with post tags)
-    /// - Comment creation (commenter's interests updated with post tags)
-    /// - Job posting interactions
-    /// 
-    /// **Processing Flow:**
-    /// 1. Call AddTagsToUserProfileInternalAsync (adds UserInterest records)
-    /// 2. SaveChangesAsync (commits to database)
-    /// 3. Publish UserInterestsUpdatedMessage (triggers embedding generation)
-    /// 
-    /// **User Interests Accumulation:**
-    /// <code>
+    ///     **Primary Method:**
+    ///     This is the main entry point for user interest updates, called from multiple sources:
+    ///     - Post creation (author's interests updated with post tags)
+    ///     - Post voting (voter's interests updated with post tags)
+    ///     - Comment creation (commenter's interests updated with post tags)
+    ///     - Job posting interactions
+    ///     **Processing Flow:**
+    ///     1. Call AddTagsToUserProfileInternalAsync (adds UserInterest records)
+    ///     2. SaveChangesAsync (commits to database)
+    ///     3. Publish UserInterestsUpdatedMessage (triggers embedding generation)
+    ///     **User Interests Accumulation:**
+    ///     <code>
     /// // User creates post about "C#" and "Azure"
     /// → UserInterests: [csharp, azure]
     /// 
@@ -468,17 +439,15 @@ public sealed class TaggingService
     /// // User comments on post about "Kubernetes"
     /// → UserInterests: [csharp, azure, docker, kubernetes]
     /// </code>
-    /// 
-    /// **Embedding Generation:**
-    /// After publishing UserInterestsUpdatedMessage:
-    /// - Background worker queries all user's UserInterests
-    /// - Loads tag descriptions
-    /// - Generates combined embedding vector (1024-dim)
-    /// - Updates Profile.UserInterestEmbedding
-    /// - Used for personalized content recommendations
-    /// 
-    /// **Example Usage:**
-    /// <code>
+    ///     **Embedding Generation:**
+    ///     After publishing UserInterestsUpdatedMessage:
+    ///     - Background worker queries all user's UserInterests
+    ///     - Loads tag descriptions
+    ///     - Generates combined embedding vector (1024-dim)
+    ///     - Updates Profile.UserInterestEmbedding
+    ///     - Used for personalized content recommendations
+    ///     **Example Usage:**
+    ///     <code>
     /// // After user votes on a post
     /// await taggingService.AddTagsToUserProfileAsync(
     ///     voterProfile.Id,
@@ -486,12 +455,10 @@ public sealed class TaggingService
     /// );
     /// // User's recommendation profile updated automatically
     /// </code>
-    /// 
-    /// **Incremental Updates:**
-    /// Only adds new tag associations (doesn't remove old ones).
-    /// User interest profiles grow over time, reflecting engagement patterns.
-    /// 
-    /// This method is critical for the recommendation engine's personalization capabilities.
+    ///     **Incremental Updates:**
+    ///     Only adds new tag associations (doesn't remove old ones).
+    ///     User interest profiles grow over time, reflecting engagement patterns.
+    ///     This method is critical for the recommendation engine's personalization capabilities.
     /// </remarks>
     public async Task AddTagsToUserProfileAsync(string profileId, IEnumerable<string> tagIds)
     {

@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Components;
@@ -12,5 +12,8 @@ public partial class Comment : ComponentBase
 
     [Parameter] public CommentResponse CommentResponse { get; set; }
 
-    private void ToggleReplies() => _showReplies = !_showReplies;
+    private void ToggleReplies()
+    {
+        _showReplies = !_showReplies;
+    }
 }

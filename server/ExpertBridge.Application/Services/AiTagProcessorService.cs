@@ -52,9 +52,7 @@ public class AiTagProcessorService
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true,
-            AllowOutOfOrderMetadataProperties = true,
-            AllowTrailingCommas = true
+            PropertyNameCaseInsensitive = true, AllowOutOfOrderMetadataProperties = true, AllowTrailingCommas = true
         };
     }
 
@@ -101,8 +99,10 @@ public class AiTagProcessorService
     /// <returns>
     ///     A string containing the JSON schema definition for translating tag responses.
     /// </returns>
-    private static string GetOutputFormatSchema() =>
-        File.ReadAllText("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
+    private static string GetOutputFormatSchema()
+    {
+        return File.ReadAllText("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
+    }
 
     /// <summary>
     ///     Generates and returns the system prompt used for tag translation and description generation.

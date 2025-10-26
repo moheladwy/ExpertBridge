@@ -23,16 +23,6 @@ namespace ExpertBridge.Worker.Consumers;
 public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterestsProsessingMessage>
 {
     /// <summary>
-    ///     Represents the database context used for accessing and managing the application's database entities
-    ///     within the <see cref="UserInterestsTagsProcessingConsumer" /> class.
-    /// </summary>
-    /// <remarks>
-    ///     This context is utilized for persisting processed user interests and tags into the database.
-    ///     It provides access to the application's database entities by leveraging the <see cref="ExpertBridgeDbContext" />.
-    /// </remarks>
-    private readonly ExpertBridgeDbContext _dbContext;
-
-    /// <summary>
     ///     Represents the service used to process and translate user interest tags
     ///     within the <see cref="UserInterestsTagsProcessingConsumer" /> class.
     /// </summary>
@@ -41,6 +31,16 @@ public sealed class UserInterestsTagsProcessingConsumer : IConsumer<UserInterest
     ///     enabling the conversion of raw user interest tag data into structured tags for further use.
     /// </remarks>
     private readonly AiTagProcessorService _aiTagProcessorService;
+
+    /// <summary>
+    ///     Represents the database context used for accessing and managing the application's database entities
+    ///     within the <see cref="UserInterestsTagsProcessingConsumer" /> class.
+    /// </summary>
+    /// <remarks>
+    ///     This context is utilized for persisting processed user interests and tags into the database.
+    ///     It provides access to the application's database entities by leveraging the <see cref="ExpertBridgeDbContext" />.
+    /// </remarks>
+    private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
     ///     Represents a logger instance used to log information, warnings, and errors

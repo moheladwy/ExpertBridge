@@ -8,22 +8,23 @@ using Microsoft.Extensions.Options;
 namespace ExpertBridge.Extensions.MessageBroker;
 
 /// <summary>
-/// Provides extension methods for configuring MassTransit with RabbitMQ message broker integration in the ExpertBridge application.
-/// Handles message broker credential configuration, consumer registration, and RabbitMQ transport setup for asynchronous message processing.
+///     Provides extension methods for configuring MassTransit with RabbitMQ message broker integration in the ExpertBridge
+///     application.
+///     Handles message broker credential configuration, consumer registration, and RabbitMQ transport setup for
+///     asynchronous message processing.
 /// </summary>
 /// <remarks>
-/// The message broker configuration enables ExpertBridge's asynchronous AI processing pipeline including:
-/// - Post content tagging via Groq API (PostTaggingMessage)
-/// - User interest embedding generation via Ollama (UserInterestsProsessingMessage)
-/// - Content moderation analysis via Groq API (ModerationMessage)
-/// - Background job processing with retry logic and error handling
-/// 
-/// MassTransit abstracts RabbitMQ complexity and provides:
-/// - Automatic endpoint configuration with kebab-case naming
-/// - Message serialization and deserialization
-/// - Retry policies for transient failures
-/// - Concurrent message processing limits
-/// - OpenTelemetry instrumentation for distributed tracing
+///     The message broker configuration enables ExpertBridge's asynchronous AI processing pipeline including:
+///     - Post content tagging via Groq API (PostTaggingMessage)
+///     - User interest embedding generation via Ollama (UserInterestsProsessingMessage)
+///     - Content moderation analysis via Groq API (ModerationMessage)
+///     - Background job processing with retry logic and error handling
+///     MassTransit abstracts RabbitMQ complexity and provides:
+///     - Automatic endpoint configuration with kebab-case naming
+///     - Message serialization and deserialization
+///     - Retry policies for transient failures
+///     - Concurrent message processing limits
+///     - OpenTelemetry instrumentation for distributed tracing
 /// </remarks>
 public static class MessageBrokerConfigurations
 {

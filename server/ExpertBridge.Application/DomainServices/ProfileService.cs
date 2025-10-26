@@ -6,8 +6,8 @@ using ExpertBridge.Core.Entities.Skills;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests;
 using ExpertBridge.Core.Requests.UpdateProfileRequest;
+using ExpertBridge.Core.Requests.UpdateProfileSkills;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using FluentValidation;
@@ -18,79 +18,11 @@ using Pgvector.EntityFrameworkCore;
 namespace ExpertBridge.Application.DomainServices;
 
 /// <summary>
-/// Provides comprehensive profile management including updates, skill management, and AI-powered recommendations.
+///     Provides comprehensive profile management including updates, skill management, and AI-powered recommendations.
 /// </summary>
 /// <remarks>
-/// This service manages user profiles with focus on professional information, skills, and matching algorithms
-/// for connecting experts based on similarity and reputation.
-/// 
-/// **Core Responsibilities:**
-/// - Profile updates (name, bio, job title, contact info)
-/// - Skill management (add, update, remove skills)
-/// - Profile discovery (similar profiles, top reputation)
-/// - Vector embedding integration for AI-powered matching
-/// 
-/// **Architecture Integration:**
-/// - Uses pgvector for semantic profile similarity
-/// - Integrates with skill taxonomy system
-/// - Supports AI-driven recommendation engine
-/// - Validates updates with FluentValidation
-/// 
-/// **Profile Discovery Algorithms:**
-/// 
-/// **1. Similar Profiles (Vector-Based):**
-/// <code>
-/// User Interest Embedding (1024-dim vector)
-///     ↓
-/// Cosine Distance Query
-///     ↓
-/// Nearest Neighbors (profiles with similar skills/interests)
-///     ↓
-/// Recommended Experts
-/// </code>
-/// 
-/// **2. Top Reputation Profiles:**
-/// - Order by reputation score (derived from votes, completed jobs)
-/// - Exclude current user
-/// - Limited to top N profiles
-/// 
-/// **Skill Management:**
-/// - Normalized to lowercase
-/// - Deduplicated automatically
-/// - Creates new skills if not exist
-/// - ProfileSkill junction table for many-to-many
-/// 
-/// **Database Schema:**
-/// <code>
-/// Profile:
-///   Id, UserId, FirstName, LastName, Bio, JobTitle
-///   Username (unique), PhoneNumber (unique)
-///   UserInterestEmbedding (vector(1024))
-///   
-/// Skill:
-///   Id, Name (unique, lowercase)
-///   
-/// ProfileSkill:
-///   ProfileId, SkillId (composite PK)
-/// </code>
-/// 
-/// **Validation Rules:**
-/// - Username: Unique, 3-50 characters
-/// - PhoneNumber: Unique, valid format
-/// - FirstName/LastName: 1-50 characters
-/// - Bio: Max 500 characters
-/// - JobTitle: Max 100 characters
-/// - Skills: Non-empty, trimmed, deduplicated
-/// 
-/// **Future Enhancements:**
-/// - Profile picture management (S3 integration)
-/// - Social media links
-/// - Portfolio/work samples
-/// - Certifications and education
-/// - Availability calendar
-/// - Hourly rate preferences
-/// 
-/// Registered as scoped service with per-request lifetime.
+///     This service manages user profiles with focus on professional information, skills, and matching algorithms
+///     for connecting experts based on similarity and reputation.
 /// </remarks>
 public class ProfileService
 {
@@ -99,7 +31,7 @@ public class ProfileService
     private readonly IValidator<UpdateProfileRequest> _updateProfileRequestValidator;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ProfileService"/> class.
+    ///     Initializes a new instance of the <see cref="ProfileService" /> class.
     /// </summary>
     /// <param name="dbContext">The database context for profile and skill operations.</param>
     /// <param name="logger">The logger for diagnostic information.</param>
@@ -115,43 +47,40 @@ public class ProfileService
     }
 
     /// <summary>
-    /// Retrieves profiles similar to the user based on AI vector embeddings of skills and interests.
+    ///     Retrieves profiles similar to the user based on AI vector embeddings of skills and interests.
     /// </summary>
     /// <param name="userProfile">
-    /// The profile to find similar profiles for. Can be null for anonymous discovery.
+    ///     The profile to find similar profiles for. Can be null for anonymous discovery.
     /// </param>
     /// <param name="limit">The maximum number of similar profiles to return.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>
-    /// A task representing the asynchronous operation, containing a list of similar <see cref="ProfileResponse"/> objects.
+    ///     A task representing the asynchronous operation, containing a list of similar <see cref="ProfileResponse" />
+    ///     objects.
     /// </returns>
     /// <remarks>
-    /// **Similarity Algorithm:**
-    /// Uses cosine distance between UserInterestEmbedding vectors:
-    /// - Distance 0.0 = identical interests
-    /// - Distance 1.0 = orthogonal (no overlap)
-    /// - Distance 2.0 = opposite interests
-    /// 
-    /// **Vector Generation:**
-    /// - User embeddings generated from interaction history (posts, votes, applications)
-    /// - Background worker aggregates tags into embedding
-    /// - 1024-dimension vector (mxbai-embed-large model)
-    /// 
-    /// **Anonymous Users:**
-    /// If userProfile is null, generates random embedding for exploration.
-    /// 
-    /// **Example:**
-    /// <code>
+    ///     **Similarity Algorithm:**
+    ///     Uses cosine distance between UserInterestEmbedding vectors:
+    ///     - Distance 0.0 = identical interests
+    ///     - Distance 1.0 = orthogonal (no overlap)
+    ///     - Distance 2.0 = opposite interests
+    ///     **Vector Generation:**
+    ///     - User embeddings generated from interaction history (posts, votes, applications)
+    ///     - Background worker aggregates tags into embedding
+    ///     - 1024-dimension vector (mxbai-embed-large model)
+    ///     **Anonymous Users:**
+    ///     If userProfile is null, generates random embedding for exploration.
+    ///     **Example:**
+    ///     <code>
     /// // Find experts similar to current user
     /// var similar = await _profileService.GetSimilarProfilesAsync(userProfile, 10);
     /// // Returns top 10 profiles with closest skill/interest match
     /// </code>
-    /// 
-    /// **Use Cases:**
-    /// - Expert discovery ("Find people like me")
-    /// - Network expansion suggestions
-    /// - Collaboration recommendations
-    /// - Mentorship matching
+    ///     **Use Cases:**
+    ///     - Expert discovery ("Find people like me")
+    ///     - Network expansion suggestions
+    ///     - Collaboration recommendations
+    ///     - Mentorship matching
     /// </remarks>
     public async Task<List<ProfileResponse>> GetSimilarProfilesAsync(
         Profile? userProfile,
@@ -181,36 +110,33 @@ public class ProfileService
     }
 
     /// <summary>
-    /// Retrieves profiles with the highest reputation scores, excluding the current user.
+    ///     Retrieves profiles with the highest reputation scores, excluding the current user.
     /// </summary>
     /// <param name="userProfile">
-    /// The current user's profile to exclude from results. Can be null for anonymous browsing.
+    ///     The current user's profile to exclude from results. Can be null for anonymous browsing.
     /// </param>
     /// <param name="limit">The maximum number of top profiles to return.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>
-    /// A task representing the asynchronous operation, containing a list of top <see cref="ProfileResponse"/> objects
-    /// ordered by reputation score descending.
+    ///     A task representing the asynchronous operation, containing a list of top <see cref="ProfileResponse" /> objects
+    ///     ordered by reputation score descending.
     /// </returns>
     /// <remarks>
-    /// **Reputation Calculation:**
-    /// Reputation is derived from:
-    /// - Upvotes on posts and comments
-    /// - Completed jobs
-    /// - Positive ratings
-    /// - Community contributions
-    /// 
-    /// **Sorting:**
-    /// Profiles ordered by Reputation property (higher = better).
-    /// 
-    /// **Use Cases:**
-    /// - "Top Experts" leaderboard
-    /// - Featured professional showcase
-    /// - Highlighting platform success stories
-    /// - Building trust through social proof
-    /// 
-    /// **Example:**
-    /// <code>
+    ///     **Reputation Calculation:**
+    ///     Reputation is derived from:
+    ///     - Upvotes on posts and comments
+    ///     - Completed jobs
+    ///     - Positive ratings
+    ///     - Community contributions
+    ///     **Sorting:**
+    ///     Profiles ordered by Reputation property (higher = better).
+    ///     **Use Cases:**
+    ///     - "Top Experts" leaderboard
+    ///     - Featured professional showcase
+    ///     - Highlighting platform success stories
+    ///     - Building trust through social proof
+    ///     **Example:**
+    ///     <code>
     /// var topExperts = await _profileService.GetTopReputationProfilesAsync(null, 20);
     /// // Returns 20 highest-reputation profiles on the platform
     /// </code>
@@ -238,59 +164,54 @@ public class ProfileService
     }
 
     /// <summary>
-    /// Updates a user's profile information including personal details and skills.
+    ///     Updates a user's profile information including personal details and skills.
     /// </summary>
     /// <param name="user">The user entity whose profile is being updated.</param>
     /// <param name="request">The profile update request containing new field values.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>
-    /// A task representing the asynchronous operation, containing the updated <see cref="ProfileResponse"/>.
+    ///     A task representing the asynchronous operation, containing the updated <see cref="ProfileResponse" />.
     /// </returns>
     /// <exception cref="ValidationException">
-    /// Thrown when the request fails validation (invalid format, missing required fields).
+    ///     Thrown when the request fails validation (invalid format, missing required fields).
     /// </exception>
     /// <exception cref="ProfileUserNameAlreadyExistsException">
-    /// Thrown when the requested username is already taken by another user.
+    ///     Thrown when the requested username is already taken by another user.
     /// </exception>
     /// <exception cref="ProfilePhoneNumberAlreadyExistsException">
-    /// Thrown when the requested phone number is already registered to another user.
+    ///     Thrown when the requested phone number is already registered to another user.
     /// </exception>
     /// <exception cref="ProfileNotFoundException">
-    /// Thrown when the profile cannot be found after update (data consistency issue).
+    ///     Thrown when the profile cannot be found after update (data consistency issue).
     /// </exception>
     /// <remarks>
-    /// **Update Strategy:**
-    /// Only non-null/non-empty fields in request are updated (partial update pattern).
-    /// 
-    /// **Uniqueness Validation:**
-    /// - Username: Case-sensitive, must be unique across all profiles
-    /// - PhoneNumber: Must be unique across all profiles
-    /// 
-    /// **Updatable Fields:**
-    /// - Username (unique constraint)
-    /// - PhoneNumber (unique constraint)
-    /// - FirstName, LastName
-    /// - Bio (professional summary)
-    /// - JobTitle (current position)
-    /// - Skills (managed separately via UpdateProfileSkillsAsync)
-    /// 
-    /// **Validation Rules:**
-    /// Enforced by FluentValidation:
-    /// - FirstName/LastName: Max 50 characters
-    /// - Username: 3-50 characters, alphanumeric + underscore
-    /// - PhoneNumber: Valid E.164 format
-    /// - Bio: Max 500 characters
-    /// - JobTitle: Max 100 characters
-    /// 
-    /// **Skill Management:**
-    /// Skills are updated via internal UpdateProfileSkillsAsync:
-    /// - Normalizes skill names (lowercase, trimmed)
-    /// - Removes duplicates
-    /// - Creates new skills if not exist
-    /// - Maintains ProfileSkill relationships
-    /// 
-    /// **Example:**
-    /// <code>
+    ///     **Update Strategy:**
+    ///     Only non-null/non-empty fields in request are updated (partial update pattern).
+    ///     **Uniqueness Validation:**
+    ///     - Username: Case-sensitive, must be unique across all profiles
+    ///     - PhoneNumber: Must be unique across all profiles
+    ///     **Updatable Fields:**
+    ///     - Username (unique constraint)
+    ///     - PhoneNumber (unique constraint)
+    ///     - FirstName, LastName
+    ///     - Bio (professional summary)
+    ///     - JobTitle (current position)
+    ///     - Skills (managed separately via UpdateProfileSkillsAsync)
+    ///     **Validation Rules:**
+    ///     Enforced by FluentValidation:
+    ///     - FirstName/LastName: Max 50 characters
+    ///     - Username: 3-50 characters, alphanumeric + underscore
+    ///     - PhoneNumber: Valid E.164 format
+    ///     - Bio: Max 500 characters
+    ///     - JobTitle: Max 100 characters
+    ///     **Skill Management:**
+    ///     Skills are updated via internal UpdateProfileSkillsAsync:
+    ///     - Normalizes skill names (lowercase, trimmed)
+    ///     - Removes duplicates
+    ///     - Creates new skills if not exist
+    ///     - Maintains ProfileSkill relationships
+    ///     **Example:**
+    ///     <code>
     /// var updated = await _profileService.UpdateProfileAsync(user, new UpdateProfileRequest
     /// {
     ///     FirstName = "John",
@@ -300,12 +221,10 @@ public class ProfileService
     ///     Skills = new List&lt;string&gt; { "C#", ".NET", "Azure" }
     /// });
     /// </code>
-    /// 
-    /// **Transaction Safety:**
-    /// All updates (profile fields + skills) committed atomically in single SaveChanges.
-    /// 
-    /// **Post-Update:**
-    /// Profile is re-fetched with all navigation properties for complete response.
+    ///     **Transaction Safety:**
+    ///     All updates (profile fields + skills) committed atomically in single SaveChanges.
+    ///     **Post-Update:**
+    ///     Profile is re-fetched with all navigation properties for complete response.
     /// </remarks>
     public async Task<ProfileResponse> UpdateProfileAsync(
         User user,
@@ -397,32 +316,29 @@ public class ProfileService
     }
 
     /// <summary>
-    /// Internal method that updates a profile's skills with normalization, deduplication, and relationship management.
+    ///     Internal method that updates a profile's skills with normalization, deduplication, and relationship management.
     /// </summary>
     /// <param name="profile">The profile entity to update skills for.</param>
     /// <param name="request">The skills update request containing the new skill list.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <remarks>
-    /// **Normalization Process:**
-    /// 1. Trim whitespace from skill names
-    /// 2. Convert to lowercase (culture-invariant)
-    /// 3. Remove duplicates
-    /// 4. Filter out empty/null entries
-    /// 
-    /// **Skill Creation:**
-    /// - Query existing skills by name
-    /// - Create new Skill entities for names not in database
-    /// - Add new skills to Skills table
-    /// 
-    /// **Relationship Management:**
-    /// - Load existing ProfileSkill relationships
-    /// - Add ProfileSkills for new skills
-    /// - Remove ProfileSkills for skills not in new list
-    /// - Maintains referential integrity
-    /// 
-    /// **Example Flow:**
-    /// <code>
+    ///     **Normalization Process:**
+    ///     1. Trim whitespace from skill names
+    ///     2. Convert to lowercase (culture-invariant)
+    ///     3. Remove duplicates
+    ///     4. Filter out empty/null entries
+    ///     **Skill Creation:**
+    ///     - Query existing skills by name
+    ///     - Create new Skill entities for names not in database
+    ///     - Add new skills to Skills table
+    ///     **Relationship Management:**
+    ///     - Load existing ProfileSkill relationships
+    ///     - Add ProfileSkills for new skills
+    ///     - Remove ProfileSkills for skills not in new list
+    ///     - Maintains referential integrity
+    ///     **Example Flow:**
+    ///     <code>
     /// Request: ["Python", "Python ", "PYTHON", "Java"]
     /// Normalized: ["python", "java"] (deduplicated, lowercase)
     /// 
@@ -435,16 +351,13 @@ public class ProfileService
     /// 
     /// Final ProfileSkills: [python, java]
     /// </code>
-    /// 
-    /// **Why Lowercase:**
-    /// - Case-insensitive matching ("Python" = "python")
-    /// - Consistent skill taxonomy
-    /// - Prevents duplicate skills with different casing
-    /// 
-    /// **Transaction Context:**
-    /// Changes are tracked but not committed. Caller must call SaveChangesAsync.
-    /// 
-    /// This is an internal method and should not be called directly from controllers.
+    ///     **Why Lowercase:**
+    ///     - Case-insensitive matching ("Python" = "python")
+    ///     - Consistent skill taxonomy
+    ///     - Prevents duplicate skills with different casing
+    ///     **Transaction Context:**
+    ///     Changes are tracked but not committed. Caller must call SaveChangesAsync.
+    ///     This is an internal method and should not be called directly from controllers.
     /// </remarks>
     private async Task UpdateProfileSkillsAsync(
         Profile profile,
