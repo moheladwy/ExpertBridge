@@ -1,8 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Threading.Channels;
-using ExpertBridge.Notifications.Models.IPC;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -51,14 +49,8 @@ public static class ServicesExtensions
         // Infrastructrue
         builder.Services.AddSignalR();
 
-        // Add publisher/masstransit
-        // builder.RegisterMessageBroker(typeof(ServicesExtensions).Assembly);
-
         // Services
         builder.Services.AddScoped<NotificationFacade>();
-
-        // IPC
-        builder.Services.AddSingleton(_ => Channel.CreateUnbounded<SendNotificationsRequestMessage>());
 
         return builder;
     }
