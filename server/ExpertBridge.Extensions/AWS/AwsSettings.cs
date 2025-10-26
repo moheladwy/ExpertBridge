@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Extensions.AWS;
 
@@ -12,7 +12,7 @@ namespace ExpertBridge.Extensions.AWS;
 /// - AWS credentials (access key and secret) for S3 operations
 /// - Region and bucket name for media storage location
 /// - File size limits and caching policies for uploaded content
-/// 
+///
 /// The settings are used by the S3 service to configure the AmazonS3Client for media file operations
 /// including presigned URL generation for client-side uploads and secure file access.
 /// </remarks>

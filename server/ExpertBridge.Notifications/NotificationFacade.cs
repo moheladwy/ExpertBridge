@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Threading.Channels;
 using ExpertBridge.Core.Entities.Comments;
@@ -24,7 +24,7 @@ namespace ExpertBridge.Notifications;
 /// </summary>
 /// <remarks>
 /// This facade implements a Channel-based pipeline architecture for notification processing:
-/// 
+///
 /// **Notification Flow:**
 /// 1. Domain events trigger NotificationFacade methods (e.g., NotifyNewCommentAsync)
 /// 2. Facade creates Notification entity with recipient, message, and action URLs
@@ -32,19 +32,19 @@ namespace ExpertBridge.Notifications;
 /// 4. NotificationSendingPipelineHandlerWorker reads from channel (background service)
 /// 5. Worker persists notification to database
 /// 6. Worker broadcasts notification via SignalR to connected clients
-/// 
+///
 /// **Benefits of Channel-Based Architecture:**
 /// - Decouples notification creation from delivery (non-blocking)
 /// - Provides backpressure handling for high notification volume
 /// - Enables reliable notification processing even during database or SignalR issues
 /// - Supports transaction isolation (notifications don't block main transaction)
-/// 
+///
 /// **Notification Types Supported:**
 /// - Social interactions: comments, replies, votes on posts/jobs
 /// - Job marketplace: applications, offers, job matches
 /// - Content moderation: deletion notifications
 /// - Real-time chat: new message notifications
-/// 
+///
 /// All notifications include optional icon URLs for sender profile pictures and action URLs for deep linking into the application.
 /// </remarks>
 public class NotificationFacade
@@ -261,11 +261,11 @@ public class NotificationFacade
     /// - Creates a notification for each matching candidate
     /// - Includes the job title and a deep link to the job detail page
     /// - Uses AI-powered profile/job matching via vector embeddings (Pgvector cosine similarity)
-    /// 
+    ///
     /// Typical usage:
     /// When a client posts a new job, the system runs background processing to find experts with matching skills/interests,
     /// then notifies all qualified candidates about the opportunity for increased application rate.
-    /// 
+    ///
     /// Performance note: Efficient batching allows notifying many candidates in a single operation.
     /// </remarks>
     public async Task NotifyJobMatchAsync(JobPosting jobPosting, List<Profile> candidates)
@@ -367,7 +367,7 @@ public class NotificationFacade
     /// 2. Transforms notifications into SendNotificationMessage DTOs for IPC
     /// 3. Writes to unbounded channel for consumption by NotificationSendingPipelineHandlerWorker
     /// 4. Returns immediately without blocking (fire-and-forget pattern)
-    /// 
+    ///
     /// The commented-out database persistence code has been moved to the background worker for better separation of concerns.
     /// </remarks>
     private async Task NotifyInternalAsync(params List<Notification> notifications)

@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Notifications.Models;
 
@@ -9,7 +9,7 @@ namespace ExpertBridge.Notifications.Models;
 /// <remarks>
 /// This DTO is designed specifically for SignalR communication through the <see cref="INotificationClient.ReceiveMessage"/> method.
 /// It carries essential message data from server to client without coupling to persistence models.
-/// 
+///
 /// **Key Properties:**
 /// - SenderId: Profile ID of the message sender
 /// - ReceiverId: Profile ID of the message recipient
@@ -17,12 +17,12 @@ namespace ExpertBridge.Notifications.Models;
 /// - Content: The text content of the message
 /// - CreatedAt: Timestamp when the message was created
 /// - IsConfirmationMessage: Flag for special UI rendering (e.g., system messages, read receipts)
-/// 
+///
 /// **Use Cases:**
 /// - Real-time one-to-one messaging
 /// - Chat notifications with special formatting (confirmations, receipts)
 /// - Message synchronization across multiple client sessions
-/// 
+///
 /// The separation from domain entities provides flexibility for future changes to the messaging system
 /// without affecting database schema or other application layers.
 /// </remarks>

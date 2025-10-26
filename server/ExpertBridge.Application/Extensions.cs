@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.EmbeddingService;
@@ -28,15 +28,15 @@ public static class Extensions
     /// <returns>The service collection with all domain services registered for method chaining.</returns>
     /// <remarks>
     /// This extension method configures the complete application layer including:
-    /// 
+    ///
     /// **Validators:**
     /// - FluentValidation validators from Core.Requests assembly (e.g., RegisterUserRequestValidator)
-    /// 
+    ///
     /// **Infrastructure Services:**
     /// - Notification system (SignalR, background workers, channel pipeline)
     /// - S3Service: AWS S3 integration for file storage and media management
     /// - IEmbeddingService: Ollama-based vector embedding generation for AI-powered search
-    /// 
+    ///
     /// **Domain Services:**
     /// - CommentService: Comment creation, editing, deletion, and vote management
     /// - ContentModerationService: AI-powered content moderation using Groq LLM
@@ -47,14 +47,14 @@ public static class Extensions
     /// - ProfileService: User profile management and skill tracking
     /// - JobService: Job application and offer workflow
     /// - MessagingService: Real-time chat and messaging functionality
-    /// 
+    ///
     /// **AI/LLM Services (Groq Integration):**
     /// - AiPostTaggingService: Automatic tag generation from post content using Groq LLM
     /// - AiTagProcessorService: Tag normalization and validation
     /// - NsfwContentDetectionService: Content safety analysis using Groq LLM
-    /// 
+    ///
     /// All services are registered with scoped lifetime for proper database context management and request isolation.
-    /// 
+    ///
     /// Typical usage in Program.cs:
     /// <code>
     /// builder.Services.AddDomainServices();
@@ -94,33 +94,33 @@ public static class Extensions
     /// <remarks>
     /// This extension method binds configuration sections to strongly-typed settings classes using the Options pattern.
     /// All settings are registered with IOptions&lt;T&gt; for dependency injection.
-    /// 
+    ///
     /// **Configured Settings:**
-    /// 
+    ///
     /// **Database:**
     /// - ConnectionStrings: PostgreSQL connection strings for main database and read replicas
-    /// 
+    ///
     /// **Authentication:**
     /// - FirebaseSettings: Firebase project configuration (ApiKey, ProjectId, AuthDomain)
     /// - FirebaseAuthSettings: Firebase authentication settings and JWT validation
-    /// 
+    ///
     /// **Cloud Storage:**
     /// - AwsSettings: AWS credentials, region, and S3 bucket configuration for media storage
-    /// 
+    ///
     /// **AI/Machine Learning:**
     /// - AiSettings: Ollama embedding service configuration (base URL, model selection)
     /// - GroqSettings: Groq LLM API settings (API key, model selection, temperature, max tokens)
     /// - InappropriateLanguageThresholds: Content moderation sensitivity thresholds for different categories
-    /// 
+    ///
     /// **Logging:**
     /// - SerilogSettings: Structured logging configuration (log levels, sinks, enrichment)
-    /// 
+    ///
     /// **Rate Limiting:**
     /// - ExpertBridgeRateLimitSettings: API rate limiting policies (requests per minute, burst limits)
-    /// 
+    ///
     /// Each settings class defines its own Section constant for configuration binding.
     /// Settings are validated at startup through data annotations and custom validators.
-    /// 
+    ///
     /// Typical usage in Program.cs:
     /// <code>
     /// builder.ConfigureExpertBridgeSettings();

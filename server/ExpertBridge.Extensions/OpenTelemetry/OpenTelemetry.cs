@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,24 +25,24 @@ public static class OpenTelemetry
     /// <returns>The builder instance for method chaining.</returns>
     /// <remarks>
     /// This method configures three pillars of observability:
-    /// 
+    ///
     /// **Logging:**
     /// - Integrates OpenTelemetry with .NET logging infrastructure
     /// - Includes formatted log messages in telemetry exports
     /// - Includes log scopes for contextual information
-    /// 
+    ///
     /// **Metrics:**
     /// - ASP.NET Core instrumentation (request count, duration, status codes)
     /// - HttpClient instrumentation (outbound HTTP call metrics)
     /// - .NET Runtime instrumentation (GC, thread pool, exception counters)
     /// - Prometheus exporter for scraping metrics
-    /// 
+    ///
     /// **Distributed Tracing:**
     /// - Trace sources for the application
     /// - ASP.NET Core request tracing (inbound HTTP requests)
     /// - HttpClient tracing (outbound HTTP calls to Firebase, Groq, Ollama, S3)
     /// - Enables end-to-end request flow visualization
-    /// 
+    ///
     /// Also configures service discovery and optional OTLP exporter based on OTEL_EXPORTER_OTLP_ENDPOINT environment variable.
     /// </remarks>
     public static TBuilder ConfigureOpenTelemetry<TBuilder>(this TBuilder builder)
@@ -89,7 +89,7 @@ public static class OpenTelemetry
     /// - Development: Disabled or local collector
     /// - Staging: Export to staging observability backend
     /// - Production: Export to production monitoring platform
-    /// 
+    ///
     /// OTLP is the standardized protocol for OpenTelemetry data export, supporting gRPC and HTTP transports.
     /// </remarks>
     private static TBuilder AddOpenTelemetryExporters<TBuilder>(this TBuilder builder)
@@ -114,17 +114,17 @@ public static class OpenTelemetry
     /// <returns>The builder instance for method chaining.</returns>
     /// <remarks>
     /// This method applies two standard configurations to all HttpClient instances:
-    /// 
+    ///
     /// **Standard Resilience Handler:**
     /// - Automatic retry with exponential backoff for transient HTTP failures (5xx errors, timeouts)
     /// - Circuit breaker pattern to prevent cascading failures
     /// - Request timeout policies for preventing hung requests
-    /// 
+    ///
     /// **Service Discovery:**
     /// - Enables dynamic endpoint resolution for service-to-service communication
     /// - Supports container orchestration and cloud-native deployments
     /// - Allows service names to be resolved to actual endpoints at runtime
-    /// 
+    ///
     /// Applied to all HttpClient instances including those for Firebase, Groq, Ollama, and S3 integrations.
     /// </remarks>
     public static TBuilder ConfigureHttpClientDefaults<TBuilder>(this TBuilder builder)

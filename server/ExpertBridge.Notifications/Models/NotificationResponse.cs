@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Notifications.Models;
 
@@ -10,13 +10,13 @@ namespace ExpertBridge.Notifications.Models;
 /// <remarks>
 /// This DTO is specifically designed for SignalR communication through the <see cref="INotificationClient.ReceiveNotification"/> method.
 /// While structurally similar to the database entity, maintaining separation provides important benefits:
-/// 
+///
 /// **Architectural Benefits:**
 /// - Flexibility to evolve notification delivery format independently from database schema
 /// - Prevents tight coupling between real-time communication and persistence layers
 /// - Enables different notification systems to consume without Core.Entities dependencies
 /// - Supports future changes to notification infrastructure without affecting domain models
-/// 
+///
 /// **Property Details:**
 /// - Id: Unique identifier for the notification (from database entity)
 /// - CreatedAt: Timestamp when notification was created
@@ -26,12 +26,12 @@ namespace ExpertBridge.Notifications.Models;
 /// - ActionUrl: Optional URL for navigation when user clicks the notification
 /// - IconUrl: Optional URL for an icon/avatar displayed with the notification (e.g., sender's profile picture)
 /// - IconActionUrl: Optional URL for navigation when user clicks the icon (e.g., sender's profile page)
-/// 
+///
 /// **Use Cases:**
 /// - Real-time push notifications for platform events (comments, votes, job applications)
 /// - In-app notification center updates
 /// - Badge count synchronization across client sessions
-/// 
+///
 /// Transformed from Core.Entities.Notification by NotificationSendingPipelineHandlerWorker before broadcasting.
 /// </remarks>
 public class NotificationResponse

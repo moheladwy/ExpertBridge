@@ -1,8 +1,9 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
 using ExpertBridge.Core.Exceptions;
+using FluentValidation;
 using Serilog;
 using Serilog.Context;
 
@@ -52,6 +53,26 @@ internal class GlobalExceptionMiddleware
         catch (ForbiddenAccessException ex)
         {
             await Results.Forbid()
+                .ExecuteAsync(httpContext);
+        }
+        catch (ValidationException validationEx)
+        {
+            var errors = validationEx.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            await Results.ValidationProblem(
+                    errors,
+                    title: "Validation Failed",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        { "traceId", httpContext.TraceIdentifier }
+                    }
+                )
                 .ExecuteAsync(httpContext);
         }
         catch (Exception ex)

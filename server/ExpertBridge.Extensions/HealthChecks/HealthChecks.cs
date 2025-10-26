@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -26,24 +26,24 @@ public static class HealthChecks
     /// <returns>The builder instance for method chaining.</returns>
     /// <remarks>
     /// This method registers three health checks:
-    /// 
+    ///
     /// **Self Check:**
     /// - Always returns healthy status
     /// - Verifies the application process is running and responsive
     /// - Tagged "live" for liveness probes
-    /// 
+    ///
     /// **PostgreSQL Check:**
     /// - Tests database connectivity using the configured connection string
     /// - Verifies database is accepting connections and queries
     /// - Critical for data persistence operations
     /// - Tagged "live" for liveness probes
-    /// 
+    ///
     /// **Redis Check:**
     /// - Tests Redis cache connectivity and availability
     /// - 30-second timeout to avoid hanging health checks
     /// - Critical for distributed caching and session management
     /// - Tagged "live" for liveness probes
-    /// 
+    ///
     /// Health check endpoints are exposed via MapDefaultEndpoints method for monitoring systems and orchestrators.
     /// </remarks>
     public static TBuilder AddDefaultHealthChecks<TBuilder>(this TBuilder builder)
@@ -67,20 +67,20 @@ public static class HealthChecks
     /// <returns>The web application instance for method chaining.</returns>
     /// <remarks>
     /// This method configures two health check endpoints:
-    /// 
+    ///
     /// **/health Endpoint:**
     /// - Returns detailed health status of all registered health checks
     /// - Uses HealthChecks UI response writer for formatted JSON output
     /// - Includes individual check names, status, duration, and error details
     /// - Suitable for monitoring dashboards and detailed health inspection
     /// - Returns 200 OK if all checks pass, 503 Service Unavailable if any fail
-    /// 
+    ///
     /// **/alive Endpoint:**
     /// - Returns only checks tagged with "live" (self, PostgreSQL, Redis)
     /// - Lightweight endpoint for Kubernetes liveness probes
     /// - Fast response for container orchestration health monitoring
     /// - Returns 200 OK if live checks pass, 503 Service Unavailable otherwise
-    /// 
+    ///
     /// These endpoints are typically excluded from authentication requirements for monitoring system access.
     /// </remarks>
     public static WebApplication MapDefaultEndpoints(this WebApplication app)

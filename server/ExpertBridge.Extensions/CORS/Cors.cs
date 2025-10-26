@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,14 +21,14 @@ public static class Cors
     /// <returns>The builder instance for method chaining.</returns>
     /// <remarks>
     /// This method configures two CORS policies:
-    /// 
+    ///
     /// **AllowAll Policy:**
     /// - Permits requests from any origin
     /// - Allows all HTTP methods (GET, POST, PUT, DELETE, etc.)
     /// - Allows all headers
     /// - Suitable for development or public API endpoints
     /// - Does not support credentials (cookies, authorization headers)
-    /// 
+    ///
     /// **SignalRClients Policy:**
     /// - Restricts origins to specific allowed URLs:
     ///   - http://localhost:5173 (Vite development server)
@@ -37,7 +37,7 @@ public static class Cors
     /// - Allows all HTTP methods and headers
     /// - Enables credentials support for authenticated SignalR connections
     /// - Required for real-time notification and chat features via SignalR hubs
-    /// 
+    ///
     /// Use the policy names from <see cref="CorsPolicyNames"/> when applying policies to controllers or endpoints.
     /// </remarks>
     public static TBuilder AddCors<TBuilder>(this TBuilder builder)

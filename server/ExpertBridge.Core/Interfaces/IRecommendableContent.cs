@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Pgvector;
 
@@ -9,7 +9,7 @@ namespace ExpertBridge.Core.Interfaces;
 /// Defines the contract for content that can be recommended using AI-powered similarity search.
 /// </summary>
 /// <remarks>
-/// Implementing this interface enables content to be embedded using vector embeddings and searched 
+/// Implementing this interface enables content to be embedded using vector embeddings and searched
 /// for similarity using PostgreSQL pgvector extension for semantic recommendations.
 /// </remarks>
 public interface IRecommendableContent

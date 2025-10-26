@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -17,7 +17,7 @@ namespace ExpertBridge.Data.DatabaseContexts;
 /// - PostgreSQL connection string from "ConnectionStrings:Postgresql" configuration section
 /// - Pgvector extension support for semantic search with 1024-dimensional vector embeddings
 /// - Connection resilience with 10 retry attempts over 60 seconds for transient database failures
-/// 
+///
 /// The factory is automatically discovered and used by Entity Framework Core CLI tools during migration operations.
 /// </remarks>
 public class ExpertBridgeDbContextFactory : IDesignTimeDbContextFactory<ExpertBridgeDbContext>
@@ -34,7 +34,7 @@ public class ExpertBridgeDbContextFactory : IDesignTimeDbContextFactory<ExpertBr
     /// 2. appsettings.Development.json environment-specific settings
     /// 3. User secrets for sensitive data (connection strings, API keys)
     /// 4. ASPNETCORE_ENVIRONMENT environment variable
-    /// 
+    ///
     /// This method is called automatically by EF Core CLI commands and should not be invoked directly in application code.
     /// </remarks>
     public ExpertBridgeDbContext CreateDbContext(string[] args)

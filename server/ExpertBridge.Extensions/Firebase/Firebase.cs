@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Interfaces;
 using FirebaseAdmin;
@@ -32,7 +32,7 @@ internal static class Firebase
     /// - Creates a Firebase app instance using Google credentials from "FirebaseOAuthCredentialsExpertBridge.json"
     /// - Registers FirebaseAuth for server-side user management and token verification
     /// - Registers FirebaseMessaging for sending push notifications to mobile clients
-    /// 
+    ///
     /// All three services are registered as singletons and available for dependency injection throughout the application.
     /// </remarks>
     public static TBuilder AddFirebaseApp<TBuilder>(this TBuilder builder)
@@ -85,20 +85,20 @@ internal static class Firebase
     /// <returns>The builder instance for method chaining.</returns>
     /// <remarks>
     /// This method configures ASP.NET Core authentication middleware to validate Firebase-issued JWT tokens:
-    /// 
+    ///
     /// **Token Validation:**
     /// - Validates issuer matches Firebase's secure token service URL for the project
     /// - Validates audience matches the Firebase project ID
     /// - Validates token lifetime (expiration) to prevent replay attacks
     /// - Includes detailed error information for debugging authentication issues
-    /// 
+    ///
     /// **Authentication Flow:**
     /// 1. Client authenticates with Firebase (email/password, Google OAuth, etc.)
     /// 2. Firebase returns an ID token (JWT)
     /// 3. Client includes token in Authorization: Bearer header
     /// 4. Middleware validates token using configured parameters
     /// 5. User's ProviderId is extracted from token claims for user identification
-    /// 
+    ///
     /// Also registers authorization services for applying [Authorize] attributes to controllers and actions.
     /// HTTPS metadata validation is disabled to support development environments (should be enabled in production).
     /// </remarks>

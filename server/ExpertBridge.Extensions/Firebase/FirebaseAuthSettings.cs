@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Extensions.Firebase;
 
@@ -10,14 +10,14 @@ namespace ExpertBridge.Extensions.Firebase;
 /// <remarks>
 /// These settings are loaded from the "Authentication:Firebase" configuration section and used to configure
 /// JWT Bearer authentication middleware for validating Firebase-issued ID tokens.
-/// 
+///
 /// Firebase Authentication flow:
 /// 1. Client authenticates with Firebase (email/password, Google, etc.)
 /// 2. Client receives Firebase ID token (JWT)
 /// 3. Client includes token in Authorization header of API requests
 /// 4. Server validates token using these settings
 /// 5. Server extracts user ProviderId from token claims
-/// 
+///
 /// The issuer and audience settings ensure tokens are issued by Firebase for the ExpertBridge project.
 /// </remarks>
 public sealed class FirebaseAuthSettings

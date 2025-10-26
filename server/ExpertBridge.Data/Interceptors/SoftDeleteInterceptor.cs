@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +17,7 @@ namespace ExpertBridge.Data.Interceptors;
 /// - Query filtering: Works with global query filters in ExpertBridgeDbContext to automatically exclude soft-deleted entities
 /// - Referential integrity: Maintains foreign key relationships without cascade delete complications
 /// - Temporal tracking: Records exact deletion timestamp for analytics and data lifecycle management
-/// 
+///
 /// The interceptor is registered in the database configuration via the AddDatabase extension method in Extensions.cs.
 /// All entities implementing ISoftDeletable (User, Profile, Post, Comment, JobPosting, etc.) automatically benefit from this pattern.
 /// </remarks>

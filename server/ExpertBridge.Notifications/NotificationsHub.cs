@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Notifications.Models;
 using Microsoft.AspNetCore.SignalR;
@@ -33,23 +33,23 @@ public interface INotificationClient
 /// </summary>
 /// <remarks>
 /// This hub implements the strongly-typed Hub&lt;INotificationClient&gt; pattern, ensuring type-safe client method invocation.
-/// 
+///
 /// **Connection Flow:**
 /// 1. Client establishes WebSocket connection to /api/notificationsHub endpoint
 /// 2. Hub assigns unique connection ID to each client
 /// 3. Server broadcasts notifications to connected clients via INotificationClient.ReceiveNotification
 /// 4. Server sends chat messages to specific clients via INotificationClient.ReceiveMessage
 /// 5. Client can retrieve connection ID for targeted messaging
-/// 
+///
 /// **Use Cases:**
 /// - Real-time notification delivery (comments, votes, job applications, offers)
 /// - Live chat message delivery between users
 /// - Connection management for presence tracking
-/// 
+///
 /// **Security:**
 /// Requires SignalRClients CORS policy configured in Extensions project.
 /// Authentication typically handled via JWT tokens in connection handshake.
-/// 
+///
 /// Hub lifecycle managed by ASP.NET Core SignalR infrastructure with automatic reconnection handling.
 /// </remarks>
 public class NotificationsHub : Hub<INotificationClient>
@@ -83,7 +83,7 @@ public class NotificationsHub : Hub<INotificationClient>
     /// <remarks>
     /// IMPORTANT: This MUST remain a method, not a property, to be callable from JavaScript/TypeScript clients.
     /// SignalR remote procedure calls (RPCs) only work with methods, not properties.
-    /// 
+    ///
     /// Example client usage (JavaScript):
     /// const connectionId = await connection.invoke("GetConnectionId");
     /// </remarks>

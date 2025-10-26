@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Extensions.Firebase;
 
@@ -10,13 +10,13 @@ namespace ExpertBridge.Extensions.Firebase;
 /// <remarks>
 /// These settings are loaded from the "Firebase" configuration section and typically sourced from
 /// a Firebase service account JSON file (FirebaseOAuthCredentialsExpertBridge.json).
-/// 
+///
 /// Used to configure:
 /// - Firebase Admin SDK for server-side operations
 /// - Firebase Authentication for JWT token validation
 /// - Firebase Cloud Messaging for push notifications
 /// - HTTP client for Firebase REST API calls
-/// 
+///
 /// The service account provides administrative access to Firebase services including user management,
 /// authentication token verification, and cloud messaging.
 /// </remarks>

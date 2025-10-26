@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using ExpertBridge.Api.Extensions;
+using ExpertBridge.Api.Filters;
 using ExpertBridge.Api.Middleware;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Extensions.CORS;
@@ -40,8 +41,39 @@ builder.AddCors();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddResponseCaching();
+
+// Configure automatic model validation error response format
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(e => e.Value?.Errors.Count > 0)
+            .ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray() ?? Array.Empty<string>()
+            );
+
+        var result = new
+        {
+            Title = "Validation Failed",
+            Status = 400,
+            Errors = errors,
+            TraceId = context.HttpContext.TraceIdentifier
+        };
+
+        return new BadRequestObjectResult(result)
+        {
+            StatusCode = StatusCodes.Status400BadRequest
+        };
+    };
+});
+
 builder.Services.AddControllers(options =>
     {
+        // Add global validation filter
+        options.Filters.Add<ValidationFilter>();
+
         options.CacheProfiles.Add(CacheProfiles.Default,
             new CacheProfile { Duration = 300, Location = ResponseCacheLocation.Any });
 

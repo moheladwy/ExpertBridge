@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Linq.Expressions;
 using ExpertBridge.Core.Entities.Areas;
@@ -58,7 +58,7 @@ namespace ExpertBridge.Data.DatabaseContexts;
 /// - Skills, badges, and professional experience tracking
 /// - Many-to-many relationships for tags, skills, badges, and user interests
 /// - Moderation system with AI-assisted content review
-/// 
+///
 /// The context automatically:
 /// - Updates CreatedAt timestamps on entity insertion
 /// - Updates LastModified timestamps on entity modification

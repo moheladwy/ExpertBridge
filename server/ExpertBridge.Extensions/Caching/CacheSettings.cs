@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Extensions.Caching;
 
@@ -11,7 +11,7 @@ namespace ExpertBridge.Extensions.Caching;
 /// These settings are loaded from the "Redis" configuration section and control:
 /// - Redis instance name prefix for cache key namespacing
 /// - Default cache entry expiration time in minutes
-/// 
+///
 /// Used by FusionCache to configure a two-level caching strategy combining:
 /// - Level 1 (L1): In-memory cache for fast local access
 /// - Level 2 (L2): Distributed Redis cache for cross-instance consistency

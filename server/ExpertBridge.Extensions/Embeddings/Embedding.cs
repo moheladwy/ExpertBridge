@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
@@ -27,12 +27,12 @@ public static class Embedding
     /// - Registers settings as IOptions for dependency injection
     /// - Creates an OllamaEmbeddingGenerator instance with configured endpoint and model
     /// - Registers IEmbeddingGenerator&lt;string, Embedding&lt;float&gt;&gt; as singleton service
-    /// 
+    ///
     /// The embedding generator is used throughout the application for:
     /// - **User Interest Embeddings**: Generating vector representations of user interests from tags for personalized recommendations
     /// - **Post Embeddings**: Creating semantic vectors of post content for similarity search
     /// - **Job Posting Embeddings**: Generating embeddings for AI-powered job matching with candidate profiles
-    /// 
+    ///
     /// Embeddings are stored in PostgreSQL using pgvector extension and indexed with HNSW algorithm
     /// for efficient cosine distance similarity queries.
     /// </remarks>

@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
 using Microsoft.Extensions.Hosting;
@@ -28,24 +28,24 @@ public static class ResiliencePipeline
     /// - Response truncation from token limits
     /// - Streaming response issues
     /// - Network interruptions during response transfer
-    /// 
+    ///
     /// **Retry Strategy:**
     /// - Handles JsonException specifically (malformed JSON parsing errors)
     /// - Maximum 3 retry attempts before failing
     /// - Exponential backoff starting at 2 seconds (2s, 4s, 8s)
     /// - Jitter enabled to prevent thundering herd effect
     /// - Logs each retry attempt for monitoring
-    /// 
+    ///
     /// **Timeout Policy:**
     /// - 90-second timeout for AI model API calls
     /// - Prevents indefinite hangs on slow or unresponsive model endpoints
     /// - Allows sufficient time for complex AI processing (tagging, moderation, embedding)
-    /// 
+    ///
     /// Used by:
     /// - Post tagging service (Groq API for multilingual tag generation)
     /// - Content moderation service (Groq API for safety analysis)
     /// - Embedding generation service (Ollama for vector embeddings)
-    /// 
+    ///
     /// Access the pipeline via ResiliencePipelines.MalformedJsonModelResponse constant.
     /// </remarks>
     public static TBuilder AddResiliencePipeline<TBuilder>(this TBuilder builder)

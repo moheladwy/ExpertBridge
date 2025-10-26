@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Amazon;
 using Amazon.Runtime;
@@ -29,7 +29,7 @@ public static class S3
     /// - Creates BasicAWSCredentials for authentication
     /// - Configures the AmazonS3Client with the specified region endpoint
     /// - Registers IAmazonS3 as a singleton for use in media attachment services
-    /// 
+    ///
     /// The configured S3 client is used throughout the application for:
     /// - Generating presigned URLs for client-side uploads (PostMedia, ProfileMedia, etc.)
     /// - Managing media file lifecycle and access control

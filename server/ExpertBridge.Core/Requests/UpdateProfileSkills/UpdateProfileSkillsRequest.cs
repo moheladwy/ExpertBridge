@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Core.Requests.UpdateProfileSkills;
 
@@ -7,7 +7,7 @@ namespace ExpertBridge.Core.Requests.UpdateProfileSkills;
 /// Represents a request to update the skills associated with a user profile.
 /// </summary>
 /// <remarks>
-/// This replaces the existing skill set with the provided skills. 
+/// This replaces the existing skill set with the provided skills.
 /// Skills are used for profile matching and job recommendations.
 /// </remarks>
 public class UpdateProfileSkillsRequest

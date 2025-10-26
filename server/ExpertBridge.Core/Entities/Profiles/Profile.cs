@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.Areas;
@@ -30,7 +30,7 @@ namespace ExpertBridge.Core.Entities.Profiles;
 /// Represents a user's professional profile in the ExpertBridge platform.
 /// </summary>
 /// <remarks>
-/// The Profile entity contains comprehensive professional information including experience, skills, 
+/// The Profile entity contains comprehensive professional information including experience, skills,
 /// ratings, and relationships to user-generated content. It has a one-to-one relationship with the <see cref="User"/> entity.
 /// </remarks>
 public partial class Profile : BaseModel, ISoftDeletable

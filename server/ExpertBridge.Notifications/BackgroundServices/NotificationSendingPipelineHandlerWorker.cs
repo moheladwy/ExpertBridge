@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Threading.Channels;
 using ExpertBridge.Core.Entities.Notifications;
@@ -19,7 +19,7 @@ namespace ExpertBridge.Notifications.BackgroundServices;
 /// </summary>
 /// <remarks>
 /// This worker implements a reliable notification delivery system with the following characteristics:
-/// 
+///
 /// **Processing Pipeline:**
 /// 1. Continuously reads SendNotificationsRequestMessage from unbounded channel
 /// 2. Creates scoped service provider for each batch (database context, SignalR hub)
@@ -27,19 +27,19 @@ namespace ExpertBridge.Notifications.BackgroundServices;
 /// 4. Persists notifications to database for historical record and offline delivery
 /// 5. Broadcasts notifications to all connected SignalR clients in real-time
 /// 6. Logs errors without stopping the pipeline (resilient design)
-/// 
+///
 /// **Benefits:**
 /// - Decouples notification creation from delivery (non-blocking for API requests)
 /// - Provides reliable delivery even during temporary database or SignalR outages
 /// - Supports batching for efficiency (processes lists of notifications together)
 /// - Enables retry and error handling without affecting main application flow
 /// - Maintains notification history in database for audit and offline scenarios
-/// 
+///
 /// **Error Handling:**
 /// - Individual notification failures are logged but don't stop the worker
 /// - Channel read failures terminate the worker gracefully with logging
 /// - Scoped services ensure proper disposal of DbContext after each batch
-/// 
+///
 /// The worker runs continuously as a hosted service until application shutdown (CancellationToken signaled).
 /// </remarks>
 public class NotificationSendingPipelineHandlerWorker : BackgroundService
@@ -77,7 +77,7 @@ public class NotificationSendingPipelineHandlerWorker : BackgroundService
     /// 3. Creates new scope for transactional processing
     /// 4. Persists notifications to ExpertBridgeDbContext
     /// 5. Broadcasts to all clients via NotificationsHub.Clients.All.ReceiveNotification
-    /// 
+    ///
     /// Error handling ensures individual failures don't crash the worker, maintaining system resilience.
     /// </remarks>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

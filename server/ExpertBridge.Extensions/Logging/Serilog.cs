@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
@@ -20,23 +20,23 @@ public static class Serilog
     /// <param name="builder">The web application builder to configure Serilog logging for.</param>
     /// <remarks>
     /// This method configures Serilog with:
-    /// 
+    ///
     /// **Configuration-Based Setup:**
     /// - Reads Serilog configuration from appsettings.json and appsettings.{Environment}.json
     /// - Supports log level configuration, enrichers, and sink settings via configuration
     /// - Allows dynamic log level changes without code recompilation
-    /// 
+    ///
     /// **Seq Integration:**
     /// - Connects to Seq endpoint for centralized log aggregation and visualization
     /// - Enables structured log querying and filtering in Seq dashboard
     /// - Provides real-time log streaming and alerting capabilities
-    /// 
+    ///
     /// **Structured Logging Benefits:**
     /// - Preserves log data as structured properties (not just strings)
     /// - Enables powerful querying and filtering in log aggregation tools
     /// - Supports log enrichment with contextual information (user, request ID, etc.)
     /// - Provides better performance and searchability than text-based logging
-    /// 
+    ///
     /// The Seq endpoint is added via AddSeqEndpoint("Seq") for service discovery integration.
     /// </remarks>
     public static void AddSerilogLogging(this WebApplicationBuilder builder)

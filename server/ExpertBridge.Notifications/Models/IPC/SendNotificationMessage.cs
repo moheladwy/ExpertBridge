@@ -1,5 +1,5 @@
-﻿// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace ExpertBridge.Notifications.Models.IPC;
 
@@ -10,14 +10,14 @@ namespace ExpertBridge.Notifications.Models.IPC;
 /// <remarks>
 /// This DTO serves as the contract for notification data transmitted through the unbounded Channel&lt;SendNotificationsRequestMessage&gt;.
 /// It carries all necessary information for the background worker to persist the notification and broadcast it via SignalR.
-/// 
+///
 /// **Pipeline Flow:**
 /// 1. NotificationFacade creates SendNotificationMessage from domain events
 /// 2. Message is written to Channel (non-blocking operation)
 /// 3. NotificationSendingPipelineHandlerWorker reads message from Channel
 /// 4. Worker transforms message into Core.Entities.Notification for persistence
 /// 5. Worker transforms message into NotificationResponse for SignalR broadcast
-/// 
+///
 /// **Key Properties:**
 /// - RecipientId: Profile ID of the user who should receive the notification
 /// - SenderId: Profile ID of the user who triggered the notification action
@@ -26,13 +26,13 @@ namespace ExpertBridge.Notifications.Models.IPC;
 /// - ActionUrl: Optional link to related content (post, comment, job, etc.)
 /// - IconUrl: Optional sender's profile picture or content thumbnail
 /// - IconActionUrl: Optional link to sender's profile when clicking icon
-/// 
+///
 /// **Design Rationale:**
 /// - Decouples notification creation from delivery (fire-and-forget pattern)
 /// - Enables reliable queueing with backpressure handling
 /// - Prevents blocking API operations during notification persistence
 /// - Supports batching for efficiency (multiple messages in one request)
-/// 
+///
 /// This is an internal IPC model and should not be exposed via public APIs or stored directly in the database.
 /// </remarks>
 public class SendNotificationMessage
