@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.RegularExpressions;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Users;
@@ -16,8 +17,9 @@ namespace ExpertBridge.Core.Requests.UpdateProfileRequest;
 ///     All validations use .When() to only validate when fields are provided (conditional validation).
 ///     Username includes regex validation for allowed characters. PhoneNumber uses international format validation.
 ///     Skills collection ensures each skill ID meets length constraints.
+///     Includes XSS prevention for JobTitle and Bio fields.
 /// </remarks>
-public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>
+public partial class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>
 {
     /// <summary>
     ///     Initializes a new instance of the ValidateUpdateProfileRequest with conditional validation rules.
@@ -30,7 +32,11 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
                 .NotEmpty().WithMessage("Job title cannot be empty when provided")
                 .MaximumLength(ProfileEntityConstraints.JobTitleMaxLength)
                 .WithMessage(
-                    $"Job title cannot be longer than {ProfileEntityConstraints.JobTitleMaxLength} characters");
+                    $"Job title cannot be longer than {ProfileEntityConstraints.JobTitleMaxLength} characters")
+                .Must(title => !ScriptTagRegex().IsMatch(title))
+                .WithMessage("Job title cannot contain script tags")
+                .Must(title => !DangerousPatternsRegex().IsMatch(title))
+                .WithMessage("Job title contains potentially dangerous content");
         });
 
         When(x => x.Bio != null, () =>
@@ -38,7 +44,11 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
             RuleFor(x => x.Bio)
                 .NotEmpty().WithMessage("Bio cannot be empty when provided")
                 .MaximumLength(ProfileEntityConstraints.BioMaxLength)
-                .WithMessage($"Bio cannot be longer than {ProfileEntityConstraints.BioMaxLength} characters");
+                .WithMessage($"Bio cannot be longer than {ProfileEntityConstraints.BioMaxLength} characters")
+                .Must(bio => !ScriptTagRegex().IsMatch(bio))
+                .WithMessage("Bio cannot contain script tags")
+                .Must(bio => !DangerousPatternsRegex().IsMatch(bio))
+                .WithMessage("Bio contains potentially dangerous content");
         });
 
         When(x => x.FirstName != null, () =>
@@ -46,7 +56,9 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First name cannot be empty when provided")
                 .MaximumLength(UserEntityConstraints.MaxNameLength)
-                .WithMessage($"First name cannot be longer than {UserEntityConstraints.MaxNameLength} characters");
+                .WithMessage($"First name cannot be longer than {UserEntityConstraints.MaxNameLength} characters")
+                .Must(name => ValidNameRegex().IsMatch(name))
+                .WithMessage("First name can only contain letters, spaces, hyphens, and apostrophes");
         });
 
         When(x => x.LastName != null, () =>
@@ -54,7 +66,9 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
             RuleFor(x => x.LastName)
                 .NotEmpty().WithMessage("Last name cannot be empty when provided")
                 .MaximumLength(UserEntityConstraints.MaxNameLength)
-                .WithMessage($"Last name cannot be longer than {UserEntityConstraints.MaxNameLength} characters");
+                .WithMessage($"Last name cannot be longer than {UserEntityConstraints.MaxNameLength} characters")
+                .Must(name => ValidNameRegex().IsMatch(name))
+                .WithMessage("Last name can only contain letters, spaces, hyphens, and apostrophes");
         });
 
         When(x => x.Username != null, () =>
@@ -90,4 +104,22 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
                 .WithMessage($"Each skill ID cannot be longer than {GlobalEntitiesConstraints.MaxIdLength} characters");
         });
     }
+
+    /// <summary>
+    ///     Compiled regex for detecting script tags in user input.
+    /// </summary>
+    [GeneratedRegex(@"<script[\s\S]*?>[\s\S]*?</script>", RegexOptions.IgnoreCase, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex ScriptTagRegex();
+
+    /// <summary>
+    ///     Compiled regex for detecting dangerous patterns (javascript:, data:, on* event handlers).
+    /// </summary>
+    [GeneratedRegex(@"(javascript:|data:text/html|on\w+\s*=)", RegexOptions.IgnoreCase, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex DangerousPatternsRegex();
+
+    /// <summary>
+    ///     Compiled regex for validating names (letters, spaces, hyphens, apostrophes only).
+    /// </summary>
+    [GeneratedRegex(@"^[a-zA-Z\s'\-]+$", RegexOptions.None, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex ValidNameRegex();
 }

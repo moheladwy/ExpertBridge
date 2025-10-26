@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.RegularExpressions;
 using ExpertBridge.Core.Entities;
 using FluentValidation;
 
@@ -12,8 +13,9 @@ namespace ExpertBridge.Core.Requests.CreateMessage;
 /// <remarks>
 ///     Validates ChatId and Content against entity constraints from Message entity configuration
 ///     to ensure data integrity during message creation.
+///     Includes XSS prevention and dangerous pattern detection.
 /// </remarks>
-public class CreateMessageRequestValidator : AbstractValidator<CreateMessageRequest>
+public partial class CreateMessageRequestValidator : AbstractValidator<CreateMessageRequest>
 {
     /// <summary>
     ///     Initializes a new instance of the CreateMessageRequestValidator with validation rules.
@@ -31,6 +33,22 @@ public class CreateMessageRequestValidator : AbstractValidator<CreateMessageRequ
             .NotEmpty().WithMessage("Content cannot be empty")
             .MaximumLength(GlobalEntitiesConstraints.MaxContentLetterLength)
             .WithMessage(
-                $"Content cannot be longer than {GlobalEntitiesConstraints.MaxContentLetterLength} characters");
+                $"Content cannot be longer than {GlobalEntitiesConstraints.MaxContentLetterLength} characters")
+            .Must(content => !ScriptTagRegex().IsMatch(content ?? string.Empty))
+            .WithMessage("Content cannot contain script tags")
+            .Must(content => !DangerousPatternsRegex().IsMatch(content ?? string.Empty))
+            .WithMessage("Content contains potentially dangerous patterns (javascript:, data:, or event handlers)");
     }
+
+    /// <summary>
+    ///     Compiled regex for detecting script tags (XSS prevention).
+    /// </summary>
+    [GeneratedRegex(@"<script[^>]*>.*?</script>", RegexOptions.IgnoreCase | RegexOptions.Singleline, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex ScriptTagRegex();
+
+    /// <summary>
+    ///     Compiled regex for detecting dangerous patterns like javascript:, data:text/html, and event handlers.
+    /// </summary>
+    [GeneratedRegex(@"(javascript:|data:text/html|on\w+\s*=)", RegexOptions.IgnoreCase, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex DangerousPatternsRegex();
 }

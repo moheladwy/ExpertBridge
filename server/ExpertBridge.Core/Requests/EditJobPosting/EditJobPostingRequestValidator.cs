@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.RegularExpressions;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.JobPostings;
 using FluentValidation;
@@ -13,8 +14,9 @@ namespace ExpertBridge.Core.Requests.EditJobPosting;
 /// <remarks>
 ///     All fields are optional. Validates Title, Content, Budget, and Area when provided
 ///     against entity constraints from JobPosting entity.
+///     Includes XSS prevention, dangerous pattern detection, and budget validation.
 /// </remarks>
-public class EditJobPostingRequestValidator : AbstractValidator<EditJobPostingRequest>
+public partial class EditJobPostingRequestValidator : AbstractValidator<EditJobPostingRequest>
 {
     /// <summary>
     ///     Initializes a new instance of the EditJobPostingRequestValidator with validation rules.
@@ -26,7 +28,11 @@ public class EditJobPostingRequestValidator : AbstractValidator<EditJobPostingRe
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Title cannot be empty when provided")
                 .MaximumLength(JobPostingEntityConstraints.MaxTitleLength)
-                .WithMessage($"Title cannot be longer than {JobPostingEntityConstraints.MaxTitleLength} characters");
+                .WithMessage($"Title cannot be longer than {JobPostingEntityConstraints.MaxTitleLength} characters")
+                .Must(title => !ScriptTagRegex().IsMatch(title ?? string.Empty))
+                .WithMessage("Title cannot contain script tags")
+                .Must(title => !HtmlTagRegex().IsMatch(title ?? string.Empty))
+                .WithMessage("Title cannot contain HTML tags");
         });
 
         When(x => x.Content != null, () =>
@@ -35,14 +41,20 @@ public class EditJobPostingRequestValidator : AbstractValidator<EditJobPostingRe
                 .NotEmpty().WithMessage("Content cannot be empty when provided")
                 .MaximumLength(JobPostingEntityConstraints.MaxContentLength)
                 .WithMessage(
-                    $"Content cannot be longer than {JobPostingEntityConstraints.MaxContentLength} characters");
+                    $"Content cannot be longer than {JobPostingEntityConstraints.MaxContentLength} characters")
+                .Must(content => !ScriptTagRegex().IsMatch(content ?? string.Empty))
+                .WithMessage("Content cannot contain script tags")
+                .Must(content => !DangerousPatternsRegex().IsMatch(content ?? string.Empty))
+                .WithMessage("Content contains potentially dangerous patterns");
         });
 
         When(x => x.Budget != null, () =>
         {
             RuleFor(x => x.Budget)
                 .GreaterThanOrEqualTo(JobPostingEntityConstraints.MinBudget)
-                .WithMessage($"Budget must be greater than or equal to {JobPostingEntityConstraints.MinBudget}");
+                .WithMessage($"Budget must be greater than or equal to {JobPostingEntityConstraints.MinBudget}")
+                .LessThanOrEqualTo(1000000m)
+                .WithMessage("Budget cannot exceed 1,000,000");
         });
 
         When(x => x.Area != null, () =>
@@ -53,4 +65,22 @@ public class EditJobPostingRequestValidator : AbstractValidator<EditJobPostingRe
                 .WithMessage($"Area cannot be longer than {GlobalEntitiesConstraints.MaxIdLength} characters");
         });
     }
+
+    /// <summary>
+    ///     Compiled regex for detecting script tags (XSS prevention).
+    /// </summary>
+    [GeneratedRegex(@"<script[^>]*>.*?</script>", RegexOptions.IgnoreCase | RegexOptions.Singleline, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex ScriptTagRegex();
+
+    /// <summary>
+    ///     Compiled regex for detecting HTML tags in titles.
+    /// </summary>
+    [GeneratedRegex(@"<[^>]+>", RegexOptions.None, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex HtmlTagRegex();
+
+    /// <summary>
+    ///     Compiled regex for detecting dangerous patterns like javascript:, data:text/html, and event handlers.
+    /// </summary>
+    [GeneratedRegex(@"(javascript:|data:text/html|on\w+\s*=)", RegexOptions.IgnoreCase, matchTimeoutMilliseconds: 1000)]
+    private static partial Regex DangerousPatternsRegex();
 }
