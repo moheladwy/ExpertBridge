@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

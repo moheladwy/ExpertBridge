@@ -33,7 +33,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 });
 
 builder.AddExpertBridgeServices();
-builder.Services.AddNotifications();
+builder.AddNotifications();
 
 builder.AddSwaggerGen("ExpertBridgeApi");
 builder.AddCors();
