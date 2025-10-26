@@ -7,6 +7,7 @@ using ExpertBridge.Extensions.MessageBroker;
 using ExpertBridge.Extensions.OpenTelemetry;
 using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary;
+using ExpertBridge.Notifications.Extensions;
 using ExpertBridge.Worker;
 using ExpertBridge.Worker.Consumers;
 using ExpertBridge.Worker.QuartzDatabase;
@@ -24,6 +25,7 @@ builder
     .AddResiliencePipeline()
     .AddEmbeddingServices()
     .AddGroqApiServices();
+builder.AddNotifications();
 builder.Services.AddDomainServices();
 var section = builder.Configuration.GetSection(AwsSettings.Section);
 builder.Services.Configure<AwsSettings>(section);

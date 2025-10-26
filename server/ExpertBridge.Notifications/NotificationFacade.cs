@@ -1,7 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Threading.Channels;
 using ExpertBridge.Core.Entities.Comments;
 using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.JobApplications;
@@ -15,6 +14,7 @@ using ExpertBridge.Core.Entities.PostVotes;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Interfaces;
 using ExpertBridge.Notifications.Models.IPC;
+using MassTransit;
 
 namespace ExpertBridge.Notifications;
 
@@ -47,17 +47,16 @@ namespace ExpertBridge.Notifications;
 /// </remarks>
 public class NotificationFacade
 {
-    private readonly Channel<SendNotificationsRequestMessage> _channel;
+    private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="NotificationFacade" /> class with the notification channel for
     ///     asynchronous processing.
     /// </summary>
-    /// <param name="channel">The unbounded channel for queuing notification requests to the background worker.</param>
-    public NotificationFacade(
-        Channel<SendNotificationsRequestMessage> channel)
+    /// <param name="publishEndpoint"> The MassTransit publish endpoint for inter-service communication.</param>
+    public NotificationFacade(IPublishEndpoint publishEndpoint)
     {
-        _channel = channel;
+        _publishEndpoint = publishEndpoint;
     }
 
     /// <summary>
@@ -375,12 +374,9 @@ public class NotificationFacade
     private async Task NotifyInternalAsync(params List<Notification> notifications)
     {
         var toSend = notifications
-            .Where(n => n.RecipientId != n.SenderId);
+            .Where(n => n.RecipientId != n.SenderId); ;
 
-        //await _dbContext.Notifications.AddRangeAsync(toSend);
-        //await _dbContext.SaveChangesAsync();
-
-        await _channel.Writer.WriteAsync(new SendNotificationsRequestMessage
+        await _publishEndpoint.Publish(new SendNotificationsRequestMessage
         {
             Notifications = toSend.Select(notification => new SendNotificationMessage
             {

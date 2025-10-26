@@ -51,7 +51,7 @@ public static class HealthChecks
         builder.Services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
             .AddNpgSql(npgsqlConnectionString, tags: ["live"])
-            .AddRedis(redisConnectionString, "Redis", tags: ["live"], timeout: TimeSpan.FromSeconds(30));
+            .AddRedis(redisConnectionString, "Redis", tags: ["live"], timeout: TimeSpan.FromSeconds(60));
 
         return builder;
     }

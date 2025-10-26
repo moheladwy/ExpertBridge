@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Threading.Channels;
-using ExpertBridge.Notifications.BackgroundServices;
 using ExpertBridge.Notifications.Models.IPC;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace ExpertBridge.Notifications.Extensions;
 
@@ -17,8 +17,8 @@ public static class ServicesExtensions
     ///     Registers all notification-related services including SignalR, background workers, facades, and the notification
     ///     channel pipeline.
     /// </summary>
-    /// <param name="services">The service collection to add notification services to.</param>
-    /// <returns>The service collection for method chaining.</returns>
+    /// <param name="builder">The host application builder to configure services on.</param>
+    /// <returns>The updated host application builder with notification services registered.</returns>
     /// <remarks>
     ///     This extension method configures a complete notification infrastructure with the following components:
     ///     **Infrastructure:**
@@ -45,20 +45,21 @@ public static class ServicesExtensions
     /// app.MapHub&lt;NotificationsHub&gt;("/api/notificationsHub");
     /// </code>
     /// </remarks>
-    public static IServiceCollection AddNotifications(this IServiceCollection services)
+    public static TBuilder AddNotifications<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
     {
         // Infrastructrue
-        services.AddSignalR();
+        builder.Services.AddSignalR();
 
-        // Background services
-        services.AddHostedService<NotificationSendingPipelineHandlerWorker>();
+        // Add publisher/masstransit
+        // builder.RegisterMessageBroker(typeof(ServicesExtensions).Assembly);
 
         // Services
-        services.AddScoped<NotificationFacade>();
+        builder.Services.AddScoped<NotificationFacade>();
 
         // IPC
-        services.AddSingleton(_ => Channel.CreateUnbounded<SendNotificationsRequestMessage>());
+        builder.Services.AddSingleton(_ => Channel.CreateUnbounded<SendNotificationsRequestMessage>());
 
-        return services;
+        return builder;
     }
 }
