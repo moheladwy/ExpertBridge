@@ -1,11 +1,11 @@
 # 🧪 Unit Testing Plan for FluentValidation Validators
 
 **Generated:** October 26, 2025  
-**Last Updated:** October 26, 2025 - Phase 4 Started (1/25 validators tested)  
+**Last Updated:** October 26, 2025 - Phase 2 In Progress (3/25 validators tested)  
 **Project:** ExpertBridge.Tests.Unit  
 **Target:** ExpertBridge.Core Request Validators  
 **Framework:** xUnit + FluentValidation.TestHelper  
-**Status:** � **IN PROGRESS** - Phase 4 Implementation Started
+**Status:** 🟢 **IN PROGRESS** - Phase 2 Implementation Ongoing
 
 ---
 
@@ -70,9 +70,9 @@ ExpertBridge.Tests.Unit/
 | #   | Validator                          | Request Type              | Priority  | Enhanced (Phase 3)         | Tests Status    |
 | --- | ---------------------------------- | ------------------------- | --------- | -------------------------- | --------------- |
 | 1   | `CreatePostRequestValidator`       | `CreatePostRequest`       | 🔴 High   | ✅ Yes (XSS, Media)        | ✅ **40 tests** |
-| 2   | `EditPostRequestValidator`         | `EditPostRequest`         | 🔴 High   | ✅ Yes (XSS)               | ⏳ Pending      |
-| 3   | `CreateCommentRequestValidator`    | `CreateCommentRequest`    | 🔴 High   | ✅ Yes (XSS)               | ⏳ Pending      |
-| 4   | `EditCommentRequestValidator`      | `EditCommentRequest`      | 🔴 High   | ✅ Yes (XSS)               | ⏳ Pending      |
+| 2   | `EditPostRequestValidator`         | `EditPostRequest`         | 🔴 High   | ✅ Yes (XSS)               | ✅ **37 tests** |
+| 3   | `CreateCommentRequestValidator`    | `CreateCommentRequest`    | 🔴 High   | ✅ Yes (XSS)               | ✅ **38 tests** |
+| 4   | `EditCommentRequestValidator`      | `EditCommentRequest`      | 🔴 High   | ✅ Yes (XSS)               | ✅ **24 tests** |
 | 5   | `PatchCommentRequestValidator`     | `PatchCommentRequest`     | 🟡 Medium | ✅ Yes (XSS)               | ⏳ Pending      |
 | 6   | `CreateJobPostingRequestValidator` | `CreateJobPostingRequest` | 🔴 High   | ✅ Yes (XSS, Budget)       | ⏳ Pending      |
 | 7   | `EditJobPostingRequestValidator`   | `EditJobPostingRequest`   | 🔴 High   | ✅ Yes (XSS, Budget)       | ⏳ Pending      |

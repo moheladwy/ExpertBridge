@@ -10,3 +10,6 @@ global using Shouldly;
 global using Xunit;
 global using ExpertBridge.Core.Requests.MediaObject;
 global using ExpertBridge.Core.Requests.CreatePost;
+global using ExpertBridge.Core.Requests.EditPost;
+global using ExpertBridge.Core.Requests.CreateComment;
+global using ExpertBridge.Core.Requests.EditComment;

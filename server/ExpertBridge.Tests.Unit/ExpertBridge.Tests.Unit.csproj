@@ -17,11 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core/" />
-    <Folder Include="Core/Validation/" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="../ExpertBridge.Core/ExpertBridge.Core.csproj" />
   </ItemGroup>
 
