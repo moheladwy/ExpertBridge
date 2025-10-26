@@ -13,3 +13,5 @@ global using ExpertBridge.Core.Requests.CreatePost;
 global using ExpertBridge.Core.Requests.EditPost;
 global using ExpertBridge.Core.Requests.CreateComment;
 global using ExpertBridge.Core.Requests.EditComment;
+global using ExpertBridge.Core.Requests.GeneratePresignedUrls;
+global using ExpertBridge.Core.Entities;

@@ -1,7 +1,7 @@
 # 🧪 Unit Testing Plan for FluentValidation Validators
 
 **Generated:** October 26, 2025  
-**Last Updated:** October 26, 2025 - Phase 2 In Progress (3/25 validators tested)  
+**Last Updated:** October 26, 2025 - Phase 2 In Progress (4/25 validators tested)  
 **Project:** ExpertBridge.Tests.Unit  
 **Target:** ExpertBridge.Core Request Validators  
 **Framework:** xUnit + FluentValidation.TestHelper  
@@ -109,11 +109,11 @@ ExpertBridge.Tests.Unit/
 
 ### Pagination/Utility Validators (3 validators)
 
-| #   | Validator                               | Request Type                   | Priority  | Enhanced (Phase 3)           | Tests Status |
-| --- | --------------------------------------- | ------------------------------ | --------- | ---------------------------- | ------------ |
-| 23  | `PostsCursorRequestValidator`           | `PostsCursorRequest`           | 🟢 Low    | ✅ N/A (pagination only)     | ⏳ Pending   |
-| 24  | `JobPostingsPaginationRequestValidator` | `JobPostingsPaginationRequest` | 🟢 Low    | ✅ N/A (pagination only)     | ⏳ Pending   |
-| 25  | `GeneratePresignedUrlsRequestValidator` | `GeneratePresignedUrlsRequest` | 🟡 Medium | ✅ Yes (File Upload, Limits) | ⏳ Pending   |
+| #   | Validator                               | Request Type                   | Priority  | Enhanced (Phase 3)           | Tests Status    |
+| --- | --------------------------------------- | ------------------------------ | --------- | ---------------------------- | --------------- |
+| 23  | `PostsCursorRequestValidator`           | `PostsCursorRequest`           | 🟢 Low    | ✅ N/A (pagination only)     | ⏳ Pending      |
+| 24  | `JobPostingsPaginationRequestValidator` | `JobPostingsPaginationRequest` | 🟢 Low    | ✅ N/A (pagination only)     | ⏳ Pending      |
+| 25  | `GeneratePresignedUrlsRequestValidator` | `GeneratePresignedUrlsRequest` | 🟡 Medium | ✅ Yes (File Upload, Limits) | ✅ **30 tests** |
 
 ---
 
