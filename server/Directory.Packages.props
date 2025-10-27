@@ -38,9 +38,12 @@
     <PackageVersion Include="Microsoft.Extensions.Resilience" Version="9.10.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.4" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.13.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.13.0-beta.1" />
     <PackageVersion Include="Pgvector" Version="0.3.2" />
     <PackageVersion Include="Pgvector.EntityFrameworkCore" Version="0.2.2" />
-    <PackageVersion Include="Quartz.Serialization.Json" Version="3.15.0" />
+    <PackageVersion Include="Quartz.Serialization.Json" Version="3.15.1" />
     <PackageVersion Include="Serilog" Version="4.3.0" />
     <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />
     <PackageVersion Include="Serilog.Enrichers.Process" Version="3.0.0" />
@@ -63,7 +66,6 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.13.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.13.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
-    <PackageVersion Include="Serilog.Sinks.Seq" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.10" />
@@ -78,9 +80,7 @@
     <PackageVersion Include="Aspire.Hosting.Redis" Version="9.5.2" />
     <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.5.2" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
-    <PackageVersion Include="Aspire.Hosting.Seq" Version="9.5.2" />
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
-    <PackageVersion Include="Aspire.Seq" Version="9.5.2" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
@@ -114,8 +114,8 @@
     <PackageVersion Include="Aspire.Hosting.Testing" Version="9.0.0" />
     <PackageVersion Include="Radzen.Blazor" Version="8.1.5" />
     <PackageVersion Include="Razor.Templating.Core" Version="2.1.0" />
-    <PackageVersion Include="Quartz" Version="3.15.0" />
-    <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.15.0" />
-    <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.15.0" />
+    <PackageVersion Include="Quartz" Version="3.15.1" />
+    <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.15.1" />
+    <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.15.1" />
   </ItemGroup>
 </Project>

@@ -2,21 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace ExpertBridge.Extensions.Logging;
 
 /// <summary>
-///     Provides extension methods for configuring Serilog structured logging with Seq integration in ASP.NET Core
-///     applications.
+///     Provides extension methods for configuring Serilog structured logging in ASP.NET Core applications.
 ///     Replaces the default logging provider with Serilog for advanced logging features and centralized log aggregation.
 /// </summary>
 public static class Serilog
 {
     /// <summary>
-    ///     Configures Serilog as the primary logging provider for the application with configuration-based setup and Seq
-    ///     endpoint integration.
+    ///     Configures Serilog as the primary logging provider for the application with configuration-based setup.
     ///     Replaces the default ASP.NET Core logging with Serilog's structured logging capabilities.
     /// </summary>
     /// <param name="builder">The web application builder to configure Serilog logging for.</param>
@@ -40,8 +37,8 @@ public static class Serilog
     public static void AddSerilogLogging(this WebApplicationBuilder builder)
     {
         builder.Host.UseSerilog((context, loggerConfig) =>
-            loggerConfig.ReadFrom.Configuration(context.Configuration));
-
-        builder.AddSeqEndpoint("Seq");
+        {
+            loggerConfig.ReadFrom.Configuration(context.Configuration);
+        });
     }
 }
