@@ -26,6 +26,7 @@
     <PackageReference Include="Serilog.Enrichers.Process"/>
     <PackageReference Include="Serilog.Enrichers.Thread"/>
     <PackageReference Include="Serilog.Sinks.File"/>
+    <PackageReference Include="Serilog.Sinks.OpenTelemetry" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience"/>
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery"/>
     <PackageReference Include="ZiggyCreatures.FusionCache"/>

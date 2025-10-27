@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace ExpertBridge.Extensions.Logging;
@@ -34,11 +34,14 @@ public static class Serilog
     ///     - Provides better performance and searchability than text-based logging
     ///     The Seq endpoint is added via AddSeqEndpoint("Seq") for service discovery integration.
     /// </remarks>
-    public static void AddSerilogLogging(this WebApplicationBuilder builder)
+    public static TBuilder AddSerilogLogging<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
     {
-        builder.Host.UseSerilog((context, loggerConfig) =>
+        builder.Services.AddSerilog(config =>
         {
-            loggerConfig.ReadFrom.Configuration(context.Configuration);
+            config.ReadFrom.Configuration(builder.Configuration);
         });
+
+        return builder;
     }
 }
