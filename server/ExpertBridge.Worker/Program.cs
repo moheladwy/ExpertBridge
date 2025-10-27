@@ -3,6 +3,7 @@ using ExpertBridge.Data;
 using ExpertBridge.Extensions.AWS;
 using ExpertBridge.Extensions.Caching;
 using ExpertBridge.Extensions.Embeddings;
+using ExpertBridge.Extensions.Logging;
 using ExpertBridge.Extensions.MessageBroker;
 using ExpertBridge.Extensions.OpenTelemetry;
 using ExpertBridge.Extensions.Resilience;
@@ -18,6 +19,7 @@ builder.Services
     .AddDatabase(builder.Configuration)
     .AddQuartzDbContext(builder.Configuration);
 builder
+    .AddSerilogLogging()
     .ConfigureExpertBridgeSettings()
     .AddFusionCache()
     .ConfigureOpenTelemetry()

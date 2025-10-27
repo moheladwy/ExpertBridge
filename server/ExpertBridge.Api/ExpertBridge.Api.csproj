@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Seq"/>
     <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching"/>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql"/>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client"/>
@@ -41,7 +40,6 @@
     <PackageReference Include="Serilog.Enrichers.Process"/>
     <PackageReference Include="Serilog.Enrichers.Thread"/>
     <PackageReference Include="Serilog.Sinks.File"/>
-    <PackageReference Include="Serilog.Sinks.Seq"/>
     <PackageReference Include="Swashbuckle.AspNetCore"/>
     <PackageReference Include="AWSSDK.S3"/>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"/>

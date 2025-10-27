@@ -5,6 +5,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <UserSecretsId>d50a9cb7-f345-40c7-9546-7d0a36e9edc8</UserSecretsId>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,6 @@
     <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
     <PackageReference Include="Aspire.Hosting.RabbitMQ"/>
     <PackageReference Include="Aspire.Hosting.Redis"/>
-    <PackageReference Include="Aspire.Hosting.Seq"/>
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama"/>
   </ItemGroup>
 

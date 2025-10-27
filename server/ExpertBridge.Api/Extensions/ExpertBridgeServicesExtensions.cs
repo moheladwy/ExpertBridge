@@ -31,7 +31,6 @@ public static class ExpertBridgeServicesExtensions
 
         // Infrastructure
         builder.Services.AddDatabase(builder.Configuration);
-        builder.AddSeqEndpoint("Seq");
         // builder.AddRedisDistributedCache(connectionName: "Redis");
         builder.AddFusionCache();
         builder.AddS3ObjectService();
