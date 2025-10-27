@@ -23,16 +23,11 @@ public static class Serilog
     ///     - Reads Serilog configuration from appsettings.json and appsettings.{Environment}.json
     ///     - Supports log level configuration, enrichers, and sink settings via configuration
     ///     - Allows dynamic log level changes without code recompilation
-    ///     **Seq Integration:**
-    ///     - Connects to Seq endpoint for centralized log aggregation and visualization
-    ///     - Enables structured log querying and filtering in Seq dashboard
-    ///     - Provides real-time log streaming and alerting capabilities
-    ///     **Structured Logging Benefits:**
+   ///     **Structured Logging Benefits:**
     ///     - Preserves log data as structured properties (not just strings)
     ///     - Enables powerful querying and filtering in log aggregation tools
     ///     - Supports log enrichment with contextual information (user, request ID, etc.)
     ///     - Provides better performance and searchability than text-based logging
-    ///     The Seq endpoint is added via AddSeqEndpoint("Seq") for service discovery integration.
     /// </remarks>
     public static TBuilder AddSerilogLogging<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
