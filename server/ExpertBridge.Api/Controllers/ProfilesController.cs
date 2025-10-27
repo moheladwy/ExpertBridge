@@ -1,4 +1,3 @@
-using System.Threading.Channels;
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Helpers;
 using ExpertBridge.Application.Settings;
@@ -10,6 +9,7 @@ using ExpertBridge.Core.Requests.OnboardUser;
 using ExpertBridge.Core.Requests.UpdateProfileRequest;
 using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,23 +22,23 @@ namespace ExpertBridge.Api.Controllers;
 public class ProfilesController : ControllerBase
 {
     private readonly AuthorizationHelper _authHelper;
-    private readonly ChannelWriter<UserInterestsProsessingMessage> _channelWriter;
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly ProfileService _profileService;
     private readonly UserService _userService;
+    private readonly IPublishEndpoint _publishEndpoint;
 
     public ProfilesController(
         ExpertBridgeDbContext dbContext,
         AuthorizationHelper authHelper,
-        Channel<UserInterestsProsessingMessage> channel,
         UserService userService,
-        ProfileService profileService)
+        ProfileService profileService,
+        IPublishEndpoint publishEndpoint)
     {
         _dbContext = dbContext;
         _authHelper = authHelper;
-        _channelWriter = channel.Writer;
         _userService = userService;
         _profileService = profileService;
+        _publishEndpoint = publishEndpoint;
     }
 
     [AllowAnonymous]
@@ -124,11 +124,11 @@ public class ProfilesController : ControllerBase
         user.IsOnboarded = true;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _channelWriter.WriteAsync(
-            new UserInterestsProsessingMessage
-            {
-                UserProfileId = user.Profile.Id, InterestsTags = newTagsToBeProcessed
-            }, cancellationToken);
+        await _publishEndpoint.Publish(new UserInterestsProsessingMessage
+        {
+            UserProfileId = user.Profile.Id,
+            InterestsTags = newTagsToBeProcessed
+        }, cancellationToken);
 
         var response = await _dbContext.Profiles
             .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
