@@ -4,14 +4,14 @@
 namespace ExpertBridge.Tests.Unit.Contract.Queries._Fixtures;
 
 /// <summary>
-/// Builder for creating realistic test data using Bogus library.
+///     Builder for creating realistic test data using Bogus library.
 /// </summary>
 public static class TestDataBuilder
 {
     private static readonly Faker _faker = new();
 
     /// <summary>
-    /// Creates a test tag with English and optional Arabic name.
+    ///     Creates a test tag with English and optional Arabic name.
     /// </summary>
     public static Tag CreateTag(string englishName, string? arabicName = null, string? id = null)
     {
@@ -25,7 +25,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test PostMedia or CommentMedia object with type and optional URL or key.
+    ///     Creates a test PostMedia or CommentMedia object with type and optional URL or key.
     /// </summary>
 #pragma warning disable CA1054 // URI parameters should not be strings (test data helper)
     public static MediaObject CreatePostMedia(
@@ -49,7 +49,7 @@ public static class TestDataBuilder
         key ??= _faker.System.FileName();
 
         // Use provided type or default to image/jpeg
-        string mediaTypeString = type ?? "image/jpeg";
+        var mediaTypeString = type ?? "image/jpeg";
 
         if (commentId != null)
         {
@@ -96,9 +96,11 @@ public static class TestDataBuilder
             Key = key,
             PostId = "dummy-post-id"
         };
-    }    /// <summary>
-         /// Creates a test chat with required hirer and worker IDs.
-         /// </summary>
+    }
+
+    /// <summary>
+    ///     Creates a test chat with required hirer and worker IDs.
+    /// </summary>
     public static Chat CreateChat(string hirerId, string workerId, string? id = null)
     {
         return new Chat
@@ -111,9 +113,10 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test message with required sender, chat, and content.
+    ///     Creates a test message with required sender, chat, and content.
     /// </summary>
-    public static Message CreateMessage(string senderId, string chatId, string? content = null, bool isConfirmation = false, string? id = null)
+    public static Message CreateMessage(string senderId, string chatId, string? content = null,
+        bool isConfirmation = false, string? id = null)
     {
         return new Message
         {
@@ -127,7 +130,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test notification.
+    ///     Creates a test notification.
     /// </summary>
 #pragma warning disable CA1054 // URI parameters should not be strings (entity uses string type)
     public static Notification CreateNotification(
@@ -156,7 +159,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test profile with required fields.
+    ///     Creates a test profile with required fields.
     /// </summary>
 #pragma warning disable CA1054 // URI parameters should not be strings (entity uses string type)
     public static Profile CreateProfile(
@@ -187,7 +190,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test comment with required fields.
+    ///     Creates a test comment with required fields.
     /// </summary>
     public static Comment CreateComment(
         string authorId,
@@ -217,7 +220,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test comment vote.
+    ///     Creates a test comment vote.
     /// </summary>
     public static CommentVote CreateCommentVote(
         string commentId,
@@ -227,15 +230,12 @@ public static class TestDataBuilder
     {
         return new CommentVote
         {
-            Id = id ?? Guid.NewGuid().ToString(),
-            CommentId = commentId,
-            ProfileId = profileId,
-            IsUpvote = isUpvote
+            Id = id ?? Guid.NewGuid().ToString(), CommentId = commentId, ProfileId = profileId, IsUpvote = isUpvote
         };
     }
 
     /// <summary>
-    /// Creates a test job posting with required fields.
+    ///     Creates a test job posting with required fields.
     /// </summary>
     public static JobPosting CreateJobPosting(
         string authorId,
@@ -259,7 +259,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test job application with required fields.
+    ///     Creates a test job application with required fields.
     /// </summary>
     public static JobApplication CreateJobApplication(
         string jobPostingId,
@@ -280,7 +280,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test job offer with required fields.
+    ///     Creates a test job offer with required fields.
     /// </summary>
     public static JobOffer CreateJobOffer(
         string authorId,
@@ -345,7 +345,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test post with required fields.
+    ///     Creates a test post with required fields.
     /// </summary>
     public static Post CreatePost(
         string authorId,
@@ -379,7 +379,7 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test post vote.
+    ///     Creates a test post vote.
     /// </summary>
     public static PostVote CreatePostVote(
         string postId,
@@ -389,29 +389,22 @@ public static class TestDataBuilder
     {
         return new PostVote
         {
-            Id = id ?? Guid.NewGuid().ToString(),
-            PostId = postId,
-            ProfileId = profileId,
-            IsUpvote = isUpvote
+            Id = id ?? Guid.NewGuid().ToString(), PostId = postId, ProfileId = profileId, IsUpvote = isUpvote
         };
     }
 
     /// <summary>
-    /// Creates a test post tag relationship.
+    ///     Creates a test post tag relationship.
     /// </summary>
     public static PostTag CreatePostTag(
         string postId,
         string tagId)
     {
-        return new PostTag
-        {
-            PostId = postId,
-            TagId = tagId
-        };
+        return new PostTag { PostId = postId, TagId = tagId };
     }
 
     /// <summary>
-    /// Creates a test job posting vote.
+    ///     Creates a test job posting vote.
     /// </summary>
     public static JobPostingVote CreateJobPostingVote(
         string jobPostingId,
@@ -429,21 +422,17 @@ public static class TestDataBuilder
     }
 
     /// <summary>
-    /// Creates a test job posting tag relationship.
+    ///     Creates a test job posting tag relationship.
     /// </summary>
     public static JobPostingTag CreateJobPostingTag(
         string jobPostingId,
         string tagId)
     {
-        return new JobPostingTag
-        {
-            JobPostingId = jobPostingId,
-            TagId = tagId
-        };
+        return new JobPostingTag { JobPostingId = jobPostingId, TagId = tagId };
     }
 
     /// <summary>
-    /// Creates a test job posting media.
+    ///     Creates a test job posting media.
     /// </summary>
     public static JobPostingMedia CreateJobPostingMedia(
         string jobPostingId,

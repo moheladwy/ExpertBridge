@@ -4,7 +4,7 @@
 namespace ExpertBridge.Tests.Unit.Contract.Queries;
 
 /// <summary>
-/// Tests for JobApplicationQueries extension methods.
+///     Tests for JobApplicationQueries extension methods.
 /// </summary>
 public sealed class JobApplicationQueriesTests : IDisposable
 {
@@ -14,6 +14,7 @@ public sealed class JobApplicationQueriesTests : IDisposable
     {
         _context = InMemoryDbContextFixture.Create();
     }
+
     public void Dispose()
     {
         _context.Dispose();
@@ -24,7 +25,7 @@ public sealed class JobApplicationQueriesTests : IDisposable
     {
         // Arrange
         var applicant = TestDataBuilder.CreateProfile(
-            userId: "user1",
+            "user1",
             firstName: "John",
             lastName: "Doe",
             username: "johndoe",
@@ -33,17 +34,17 @@ public sealed class JobApplicationQueriesTests : IDisposable
         );
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "Build a website",
-            content: "Need a modern website",
-            budget: 5000m
+            "author1",
+            "Build a website",
+            "Need a modern website",
+            5000m
         );
 
         var application = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant.Id,
-            offeredCost: 4500m,
-            coverLetter: "I'm perfect for this job"
+            jobPosting.Id,
+            applicant.Id,
+            4500m,
+            "I'm perfect for this job"
         );
 
         _context.Profiles.Add(applicant);
@@ -54,8 +55,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var result = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.Id == application.Id)
             .SelectJobApplicationResponseFromEntity()
             .SingleAsync();
@@ -69,12 +70,13 @@ public sealed class JobApplicationQueriesTests : IDisposable
         result.CoverLetter.ShouldBe("I'm perfect for this job");
         result.AppliedAt.ShouldBeGreaterThan(DateTime.MinValue);
     }
+
     [Fact]
     public async Task SelectJobApplicationResponseFromEntity_ShouldProjectApplicantDetails()
     {
         // Arrange
         var applicant = TestDataBuilder.CreateProfile(
-            userId: "user1",
+            "user1",
             firstName: "Jane",
             lastName: "Smith",
             username: "janesmith",
@@ -84,16 +86,16 @@ public sealed class JobApplicationQueriesTests : IDisposable
         );
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "API Development",
-            content: "Build REST API",
-            budget: 3000m
+            "author1",
+            "API Development",
+            "Build REST API",
+            3000m
         );
 
         var application = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant.Id,
-            offeredCost: 2800m
+            jobPosting.Id,
+            applicant.Id,
+            2800m
         );
 
         _context.Profiles.Add(applicant);
@@ -104,8 +106,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var result = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.Id == application.Id)
             .SelectJobApplicationResponseFromEntity()
             .SingleAsync();
@@ -126,21 +128,21 @@ public sealed class JobApplicationQueriesTests : IDisposable
     {
         // Arrange
         var applicant = TestDataBuilder.CreateProfile(
-            userId: "user1",
+            "user1",
             username: "noreputation"
         );
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "Job",
-            content: "Content",
-            budget: 1000m
+            "author1",
+            "Job",
+            "Content",
+            1000m
         );
 
         var application = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant.Id,
-            offeredCost: 900m
+            jobPosting.Id,
+            applicant.Id,
+            900m
         );
 
         _context.Profiles.Add(applicant);
@@ -151,8 +153,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var result = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.Id == application.Id)
             .SelectJobApplicationResponseFromEntity()
             .SingleAsync();
@@ -161,46 +163,47 @@ public sealed class JobApplicationQueriesTests : IDisposable
         result.Applicant.ShouldNotBeNull();
         result.Applicant.Reputation.ShouldBe(0);
     }
+
     [Fact]
     public async Task SelectJobApplicationResponseFromEntity_ShouldCalculateReputationWithOnlyUpvotes()
     {
         // Arrange
         var applicant = TestDataBuilder.CreateProfile(
-            userId: "user1",
+            "user1",
             username: "popular"
         );
 
         var comment1 = TestDataBuilder.CreateComment(
-            authorId: applicant.Id,
-            content: "Great comment",
-            postId: "post1"
+            applicant.Id,
+            "Great comment",
+            "post1"
         );
 
         var comment2 = TestDataBuilder.CreateComment(
-            authorId: applicant.Id,
-            content: "Another great comment",
-            postId: "post2"
+            applicant.Id,
+            "Another great comment",
+            "post2"
         );
 
-        var upvote1 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter1", isUpvote: true);
-        var upvote2 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter2", isUpvote: true);
-        var upvote3 = TestDataBuilder.CreateCommentVote(comment2.Id, "voter3", isUpvote: true);
+        var upvote1 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter1", true);
+        var upvote2 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter2", true);
+        var upvote3 = TestDataBuilder.CreateCommentVote(comment2.Id, "voter3", true);
 
         comment1.Votes = [upvote1, upvote2];
         comment2.Votes = [upvote3];
         applicant.Comments = [comment1, comment2];
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "Job",
-            content: "Content",
-            budget: 2000m
+            "author1",
+            "Job",
+            "Content",
+            2000m
         );
 
         var application = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant.Id,
-            offeredCost: 1800m
+            jobPosting.Id,
+            applicant.Id,
+            1800m
         );
 
         _context.Profiles.Add(applicant);
@@ -213,8 +216,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var result = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.Id == application.Id)
             .SelectJobApplicationResponseFromEntity()
             .SingleAsync();
@@ -223,41 +226,42 @@ public sealed class JobApplicationQueriesTests : IDisposable
         result.Applicant.ShouldNotBeNull();
         result.Applicant.Reputation.ShouldBe(3); // 3 upvotes - 0 downvotes
     }
+
     [Fact]
     public async Task SelectJobApplicationResponseFromEntity_ShouldCalculateReputationWithMixedVotes()
     {
         // Arrange
         var applicant = TestDataBuilder.CreateProfile(
-            userId: "user1",
+            "user1",
             username: "controversial"
         );
 
         var comment = TestDataBuilder.CreateComment(
-            authorId: applicant.Id,
-            content: "Mixed reactions",
-            postId: "post1"
+            applicant.Id,
+            "Mixed reactions",
+            "post1"
         );
 
-        var upvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter1", isUpvote: true);
-        var upvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter2", isUpvote: true);
-        var upvote3 = TestDataBuilder.CreateCommentVote(comment.Id, "voter3", isUpvote: true);
-        var downvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter4", isUpvote: false);
-        var downvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter5", isUpvote: false);
+        var upvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter1", true);
+        var upvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter2", true);
+        var upvote3 = TestDataBuilder.CreateCommentVote(comment.Id, "voter3", true);
+        var downvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter4", false);
+        var downvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter5", false);
 
         comment.Votes = [upvote1, upvote2, upvote3, downvote1, downvote2];
         applicant.Comments = [comment];
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "Job",
-            content: "Content",
-            budget: 1500m
+            "author1",
+            "Job",
+            "Content",
+            1500m
         );
 
         var application = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant.Id,
-            offeredCost: 1400m
+            jobPosting.Id,
+            applicant.Id,
+            1400m
         );
 
         _context.Profiles.Add(applicant);
@@ -270,8 +274,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var result = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.Id == application.Id)
             .SelectJobApplicationResponseFromEntity()
             .SingleAsync();
@@ -280,40 +284,41 @@ public sealed class JobApplicationQueriesTests : IDisposable
         result.Applicant.ShouldNotBeNull();
         result.Applicant.Reputation.ShouldBe(1); // 3 upvotes - 2 downvotes = 1
     }
+
     [Fact]
     public async Task SelectJobApplicationResponseFromEntity_ShouldCalculateNegativeReputation()
     {
         // Arrange
         var applicant = TestDataBuilder.CreateProfile(
-            userId: "user1",
+            "user1",
             username: "unpopular"
         );
 
         var comment = TestDataBuilder.CreateComment(
-            authorId: applicant.Id,
-            content: "Unpopular opinion",
-            postId: "post1"
+            applicant.Id,
+            "Unpopular opinion",
+            "post1"
         );
 
-        var upvote = TestDataBuilder.CreateCommentVote(comment.Id, "voter1", isUpvote: true);
-        var downvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter2", isUpvote: false);
-        var downvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter3", isUpvote: false);
-        var downvote3 = TestDataBuilder.CreateCommentVote(comment.Id, "voter4", isUpvote: false);
+        var upvote = TestDataBuilder.CreateCommentVote(comment.Id, "voter1", true);
+        var downvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter2", false);
+        var downvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter3", false);
+        var downvote3 = TestDataBuilder.CreateCommentVote(comment.Id, "voter4", false);
 
         comment.Votes = [upvote, downvote1, downvote2, downvote3];
         applicant.Comments = [comment];
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "Job",
-            content: "Content",
-            budget: 800m
+            "author1",
+            "Job",
+            "Content",
+            800m
         );
 
         var application = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant.Id,
-            offeredCost: 750m
+            jobPosting.Id,
+            applicant.Id,
+            750m
         );
 
         _context.Profiles.Add(applicant);
@@ -326,8 +331,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var result = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.Id == application.Id)
             .SelectJobApplicationResponseFromEntity()
             .SingleAsync();
@@ -336,32 +341,33 @@ public sealed class JobApplicationQueriesTests : IDisposable
         result.Applicant.ShouldNotBeNull();
         result.Applicant.Reputation.ShouldBe(-2); // 1 upvote - 3 downvotes = -2
     }
+
     [Fact]
     public async Task SelectJobApplicationResponseFromEntity_ShouldProjectMultipleApplications()
     {
         // Arrange
-        var applicant1 = TestDataBuilder.CreateProfile(userId: "user1", username: "applicant1");
-        var applicant2 = TestDataBuilder.CreateProfile(userId: "user2", username: "applicant2");
+        var applicant1 = TestDataBuilder.CreateProfile("user1", username: "applicant1");
+        var applicant2 = TestDataBuilder.CreateProfile("user2", username: "applicant2");
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "Big Project",
-            content: "Complex requirements",
-            budget: 10000m
+            "author1",
+            "Big Project",
+            "Complex requirements",
+            10000m
         );
 
         var application1 = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant1.Id,
-            offeredCost: 9500m,
-            coverLetter: "First application"
+            jobPosting.Id,
+            applicant1.Id,
+            9500m,
+            "First application"
         );
 
         var application2 = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant2.Id,
-            offeredCost: 8500m,
-            coverLetter: "Second application"
+            jobPosting.Id,
+            applicant2.Id,
+            8500m,
+            "Second application"
         );
 
         _context.Profiles.AddRange(applicant1, applicant2);
@@ -372,8 +378,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var results = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.JobPostingId == jobPosting.Id)
             .SelectJobApplicationResponseFromEntity()
             .ToListAsync();
@@ -394,27 +400,28 @@ public sealed class JobApplicationQueriesTests : IDisposable
         secondApp.Applicant.ShouldNotBeNull();
         secondApp.Applicant.Username.ShouldBe("applicant2");
     }
+
     [Fact]
     public async Task SelectJobApplicationResponseFromEntity_ShouldHandleNullCoverLetter()
     {
         // Arrange
         var applicant = TestDataBuilder.CreateProfile(
-            userId: "user1",
+            "user1",
             username: "nocoverletter"
         );
 
         var jobPosting = TestDataBuilder.CreateJobPosting(
-            authorId: "author1",
-            title: "Job",
-            content: "Content",
-            budget: 1000m
+            "author1",
+            "Job",
+            "Content",
+            1000m
         );
 
         var application = TestDataBuilder.CreateJobApplication(
-            jobPostingId: jobPosting.Id,
-            applicantId: applicant.Id,
-            offeredCost: 900m,
-            coverLetter: null
+            jobPosting.Id,
+            applicant.Id,
+            900m,
+            null
         );
 
         _context.Profiles.Add(applicant);
@@ -425,8 +432,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var result = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .Where(j => j.Id == application.Id)
             .SelectJobApplicationResponseFromEntity()
             .SingleAsync();
@@ -441,8 +448,8 @@ public sealed class JobApplicationQueriesTests : IDisposable
         // Act
         var results = await _context.JobApplications
             .Include(j => j.Applicant)
-                .ThenInclude(a => a.Comments)
-                    .ThenInclude(c => c.Votes)
+            .ThenInclude(a => a.Comments)
+            .ThenInclude(c => c.Votes)
             .SelectJobApplicationResponseFromEntity()
             .ToListAsync();
 

@@ -4,22 +4,22 @@
 namespace ExpertBridge.Tests.Unit.Contract.Queries._Fixtures;
 
 /// <summary>
-/// Factory for creating in-memory EF Core database contexts for testing.
+///     Factory for creating in-memory EF Core database contexts for testing.
 /// </summary>
 /// <remarks>
-/// Uses in-memory database provider which doesn't support pgvector types.
-/// A custom model customizer is used to ignore vector properties during model building.
+///     Uses in-memory database provider which doesn't support pgvector types.
+///     A custom model customizer is used to ignore vector properties during model building.
 /// </remarks>
 public static class InMemoryDbContextFixture
 {
     /// <summary>
-    /// Creates a new in-memory database context with unique database name.
+    ///     Creates a new in-memory database context with unique database name.
     /// </summary>
-    /// <returns>A new instance of <see cref="ExpertBridgeDbContext"/> configured for in-memory testing.</returns>
+    /// <returns>A new instance of <see cref="ExpertBridgeDbContext" /> configured for in-memory testing.</returns>
     public static ExpertBridgeDbContext Create()
     {
         var options = new DbContextOptionsBuilder<ExpertBridgeDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .EnableSensitiveDataLogging()
             .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .ReplaceService<IModelCustomizer, InMemoryModelCustomizer>()
@@ -30,7 +30,7 @@ public static class InMemoryDbContextFixture
 }
 
 /// <summary>
-/// Custom model customizer that ignores pgvector properties for in-memory database testing.
+///     Custom model customizer that ignores pgvector properties for in-memory database testing.
 /// </summary>
 public class InMemoryModelCustomizer : ModelCustomizer
 {

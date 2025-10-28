@@ -11,239 +11,206 @@ namespace ExpertBridge.Tests.Unit.Contract.Validation;
 /// </remarks>
 public sealed class UpdateJobStatusRequestValidatorTests
 {
-  private readonly UpdateJobStatusRequestValidator _validator;
+    private readonly UpdateJobStatusRequestValidator _validator;
 
-  public UpdateJobStatusRequestValidatorTests()
-  {
-    _validator = new UpdateJobStatusRequestValidator();
-  }
-
-  #region Happy Path Tests
-
-  [Fact]
-  public async Task Should_Pass_With_Valid_Status()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    public UpdateJobStatusRequestValidatorTests()
     {
-      Status = "InProgress"
-    };
-
-    // Act
-    var result = await _validator.TestValidateAsync(request);
-
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
-
-  [Fact]
-  public async Task Should_Pass_With_Single_Character_Status()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
-    {
-      Status = "A"
-    };
-
-    // Act
-    var result = await _validator.TestValidateAsync(request);
-
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
-
-  [Fact]
-  public async Task Should_Pass_With_Maximum_Length_Status()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
-    {
-      Status = new string('a', 128) // Max enum length
-    };
-
-    // Act
-    var result = await _validator.TestValidateAsync(request);
-
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
-
-  [Fact]
-  public async Task Should_Pass_With_Different_Status_Values()
-  {
-    // Arrange
-    var statuses = new[] { "Pending", "Active", "Completed", "Cancelled", "OnHold" };
-
-    foreach (var status in statuses)
-    {
-      var request = new UpdateJobStatusRequest
-      {
-        Status = status
-      };
-
-      // Act
-      var result = await _validator.TestValidateAsync(request);
-
-      // Assert
-      result.ShouldNotHaveAnyValidationErrors();
+        _validator = new UpdateJobStatusRequestValidator();
     }
-  }
 
-  #endregion
+    #region Happy Path Tests
 
-  #region Status Validation Tests
-
-  [Fact]
-  public async Task Should_Fail_When_Status_Is_Null()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    [Fact]
+    public async Task Should_Pass_With_Valid_Status()
     {
-      Status = null!
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = "InProgress" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Status)
-        .WithErrorMessage("Status cannot be null");
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Status_Is_Empty()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    [Fact]
+    public async Task Should_Pass_With_Single_Character_Status()
     {
-      Status = string.Empty
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = "A" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Status)
-        .WithErrorMessage("Status cannot be empty");
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Status_Is_Whitespace()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    [Fact]
+    public async Task Should_Pass_With_Maximum_Length_Status()
     {
-      Status = "   "
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest
+        {
+            Status = new string('a', 128) // Max enum length
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Status)
-        .WithErrorMessage("Status cannot be empty");
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Status_Exceeds_MaxLength()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    [Fact]
+    public async Task Should_Pass_With_Different_Status_Values()
     {
-      Status = new string('a', 129) // Max is 128
-    };
+        // Arrange
+        var statuses = new[] { "Pending", "Active", "Completed", "Cancelled", "OnHold" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        foreach (var status in statuses)
+        {
+            var request = new UpdateJobStatusRequest { Status = status };
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Status)
-        .WithErrorMessage("Status cannot be longer than 128 characters");
-  }
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-  #endregion
+            // Assert
+            result.ShouldNotHaveAnyValidationErrors();
+        }
+    }
 
-  #region Edge Cases
+    #endregion
 
-  [Fact]
-  public async Task Should_Pass_With_PascalCase_Status()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    #region Status Validation Tests
+
+    [Fact]
+    public async Task Should_Fail_When_Status_Is_Null()
     {
-      Status = "InProgress"
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = null! };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Status)
+            .WithErrorMessage("Status cannot be null");
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Uppercase_Status()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    [Fact]
+    public async Task Should_Fail_When_Status_Is_Empty()
     {
-      Status = "COMPLETED"
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = string.Empty };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Status)
+            .WithErrorMessage("Status cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Lowercase_Status()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    [Fact]
+    public async Task Should_Fail_When_Status_Is_Whitespace()
     {
-      Status = "pending"
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = "   " };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Status)
+            .WithErrorMessage("Status cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Status_Containing_Numbers()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    [Fact]
+    public async Task Should_Fail_When_Status_Exceeds_MaxLength()
     {
-      Status = "Status123"
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest
+        {
+            Status = new string('a', 129) // Max is 128
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Status)
+            .WithErrorMessage("Status cannot be longer than 128 characters");
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Status_At_Exact_MaxLength()
-  {
-    // Arrange
-    var request = new UpdateJobStatusRequest
+    #endregion
+
+    #region Edge Cases
+
+    [Fact]
+    public async Task Should_Pass_With_PascalCase_Status()
     {
-      Status = new string('x', 128)
-    };
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = "InProgress" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  #endregion
+    [Fact]
+    public async Task Should_Pass_With_Uppercase_Status()
+    {
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = "COMPLETED" };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public async Task Should_Pass_With_Lowercase_Status()
+    {
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = "pending" };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public async Task Should_Pass_With_Status_Containing_Numbers()
+    {
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = "Status123" };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public async Task Should_Pass_With_Status_At_Exact_MaxLength()
+    {
+        // Arrange
+        var request = new UpdateJobStatusRequest { Status = new string('x', 128) };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    #endregion
 }

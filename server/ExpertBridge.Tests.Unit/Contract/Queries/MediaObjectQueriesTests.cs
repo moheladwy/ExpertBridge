@@ -4,176 +4,176 @@
 namespace ExpertBridge.Tests.Unit.Contract.Queries;
 
 /// <summary>
-/// Unit tests for MediaObjectQueries extension methods.
+///     Unit tests for MediaObjectQueries extension methods.
 /// </summary>
 /// <remarks>
-/// Tests cover SelectMediaObjectResponse projection method with S3 URL construction.
-/// Uses in-memory EF Core database for realistic query execution.
+///     Tests cover SelectMediaObjectResponse projection method with S3 URL construction.
+///     Uses in-memory EF Core database for realistic query execution.
 /// </remarks>
 public sealed class MediaObjectQueriesTests : IDisposable
 {
-  private readonly ExpertBridgeDbContext _context;
+    private readonly ExpertBridgeDbContext _context;
 
-  public MediaObjectQueriesTests()
-  {
-    _context = InMemoryDbContextFixture.Create();
-  }
+    public MediaObjectQueriesTests()
+    {
+        _context = InMemoryDbContextFixture.Create();
+    }
 
-  #region SelectMediaObjectResponse Tests
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
 
-  [Fact]
-  public async Task SelectMediaObjectResponse_Should_Construct_S3Url_Correctly()
-  {
-    // Arrange
-    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
-        postId: "post1",
-        type: "image/jpeg",
-        key: "profile-images/123.jpg",
-        id: "media1");
-    _context.Set<PostMedia>().Add(media);
-    await _context.SaveChangesAsync();
+    #region SelectMediaObjectResponse Tests
 
-    // Act
-    var result = await _context.Set<PostMedia>()
-        .SelectMediaObjectResponse()
-        .FirstAsync();
+    [Fact]
+    public async Task SelectMediaObjectResponse_Should_Construct_S3Url_Correctly()
+    {
+        // Arrange
+        var media = (PostMedia)TestDataBuilder.CreatePostMedia(
+            "post1",
+            type: "image/jpeg",
+            key: "profile-images/123.jpg",
+            id: "media1");
+        _context.Set<PostMedia>().Add(media);
+        await _context.SaveChangesAsync();
 
-    // Assert
-    result.ShouldNotBeNull();
-    result.Url.ShouldBe("https://expert-bridge-media.s3.amazonaws.com/profile-images/123.jpg");
-    result.Type.ShouldBe("image/jpeg");
-  }
+        // Act
+        var result = await _context.Set<PostMedia>()
+            .SelectMediaObjectResponse()
+            .FirstAsync();
 
-  [Theory]
-  [InlineData("image/jpeg", "profile-images/123.jpg")]
-  [InlineData("image/png", "posts/456.png")]
-  [InlineData("video/mp4", "videos/demo.mp4")]
-  [InlineData("application/pdf", "documents/file.pdf")]
-  public async Task SelectMediaObjectResponse_Should_Handle_DifferentMediaTypes(
-      string type, string key)
-  {
-    // Arrange
-    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
-        postId: "post1",
-        type: type,
-        key: key);
-    _context.Set<PostMedia>().Add(media);
-    await _context.SaveChangesAsync();
+        // Assert
+        result.ShouldNotBeNull();
+        result.Url.ShouldBe("https://expert-bridge-media.s3.amazonaws.com/profile-images/123.jpg");
+        result.Type.ShouldBe("image/jpeg");
+    }
 
-    // Act
-    var result = await _context.Set<PostMedia>()
-        .SelectMediaObjectResponse()
-        .FirstAsync();
+    [Theory]
+    [InlineData("image/jpeg", "profile-images/123.jpg")]
+    [InlineData("image/png", "posts/456.png")]
+    [InlineData("video/mp4", "videos/demo.mp4")]
+    [InlineData("application/pdf", "documents/file.pdf")]
+    public async Task SelectMediaObjectResponse_Should_Handle_DifferentMediaTypes(
+        string type, string key)
+    {
+        // Arrange
+        var media = (PostMedia)TestDataBuilder.CreatePostMedia(
+            "post1",
+            type: type,
+            key: key);
+        _context.Set<PostMedia>().Add(media);
+        await _context.SaveChangesAsync();
 
-    // Assert
-    result.Url.ShouldContain(key);
-    result.Type.ShouldBe(type);
-  }
+        // Act
+        var result = await _context.Set<PostMedia>()
+            .SelectMediaObjectResponse()
+            .FirstAsync();
 
-  [Fact]
-  public async Task SelectMediaObjectResponse_Should_Include_MediaId()
-  {
-    // Arrange
-    var mediaId = "unique-media-id-123";
-    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
-        postId: "post1",
-        type: "image/jpeg",
-        key: "test.jpg",
-        id: mediaId);
-    _context.Set<PostMedia>().Add(media);
-    await _context.SaveChangesAsync();
+        // Assert
+        result.Url.ShouldContain(key);
+        result.Type.ShouldBe(type);
+    }
 
-    // Act
-    var result = await _context.Set<PostMedia>()
-        .SelectMediaObjectResponse()
-        .FirstAsync();
+    [Fact]
+    public async Task SelectMediaObjectResponse_Should_Include_MediaId()
+    {
+        // Arrange
+        var mediaId = "unique-media-id-123";
+        var media = (PostMedia)TestDataBuilder.CreatePostMedia(
+            "post1",
+            type: "image/jpeg",
+            key: "test.jpg",
+            id: mediaId);
+        _context.Set<PostMedia>().Add(media);
+        await _context.SaveChangesAsync();
 
-    // Assert
-    result.Id.ShouldBe(mediaId);
-  }
+        // Act
+        var result = await _context.Set<PostMedia>()
+            .SelectMediaObjectResponse()
+            .FirstAsync();
 
-  [Fact]
-  public async Task SelectMediaObjectResponse_Should_Include_MediaName()
-  {
-    // Arrange
-    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
-        postId: "post1",
-        type: "image/jpeg",
-        key: "test.jpg");
-    _context.Set<PostMedia>().Add(media);
-    await _context.SaveChangesAsync();
+        // Assert
+        result.Id.ShouldBe(mediaId);
+    }
 
-    // Act
-    var result = await _context.Set<PostMedia>()
-        .SelectMediaObjectResponse()
-        .FirstAsync();
+    [Fact]
+    public async Task SelectMediaObjectResponse_Should_Include_MediaName()
+    {
+        // Arrange
+        var media = (PostMedia)TestDataBuilder.CreatePostMedia(
+            "post1",
+            type: "image/jpeg",
+            key: "test.jpg");
+        _context.Set<PostMedia>().Add(media);
+        await _context.SaveChangesAsync();
 
-    // Assert
-    result.Name.ShouldNotBeNull();
-    result.Name.ShouldNotBeEmpty();
-  }
+        // Act
+        var result = await _context.Set<PostMedia>()
+            .SelectMediaObjectResponse()
+            .FirstAsync();
 
-  [Fact]
-  public async Task SelectMediaObjectResponse_Should_Project_MultipleMediaObjects()
-  {
-    // Arrange
-    var media1 = (PostMedia)TestDataBuilder.CreatePostMedia(postId: "post1", type: "image/jpeg", key: "img1.jpg", id: "m1");
-    var media2 = (PostMedia)TestDataBuilder.CreatePostMedia(postId: "post1", type: "image/png", key: "img2.png", id: "m2");
-    var media3 = (PostMedia)TestDataBuilder.CreatePostMedia(postId: "post2", type: "video/mp4", key: "vid1.mp4", id: "m3");
+        // Assert
+        result.Name.ShouldNotBeNull();
+        result.Name.ShouldNotBeEmpty();
+    }
 
-    _context.Set<PostMedia>().AddRange(media1, media2, media3);
-    await _context.SaveChangesAsync();
+    [Fact]
+    public async Task SelectMediaObjectResponse_Should_Project_MultipleMediaObjects()
+    {
+        // Arrange
+        var media1 = (PostMedia)TestDataBuilder.CreatePostMedia("post1", type: "image/jpeg", key: "img1.jpg", id: "m1");
+        var media2 = (PostMedia)TestDataBuilder.CreatePostMedia("post1", type: "image/png", key: "img2.png", id: "m2");
+        var media3 = (PostMedia)TestDataBuilder.CreatePostMedia("post2", type: "video/mp4", key: "vid1.mp4", id: "m3");
 
-    // Act
-    var results = await _context.Set<PostMedia>()
-        .SelectMediaObjectResponse()
-        .ToListAsync();
+        _context.Set<PostMedia>().AddRange(media1, media2, media3);
+        await _context.SaveChangesAsync();
 
-    // Assert
-    results.Count.ShouldBe(3);
-    results.ShouldAllBe(r => r.Url.StartsWith("https://expert-bridge-media.s3.amazonaws.com/"));
-  }
+        // Act
+        var results = await _context.Set<PostMedia>()
+            .SelectMediaObjectResponse()
+            .ToListAsync();
 
-  [Fact]
-  public async Task SelectMediaObjectResponse_Should_Return_Empty_When_NoMedia()
-  {
-    // Arrange - no data added
+        // Assert
+        results.Count.ShouldBe(3);
+        results.ShouldAllBe(r => r.Url.StartsWith("https://expert-bridge-media.s3.amazonaws.com/"));
+    }
 
-    // Act
-    var results = await _context.Set<PostMedia>()
-        .SelectMediaObjectResponse()
-        .ToListAsync();
+    [Fact]
+    public async Task SelectMediaObjectResponse_Should_Return_Empty_When_NoMedia()
+    {
+        // Arrange - no data added
 
-    // Assert
-    results.ShouldBeEmpty();
-  }
+        // Act
+        var results = await _context.Set<PostMedia>()
+            .SelectMediaObjectResponse()
+            .ToListAsync();
 
-  [Fact]
-  public async Task SelectMediaObjectResponse_Should_Use_HardcodedS3Url()
-  {
-    // Arrange
-    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
-        postId: "post1",
-        type: "image/jpeg",
-        key: "test-key.jpg");
-    _context.Set<PostMedia>().Add(media);
-    await _context.SaveChangesAsync();
+        // Assert
+        results.ShouldBeEmpty();
+    }
 
-    // Act
-    var result = await _context.Set<PostMedia>()
-        .SelectMediaObjectResponse()
-        .FirstAsync();
+    [Fact]
+    public async Task SelectMediaObjectResponse_Should_Use_HardcodedS3Url()
+    {
+        // Arrange
+        var media = (PostMedia)TestDataBuilder.CreatePostMedia(
+            "post1",
+            type: "image/jpeg",
+            key: "test-key.jpg");
+        _context.Set<PostMedia>().Add(media);
+        await _context.SaveChangesAsync();
 
-    // Assert
-    // TODO: This test documents the current hardcoded S3 URL issue
-    // Consider refactoring to use configuration-based S3 bucket URL
-    result.Url.ShouldStartWith("https://expert-bridge-media.s3.amazonaws.com/");
-  }
+        // Act
+        var result = await _context.Set<PostMedia>()
+            .SelectMediaObjectResponse()
+            .FirstAsync();
 
-  #endregion
+        // Assert
+        // TODO: This test documents the current hardcoded S3 URL issue
+        // Consider refactoring to use configuration-based S3 bucket URL
+        result.Url.ShouldStartWith("https://expert-bridge-media.s3.amazonaws.com/");
+    }
 
-  public void Dispose()
-  {
-    _context.Dispose();
-  }
+    #endregion
 }

@@ -11,82 +11,70 @@ namespace ExpertBridge.Tests.Unit.Contract.Validation;
 /// </remarks>
 public sealed class RespondToJobOfferRequestValidatorTests
 {
-  private readonly RespondToJobOfferRequestValidator _validator;
+    private readonly RespondToJobOfferRequestValidator _validator;
 
-  public RespondToJobOfferRequestValidatorTests()
-  {
-    _validator = new RespondToJobOfferRequestValidator();
-  }
-
-  #region Happy Path Tests
-
-  [Fact]
-  public async Task Should_Pass_When_Accept_Is_True()
-  {
-    // Arrange
-    var request = new RespondToJobOfferRequest
+    public RespondToJobOfferRequestValidatorTests()
     {
-      Accept = true
-    };
+        _validator = new RespondToJobOfferRequestValidator();
+    }
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+    #region Happy Path Tests
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
-
-  [Fact]
-  public async Task Should_Pass_When_Accept_Is_False()
-  {
-    // Arrange
-    var request = new RespondToJobOfferRequest
+    [Fact]
+    public async Task Should_Pass_When_Accept_Is_True()
     {
-      Accept = false
-    };
+        // Arrange
+        var request = new RespondToJobOfferRequest { Accept = true };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  #endregion
-
-  #region Sad Path Tests
-
-  [Fact]
-  public async Task Should_Pass_With_Explicit_True_Value()
-  {
-    // Arrange
-    var request = new RespondToJobOfferRequest
+    [Fact]
+    public async Task Should_Pass_When_Accept_Is_False()
     {
-      Accept = bool.Parse("true")
-    };
+        // Arrange
+        var request = new RespondToJobOfferRequest { Accept = false };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Explicit_False_Value()
-  {
-    // Arrange
-    var request = new RespondToJobOfferRequest
+    #endregion
+
+    #region Sad Path Tests
+
+    [Fact]
+    public async Task Should_Pass_With_Explicit_True_Value()
     {
-      Accept = bool.Parse("false")
-    };
+        // Arrange
+        var request = new RespondToJobOfferRequest { Accept = bool.Parse("true") };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  #endregion
+    [Fact]
+    public async Task Should_Pass_With_Explicit_False_Value()
+    {
+        // Arrange
+        var request = new RespondToJobOfferRequest { Accept = bool.Parse("false") };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    #endregion
 }

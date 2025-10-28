@@ -4,11 +4,11 @@
 namespace ExpertBridge.Tests.Unit.Contract.Queries;
 
 /// <summary>
-/// Unit tests for TagQueries extension methods.
+///     Unit tests for TagQueries extension methods.
 /// </summary>
 /// <remarks>
-/// Tests cover SelectTagResponseFromTag projection method.
-/// Uses in-memory EF Core database for realistic query execution.
+///     Tests cover SelectTagResponseFromTag projection method.
+///     Uses in-memory EF Core database for realistic query execution.
 /// </remarks>
 public sealed class TagQueriesTests : IDisposable
 {
@@ -17,6 +17,11 @@ public sealed class TagQueriesTests : IDisposable
     public TagQueriesTests()
     {
         _context = InMemoryDbContextFixture.Create();
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
     }
 
     #region SelectTagResponseFromTag Tests
@@ -65,8 +70,7 @@ public sealed class TagQueriesTests : IDisposable
         var tags = new[]
         {
             TestDataBuilder.CreateTag("AI", "ذكاء اصطناعي", "tag1"),
-            TestDataBuilder.CreateTag("ML", "تعلم آلي", "tag2"),
-            TestDataBuilder.CreateTag("Data", null, "tag3")
+            TestDataBuilder.CreateTag("ML", "تعلم آلي", "tag2"), TestDataBuilder.CreateTag("Data", null, "tag3")
         };
         _context.Tags.AddRange(tags);
         await _context.SaveChangesAsync();
@@ -140,9 +144,4 @@ public sealed class TagQueriesTests : IDisposable
     }
 
     #endregion
-
-    public void Dispose()
-    {
-        _context.Dispose();
-    }
 }

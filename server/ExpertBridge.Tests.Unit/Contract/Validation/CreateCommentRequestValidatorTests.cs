@@ -13,677 +13,635 @@ namespace ExpertBridge.Tests.Unit.Contract.Validation;
 /// </remarks>
 public sealed class CreateCommentRequestValidatorTests
 {
-  private readonly CreateCommentRequestValidator _validator;
+    private readonly CreateCommentRequestValidator _validator;
 
-  public CreateCommentRequestValidatorTests()
-  {
-    _validator = new CreateCommentRequestValidator();
-  }
-
-  #region Happy Path Tests
-
-  [Fact]
-  public async Task Should_Pass_When_All_Required_Fields_Valid_With_PostId()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    public CreateCommentRequestValidatorTests()
     {
-      Content = "This is a valid comment without any dangerous patterns.",
-      PostId = "valid-post-id-123",
-      JobPostingId = null,
-      ParentCommentId = null
-    };
+        _validator = new CreateCommentRequestValidator();
+    }
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+    #region Happy Path Tests
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
-
-  [Fact]
-  public async Task Should_Pass_When_All_Required_Fields_Valid_With_JobPostingId()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_All_Required_Fields_Valid_With_PostId()
     {
-      Content = "This is a valid comment on a job posting.",
-      PostId = null,
-      JobPostingId = "valid-job-posting-id-456",
-      ParentCommentId = null
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "This is a valid comment without any dangerous patterns.",
+            PostId = "valid-post-id-123",
+            JobPostingId = null,
+            ParentCommentId = null
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_ParentCommentId_Provided()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_All_Required_Fields_Valid_With_JobPostingId()
     {
-      Content = "This is a nested reply comment.",
-      PostId = "valid-post-id",
-      ParentCommentId = "parent-comment-id-789"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "This is a valid comment on a job posting.",
+            PostId = null,
+            JobPostingId = "valid-job-posting-id-456",
+            ParentCommentId = null
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_Content_At_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_ParentCommentId_Provided()
     {
-      Content = new string('a', 5000), // Max length is 5000
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "This is a nested reply comment.",
+            PostId = "valid-post-id",
+            ParentCommentId = "parent-comment-id-789"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.Content);
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_PostId_At_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_Content_At_Max_Length()
     {
-      Content = "Valid content",
-      PostId = new string('a', 450) // Max ID length is 450
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = new string('a', 5000), // Max length is 5000
+            PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.PostId);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Content);
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_JobPostingId_At_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_PostId_At_Max_Length()
     {
-      Content = "Valid content",
-      JobPostingId = new string('a', 450) // Max ID length is 450
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = new string('a', 450) // Max ID length is 450
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.JobPostingId);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.PostId);
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_ParentCommentId_At_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_JobPostingId_At_Max_Length()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id",
-      ParentCommentId = new string('a', 450) // Max ID length is 450
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", JobPostingId = new string('a', 450) // Max ID length is 450
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.ParentCommentId);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.JobPostingId);
+    }
 
-  #endregion
-
-  #region Content Validation Tests
-
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Is_Null()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_ParentCommentId_At_Max_Length()
     {
-      Content = null!,
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content",
+            PostId = "valid-post-id",
+            ParentCommentId = new string('a', 450) // Max ID length is 450
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content cannot be null");
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.ParentCommentId);
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Is_Empty()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    #endregion
+
+    #region Content Validation Tests
+
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Is_Null()
     {
-      Content = string.Empty,
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest { Content = null!, PostId = "valid-post-id" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage("Content cannot be null");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Is_Whitespace()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Is_Empty()
     {
-      Content = "   ",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest { Content = string.Empty, PostId = "valid-post-id" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage("Content cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Exceeds_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Is_Whitespace()
     {
-      Content = new string('a', 5001), // Max is 5000
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest { Content = "   ", PostId = "valid-post-id" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content cannot be longer than 5000 characters");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage("Content cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Contains_Script_Tags()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Exceeds_Max_Length()
     {
-      Content = "Valid content but has <script>alert('xss')</script> in it",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = new string('a', 5001), // Max is 5000
+            PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content cannot contain script tags");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage("Content cannot be longer than 5000 characters");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Contains_Script_Tags_Multiline()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Contains_Script_Tags()
     {
-      Content = @"Some content
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content but has <script>alert('xss')</script> in it", PostId = "valid-post-id"
+        };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage("Content cannot contain script tags");
+    }
+
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Contains_Script_Tags_Multiline()
+    {
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = @"Some content
                 <script>
                     var x = 'malicious';
                     doSomethingBad();
                 </script>
                 More content",
-      PostId = "valid-post-id"
-    };
+            PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content cannot contain script tags");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage("Content cannot contain script tags");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Contains_Javascript_Protocol()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Contains_Javascript_Protocol()
     {
-      Content = "Click here: javascript:alert('xss')",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Click here: javascript:alert('xss')", PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content contains potentially dangerous patterns (javascript:, data:, or event handlers)");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage(
+                "Content contains potentially dangerous patterns (javascript:, data:, or event handlers)");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Content_Contains_Data_Protocol()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Content_Contains_Data_Protocol()
     {
-      Content = "Image: data:text/html,<script>alert('xss')</script>",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Image: data:text/html,<script>alert('xss')</script>", PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content contains potentially dangerous patterns (javascript:, data:, or event handlers)");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage(
+                "Content contains potentially dangerous patterns (javascript:, data:, or event handlers)");
+    }
 
-  [Theory]
-  [InlineData("onclick=alert('xss')")]
-  [InlineData("onload=malicious()")]
-  [InlineData("onerror=badFunction()")]
-  [InlineData("onmouseover=hack()")]
-  public async Task Should_Have_Error_When_Content_Contains_Event_Handlers(string eventHandler)
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Theory]
+    [InlineData("onclick=alert('xss')")]
+    [InlineData("onload=malicious()")]
+    [InlineData("onerror=badFunction()")]
+    [InlineData("onmouseover=hack()")]
+    public async Task Should_Have_Error_When_Content_Contains_Event_Handlers(string eventHandler)
     {
-      Content = $"Content with {eventHandler} event handler",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = $"Content with {eventHandler} event handler", PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content)
-        .WithErrorMessage("Content contains potentially dangerous patterns (javascript:, data:, or event handlers)");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorMessage(
+                "Content contains potentially dangerous patterns (javascript:, data:, or event handlers)");
+    }
 
-  [Fact]
-  public async Task Should_Detect_Case_Insensitive_Script_Tags()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Detect_Case_Insensitive_Script_Tags()
     {
-      Content = "Content with <SCRIPT>alert('xss')</SCRIPT>",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Content with <SCRIPT>alert('xss')</SCRIPT>", PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content);
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content);
+    }
 
-  [Fact]
-  public async Task Should_Detect_Case_Insensitive_Javascript_Protocol()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Detect_Case_Insensitive_Javascript_Protocol()
     {
-      Content = "Link: JAVASCRIPT:alert('xss')",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest { Content = "Link: JAVASCRIPT:alert('xss')", PostId = "valid-post-id" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content);
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content);
+    }
 
-  #endregion
+    #endregion
 
-  #region PostId/JobPostingId Either/Or Validation Tests
+    #region PostId/JobPostingId Either/Or Validation Tests
 
-  [Fact]
-  public async Task Should_Have_Error_When_Both_PostId_And_JobPostingId_Are_Null()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Both_PostId_And_JobPostingId_Are_Null()
     {
-      Content = "Valid content",
-      PostId = null,
-      JobPostingId = null
-    };
+        // Arrange
+        var request = new CreateCommentRequest { Content = "Valid content", PostId = null, JobPostingId = null };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x)
-        .WithErrorMessage("Either PostId or JobPostingId must be provided");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x)
+            .WithErrorMessage("Either PostId or JobPostingId must be provided");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_Both_PostId_And_JobPostingId_Are_Empty()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_Both_PostId_And_JobPostingId_Are_Empty()
     {
-      Content = "Valid content",
-      PostId = string.Empty,
-      JobPostingId = string.Empty
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = string.Empty, JobPostingId = string.Empty
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x)
-        .WithErrorMessage("Either PostId or JobPostingId must be provided");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x)
+            .WithErrorMessage("Either PostId or JobPostingId must be provided");
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_Only_PostId_Is_Provided()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_Only_PostId_Is_Provided()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id",
-      JobPostingId = null
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = "valid-post-id", JobPostingId = null
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x);
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_Only_JobPostingId_Is_Provided()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_Only_JobPostingId_Is_Provided()
     {
-      Content = "Valid content",
-      PostId = null,
-      JobPostingId = "valid-job-posting-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = null, JobPostingId = "valid-job-posting-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x);
+    }
 
-  [Fact]
-  public async Task Should_Pass_When_Both_PostId_And_JobPostingId_Are_Provided()
-  {
-    // Arrange - The validator allows both to be set (business logic might prevent this elsewhere)
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_Both_PostId_And_JobPostingId_Are_Provided()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id",
-      JobPostingId = "valid-job-posting-id"
-    };
+        // Arrange - The validator allows both to be set (business logic might prevent this elsewhere)
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = "valid-post-id", JobPostingId = "valid-job-posting-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x);
+    }
 
-  #endregion
+    #endregion
 
-  #region PostId Validation Tests
+    #region PostId Validation Tests
 
-  [Fact]
-  public async Task Should_Have_Error_When_PostId_Is_Empty_String()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_PostId_Is_Empty_String()
     {
-      Content = "Valid content",
-      PostId = string.Empty,
-      JobPostingId = "valid-job-posting-id" // Provide the other ID to satisfy Either/Or rule
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content",
+            PostId = string.Empty,
+            JobPostingId = "valid-job-posting-id" // Provide the other ID to satisfy Either/Or rule
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.PostId)
-        .WithErrorMessage("PostId cannot be empty when provided");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.PostId)
+            .WithErrorMessage("PostId cannot be empty when provided");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_PostId_Exceeds_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_PostId_Exceeds_Max_Length()
     {
-      Content = "Valid content",
-      PostId = new string('a', 451) // Max is 450
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = new string('a', 451) // Max is 450
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.PostId)
-        .WithErrorMessage("PostId cannot be longer than 450 characters");
-  }
-  [Fact]
-  public async Task Should_Not_Validate_PostId_When_Null()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.PostId)
+            .WithErrorMessage("PostId cannot be longer than 450 characters");
+    }
+
+    [Fact]
+    public async Task Should_Not_Validate_PostId_When_Null()
     {
-      Content = "Valid content",
-      PostId = null,
-      JobPostingId = "valid-job-posting-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = null, JobPostingId = "valid-job-posting-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.PostId);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.PostId);
+    }
 
-  #endregion
+    #endregion
 
-  #region JobPostingId Validation Tests
+    #region JobPostingId Validation Tests
 
-  [Fact]
-  public async Task Should_Have_Error_When_JobPostingId_Is_Empty_String()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_JobPostingId_Is_Empty_String()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id", // Provide the other ID to satisfy Either/Or rule
-      JobPostingId = string.Empty
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content",
+            PostId = "valid-post-id", // Provide the other ID to satisfy Either/Or rule
+            JobPostingId = string.Empty
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.JobPostingId)
-        .WithErrorMessage("JobPostingId cannot be empty when provided");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.JobPostingId)
+            .WithErrorMessage("JobPostingId cannot be empty when provided");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_JobPostingId_Exceeds_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_JobPostingId_Exceeds_Max_Length()
     {
-      Content = "Valid content",
-      JobPostingId = new string('a', 451) // Max is 450
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", JobPostingId = new string('a', 451) // Max is 450
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.JobPostingId)
-        .WithErrorMessage("JobPostingId cannot be longer than 450 characters");
-  }
-  [Fact]
-  public async Task Should_Not_Validate_JobPostingId_When_Null()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.JobPostingId)
+            .WithErrorMessage("JobPostingId cannot be longer than 450 characters");
+    }
+
+    [Fact]
+    public async Task Should_Not_Validate_JobPostingId_When_Null()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id",
-      JobPostingId = null
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = "valid-post-id", JobPostingId = null
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.JobPostingId);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.JobPostingId);
+    }
 
-  #endregion
+    #endregion
 
-  #region ParentCommentId Validation Tests
+    #region ParentCommentId Validation Tests
 
-  [Fact]
-  public async Task Should_Have_Error_When_ParentCommentId_Is_Empty_String()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_ParentCommentId_Is_Empty_String()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id",
-      ParentCommentId = string.Empty
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = "valid-post-id", ParentCommentId = string.Empty
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.ParentCommentId)
-        .WithErrorMessage("ParentCommentId cannot be empty when provided");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.ParentCommentId)
+            .WithErrorMessage("ParentCommentId cannot be empty when provided");
+    }
 
-  [Fact]
-  public async Task Should_Have_Error_When_ParentCommentId_Exceeds_Max_Length()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Error_When_ParentCommentId_Exceeds_Max_Length()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id",
-      ParentCommentId = new string('a', 451) // Max is 450
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = "valid-post-id", ParentCommentId = new string('a', 451) // Max is 450
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.ParentCommentId)
-        .WithErrorMessage("ParentCommentId cannot be longer than 450 characters");
-  }
-  [Fact]
-  public async Task Should_Not_Validate_ParentCommentId_When_Null()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.ParentCommentId)
+            .WithErrorMessage("ParentCommentId cannot be longer than 450 characters");
+    }
+
+    [Fact]
+    public async Task Should_Not_Validate_ParentCommentId_When_Null()
     {
-      Content = "Valid content",
-      PostId = "valid-post-id",
-      ParentCommentId = null
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Valid content", PostId = "valid-post-id", ParentCommentId = null
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.ParentCommentId);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.ParentCommentId);
+    }
 
-  #endregion
+    #endregion
 
-  #region Edge Cases
+    #region Edge Cases
 
-  [Fact]
-  public async Task Should_Pass_When_Content_Has_Valid_Special_Characters()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Pass_When_Content_Has_Valid_Special_Characters()
     {
-      Content = "Content with émojis 🎉, line breaks\nand special characters: @#$%^&*()",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Content with émojis 🎉, line breaks\nand special characters: @#$%^&*()",
+            PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.Content);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Content);
+    }
 
-  [Fact]
-  public async Task Should_Have_Multiple_Errors_When_Multiple_Fields_Invalid()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+    [Fact]
+    public async Task Should_Have_Multiple_Errors_When_Multiple_Fields_Invalid()
     {
-      Content = "<script>alert('xss')</script>", // Script tag
-      PostId = string.Empty, // Empty
-      JobPostingId = string.Empty, // Empty
-      ParentCommentId = new string('a', 451) // Too long
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "<script>alert('xss')</script>", // Script tag
+            PostId = string.Empty, // Empty
+            JobPostingId = string.Empty, // Empty
+            ParentCommentId = new string('a', 451) // Too long
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Content);
-    result.ShouldHaveValidationErrorFor(x => x);
-    result.ShouldHaveValidationErrorFor(x => x.ParentCommentId);
-  }
-  [Fact]
-  public async Task Should_Pass_When_Content_Contains_Safe_HTML_Entities()
-  {
-    // Arrange
-    var request = new CreateCommentRequest
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Content);
+        result.ShouldHaveValidationErrorFor(x => x);
+        result.ShouldHaveValidationErrorFor(x => x.ParentCommentId);
+    }
+
+    [Fact]
+    public async Task Should_Pass_When_Content_Contains_Safe_HTML_Entities()
     {
-      Content = "Content with &lt;safe&gt; HTML entities and &amp; symbols",
-      PostId = "valid-post-id"
-    };
+        // Arrange
+        var request = new CreateCommentRequest
+        {
+            Content = "Content with &lt;safe&gt; HTML entities and &amp; symbols", PostId = "valid-post-id"
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveValidationErrorFor(x => x.Content);
-  }
+        // Assert
+        result.ShouldNotHaveValidationErrorFor(x => x.Content);
+    }
 
-  #endregion
+    #endregion
 }

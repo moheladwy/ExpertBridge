@@ -26,9 +26,9 @@ public sealed class CommentQueriesTests : IDisposable
         // Arrange
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
         var comment = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
-            content: "This is a test comment",
-            postId: "post-123",
+            authorProfile.Id,
+            "This is a test comment",
+            "post-123",
             id: "comment-1"
         );
 
@@ -39,7 +39,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .FirstAsync();
 
         // Assert
@@ -65,7 +65,7 @@ public sealed class CommentQueriesTests : IDisposable
             jobTitle: "Software Engineer",
             profilePictureUrl: "https://example.com/john.jpg"
         );
-        var comment = TestDataBuilder.CreateComment(authorId: authorProfile.Id, postId: "post-123");
+        var comment = TestDataBuilder.CreateComment(authorProfile.Id, postId: "post-123");
 
         _context.Profiles.Add(authorProfile);
         _context.Comments.Add(comment);
@@ -74,7 +74,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .FirstAsync();
 
         // Assert
@@ -93,14 +93,14 @@ public sealed class CommentQueriesTests : IDisposable
     {
         // Arrange
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
-        var comment = TestDataBuilder.CreateComment(authorId: authorProfile.Id, postId: "post-123", id: "comment-1");
+        var comment = TestDataBuilder.CreateComment(authorProfile.Id, postId: "post-123", id: "comment-1");
 
         // Create 3 upvotes and 2 downvotes
-        var upvote1 = TestDataBuilder.CreateCommentVote(commentId: "comment-1", profileId: "voter-1", isUpvote: true);
-        var upvote2 = TestDataBuilder.CreateCommentVote(commentId: "comment-1", profileId: "voter-2", isUpvote: true);
-        var upvote3 = TestDataBuilder.CreateCommentVote(commentId: "comment-1", profileId: "voter-3", isUpvote: true);
-        var downvote1 = TestDataBuilder.CreateCommentVote(commentId: "comment-1", profileId: "voter-4", isUpvote: false);
-        var downvote2 = TestDataBuilder.CreateCommentVote(commentId: "comment-1", profileId: "voter-5", isUpvote: false);
+        var upvote1 = TestDataBuilder.CreateCommentVote("comment-1", "voter-1", true);
+        var upvote2 = TestDataBuilder.CreateCommentVote("comment-1", "voter-2", true);
+        var upvote3 = TestDataBuilder.CreateCommentVote("comment-1", "voter-3", true);
+        var downvote1 = TestDataBuilder.CreateCommentVote("comment-1", "voter-4", false);
+        var downvote2 = TestDataBuilder.CreateCommentVote("comment-1", "voter-5", false);
 
         comment.Votes = [upvote1, upvote2, upvote3, downvote1, downvote2];
 
@@ -111,7 +111,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .FirstAsync();
 
         // Assert
@@ -125,8 +125,8 @@ public sealed class CommentQueriesTests : IDisposable
         // Arrange
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
         var currentUserProfile = TestDataBuilder.CreateProfile(id: "current-user-profile", userId: "current-user");
-        var comment = TestDataBuilder.CreateComment(authorId: authorProfile.Id, postId: "post-123", id: "comment-1");
-        var userUpvote = TestDataBuilder.CreateCommentVote(commentId: "comment-1", profileId: "current-user-profile", isUpvote: true);
+        var comment = TestDataBuilder.CreateComment(authorProfile.Id, postId: "post-123", id: "comment-1");
+        var userUpvote = TestDataBuilder.CreateCommentVote("comment-1", "current-user-profile", true);
 
         comment.Votes = [userUpvote];
 
@@ -137,7 +137,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: "current-user-profile")
+            .SelectCommentResponseFromFullComment("current-user-profile")
             .FirstAsync();
 
         // Assert
@@ -151,8 +151,8 @@ public sealed class CommentQueriesTests : IDisposable
         // Arrange
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
         var currentUserProfile = TestDataBuilder.CreateProfile(id: "current-user-profile", userId: "current-user");
-        var comment = TestDataBuilder.CreateComment(authorId: authorProfile.Id, postId: "post-123", id: "comment-1");
-        var userDownvote = TestDataBuilder.CreateCommentVote(commentId: "comment-1", profileId: "current-user-profile", isUpvote: false);
+        var comment = TestDataBuilder.CreateComment(authorProfile.Id, postId: "post-123", id: "comment-1");
+        var userDownvote = TestDataBuilder.CreateCommentVote("comment-1", "current-user-profile", false);
 
         comment.Votes = [userDownvote];
 
@@ -163,7 +163,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: "current-user-profile")
+            .SelectCommentResponseFromFullComment("current-user-profile")
             .FirstAsync();
 
         // Assert
@@ -179,14 +179,14 @@ public sealed class CommentQueriesTests : IDisposable
         var replyAuthorProfile = TestDataBuilder.CreateProfile(id: "reply-author-profile", userId: "reply-author-user");
 
         var parentComment = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             postId: "post-123",
             id: "parent-comment",
             content: "Parent comment"
         );
 
         var reply1 = TestDataBuilder.CreateComment(
-            authorId: replyAuthorProfile.Id,
+            replyAuthorProfile.Id,
             postId: "post-123",
             id: "reply-1",
             content: "Reply 1",
@@ -194,7 +194,7 @@ public sealed class CommentQueriesTests : IDisposable
         );
 
         var reply2 = TestDataBuilder.CreateComment(
-            authorId: replyAuthorProfile.Id,
+            replyAuthorProfile.Id,
             postId: "post-123",
             id: "reply-2",
             content: "Reply 2",
@@ -210,7 +210,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .FirstAsync();
 
         // Assert
@@ -229,7 +229,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Arrange
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
         var comment = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             postId: "post-123"
         );
 
@@ -244,13 +244,14 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .FirstAsync();
 
         // Assert
         result.CreatedAt.ShouldNotBe(default);
         result.LastModified.ShouldBe(new DateTime(2024, 1, 16, 14, 45, 0, DateTimeKind.Utc));
     }
+
     [Fact]
     public async Task FullyPopulatedCommentQuery_ShouldFilterTopLevelCommentsOnly()
     {
@@ -258,21 +259,21 @@ public sealed class CommentQueriesTests : IDisposable
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
 
         var parentComment1 = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             postId: "post-123",
             id: "parent-1",
             content: "Parent 1"
         );
 
         var parentComment2 = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             postId: "post-123",
             id: "parent-2",
             content: "Parent 2"
         );
 
         var reply = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             postId: "post-123",
             id: "reply-1",
             content: "Reply to parent 1",
@@ -286,7 +287,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var results = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .ToListAsync();
 
         // Assert
@@ -300,7 +301,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Arrange
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
         var comment = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             jobPostingId: "job-posting-456",
             content: "Comment on job posting"
         );
@@ -312,7 +313,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var result = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .FirstAsync();
 
         // Assert
@@ -326,7 +327,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var results = await _context.Comments
             .FullyPopulatedCommentQuery()
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .ToListAsync();
 
         // Assert
@@ -340,14 +341,14 @@ public sealed class CommentQueriesTests : IDisposable
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
 
         var comment1 = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             postId: "post-123",
             id: "comment-1",
             content: "Comment for post 123"
         );
 
         var comment2 = TestDataBuilder.CreateComment(
-            authorId: authorProfile.Id,
+            authorProfile.Id,
             postId: "post-456",
             id: "comment-2",
             content: "Comment for post 456"
@@ -360,7 +361,7 @@ public sealed class CommentQueriesTests : IDisposable
         // Act
         var results = await _context.Comments
             .FullyPopulatedCommentQuery(c => c.PostId == "post-123")
-            .SelectCommentResponseFromFullComment(userProfileId: null)
+            .SelectCommentResponseFromFullComment(null)
             .ToListAsync();
 
         // Assert

@@ -12,361 +12,306 @@ namespace ExpertBridge.Tests.Unit.Contract.Validation;
 /// </remarks>
 public sealed class SearchPostRequestValidatorTests
 {
-  private readonly SearchPostRequestValidator _validator;
+    private readonly SearchPostRequestValidator _validator;
 
-  public SearchPostRequestValidatorTests()
-  {
-    _validator = new SearchPostRequestValidator();
-  }
-
-  #region Happy Path Tests
-
-  [Fact]
-  public async Task Should_Pass_With_Valid_Query_Only()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    public SearchPostRequestValidatorTests()
     {
-      Query = "test query"
-    };
+        _validator = new SearchPostRequestValidator();
+    }
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+    #region Happy Path Tests
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
-
-  [Fact]
-  public async Task Should_Pass_With_Valid_Query_And_Limit()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Valid_Query_Only()
     {
-      Query = "technology",
-      Limit = 50
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "test query" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Minimum_Valid_Query_Length()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Valid_Query_And_Limit()
     {
-      Query = "ab" // Exactly 2 characters
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "technology", Limit = 50 };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Maximum_Valid_Query_Length()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Minimum_Valid_Query_Length()
     {
-      Query = new string('a', 200) // Exactly 200 characters
-    };
+        // Arrange
+        var request = new SearchPostRequest
+        {
+            Query = "ab" // Exactly 2 characters
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Limit_At_Minimum_Boundary()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Maximum_Valid_Query_Length()
     {
-      Query = "search",
-      Limit = 1
-    };
+        // Arrange
+        var request = new SearchPostRequest
+        {
+            Query = new string('a', 200) // Exactly 200 characters
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Limit_At_Maximum_Boundary()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Limit_At_Minimum_Boundary()
     {
-      Query = "search",
-      Limit = 100
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "search", Limit = 1 };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  #endregion
-
-  #region Query Validation Tests
-
-  [Fact]
-  public async Task Should_Fail_When_Query_Is_Null()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Limit_At_Maximum_Boundary()
     {
-      Query = null!
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "search", Limit = 100 };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Query)
-        .WithErrorMessage("Query cannot be null");
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Query_Is_Empty()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    #endregion
+
+    #region Query Validation Tests
+
+    [Fact]
+    public async Task Should_Fail_When_Query_Is_Null()
     {
-      Query = string.Empty
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = null! };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Query)
-        .WithErrorMessage("Query cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Query)
+            .WithErrorMessage("Query cannot be null");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Query_Is_Whitespace()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Fail_When_Query_Is_Empty()
     {
-      Query = "   "
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = string.Empty };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Query)
-        .WithErrorMessage("Query cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Query)
+            .WithErrorMessage("Query cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Query_Is_Too_Short()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Fail_When_Query_Is_Whitespace()
     {
-      Query = "a" // Only 1 character
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "   " };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Query)
-        .WithErrorMessage("Query must be at least 2 characters long");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Query)
+            .WithErrorMessage("Query cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Query_Exceeds_Maximum_Length()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Fail_When_Query_Is_Too_Short()
     {
-      Query = new string('a', 201) // 201 characters
-    };
+        // Arrange
+        var request = new SearchPostRequest
+        {
+            Query = "a" // Only 1 character
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Query)
-        .WithErrorMessage("Query cannot exceed 200 characters");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Query)
+            .WithErrorMessage("Query must be at least 2 characters long");
+    }
 
-  #endregion
-
-  #region Limit Validation Tests
-
-  [Fact]
-  public async Task Should_Pass_When_Limit_Is_Null()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Fail_When_Query_Exceeds_Maximum_Length()
     {
-      Query = "search",
-      Limit = null
-    };
+        // Arrange
+        var request = new SearchPostRequest
+        {
+            Query = new string('a', 201) // 201 characters
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Query)
+            .WithErrorMessage("Query cannot exceed 200 characters");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Limit_Is_Zero()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    #endregion
+
+    #region Limit Validation Tests
+
+    [Fact]
+    public async Task Should_Pass_When_Limit_Is_Null()
     {
-      Query = "search",
-      Limit = 0
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "search", Limit = null };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Limit)
-        .WithErrorMessage("Limit must be greater than 0");
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Limit_Is_Negative()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Fail_When_Limit_Is_Zero()
     {
-      Query = "search",
-      Limit = -10
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "search", Limit = 0 };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Limit)
-        .WithErrorMessage("Limit must be greater than 0");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Limit)
+            .WithErrorMessage("Limit must be greater than 0");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Limit_Exceeds_Maximum()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Fail_When_Limit_Is_Negative()
     {
-      Query = "search",
-      Limit = 101
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "search", Limit = -10 };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Limit)
-        .WithErrorMessage("Limit cannot exceed 100");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Limit)
+            .WithErrorMessage("Limit must be greater than 0");
+    }
 
-  #endregion
-
-  #region Edge Cases
-
-  [Fact]
-  public async Task Should_Pass_With_Query_Containing_Special_Characters()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Fail_When_Limit_Exceeds_Maximum()
     {
-      Query = "C# .NET & Azure!"
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "search", Limit = 101 };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Limit)
+            .WithErrorMessage("Limit cannot exceed 100");
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Query_Containing_Unicode()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    #endregion
+
+    #region Edge Cases
+
+    [Fact]
+    public async Task Should_Pass_With_Query_Containing_Special_Characters()
     {
-      Query = "技術 technology"
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "C# .NET & Azure!" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Query_Containing_Emojis()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Query_Containing_Unicode()
     {
-      Query = "tech 🚀 innovation"
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "技術 technology" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Query_Containing_Numbers()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Query_Containing_Emojis()
     {
-      Query = "dotnet9 2025"
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "tech 🚀 innovation" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Multiple_Word_Query()
-  {
-    // Arrange
-    var request = new SearchPostRequest
+    [Fact]
+    public async Task Should_Pass_With_Query_Containing_Numbers()
     {
-      Query = "software engineering best practices"
-    };
+        // Arrange
+        var request = new SearchPostRequest { Query = "dotnet9 2025" };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  #endregion
+    [Fact]
+    public async Task Should_Pass_With_Multiple_Word_Query()
+    {
+        // Arrange
+        var request = new SearchPostRequest { Query = "software engineering best practices" };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    #endregion
 }

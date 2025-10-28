@@ -4,7 +4,7 @@
 namespace ExpertBridge.Tests.Unit.Contract.Queries;
 
 /// <summary>
-/// Tests for JobOfferQueries extension methods.
+///     Tests for JobOfferQueries extension methods.
 /// </summary>
 public sealed class JobOfferQueriesTests : IDisposable
 {
@@ -25,26 +25,26 @@ public sealed class JobOfferQueriesTests : IDisposable
     {
         // Arrange
         var author = TestDataBuilder.CreateProfile(
-            userId: "author1",
+            "author1",
             firstName: "John",
             lastName: "Doe",
             username: "johndoe"
         );
 
         var worker = TestDataBuilder.CreateProfile(
-            userId: "worker1",
+            "worker1",
             firstName: "Jane",
             lastName: "Smith",
             username: "janesmith"
         );
 
         var offer = TestDataBuilder.CreateJobOffer(
-            authorId: author.Id,
-            workerId: worker.Id,
-            title: "Build a Mobile App",
-            description: "Need an experienced React Native developer",
-            budget: 5000m,
-            area: "Remote"
+            author.Id,
+            worker.Id,
+            "Build a Mobile App",
+            "Need an experienced React Native developer",
+            5000m,
+            "Remote"
         );
 
         _context.Profiles.AddRange(author, worker);
@@ -74,7 +74,7 @@ public sealed class JobOfferQueriesTests : IDisposable
     {
         // Arrange
         var author = TestDataBuilder.CreateProfile(
-            userId: "author1",
+            "author1",
             firstName: "Alice",
             lastName: "Johnson",
             username: "alicejohnson",
@@ -84,17 +84,17 @@ public sealed class JobOfferQueriesTests : IDisposable
         );
 
         var worker = TestDataBuilder.CreateProfile(
-            userId: "worker1",
+            "worker1",
             username: "worker"
         );
 
         var offer = TestDataBuilder.CreateJobOffer(
-            authorId: author.Id,
-            workerId: worker.Id,
-            title: "UX Design Project",
-            description: "Design a new user interface",
-            budget: 3000m,
-            area: "New York"
+            author.Id,
+            worker.Id,
+            "UX Design Project",
+            "Design a new user interface",
+            3000m,
+            "New York"
         );
 
         _context.Profiles.AddRange(author, worker);
@@ -119,17 +119,18 @@ public sealed class JobOfferQueriesTests : IDisposable
         result.Author.JobTitle.ShouldBe("Product Manager");
         result.Author.ProfilePictureUrl.ShouldBe("https://example.com/alice.jpg");
     }
+
     [Fact]
     public async Task SelectJobOfferResponseFromEntity_ShouldProjectWorkerDetails()
     {
         // Arrange
         var author = TestDataBuilder.CreateProfile(
-            userId: "author1",
+            "author1",
             username: "author"
         );
 
         var worker = TestDataBuilder.CreateProfile(
-            userId: "worker1",
+            "worker1",
             firstName: "Bob",
             lastName: "Williams",
             username: "bobwilliams",
@@ -139,12 +140,12 @@ public sealed class JobOfferQueriesTests : IDisposable
         );
 
         var offer = TestDataBuilder.CreateJobOffer(
-            authorId: author.Id,
-            workerId: worker.Id,
-            title: "Backend Development",
-            description: "Build REST API",
-            budget: 4000m,
-            area: "San Francisco"
+            author.Id,
+            worker.Id,
+            "Backend Development",
+            "Build REST API",
+            4000m,
+            "San Francisco"
         );
 
         _context.Profiles.AddRange(author, worker);
@@ -169,30 +170,31 @@ public sealed class JobOfferQueriesTests : IDisposable
         result.Worker.JobTitle.ShouldBe("Full Stack Developer");
         result.Worker.ProfilePictureUrl.ShouldBe("https://example.com/bob.jpg");
     }
+
     [Fact]
     public async Task SelectJobOfferResponseFromEntity_ShouldProjectMultipleOffers()
     {
         // Arrange
-        var author1 = TestDataBuilder.CreateProfile(userId: "author1", username: "author1");
-        var author2 = TestDataBuilder.CreateProfile(userId: "author2", username: "author2");
-        var worker = TestDataBuilder.CreateProfile(userId: "worker1", username: "worker1");
+        var author1 = TestDataBuilder.CreateProfile("author1", username: "author1");
+        var author2 = TestDataBuilder.CreateProfile("author2", username: "author2");
+        var worker = TestDataBuilder.CreateProfile("worker1", username: "worker1");
 
         var offer1 = TestDataBuilder.CreateJobOffer(
-            authorId: author1.Id,
-            workerId: worker.Id,
-            title: "Project A",
-            description: "Description A",
-            budget: 1000m,
-            area: "Area A"
+            author1.Id,
+            worker.Id,
+            "Project A",
+            "Description A",
+            1000m,
+            "Area A"
         );
 
         var offer2 = TestDataBuilder.CreateJobOffer(
-            authorId: author2.Id,
-            workerId: worker.Id,
-            title: "Project B",
-            description: "Description B",
-            budget: 2000m,
-            area: "Area B"
+            author2.Id,
+            worker.Id,
+            "Project B",
+            "Description B",
+            2000m,
+            "Area B"
         );
 
         _context.Profiles.AddRange(author1, author2, worker);
@@ -228,26 +230,26 @@ public sealed class JobOfferQueriesTests : IDisposable
     public async Task SelectJobOfferResponseFromEntity_ShouldFilterByAuthor()
     {
         // Arrange
-        var author = TestDataBuilder.CreateProfile(userId: "author1", username: "author");
-        var worker1 = TestDataBuilder.CreateProfile(userId: "worker1", username: "worker1");
-        var worker2 = TestDataBuilder.CreateProfile(userId: "worker2", username: "worker2");
+        var author = TestDataBuilder.CreateProfile("author1", username: "author");
+        var worker1 = TestDataBuilder.CreateProfile("worker1", username: "worker1");
+        var worker2 = TestDataBuilder.CreateProfile("worker2", username: "worker2");
 
         var offer1 = TestDataBuilder.CreateJobOffer(
-            authorId: author.Id,
-            workerId: worker1.Id,
-            title: "Offer 1",
-            description: "First offer",
-            budget: 1000m,
-            area: "Area 1"
+            author.Id,
+            worker1.Id,
+            "Offer 1",
+            "First offer",
+            1000m,
+            "Area 1"
         );
 
         var offer2 = TestDataBuilder.CreateJobOffer(
-            authorId: author.Id,
-            workerId: worker2.Id,
-            title: "Offer 2",
-            description: "Second offer",
-            budget: 2000m,
-            area: "Area 2"
+            author.Id,
+            worker2.Id,
+            "Offer 2",
+            "Second offer",
+            2000m,
+            "Area 2"
         );
 
         _context.Profiles.AddRange(author, worker1, worker2);
@@ -273,23 +275,23 @@ public sealed class JobOfferQueriesTests : IDisposable
     {
         // Arrange
         var author = TestDataBuilder.CreateProfile(
-            userId: "author1",
+            "author1",
             username: "author",
             profilePictureUrl: null
         );
 
         var worker = TestDataBuilder.CreateProfile(
-            userId: "worker1",
+            "worker1",
             username: "worker"
         );
 
         var offer = TestDataBuilder.CreateJobOffer(
-            authorId: author.Id,
-            workerId: worker.Id,
-            title: "Test Job",
-            description: "Test Description",
-            budget: 1000m,
-            area: "Test Area"
+            author.Id,
+            worker.Id,
+            "Test Job",
+            "Test Description",
+            1000m,
+            "Test Area"
         );
 
         _context.Profiles.AddRange(author, worker);
@@ -328,16 +330,16 @@ public sealed class JobOfferQueriesTests : IDisposable
     public async Task SelectJobOfferResponseFromEntity_ShouldHandleLargeBudget()
     {
         // Arrange
-        var author = TestDataBuilder.CreateProfile(userId: "author1", username: "author");
-        var worker = TestDataBuilder.CreateProfile(userId: "worker1", username: "worker");
+        var author = TestDataBuilder.CreateProfile("author1", username: "author");
+        var worker = TestDataBuilder.CreateProfile("worker1", username: "worker");
 
         var offer = TestDataBuilder.CreateJobOffer(
-            authorId: author.Id,
-            workerId: worker.Id,
-            title: "Enterprise Project",
-            description: "Large scale implementation",
-            budget: 999999.99m,
-            area: "Global"
+            author.Id,
+            worker.Id,
+            "Enterprise Project",
+            "Large scale implementation",
+            999999.99m,
+            "Global"
         );
 
         _context.Profiles.AddRange(author, worker);

@@ -9,24 +9,24 @@ namespace ExpertBridge.Tests.Unit.Contract.Validation;
 /// </remarks>
 public sealed class GeneratePresignedUrlsRequestValidatorTests
 {
-  private readonly GeneratePresignedUrlsRequestValidator _validator;
+    private readonly GeneratePresignedUrlsRequestValidator _validator;
 
-  public GeneratePresignedUrlsRequestValidatorTests()
-  {
-    _validator = new GeneratePresignedUrlsRequestValidator();
-  }
-
-  #region Happy Path Tests
-
-  [Fact]
-  public async Task Should_Pass_With_Valid_Single_Image_File()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    public GeneratePresignedUrlsRequestValidatorTests()
     {
-      Files = new List<FileMetadata>
+        _validator = new GeneratePresignedUrlsRequestValidator();
+    }
+
+    #region Happy Path Tests
+
+    [Fact]
+    public async Task Should_Pass_With_Valid_Single_Image_File()
+    {
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -35,24 +35,24 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Valid_Single_Video_File()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_With_Valid_Single_Video_File()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "video/mp4",
                     Type = "video",
@@ -61,24 +61,24 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".mp4"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Valid_Single_Document_File()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_With_Valid_Single_Document_File()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "application/pdf",
                     Type = "document",
@@ -87,24 +87,24 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".pdf"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Multiple_Valid_Files()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_With_Multiple_Valid_Files()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/png",
                     Type = "image",
@@ -112,7 +112,7 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Size = 500 * 1024,
                     Extension = ".png"
                 },
-                new FileMetadata
+                new()
                 {
                     ContentType = "video/webm",
                     Type = "video",
@@ -120,7 +120,7 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Size = 10 * 1024 * 1024,
                     Extension = ".webm"
                 },
-                new FileMetadata
+                new()
                 {
                     ContentType = "application/pdf",
                     Type = "document",
@@ -129,28 +129,28 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".pdf"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_All_Allowed_Image_Types()
-  {
-    // Arrange
-    var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "image/svg+xml" };
-
-    foreach (var contentType in allowedTypes)
+    [Fact]
+    public async Task Should_Pass_With_All_Allowed_Image_Types()
     {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        // Arrange
+        var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "image/svg+xml" };
+
+        foreach (var contentType in allowedTypes)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = contentType,
                         Type = "image",
@@ -159,29 +159,29 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = ".jpg"
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldNotHaveAnyValidationErrors();
+            // Assert
+            result.ShouldNotHaveAnyValidationErrors();
+        }
     }
-  }
 
-  [Fact]
-  public async Task Should_Pass_With_All_Allowed_Video_Types()
-  {
-    // Arrange
-    var allowedTypes = new[] { "video/mp4", "video/mpeg", "video/quicktime", "video/webm", "video/x-msvideo" };
-
-    foreach (var contentType in allowedTypes)
+    [Fact]
+    public async Task Should_Pass_With_All_Allowed_Video_Types()
     {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        // Arrange
+        var allowedTypes = new[] { "video/mp4", "video/mpeg", "video/quicktime", "video/webm", "video/x-msvideo" };
+
+        foreach (var contentType in allowedTypes)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = contentType,
                         Type = "video",
@@ -190,37 +190,34 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = ".mp4"
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldNotHaveAnyValidationErrors();
+            // Assert
+            result.ShouldNotHaveAnyValidationErrors();
+        }
     }
-  }
 
-  [Fact]
-  public async Task Should_Pass_With_All_Allowed_Document_Types()
-  {
-    // Arrange
-    var allowedTypes = new[]
+    [Fact]
+    public async Task Should_Pass_With_All_Allowed_Document_Types()
     {
-            "application/pdf",
-            "application/msword",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            "application/vnd.ms-excel",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "text/plain"
+        // Arrange
+        var allowedTypes = new[]
+        {
+            "application/pdf", "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/plain"
         };
 
-    foreach (var contentType in allowedTypes)
-    {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        foreach (var contentType in allowedTypes)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = contentType,
                         Type = "document",
@@ -229,25 +226,25 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = ".pdf"
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldNotHaveAnyValidationErrors();
+            // Assert
+            result.ShouldNotHaveAnyValidationErrors();
+        }
     }
-  }
 
-  [Fact]
-  public async Task Should_Pass_With_File_At_Max_Size_Boundary()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_With_File_At_Max_Size_Boundary()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "video/mp4",
                     Type = "video",
@@ -256,96 +253,93 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".mp4"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_10_Files_At_Collection_Limit()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_With_10_Files_At_Collection_Limit()
     {
-      Files = Enumerable.Range(1, 10).Select(i => new FileMetadata
-      {
-        ContentType = "image/jpeg",
-        Type = "image",
-        Name = $"photo{i}.jpg",
-        Size = 1024,
-        Extension = ".jpg"
-      }).ToList()
-    };
-
-    // Act
-    var result = await _validator.TestValidateAsync(request);
-
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
-
-  #endregion
-
-  #region Files Collection Validation Tests
-
-  [Fact]
-  public async Task Should_Fail_When_Files_Is_Empty()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
-    {
-      Files = new List<FileMetadata>()
-    };
-
-    // Act
-    var result = await _validator.TestValidateAsync(request);
-
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Files)
-        .WithErrorMessage("At least one file must be provided");
-  }
-
-  [Fact]
-  public async Task Should_Fail_When_Files_Exceeds_10_Count_Limit()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
-    {
-      Files = Enumerable.Range(1, 11).Select(i => new FileMetadata
-      {
-        ContentType = "image/jpeg",
-        Type = "image",
-        Name = $"photo{i}.jpg",
-        Size = 1024,
-        Extension = ".jpg"
-      }).ToList()
-    };
-
-    // Act
-    var result = await _validator.TestValidateAsync(request);
-
-    // Assert
-    result.ShouldHaveValidationErrorFor(x => x.Files)
-        .WithErrorMessage("Cannot upload more than 10 files at once");
-  }
-
-  #endregion
-
-  #region ContentType Validation Tests
-
-  [Fact]
-  public async Task Should_Fail_When_ContentType_Is_Null()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
-    {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = Enumerable.Range(1, 10).Select(i => new FileMetadata
             {
-                new FileMetadata
+                ContentType = "image/jpeg",
+                Type = "image",
+                Name = $"photo{i}.jpg",
+                Size = 1024,
+                Extension = ".jpg"
+            }).ToList()
+        };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    #endregion
+
+    #region Files Collection Validation Tests
+
+    [Fact]
+    public async Task Should_Fail_When_Files_Is_Empty()
+    {
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest { Files = new List<FileMetadata>() };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Files)
+            .WithErrorMessage("At least one file must be provided");
+    }
+
+    [Fact]
+    public async Task Should_Fail_When_Files_Exceeds_10_Count_Limit()
+    {
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = Enumerable.Range(1, 11).Select(i => new FileMetadata
+            {
+                ContentType = "image/jpeg",
+                Type = "image",
+                Name = $"photo{i}.jpg",
+                Size = 1024,
+                Extension = ".jpg"
+            }).ToList()
+        };
+
+        // Act
+        var result = await _validator.TestValidateAsync(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Files)
+            .WithErrorMessage("Cannot upload more than 10 files at once");
+    }
+
+    #endregion
+
+    #region ContentType Validation Tests
+
+    [Fact]
+    public async Task Should_Fail_When_ContentType_Is_Null()
+    {
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
+            {
+                new()
                 {
                     ContentType = null!,
                     Type = "image",
@@ -354,25 +348,25 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].ContentType")
-        .WithErrorMessage("ContentType cannot be null");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].ContentType")
+            .WithErrorMessage("ContentType cannot be null");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_ContentType_Is_Empty()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_ContentType_Is_Empty()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = string.Empty,
                     Type = "image",
@@ -381,29 +375,29 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].ContentType")
-        .WithErrorMessage("ContentType cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].ContentType")
+            .WithErrorMessage("ContentType cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_ContentType_Is_Not_Allowed()
-  {
-    // Arrange
-    var disallowedTypes = new[] { "application/x-executable", "text/html", "application/javascript", "image/tiff" };
-
-    foreach (var contentType in disallowedTypes)
+    [Fact]
+    public async Task Should_Fail_When_ContentType_Is_Not_Allowed()
     {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        // Arrange
+        var disallowedTypes = new[] { "application/x-executable", "text/html", "application/javascript", "image/tiff" };
+
+        foreach (var contentType in disallowedTypes)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = contentType,
                         Type = "other",
@@ -412,26 +406,26 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = ".bin"
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldHaveValidationErrorFor("Files[0].ContentType")
-          .WithErrorMessage("ContentType is not allowed. Only images, videos, and documents are supported.");
+            // Assert
+            result.ShouldHaveValidationErrorFor("Files[0].ContentType")
+                .WithErrorMessage("ContentType is not allowed. Only images, videos, and documents are supported.");
+        }
     }
-  }
 
-  [Fact]
-  public async Task Should_Pass_When_ContentType_Is_Case_Insensitive()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_When_ContentType_Is_Case_Insensitive()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "IMAGE/JPEG", // Uppercase
                     Type = "image",
@@ -440,28 +434,28 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  #endregion
+    #endregion
 
-  #region Type Validation Tests
+    #region Type Validation Tests
 
-  [Fact]
-  public async Task Should_Fail_When_Type_Is_Null()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Type_Is_Null()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = null!,
@@ -470,25 +464,25 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].Type")
-        .WithErrorMessage("Type cannot be null");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].Type")
+            .WithErrorMessage("Type cannot be null");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Type_Is_Empty()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Type_Is_Empty()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = string.Empty,
@@ -497,29 +491,29 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].Type")
-        .WithErrorMessage("Type cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].Type")
+            .WithErrorMessage("Type cannot be empty");
+    }
 
-  #endregion
+    #endregion
 
-  #region Name Validation Tests
+    #region Name Validation Tests
 
-  [Fact]
-  public async Task Should_Fail_When_Name_Is_Empty()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Name_Is_Empty()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -528,29 +522,33 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].Name")
-        .WithErrorMessage("Name cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].Name")
+            .WithErrorMessage("Name cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Name_Contains_Path_Traversal_Patterns()
-  {
-    // Arrange
-    var maliciousNames = new[] { "../../../etc/passwd", "..\\..\\windows\\system32", "file<script>.jpg", "file:name.jpg", "file|name.jpg", "file?.jpg", "file*.jpg" };
-
-    foreach (var maliciousName in maliciousNames)
+    [Fact]
+    public async Task Should_Fail_When_Name_Contains_Path_Traversal_Patterns()
     {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        // Arrange
+        var maliciousNames = new[]
+        {
+            "../../../etc/passwd", "..\\..\\windows\\system32", "file<script>.jpg", "file:name.jpg",
+            "file|name.jpg", "file?.jpg", "file*.jpg"
+        };
+
+        foreach (var maliciousName in maliciousNames)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = "image/jpeg",
                         Type = "image",
@@ -559,30 +557,30 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = ".jpg"
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldHaveValidationErrorFor("Files[0].Name")
-          .WithErrorMessage("File name contains invalid path traversal characters");
+            // Assert
+            result.ShouldHaveValidationErrorFor("Files[0].Name")
+                .WithErrorMessage("File name contains invalid path traversal characters");
+        }
     }
-  }
 
-  [Fact]
-  public async Task Should_Pass_When_Name_Is_Valid()
-  {
-    // Arrange
-    var validNames = new[] { "photo.jpg", "my-document.pdf", "video_2024.mp4", "report-final.docx" };
-
-    foreach (var validName in validNames)
+    [Fact]
+    public async Task Should_Pass_When_Name_Is_Valid()
     {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        // Arrange
+        var validNames = new[] { "photo.jpg", "my-document.pdf", "video_2024.mp4", "report-final.docx" };
+
+        foreach (var validName in validNames)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = "image/jpeg",
                         Type = "image",
@@ -591,29 +589,29 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = ".jpg"
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldNotHaveAnyValidationErrors();
+            // Assert
+            result.ShouldNotHaveAnyValidationErrors();
+        }
     }
-  }
 
-  #endregion
+    #endregion
 
-  #region Size Validation Tests
+    #region Size Validation Tests
 
-  [Fact]
-  public async Task Should_Fail_When_Size_Is_Zero()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Size_Is_Zero()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -622,25 +620,25 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].Size")
-        .WithErrorMessage("Size must be greater than 0");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].Size")
+            .WithErrorMessage("Size must be greater than 0");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Size_Is_Negative()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Size_Is_Negative()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -649,56 +647,56 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].Size")
-        .WithErrorMessage("Size must be greater than 0");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].Size")
+            .WithErrorMessage("Size must be greater than 0");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Size_Exceeds_100MB_Limit()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Size_Exceeds_100MB_Limit()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "video/mp4",
                     Type = "video",
                     Name = "huge.mp4",
-                    Size = (100 * 1024 * 1024) + 1, // 100 MB + 1 byte
+                    Size = 100 * 1024 * 1024 + 1, // 100 MB + 1 byte
                     Extension = ".mp4"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].Size")
-        .WithErrorMessage("File size cannot exceed 100 MB");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].Size")
+            .WithErrorMessage("File size cannot exceed 100 MB");
+    }
 
-  #endregion
+    #endregion
 
-  #region Extension Validation Tests
+    #region Extension Validation Tests
 
-  [Fact]
-  public async Task Should_Fail_When_Extension_Is_Empty()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Extension_Is_Empty()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -707,29 +705,29 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = string.Empty
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].Extension")
-        .WithErrorMessage("Extension cannot be empty");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].Extension")
+            .WithErrorMessage("Extension cannot be empty");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Extension_Contains_Path_Traversal_Patterns()
-  {
-    // Arrange
-    var maliciousExtensions = new[] { "../.jpg", "..\\.png", ".<script>", ".|pdf" };
-
-    foreach (var maliciousExtension in maliciousExtensions)
+    [Fact]
+    public async Task Should_Fail_When_Extension_Contains_Path_Traversal_Patterns()
     {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        // Arrange
+        var maliciousExtensions = new[] { "../.jpg", "..\\.png", ".<script>", ".|pdf" };
+
+        foreach (var maliciousExtension in maliciousExtensions)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = "image/jpeg",
                         Type = "image",
@@ -738,30 +736,30 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = maliciousExtension
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldHaveValidationErrorFor("Files[0].Extension")
-          .WithErrorMessage("Extension contains invalid characters");
+            // Assert
+            result.ShouldHaveValidationErrorFor("Files[0].Extension")
+                .WithErrorMessage("Extension contains invalid characters");
+        }
     }
-  }
 
-  #endregion
+    #endregion
 
-  #region Multiple Files Validation Tests
+    #region Multiple Files Validation Tests
 
-  [Fact]
-  public async Task Should_Fail_When_Second_File_In_Collection_Is_Invalid()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Second_File_In_Collection_Is_Invalid()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -769,7 +767,7 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Size = 1024,
                     Extension = ".jpg"
                 },
-                new FileMetadata
+                new()
                 {
                     ContentType = "application/x-executable", // Invalid type
                     Type = "executable",
@@ -778,25 +776,25 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".exe"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[1].ContentType")
-        .WithErrorMessage("ContentType is not allowed. Only images, videos, and documents are supported.");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[1].ContentType")
+            .WithErrorMessage("ContentType is not allowed. Only images, videos, and documents are supported.");
+    }
 
-  [Fact]
-  public async Task Should_Fail_When_Multiple_Files_Have_Validation_Errors()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Fail_When_Multiple_Files_Have_Validation_Errors()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = string.Empty, // Invalid
                     Type = "image",
@@ -804,7 +802,7 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Size = 1024,
                     Extension = ".jpg"
                 },
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -812,39 +810,39 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Size = 1024,
                     Extension = ".jpg"
                 },
-                new FileMetadata
+                new()
                 {
                     ContentType = "video/mp4",
                     Type = "video",
                     Name = "huge.mp4",
-                    Size = (100 * 1024 * 1024) + 1, // Exceeds limit
+                    Size = 100 * 1024 * 1024 + 1, // Exceeds limit
                     Extension = ".mp4"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldHaveValidationErrorFor("Files[0].ContentType");
-    result.ShouldHaveValidationErrorFor("Files[1].Name");
-    result.ShouldHaveValidationErrorFor("Files[2].Size");
-  }
+        // Assert
+        result.ShouldHaveValidationErrorFor("Files[0].ContentType");
+        result.ShouldHaveValidationErrorFor("Files[1].Name");
+        result.ShouldHaveValidationErrorFor("Files[2].Size");
+    }
 
-  #endregion
+    #endregion
 
-  #region Edge Cases
+    #region Edge Cases
 
-  [Fact]
-  public async Task Should_Pass_With_Minimal_Valid_File_Size()
-  {
-    // Arrange
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_With_Minimal_Valid_File_Size()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -853,25 +851,25 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Long_Valid_File_Name()
-  {
-    // Arrange
-    var longName = new string('a', 200) + ".jpg";
-    var request = new GeneratePresignedUrlsRequest
+    [Fact]
+    public async Task Should_Pass_With_Long_Valid_File_Name()
     {
-      Files = new List<FileMetadata>
+        // Arrange
+        var longName = new string('a', 200) + ".jpg";
+        var request = new GeneratePresignedUrlsRequest
+        {
+            Files = new List<FileMetadata>
             {
-                new FileMetadata
+                new()
                 {
                     ContentType = "image/jpeg",
                     Type = "image",
@@ -880,28 +878,31 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                     Extension = ".jpg"
                 }
             }
-    };
+        };
 
-    // Act
-    var result = await _validator.TestValidateAsync(request);
+        // Act
+        var result = await _validator.TestValidateAsync(request);
 
-    // Assert
-    result.ShouldNotHaveAnyValidationErrors();
-  }
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
-  [Fact]
-  public async Task Should_Pass_With_Various_Valid_Extensions()
-  {
-    // Arrange
-    var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4", ".mpeg", ".pdf", ".docx", ".xlsx", ".txt" };
-
-    foreach (var extension in validExtensions)
+    [Fact]
+    public async Task Should_Pass_With_Various_Valid_Extensions()
     {
-      var request = new GeneratePresignedUrlsRequest
-      {
-        Files = new List<FileMetadata>
+        // Arrange
+        var validExtensions = new[]
+        {
+            ".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4", ".mpeg", ".pdf", ".docx", ".xlsx", ".txt"
+        };
+
+        foreach (var extension in validExtensions)
+        {
+            var request = new GeneratePresignedUrlsRequest
+            {
+                Files = new List<FileMetadata>
                 {
-                    new FileMetadata
+                    new()
                     {
                         ContentType = "image/jpeg",
                         Type = "image",
@@ -910,15 +911,15 @@ public sealed class GeneratePresignedUrlsRequestValidatorTests
                         Extension = extension
                     }
                 }
-      };
+            };
 
-      // Act
-      var result = await _validator.TestValidateAsync(request);
+            // Act
+            var result = await _validator.TestValidateAsync(request);
 
-      // Assert
-      result.ShouldNotHaveAnyValidationErrors();
+            // Assert
+            result.ShouldNotHaveAnyValidationErrors();
+        }
     }
-  }
 
-  #endregion
+    #endregion
 }
