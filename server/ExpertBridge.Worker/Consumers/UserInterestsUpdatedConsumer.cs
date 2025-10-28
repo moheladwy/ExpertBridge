@@ -3,8 +3,8 @@
 
 using System.Text;
 using ExpertBridge.Application.EmbeddingService;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;

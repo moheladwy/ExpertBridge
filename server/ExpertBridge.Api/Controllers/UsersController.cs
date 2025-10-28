@@ -2,12 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Security.Claims;
+using ExpertBridge.Contract.Messages;
+using ExpertBridge.Contract.Requests.UpdateUserRequest;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Requests.UpdateUserRequest;
-using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,14 +24,25 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 public sealed class UsersController : ControllerBase
 {
+    /// <summary>
+    ///     Represents the database context for accessing and interacting with the ExpertBridge database.
+    /// </summary>
     private readonly ExpertBridgeDbContext _dbContext;
+
+    /// <summary>
+    ///     Represents the MassTransit publish endpoint used for publishing events to the message bus.
+    /// </summary>
+    private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
     ///     Provides API endpoints for user account management and authentication.
     /// </summary>
-    public UsersController(ExpertBridgeDbContext dbContext)
+    public UsersController(
+        ExpertBridgeDbContext dbContext,
+        IPublishEndpoint publishEndpoint)
     {
         _dbContext = dbContext;
+        _publishEndpoint = publishEndpoint;
     }
 
     /// <summary>
@@ -75,6 +88,7 @@ public sealed class UsersController : ControllerBase
         }
 
         var user = await _dbContext.Users
+            .Include(u => u.Profile)
             .FirstOrDefaultAsync(u => u.Email == email);
 
         if (user == null)
@@ -92,9 +106,8 @@ public sealed class UsersController : ControllerBase
             };
 
             await _dbContext.Users.AddAsync(user);
-            //await _dbContext.SaveChangesAsync();
 
-            await _dbContext.Profiles.AddAsync(new Profile
+            var profile = new Profile
             {
                 User = user,
                 Email = user.Email,
@@ -104,7 +117,11 @@ public sealed class UsersController : ControllerBase
                 Username = username,
                 PhoneNumber = user.PhoneNumber,
                 ProfilePictureUrl = request.ProfilePictureUrl
-            });
+            };
+            await _dbContext.Profiles.AddAsync(profile);
+
+            if (string.IsNullOrWhiteSpace(request.ProfilePictureUrl))
+                await _publishEndpoint.Publish(new MoveProfileImageFromGoogleToS3Message { ProfileId = profile.Id });
         }
         else
         {
@@ -113,6 +130,10 @@ public sealed class UsersController : ControllerBase
             user.FirstName = request.FirstName ?? user.FirstName;
             user.LastName = request.LastName ?? user.LastName;
             user.IsEmailVerified = request.IsEmailVerified;
+            if (string.IsNullOrWhiteSpace(user.Profile.ProfilePictureUrl))
+            {
+                user.Profile.ProfilePictureUrl = request.ProfilePictureUrl;
+            }
         }
 
         // UNIT OF WORK, only one save after the unit is complete.

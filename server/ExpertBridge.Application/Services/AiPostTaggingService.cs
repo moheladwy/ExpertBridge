@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using ExpertBridge.Core.Responses;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
 using Polly.Registry;

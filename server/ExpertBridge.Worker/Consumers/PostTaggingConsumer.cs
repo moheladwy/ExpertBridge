@@ -3,7 +3,7 @@
 
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Services;
-using ExpertBridge.Core.Messages;
+using ExpertBridge.Contract.Messages;
 using MassTransit;
 
 namespace ExpertBridge.Worker.Consumers;

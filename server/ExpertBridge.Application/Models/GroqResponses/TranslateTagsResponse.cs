@@ -1,4 +1,4 @@
-using ExpertBridge.Core.Responses;
+using ExpertBridge.Contract.Responses;
 
 namespace ExpertBridge.Application.Models.GroqResponses;
 

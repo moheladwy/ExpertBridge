@@ -2,7 +2,7 @@
 using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Application.Helpers;
 using ExpertBridge.Application.Services;
-using ExpertBridge.Core.Requests.RegisterUser;
+using ExpertBridge.Contract.Requests.RegisterUser;
 using FluentValidation;
 
 namespace ExpertBridge.Api.Extensions;

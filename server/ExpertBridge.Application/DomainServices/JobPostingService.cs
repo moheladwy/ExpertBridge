@@ -5,14 +5,14 @@ using ExpertBridge.Core.Entities.JobPostingsVotes;
 using ExpertBridge.Core.Entities.Media.JobPostingMedia;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Messages;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests.ApplyToJobPosting;
-using ExpertBridge.Core.Requests.CreateJobPosting;
-using ExpertBridge.Core.Requests.EditJobPosting;
-using ExpertBridge.Core.Requests.JobPostingsPagination;
-using ExpertBridge.Core.Requests.MediaObject;
-using ExpertBridge.Core.Responses;
+using ExpertBridge.Contract.Messages;
+using ExpertBridge.Contract.Queries;
+using ExpertBridge.Contract.Requests.ApplyToJobPosting;
+using ExpertBridge.Contract.Requests.CreateJobPosting;
+using ExpertBridge.Contract.Requests.EditJobPosting;
+using ExpertBridge.Contract.Requests.JobPostingsPagination;
+using ExpertBridge.Contract.Requests.MediaObject;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;
@@ -244,9 +244,9 @@ public class JobPostingService
     ///         new() { FileName = "requirements.pdf", ContentType = "application/pdf" }
     ///     }
     /// };
-    /// 
+    ///
     /// var jobPosting = await jobPostingService.CreateAsync(request, clientProfile);
-    /// 
+    ///
     /// // Background processing begins automatically
     /// // After ~30 seconds: tags and embedding ready
     /// // Job appears in contractor recommendations
@@ -301,7 +301,7 @@ public class JobPostingService
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(authorProfile);
-        
+
         // Validate request using FluentValidation
         var validationResult = await _createJobPostingValidator.ValidateAsync(request);
         if (!validationResult.IsValid)

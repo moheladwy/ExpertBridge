@@ -18,6 +18,11 @@
 
   <ItemGroup>
     <ProjectReference Include="../ExpertBridge.Core/ExpertBridge.Core.csproj" />
+    <ProjectReference Include="..\ExpertBridge.Contract\ExpertBridge.Contract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Contract\Queries\" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,9 @@
-﻿using ExpertBridge.Core.Entities.Messages;
+﻿using ExpertBridge.Contract.Queries;
+using ExpertBridge.Contract.Requests.CreateMessage;
+using ExpertBridge.Contract.Responses;
+using ExpertBridge.Core.Entities.Messages;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests.CreateMessage;
-using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;
@@ -55,7 +55,7 @@ namespace ExpertBridge.Application.DomainServices;
 /// hubConnection.on("ReceiveMessage", (message) => {
 ///     displayMessage(message);
 /// });
-/// 
+///
 /// // Server pushes to all connected clients
 /// await _hubContext.Clients.All.ReceiveMessage(messageDto);
 /// </code>
@@ -67,7 +67,7 @@ namespace ExpertBridge.Application.DomainServices;
 ///   WorkerId: Profile FK (contractor)
 ///   JobId: Job FK
 ///   CreatedAt: DateTime
-/// 
+///
 /// Message:
 ///   Id: Guid
 ///   ChatId: Chat FK
@@ -82,7 +82,7 @@ namespace ExpertBridge.Application.DomainServices;
 /// var chat = await _dbContext.Chats
 ///     .WhereProfileIsChatParticipant(userProfile.Id)
 ///     .FirstOrDefaultAsync(c => c.Id == chatId);
-///     
+///
 /// if (chat == null)
 ///     throw new ChatNotFoundException();
 /// </code>
@@ -179,7 +179,7 @@ public class MessagingService
     ///     **Recipient Identification:**
     ///     <code>
     /// // Determine other participant
-    /// var receiverId = userProfile.Id == chat.HirerId 
+    /// var receiverId = userProfile.Id == chat.HirerId
     ///     ? chat.WorkerId  // Sender is hirer → receiver is worker
     ///     : chat.HirerId;  // Sender is worker → receiver is hirer
     /// </code>

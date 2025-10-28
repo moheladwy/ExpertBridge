@@ -3,11 +3,11 @@
 
 using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Interfaces;
-using ExpertBridge.Core.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using MassTransit;

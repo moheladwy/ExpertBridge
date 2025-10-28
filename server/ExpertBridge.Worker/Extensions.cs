@@ -1,5 +1,6 @@
 using ExpertBridge.Worker.PeriodicJobs.CommentsModeration;
 using ExpertBridge.Worker.PeriodicJobs.JobPostsModeration;
+using ExpertBridge.Worker.PeriodicJobs.MoveImagesFromGoogleToS3;
 using ExpertBridge.Worker.PeriodicJobs.NotificationsCleaning;
 using ExpertBridge.Worker.PeriodicJobs.PostModeration;
 using ExpertBridge.Worker.PeriodicJobs.S3Cleaning;
@@ -64,5 +65,6 @@ internal static class Extensions
         services.ConfigureOptions<CommentsModerationPeriodicWorkerSetup>();
         services.ConfigureOptions<UserInterestUpdaterPeriodicWorkerSetup>();
         services.ConfigureOptions<NotificationsCleaningPeriodicWorkerSetup>();
+        services.ConfigureOptions<MoveImagesFromGoogleToS3PeriodicWorkerSetup>();
     }
 }
