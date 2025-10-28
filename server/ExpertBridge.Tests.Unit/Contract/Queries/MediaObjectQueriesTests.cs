@@ -120,9 +120,9 @@ public sealed class MediaObjectQueriesTests : IDisposable
   public async Task SelectMediaObjectResponse_Should_Project_MultipleMediaObjects()
   {
     // Arrange
-    var media1 = (PostMedia)TestDataBuilder.CreatePostMedia("post1", "image/jpeg", "img1.jpg", "m1");
-    var media2 = (PostMedia)TestDataBuilder.CreatePostMedia("post1", "image/png", "img2.png", "m2");
-    var media3 = (PostMedia)TestDataBuilder.CreatePostMedia("post2", "video/mp4", "vid1.mp4", "m3");
+    var media1 = (PostMedia)TestDataBuilder.CreatePostMedia(postId: "post1", type: "image/jpeg", key: "img1.jpg", id: "m1");
+    var media2 = (PostMedia)TestDataBuilder.CreatePostMedia(postId: "post1", type: "image/png", key: "img2.png", id: "m2");
+    var media3 = (PostMedia)TestDataBuilder.CreatePostMedia(postId: "post2", type: "video/mp4", key: "vid1.mp4", id: "m3");
 
     _context.Set<PostMedia>().AddRange(media1, media2, media3);
     await _context.SaveChangesAsync();
