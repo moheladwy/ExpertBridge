@@ -359,4 +359,123 @@ public static class TestDataBuilder
             IsDeleted = false
         };
     }
+
+    /// <summary>
+    /// Creates a test post with required fields.
+    /// </summary>
+    public static ExpertBridge.Core.Entities.Posts.Post CreatePost(
+        string authorId,
+        string title,
+        string content,
+        string? language = null,
+        DateTime? createdAt = null,
+        DateTime? updatedAt = null,
+        bool isProcessed = true,
+        bool isSafeContent = true,
+        bool isDeleted = false,
+        string? id = null)
+    {
+        return new ExpertBridge.Core.Entities.Posts.Post
+        {
+            Id = id ?? Guid.NewGuid().ToString(),
+            AuthorId = authorId,
+            Title = title,
+            Content = content,
+            Language = language ?? "en",
+            IsProcessed = isProcessed,
+            IsSafeContent = isSafeContent,
+            IsDeleted = isDeleted,
+            CreatedAt = createdAt ?? DateTime.UtcNow,
+            UpdatedAt = updatedAt,
+            Votes = [],
+            Comments = [],
+            Medias = [],
+            PostTags = []
+        };
+    }
+
+    /// <summary>
+    /// Creates a test post vote.
+    /// </summary>
+    public static ExpertBridge.Core.Entities.PostVotes.PostVote CreatePostVote(
+        string postId,
+        string profileId,
+        bool isUpvote = true,
+        string? id = null)
+    {
+        return new ExpertBridge.Core.Entities.PostVotes.PostVote
+        {
+            Id = id ?? Guid.NewGuid().ToString(),
+            PostId = postId,
+            ProfileId = profileId,
+            IsUpvote = isUpvote
+        };
+    }
+
+    /// <summary>
+    /// Creates a test post tag relationship.
+    /// </summary>
+    public static ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags.PostTag CreatePostTag(
+        string postId,
+        string tagId)
+    {
+        return new ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags.PostTag
+        {
+            PostId = postId,
+            TagId = tagId
+        };
+    }
+
+    /// <summary>
+    /// Creates a test job posting vote.
+    /// </summary>
+    public static ExpertBridge.Core.Entities.JobPostingsVotes.JobPostingVote CreateJobPostingVote(
+        string jobPostingId,
+        string profileId,
+        bool isUpvote = true,
+        string? id = null)
+    {
+        return new ExpertBridge.Core.Entities.JobPostingsVotes.JobPostingVote
+        {
+            Id = id ?? Guid.NewGuid().ToString(),
+            JobPostingId = jobPostingId,
+            ProfileId = profileId,
+            IsUpvote = isUpvote
+        };
+    }
+
+    /// <summary>
+    /// Creates a test job posting tag relationship.
+    /// </summary>
+    public static ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags.JobPostingTag CreateJobPostingTag(
+        string jobPostingId,
+        string tagId)
+    {
+        return new ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags.JobPostingTag
+        {
+            JobPostingId = jobPostingId,
+            TagId = tagId
+        };
+    }
+
+    /// <summary>
+    /// Creates a test job posting media.
+    /// </summary>
+    public static ExpertBridge.Core.Entities.Media.JobPostingMedia.JobPostingMedia CreateJobPostingMedia(
+        string jobPostingId,
+        string? key = null,
+        string? type = null,
+        string? name = null,
+        string? id = null)
+    {
+        return new ExpertBridge.Core.Entities.Media.JobPostingMedia.JobPostingMedia
+        {
+            Id = id ?? Guid.NewGuid().ToString(),
+            JobPostingId = jobPostingId,
+            Key = key ?? "test-media-key",
+            Type = type ?? "image/jpeg",
+            Name = name ?? "test-image.jpg",
+            IsDeleted = false
+        };
+    }
 }
