@@ -29,10 +29,19 @@ internal sealed class UserInterestUpdaterPeriodicWorkerSetup : IConfigureOptions
     private const string Description = "User Interests Embedding Periodic Worker";
 
     /// <summary>
+    ///     The description of the Quartz trigger.
+    /// </summary>
+    private const string TriggerDescription = "Trigger for the User Interests Embedding Periodic Worker";
+
+    /// <summary>
     ///     The time interval, in hours, for triggering.
     /// </summary>
     private const int TriggerJobIntervalInHours = 6;
 
+    /// <summary>
+    ///     Configures Quartz options to schedule the User Interest Updater periodic worker.
+    /// </summary>
+    /// <param name="options">The Quartz options to configure.</param>
     public void Configure(QuartzOptions options)
     {
         options
@@ -47,8 +56,9 @@ internal sealed class UserInterestUpdaterPeriodicWorkerSetup : IConfigureOptions
             .AddTrigger(triggerBuilder =>
             {
                 // Configures the trigger for the job with a simple schedule
-                // to run every 24 hours indefinitely.
+                // to run every 6 hours indefinitely.
                 triggerBuilder.ForJob(JobName, Group);
+                triggerBuilder.WithDescription(TriggerDescription);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>
                 {
                     scheduleBuilder

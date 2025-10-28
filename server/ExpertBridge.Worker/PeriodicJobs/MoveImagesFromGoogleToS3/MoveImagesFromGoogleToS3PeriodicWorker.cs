@@ -52,6 +52,15 @@ public sealed class MoveImagesFromGoogleToS3PeriodicWorker : IJob
         _publishEndpoint = publishEndpoint;
     }
 
+    /// <summary>
+    ///     Executes the image migration job.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     This method identifies profiles with images hosted on Google Cloud Storage
+    ///     and publishes migration messages to move them to Amazon S3.
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         try

@@ -20,8 +20,8 @@ namespace ExpertBridge.Worker.PeriodicJobs.PostModeration;
 internal sealed class PostsModerationPeriodicWorker : IJob
 {
     /// <summary>
-    ///     Database context instance for accessing and managing JobPosts and related entities within the system.
-    ///     Provides a connection to the database and enables querying and updating JobPosts data.
+    ///     Database context instance for accessing and managing posts and related entities within the system.
+    ///     Provides a connection to the database and enables querying and updating posts data.
     /// </summary>
     private readonly ExpertBridgeDbContext _dbContext;
 
@@ -31,7 +31,7 @@ internal sealed class PostsModerationPeriodicWorker : IJob
     private readonly ILogger<PostsModerationPeriodicWorker> _logger;
 
     /// <summary>
-    ///     Endpoint for publishing messages related to job post moderation to the message broker.
+    ///     Endpoint for publishing messages related to post moderation to the message broker.
     /// </summary>
     private readonly IPublishEndpoint _publishEndpoint;
 
@@ -39,8 +39,8 @@ internal sealed class PostsModerationPeriodicWorker : IJob
     ///     Initializes a new instance of the <see cref="PostsModerationPeriodicWorker" /> class.
     /// </summary>
     /// <param name="logger">The logger instance.</param>
-    /// <param name="dbContext"></param>
-    /// <param name="publishEndpoint"></param>
+    /// <param name="dbContext">The database context for accessing posts.</param>
+    /// <param name="publishEndpoint">The publish endpoint for sending messages.</param>
     public PostsModerationPeriodicWorker(
         ILogger<PostsModerationPeriodicWorker> logger,
         ExpertBridgeDbContext dbContext,
@@ -51,6 +51,17 @@ internal sealed class PostsModerationPeriodicWorker : IJob
         _publishEndpoint = publishEndpoint;
     }
 
+    /// <summary>
+    ///     Executes the posts moderation job.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     This method processes posts through three stages:
+    ///     1. Safety checking for inappropriate content
+    ///     2. Tagging with AI-generated tags
+    ///     3. Embedding generation for similarity matching
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         try
@@ -100,7 +111,10 @@ internal sealed class PostsModerationPeriodicWorker : IJob
                 .Where(p => p.IsProcessed && p.Embedding == null)
                 .Select(p => new EmbedPostMessage
                 {
-                    PostId = p.Id, Content = p.Content, Title = p.Title, IsJobPosting = false
+                    PostId = p.Id,
+                    Content = p.Content,
+                    Title = p.Title,
+                    IsJobPosting = false
                 })
                 .ToListAsync(context.CancellationToken);
 

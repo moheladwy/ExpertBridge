@@ -70,6 +70,15 @@ internal sealed class UserInterestUpdaterPeriodicWorker : IJob
         _publishEndpoint = publishEndpoint;
     }
 
+    /// <summary>
+    ///     Executes the user interest updater job.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     This method identifies profiles without user interest embeddings and publishes
+    ///     messages to generate embeddings for interest-based matching.
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         _logger.LogInformation("Starting User Interest Updater Periodic Worker.");

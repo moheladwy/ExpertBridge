@@ -14,51 +14,48 @@ namespace ExpertBridge.Worker.Consumers;
 
 /// <summary>
 ///     Consumer for detecting inappropriate comments using the NsfwContentDetectionService.
-///     This class processes messages to analyze comment content, generate moderation reports, and handle comment removal
-///     and notifications.
 /// </summary>
+/// <remarks>
+///     This class processes messages to analyze comment content, generate moderation reports, and handle comment removal
+///     and notifications when content violates community guidelines.
+/// </remarks>
 public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInappropriateCommentMessage>
 {
     /// <summary>
     ///     An instance of <see cref="ExpertBridgeDbContext" /> used to interact with the application's database for performing
-    ///     CRUD operations, particularly related to comments and moderation reports. It facilitates the storage and retrieval
-    ///     of data as part of the inappropriate comment detection process.
+    ///     CRUD operations on comments and moderation reports.
     /// </summary>
+    /// <remarks>
+    ///     This context facilitates the storage and retrieval of data as part of the inappropriate comment detection process.
+    /// </remarks>
     private readonly ExpertBridgeDbContext _dbContext;
 
     /// <summary>
     ///     An instance of <see cref="NsfwContentDetectionService" /> responsible for detecting
-    ///     inappropriate language in comments by utilizing defined detection algorithms and strategies.
-    ///     This service is used within the <see cref="InappropriateCommentDetectionConsumer" /> class
-    ///     to analyze content for moderation purposes.
+    ///     inappropriate language in comments using AI-powered content moderation.
     /// </summary>
     private readonly NsfwContentDetectionService _detectionService;
 
     /// <summary>
     ///     An instance of <see cref="ILogger{TCategoryName}" /> used for logging events, errors, and debugging information
-    ///     within the <see cref="InappropriateCommentDetectionConsumer" /> class.
-    ///     This logger is primarily utilized for monitoring and troubleshooting the detection
-    ///     of inappropriate language in comments, as well as logging relevant information
-    ///     during the moderation process.
+    ///     during the inappropriate comment detection and moderation process.
     /// </summary>
     private readonly ILogger<InappropriateCommentDetectionConsumer> _logger;
 
     /// <summary>
-    ///     An instance of <see cref="NotificationFacade" /> used to manage and send notifications
-    ///     related to various actions and events, such as the deletion of inappropriate comments.
-    ///     This instance is leveraged within the <see cref="InappropriateCommentDetectionConsumer" /> class
-    ///     to notify users or systems about moderation actions and ensure proper communication during the
-    ///     content moderation process.
+    ///     An instance of <see cref="NotificationFacade" /> used to send notifications
+    ///     about moderation actions, such as comment deletions due to policy violations.
     /// </summary>
     private readonly NotificationFacade _notifications;
 
     /// <summary>
-    ///     An instance of <see cref="InappropriateLanguageThresholds" /> containing the configured thresholds
-    ///     for detecting various forms of inappropriate language, such as toxicity, obscenity, insults, threats,
-    ///     and other harmful behaviors in user-generated content. These thresholds are used to determine whether
-    ///     a comment exceeds permissible limits for specific categories of inappropriate language during the moderation
-    ///     process.
+    ///     Configured thresholds for detecting inappropriate language categories such as toxicity,
+    ///     obscenity, insults, threats, and identity attacks.
     /// </summary>
+    /// <remarks>
+    ///     These thresholds determine whether a comment exceeds permissible limits for specific
+    ///     categories of inappropriate content during the moderation process.
+    /// </remarks>
     private readonly InappropriateLanguageThresholds _thresholds;
 
     /// <summary>

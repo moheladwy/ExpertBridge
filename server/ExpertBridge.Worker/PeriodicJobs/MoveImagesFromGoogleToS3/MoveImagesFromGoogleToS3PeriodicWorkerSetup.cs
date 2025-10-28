@@ -6,7 +6,10 @@ using Quartz;
 
 namespace ExpertBridge.Worker.PeriodicJobs.MoveImagesFromGoogleToS3;
 
-public class MoveImagesFromGoogleToS3PeriodicWorkerSetup : IConfigureOptions<QuartzOptions>
+/// <summary>
+///     Configures Quartz.NET scheduling options for the Move Images From Google To S3 Periodic Worker.
+/// </summary>
+internal sealed class MoveImagesFromGoogleToS3PeriodicWorkerSetup : IConfigureOptions<QuartzOptions>
 {
     /// <summary>
     ///     The group name for the Quartz job and trigger.
@@ -39,6 +42,10 @@ public class MoveImagesFromGoogleToS3PeriodicWorkerSetup : IConfigureOptions<Qua
     private const int TriggerJobIntervalInHours = 10;
 
 
+    /// <summary>
+    ///     Configures Quartz options to schedule the Move Images From Google To S3 periodic worker.
+    /// </summary>
+    /// <param name="options">The Quartz options to configure.</param>
     public void Configure(QuartzOptions options)
     {
         options
@@ -53,7 +60,7 @@ public class MoveImagesFromGoogleToS3PeriodicWorkerSetup : IConfigureOptions<Qua
             .AddTrigger(triggerBuilder =>
             {
                 // Configures the trigger for the job with a simple schedule
-                // to run every 36 hours indefinitely.
+                // to run every 10 hours indefinitely.
                 triggerBuilder.ForJob(JobName, Group);
                 triggerBuilder.WithDescription(TriggerDescription);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>

@@ -10,56 +10,37 @@ namespace ExpertBridge.Worker.Consumers;
 
 /// <summary>
 ///     Consumer class responsible for processing incoming messages containing information
-///     about posts and their associated details, and performing post-tagging operations.
+///     about posts and performing AI-powered post-tagging operations.
 /// </summary>
 /// <remarks>
 ///     This consumer handles messages of type <see cref="TagPostMessage" />. It uses the
 ///     <see cref="AiPostTaggingService" /> to generate tags for the post based on its content and title.
 ///     The generated tags are then added to the post using the <see cref="TaggingService" />.
-///     Errors that occur during processing are logged with the relevant details.
 /// </remarks>
 public sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
 {
     /// <summary>
-    ///     Instance of <see cref="AiPostTaggingService" /> used for generating tags for posts based on their content and
-    ///     title.
+    ///     Service for generating AI-powered tags for posts based on their content and title.
     /// </summary>
-    /// <remarks>
-    ///     This service is a core dependency for the consumer class <see cref="PostTaggingConsumer" />.
-    ///     It processes text data to automatically generate relevant tags for posts using an underlying
-    ///     GroqLlmProvider and ensures resilience through specified pipelines.
-    /// </remarks>
     private readonly AiPostTaggingService _aiPostTaggingService;
 
     /// <summary>
-    ///     Logger instance for capturing and recording information, warnings, and errors
-    ///     encountered during the execution of the <see cref="PostTaggingConsumer" />.
+    ///     Logger instance for capturing information, warnings, and errors
+    ///     encountered during post-tagging operations.
     /// </summary>
-    /// <remarks>
-    ///     This logger is used to log diagnostic information and handle exceptions that occur
-    ///     while processing messages of type <see cref="TagPostMessage" />. It ensures that any
-    ///     issues during the post-tagging process are properly documented for troubleshooting.
-    /// </remarks>
     private readonly ILogger<PostTaggingConsumer> _logger;
 
     /// <summary>
-    ///     Represents an instance of <see cref="TaggingService" /> used to manage and associate tags with posts
-    ///     during post-tagging operations.
+    ///     Service for managing and associating tags with posts during tagging operations.
     /// </summary>
-    /// <remarks>
-    ///     This service is utilized within the <see cref="PostTaggingConsumer" /> to persist tags generated
-    ///     for posts. It provides methods for adding raw tags to posts, ensuring that post data is updated
-    ///     with relevant tagging details as part of the post processing workflow.
-    /// </remarks>
     private readonly TaggingService _taggingService;
 
     /// <summary>
-    ///     Consumes messages related to tagging posts and processes them.
+    ///     Initializes a new instance of the <see cref="PostTaggingConsumer" /> class.
     /// </summary>
-    /// <remarks>
-    ///     This class is responsible for handling incoming tag-related messages and processing them
-    ///     using the provided services. It operates as part of a messaging or event-driven architecture.
-    /// </remarks>
+    /// <param name="logger">The logger instance for diagnostic logging.</param>
+    /// <param name="aiPostTaggingService">The AI service for generating post tags.</param>
+    /// <param name="taggingService">The service for persisting tags to posts.</param>
     public PostTaggingConsumer(
         ILogger<PostTaggingConsumer> logger,
         AiPostTaggingService aiPostTaggingService,
@@ -70,6 +51,15 @@ public sealed class PostTaggingConsumer : IConsumer<TagPostMessage>
         _taggingService = taggingService;
     }
 
+    /// <summary>
+    ///     Consumes a tag post message and generates AI-powered tags for the post.
+    /// </summary>
+    /// <param name="context">The consume context containing the tag post message.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     This method generates tags using AI, then atomically adds them to the post in the database.
+    ///     If no tags are generated, a warning is logged and processing continues.
+    /// </remarks>
     public async Task Consume(ConsumeContext<TagPostMessage> context)
     {
         try

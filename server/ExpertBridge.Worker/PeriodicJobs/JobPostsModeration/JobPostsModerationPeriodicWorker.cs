@@ -51,6 +51,17 @@ internal sealed class JobPostsModerationPeriodicWorker : IJob
         _publishEndpoint = publishEndpoint;
     }
 
+    /// <summary>
+    ///     Executes the job postings moderation job.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     This method processes job postings through three stages:
+    ///     1. Safety checking for inappropriate content
+    ///     2. Tagging with AI-generated tags
+    ///     3. Embedding generation for candidate matching
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         try
@@ -100,7 +111,10 @@ internal sealed class JobPostsModerationPeriodicWorker : IJob
                 .Where(p => p.IsProcessed && p.Embedding == null)
                 .Select(p => new EmbedPostMessage
                 {
-                    PostId = p.Id, Content = p.Content, Title = p.Title, IsJobPosting = true
+                    PostId = p.Id,
+                    Content = p.Content,
+                    Title = p.Title,
+                    IsJobPosting = true
                 })
                 .ToListAsync(context.CancellationToken);
 
