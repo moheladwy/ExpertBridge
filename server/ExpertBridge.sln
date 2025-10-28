@@ -36,9 +36,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Tests.Unit", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpertBridge.Contract", "ExpertBridge.Contract\ExpertBridge.Contract.csproj", "{8FFA772F-429E-428A-8A78-07CE62924E39}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{09D180C7-441B-4DA5-887B-9E4BAC1C8072}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{09D180C7-441B-4DA5-887B-9E4BAC1C8072}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A861F68E-3272-4B88-B51A-DF95426F6A32}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{A861F68E-3272-4B88-B51A-DF95426F6A32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
