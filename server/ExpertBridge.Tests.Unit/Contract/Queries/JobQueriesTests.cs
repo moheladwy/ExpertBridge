@@ -1,13 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Contract.Queries;
-using ExpertBridge.Contract.Responses;
-using ExpertBridge.Core.Entities.JobStatuses;
-using ExpertBridge.Core.Entities.Jobs;
-using ExpertBridge.Tests.Unit.Contract.Queries._Fixtures;
-using Microsoft.EntityFrameworkCore;
-
 namespace ExpertBridge.Tests.Unit.Contract.Queries;
 
 /// <summary>
@@ -136,39 +129,39 @@ public sealed class JobQueriesTests : IDisposable
     result.Worker.ProfilePictureUrl.ShouldBe("https://example.com/jane.jpg");
   }
 
-    [Fact]
-    public async Task SelectJobResponseFromFullJob_ShouldProjectStatusAndFlags()
-    {
-        // Arrange
-        var author = TestDataBuilder.CreateProfile(userId: "user1");
-        var worker = TestDataBuilder.CreateProfile(userId: "user2");
-        var job = TestDataBuilder.CreateJob(
-            authorId: author.Id,
-            workerId: worker.Id,
-            isCompleted: true,
-            isPaid: true,
-            status: JobStatusEnum.Completed
-        );
+  [Fact]
+  public async Task SelectJobResponseFromFullJob_ShouldProjectStatusAndFlags()
+  {
+    // Arrange
+    var author = TestDataBuilder.CreateProfile(userId: "user1");
+    var worker = TestDataBuilder.CreateProfile(userId: "user2");
+    var job = TestDataBuilder.CreateJob(
+        authorId: author.Id,
+        workerId: worker.Id,
+        isCompleted: true,
+        isPaid: true,
+        status: JobStatusEnum.Completed
+    );
 
-        await _context.Profiles.AddRangeAsync(author, worker);
-        await _context.Jobs.AddAsync(job);
-        await _context.SaveChangesAsync();
+    await _context.Profiles.AddRangeAsync(author, worker);
+    await _context.Jobs.AddAsync(job);
+    await _context.SaveChangesAsync();
 
-        // Act
-        var result = await _context.Jobs
-            .Include(j => j.Author)
-            .Include(j => j.Worker)
-            .SelectJobResponseFromFullJob()
-            .FirstAsync();
+    // Act
+    var result = await _context.Jobs
+        .Include(j => j.Author)
+        .Include(j => j.Worker)
+        .SelectJobResponseFromFullJob()
+        .FirstAsync();
 
-        // Assert
-        result.IsCompleted.ShouldBeTrue();
-        result.IsPaid.ShouldBeTrue();
-        result.Status.ShouldBe(JobStatusEnum.Completed);
-    }
+    // Assert
+    result.IsCompleted.ShouldBeTrue();
+    result.IsPaid.ShouldBeTrue();
+    result.Status.ShouldBe(JobStatusEnum.Completed);
+  }
 
-    [Fact]
-    public async Task SelectJobResponseFromFullJob_ShouldProjectDates()
+  [Fact]
+  public async Task SelectJobResponseFromFullJob_ShouldProjectDates()
   {
     // Arrange
     var startedAt = DateTime.UtcNow.AddDays(-10);

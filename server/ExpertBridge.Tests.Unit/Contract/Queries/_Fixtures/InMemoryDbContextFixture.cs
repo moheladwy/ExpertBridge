@@ -1,10 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using ExpertBridge.Data.DatabaseContexts;
-
 namespace ExpertBridge.Tests.Unit.Contract.Queries._Fixtures;
 
 /// <summary>
@@ -25,7 +21,7 @@ public static class InMemoryDbContextFixture
         var options = new DbContextOptionsBuilder<ExpertBridgeDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .EnableSensitiveDataLogging()
-            .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.InMemoryEventId.TransactionIgnoredWarning))
+            .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .ReplaceService<IModelCustomizer, InMemoryModelCustomizer>()
             .Options;
 
@@ -50,13 +46,13 @@ public class InMemoryModelCustomizer : ModelCustomizer
         base.Customize(modelBuilder, context);
 
         // Ignore Vector properties that are not supported by in-memory database
-        modelBuilder.Entity<ExpertBridge.Core.Entities.Posts.Post>()
+        modelBuilder.Entity<Post>()
             .Ignore(p => p.Embedding);
 
-        modelBuilder.Entity<ExpertBridge.Core.Entities.JobPostings.JobPosting>()
+        modelBuilder.Entity<JobPosting>()
             .Ignore(jp => jp.Embedding);
 
-        modelBuilder.Entity<ExpertBridge.Core.Entities.Profiles.Profile>()
+        modelBuilder.Entity<Profile>()
             .Ignore(p => p.UserInterestEmbedding);
     }
 }

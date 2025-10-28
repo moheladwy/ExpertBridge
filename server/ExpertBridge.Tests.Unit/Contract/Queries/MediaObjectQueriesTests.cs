@@ -1,9 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Contract.Queries;
-using ExpertBridge.Core.Entities.Media.PostMedia;
-
 namespace ExpertBridge.Tests.Unit.Contract.Queries;
 
 /// <summary>
@@ -28,7 +25,7 @@ public sealed class MediaObjectQueriesTests : IDisposable
   public async Task SelectMediaObjectResponse_Should_Construct_S3Url_Correctly()
   {
     // Arrange
-    var media = (PostMedia)(PostMedia)TestDataBuilder.CreatePostMedia(
+    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
         postId: "post1",
         type: "image/jpeg",
         key: "profile-images/123.jpg",
@@ -56,7 +53,7 @@ public sealed class MediaObjectQueriesTests : IDisposable
       string type, string key)
   {
     // Arrange
-    var media = (PostMedia)(PostMedia)TestDataBuilder.CreatePostMedia(
+    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
         postId: "post1",
         type: type,
         key: key);
@@ -78,7 +75,7 @@ public sealed class MediaObjectQueriesTests : IDisposable
   {
     // Arrange
     var mediaId = "unique-media-id-123";
-    var media = (PostMedia)(PostMedia)TestDataBuilder.CreatePostMedia(
+    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
         postId: "post1",
         type: "image/jpeg",
         key: "test.jpg",
@@ -99,7 +96,7 @@ public sealed class MediaObjectQueriesTests : IDisposable
   public async Task SelectMediaObjectResponse_Should_Include_MediaName()
   {
     // Arrange
-    var media = (PostMedia)(PostMedia)TestDataBuilder.CreatePostMedia(
+    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
         postId: "post1",
         type: "image/jpeg",
         key: "test.jpg");
@@ -155,7 +152,7 @@ public sealed class MediaObjectQueriesTests : IDisposable
   public async Task SelectMediaObjectResponse_Should_Use_HardcodedS3Url()
   {
     // Arrange
-    var media = (PostMedia)(PostMedia)TestDataBuilder.CreatePostMedia(
+    var media = (PostMedia)TestDataBuilder.CreatePostMedia(
         postId: "post1",
         type: "image/jpeg",
         key: "test-key.jpg");

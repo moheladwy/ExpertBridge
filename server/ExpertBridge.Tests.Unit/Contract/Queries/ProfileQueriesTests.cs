@@ -1,14 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Contract.Queries;
-using ExpertBridge.Core.Entities.Comments;
-using ExpertBridge.Core.Entities.CommentVotes;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
-using ExpertBridge.Core.Entities.Profiles;
-using ExpertBridge.Core.Entities.Skills;
-using ExpertBridge.Core.Entities.Users;
-
 namespace ExpertBridge.Tests.Unit.Contract.Queries;
 
 /// <summary>

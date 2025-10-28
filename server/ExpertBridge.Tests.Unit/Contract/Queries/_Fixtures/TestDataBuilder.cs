@@ -1,22 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Bogus;
-using ExpertBridge.Core.Entities.Chats;
-using ExpertBridge.Core.Entities.Comments;
-using ExpertBridge.Core.Entities.CommentVotes;
-using ExpertBridge.Core.Entities.JobApplications;
-using ExpertBridge.Core.Entities.JobOffers;
-using ExpertBridge.Core.Entities.JobPostings;
-using ExpertBridge.Core.Entities.Jobs;
-using ExpertBridge.Core.Entities.JobStatuses;
-using ExpertBridge.Core.Entities.Media;
-using ExpertBridge.Core.Entities.Media.PostMedia;
-using ExpertBridge.Core.Entities.Messages;
-using ExpertBridge.Core.Entities.Notifications;
-using ExpertBridge.Core.Entities.Profiles;
-using ExpertBridge.Core.Entities.Tags;
-
 namespace ExpertBridge.Tests.Unit.Contract.Queries._Fixtures;
 
 /// <summary>
@@ -69,7 +53,7 @@ public static class TestDataBuilder
 
         if (commentId != null)
         {
-            return new ExpertBridge.Core.Entities.Media.CommentMedia.CommentMedia
+            return new CommentMedia
             {
                 Id = id ?? Guid.NewGuid().ToString(),
                 Name = _faker.System.FileName(),
@@ -93,7 +77,7 @@ public static class TestDataBuilder
 
         if (jobPostingId != null)
         {
-            return new ExpertBridge.Core.Entities.Media.JobPostingMedia.JobPostingMedia
+            return new JobPostingMedia
             {
                 Id = id ?? Guid.NewGuid().ToString(),
                 Name = _faker.System.FileName(),
@@ -363,7 +347,7 @@ public static class TestDataBuilder
     /// <summary>
     /// Creates a test post with required fields.
     /// </summary>
-    public static ExpertBridge.Core.Entities.Posts.Post CreatePost(
+    public static Post CreatePost(
         string authorId,
         string title,
         string content,
@@ -375,7 +359,7 @@ public static class TestDataBuilder
         bool isDeleted = false,
         string? id = null)
     {
-        return new ExpertBridge.Core.Entities.Posts.Post
+        return new Post
         {
             Id = id ?? Guid.NewGuid().ToString(),
             AuthorId = authorId,
@@ -397,13 +381,13 @@ public static class TestDataBuilder
     /// <summary>
     /// Creates a test post vote.
     /// </summary>
-    public static ExpertBridge.Core.Entities.PostVotes.PostVote CreatePostVote(
+    public static PostVote CreatePostVote(
         string postId,
         string profileId,
         bool isUpvote = true,
         string? id = null)
     {
-        return new ExpertBridge.Core.Entities.PostVotes.PostVote
+        return new PostVote
         {
             Id = id ?? Guid.NewGuid().ToString(),
             PostId = postId,
@@ -415,11 +399,11 @@ public static class TestDataBuilder
     /// <summary>
     /// Creates a test post tag relationship.
     /// </summary>
-    public static ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags.PostTag CreatePostTag(
+    public static PostTag CreatePostTag(
         string postId,
         string tagId)
     {
-        return new ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags.PostTag
+        return new PostTag
         {
             PostId = postId,
             TagId = tagId
@@ -429,13 +413,13 @@ public static class TestDataBuilder
     /// <summary>
     /// Creates a test job posting vote.
     /// </summary>
-    public static ExpertBridge.Core.Entities.JobPostingsVotes.JobPostingVote CreateJobPostingVote(
+    public static JobPostingVote CreateJobPostingVote(
         string jobPostingId,
         string profileId,
         bool isUpvote = true,
         string? id = null)
     {
-        return new ExpertBridge.Core.Entities.JobPostingsVotes.JobPostingVote
+        return new JobPostingVote
         {
             Id = id ?? Guid.NewGuid().ToString(),
             JobPostingId = jobPostingId,
@@ -447,11 +431,11 @@ public static class TestDataBuilder
     /// <summary>
     /// Creates a test job posting tag relationship.
     /// </summary>
-    public static ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags.JobPostingTag CreateJobPostingTag(
+    public static JobPostingTag CreateJobPostingTag(
         string jobPostingId,
         string tagId)
     {
-        return new ExpertBridge.Core.Entities.ManyToManyRelationships.JobPostingTags.JobPostingTag
+        return new JobPostingTag
         {
             JobPostingId = jobPostingId,
             TagId = tagId
@@ -461,14 +445,14 @@ public static class TestDataBuilder
     /// <summary>
     /// Creates a test job posting media.
     /// </summary>
-    public static ExpertBridge.Core.Entities.Media.JobPostingMedia.JobPostingMedia CreateJobPostingMedia(
+    public static JobPostingMedia CreateJobPostingMedia(
         string jobPostingId,
         string? key = null,
         string? type = null,
         string? name = null,
         string? id = null)
     {
-        return new ExpertBridge.Core.Entities.Media.JobPostingMedia.JobPostingMedia
+        return new JobPostingMedia
         {
             Id = id ?? Guid.NewGuid().ToString(),
             JobPostingId = jobPostingId,
