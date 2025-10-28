@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" />
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit" />
@@ -19,10 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="../ExpertBridge.Core/ExpertBridge.Core.csproj" />
     <ProjectReference Include="..\ExpertBridge.Contract\ExpertBridge.Contract.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contract\Queries\" />
+    <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj" />
   </ItemGroup>
 
 </Project>

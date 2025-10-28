@@ -48,7 +48,8 @@ public static class JobQueries
             UpdatedAt = j.UpdatedAt,
             WorkerId = j.WorkerId,
             Author = j.Author.SelectAuthorResponseFromProfile(),
-            Worker = j.Worker.SelectAuthorResponseFromProfile()
+            Worker = j.Worker.SelectAuthorResponseFromProfile(),
+            Status = j.Status
         };
     }
 }

@@ -36,3 +36,7 @@ global using ExpertBridge.Contract.Requests.JobPostingsPagination;
 global using ExpertBridge.Core.Entities;
 global using ExpertBridge.Core.Entities.Users;
 global using ExpertBridge.Core.Entities.Profiles;
+global using ExpertBridge.Core.Entities.Jobs;
+global using ExpertBridge.Data.DatabaseContexts;
+global using ExpertBridge.Tests.Unit.Contract.Queries._Fixtures;
+global using Microsoft.EntityFrameworkCore;
