@@ -1,11 +1,11 @@
 using System.Globalization;
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.EmbeddingService;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests.SearchJobPosts;
-using ExpertBridge.Core.Requests.SearchPost;
-using ExpertBridge.Core.Requests.SearchUser;
-using ExpertBridge.Core.Responses;
+using ExpertBridge.Contract.Queries;
+using ExpertBridge.Contract.Requests.SearchJobPosts;
+using ExpertBridge.Contract.Requests.SearchPost;
+using ExpertBridge.Contract.Requests.SearchUser;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

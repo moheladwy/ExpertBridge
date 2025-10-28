@@ -1,7 +1,7 @@
 ﻿using ExpertBridge.Application.Helpers;
+using ExpertBridge.Contract.Queries;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

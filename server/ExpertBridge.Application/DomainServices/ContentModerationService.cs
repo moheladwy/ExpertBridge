@@ -1,4 +1,4 @@
-﻿using ExpertBridge.Core.Responses;
+﻿using ExpertBridge.Contract.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 
 namespace ExpertBridge.Application.DomainServices;

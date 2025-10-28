@@ -1,14 +1,14 @@
 ﻿using System.Globalization;
 using ExpertBridge.Application.DataGenerator;
+using ExpertBridge.Contract.Queries;
+using ExpertBridge.Contract.Requests.UpdateProfileRequest;
+using ExpertBridge.Contract.Requests.UpdateProfileSkills;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Skills;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests.UpdateProfileRequest;
-using ExpertBridge.Core.Requests.UpdateProfileSkills;
-using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -341,14 +341,14 @@ public class ProfileService
     ///     <code>
     /// Request: ["Python", "Python ", "PYTHON", "Java"]
     /// Normalized: ["python", "java"] (deduplicated, lowercase)
-    /// 
+    ///
     /// Existing in DB: ["python"]
     /// New to create: ["java"]
-    /// 
+    ///
     /// Existing ProfileSkills: [python, c#]
     /// To add: [java]
     /// To remove: [c#]
-    /// 
+    ///
     /// Final ProfileSkills: [python, java]
     /// </code>
     ///     **Why Lowercase:**

@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Core.Messages;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +42,15 @@ internal sealed class CommentsModerationPeriodicWorker : IJob
         _publishEndpoint = publishEndpoint;
     }
 
+    /// <summary>
+    ///     Executes the comments moderation job.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     This method publishes unprocessed comments for inappropriate content detection
+    ///     and marks processed comments as safe content.
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         var comments = await _dbContext.Comments
@@ -49,7 +58,9 @@ internal sealed class CommentsModerationPeriodicWorker : IJob
             .Where(c => !c.IsProcessed)
             .Select(c => new DetectInappropriateCommentMessage
             {
-                CommentId = c.Id, AuthorId = c.AuthorId, Content = c.Content
+                CommentId = c.Id,
+                AuthorId = c.AuthorId,
+                Content = c.Content
             })
             .ToListAsync(context.CancellationToken);
 

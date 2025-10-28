@@ -161,6 +161,10 @@ dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.CA1707.severity = none
 
 # IDE0290: csharp_style_prefer_primary_constructors
+
+# CA1848: Use the LoggerMessage delegates
+dotnet_diagnostic.CA1848.severity = none
+
 [*.{cs,vb}]
 dotnet_analyzer_diagnostic.category-Style.severity = none
 

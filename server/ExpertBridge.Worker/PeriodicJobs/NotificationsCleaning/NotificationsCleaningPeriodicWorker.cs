@@ -7,12 +7,35 @@ using Quartz;
 
 namespace ExpertBridge.Worker.PeriodicJobs.NotificationsCleaning;
 
+/// <summary>
+///     Periodic worker job responsible for cleaning up old read notifications from the database.
+/// </summary>
+/// <remarks>
+///     This job removes notifications that are older than 30 days and have been marked as read,
+///     helping to maintain database performance and storage efficiency.
+/// </remarks>
 internal sealed class NotificationsCleaningPeriodicWorker : IJob
 {
+    /// <summary>
+    ///     The time interval in days after which read notifications are eligible for cleanup.
+    /// </summary>
     private const int TimeIntervalForNotificationCleanupInDays = 30;
+
+    /// <summary>
+    ///     Database context for accessing and deleting notifications.
+    /// </summary>
     private readonly ExpertBridgeDbContext _dbContext;
+
+    /// <summary>
+    ///     Logger instance for logging job execution results.
+    /// </summary>
     private readonly ILogger<NotificationsCleaningPeriodicWorker> _logger;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NotificationsCleaningPeriodicWorker" /> class.
+    /// </summary>
+    /// <param name="logger">The logger instance.</param>
+    /// <param name="dbContext">The database context.</param>
     public NotificationsCleaningPeriodicWorker(
         ILogger<NotificationsCleaningPeriodicWorker> logger,
         ExpertBridgeDbContext dbContext)
@@ -21,6 +44,15 @@ internal sealed class NotificationsCleaningPeriodicWorker : IJob
         _dbContext = dbContext;
     }
 
+    /// <summary>
+    ///     Executes the notification cleanup job.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     Uses ExecuteDeleteAsync for efficient bulk deletion, executing as a single SQL DELETE statement
+    ///     directly on the database server without loading entities into memory.
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         // Using ExecuteDeleteAsync for bulk deletion is more efficient than fetching and deleting individually:

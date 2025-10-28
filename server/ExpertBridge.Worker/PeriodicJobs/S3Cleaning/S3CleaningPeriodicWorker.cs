@@ -60,6 +60,18 @@ internal sealed class S3CleaningPeriodicWorker : IJob
         _awsSettings = awsSettings.Value;
     }
 
+    /// <summary>
+    ///     Executes the S3 bucket cleaning job.
+    /// </summary>
+    /// <param name="context">The job execution context.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <remarks>
+    ///     This method:
+    ///     1. Identifies media objects whose parent entities have been deleted
+    ///     2. Identifies media grants that have been on hold for more than 1 hour
+    ///     3. Removes orphaned objects from S3 storage
+    ///     4. Removes corresponding database records
+    /// </remarks>
     public async Task Execute(IJobExecutionContext context)
     {
         try

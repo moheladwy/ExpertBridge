@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj"/>
+  </ItemGroup>
+</Project>

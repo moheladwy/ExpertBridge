@@ -3,8 +3,8 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Core.Interfaces;
-using ExpertBridge.Core.Messages;
-using ExpertBridge.Core.Responses;
+using ExpertBridge.Contract.Messages;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -240,7 +240,7 @@ public sealed class TaggingService
     /// Existing: { EnglishName: "machine learning", ArabicName: "تعلم الآلة" }
     /// AI Generates: { EnglishName: "machine learning", ArabicName: "تعلم آلي" }
     /// Result: Matched (English name exists), reuse existing tag
-    /// 
+    ///
     /// AI Generates: { EnglishName: "deep learning", ArabicName: "تعلم عميق" }
     /// Result: Not found, create new tag
     /// </code>
@@ -432,10 +432,10 @@ public sealed class TaggingService
     ///     <code>
     /// // User creates post about "C#" and "Azure"
     /// → UserInterests: [csharp, azure]
-    /// 
+    ///
     /// // User upvotes post about "Docker" and "Azure"
     /// → UserInterests: [csharp, azure, docker] (Azure already exists, Docker added)
-    /// 
+    ///
     /// // User comments on post about "Kubernetes"
     /// → UserInterests: [csharp, azure, docker, kubernetes]
     /// </code>

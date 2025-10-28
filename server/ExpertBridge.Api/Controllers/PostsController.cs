@@ -1,10 +1,10 @@
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Settings;
+using ExpertBridge.Contract.Requests.CreatePost;
+using ExpertBridge.Contract.Requests.EditPost;
+using ExpertBridge.Contract.Requests.PostsCursor;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Requests.CreatePost;
-using ExpertBridge.Core.Requests.EditPost;
-using ExpertBridge.Core.Requests.PostsCursor;
-using ExpertBridge.Core.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;

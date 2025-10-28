@@ -1,7 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Entities;
-using ExpertBridge.Core.Responses;
 using ExpertBridge.Extensions.AWS;
 using Microsoft.Extensions.Options;
 
@@ -94,7 +94,8 @@ public sealed class S3Service
 
         var response = new PresignedUrlResponse
         {
-            Url = await _s3Client.GetPreSignedURLAsync(request), Key = request.Key
+            Url = await _s3Client.GetPreSignedURLAsync(request),
+            Key = request.Key
         };
 
         return response;
@@ -116,31 +117,15 @@ public sealed class S3Service
     {
         var request = new GetPreSignedUrlRequest
         {
-            BucketName = _awsSettings.BucketName, Key = key, Expires = DateTime.UtcNow.AddMinutes(60)
+            BucketName = _awsSettings.BucketName,
+            Key = key,
+            Expires = DateTime.UtcNow.AddMinutes(60)
         };
 
         var response = new PresignedUrlResponse { Url = await _s3Client.GetPreSignedURLAsync(request), Key = key };
 
         return response;
     }
-
-    //public async Task<GetFileResponse> GetObjectAsync(string key)
-    //{
-    //    var request = new GetObjectRequest
-    //    {
-    //        BucketName = awsSettings.Value.BucketName,
-    //        Key = key
-    //    };
-    //    var response = await s3Client.GetObjectAsync(request);
-    //    var fileResponse = new GetFileResponse
-    //    {
-    //        ResponseStream = response.ResponseStream,
-    //        ContentType = response.Headers.ContentType,
-    //        FileName = response.Key
-    //    };
-
-    //    return fileResponse;
-    //}
 
     /// <summary>
     ///     Generates the URL for accessing an object in the S3-compatible storage system.
@@ -158,20 +143,40 @@ public sealed class S3Service
         return $"https://{_awsSettings.BucketName}.s3.amazonaws.com/{key}";
     }
 
-    //public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)
-    //{
-    //    request.Key = Guid.NewGuid().ToString();
-    //    request.BucketName = awsSettings.Value.BucketName;
-    //    var response = await s3Client.PutObjectAsync(request);
-    //    var fileUrl = await GetPresignedUrlAsync(request.Key);
+    /// <summary>
+    /// Uploads an object to an Amazon S3 bucket asynchronously. The method generates a unique key for the object,
+    /// sets the designated bucket name, and uploads the object using the provided request details.
+    /// Upon successful upload, it returns an object containing the upload status and a presigned URL for access.
+    /// </summary>
+    /// <param name="request">
+    /// The <see cref="PutObjectRequest"/> containing details of the object to upload, such as the input stream,
+    /// metadata, and content type.
+    /// This request must specify the intended object content and metadata required for the operation.
+    /// </param>
+    /// <returns>
+    /// An <see cref="UploadFileResponse"/> instance containing details about the success of the operation,
+    /// the HTTP status code, and the presigned URL of the uploaded object.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///   Thrown if the <paramref name="request"/> is null.
+    /// </exception>
+    public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-    //    return new UploadFileResponse
-    //    {
-    //        StatusCode = (int)response.HttpStatusCode,
-    //        Message = $"File with name: `{request.Metadata["file-name"]}` uploaded successfully!",
-    //        FileUrl = fileUrl.Url
-    //    };
-    //}
+        request.Key = Guid.NewGuid().ToString();
+        request.BucketName = _awsSettings.BucketName;
+
+        var response = await _s3Client.PutObjectAsync(request);
+
+        return new UploadFileResponse
+        {
+            StatusCode = (int)response.HttpStatusCode,
+            Message = $"File with name: `{request.Metadata["file-name"]}` uploaded successfully!",
+            FileUrl = GetObjectUrl(request.Key),
+            Key = request.Key
+        };
+    }
 
     /// <summary>
     ///     Deletes an object from the S3-compatible storage system using the specified key.

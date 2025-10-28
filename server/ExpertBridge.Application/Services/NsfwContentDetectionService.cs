@@ -1,5 +1,5 @@
 using System.Text.Json;
-using ExpertBridge.Core.Responses;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Extensions.Resilience;
 using ExpertBridge.GroqLibrary.Providers;
 using Polly.Registry;

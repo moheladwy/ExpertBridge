@@ -1,12 +1,12 @@
-﻿using ExpertBridge.Core.Entities.Chats;
+﻿using ExpertBridge.Contract.Queries;
+using ExpertBridge.Contract.Requests.CreateJobOffer;
+using ExpertBridge.Contract.Requests.UpdateJobStatus;
+using ExpertBridge.Contract.Responses;
+using ExpertBridge.Core.Entities.Chats;
 using ExpertBridge.Core.Entities.JobOffers;
 using ExpertBridge.Core.Entities.Jobs;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests.CreateJobOffer;
-using ExpertBridge.Core.Requests.UpdateJobStatus;
-using ExpertBridge.Core.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;

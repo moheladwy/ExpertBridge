@@ -1,5 +1,5 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Data.DatabaseContexts;
@@ -12,18 +12,18 @@ using Microsoft.AspNetCore.SignalR;
 namespace ExpertBridge.Worker.Consumers;
 
 /// <summary>
-/// Consumes <see cref="SendNotificationsRequestMessage"/> messages from the message bus
-/// and forwards the notifications to connected clients via SignalR while persisting them
-/// to the database.
+///     Consumes <see cref="SendNotificationsRequestMessage" /> messages from the message bus
+///     and forwards the notifications to connected clients via SignalR while persisting them
+///     to the database.
 /// </summary>
 public sealed class NotificationSendingPipelineConsumer : IConsumer<SendNotificationsRequestMessage>
 {
-    private readonly ILogger<NotificationSendingPipelineConsumer> _logger;
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly IHubContext<NotificationsHub, INotificationClient> _hubContext;
+    private readonly ILogger<NotificationSendingPipelineConsumer> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotificationSendingPipelineConsumer"/> class.
+    ///     Initializes a new instance of the <see cref="NotificationSendingPipelineConsumer" /> class.
     /// </summary>
     /// <param name="logger">The logger instance used for diagnostics and tracking notification processing.</param>
     /// <param name="dbContext">The database context for persisting notifications to the database.</param>
@@ -39,20 +39,26 @@ public sealed class NotificationSendingPipelineConsumer : IConsumer<SendNotifica
     }
 
     /// <summary>
-    /// Handles the consumption of a <see cref="SendNotificationsRequestMessage"/> message.
-    /// The method persists the notifications to the database and broadcasts them to all
-    /// connected SignalR clients.
+    ///     Handles the consumption of a <see cref="SendNotificationsRequestMessage" /> message.
+    ///     The method persists the notifications to the database and broadcasts them to all
+    ///     connected SignalR clients.
     /// </summary>
     /// <param name="context">The consume context containing the message and cancellation token.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     /// <remarks>
-    /// This method performs the following steps:
-    /// <list type="number">
-    /// <item><description>Maps the notification data from the message to <see cref="Notification"/> entities.</description></item>
-    /// <item><description>Persists all notifications to the database.</description></item>
-    /// <item><description>Broadcasts each notification to all connected SignalR clients.</description></item>
-    /// </list>
-    /// Any exceptions that occur during processing are caught and logged, but do not propagate.
+    ///     This method performs the following steps:
+    ///     <list type="number">
+    ///         <item>
+    ///             <description>Maps the notification data from the message to <see cref="Notification" /> entities.</description>
+    ///         </item>
+    ///         <item>
+    ///             <description>Persists all notifications to the database.</description>
+    ///         </item>
+    ///         <item>
+    ///             <description>Broadcasts each notification to all connected SignalR clients.</description>
+    ///         </item>
+    ///     </list>
+    ///     Any exceptions that occur during processing are caught and logged, but do not propagate.
     /// </remarks>
     public async Task Consume(ConsumeContext<SendNotificationsRequestMessage> context)
     {

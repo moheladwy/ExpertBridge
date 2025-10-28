@@ -14,25 +14,34 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
     private const string Group = "periodic";
 
     /// <summary>
-    ///     The name of the Quartz job for the Content Moderation periodic worker.
+    ///     The name of the Quartz job for the Job Posts Moderation periodic worker.
     /// </summary>
     private const string JobName = $"{nameof(JobPostsModerationPeriodicWorker)}.Job";
 
     /// <summary>
-    ///     The name of the Quartz trigger for the Content Moderation periodic worker.
+    ///     The name of the Quartz trigger for the Job Posts Moderation periodic worker.
     /// </summary>
     private const string TriggerName = $"{nameof(JobPostsModerationPeriodicWorker)}.trigger";
 
     /// <summary>
-    ///     The description of the Quartz job for the Content Moderation periodic worker.
+    ///     The description of the Quartz job for the Job Posts Moderation periodic worker.
     /// </summary>
     private const string Description = "JobPosts Moderation Periodic Worker";
 
     /// <summary>
-    ///     The time interval, in hours, for triggering the Content Moderation periodic worker job.
+    ///     The description of the Quartz trigger for the Job Posts Moderation periodic worker.
+    /// </summary>
+    private const string TriggerDescription = "Trigger for the JobPosts Moderation Periodic Worker";
+
+    /// <summary>
+    ///     The time interval, in hours, for triggering the Job Posts Moderation periodic worker job.
     /// </summary>
     private const int TriggerJobIntervalInHours = 1;
 
+    /// <summary>
+    ///     Configures Quartz options to schedule the Job Posts Moderation periodic worker.
+    /// </summary>
+    /// <param name="options">The Quartz options to configure.</param>
     public void Configure(QuartzOptions options)
     {
         options
@@ -49,6 +58,7 @@ internal sealed class JobPostsModerationPeriodicWorkerSetup : IConfigureOptions<
                 // Configures the trigger for the job with a simple schedule
                 // to run every 1 hour indefinitely.
                 triggerBuilder.ForJob(JobName, Group);
+                triggerBuilder.WithDescription(TriggerDescription);
                 triggerBuilder.WithSimpleSchedule(scheduleBuilder =>
                 {
                     scheduleBuilder

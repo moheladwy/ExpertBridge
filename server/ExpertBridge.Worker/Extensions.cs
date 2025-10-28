@@ -1,5 +1,6 @@
 using ExpertBridge.Worker.PeriodicJobs.CommentsModeration;
 using ExpertBridge.Worker.PeriodicJobs.JobPostsModeration;
+using ExpertBridge.Worker.PeriodicJobs.MoveImagesFromGoogleToS3;
 using ExpertBridge.Worker.PeriodicJobs.NotificationsCleaning;
 using ExpertBridge.Worker.PeriodicJobs.PostModeration;
 using ExpertBridge.Worker.PeriodicJobs.S3Cleaning;
@@ -27,8 +28,13 @@ internal static class Extensions
     ///     This method:
     ///     <list type="bullet">
     ///         <item>Configures Quartz to use Microsoft Dependency Injection</item>
+    ///         <item>Configures Quartz to use PostgreSQL for persistent job storage</item>
     ///         <item>Sets up Quartz as a hosted service with specific execution options</item>
-    ///         <item>Configures the logging background job</item>
+    ///         <item>Registers all periodic worker job configurations 
+    ///             (S3 cleaning, post moderation, comments moderation,
+    ///             job posts moderation, user interest updater,
+    ///             notifications cleaning, and image migration)
+    ///         </item>
     ///     </list>
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when the service parameter is null.</exception>
@@ -64,5 +70,6 @@ internal static class Extensions
         services.ConfigureOptions<CommentsModerationPeriodicWorkerSetup>();
         services.ConfigureOptions<UserInterestUpdaterPeriodicWorkerSetup>();
         services.ConfigureOptions<NotificationsCleaningPeriodicWorkerSetup>();
+        services.ConfigureOptions<MoveImagesFromGoogleToS3PeriodicWorkerSetup>();
     }
 }

@@ -3,12 +3,12 @@ using ExpertBridge.Core.Entities.CommentVotes;
 using ExpertBridge.Core.Entities.Media.CommentMedia;
 using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Core.Messages;
-using ExpertBridge.Core.Queries;
-using ExpertBridge.Core.Requests.CreateComment;
-using ExpertBridge.Core.Requests.EditComment;
-using ExpertBridge.Core.Requests.MediaObject;
-using ExpertBridge.Core.Responses;
+using ExpertBridge.Contract.Messages;
+using ExpertBridge.Contract.Queries;
+using ExpertBridge.Contract.Requests.CreateComment;
+using ExpertBridge.Contract.Requests.EditComment;
+using ExpertBridge.Contract.Requests.MediaObject;
+using ExpertBridge.Contract.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;
@@ -201,7 +201,7 @@ public class CommentService
     ///     }
     /// };
     /// var comment = await commentService.CreateCommentAsync(request, currentProfile);
-    /// 
+    ///
     /// // Nested reply to existing comment
     /// var replyRequest = new CreateCommentRequest {
     ///     PostId = "post123",
@@ -402,7 +402,7 @@ public class CommentService
     ///     <code>
     /// // Anonymous user viewing comment
     /// var comment = await commentService.GetCommentAsync("comment123", null);
-    /// 
+    ///
     /// // Authenticated user viewing comment (includes their vote status)
     /// var comment = await commentService.GetCommentAsync("comment123", currentUser.ProfileId);
     /// if (comment.CurrentUserVote == VoteType.Upvote) {
@@ -447,7 +447,7 @@ public class CommentService
     ///     **Example Usage:**
     ///     <code>
     /// var comments = await commentService.GetCommentsByPostAsync("post123", currentUser.ProfileId);
-    /// 
+    ///
     /// // Build comment tree client-side
     /// var topLevel = comments.Where(c => c.ParentCommentId == null);
     /// foreach (var comment in topLevel) {
@@ -559,7 +559,7 @@ public class CommentService
     ///     profileId,
     ///     currentUser.ProfileId
     /// );
-    /// 
+    ///
     /// // Show statistics
     /// var totalComments = userComments.Count;
     /// var totalUpvotes = userComments.Sum(c => c.UpvotesCount);
@@ -642,7 +642,7 @@ public class CommentService
     /// var editRequest = new EditCommentRequest {
     ///     Content = "Updated comment with additional context."
     /// };
-    /// 
+    ///
     /// try {
     ///     var updated = await commentService.EditCommentAsync(
     ///         "comment123",
@@ -755,7 +755,7 @@ public class CommentService
     ///     **Vote Processing Logic:**
     ///     <code>
     /// existingVote = Get current user's vote on this comment
-    /// 
+    ///
     /// if (existingVote == null) {
     ///     // No vote yet, create new
     ///     CreateCommentVote(commentId, voterId, isUpvoteIntent)
@@ -783,7 +783,7 @@ public class CommentService
     /// );
     /// // updated.UpvotesCount incremented
     /// // updated.CurrentUserVote == VoteType.Upvote
-    /// 
+    ///
     /// // User clicks upvote again (toggle off)
     /// updated = await commentService.VoteCommentAsync(
     ///     "comment123",
