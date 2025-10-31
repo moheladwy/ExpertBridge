@@ -38,6 +38,9 @@ internal static class RabbitMq
             .WithOtlpExporter()
             .WithExternalHttpEndpoints();
 
+        userName = userName.WithParentRelationship(rabbitMq);
+        password = password.WithParentRelationship(rabbitMq);
+
         return rabbitMq;
     }
 }
