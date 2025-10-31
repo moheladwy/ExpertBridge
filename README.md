@@ -37,8 +37,8 @@ ExpertBridge.sln
 ## Architecture overview
 
 - Clean Architecture with clear separation: Presentation → Application → Core → Infrastructure.
-- Composition via .NET Aspire to run API, Admin, Worker and dependencies locally.
-- Persistence: PostgreSQL 17 + pgvector; EF Core 9 with soft-delete and retry policies.
+- Composition via .NET Aspire to run API, Admin, Worker, and dependencies locally.
+- Persistence: PostgreSQL 18 + pgvector; EF Core 9 with soft-delete and retry policies.
 - Messaging: MassTransit on RabbitMQ; Background: Quartz persistent jobs.
 - Real-time: SignalR for notifications/messaging.
 - Caching: FusionCache + Redis.
@@ -56,9 +56,9 @@ System component diagram and domain models are available under:
 
 Pick one path to run locally.
 
-### Option A — Run everything with .NET Aspire (recommended)
+### Run everything with .NET Aspire (recommended)
 
-Starts RabbitMQ, Redis, Seq, Ollama and the API/Admin/Worker projects together.
+Starts RabbitMQ, Redis, Seq, Ollama, Postgresql Database, and the API/Admin/Worker projects together.
 
 ```bash
 # From repository root
@@ -71,53 +71,13 @@ Key endpoints (development defaults):
 - SignalR hub: `/api/notificationsHub`
 
 
-### Option B — Run services manually
-
-1) Start PostgreSQL (+pgAdmin) for local dev
-
-```bash
-# From repository root
-docker compose -f server/postgresql-compose.yaml up -d
-```
-
-2) Export minimal env vars for the API/Worker (adjust as needed)
-
-```bash
-export ConnectionStrings__Postgresql="Host=localhost;Port=5432;Database=expertbridge;Username=root;Password=root"
-export ConnectionStrings__Redis="localhost:6379"
-export ConnectionStrings__Seq="http://localhost:5341"
-export ConnectionStrings__QuartzDatabase="Host=localhost;Port=5432;Database=quartz;Username=root;Password=root"
-export MessageBrokerCredentials__Host="amqp://localhost"
-export MessageBrokerCredentials__Username="guest"
-export MessageBrokerCredentials__Password="guest"
-```
-
-3) Build and run the API (and others as needed)
-
-```bash
-dotnet restore
-dotnet build
-dotnet run --project server/ExpertBridge.Api/ExpertBridge.Api.csproj
-```
+## Frontend (client/)
 
 Frontend in a separate terminal:
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-By default the SPA runs on http://localhost:5173 and calls `${VITE_SERVER_URL}` for API/health.
-
-
-## Frontend (client/)
 
 - React 19, React Router v7, Redux Toolkit + RTK Query
 - TailwindCSS + MUI; Auth via Firebase; IndexedDB via Dexie
 - Health guard: calls `${VITE_SERVER_URL}/health` on startup. See `client/docs/`.
-
-Local development:
 
 ```bash
 cd client
@@ -128,7 +88,7 @@ npm run dev
 Environment variables (create `client/.env`):
 
 ```dotenv
-VITE_SERVER_URL=http://localhost:5027        # or your API base
+VITE_SERVER_URL=http://localhost:5027
 VITE_API_KEY=your_firebase_api_key
 VITE_AUTH_DOMAIN=your-project.firebaseapp.com
 VITE_PROJECT_ID=your-project-id
@@ -140,7 +100,6 @@ VITE_MEASUREMENT_ID=G-XXXXXXXXXX
 
 More details: `client/README.md` (routing, state, codegen, Docker options).
 
-
 ## Backend (server/)
 
 Highlights:
@@ -150,90 +109,6 @@ Highlights:
 - Dockerfiles per project and `compose.yaml` for services
 
 Run via Aspire (recommended) or see manual steps above. For EF migrations, examples are in `server/README.md`.
-
-
-## Deployment (Docker Compose)
-
-Composable stacks are under `deployment/`:
-
-- `deployment/postgresql/docker-compose.yml` — PostgreSQL (pgvector), pgAdmin, exporter
-- `deployment/rabbitmq/docker-compose.yaml` — RabbitMQ management
-- `deployment/prometheus/prometheus-compose.yml` — Prometheus
-- `deployment/grafana/grafana-compose.yml` — Grafana
-- `deployment/nginx/docker-compose.yaml` — Nginx Proxy Manager
-- `deployment/ollama/docker-compose.yaml` — Ollama
-- `deployment/api/docker-compose.yml` — App stack (API, Admin, Worker, Seq, Aspire dashboard)
-
-Typical bring-up order:
-
-```bash
-# One-time: shared network used by stacks
-docker network create shared || true
-
-# Datastores & infra
-docker compose -f deployment/postgresql/docker-compose.yml up -d
-docker compose -f deployment/rabbitmq/docker-compose.yaml up -d
-docker compose -f deployment/prometheus/prometheus-compose.yml up -d
-docker compose -f deployment/grafana/grafana-compose.yml up -d
-docker compose -f deployment/nginx/docker-compose.yaml up -d
-docker compose -f deployment/ollama/docker-compose.yaml up -d
-
-# Application services
-docker compose -f deployment/api/docker-compose.yml up -d
-```
-
-Environment files:
-
-- `deployment/postgresql/.env` — supplies `POSTGRES_USER`, `POSTGRES_PASSWORD`, `PGADMIN_*`
-- `deployment/api/.env` — supplies the app settings (connection strings, Firebase, AWS S3, OTEL, etc.)
-
-Example snippets (adjust for your environment):
-
-```dotenv
-# deployment/postgresql/.env
-POSTGRES_USER=root
-POSTGRES_PASSWORD=root
-PGADMIN_DEFAULT_EMAIL=admin@example.com
-PGADMIN_DEFAULT_PASSWORD=change-me
-DB_HOST=postgres
-DB_NAME=expertbridge
-```
-
-```dotenv
-# deployment/api/.env (partial)
-ASPNETCORE_ENVIRONMENT=Production
-OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
-HTTP_PORTS=8080
-
-# Connection strings (containers communicate via Docker networks)
-ConnectionStrings__Postgresql=Host=postgres;Port=5432;Database=expertbridge;Username=root;Password=root
-ConnectionStrings__QuartzDatabase=Host=postgres;Port=5432;Database=quartz;Username=root;Password=root
-ConnectionStrings__Redis=ExpertBridgeRedis:6379
-ConnectionStrings__rabbitmq=amqp://rabbitmq:5672
-ConnectionStrings__Seq=http://seq:5341
-
-# RabbitMQ credentials
-MessageBroker__Host=amqp://rabbitmq
-MessageBroker__Username=guest
-MessageBroker__Password=guest
-
-# Firebase (example placeholders)
-Firebase__ProjectId=your-project-id
-Firebase__ClientEmail=service-account@your-project.iam.gserviceaccount.com
-Firebase__PrivateKey=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
-
-# AWS S3
-AwsS3__Region=us-east-1
-AwsS3__BucketName=your-bucket
-AwsS3__AwsKey=AKIA...
-AwsS3__AwsSecret=...
-AwsS3__BucketUrl=https://your-bucket.s3.amazonaws.com
-```
-
-Notes:
-- Stacks assume an external Docker network named `shared`.
-- Volumes are bound to local folders as declared in each compose file.
-
 
 ## Observability
 
