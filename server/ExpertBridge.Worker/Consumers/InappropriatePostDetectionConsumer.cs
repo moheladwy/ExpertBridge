@@ -149,13 +149,13 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
         var isAppropriate = true;
         var reason = "No issues.";
 
-        if (results.Insult >= _thresholds.Insult
-            || results.SexualExplicit >= _thresholds.SexualExplicit
-            || results.Toxicity >= _thresholds.Toxicity
-            || results.SevereToxicity >= _thresholds.SevereToxicity
-            || results.Threat >= _thresholds.Threat
-            || results.IdentityAttack >= _thresholds.IdentityAttack
-            || results.Obscene >= _thresholds.Obscene)
+        if (results.Insult > _thresholds.Insult
+            || results.SexualExplicit > _thresholds.SexualExplicit
+            || results.Toxicity > _thresholds.Toxicity
+            || results.SevereToxicity > _thresholds.SevereToxicity
+            || results.Threat > _thresholds.Threat
+            || results.IdentityAttack > _thresholds.IdentityAttack
+            || results.Obscene > _thresholds.Obscene)
         {
             isAppropriate = false;
             reason = "Your post does not follow our Community Guidelines.";
@@ -169,12 +169,12 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
         var report = new ModerationReport
         {
             ContentType = post.IsJobPosting ? ContentTypes.JobPosting : ContentTypes.Post,
+            ReportedBy = ReportedBy.Ai,
             AuthorId = existingPost.AuthorId,
             ContentId = existingPost.Id,
             IsNegative = !isAppropriate,
             Reason = reason,
-            IsResolved =
-                true, // Because this is an automated report generation, not issued by a user of the application
+            IsResolved = false, // Because this is an automated report generation, not issued by a user of the application
             IdentityAttack = results.IdentityAttack,
             Obscene = results.Obscene,
             Insult = results.Insult,

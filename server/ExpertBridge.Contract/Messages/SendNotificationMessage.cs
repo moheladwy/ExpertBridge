@@ -1,7 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace ExpertBridge.Notifications.Models.IPC;
+namespace ExpertBridge.Contract.Messages;
 
 /// <summary>
 ///     Represents a single notification to be queued for processing in the Channel-based notification pipeline.

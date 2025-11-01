@@ -19,7 +19,7 @@ internal sealed class NotificationsCleaningPeriodicWorker : IJob
     /// <summary>
     ///     The time interval in days after which read notifications are eligible for cleanup.
     /// </summary>
-    private const int TimeIntervalForNotificationCleanupInDays = 30;
+    private const int TimeIntervalForNotificationCleanupInDays = 120;
 
     /// <summary>
     ///     Database context for accessing and deleting notifications.

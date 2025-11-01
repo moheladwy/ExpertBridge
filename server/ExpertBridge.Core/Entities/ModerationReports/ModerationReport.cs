@@ -10,9 +10,8 @@ namespace ExpertBridge.Core.Entities.ModerationReports;
 /// </summary>
 /// <remarks>
 ///     Moderation reports are generated through AI-powered content analysis that detects various types of inappropriate
-///     content
-///     including toxicity, obscenity, threats, insults, identity attacks, and sexual content. Reports can be manually
-///     reviewed
+///     content, including
+///     toxicity, obscenity, threats, insults, identity attacks, and sexual content. Reports can be manually reviewed
 ///     and resolved by moderators.
 /// </remarks>
 public class ModerationReport : BaseModel, ISoftDeletable
@@ -21,6 +20,11 @@ public class ModerationReport : BaseModel, ISoftDeletable
     ///     Gets or sets the type of content being reported.
     /// </summary>
     public ContentTypes ContentType { get; set; }
+
+    /// <summary>
+    ///    Gets or sets who reported the content.
+    /// </summary>
+    public ReportedBy ReportedBy { get; set; }
 
     /// <summary>
     ///     Gets or sets the unique identifier of the content being reported.
@@ -115,6 +119,4 @@ public class ModerationReport : BaseModel, ISoftDeletable
     ///     Gets or sets the date and time when this moderation report was soft-deleted.
     /// </summary>
     public DateTime? DeletedAt { get; set; }
-
-    // Navigation properties
 }

@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.JobPostings;
 using ExpertBridge.Core.Entities.Tags;
 
@@ -29,10 +30,12 @@ public class JobPostingTag
     /// <summary>
     ///     Gets or sets the job posting being tagged.
     /// </summary>
+    [JsonIgnore]
     public JobPosting JobPosting { get; set; }
 
     /// <summary>
     ///     Gets or sets the tag applied to the job posting.
     /// </summary>
+    [JsonIgnore]
     public Tag Tag { get; set; }
 }
