@@ -341,14 +341,14 @@ public class ProfileService
     ///     <code>
     /// Request: ["Python", "Python ", "PYTHON", "Java"]
     /// Normalized: ["python", "java"] (deduplicated, lowercase)
-    ///
+    /// 
     /// Existing in DB: ["python"]
     /// New to create: ["java"]
-    ///
+    /// 
     /// Existing ProfileSkills: [python, c#]
     /// To add: [java]
     /// To remove: [c#]
-    ///
+    /// 
     /// Final ProfileSkills: [python, java]
     /// </code>
     ///     **Why Lowercase:**

@@ -1,13 +1,13 @@
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Helpers;
 using ExpertBridge.Application.Settings;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
-using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.OnboardUser;
 using ExpertBridge.Contract.Requests.UpdateProfileRequest;
 using ExpertBridge.Contract.Responses;
+using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
@@ -24,8 +24,8 @@ public class ProfilesController : ControllerBase
     private readonly AuthorizationHelper _authHelper;
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly ProfileService _profileService;
-    private readonly UserService _userService;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly UserService _userService;
 
     public ProfilesController(
         ExpertBridgeDbContext dbContext,
@@ -124,11 +124,11 @@ public class ProfilesController : ControllerBase
         user.IsOnboarded = true;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _publishEndpoint.Publish(new UserInterestsProsessingMessage
-        {
-            UserProfileId = user.Profile.Id,
-            InterestsTags = newTagsToBeProcessed
-        }, cancellationToken);
+        await _publishEndpoint.Publish(
+            new UserInterestsProsessingMessage
+            {
+                UserProfileId = user.Profile.Id, InterestsTags = newTagsToBeProcessed
+            }, cancellationToken);
 
         var response = await _dbContext.Profiles
             .FullyPopulatedProfileQuery(p => p.UserId == user.Id)

@@ -4,8 +4,6 @@ using ExpertBridge.Contract.Requests.CreateComment;
 using ExpertBridge.Contract.Requests.EditComment;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Contract.Requests.CreateComment;
-using ExpertBridge.Contract.Requests.EditComment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;

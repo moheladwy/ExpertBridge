@@ -1,10 +1,4 @@
 ﻿using ExpertBridge.Application.DataGenerator;
-using ExpertBridge.Core.Entities.JobApplications;
-using ExpertBridge.Core.Entities.JobPostings;
-using ExpertBridge.Core.Entities.JobPostingsVotes;
-using ExpertBridge.Core.Entities.Media.JobPostingMedia;
-using ExpertBridge.Core.Entities.Profiles;
-using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.ApplyToJobPosting;
@@ -13,6 +7,12 @@ using ExpertBridge.Contract.Requests.EditJobPosting;
 using ExpertBridge.Contract.Requests.JobPostingsPagination;
 using ExpertBridge.Contract.Requests.MediaObject;
 using ExpertBridge.Contract.Responses;
+using ExpertBridge.Core.Entities.JobApplications;
+using ExpertBridge.Core.Entities.JobPostings;
+using ExpertBridge.Core.Entities.JobPostingsVotes;
+using ExpertBridge.Core.Entities.Media.JobPostingMedia;
+using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;
@@ -176,7 +176,7 @@ public class JobPostingService
     }
 
     // <summary>
-    ///     Creates a new job posting with optional media attachments and initiates AI processing pipeline.
+    /// Creates a new job posting with optional media attachments and initiates AI processing pipeline.
     /// </summary>
     /// <param name="request">The job posting creation request containing title, content, budget, area, and media.</param>
     /// <param name="authorProfile">The authenticated user profile creating the job posting (client).</param>
@@ -244,9 +244,9 @@ public class JobPostingService
     ///         new() { FileName = "requirements.pdf", ContentType = "application/pdf" }
     ///     }
     /// };
-    ///
+    /// 
     /// var jobPosting = await jobPostingService.CreateAsync(request, clientProfile);
-    ///
+    /// 
     /// // Background processing begins automatically
     /// // After ~30 seconds: tags and embedding ready
     /// // Job appears in contractor recommendations
@@ -431,8 +431,7 @@ public class JobPostingService
                 }).ToList(),
             PageInfo = new PageInfoResponse
             {
-                HasNextPage = hasNextPage,
-                Embedding = randomEmbedding ?? request.Embedding
+                HasNextPage = hasNextPage, Embedding = randomEmbedding ?? request.Embedding
             }
         };
     }

@@ -37,10 +37,7 @@ internal static class Postgresql
             .WithOtlpExporter();
 
 
-        postgresql = postgresql.WithPgAdmin(cfg =>
-        {
-            cfg.GetPgadmin(postgresql);
-        });
+        postgresql = postgresql.WithPgAdmin(cfg => { cfg.GetPgadmin(postgresql); });
         postgresqlUserName = postgresqlUserName.WithParentRelationship(postgresql);
         postgresqlPassword = postgresqlPassword.WithParentRelationship(postgresql);
 
@@ -48,15 +45,18 @@ internal static class Postgresql
     }
 
     /// <summary>
-    /// Configures and provides a resource builder for a PgAdmin container resource, integrated with the specified
-    /// Postgres server resource. This includes predefined configurations such as image version, container name,
-    /// port mapping, lifetime, and environment variables.
+    ///     Configures and provides a resource builder for a PgAdmin container resource, integrated with the specified
+    ///     Postgres server resource. This includes predefined configurations such as image version, container name,
+    ///     port mapping, lifetime, and environment variables.
     /// </summary>
     /// <param name="pgadmin">The resource builder for the PgAdmin container resource being configured.</param>
-    /// <param name="postgresql">The resource builder for the Postgres server resource to be associated with this PgAdmin container.</param>
+    /// <param name="postgresql">
+    ///     The resource builder for the Postgres server resource to be associated with this PgAdmin
+    ///     container.
+    /// </param>
     /// <returns>
-    /// A resource builder for the PgAdmin container resource, integrated with the specified Postgres server resource,
-    /// and ready for deployment.
+    ///     A resource builder for the PgAdmin container resource, integrated with the specified Postgres server resource,
+    ///     and ready for deployment.
     /// </returns>
     private static IResourceBuilder<PgAdminContainerResource> GetPgadmin(
         this IResourceBuilder<PgAdminContainerResource> pgadmin,

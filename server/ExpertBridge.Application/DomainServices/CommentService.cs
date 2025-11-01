@@ -1,14 +1,14 @@
-﻿using ExpertBridge.Core.Entities.Comments;
-using ExpertBridge.Core.Entities.CommentVotes;
-using ExpertBridge.Core.Entities.Media.CommentMedia;
-using ExpertBridge.Core.Entities.Profiles;
-using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Contract.Messages;
+﻿using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.CreateComment;
 using ExpertBridge.Contract.Requests.EditComment;
 using ExpertBridge.Contract.Requests.MediaObject;
 using ExpertBridge.Contract.Responses;
+using ExpertBridge.Core.Entities.Comments;
+using ExpertBridge.Core.Entities.CommentVotes;
+using ExpertBridge.Core.Entities.Media.CommentMedia;
+using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;
@@ -201,7 +201,7 @@ public class CommentService
     ///     }
     /// };
     /// var comment = await commentService.CreateCommentAsync(request, currentProfile);
-    ///
+    /// 
     /// // Nested reply to existing comment
     /// var replyRequest = new CreateCommentRequest {
     ///     PostId = "post123",
@@ -402,7 +402,7 @@ public class CommentService
     ///     <code>
     /// // Anonymous user viewing comment
     /// var comment = await commentService.GetCommentAsync("comment123", null);
-    ///
+    /// 
     /// // Authenticated user viewing comment (includes their vote status)
     /// var comment = await commentService.GetCommentAsync("comment123", currentUser.ProfileId);
     /// if (comment.CurrentUserVote == VoteType.Upvote) {
@@ -447,7 +447,7 @@ public class CommentService
     ///     **Example Usage:**
     ///     <code>
     /// var comments = await commentService.GetCommentsByPostAsync("post123", currentUser.ProfileId);
-    ///
+    /// 
     /// // Build comment tree client-side
     /// var topLevel = comments.Where(c => c.ParentCommentId == null);
     /// foreach (var comment in topLevel) {
@@ -559,7 +559,7 @@ public class CommentService
     ///     profileId,
     ///     currentUser.ProfileId
     /// );
-    ///
+    /// 
     /// // Show statistics
     /// var totalComments = userComments.Count;
     /// var totalUpvotes = userComments.Sum(c => c.UpvotesCount);
@@ -642,7 +642,7 @@ public class CommentService
     /// var editRequest = new EditCommentRequest {
     ///     Content = "Updated comment with additional context."
     /// };
-    ///
+    /// 
     /// try {
     ///     var updated = await commentService.EditCommentAsync(
     ///         "comment123",
@@ -713,9 +713,7 @@ public class CommentService
             // Offload to inappropriate content detection
             await _publishEndpoint.Publish(new DetectInappropriateCommentMessage
             {
-                CommentId = comment.Id,
-                Content = comment.Content,
-                AuthorId = comment.AuthorId
+                CommentId = comment.Id, Content = comment.Content, AuthorId = comment.AuthorId
             });
         }
 
@@ -755,7 +753,7 @@ public class CommentService
     ///     **Vote Processing Logic:**
     ///     <code>
     /// existingVote = Get current user's vote on this comment
-    ///
+    /// 
     /// if (existingVote == null) {
     ///     // No vote yet, create new
     ///     CreateCommentVote(commentId, voterId, isUpvoteIntent)
@@ -783,7 +781,7 @@ public class CommentService
     /// );
     /// // updated.UpvotesCount incremented
     /// // updated.CurrentUserVote == VoteType.Upvote
-    ///
+    /// 
     /// // User clicks upvote again (toggle off)
     /// updated = await commentService.VoteCommentAsync(
     ///     "comment123",
@@ -823,7 +821,7 @@ public class CommentService
         // Fetch comment with necessary includes for vote processing and notification
         var comment = await _dbContext.Comments
             .Include(c => c.Author) // Needed for notification recipient
-                                    // .Include(c => c.Votes) // Not strictly needed here if we query CommentVotes separately
+            // .Include(c => c.Votes) // Not strictly needed here if we query CommentVotes separately
             .FirstOrDefaultAsync(c => c.Id == commentId);
 
         if (comment == null)
@@ -884,7 +882,7 @@ public class CommentService
     }
 
     // <summary>
-    ///     Deletes a comment with authorization checks and cascade handling for nested replies.
+    /// Deletes a comment with authorization checks and cascade handling for nested replies.
     /// </summary>
     /// <param name="commentId">The unique identifier of the comment to delete.</param>
     /// <param name="deleterProfile">The authenticated user profile attempting the deletion.</param>
@@ -914,7 +912,7 @@ public class CommentService
     /// Comment B (reply to A)
     ///     ↓ ParentCommentId
     /// Comment C (reply to B)
-    ///
+    /// 
     /// DELETE Comment A → Cascade deletes B and C
     /// </code>
     ///     **Cascade Configuration:**

@@ -123,7 +123,7 @@ public sealed class ProfileQueriesTests : IDisposable
         profile.User = user;
 
         var comment = TestDataBuilder.CreateComment("profile1", postId: "post1", id: "comment1");
-        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2", true);
+        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2");
         var vote2 = TestDataBuilder.CreateCommentVote("comment1", "profile3", false);
 
         comment.Votes = new List<CommentVote> { vote1, vote2 };
@@ -301,14 +301,14 @@ public sealed class ProfileQueriesTests : IDisposable
         var comment2 = TestDataBuilder.CreateComment("profile1", postId: "post1", id: "comment2");
 
         // Comment1: 3 upvotes, 1 downvote
-        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2", true);
-        var vote2 = TestDataBuilder.CreateCommentVote("comment1", "profile3", true);
-        var vote3 = TestDataBuilder.CreateCommentVote("comment1", "profile4", true);
+        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2");
+        var vote2 = TestDataBuilder.CreateCommentVote("comment1", "profile3");
+        var vote3 = TestDataBuilder.CreateCommentVote("comment1", "profile4");
         var vote4 = TestDataBuilder.CreateCommentVote("comment1", "profile5", false);
 
         // Comment2: 2 upvotes, 2 downvotes
-        var vote5 = TestDataBuilder.CreateCommentVote("comment2", "profile6", true);
-        var vote6 = TestDataBuilder.CreateCommentVote("comment2", "profile7", true);
+        var vote5 = TestDataBuilder.CreateCommentVote("comment2", "profile6");
+        var vote6 = TestDataBuilder.CreateCommentVote("comment2", "profile7");
         var vote7 = TestDataBuilder.CreateCommentVote("comment2", "profile8", false);
         var vote8 = TestDataBuilder.CreateCommentVote("comment2", "profile9", false);
 
@@ -534,8 +534,8 @@ public sealed class ProfileQueriesTests : IDisposable
 
         // Add comments with votes for reputation calculation
         var comment1 = TestDataBuilder.CreateComment("profile1", postId: "post1", id: "comment1");
-        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2", true);
-        var vote2 = TestDataBuilder.CreateCommentVote("comment1", "profile3", true);
+        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2");
+        var vote2 = TestDataBuilder.CreateCommentVote("comment1", "profile3");
         var vote3 = TestDataBuilder.CreateCommentVote("comment1", "profile4", false);
 
         comment1.Votes = new List<CommentVote> { vote1, vote2, vote3 };
@@ -611,7 +611,7 @@ public sealed class ProfileQueriesTests : IDisposable
         profile.User = user;
 
         var comment1 = TestDataBuilder.CreateComment("profile1", postId: "post1", id: "comment1");
-        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2", true);
+        var vote1 = TestDataBuilder.CreateCommentVote("comment1", "profile2");
         var vote2 = TestDataBuilder.CreateCommentVote("comment1", "profile3", false);
         var vote3 = TestDataBuilder.CreateCommentVote("comment1", "profile4", false);
         var vote4 = TestDataBuilder.CreateCommentVote("comment1", "profile5", false);

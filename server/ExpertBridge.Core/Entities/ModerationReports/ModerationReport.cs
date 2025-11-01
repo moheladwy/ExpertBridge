@@ -22,7 +22,7 @@ public class ModerationReport : BaseModel, ISoftDeletable
     public ContentTypes ContentType { get; set; }
 
     /// <summary>
-    ///    Gets or sets who reported the content.
+    ///     Gets or sets who reported the content.
     /// </summary>
     public ReportedBy ReportedBy { get; set; }
 

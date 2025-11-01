@@ -30,7 +30,8 @@ internal static class Extensions
     ///         <item>Configures Quartz to use Microsoft Dependency Injection</item>
     ///         <item>Configures Quartz to use PostgreSQL for persistent job storage</item>
     ///         <item>Sets up Quartz as a hosted service with specific execution options</item>
-    ///         <item>Registers all periodic worker job configurations 
+    ///         <item>
+    ///             Registers all periodic worker job configurations
     ///             (S3 cleaning, post moderation, comments moderation,
     ///             job posts moderation, user interest updater,
     ///             notifications cleaning, and image migration)

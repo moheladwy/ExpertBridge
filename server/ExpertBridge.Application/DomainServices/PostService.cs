@@ -1,9 +1,4 @@
 ﻿using ExpertBridge.Application.DataGenerator;
-using ExpertBridge.Core.Entities.Media.PostMedia;
-using ExpertBridge.Core.Entities.Posts;
-using ExpertBridge.Core.Entities.PostVotes;
-using ExpertBridge.Core.Entities.Profiles;
-using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.CreatePost;
@@ -11,6 +6,11 @@ using ExpertBridge.Contract.Requests.EditPost;
 using ExpertBridge.Contract.Requests.MediaObject;
 using ExpertBridge.Contract.Requests.PostsCursor;
 using ExpertBridge.Contract.Responses;
+using ExpertBridge.Core.Entities.Media.PostMedia;
+using ExpertBridge.Core.Entities.Posts;
+using ExpertBridge.Core.Entities.PostVotes;
+using ExpertBridge.Core.Entities.Profiles;
+using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;
@@ -553,11 +553,11 @@ public class PostService
             // Adjust p.Id > or < lastPostIdCursor.Value based on your tie-breaking sort preference (e.g., if you also sort by CreatedAt DESC)
             query = query.Where(p =>
                     p.Embedding.CosineDistance(userEmbedding) > request.After.Value
-            //||
-            //(
-            //    p.Embedding.CosineDistance(userEmbedding) == request.After.Value
-            ////&& p.Id.CompareTo(request.LastIdCursor) // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
-            //)
+                //||
+                //(
+                //    p.Embedding.CosineDistance(userEmbedding) == request.After.Value
+                ////&& p.Id.CompareTo(request.LastIdCursor) // Tie-breaker: use Post ID. Adjust if secondary sort is different (e.g. newest first)
+                //)
             );
         }
 
@@ -603,15 +603,13 @@ public class PostService
             Posts = postDtos,
             PageInfo = new PageInfoResponse
             {
-                EndCursor = nextDistance,
-                NextIdCursor = nextPostId,
-                HasNextPage = hasNextPage
+                EndCursor = nextDistance, NextIdCursor = nextPostId, HasNextPage = hasNextPage
             }
         };
     }
 
     // <summary>
-    ///     Retrieves AI-recommended posts using offset-based pagination (traditional page numbers).
+    /// Retrieves AI-recommended posts using offset-based pagination (traditional page numbers).
     /// </summary>
     /// <param name="userProfile">Optional user profile for personalized recommendations.</param>
     /// <param name="request">Pagination request with Page number, PageSize, and optional Embedding.</param>
@@ -684,8 +682,7 @@ public class PostService
                 }).ToList(),
             PageInfo = new PageInfoResponse
             {
-                HasNextPage = hasNextPage,
-                Embedding = randomEmbedding ?? request.Embedding
+                HasNextPage = hasNextPage, Embedding = randomEmbedding ?? request.Embedding
             }
         };
     }

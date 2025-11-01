@@ -111,10 +111,7 @@ internal sealed class JobPostsModerationPeriodicWorker : IJob
                 .Where(p => p.IsProcessed && p.Embedding == null)
                 .Select(p => new EmbedPostMessage
                 {
-                    PostId = p.Id,
-                    Content = p.Content,
-                    Title = p.Title,
-                    IsJobPosting = true
+                    PostId = p.Id, Content = p.Content, Title = p.Title, IsJobPosting = true
                 })
                 .ToListAsync(context.CancellationToken);
 

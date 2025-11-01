@@ -174,7 +174,8 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
             ContentId = existingPost.Id,
             IsNegative = !isAppropriate,
             Reason = reason,
-            IsResolved = false, // Because this is an automated report generation, not issued by a user of the application
+            IsResolved =
+                false, // Because this is an automated report generation, not issued by a user of the application
             IdentityAttack = results.IdentityAttack,
             Obscene = results.Obscene,
             Insult = results.Insult,

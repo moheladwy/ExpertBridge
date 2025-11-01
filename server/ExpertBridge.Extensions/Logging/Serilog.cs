@@ -23,7 +23,7 @@ public static class Serilog
     ///     - Reads Serilog configuration from appsettings.json and appsettings.{Environment}.json
     ///     - Supports log level configuration, enrichers, and sink settings via configuration
     ///     - Allows dynamic log level changes without code recompilation
-   ///     **Structured Logging Benefits:**
+    ///     **Structured Logging Benefits:**
     ///     - Preserves log data as structured properties (not just strings)
     ///     - Enables powerful querying and filtering in log aggregation tools
     ///     - Supports log enrichment with contextual information (user, request ID, etc.)
@@ -32,10 +32,7 @@ public static class Serilog
     public static TBuilder AddSerilogLogging<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
-        builder.Services.AddSerilog(config =>
-        {
-            config.ReadFrom.Configuration(builder.Configuration);
-        });
+        builder.Services.AddSerilog(config => { config.ReadFrom.Configuration(builder.Configuration); });
 
         return builder;
     }

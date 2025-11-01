@@ -80,8 +80,7 @@ public sealed class MessageQueriesTests : IDisposable
         var regularMsg = TestDataBuilder.CreateMessage(
             "user1",
             "chat1",
-            "Regular message",
-            false);
+            "Regular message");
         _context.Set<Message>().Add(regularMsg);
         await _context.SaveChangesAsync();
 

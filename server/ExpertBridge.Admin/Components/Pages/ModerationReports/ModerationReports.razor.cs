@@ -20,9 +20,9 @@ public partial class ModerationReports : ComponentBase
 
     // Filter options
     private List<string> contentTypes = [];
-    private List<string> reportedByOptions = [];
     private RadzenDataGrid<ModerationReport>? grid;
     private bool isLoading = true;
+    private List<string> reportedByOptions = [];
     private List<ModerationReport> reports = [];
     private int resolvedCount;
     private string searchText = string.Empty;
@@ -30,8 +30,8 @@ public partial class ModerationReports : ComponentBase
     // Selected filters
     private string? selectedContentType;
     private string? selectedNegativeFilter;
-    private string? selectedResolutionStatus;
     private string? selectedReportedBy;
+    private string? selectedResolutionStatus;
 
     // Statistics
     private int totalCount;
@@ -244,10 +244,7 @@ public partial class ModerationReports : ComponentBase
     {
         NotificationService.Notify(new NotificationMessage
         {
-            Severity = severity,
-            Summary = summary,
-            Detail = detail,
-            Duration = 4000
+            Severity = severity, Summary = summary, Detail = detail, Duration = 4000
         });
     }
 }

@@ -228,14 +228,17 @@ public class NotificationFacade
     }
 
     /// <summary>
-    /// Sends a notification to the author of a comment when their comment has been restored
-    /// following a review by the site administrators.
+    ///     Sends a notification to the author of a comment when their comment has been restored
+    ///     following a review by the site administrators.
     /// </summary>
-    /// <param name="comment">The comment that has been restored, containing details such as its content and related post or job posting.</param>
+    /// <param name="comment">
+    ///     The comment that has been restored, containing details such as its content and related post or
+    ///     job posting.
+    /// </param>
     /// <param name="report">The moderation report associated with the review and restoration of the comment.</param>
     /// <returns>A task representing the asynchronous operation of sending the notification.</returns>
     /// <exception cref="ArgumentNullException">
-    ///   Thrown if either the <paramref name="comment" /> or <paramref name="report" /> is null.
+    ///     Thrown if either the <paramref name="comment" /> or <paramref name="report" /> is null.
     /// </exception>
     public async Task NotifyCommentRestoredAsync(Comment comment, ModerationReport report)
     {
@@ -244,7 +247,8 @@ public class NotificationFacade
         await NotifyInternalAsync(new Notification
         {
             RecipientId = comment.AuthorId,
-            Message = $"Your comment has been restored after being reviewed by the site admins.\nComment: {comment.Content}",
+            Message =
+                $"Your comment has been restored after being reviewed by the site admins.\nComment: {comment.Content}",
             IconUrl = comment.Post?.Author.ProfilePictureUrl ?? comment.JobPosting?.Author.ProfilePictureUrl,
             ActionUrl = $"/posts/{comment.PostId ?? comment.JobPostingId}/#comment-{comment.Id}"
         });
@@ -262,7 +266,7 @@ public class NotificationFacade
     ///     Links to the user's profile page. Part of the AI-assisted content moderation system using Groq API.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
-    ///   Thrown if either the <paramref name="post" /> or <paramref name="report" /> is null.
+    ///     Thrown if either the <paramref name="post" /> or <paramref name="report" /> is null.
     /// </exception>
     public async Task NotifyPostDeletedAsync(IRecommendableContent post, ModerationReport report)
     {
@@ -277,14 +281,17 @@ public class NotificationFacade
     }
 
     /// <summary>
-    /// Sends a notification to the author of a moderated post, informing them that their post has
-    /// been restored after a review by the site administrators.
+    ///     Sends a notification to the author of a moderated post, informing them that their post has
+    ///     been restored after a review by the site administrators.
     /// </summary>
     /// <param name="post">The content that has been restored, implementing the <see cref="IRecommendableContent" /> interface.</param>
-    /// <param name="report">The moderation report corresponding to the restored content, containing author details and related metadata.</param>
+    /// <param name="report">
+    ///     The moderation report corresponding to the restored content, containing author details and related
+    ///     metadata.
+    /// </param>
     /// <returns>A task that represents the asynchronous operation of sending the notification.</returns>
     /// <exception cref="ArgumentNullException">
-    ///   Thrown if either the <paramref name="post" /> or <paramref name="report" /> is null.
+    ///     Thrown if either the <paramref name="post" /> or <paramref name="report" /> is null.
     /// </exception>
     public async Task NotifyPostRestoredAsync(IRecommendableContent post, ModerationReport report)
     {
@@ -295,7 +302,8 @@ public class NotificationFacade
         await NotifyInternalAsync(new Notification
         {
             RecipientId = report.AuthorId,
-            Message = $"Your {contentType} has been restored after being reviewed by the site admins, Title: {post.Title}",
+            Message =
+                $"Your {contentType} has been restored after being reviewed by the site admins, Title: {post.Title}",
             ActionUrl = $"/{(report.ContentType == ContentTypes.Post ? "posts" : "jobs")}/{post.Id}"
         });
     }
@@ -428,7 +436,8 @@ public class NotificationFacade
     private async Task NotifyInternalAsync(params List<Notification> notifications)
     {
         var toSend = notifications
-            .Where(n => n.RecipientId != n.SenderId); ;
+            .Where(n => n.RecipientId != n.SenderId);
+        ;
 
         await _publishEndpoint.Publish(new SendNotificationsRequestMessage
         {

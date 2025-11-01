@@ -185,9 +185,9 @@ public sealed class JobApplicationQueriesTests : IDisposable
             "post2"
         );
 
-        var upvote1 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter1", true);
-        var upvote2 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter2", true);
-        var upvote3 = TestDataBuilder.CreateCommentVote(comment2.Id, "voter3", true);
+        var upvote1 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter1");
+        var upvote2 = TestDataBuilder.CreateCommentVote(comment1.Id, "voter2");
+        var upvote3 = TestDataBuilder.CreateCommentVote(comment2.Id, "voter3");
 
         comment1.Votes = [upvote1, upvote2];
         comment2.Votes = [upvote3];
@@ -242,9 +242,9 @@ public sealed class JobApplicationQueriesTests : IDisposable
             "post1"
         );
 
-        var upvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter1", true);
-        var upvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter2", true);
-        var upvote3 = TestDataBuilder.CreateCommentVote(comment.Id, "voter3", true);
+        var upvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter1");
+        var upvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter2");
+        var upvote3 = TestDataBuilder.CreateCommentVote(comment.Id, "voter3");
         var downvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter4", false);
         var downvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter5", false);
 
@@ -300,7 +300,7 @@ public sealed class JobApplicationQueriesTests : IDisposable
             "post1"
         );
 
-        var upvote = TestDataBuilder.CreateCommentVote(comment.Id, "voter1", true);
+        var upvote = TestDataBuilder.CreateCommentVote(comment.Id, "voter1");
         var downvote1 = TestDataBuilder.CreateCommentVote(comment.Id, "voter2", false);
         var downvote2 = TestDataBuilder.CreateCommentVote(comment.Id, "voter3", false);
         var downvote3 = TestDataBuilder.CreateCommentVote(comment.Id, "voter4", false);
