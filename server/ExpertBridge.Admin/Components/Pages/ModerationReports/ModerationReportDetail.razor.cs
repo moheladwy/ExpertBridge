@@ -248,12 +248,15 @@ public partial class ModerationReportDetail : ComponentBase
                 // Invalidate cache
                 case ContentTypes.Post:
                     await Cache.RemoveAsync($"admin:posts:{_report.ContentId}");
+                    await Cache.RemoveAsync("admin:posts:all");
                     break;
                 case ContentTypes.Comment:
                     await Cache.RemoveAsync($"admin:comments:{_report.ContentId}");
+                    await Cache.RemoveAsync("admin:comments:all");
                     break;
                 case ContentTypes.JobPosting:
                     await Cache.RemoveAsync($"admin:job-postings:{_report.ContentId}");
+                    await Cache.RemoveAsync("admin:job-posts:all");
                     break;
                 case ContentTypes.Profile:
                 case ContentTypes.Message:
@@ -304,6 +307,7 @@ public partial class ModerationReportDetail : ComponentBase
                 if (_report.ContentType == ContentTypes.Post && _postResponse != null)
                 {
                     await Cache.RemoveAsync($"admin:posts:{_postResponse.Id}");
+                    await Cache.RemoveAsync("admin:posts:all");
                     await NotificationFacade.NotifyPostRestoredAsync(
                         new Post
                         {
@@ -316,6 +320,7 @@ public partial class ModerationReportDetail : ComponentBase
                 else if (_report.ContentType == ContentTypes.Comment && _commentResponse != null)
                 {
                     await Cache.RemoveAsync($"admin:comments:{_report.ContentId}");
+                    await Cache.RemoveAsync("admin:comments:all");
                     await NotificationFacade.NotifyCommentRestoredAsync(
                         new Comment
                         {
@@ -327,6 +332,7 @@ public partial class ModerationReportDetail : ComponentBase
                 else if (_report.ContentType == ContentTypes.JobPosting && _jobPostingResponse != null)
                 {
                     await Cache.RemoveAsync($"admin:job-postings:{_report.ContentId}");
+                    await Cache.RemoveAsync("admin:job-posts:all");
                     await NotificationFacade.NotifyPostRestoredAsync(
                         new JobPosting
                         {
@@ -433,7 +439,10 @@ public partial class ModerationReportDetail : ComponentBase
     {
         NotificationService.Notify(new NotificationMessage
         {
-            Severity = severity, Summary = summary, Detail = detail, Duration = 4000
+            Severity = severity,
+            Summary = summary,
+            Detail = detail,
+            Duration = 4000
         });
     }
 }
