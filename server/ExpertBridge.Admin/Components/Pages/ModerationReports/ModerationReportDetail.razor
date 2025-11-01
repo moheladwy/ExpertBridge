@@ -249,7 +249,7 @@
 
                             @if (_report.IsNegative)
                             {
-                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success"
+                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Secondary"
                                               Click="@(() => ToggleIsNegative())" Style="width: 100%;"
                                               Text="Mark as Clean Content"/>
                             }
@@ -259,10 +259,6 @@
                                               Click="@(() => ToggleIsNegative())" Style="width: 100%;"
                                               Text="Mark as Flagged Content"/>
                             }
-
-                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Secondary"
-                                          Click="@RestoreContent" Style="width: 100%;"
-                                          Text="Restore Content"/>
                         </RadzenStack>
                     </RadzenCard>
                 </RadzenStack>
