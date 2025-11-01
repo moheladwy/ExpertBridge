@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="logs\"/>
-    <Folder Include="Services\"/>
     <Folder Include="wwwroot/lib/"/>
   </ItemGroup>
 
