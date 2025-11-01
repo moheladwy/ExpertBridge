@@ -27,6 +27,7 @@ internal static class DomainServices
 
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
         services
+            .AddScoped<ModerationReportService>()
             .AddScoped<CommentService>()
             .AddScoped<ContentModerationService>()
             .AddScoped<MediaAttachmentService>()

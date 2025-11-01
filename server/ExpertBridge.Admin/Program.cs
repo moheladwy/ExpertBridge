@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Admin.Components;
+using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Data;
 using ExpertBridge.Extensions.Caching;
 using ExpertBridge.Extensions.CORS;
@@ -30,6 +31,7 @@ builder
     .AddFusionCache();
 
 builder.Services
+    .AddScoped<ModerationReportService>()
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -44,8 +46,8 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", true);
-    // The default HSTS value is 30 days. 
-    // You may want to change this for production scenarios, 
+    // The default HSTS value is 30 days.
+    // You may want to change this for production scenarios,
     // see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

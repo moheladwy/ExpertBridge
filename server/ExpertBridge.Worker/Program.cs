@@ -27,6 +27,7 @@ builder
     .AddResiliencePipeline()
     .AddEmbeddingServices()
     .AddGroqApiServices();
+
 builder.AddNotifications();
 builder.Services.AddDomainServices();
 var section = builder.Configuration.GetSection(AwsSettings.Section);

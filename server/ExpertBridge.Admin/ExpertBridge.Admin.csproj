@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExpertBridge.Application\ExpertBridge.Application.csproj" />
     <ProjectReference Include="..\ExpertBridge.Contract\ExpertBridge.Contract.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
@@ -22,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="logs\"/>
+    <Folder Include="Services\" />
     <Folder Include="wwwroot/lib/"/>
   </ItemGroup>
 

@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Entities;
@@ -42,6 +43,8 @@ public partial class ModerationReportDetail : ComponentBase
     [Inject] private ILogger<ModerationReportDetail> Logger { get; set; }
 
     [Inject] private NotificationFacade NotificationFacade { get; set; }
+
+    [Inject] private ModerationReportService ModerationReportService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,6 +113,11 @@ public partial class ModerationReportDetail : ComponentBase
                 case ContentTypes.JobPosting:
                     await LoadJobPostingAsync();
                     break;
+                case ContentTypes.Profile:
+                case ContentTypes.Message:
+                case ContentTypes.Video:
+                case ContentTypes.Image:
+                case ContentTypes.File:
                 default:
                     _contentNotFound = true;
                     break;
@@ -233,10 +241,7 @@ public partial class ModerationReportDetail : ComponentBase
 
         try
         {
-            await DbContext.ModerationReports
-                .IgnoreQueryFilters()
-                .Where(mr => mr.Id == _report.Id)
-                .ExecuteUpdateAsync(set => set.SetProperty(mr => mr.IsResolved, !_report.IsResolved));
+            await ModerationReportService.ToggleResolution(_report);
 
             switch (_report.ContentType)
             {
@@ -282,10 +287,7 @@ public partial class ModerationReportDetail : ComponentBase
 
         try
         {
-            await DbContext.ModerationReports
-                .IgnoreQueryFilters()
-                .Where(mr => mr.Id == _report.Id)
-                .ExecuteUpdateAsync(set => set.SetProperty(mr => mr.IsNegative, !_report.IsNegative));
+            await ModerationReportService.ToggleNegative(_report);
 
             switch (_report.ContentType)
             {
@@ -339,22 +341,12 @@ public partial class ModerationReportDetail : ComponentBase
         {
             try
             {
-                await DbContext.ModerationReports
-                    .IgnoreQueryFilters()
-                    .Where(r => r.Id == _report.Id)
-                    .ExecuteUpdateAsync(set => set
-                            .SetProperty(p => p.IsResolved, true)
-                            .SetProperty(p => p.IsNegative, false));
-
                 // Invalidate cache
                 await Cache.RemoveAsync("admin:moderation-reports:all");
+                await ModerationReportService.RestoreContent(_report);
                 if (_report.ContentType == ContentTypes.Post && _postResponse != null)
                 {
                     await Cache.RemoveAsync($"admin:posts:{_postResponse.Id}");
-                    await DbContext.Posts
-                        .IgnoreQueryFilters()
-                        .Where(p => p.Id == _postResponse.Id)
-                        .ExecuteUpdateAsync(set => set.SetProperty(p => p.IsDeleted, false));
                     await NotificationFacade.NotifyPostRestoredAsync(
                         new Post
                         {
@@ -367,10 +359,6 @@ public partial class ModerationReportDetail : ComponentBase
                 else if (_report.ContentType == ContentTypes.Comment && _commentResponse != null)
                 {
                     await Cache.RemoveAsync($"admin:comments:{_report.ContentId}");
-                    await DbContext.Comments
-                        .IgnoreQueryFilters()
-                        .Where(c => c.Id == _report.ContentId)
-                        .ExecuteUpdateAsync(set => set.SetProperty(c => c.IsDeleted, false));
                     await NotificationFacade.NotifyCommentRestoredAsync(
                         new Comment
                         {
@@ -382,10 +370,6 @@ public partial class ModerationReportDetail : ComponentBase
                 else if (_report.ContentType == ContentTypes.JobPosting && _jobPostingResponse != null)
                 {
                     await Cache.RemoveAsync($"admin:job-postings:{_report.ContentId}");
-                    await DbContext.JobPostings
-                        .IgnoreQueryFilters()
-                        .Where(jp => jp.Id == _report.ContentId)
-                        .ExecuteUpdateAsync(set => set.SetProperty(jp => jp.IsDeleted, false));
                     await NotificationFacade.NotifyPostRestoredAsync(
                         new JobPosting
                         {
