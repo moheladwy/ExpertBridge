@@ -58,9 +58,7 @@ internal sealed class CommentsModerationPeriodicWorker : IJob
             .Where(c => !c.IsProcessed)
             .Select(c => new DetectInappropriateCommentMessage
             {
-                CommentId = c.Id,
-                AuthorId = c.AuthorId,
-                Content = c.Content
+                CommentId = c.Id, AuthorId = c.AuthorId, Content = c.Content
             })
             .ToListAsync(context.CancellationToken);
 

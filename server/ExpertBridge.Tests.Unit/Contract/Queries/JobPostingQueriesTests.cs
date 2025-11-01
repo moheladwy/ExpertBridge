@@ -48,7 +48,7 @@ public sealed class JobPostingQueriesTests
             "Need backend engineer",
             4000m);
 
-        var vote = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, voter.Id, true);
+        var vote = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, voter.Id);
 
         jobPosting.Author = author;
         jobPosting.Votes.Add(vote);
@@ -287,8 +287,8 @@ public sealed class JobPostingQueriesTests
             "iOS and Android development",
             5000m);
 
-        var upvote1 = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, voter1.Id, true);
-        var upvote2 = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, voter2.Id, true);
+        var upvote1 = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, voter1.Id);
+        var upvote2 = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, voter2.Id);
         var downvote = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, voter3.Id, false);
 
         jobPosting.Author = author;
@@ -326,7 +326,7 @@ public sealed class JobPostingQueriesTests
             "ML and AI expertise needed",
             7000m);
 
-        var upvote = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, currentUser.Id, true);
+        var upvote = TestDataBuilder.CreateJobPostingVote(jobPosting.Id, currentUser.Id);
 
         jobPosting.Author = author;
         jobPosting.Votes.Add(upvote);

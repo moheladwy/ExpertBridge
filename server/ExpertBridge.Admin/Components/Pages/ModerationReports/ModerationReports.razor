@@ -1,0 +1,298 @@
+@page "/moderation-reports"
+@using ExpertBridge.Core.Entities.ModerationReports
+
+<PageTitle>Moderation Reports - ExpertBridge Admin</PageTitle>
+
+<RadzenStack Gap="1.5rem" class="rz-p-4 rz-p-md-6">
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                     AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
+            <RadzenStack Gap="0.5rem">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenIcon Icon="report" Style="color: var(--rz-danger);"/>
+                    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1" class="rz-m-0">
+                        Moderation Reports
+                    </RadzenText>
+                </RadzenStack>
+                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                    AI-powered content moderation analysis and management
+                </RadzenText>
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"
+                              Size="ButtonSize.Medium" Click="@RefreshData" Disabled="@isLoading"
+                              title="Refresh Data"/>
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@($"Total: {totalCount}")"/>
+                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@($"Unresolved: {unresolvedCount}")"/>
+                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Resolved: {resolvedCount}")"/>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenCard>
+
+    @* Filter Card *@
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap" AlignItems="AlignItems.End">
+            <RadzenStack Gap="0.5rem" Style="flex: 1; min-width: 200px;">
+                <RadzenLabel Text="Content Type"/>
+                <RadzenDropDown @bind-Value="@selectedContentType" Data="@contentTypes" AllowClear="true"
+                                Placeholder="All Content Types" Style="width: 100%;"
+                                Change="@OnFilterChanged"/>
+            </RadzenStack>
+
+            <RadzenStack Gap="0.5rem" Style="flex: 1; min-width: 200px;">
+                <RadzenLabel Text="Resolution Status"/>
+                <RadzenDropDown @bind-Value="@selectedResolutionStatus" Data="@resolutionStatuses" AllowClear="true"
+                                Placeholder="All Statuses" Style="width: 100%;"
+                                Change="@OnFilterChanged"/>
+            </RadzenStack>
+
+            <RadzenStack Gap="0.5rem" Style="flex: 1; min-width: 200px;">
+                <RadzenLabel Text="Negative Content"/>
+                <RadzenDropDown @bind-Value="@selectedNegativeFilter" Data="@negativeFilters" AllowClear="true"
+                                Placeholder="All Reports" Style="width: 100%;"
+                                Change="@OnFilterChanged"/>
+            </RadzenStack>
+
+            <RadzenStack Gap="0.5rem" Style="flex: 1; min-width: 200px;">
+                <RadzenLabel Text="Reported By"/>
+                <RadzenDropDown @bind-Value="@selectedReportedBy" Data="@reportedByOptions" AllowClear="true"
+                                Placeholder="All Sources" Style="width: 100%;"
+                                Change="@OnFilterChanged"/>
+            </RadzenStack>
+
+            <RadzenStack Gap="0.5rem" Style="flex: 1; min-width: 200px;">
+                <RadzenLabel Text="Search"/>
+                <RadzenTextBox @bind-Value="@searchText" Placeholder="Search by ID, Author ID, or Reason..."
+                               Style="width: 100%;" Change="@OnFilterChanged"/>
+            </RadzenStack>
+
+            @if (HasActiveFilters)
+            {
+                <RadzenButton Icon="clear" ButtonStyle="ButtonStyle.Light" Click="@ClearFilters"
+                              Size="ButtonSize.Medium" Text="Clear Filters"/>
+            }
+        </RadzenStack>
+    </RadzenCard>
+
+    <RadzenCard>
+        @if (isLoading)
+        {
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem"
+                         Style="min-height: 300px;">
+                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                           Size="ProgressBarCircularSize.Large"/>
+                <RadzenText TextStyle="TextStyle.Body1">Loading moderation reports...</RadzenText>
+            </RadzenStack>
+        }
+        else if (!reports.Any())
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenIcon Icon="info"/>
+                    <RadzenText TextStyle="TextStyle.Body1">
+                        @(HasActiveFilters ? "No moderation reports found matching the selected filters." : "No moderation reports found in the system.")
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenAlert>
+        }
+        else
+        {
+            <RadzenDataGrid @ref="grid" Data="@reports" TItem="ModerationReport"
+                            AllowFiltering="true" FilterMode="FilterMode.Advanced"
+                            AllowSorting="true" AllowPaging="true" PageSize="20"
+                            AllowColumnResize="true" ColumnWidth="150px"
+                            Density="Density.Compact"
+                            RowClick="@OnRowClick">
+                <Columns>
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="ContentType" Title="Content Type"
+                                          Width="140px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenBadge BadgeStyle="@GetContentTypeBadgeStyle(data.ContentType)"
+                                         Text="@data.ContentType.ToString()" Shade="Shade.Lighter"/>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="ContentId" Title="Content ID" Width="220px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenText TextStyle="TextStyle.Body2" Style="font-family: monospace; font-size: 0.75rem;">
+                                @(data.ContentId?.Length > 20 ? data.ContentId.Substring(0, 20) + "..." : data.ContentId)
+                            </RadzenText>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="AuthorId" Title="Author ID" Width="220px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenText TextStyle="TextStyle.Body2" Style="font-family: monospace; font-size: 0.75rem;">
+                                @(data.AuthorId?.Length > 20 ? data.AuthorId.Substring(0, 20) + "..." : data.AuthorId)
+                            </RadzenText>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="IsNegative" Title="Status" Width="120px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            @if (data.IsNegative)
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Flagged" Shade="Shade.Lighter"/>
+                            }
+                            else
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Clean" Shade="Shade.Lighter"/>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="IsResolved" Title="Resolution"
+                                          Width="130px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            @if (data.IsResolved)
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Resolved" Shade="Shade.Lighter"/>
+                            }
+                            else
+                            {
+                                <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="Pending" Shade="Shade.Lighter"/>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="ReportedBy" Title="Reported By"
+                                          Width="120px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenBadge BadgeStyle="@GetReportedByBadgeStyle(data.ReportedBy)"
+                                         Text="@data.ReportedBy.ToString()" Shade="Shade.Lighter"/>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="Toxicity" Title="Toxicity" Width="120px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         AlignItems="AlignItems.Center">
+                                <RadzenProgressBar Value="@(data.Toxicity * 100)" ShowValue="false"
+                                                   Style="@GetScoreBarStyle(data.Toxicity)"/>
+                                <RadzenText TextStyle="TextStyle.Caption" Style="min-width: 45px;">
+                                    @($"{data.Toxicity:P0}")
+                                </RadzenText>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="SevereToxicity" Title="Severe"
+                                          Width="110px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         AlignItems="AlignItems.Center">
+                                <RadzenProgressBar Value="@(data.SevereToxicity * 100)" ShowValue="false"
+                                                   Style="@GetScoreBarStyle(data.SevereToxicity)"/>
+                                <RadzenText TextStyle="TextStyle.Caption" Style="min-width: 45px;">
+                                    @($"{data.SevereToxicity:P0}")
+                                </RadzenText>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="Obscene" Title="Obscene" Width="110px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         AlignItems="AlignItems.Center">
+                                <RadzenProgressBar Value="@(data.Obscene * 100)" ShowValue="false"
+                                                   Style="@GetScoreBarStyle(data.Obscene)"/>
+                                <RadzenText TextStyle="TextStyle.Caption" Style="min-width: 45px;">
+                                    @($"{data.Obscene:P0}")
+                                </RadzenText>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="Threat" Title="Threat" Width="110px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         AlignItems="AlignItems.Center">
+                                <RadzenProgressBar Value="@(data.Threat * 100)" ShowValue="false"
+                                                   Style="@GetScoreBarStyle(data.Threat)"/>
+                                <RadzenText TextStyle="TextStyle.Caption" Style="min-width: 45px;">
+                                    @($"{data.Threat:P0}")
+                                </RadzenText>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="Insult" Title="Insult" Width="110px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         AlignItems="AlignItems.Center">
+                                <RadzenProgressBar Value="@(data.Insult * 100)" ShowValue="false"
+                                                   Style="@GetScoreBarStyle(data.Insult)"/>
+                                <RadzenText TextStyle="TextStyle.Caption" Style="min-width: 45px;">
+                                    @($"{data.Insult:P0}")
+                                </RadzenText>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="IdentityAttack" Title="Identity Attack"
+                                          Width="140px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         AlignItems="AlignItems.Center">
+                                <RadzenProgressBar Value="@(data.IdentityAttack * 100)" ShowValue="false"
+                                                   Style="@GetScoreBarStyle(data.IdentityAttack)"/>
+                                <RadzenText TextStyle="TextStyle.Caption" Style="min-width: 45px;">
+                                    @($"{data.IdentityAttack:P0}")
+                                </RadzenText>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="SexualExplicit" Title="Sexual"
+                                          Width="110px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         AlignItems="AlignItems.Center">
+                                <RadzenProgressBar Value="@(data.SexualExplicit * 100)" ShowValue="false"
+                                                   Style="@GetScoreBarStyle(data.SexualExplicit)"/>
+                                <RadzenText TextStyle="TextStyle.Caption" Style="min-width: 45px;">
+                                    @($"{data.SexualExplicit:P0}")
+                                </RadzenText>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Property="CreatedAt" Title="Created" Width="160px"
+                                          Filterable="true" Sortable="true">
+                        <Template Context="data">
+                            <RadzenText TextStyle="TextStyle.Body2">
+                                @(data.CreatedAt?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")
+                            </RadzenText>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ModerationReport" Title="Actions" Width="80px" Filterable="false"
+                                          Sortable="false" TextAlign="TextAlign.Center" Frozen="true"
+                                          FrozenPosition="FrozenColumnPosition.Right">
+                        <Template Context="data">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem"
+                                         JustifyContent="JustifyContent.Center">
+                                <RadzenButton Icon="visibility" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat"
+                                              Size="ButtonSize.Small" Click="@(() => OpenDetailsDialog(data))"
+                                              title="View Details"/>
+                            </RadzenStack>
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+    </RadzenCard>
+</RadzenStack>

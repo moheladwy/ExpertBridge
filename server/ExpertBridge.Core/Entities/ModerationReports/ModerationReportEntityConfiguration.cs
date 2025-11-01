@@ -25,6 +25,9 @@ public class ModerationReportEntityConfiguration : IEntityTypeConfiguration<Mode
         builder.Property(x => x.ContentType)
             .HasConversion<string>();
 
+        builder.Property(x => x.ReportedBy)
+            .HasConversion<string>();
+
         builder.HasIndex(x => x.IsNegative);
         builder.HasIndex(x => x.ContentId);
         builder.HasIndex(x => new { x.IsNegative, x.ContentId });

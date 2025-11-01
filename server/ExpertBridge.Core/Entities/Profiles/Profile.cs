@@ -157,6 +157,7 @@ public partial class Profile
     /// <summary>
     ///     Gets or sets the collection of job postings created by the user.
     /// </summary>
+    [JsonIgnore]
     public ICollection<JobPosting> JobPostings { get; set; } = [];
 
     /// <summary>

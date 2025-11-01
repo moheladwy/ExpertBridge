@@ -94,8 +94,7 @@ public sealed class S3Service
 
         var response = new PresignedUrlResponse
         {
-            Url = await _s3Client.GetPreSignedURLAsync(request),
-            Key = request.Key
+            Url = await _s3Client.GetPreSignedURLAsync(request), Key = request.Key
         };
 
         return response;
@@ -117,9 +116,7 @@ public sealed class S3Service
     {
         var request = new GetPreSignedUrlRequest
         {
-            BucketName = _awsSettings.BucketName,
-            Key = key,
-            Expires = DateTime.UtcNow.AddMinutes(60)
+            BucketName = _awsSettings.BucketName, Key = key, Expires = DateTime.UtcNow.AddMinutes(60)
         };
 
         var response = new PresignedUrlResponse { Url = await _s3Client.GetPreSignedURLAsync(request), Key = key };
@@ -144,21 +141,21 @@ public sealed class S3Service
     }
 
     /// <summary>
-    /// Uploads an object to an Amazon S3 bucket asynchronously. The method generates a unique key for the object,
-    /// sets the designated bucket name, and uploads the object using the provided request details.
-    /// Upon successful upload, it returns an object containing the upload status and a presigned URL for access.
+    ///     Uploads an object to an Amazon S3 bucket asynchronously. The method generates a unique key for the object,
+    ///     sets the designated bucket name, and uploads the object using the provided request details.
+    ///     Upon successful upload, it returns an object containing the upload status and a presigned URL for access.
     /// </summary>
     /// <param name="request">
-    /// The <see cref="PutObjectRequest"/> containing details of the object to upload, such as the input stream,
-    /// metadata, and content type.
-    /// This request must specify the intended object content and metadata required for the operation.
+    ///     The <see cref="PutObjectRequest" /> containing details of the object to upload, such as the input stream,
+    ///     metadata, and content type.
+    ///     This request must specify the intended object content and metadata required for the operation.
     /// </param>
     /// <returns>
-    /// An <see cref="UploadFileResponse"/> instance containing details about the success of the operation,
-    /// the HTTP status code, and the presigned URL of the uploaded object.
+    ///     An <see cref="UploadFileResponse" /> instance containing details about the success of the operation,
+    ///     the HTTP status code, and the presigned URL of the uploaded object.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    ///   Thrown if the <paramref name="request"/> is null.
+    ///     Thrown if the <paramref name="request" /> is null.
     /// </exception>
     public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)
     {

@@ -59,7 +59,7 @@ public sealed class PostQueriesTests : IDisposable
             "Test Content",
             id: "post-1"
         );
-        var vote = TestDataBuilder.CreatePostVote(post.Id, voterProfile.Id, true);
+        var vote = TestDataBuilder.CreatePostVote(post.Id, voterProfile.Id);
 
         _context.Profiles.AddRange(authorProfile, voterProfile);
         _context.Posts.Add(post);
@@ -188,8 +188,8 @@ public sealed class PostQueriesTests : IDisposable
             id: "post-1"
         );
 
-        var upvote1 = TestDataBuilder.CreatePostVote(post.Id, voter1.Id, true);
-        var upvote2 = TestDataBuilder.CreatePostVote(post.Id, voter2.Id, true);
+        var upvote1 = TestDataBuilder.CreatePostVote(post.Id, voter1.Id);
+        var upvote2 = TestDataBuilder.CreatePostVote(post.Id, voter2.Id);
         var downvote = TestDataBuilder.CreatePostVote(post.Id, voter3.Id, false);
 
         _context.Profiles.AddRange(authorProfile, voter1, voter2, voter3);
@@ -267,7 +267,7 @@ public sealed class PostQueriesTests : IDisposable
             "Test Content",
             id: "post-1"
         );
-        var upvote = TestDataBuilder.CreatePostVote(post.Id, voterProfile.Id, true);
+        var upvote = TestDataBuilder.CreatePostVote(post.Id, voterProfile.Id);
 
         _context.Profiles.AddRange(authorProfile, voterProfile);
         _context.Posts.Add(post);
@@ -355,7 +355,7 @@ public sealed class PostQueriesTests : IDisposable
             "Test Content",
             id: "post-1"
         );
-        var upvote = TestDataBuilder.CreatePostVote(post.Id, voterProfile.Id, true);
+        var upvote = TestDataBuilder.CreatePostVote(post.Id, voterProfile.Id);
 
         _context.Profiles.AddRange(authorProfile, voterProfile);
         _context.Posts.Add(post);

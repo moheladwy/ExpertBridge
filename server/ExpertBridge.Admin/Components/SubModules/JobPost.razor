@@ -1,0 +1,223 @@
+@namespace ExpertBridge.Admin.Components.SubModules
+
+<RadzenCard Style="width: 100%;">
+    @if (JobPostingResponse != null)
+    {
+        <RadzenStack Gap="1rem">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                         AlignItems="AlignItems.Start" Gap="1rem">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="0.75rem">
+                    @if (!string.IsNullOrEmpty(JobPostingResponse.Author?.ProfilePictureUrl))
+                    {
+                        @* <RadzenImage Path="@JobPostingResponse.Author.ProfilePictureUrl" *@
+                        @*              alt="@($"{JobPostingResponse.Author.FirstName}'s profile")" *@
+                        @*              Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" /> *@
+                        <RadzenImage Path="images/default-profile.jpg"
+                                     alt="@($"{JobPostingResponse.Author?.FirstName}'s profile")"
+                                     Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;"/>
+                    }
+                    else
+                    {
+                        <RadzenImage Path="images/default-profile.jpg"
+                                     alt="@($"{JobPostingResponse.Author?.FirstName}'s profile")"
+                                     Style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;"/>
+                    }
+                    <RadzenStack Gap="0.25rem">
+                        @if (JobPostingResponse.Author != null)
+                        {
+                            <RadzenStack Gap="0.1rem">
+                                <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-font-weight-medium">
+                                    @JobPostingResponse.Author.FirstName @JobPostingResponse.Author.LastName
+                                </RadzenText>
+                                @if (!string.IsNullOrEmpty(JobPostingResponse.Author.Username))
+                                {
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                        @("@" + JobPostingResponse.Author.Username)
+                                    </RadzenText>
+                                }
+                            </RadzenStack>
+                            @if (!string.IsNullOrEmpty(JobPostingResponse.Author.JobTitle))
+                            {
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">
+                                    @JobPostingResponse.Author.JobTitle
+                                </RadzenText>
+                            }
+                        }
+                        else
+                        {
+                            <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-font-weight-medium">
+                                Anonymous
+                            </RadzenText>
+                        }
+                    </RadzenStack>
+                </RadzenStack>
+                <RadzenBadge BadgeStyle="BadgeStyle.Light"
+                             Text="@(JobPostingResponse.CreatedAt?.ToString("MMM dd, yyyy • h:mm tt") ?? "Unknown date")"
+                             Shade="Shade.Lighter"/>
+            </RadzenStack>
+
+            <RadzenStack Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H2" class="rz-font-weight-bold">
+                    @JobPostingResponse.Title
+                </RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">
+                    @JobPostingResponse.Content
+                </RadzenText>
+            </RadzenStack>
+
+            <RadzenStack Gap="0.5rem">
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem">
+                        <RadzenIcon Icon="payments" Style="color: var(--rz-success);"/>
+                        <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-font-weight-medium">
+                            Budget: @JobPostingResponse.Budget.ToString("C")
+                        </RadzenText>
+                    </RadzenStack>
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem">
+                        <RadzenIcon Icon="location_on" Style="color: var(--rz-info);"/>
+                        <RadzenText TextStyle="TextStyle.Subtitle2">
+                            @JobPostingResponse.Area
+                        </RadzenText>
+                    </RadzenStack>
+                </RadzenStack>
+            </RadzenStack>
+
+            @if (JobPostingResponse.Tags != null && JobPostingResponse.Tags.Any())
+            {
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                    @foreach (var tag in JobPostingResponse.Tags)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Info" Shade="Shade.Lighter" Text="@tag.EnglishName"/>
+                    }
+                </RadzenStack>
+            }
+
+            @if (JobPostingResponse.Medias != null && JobPostingResponse.Medias.Any())
+            {
+                <RadzenRow Gap="0.5rem">
+                    @foreach (var media in JobPostingResponse.Medias)
+                    {
+                        <RadzenColumn Size="@(JobPostingResponse.Medias.Count == 1 ? 12 : 6)">
+                            @if (media.Type.StartsWith("image"))
+                            {
+                                <RadzenImage Path="@media.Url"
+                                             alt="@media.Name"
+                                             Style="border-radius: 8px; width: 100%; height: auto; object-fit: cover;"/>
+                            }
+                            else if (media.Type.StartsWith("video"))
+                            {
+                                <video src="@media.Url" controls style="border-radius: 8px; width: 100%;">
+                                    Your browser does not support the video tag.
+                                </video>
+                            }
+                            else
+                            {
+                                <RadzenCard Style="padding: 0.75rem;">
+                                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                                 Gap="0.5rem">
+                                        <RadzenIcon Icon="description"/>
+                                        <RadzenLink Path="@media.Url" Target="_blank" Text="@media.Name"/>
+                                    </RadzenStack>
+                                </RadzenCard>
+                            }
+                        </RadzenColumn>
+                    }
+                </RadzenRow>
+            }
+
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center"
+                         Style="padding-top: 0.75rem; border-top: 1px solid var(--rz-border-color);">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
+                             Style="@(JobPostingResponse.IsUpvoted ? "color: var(--rz-primary);" : "color: var(--rz-text-disabled-color);")">
+                    <RadzenIcon Icon="@(JobPostingResponse.IsUpvoted ? "arrow_upward" : "keyboard_arrow_up")"/>
+                    <RadzenText TextStyle="TextStyle.Body2">@JobPostingResponse.Upvotes upvotes</RadzenText>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
+                             Style="@(JobPostingResponse.IsDownvoted ? "color: var(--rz-danger);" : "color: var(--rz-text-disabled-color);")">
+                    <RadzenIcon Icon="@(JobPostingResponse.IsDownvoted ? "arrow_downward" : "keyboard_arrow_down")"/>
+                    <RadzenText TextStyle="TextStyle.Body2">@JobPostingResponse.Downvotes downvotes</RadzenText>
+                </RadzenStack>
+
+                <RadzenButton Variant="Variant.Text" Size="ButtonSize.Small"
+                              Click="@ToggleCommentsAsync"
+                              Style="padding: 0.25rem 0.5rem; min-width: auto;">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.25rem"
+                                 class="rz-color-secondary">
+                        <RadzenIcon Icon="@(_showComments ? "chat_bubble" : "chat_bubble_outline")"/>
+                        <RadzenText TextStyle="TextStyle.Body2">@JobPostingResponse.Comments comments</RadzenText>
+                    </RadzenStack>
+                </RadzenButton>
+
+                @if (JobPostingResponse.IsAppliedFor)
+                {
+                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Applied"/>
+                }
+            </RadzenStack>
+
+            @if (_showComments)
+            {
+                <RadzenStack Gap="1rem"
+                             Style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--rz-border-color);">
+                    <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-font-weight-medium">
+                        Comments (@JobPostingResponse.Comments)
+                    </RadzenText>
+
+                    @if (_loadingComments)
+                    {
+                        <RadzenStack AlignItems="AlignItems.Center" Gap="0.5rem" Style="padding: 2rem 0;">
+                            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                                       Size="ProgressBarCircularSize.Medium"/>
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-secondary">Loading comments...
+                            </RadzenText>
+                        </RadzenStack>
+                    }
+                    else if (_comments == null || !_comments.Any())
+                    {
+                        <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                            <RadzenText TextStyle="TextStyle.Body2">No comments yet. Be the first to comment!
+                            </RadzenText>
+                        </RadzenAlert>
+                    }
+                    else
+                    {
+                        <RadzenStack Gap="1rem">
+                            @foreach (var comment in _comments)
+                            {
+                                <Comment CommentResponse="comment"/>
+                            }
+                        </RadzenStack>
+                    }
+                </RadzenStack>
+            }
+        </RadzenStack>
+    }
+    else
+    {
+        <RadzenStack Gap="1rem">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="0.75rem">
+                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                           Size="ProgressBarCircularSize.Small"
+                                           Style="width: 60px; height: 60px;"/>
+                <RadzenStack Gap="0.5rem" Style="flex: 1;">
+                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                       Style="height: 16px; width: 25%;"/>
+                    <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                       Style="height: 12px; width: 16.67%; margin-top: 0.5rem;"/>
+                </RadzenStack>
+            </RadzenStack>
+            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                               Style="height: 24px; width: 75%;"/>
+            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 80px;"/>
+            <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 160px;"/>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem">
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                   Style="height: 20px; width: 64px;"/>
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                   Style="height: 20px; width: 64px;"/>
+                <RadzenProgressBar ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                   Style="height: 20px; width: 64px;"/>
+            </RadzenStack>
+        </RadzenStack>
+    }
+</RadzenCard>

@@ -2,7 +2,6 @@ using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Requests.CreateJobOffer;
 using ExpertBridge.Contract.Requests.UpdateJobStatus;
 using ExpertBridge.Contract.Responses;
-using ExpertBridge.Contract.Requests.CreateJobOffer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

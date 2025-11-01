@@ -121,13 +121,13 @@ public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInap
             // Log detection results
             _logger.LogDebug("Detection results for CommentId {CommentId}: {@Results}", message.CommentId, results);
 
-            if (results.Insult >= _thresholds.Insult
-                || results.SexualExplicit >= _thresholds.SexualExplicit
-                || results.Toxicity >= _thresholds.Toxicity
-                || results.SevereToxicity >= _thresholds.SevereToxicity
-                || results.Threat >= _thresholds.Threat
-                || results.IdentityAttack >= _thresholds.IdentityAttack
-                || results.Obscene >= _thresholds.Obscene)
+            if (results.Insult > _thresholds.Insult
+                || results.SexualExplicit > _thresholds.SexualExplicit
+                || results.Toxicity > _thresholds.Toxicity
+                || results.SevereToxicity > _thresholds.SevereToxicity
+                || results.Threat > _thresholds.Threat
+                || results.IdentityAttack > _thresholds.IdentityAttack
+                || results.Obscene > _thresholds.Obscene)
             {
                 isAppropriate = false;
                 reason = "Your comment does not follow our Community Guidelines.";
@@ -141,12 +141,13 @@ public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInap
             var report = new ModerationReport
             {
                 ContentType = ContentTypes.Comment,
+                ReportedBy = ReportedBy.Ai,
                 AuthorId = existingComment.AuthorId,
                 ContentId = existingComment.Id,
                 IsNegative = !isAppropriate,
                 Reason = reason,
                 IsResolved =
-                    true, // Because this is an automated report generation, not issued by a user of the application
+                    false, // Because this is an automated report generation, not issued by a user of the application
                 IdentityAttack = results.IdentityAttack,
                 Obscene = results.Obscene,
                 Insult = results.Insult,

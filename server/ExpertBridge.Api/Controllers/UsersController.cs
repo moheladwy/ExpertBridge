@@ -121,7 +121,9 @@ public sealed class UsersController : ControllerBase
             await _dbContext.Profiles.AddAsync(profile);
 
             if (string.IsNullOrWhiteSpace(request.ProfilePictureUrl))
+            {
                 await _publishEndpoint.Publish(new MoveProfileImageFromGoogleToS3Message { ProfileId = profile.Id });
+            }
         }
         else
         {

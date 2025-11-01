@@ -96,9 +96,9 @@ public sealed class CommentQueriesTests : IDisposable
         var comment = TestDataBuilder.CreateComment(authorProfile.Id, postId: "post-123", id: "comment-1");
 
         // Create 3 upvotes and 2 downvotes
-        var upvote1 = TestDataBuilder.CreateCommentVote("comment-1", "voter-1", true);
-        var upvote2 = TestDataBuilder.CreateCommentVote("comment-1", "voter-2", true);
-        var upvote3 = TestDataBuilder.CreateCommentVote("comment-1", "voter-3", true);
+        var upvote1 = TestDataBuilder.CreateCommentVote("comment-1", "voter-1");
+        var upvote2 = TestDataBuilder.CreateCommentVote("comment-1", "voter-2");
+        var upvote3 = TestDataBuilder.CreateCommentVote("comment-1", "voter-3");
         var downvote1 = TestDataBuilder.CreateCommentVote("comment-1", "voter-4", false);
         var downvote2 = TestDataBuilder.CreateCommentVote("comment-1", "voter-5", false);
 
@@ -126,7 +126,7 @@ public sealed class CommentQueriesTests : IDisposable
         var authorProfile = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
         var currentUserProfile = TestDataBuilder.CreateProfile(id: "current-user-profile", userId: "current-user");
         var comment = TestDataBuilder.CreateComment(authorProfile.Id, postId: "post-123", id: "comment-1");
-        var userUpvote = TestDataBuilder.CreateCommentVote("comment-1", "current-user-profile", true);
+        var userUpvote = TestDataBuilder.CreateCommentVote("comment-1", "current-user-profile");
 
         comment.Votes = [userUpvote];
 

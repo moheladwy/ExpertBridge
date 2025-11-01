@@ -1,11 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities.Notifications;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using ExpertBridge.Notifications.Models;
-using ExpertBridge.Notifications.Models.IPC;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 

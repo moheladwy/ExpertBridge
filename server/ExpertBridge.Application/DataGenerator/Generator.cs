@@ -194,7 +194,7 @@ public static class Generator
     }
 
     // <summary>
-    ///     Generates fake Post entities with random authors from provided profiles.
+    /// Generates fake Post entities with random authors from provided profiles.
     /// </summary>
     /// <param name="profiles">The list of profiles to randomly assign as post authors.</param>
     /// <param name="count">The number of posts to generate.</param>

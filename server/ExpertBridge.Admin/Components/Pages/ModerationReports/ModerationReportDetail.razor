@@ -1,0 +1,272 @@
+@page "/moderation-reports/{id}"
+@using System.Globalization
+@using ExpertBridge.Core.Entities
+
+<PageTitle>Moderation Report Details - ExpertBridge Admin</PageTitle>
+
+<RadzenStack Gap="1.5rem" class="rz-p-4 rz-p-md-6">
+    @* Header with Back Button *@
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                     AlignItems="AlignItems.Center" Gap="1rem" Wrap="FlexWrap.Wrap">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenButton Icon="arrow_back" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"
+                              Size="ButtonSize.Medium" Click="@NavigateBack" title="Back to Reports"/>
+                <RadzenIcon Icon="report" Style="color: var(--rz-danger);"/>
+                <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1" class="rz-m-0">
+                    Moderation Report Details
+                </RadzenText>
+            </RadzenStack>
+            @if (_report != null)
+            {
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                    <RadzenBadge BadgeStyle="@GetContentTypeBadgeStyle(_report.ContentType)"
+                                 Text="@_report.ContentType.ToString()" Shade="Shade.Lighter"/>
+                    @if (_report.IsNegative)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Flagged" Shade="Shade.Lighter"/>
+                    }
+                    else
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Clean" Shade="Shade.Lighter"/>
+                    }
+                    @if (_report.IsResolved)
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Resolved" Shade="Shade.Lighter"/>
+                    }
+                    else
+                    {
+                        <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="Pending" Shade="Shade.Lighter"/>
+                    }
+                </RadzenStack>
+            }
+        </RadzenStack>
+    </RadzenCard>
+
+    @if (_isLoading)
+    {
+        <RadzenCard>
+            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem"
+                         Style="min-height: 300px;">
+                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                           Size="ProgressBarCircularSize.Large"/>
+                <RadzenText TextStyle="TextStyle.Body1">Loading moderation report...</RadzenText>
+            </RadzenStack>
+        </RadzenCard>
+    }
+    else if (_report == null)
+    {
+        <RadzenCard>
+            <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Shade="Shade.Lighter">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                    <RadzenIcon Icon="error"/>
+                    <RadzenText TextStyle="TextStyle.Body1">
+                        Moderation report not found or has been deleted.
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenAlert>
+        </RadzenCard>
+    }
+    else
+    {
+        @* Report Information *@
+        <RadzenRow Gap="1.5rem">
+            <RadzenColumn Size="12" SizeMD="8">
+                @* Content Display *@
+                <RadzenCard>
+                    <RadzenStack Gap="1rem">
+                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H2">
+                            Flagged Content
+                        </RadzenText>
+
+                        @if (_isLoadingContent)
+                        {
+                            <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center"
+                                         Gap="1rem"
+                                         Style="min-height: 200px;">
+                                <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                                           Size="ProgressBarCircularSize.Medium"/>
+                                <RadzenText TextStyle="TextStyle.Body2">Loading content...</RadzenText>
+                            </RadzenStack>
+                        }
+                        else if (_contentNotFound)
+                        {
+                            <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
+                                <RadzenText TextStyle="TextStyle.Body2">
+                                    Content not found. It may have been deleted.
+                                </RadzenText>
+                            </RadzenAlert>
+                        }
+                        else
+                        {
+                            @if (_report.ContentType == ContentTypes.Post && _postResponse != null)
+                            {
+                                <Post PostResponse="@_postResponse"/>
+                            }
+                            else if (_report.ContentType == ContentTypes.Comment && _commentResponse != null)
+                            {
+                                <Comment CommentResponse="@_commentResponse"/>
+                            }
+                            else if (_report.ContentType == ContentTypes.JobPosting && _jobPostingResponse != null)
+                            {
+                                <JobPost JobPostingResponse="@_jobPostingResponse"/>
+                            }
+                            else
+                            {
+                                <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                                    <RadzenText TextStyle="TextStyle.Body2">
+                                        Content preview not available for @_report.ContentType type.
+                                    </RadzenText>
+                                </RadzenAlert>
+                            }
+                        }
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenColumn>
+
+            <RadzenColumn Size="12" SizeMD="4">
+                @* Report Details *@
+                <RadzenStack Gap="1rem">
+                    <RadzenCard>
+                        <RadzenStack Gap="1rem">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H2">
+                                Report Information
+                            </RadzenText>
+
+                            <RadzenStack Gap="0.5rem">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">Report ID
+                                </RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2"
+                                            Style="font-family: monospace; word-break: break-all;">
+                                    @_report.Id
+                                </RadzenText>
+                            </RadzenStack>
+
+                            <RadzenStack Gap="0.5rem">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">Content ID
+                                </RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2"
+                                            Style="font-family: monospace; word-break: break-all;">
+                                    @_report.ContentId
+                                </RadzenText>
+                            </RadzenStack>
+
+                            <RadzenStack Gap="0.5rem">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">Author ID
+                                </RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2"
+                                            Style="font-family: monospace; word-break: break-all;">
+                                    @_report.AuthorId
+                                </RadzenText>
+                            </RadzenStack>
+
+                            <RadzenStack Gap="0.5rem">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">Reported By
+                                </RadzenText>
+                                <RadzenBadge BadgeStyle="@GetReportedByBadgeStyle(_report.ReportedBy)"
+                                             Text="@_report.ReportedBy.ToString()" Shade="Shade.Lighter"/>
+                            </RadzenStack>
+
+                            @if (!string.IsNullOrWhiteSpace(_report.Reason))
+                            {
+                                <RadzenStack Gap="0.5rem">
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">Reason
+                                    </RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body2">@_report.Reason</RadzenText>
+                                </RadzenStack>
+                            }
+
+                            <RadzenStack Gap="0.5rem">
+                                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">Created
+                                </RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2">
+                                    @(_report.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? "N/A")
+                                </RadzenText>
+                            </RadzenStack>
+
+                            @if (_report.LastModified.HasValue)
+                            {
+                                <RadzenStack Gap="0.5rem">
+                                    <RadzenText TextStyle="TextStyle.Overline" class="rz-color-secondary">Last
+                                        Modified
+                                    </RadzenText>
+                                    <RadzenText TextStyle="TextStyle.Body2">
+                                        @_report.LastModified.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                                    </RadzenText>
+                                </RadzenStack>
+                            }
+                        </RadzenStack>
+                    </RadzenCard>
+
+                    @* AI Scores Card *@
+                    <RadzenCard>
+                        <RadzenStack Gap="1rem">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H2">
+                                AI Moderation Scores
+                            </RadzenText>
+
+                            <RadzenStack Gap="0.75rem">
+                                @foreach (var score in GetAiScores())
+                                {
+                                    {
+                                        var style = $"font-weight: 600; color: {GetScoreColor(score.Value)};";
+                                        <RadzenStack Gap="0.25rem">
+                                            <RadzenStack Orientation="Orientation.Horizontal"
+                                                         JustifyContent="JustifyContent.SpaceBetween">
+                                                <RadzenText TextStyle="TextStyle.Body2">@score.Name</RadzenText>
+                                                <RadzenText TextStyle="TextStyle.Body2" Style=@style>
+                                                    @score.Value.ToString("P1", CultureInfo.InvariantCulture)
+                                                </RadzenText>
+                                            </RadzenStack>
+                                            <RadzenProgressBar Value="@(score.Value * 100)" ShowValue="false"
+                                                               Style="@GetScoreBarStyle(score.Value)"/>
+                                        </RadzenStack>
+                                    }
+                                }
+                            </RadzenStack>
+                        </RadzenStack>
+                    </RadzenCard>
+
+                    @* Actions Card *@
+                    <RadzenCard>
+                        <RadzenStack Gap="0.75rem">
+                            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H2">
+                                Actions
+                            </RadzenText>
+
+                            @if (!_report.IsResolved)
+                            {
+                                <RadzenButton Icon="check_circle" ButtonStyle="ButtonStyle.Success"
+                                              Click="@(() => ToggleResolution())" Style="width: 100%;"
+                                              Text="Mark as Resolved"/>
+                            }
+                            else
+                            {
+                                <RadzenButton Icon="undo" ButtonStyle="ButtonStyle.Warning"
+                                              Click="@(() => ToggleResolution())" Style="width: 100%;"
+                                              Text="Mark as Unresolved"/>
+                            }
+
+                            @if (_report.IsNegative)
+                            {
+                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success"
+                                              Click="@(() => ToggleIsNegative())" Style="width: 100%;"
+                                              Text="Mark as Clean Content"/>
+                            }
+                            else
+                            {
+                                <RadzenButton Icon="flag" ButtonStyle="ButtonStyle.Danger"
+                                              Click="@(() => ToggleIsNegative())" Style="width: 100%;"
+                                              Text="Mark as Flagged Content"/>
+                            }
+
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Secondary"
+                                          Click="@RestoreContent" Style="width: 100%;"
+                                          Text="Restore Content"/>
+                        </RadzenStack>
+                    </RadzenCard>
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+    }
+</RadzenStack>

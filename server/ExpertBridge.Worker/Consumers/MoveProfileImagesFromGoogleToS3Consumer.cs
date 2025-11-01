@@ -145,11 +145,7 @@ public sealed class MoveProfileImagesFromGoogleToS3Consumer : IConsumer<MoveProf
             {
                 InputStream = imageStream,
                 ContentType = contentType,
-                Metadata =
-                {
-                    ["file-name"] = $"profile-{message.ProfileId}",
-                    ["original-url"] = pictureUrl
-                }
+                Metadata = { ["file-name"] = $"profile-{message.ProfileId}", ["original-url"] = pictureUrl }
             };
 
             var uploadResponse = await _s3Service.UploadObjectAsync(putRequest);
