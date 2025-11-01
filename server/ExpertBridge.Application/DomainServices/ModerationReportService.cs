@@ -231,11 +231,42 @@ public class ModerationReportService
         _logger.LogInformation("Toggling {ContentType} {ContentId} as {Negativity}",
             report.ContentType, report.ContentId, report.IsNegative ? "negative" : "not negative");
 
+        var newStatus = !report.IsNegative;
         await _dbContext.ModerationReports
             .IgnoreQueryFilters()
             .Where(r => r.Id == report.Id)
             .ExecuteUpdateAsync(set => set
-                .SetProperty(p => p.IsNegative, !report.IsNegative));
+                .SetProperty(p => p.IsResolved, true)
+                .SetProperty(p => p.IsNegative, newStatus));
+
+        switch (report.ContentType)
+        {
+            case ContentTypes.Post:
+                await _dbContext.Posts
+                    .IgnoreQueryFilters()
+                    .Where(p => p.Id == report.ContentId)
+                    .ExecuteUpdateAsync(set => set.SetProperty(p => p.IsDeleted, newStatus));
+                break;
+            case ContentTypes.Comment:
+                await _dbContext.Comments
+                    .IgnoreQueryFilters()
+                    .Where(p => p.Id == report.ContentId)
+                    .ExecuteUpdateAsync(set => set.SetProperty(p => p.IsDeleted, newStatus));
+                break;
+            case ContentTypes.JobPosting:
+                await _dbContext.JobPostings
+                    .IgnoreQueryFilters()
+                    .Where(p => p.Id == report.ContentId)
+                    .ExecuteUpdateAsync(set => set.SetProperty(p => p.IsDeleted, newStatus));
+                break;
+            case ContentTypes.Profile:
+            case ContentTypes.Message:
+            case ContentTypes.Video:
+            case ContentTypes.Image:
+            case ContentTypes.File:
+            default:
+                break;
+        }
 
         _logger.LogInformation("Toggled {ContentType} {ContentId} successfully",
             report.ContentType, report.ContentId);

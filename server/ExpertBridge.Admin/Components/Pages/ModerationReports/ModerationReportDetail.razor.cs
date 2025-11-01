@@ -285,65 +285,22 @@ public partial class ModerationReportDetail : ComponentBase
             return;
         }
 
-        try
-        {
-            await ModerationReportService.ToggleNegative(_report);
-
-            switch (_report.ContentType)
-            {
-                // Invalidate cache
-                case ContentTypes.Post:
-                    await Cache.RemoveAsync($"admin:posts:{_report.ContentId}");
-                    break;
-                case ContentTypes.Comment:
-                    await Cache.RemoveAsync($"admin:comments:{_report.ContentId}");
-                    break;
-                case ContentTypes.JobPosting:
-                    await Cache.RemoveAsync($"admin:job-postings:{_report.ContentId}");
-                    break;
-                case ContentTypes.Profile:
-                case ContentTypes.Message:
-                case ContentTypes.Video:
-                case ContentTypes.Image:
-                case ContentTypes.File:
-                default:
-                    break;
-            }
-
-            await Cache.RemoveAsync("admin:moderation-reports:all");
-            await Cache.RemoveAsync($"admin:moderation-reports:{Id}");
-
-            _report.IsNegative = !_report.IsNegative;
-            var message = _report.IsNegative ? "Content marked as flagged" : "Content marked as clean";
-            ShowNotification(NotificationSeverity.Success, "Success", message);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error toggling negative flag for report {ReportId}", _report.Id);
-            ShowNotification(NotificationSeverity.Error, "Error", "Failed to update content flag status");
-        }
-    }
-
-    private async Task RestoreContent()
-    {
-        if (_report == null)
-        {
-            return;
-        }
-
+        var confirmationMessage = $"Are you sure you want to mark this {_report.ContentType} as {(_report.IsNegative ?
+                                      $"Clean and undelete the {_report.ContentType}" :
+                                      $"Negative and delete the {_report.ContentType}")}?";
         var confirmed = await DialogService.Confirm(
-            $"Are you sure you want to restore this {_report.ContentType} after it has been deleted?",
-            "Confirm Restore",
-            new ConfirmOptions { OkButtonText = "Restore", CancelButtonText = "Cancel" }
+            confirmationMessage,
+            "Confirm",
+            new ConfirmOptions { OkButtonText = "Confirm", CancelButtonText = "Cancel" }
         );
 
         if (confirmed == true)
         {
             try
             {
-                // Invalidate cache
                 await Cache.RemoveAsync("admin:moderation-reports:all");
-                await ModerationReportService.RestoreContent(_report);
+                await ModerationReportService.ToggleNegative(_report);
+
                 if (_report.ContentType == ContentTypes.Post && _postResponse != null)
                 {
                     await Cache.RemoveAsync($"admin:posts:{_postResponse.Id}");
@@ -380,15 +337,19 @@ public partial class ModerationReportDetail : ComponentBase
                         }, _report);
                 }
 
-                ShowNotification(NotificationSeverity.Success, "Deleted", "Moderation report has been deleted");
+                await Cache.RemoveAsync("admin:moderation-reports:all");
+                await Cache.RemoveAsync($"admin:moderation-reports:{Id}");
 
-                // Navigate back to the list
-                NavigateBack();
+                _report.IsNegative = !_report.IsNegative;
+                var message = _report.IsNegative ?
+                    $"{_report.ContentType} marked as negative and deleted" :
+                    $"{_report.ContentType} marked as clean and restored";
+                ShowNotification(NotificationSeverity.Success, "Success", message);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error deleting report {ReportId}", _report.Id);
-                ShowNotification(NotificationSeverity.Error, "Error", "Failed to delete moderation report");
+                Logger.LogError(ex, "Error toggling negative flag for report {ReportId}", _report.Id);
+                ShowNotification(NotificationSeverity.Error, "Error", "Failed to update report negative status");
             }
         }
     }
