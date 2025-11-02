@@ -11,17 +11,17 @@ namespace ExpertBridge.Application.Settings;
 ///     when users sign in or refresh their authentication tokens.
 ///     **Firebase Auth API Response Example:**
 ///     <code>
-/// {
-///   "kind": "identitytoolkit#VerifyPasswordResponse",
-///   "localId": "user123",
-///   "email": "user@example.com",
-///   "displayName": "John Doe",
-///   "idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
-///   "registered": true,
-///   "refreshToken": "AEu4IL2...",
-///   "expiresIn": "3600"
-/// }
-/// </code>
+///         {
+///           "kind": "identitytoolkit#VerifyPasswordResponse",
+///           "localId": "user123",
+///           "email": "user@example.com",
+///           "displayName": "John Doe",
+///           "idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+///           "registered": true,
+///           "refreshToken": "AEu4IL2...",
+///           "expiresIn": "3600"
+///         }
+///     </code>
 ///     Properties are decorated with JsonPropertyName attributes to match Firebase's camelCase JSON format
 ///     while maintaining C# PascalCase naming conventions.
 ///     Not exposed publicly - used only within authentication service implementations.
