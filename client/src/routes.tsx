@@ -28,143 +28,131 @@ import App from "./App.tsx";
 import LandingPage from "./views/pages/landing/LandingPage.tsx";
 
 export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        index: true,
-        element: <LandingPage />,
-      },
-      {
-        path: "home",
-        element: (
-          // <ProtectedRoute>
-          <HomePage />
-          // </ProtectedRoute>
-        ),
-      },
-      {
-        path: "posts/:postId",
-        element: (
-          // <ProtectedRoute>
-          <PostFromUrlPage />
-          // </ProtectedRoute>
-        ),
-      },
-      {
-        path: "feed/:postId",
-        element: (
-          // <ProtectedRoute>
-          <PostFromFeedPage />
-          // </ProtectedRoute>
-        ),
-      },
-      {
-        path: "jobs",
-        element: <JobPostingsFeed />,
-      },
-      {
-        path: "jobs/:jobPostingId",
-        element: <JobPostingFromFeedPage />,
-      },
-      {
-        path: "job/:jobPostingId",
-        element: <JobPostingFromUrlPage />,
-      },
-      {
-        path: "job/:jobPostingId/applications",
-        element: <JobApplicationsPage />,
-      },
-      {
-        path: "profile",
-        element: (
-          <ProtectedRoute>
-            <MyProfilePage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "profile/:userId",
-        element: <UserProfilePage />,
-      },
-      {
-        path: "search/p",
-        element: <SearchPosts />,
-      },
-      {
-        path: "search/u",
-        element: <SearchUsers />,
-      },
-      {
-        path: "search/jobs",
-        element: <SearchJobPosts />,
-      },
-      {
-        path: "notifications",
-        element: (
-          <ProtectedRoute>
-            <Notifications />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "offers",
-        element: (
-          <ProtectedRoute>
-            <JobOffersDashboardPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "my-jobs",
-        element: (
-          <ProtectedRoute>
-            <MyJobsPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "my-jobs/:jobId",
-        element: (
-          <ProtectedRoute>
-            <JobDetailsPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "privacy-policy",
-        element: <PrivacyPolicy />,
-      },
-      {
-        path: "AboutUs",
-        element: <AboutUsPage />,
-      },
-      {
-        path: "service-unavailable",
-        element: <ApiHealthErrorPage healthData={null} />,
-      },
-    ],
-  },
-  {
-    path: "login",
-    element: <LoginPage />,
-  },
-  {
-    path: "signup",
-    element: <SignUpPage />,
-  },
-  {
-    path: "verify-email",
-    element: <EmailVerificationPage />,
-  },
-  {
-    path: "onboarding",
-    element: (
-      <ProtectedRoute>
-        <Interests />
-      </ProtectedRoute>
-    ),
-  },
-  { path: "*", element: <NotFoundError /> }, // Catch-all 404
+	{
+		path: "/",
+		element: <App />,
+		children: [
+			{
+				index: true,
+				element: <LandingPage />,
+			},
+			{
+				path: "home",
+				element: <HomePage />,
+			},
+			{
+				path: "posts/:postId",
+				element: <PostFromUrlPage />,
+			},
+			{
+				path: "feed/:postId",
+				element: <PostFromFeedPage />,
+			},
+			{
+				path: "jobs",
+				element: <JobPostingsFeed />,
+			},
+			{
+				path: "jobs/:jobPostingId",
+				element: <JobPostingFromFeedPage />,
+			},
+			{
+				path: "job/:jobPostingId",
+				element: <JobPostingFromUrlPage />,
+			},
+			{
+				path: "job/:jobPostingId/applications",
+				element: <JobApplicationsPage />,
+			},
+			{
+				path: "profile",
+				element: (
+					<ProtectedRoute>
+						<MyProfilePage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "profile/:userId",
+				element: <UserProfilePage />,
+			},
+			{
+				path: "search/p",
+				element: <SearchPosts />,
+			},
+			{
+				path: "search/u",
+				element: <SearchUsers />,
+			},
+			{
+				path: "search/jobs",
+				element: <SearchJobPosts />,
+			},
+			{
+				path: "notifications",
+				element: (
+					<ProtectedRoute>
+						<Notifications />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "offers",
+				element: (
+					<ProtectedRoute>
+						<JobOffersDashboardPage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "my-jobs",
+				element: (
+					<ProtectedRoute>
+						<MyJobsPage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "my-jobs/:jobId",
+				element: (
+					<ProtectedRoute>
+						<JobDetailsPage />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "privacy-policy",
+				element: <PrivacyPolicy />,
+			},
+			{
+				path: "AboutUs",
+				element: <AboutUsPage />,
+			},
+			{
+				path: "service-unavailable",
+				element: <ApiHealthErrorPage healthData={null} />,
+			},
+		],
+	},
+	{
+		path: "login",
+		element: <LoginPage />,
+	},
+	{
+		path: "signup",
+		element: <SignUpPage />,
+	},
+	{
+		path: "verify-email",
+		element: <EmailVerificationPage />,
+	},
+	{
+		path: "onboarding",
+		element: (
+			<ProtectedRoute>
+				<Interests />
+			</ProtectedRoute>
+		),
+	},
+	{ path: "*", element: <NotFoundError /> }, // Catch-all 404
 ]);

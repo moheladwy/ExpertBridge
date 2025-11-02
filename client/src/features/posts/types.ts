@@ -1,7 +1,6 @@
-import { Comment } from "../comments/types";
-import { MediaObject, MediaObjectResponse, PresignedUrl } from "../media/types";
+import { MediaObjectResponse, PresignedUrl } from "../media/types";
 import { Tag } from "../tags/types";
-import { AppUser, Author } from "../users/types";
+import { Author } from "../users/types";
 
 export interface PostTag {
 	id: string;
@@ -9,20 +8,20 @@ export interface PostTag {
 }
 
 export type PostsCursorPaginatedResponse = {
-  posts: Post[];
-  pageInfo: {
-    endCursor?: number;
-    hasNextPage: boolean;
-    embedding?: string;
-  };
-}
+	posts: Post[];
+	pageInfo: {
+		endCursor?: number;
+		hasNextPage: boolean;
+		embedding?: string;
+	};
+};
 
 export type PostsInitialPageParam = {
-  after?: number;
-  pageSize: number;
-  page: number;
-  embedding?: string;
-}
+	after?: number;
+	pageSize: number;
+	page: number;
+	embedding?: string;
+};
 
 export type PostsQueryParamLimit = number;
 

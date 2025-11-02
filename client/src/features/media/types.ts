@@ -1,23 +1,22 @@
-
 export interface PresignedUrl {
-  url: string;
-  key: string;
-  type: string;
+	url: string;
+	key: string;
+	type: string;
 }
 
 export interface MediaObject {
-  file: File;
-  url?: string | null;
-  type: string;
-};
+	file: File;
+	url?: string | null;
+	type: string;
+}
 
 export interface MediaObjectResponse {
-  id: string;
-  name?: string | null;
-  url: string;
-  type: string;
-};
+	id: string;
+	name?: string | null;
+	url: string;
+	type: string;
+}
 
 export interface UploadMediaRequest {
-  mediaList: MediaObject[];
-};
+	mediaList: MediaObject[];
+}

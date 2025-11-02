@@ -4,18 +4,18 @@ import { auth } from "@/lib/firebase";
 import { type User } from "firebase/auth";
 
 export function useCurrentAuthUser() {
-  const [user, setUser] = useState(() => auth.currentUser); // initial value might be null
+	const [user, setUser] = useState(() => auth.currentUser); // initial value might be null
 
-  const [returnedUser, setReturnedUser] = useState<User | null | undefined>();
+	const [returnedUser, setReturnedUser] = useState<User | null | undefined>();
 
-  useEffect(() => {
-    setReturnedUser(user);
-  }, [user]);
+	useEffect(() => {
+		setReturnedUser(user);
+	}, [user]);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, []);
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, setUser);
+		return () => unsubscribe();
+	}, []);
 
-  return returnedUser;
+	return returnedUser;
 }

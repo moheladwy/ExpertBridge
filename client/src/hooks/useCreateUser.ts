@@ -1,152 +1,168 @@
-import { Auth, AuthError, CustomParameters, UserCredential } from "firebase/auth";
-import { AppUser, CreateUserError, CreateUserRequest, UpdateUserRequest, UserFormData } from "../features/users/types";
+import {
+	Auth,
+	AuthError,
+	CustomParameters,
+	UserCredential,
+} from "firebase/auth";
+import {
+	AppUser,
+	CreateUserError,
+	UpdateUserRequest,
+	UserFormData,
+} from "../features/users/types";
 import { useSignInWithGoogle } from "@/lib/firebase/useSignInWithPopup";
 import { useUpdateUserMutation } from "../features/users/usersSlice";
 import { useCallback, useEffect, useState } from "react";
 import useCreateUserWithEmailAndPassword from "@/lib/firebase/EmailAuth/useCreateUserWithEmailAndPassword";
 
-export type GoogleCallback =
-  (scopes?: string[], customOAuthParameters?: CustomParameters)
-    => Promise<UserCredential | undefined>
+export type GoogleCallback = (
+	scopes?: string[],
+	customOAuthParameters?: CustomParameters
+) => Promise<UserCredential | undefined>;
 
 export type EmailCallback = (
-  email: string,
-  password: string,
-  user: UserFormData
-)
-  => Promise<UserCredential | undefined>
+	email: string,
+	password: string,
+	user: UserFormData
+) => Promise<UserCredential | undefined>;
 
 export type CreateUserWithGoogleHook = [
-  GoogleCallback,
-  EmailCallback,
-  UserCredential | undefined,
-  AppUser | undefined,
-  boolean, // loading
-  AuthError | undefined,
-  CreateUserError, // createUserError from the rtkq hook
-  boolean // createUserSuccess
+	GoogleCallback,
+	EmailCallback,
+	UserCredential | undefined,
+	AppUser | undefined,
+	boolean, // loading
+	AuthError | undefined,
+	CreateUserError, // createUserError from the rtkq hook
+	boolean, // createUserSuccess
 ];
 
-export type AuthType = 'email' | 'google';
+export type AuthType = "email" | "google";
 
 export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
-  const [loading, setLoading] = useState(false);
-  const [authError, setAuthError] = useState<AuthError | undefined>(undefined);
-  const [userCred, setUserCred] = useState<UserCredential | undefined>(undefined);
+	const [loading, setLoading] = useState(false);
+	const [authError, setAuthError] = useState<AuthError | undefined>(
+		undefined
+	);
+	const [userCred, setUserCred] = useState<UserCredential | undefined>(
+		undefined
+	);
 
-  const [
-    signInWithGoogle,
-    googleUser,
-    googleLoading,
-    googleError
-  ] = useSignInWithGoogle(auth);
+	const [signInWithGoogle, googleUser, googleLoading, googleError] =
+		useSignInWithGoogle(auth);
 
-  // Email/Password Sign-Up Hook
-  const [
-    registerWithEmailAndPassword,
-    emailUser,
-    emailLoading,
-    emailError
-  ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
+	// Email/Password Sign-Up Hook
+	const [registerWithEmailAndPassword, emailUser, emailLoading, emailError] =
+		useCreateUserWithEmailAndPassword(auth, {
+			sendEmailVerification: true,
+		});
 
-  const [createAppUser, result] = useUpdateUserMutation();
-  const {
-    isLoading: createUserLoading,
-    isError: createUserError,
-    isSuccess: createUserSuccess,
-    data: createdUser,
-  } = result;
+	const [createAppUser, result] = useUpdateUserMutation();
+	const {
+		isLoading: createUserLoading,
+		isError: createUserError,
+		isSuccess: createUserSuccess,
+		data: createdUser,
+	} = result;
 
-  const [createUserErrorMessage, setCreateUserErrorMessage] = useState<CreateUserError>();
-  const [userInfo, setUserInfo] = useState<UserFormData>();
+	const [createUserErrorMessage, setCreateUserErrorMessage] =
+		useState<CreateUserError>();
+	const [userInfo, setUserInfo] = useState<UserFormData>();
 
-  const createWithEmail = useCallback(async (email: string, passowrd: string, userInfo: UserFormData) => {
-    setUserInfo(userInfo);
+	const createWithEmail = useCallback(
+		async (email: string, passowrd: string, userInfo: UserFormData) => {
+			setUserInfo(userInfo);
 
-    return await registerWithEmailAndPassword(email, passowrd);
-  }, [registerWithEmailAndPassword]);
+			return await registerWithEmailAndPassword(email, passowrd);
+		},
+		[registerWithEmailAndPassword]
+	);
 
-  const create = useCallback(async (user: UpdateUserRequest) => {
-    const token = await (emailUser || googleUser)?.user.getIdToken();
-    await createAppUser({
-      ...user,
-      token
-    });
-  }, [createAppUser, emailUser, googleUser]);
+	const create = useCallback(
+		async (user: UpdateUserRequest) => {
+			const token = await (emailUser || googleUser)?.user.getIdToken();
+			await createAppUser({
+				...user,
+				token,
+			});
+		},
+		[createAppUser, emailUser, googleUser]
+	);
 
-  useEffect(() => {
-    console.log('useCreateUser Hook');
-    if (emailUser && userInfo) {
-      const user: UpdateUserRequest = {
-        firstName: userInfo.firstName,
-        lastName: userInfo.lastName,
-        email: emailUser.user.email!,
-        username: userInfo.email,
-        providerId: emailUser.user.uid,
-        isEmailVerified: emailUser.user.emailVerified,
-      }
+	useEffect(() => {
+		console.log("useCreateUser Hook");
+		if (emailUser && userInfo) {
+			const user: UpdateUserRequest = {
+				firstName: userInfo.firstName,
+				lastName: userInfo.lastName,
+				email: emailUser.user.email!,
+				username: userInfo.email,
+				providerId: emailUser.user.uid,
+				isEmailVerified: emailUser.user.emailVerified,
+			};
 
-      create(user);
-    }
-    else if (googleUser) {
-      const name = googleUser.user.displayName!.split(' ');
-      console.log(googleUser.user.uid);
+			create(user);
+		} else if (googleUser) {
+			const name = googleUser.user.displayName!.split(" ");
+			console.log(googleUser.user.uid);
 
-      const user: UpdateUserRequest = {
-        firstName: name[0],
-        lastName: name[1],
-        email: googleUser.user.email!,
-        username: googleUser.user.email!,
-        phoneNumber: googleUser.user.phoneNumber,
-        providerId: googleUser.user.uid,
-        profilePictureUrl: googleUser.user.photoURL,
-        isEmailVerified: googleUser.user.emailVerified,
-      }
+			const user: UpdateUserRequest = {
+				firstName: name[0],
+				lastName: name[1],
+				email: googleUser.user.email!,
+				username: googleUser.user.email!,
+				phoneNumber: googleUser.user.phoneNumber,
+				providerId: googleUser.user.uid,
+				profilePictureUrl: googleUser.user.photoURL,
+				isEmailVerified: googleUser.user.emailVerified,
+			};
 
-      console.log('updating user');
+			console.log("updating user");
 
-      create(user);
-    }
-  }, [googleUser, emailUser, userInfo, create]);
+			create(user);
+		}
+	}, [googleUser, emailUser, userInfo, create]);
 
-  const handleCreateBackendUserError = useCallback(async () => {
-    // Delete the user from firebase if api user creation fails.
-    await auth.currentUser?.delete();
-    await auth.signOut();
-  }, [auth]);
+	const handleCreateBackendUserError = useCallback(async () => {
+		// Delete the user from firebase if api user creation fails.
+		await auth.currentUser?.delete();
+		await auth.signOut();
+	}, [auth]);
 
-  useEffect(() => {
-    if (createUserError) {
-      handleCreateBackendUserError();
+	useEffect(() => {
+		if (createUserError) {
+			handleCreateBackendUserError();
 
-      // TODO: use createUserError to extract useful info and give it to the user
-      // from the response. createUserError is only a boolean
+			// TODO: use createUserError to extract useful info and give it to the user
+			// from the response. createUserError is only a boolean
 
-      setCreateUserErrorMessage('An error occurred while creating your account. Please try again.');
-      console.log(createUserError);
-    }
-  }, [createUserError, handleCreateBackendUserError]);
+			setCreateUserErrorMessage(
+				"An error occurred while creating your account. Please try again."
+			);
+			console.log(createUserError);
+		}
+	}, [createUserError, handleCreateBackendUserError]);
 
-  useEffect(() => {
-    setAuthError(googleError || emailError);
-  }, [googleError, emailError]);
+	useEffect(() => {
+		setAuthError(googleError || emailError);
+	}, [googleError, emailError]);
 
-  useEffect(() => {
-    setUserCred(googleUser || emailUser);
-  }, [googleUser, emailUser]);
+	useEffect(() => {
+		setUserCred(googleUser || emailUser);
+	}, [googleUser, emailUser]);
 
-  useEffect(() => {
-    setLoading(emailLoading || googleLoading || createUserLoading);
-  }, [emailLoading, googleLoading, createUserLoading]);
+	useEffect(() => {
+		setLoading(emailLoading || googleLoading || createUserLoading);
+	}, [emailLoading, googleLoading, createUserLoading]);
 
-  return [
-    signInWithGoogle,
-    createWithEmail,
-    userCred,
-    createdUser,
-    loading,
-    authError,
-    createUserErrorMessage,
-    createUserSuccess
-  ];
-}
+	return [
+		signInWithGoogle,
+		createWithEmail,
+		userCred,
+		createdUser,
+		loading,
+		authError,
+		createUserErrorMessage,
+		createUserSuccess,
+	];
+};
