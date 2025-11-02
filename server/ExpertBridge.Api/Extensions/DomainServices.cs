@@ -39,6 +39,7 @@ internal static class DomainServices
             .AddScoped<JobService>()
             .AddScoped<MessagingService>()
             .AddScoped<MediaService>()
+            .AddScoped<SearchService>()
             ;
 
         return services;
