@@ -96,7 +96,7 @@ public static class Extensions
     ///     **AI/Machine Learning:**
     ///     - AiSettings: Ollama embedding service configuration (base URL, model selection)
     ///     - GroqSettings: Groq LLM API settings (API key, model selection, temperature, max tokens)
-    ///     - InappropriateLanguageThresholds: Content moderation sensitivity thresholds for different categories
+    ///     - NsfwThresholds: Content moderation sensitivity thresholds for different categories
     ///     **Logging:**
     ///     - SerilogSettings: Structured logging configuration (log levels, sinks, enrichment)
     ///     **Rate Limiting:**
@@ -123,8 +123,8 @@ public static class Extensions
         builder.Services.Configure<RateLimitOptions>(
             builder.Configuration.GetSection(RateLimitOptions.SectionName));
 
-        builder.Services.Configure<InappropriateLanguageThresholds>(
-            builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));
+        builder.Services.Configure<NsfwThresholds>(
+            builder.Configuration.GetSection(NsfwThresholds.Section));
 
         builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 

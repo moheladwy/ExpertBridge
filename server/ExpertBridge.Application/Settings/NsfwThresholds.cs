@@ -7,47 +7,29 @@
 /// <remarks>
 ///     This settings class defines the acceptable threshold values for various categories of inappropriate content.
 ///     Used by NsfwContentDetectionService to determine when content should be flagged or rejected.
-///     **Configured in appsettings.json under "InappropriateLanguageThresholds" section:**
+///     **Configured in appsettings.json under "NsfwThresholds" section: **
 ///     <code>
-/// {
-///   "InappropriateLanguageThresholds": {
-///     "Toxicity": 0.7,
-///     "SevereToxicity": 0.5,
-///     "Obscene": 0.7,
-///     "Threat": 0.6,
-///     "Insult": 0.7,
-///     "IdentityAttack": 0.6,
-///     "SexualExplicit": 0.7
-///   }
-/// }
-/// </code>
-///     **Threshold Interpretation:**
-///     - Values range from 0.0 (allow all) to 1.0 (block all)
-///     - Content scoring above threshold is flagged/rejected
-///     - Lower thresholds = stricter moderation (more sensitive)
-///     - Higher thresholds = lenient moderation (less sensitive)
-///     **Category Descriptions:**
-///     - Toxicity: General rude, disrespectful, or unreasonable content
-///     - SevereToxicity: Highly hateful, aggressive, or disrespectful language
-///     - Obscene: Vulgar, profane, or sexually suggestive language
-///     - Threat: Content threatening violence or harm
-///     - Insult: Personal attacks or derogatory language
-///     - IdentityAttack: Negative statements based on identity (race, religion, gender, etc.)
-///     - SexualExplicit: Explicitly sexual or pornographic content
-///     **Recommended Values:**
-///     - Strict community: 0.5-0.6 (professional platform)
-///     - Balanced: 0.6-0.7 (most platforms)
-///     - Lenient: 0.7-0.8 (casual community, allows stronger language)
-///     **AI Integration:**
+///         {
+///           "NsfwThresholds": {
+///             "Toxicity": 0.7,
+///             "SevereToxicity": 0.5,
+///             "Obscene": 0.7,
+///             "Threat": 0.6,
+///             "Insult": 0.7,
+///             "IdentityAttack": 0.6,
+///             "SexualExplicit": 0.7
+///           }
+///         }
+///     </code>
 ///     Groq LLM analyzes text and returns confidence scores (0.0-1.0) for each category.
 ///     Content is flagged if ANY category score exceeds its configured threshold.
 /// </remarks>
-public sealed class InappropriateLanguageThresholds
+public sealed class NsfwThresholds
 {
     /// <summary>
     ///     The configuration section name in appsettings.json.
     /// </summary>
-    public const string Section = "InappropriateLanguageThresholds";
+    public const string Section = "NsfwThresholds";
 
     /// <summary>
     ///     Gets or sets the threshold for general toxic, rude, or disrespectful language.

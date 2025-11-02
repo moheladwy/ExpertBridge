@@ -80,8 +80,8 @@ public static class ExpertBridgeServicesExtensions
         builder.Services.Configure<RateLimitOptions>(
             builder.Configuration.GetSection(RateLimitOptions.SectionName));
 
-        builder.Services.Configure<InappropriateLanguageThresholds>(
-            builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));
+        builder.Services.Configure<NsfwThresholds>(
+            builder.Configuration.GetSection(NsfwThresholds.Section));
 
         builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 
