@@ -1,3 +1,4 @@
+using ExpertBridge.Api.Services;
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Contract.Requests.CreatePost;

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Security.Claims;
+using ExpertBridge.Api.Services;
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Requests.UpdateUserRequest;
 using ExpertBridge.Core.Entities.Users;

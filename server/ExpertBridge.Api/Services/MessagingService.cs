@@ -9,9 +9,8 @@ using ExpertBridge.Notifications;
 using FluentValidation;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides real-time messaging services for chat conversations between job clients and contractors.
@@ -55,7 +54,7 @@ namespace ExpertBridge.Application.DomainServices;
 /// hubConnection.on("ReceiveMessage", (message) => {
 ///     displayMessage(message);
 /// });
-/// 
+///
 /// // Server pushes to all connected clients
 /// await _hubContext.Clients.All.ReceiveMessage(messageDto);
 /// </code>
@@ -67,7 +66,7 @@ namespace ExpertBridge.Application.DomainServices;
 ///   WorkerId: Profile FK (contractor)
 ///   JobId: Job FK
 ///   CreatedAt: DateTime
-/// 
+///
 /// Message:
 ///   Id: Guid
 ///   ChatId: Chat FK
@@ -82,7 +81,7 @@ namespace ExpertBridge.Application.DomainServices;
 /// var chat = await _dbContext.Chats
 ///     .WhereProfileIsChatParticipant(userProfile.Id)
 ///     .FirstOrDefaultAsync(c => c.Id == chatId);
-/// 
+///
 /// if (chat == null)
 ///     throw new ChatNotFoundException();
 /// </code>

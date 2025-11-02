@@ -1,4 +1,5 @@
 ﻿using ExpertBridge.Application.DataGenerator;
+using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.CreatePost;
@@ -17,7 +18,6 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.Logging;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
 
@@ -26,7 +26,7 @@ using Pgvector.EntityFrameworkCore;
 // For PostProcessingPipelineMessage
 // For NotificationFacade
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides comprehensive content management with AI-powered recommendations, similarity search, and social engagement

@@ -62,8 +62,6 @@ public static class Extensions
             .AddScoped<ContentModerationService>()
             .AddScoped<MediaAttachmentService>()
             .AddScoped<TaggingService>()
-            .AddScoped<PostService>()
-            .AddScoped<MessagingService>()
             .AddScoped<AiPostTaggingService>()
             .AddScoped<AiTagProcessorService>()
             .AddScoped<NsfwContentDetectionService>()

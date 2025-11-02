@@ -9,7 +9,7 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides user-related operations for retrieving the current authenticated user and their profile.
