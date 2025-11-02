@@ -71,6 +71,7 @@ public static class Extensions
             .AddScoped<AiPostTaggingService>()
             .AddScoped<AiTagProcessorService>()
             .AddScoped<NsfwContentDetectionService>()
+            .AddScoped<MediaService>()
             ;
 
         return services;
