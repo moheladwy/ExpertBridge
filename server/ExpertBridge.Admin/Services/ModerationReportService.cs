@@ -5,9 +5,8 @@ using ExpertBridge.Core.Entities;
 using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Admin.Services;
 
 /// <summary>
 ///     Provides domain-level operations for moderation reports such as reporting content,

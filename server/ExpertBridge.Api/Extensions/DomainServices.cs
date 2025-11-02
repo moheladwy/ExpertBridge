@@ -1,4 +1,4 @@
-﻿using ExpertBridge.Application.DomainServices;
+﻿using ExpertBridge.Api.Services;
 using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Application.Helpers;
 using ExpertBridge.Application.Services;
@@ -27,9 +27,7 @@ internal static class DomainServices
 
         services.AddSingleton<IEmbeddingService, OllamaEmbeddingService>();
         services
-            .AddScoped<ModerationReportService>()
             .AddScoped<CommentService>()
-            .AddScoped<ContentModerationService>()
             .AddScoped<MediaAttachmentService>()
             .AddScoped<TaggingService>()
             .AddScoped<UserService>()
@@ -39,6 +37,9 @@ internal static class DomainServices
             .AddScoped<ProfileService>()
             .AddScoped<JobService>()
             .AddScoped<MessagingService>()
+            .AddScoped<MediaService>()
+            .AddScoped<SearchService>()
+            .AddScoped<NotificationsService>()
             ;
 
         return services;

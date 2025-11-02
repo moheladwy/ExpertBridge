@@ -4,13 +4,7 @@ import { Navigate } from "react-router";
 
 // ✅ Public Route: Redirects authenticated users to /home
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  // if (authLodagin || userLoading) return <div>Loading...</div>;
-
-  // if (authUser && appUser) {
-  //   console.log("User already logged in, redirecting...");
-  //   return <Navigate to="/home" replace />;
-  // }
-  return children;
+	return children;
 };
 
 export default PublicRoute;

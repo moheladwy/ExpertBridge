@@ -1,11 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
-using ExpertBridge.Application.Settings.Serilog;
 using ExpertBridge.Contract.Requests.RegisterUser;
 using ExpertBridge.Extensions.AWS;
 using ExpertBridge.GroqLibrary.Settings;
@@ -58,18 +56,9 @@ public static class Extensions
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
 
         services
-            .AddScoped<ModerationReportService>()
             .AddScoped<S3Service>()
             .AddScoped<IEmbeddingService, OllamaEmbeddingService>()
-            .AddScoped<CommentService>()
-            .AddScoped<ContentModerationService>()
-            .AddScoped<MediaAttachmentService>()
             .AddScoped<TaggingService>()
-            .AddScoped<PostService>()
-            .AddScoped<JobPostingService>()
-            .AddScoped<ProfileService>()
-            .AddScoped<JobService>()
-            .AddScoped<MessagingService>()
             .AddScoped<AiPostTaggingService>()
             .AddScoped<AiTagProcessorService>()
             .AddScoped<NsfwContentDetectionService>()
@@ -98,11 +87,11 @@ public static class Extensions
     ///     **AI/Machine Learning:**
     ///     - AiSettings: Ollama embedding service configuration (base URL, model selection)
     ///     - GroqSettings: Groq LLM API settings (API key, model selection, temperature, max tokens)
-    ///     - InappropriateLanguageThresholds: Content moderation sensitivity thresholds for different categories
+    ///     - NsfwThresholds: Content moderation sensitivity thresholds for different categories
     ///     **Logging:**
     ///     - SerilogSettings: Structured logging configuration (log levels, sinks, enrichment)
     ///     **Rate Limiting:**
-    ///     - ExpertBridgeRateLimitSettings: API rate limiting policies (requests per minute, burst limits)
+    ///     - RateLimitOptions: API rate limiting policies (requests per minute, burst limits)
     ///     Each settings class defines its own Section constant for configuration binding.
     ///     Settings are validated at startup through data annotations and custom validators.
     ///     Typical usage in Program.cs:
@@ -113,9 +102,6 @@ public static class Extensions
     public static TBuilder ConfigureExpertBridgeSettings<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
-        builder.Services.Configure<ConnectionStrings>(
-            builder.Configuration.GetSection(ConnectionStrings.Section));
-
         builder.Services.Configure<FirebaseSettings>(
             builder.Configuration.GetSection(FirebaseSettings.Section));
 
@@ -125,17 +111,11 @@ public static class Extensions
         builder.Services.Configure<AwsSettings>(
             builder.Configuration.GetSection(AwsSettings.Section));
 
-        builder.Services.Configure<AiSettings>(
-            builder.Configuration.GetSection(AiSettings.Section));
+        builder.Services.Configure<RateLimitOptions>(
+            builder.Configuration.GetSection(RateLimitOptions.SectionName));
 
-        builder.Services.Configure<SerilogSettings>(
-            builder.Configuration.GetSection(SerilogSettings.Section));
-
-        builder.Services.Configure<ExpertBridgeRateLimitSettings>(
-            builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
-
-        builder.Services.Configure<InappropriateLanguageThresholds>(
-            builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));
+        builder.Services.Configure<NsfwThresholds>(
+            builder.Configuration.GetSection(NsfwThresholds.Section));
 
         builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 

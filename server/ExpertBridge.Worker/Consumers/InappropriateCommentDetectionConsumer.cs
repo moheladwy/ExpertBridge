@@ -56,7 +56,7 @@ public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInap
     ///     These thresholds determine whether a comment exceeds permissible limits for specific
     ///     categories of inappropriate content during the moderation process.
     /// </remarks>
-    private readonly InappropriateLanguageThresholds _thresholds;
+    private readonly NsfwThresholds _thresholds;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="InappropriateCommentDetectionConsumer" /> class.
@@ -70,7 +70,7 @@ public sealed class InappropriateCommentDetectionConsumer : IConsumer<DetectInap
     public InappropriateCommentDetectionConsumer(
         ILogger<InappropriateCommentDetectionConsumer> logger,
         NsfwContentDetectionService detectionService,
-        IOptionsSnapshot<InappropriateLanguageThresholds> thresholds,
+        IOptionsSnapshot<NsfwThresholds> thresholds,
         ExpertBridgeDbContext dbContext,
         NotificationFacade notifications)
     {

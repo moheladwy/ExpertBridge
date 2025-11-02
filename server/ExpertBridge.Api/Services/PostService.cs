@@ -1,4 +1,5 @@
 ﻿using ExpertBridge.Application.DataGenerator;
+using ExpertBridge.Application.Services;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.CreatePost;
@@ -17,7 +18,6 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.Logging;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
 
@@ -26,7 +26,7 @@ using Pgvector.EntityFrameworkCore;
 // For PostProcessingPipelineMessage
 // For NotificationFacade
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides comprehensive content management with AI-powered recommendations, similarity search, and social engagement
@@ -227,7 +227,7 @@ public class PostService
     /// <param name="authorProfile">The authenticated user profile creating the post.</param>
     /// <returns>A task containing the created post with full metadata.</returns>
     /// <exception cref="ArgumentNullException">Thrown when request or authorProfile is null.</exception>
-    /// <exception cref="BadHttpRequestException">Thrown when title or content is empty.</exception>
+    /// <exception cref="Microsoft.AspNetCore.Http.BadHttpRequestException">Thrown when title or content is empty.</exception>
     /// <remarks>
     ///     **Complete Creation Workflow:**
     ///     1. **Validation** - Title and content required (trimmed)
@@ -693,7 +693,7 @@ public class PostService
     /// <param name="profileId">The user profile ID whose posts to retrieve.</param>
     /// <param name="currentMaybeUserProfileId">Optional profile ID for vote status perspective.</param>
     /// <returns>List of posts by the specified author.</returns>
-    /// <exception cref="ProfileNotFoundException">Thrown when profile doesn't exist.</exception>
+    /// <exception cref="Core.Exceptions.ProfileNotFoundException">Thrown when profile doesn't exist.</exception>
     /// <remarks>
     ///     **Validation:** Checks profile exists before querying posts.
     ///     **Use Cases:** User profile page, author's post history, portfolio.
@@ -723,8 +723,8 @@ public class PostService
     /// <param name="request">Edit request with optional title and/or content updates.</param>
     /// <param name="editorProfile">The user attempting the edit.</param>
     /// <returns>Updated PostResponse with new metadata.</returns>
-    /// <exception cref="PostNotFoundException">Thrown when post doesn't exist.</exception>
-    /// <exception cref="ForbiddenAccessException">Thrown when editor is not the author.</exception>
+    /// <exception cref="Core.Exceptions.PostNotFoundException">Thrown when post doesn't exist.</exception>
+    /// <exception cref="Core.Exceptions.ForbiddenAccessException">Thrown when editor is not the author.</exception>
     /// <remarks>
     ///     **Authorization:** Only post author can edit their own posts.
     ///     **Partial Updates:** Only provided fields are updated (title and/or content).
@@ -808,7 +808,7 @@ public class PostService
     /// <param name="postId">The post ID to delete.</param>
     /// <param name="deleterProfile">The user attempting deletion.</param>
     /// <returns>True if deleted or already gone (idempotent DELETE semantics).</returns>
-    /// <exception cref="ForbiddenAccessException">Thrown when deleter is not the author.</exception>
+    /// <exception cref="Core.Exceptions.ForbiddenAccessException">Thrown when deleter is not the author.</exception>
     /// <remarks>
     ///     **Authorization:** Only post author can delete their own posts.
     ///     **Cascade Deletion:** EF Core cascade deletes PostMedia, PostVotes, Comments, PostTags.
@@ -852,7 +852,7 @@ public class PostService
     /// <param name="voterProfile">The user casting the vote.</param>
     /// <param name="isUpvoteIntent">True for upvote, false for downvote.</param>
     /// <returns>Updated PostResponse with new vote counts and current user's vote status.</returns>
-    /// <exception cref="PostNotFoundException">Thrown when post doesn't exist.</exception>
+    /// <exception cref="Core.Exceptions.PostNotFoundException">Thrown when post doesn't exist.</exception>
     /// <remarks>
     ///     **Toggle Voting Mechanics:**
     ///     - Same vote clicked again → Remove vote (toggle off)

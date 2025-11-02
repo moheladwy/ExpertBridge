@@ -9,7 +9,7 @@ using ExpertBridge.Data.DatabaseContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Application.Services;
 
 /// <summary>
 ///     Provides intelligent tag management and content categorization using AI-powered analysis.

@@ -1,47 +1,45 @@
 import {
-  Auth,
-  AuthError,
-  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
-  UserCredential,
-} from 'firebase/auth';
-import { useCallback, useState } from 'react';
-import { EmailAndPasswordActionHook } from '../types';
+	Auth,
+	AuthError,
+	signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
+	UserCredential,
+} from "firebase/auth";
+import { useCallback, useState } from "react";
+import { EmailAndPasswordActionHook } from "../types";
 
 export default (auth: Auth): EmailAndPasswordActionHook => {
-  const [error, setError] = useState<AuthError>();
-  const [loggedInUser, setLoggedInUser] = useState<UserCredential>();
-  const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<AuthError>();
+	const [loggedInUser, setLoggedInUser] = useState<UserCredential>();
+	const [loading, setLoading] = useState<boolean>(false);
 
-  const signInWithEmailAndPassword = useCallback(
-    async (email: string, password: string) => {
-      setLoading(true);
-      setError(undefined);
+	const signInWithEmailAndPassword = useCallback(
+		async (email: string, password: string) => {
+			setLoading(true);
+			setError(undefined);
 
-      try {
-        const userCredential = await firebaseSignInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+			try {
+				const userCredential = await firebaseSignInWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
 
-        if (!userCredential?.user?.emailVerified) { 
-          console.log('SignInHook: Email Unverified')
-          throw new Error('Email is not verified');
-        }
+				if (!userCredential?.user?.emailVerified) {
+					console.log("SignInHook: Email Unverified");
+					throw new Error("Email is not verified");
+				}
 
-        setLoggedInUser(userCredential);
+				setLoggedInUser(userCredential);
 
-        return userCredential;
-      }
-      catch (err) {
-        setError(err as AuthError);
-      }
-      finally {
-        setLoading(false);
-      }
-    },
-    [auth]
-  );
+				return userCredential;
+			} catch (err) {
+				setError(err as AuthError);
+			} finally {
+				setLoading(false);
+			}
+		},
+		[auth]
+	);
 
-  return [signInWithEmailAndPassword, loggedInUser, loading, error];
+	return [signInWithEmailAndPassword, loggedInUser, loading, error];
 };

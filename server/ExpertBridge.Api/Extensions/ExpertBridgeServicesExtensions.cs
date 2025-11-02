@@ -1,6 +1,5 @@
 ﻿using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
-using ExpertBridge.Application.Settings.Serilog;
 using ExpertBridge.Data;
 using ExpertBridge.Extensions.AWS;
 using ExpertBridge.Extensions.Caching;
@@ -69,9 +68,6 @@ public static class ExpertBridgeServicesExtensions
     /// <returns>The modified WebApplicationBuilder with the configured application settings.</returns>
     private static WebApplicationBuilder ConfigureExpertBridgeSettings(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<ConnectionStrings>(
-            builder.Configuration.GetSection(ConnectionStrings.Section));
-
         builder.Services.Configure<FirebaseSettings>(
             builder.Configuration.GetSection(FirebaseSettings.Section));
 
@@ -81,17 +77,11 @@ public static class ExpertBridgeServicesExtensions
         builder.Services.Configure<AwsSettings>(
             builder.Configuration.GetSection(AwsSettings.Section));
 
-        builder.Services.Configure<AiSettings>(
-            builder.Configuration.GetSection(AiSettings.Section));
+        builder.Services.Configure<RateLimitOptions>(
+            builder.Configuration.GetSection(RateLimitOptions.SectionName));
 
-        builder.Services.Configure<SerilogSettings>(
-            builder.Configuration.GetSection(SerilogSettings.Section));
-
-        builder.Services.Configure<ExpertBridgeRateLimitSettings>(
-            builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
-
-        builder.Services.Configure<InappropriateLanguageThresholds>(
-            builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));
+        builder.Services.Configure<NsfwThresholds>(
+            builder.Configuration.GetSection(NsfwThresholds.Section));
 
         builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 

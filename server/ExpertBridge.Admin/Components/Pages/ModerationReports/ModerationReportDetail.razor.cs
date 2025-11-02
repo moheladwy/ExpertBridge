@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Application.DomainServices;
+using ExpertBridge.Admin.Services;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Entities;
@@ -178,7 +178,9 @@ public partial class ModerationReportDetail : ComponentBase
             {
                 return await DbContext.Comments
                     .IgnoreQueryFilters()
-                    .FullyPopulatedCommentQuery()
+                    .AsNoTracking()
+                    .Include(c => c.Votes)
+                    .Include(c => c.Author)
                     .FirstOrDefaultAsync(c => c.Id == _report.ContentId, cancellationToken);
             });
 
@@ -289,8 +291,8 @@ public partial class ModerationReportDetail : ComponentBase
         }
 
         var confirmationMessage = $"Are you sure you want to mark this {_report.ContentType} as {(_report.IsNegative ?
-                                      $"Clean and undelete the {_report.ContentType}" :
-                                      $"Negative and delete the {_report.ContentType}")}?";
+            $"Clean and undelete the {_report.ContentType}" :
+            $"Negative and delete the {_report.ContentType}")}?";
         var confirmed = await DialogService.Confirm(
             confirmationMessage,
             "Confirm",
@@ -347,9 +349,9 @@ public partial class ModerationReportDetail : ComponentBase
                 await Cache.RemoveAsync($"admin:moderation-reports:{Id}");
 
                 _report.IsNegative = !_report.IsNegative;
-                var message = _report.IsNegative ?
-                    $"{_report.ContentType} marked as negative and deleted" :
-                    $"{_report.ContentType} marked as clean and restored";
+                var message = _report.IsNegative
+                    ? $"{_report.ContentType} marked as negative and deleted"
+                    : $"{_report.ContentType} marked as clean and restored";
                 ShowNotification(NotificationSeverity.Success, "Success", message);
             }
             catch (Exception ex)
@@ -439,10 +441,7 @@ public partial class ModerationReportDetail : ComponentBase
     {
         NotificationService.Notify(new NotificationMessage
         {
-            Severity = severity,
-            Summary = summary,
-            Detail = detail,
-            Duration = 4000
+            Severity = severity, Summary = summary, Detail = detail, Duration = 4000
         });
     }
 }

@@ -17,9 +17,8 @@ internal static class RateLimiting
     /// </returns>
     public static WebApplicationBuilder AddRateLimiting(this WebApplicationBuilder builder)
     {
-        var rateLimitOptions = new ExpertBridgeRateLimitSettings();
-        builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName)
-            .Bind(rateLimitOptions);
+        var rateLimitOptions = new RateLimitOptions();
+        builder.Configuration.GetSection(RateLimitOptions.SectionName).Bind(rateLimitOptions);
 
         builder.Services.AddRateLimiter(options =>
         {

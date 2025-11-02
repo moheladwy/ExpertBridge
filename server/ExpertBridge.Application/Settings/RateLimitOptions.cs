@@ -4,33 +4,25 @@
 ///     Configuration settings for API rate limiting to prevent abuse and ensure fair resource usage.
 /// </summary>
 /// <remarks>
-///     This settings class configures the rate limiting policy applied to API endpoints.
+///     This settings class configures the rate-limiting policy applied to API endpoints.
 ///     Uses the fixed window algorithm to limit the number of requests per user/IP within a time window.
 ///     **Configured in appsettings.json under "RateLimit" section:**
 ///     <code>
-/// {
-///   "RateLimit": {
-///     "PermitLimit": 100,
-///     "Window": 60,
-///     "QueueLimit": 10
-///   }
-/// }
-/// </code>
+///         {
+///           "RateLimit": {
+///             "PermitLimit": 100,
+///             "Window": 60,
+///             "QueueLimit": 10
+///           }
+///         }
+///     </code>
 ///     **Rate Limiting Algorithm:**
 ///     - Fixed Window: Resets counter at fixed intervals (e.g., every 60 seconds)
 ///     - Requests are tracked per authenticated user or IP address
 ///     - Exceeded requests return 429 Too Many Requests status
-///     **Configuration Guidelines:**
-///     - PermitLimit: Balance between user experience and server protection (50-200 for APIs)
-///     - Window: Shorter windows (30-60s) provide better burst protection
-///     - QueueLimit: Prevents thundering herd during high load (5-20 typical)
-///     **Typical Values:**
-///     - Development: 1000 permits/60s window (lenient for testing)
-///     - Production: 100 permits/60s window (balance)
-///     - Public APIs: 60 permits/60s window (strict)
 ///     Applied via ASP.NET Core RateLimiting middleware in Program.cs.
 /// </remarks>
-public sealed class ExpertBridgeRateLimitSettings
+public sealed class RateLimitOptions
 {
     /// <summary>
     ///     The configuration section name in appsettings.json.

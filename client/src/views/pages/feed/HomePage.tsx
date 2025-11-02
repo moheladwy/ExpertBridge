@@ -1,8 +1,7 @@
-
-import Feed from '@/views/components/common/posts/Feed';
+import Feed from "@/views/components/common/posts/Feed";
 
 const HomePage = () => {
-  return <Feed />
-}
+	return <Feed />;
+};
 
 export default HomePage;

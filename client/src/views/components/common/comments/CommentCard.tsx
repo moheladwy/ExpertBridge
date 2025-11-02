@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextField, IconButton } from "@mui/material";
-import { ThumbUp, ThumbDown } from "@mui/icons-material";
+import { Button, TextField } from "@mui/material";
 import { Comment, DeleteCommentRequest } from "@/features/comments/types";
 import {
-	commentsApiSlice,
 	useCreateReplyMutation,
 	useUpdateCommentMutation,
 } from "@/features/comments/commentsSlice";
@@ -14,17 +12,13 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Link } from "react-router";
-
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/views/components/custom/dropdown-menu";
 import { DeleteIcon, EditIcon, Ellipsis, Link2 } from "lucide-react";
-
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -34,7 +28,6 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from "@/views/components/ui/alert-dialog";
 import MediaCarousel from "../media/MediaCarousel";
 
@@ -55,7 +48,6 @@ const CommentCard: React.FC<CommentItemProps> = ({
 	const [replyText, setReplyText] = useState("");
 	const authUser = useCurrentAuthUser();
 	const { showAuthPrompt } = useAuthPrompt();
-	// const [replies, setReplies] = useState<Comment[]>(comment.replies || []);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const [createReply, { isLoading, isSuccess, isError }] =
@@ -65,7 +57,6 @@ const CommentCard: React.FC<CommentItemProps> = ({
 		if (isError) toast.error("An error occurred while creating your reply");
 		if (isSuccess) {
 			toast.success("reply created successfully");
-			// setReplies(comment.replies || []);
 		}
 	}, [isSuccess, isError, isLoading]);
 

@@ -9,9 +9,8 @@ using ExpertBridge.Notifications;
 using FluentValidation;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides real-time messaging services for chat conversations between job clients and contractors.

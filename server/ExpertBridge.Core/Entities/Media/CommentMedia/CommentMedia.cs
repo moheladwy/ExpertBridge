@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using ExpertBridge.Core.Entities.Comments;
 
 namespace ExpertBridge.Core.Entities.Media.CommentMedia;
@@ -23,5 +24,6 @@ public class CommentMedia : MediaObject
     /// <summary>
     ///     Gets or sets the comment this media is attached to.
     /// </summary>
+    [JsonIgnore]
     public Comment Comment { get; set; }
 }

@@ -49,7 +49,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     /// <summary>
     ///     Thresholds used to determine when detection scores are considered violations.
     /// </summary>
-    private readonly InappropriateLanguageThresholds _thresholds;
+    private readonly NsfwThresholds _thresholds;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="InappropriatePostDetectionConsumer" /> class.
@@ -58,7 +58,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
     /// <param name="detectionService">The Groq inappropriate language detection service.</param>
     /// <param name="dbContext">The database context used to lookup and modify posts and moderation reports.</param>
     /// <param name="thresholds">
-    ///     Snapshot of <see cref="InappropriateLanguageThresholds" /> used to decide when to mark content
+    ///     Snapshot of <see cref="NsfwThresholds" /> used to decide when to mark content
     ///     as inappropriate.
     /// </param>
     /// <param name="publishEndpoint">The MassTransit publish endpoint for sending messages.</param>
@@ -71,7 +71,7 @@ public sealed class InappropriatePostDetectionConsumer : IConsumer<DetectInappro
         ILogger<InappropriatePostDetectionConsumer> logger,
         NsfwContentDetectionService detectionService,
         ExpertBridgeDbContext dbContext,
-        IOptionsSnapshot<InappropriateLanguageThresholds> thresholds,
+        IOptionsSnapshot<NsfwThresholds> thresholds,
         NotificationFacade notifications,
         IPublishEndpoint publishEndpoint)
     {

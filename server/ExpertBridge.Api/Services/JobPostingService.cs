@@ -1,4 +1,5 @@
 ﻿using ExpertBridge.Application.DataGenerator;
+using ExpertBridge.Application.Services;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.ApplyToJobPosting;
@@ -19,11 +20,11 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.Logging;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
+using BadHttpRequestException = ExpertBridge.Core.Exceptions.BadHttpRequestException;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides comprehensive job posting management with AI-powered matching, recommendations, and application

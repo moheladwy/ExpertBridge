@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextField, IconButton } from "@mui/material";
-import { ThumbUp, ThumbDown } from "@mui/icons-material";
+import { Button, TextField } from "@mui/material";
 import { Comment, DeleteCommentRequest } from "@/features/comments/types";
 import {
-	commentsApiSlice,
 	useCreateReplyMutation,
 	useUpdateCommentMutation,
 } from "@/features/comments/commentsSlice";
@@ -14,17 +12,18 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Link } from "react-router";
-
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/views/components/custom/dropdown-menu";
-import { DeleteIcon, EditIcon, CircleEllipsis as Ellipsis, Link2 } from "lucide-react";
-
+import {
+	DeleteIcon,
+	EditIcon,
+	CircleEllipsis as Ellipsis,
+	Link2,
+} from "lucide-react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -34,7 +33,6 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from "@/views/components/ui/alert-dialog";
 import MediaCarousel from "../media/MediaCarousel";
 
@@ -324,7 +322,8 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 								onClick={() => setShowReplies((prev) => !prev)}
 								className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
 							>
-								{showReplies ? "Hide Replies" : "Show Replies"} ({comment.replies.length})
+								{showReplies ? "Hide Replies" : "Show Replies"}{" "}
+								({comment.replies.length})
 							</Button>
 						)}
 					</div>

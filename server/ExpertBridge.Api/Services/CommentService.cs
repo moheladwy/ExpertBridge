@@ -1,4 +1,5 @@
-﻿using ExpertBridge.Contract.Messages;
+﻿using ExpertBridge.Application.Services;
+using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.CreateComment;
 using ExpertBridge.Contract.Requests.EditComment;
@@ -14,9 +15,8 @@ using ExpertBridge.Notifications;
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides comprehensive comment management for posts and job postings with support for nested replies,

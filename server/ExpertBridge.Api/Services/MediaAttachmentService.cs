@@ -3,7 +3,7 @@ using ExpertBridge.Core.Entities.Media;
 using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides reusable media attachment processing services for posts, comments, and job postings.
@@ -89,7 +89,7 @@ namespace ExpertBridge.Application.DomainServices;
 ///             Key = req.Key
 ///         };
 ///     }
-///     
+/// 
 ///     post.Medias = await _mediaService.ProcessAndAttachMediaAsync(
 ///         request.Media,
 ///         post,

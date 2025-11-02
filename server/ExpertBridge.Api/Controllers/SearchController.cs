@@ -1,16 +1,10 @@
-using System.Globalization;
-using ExpertBridge.Application.DomainServices;
-using ExpertBridge.Application.EmbeddingService;
-using ExpertBridge.Contract.Queries;
+using ExpertBridge.Api.Services;
 using ExpertBridge.Contract.Requests.SearchJobPosts;
 using ExpertBridge.Contract.Requests.SearchPost;
 using ExpertBridge.Contract.Requests.SearchUser;
 using ExpertBridge.Contract.Responses;
-using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Pgvector.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Controllers;
 
@@ -24,182 +18,79 @@ namespace ExpertBridge.Api.Controllers;
 [AllowAnonymous]
 public class SearchController : ControllerBase
 {
-    private readonly float _cosineDistanceThreshold;
-    private readonly ExpertBridgeDbContext _dbContext;
-    private readonly int _defaultLimit;
-    private readonly IEmbeddingService _embeddingService;
-    private readonly UserService _userService;
+    /// <summary>
+    ///     Represents the service responsible for handling search-related operations,
+    ///     such as retrieving posts, users, and job postings, based on specific queries.
+    /// </summary>
+    private readonly SearchService _searchService;
 
-    public SearchController(
-        ExpertBridgeDbContext dbContext,
-        IEmbeddingService embeddingService,
-        UserService userService)
+    /// <summary>
+    ///     Handles search-related endpoints for posts, users, and jobs.
+    ///     Provides an API interface for retrieving data based on search queries
+    ///     by utilizing the SearchService.
+    /// </summary>
+    /// <remarks>
+    ///     This controller handles requests from the client side and delegates
+    ///     search tasks to the underlying SearchService. It is designed to be
+    ///     stateless and supports asynchronous operations.
+    ///     All operations under this controller are accessible without authorization.
+    /// </remarks>
+    public SearchController(SearchService searchService)
     {
-        _dbContext = dbContext;
-        _embeddingService = embeddingService;
-        _userService = userService;
-        _cosineDistanceThreshold = 1.0f;
-        _defaultLimit = 25;
+        _searchService = searchService;
     }
 
+    /// <summary>
+    ///     Retrieves a list of posts that match the specified search criteria.
+    ///     Utilizes the search service to query and return posts based on the provided request parameters.
+    /// </summary>
+    /// <param name="request">The request object containing search criteria such as filters and keywords.</param>
+    /// <param name="cancellationToken">The cancellation token to observe for task cancellation requests.</param>
+    /// <returns>A list of posts that match the search criteria encapsulated in the response structure.</returns>
     [HttpGet("posts")]
     public async Task<List<PostResponse>> SearchPosts(
         [FromQuery] SearchPostRequest request,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
-
-        var currentUserProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
-        var notNullOrEmptyCurrentUserProfileId = !string.IsNullOrEmpty(currentUserProfileId);
-
-        var queryEmbeddings = await _embeddingService.GenerateEmbedding(request.Query);
-
-        var posts = await _dbContext.Posts
-            .AsNoTracking()
-            .Where(p => p.Embedding != null && p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold)
-            .OrderBy(p => p.Embedding.CosineDistance(queryEmbeddings))
-            .Take(request.Limit ?? _defaultLimit)
-            .Select(p => new PostResponse
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Content = p.Content,
-                Author = p.Author.SelectAuthorResponseFromProfile(),
-                CreatedAt = p.CreatedAt.Value,
-                LastModified = p.LastModified,
-                Upvotes = p.Votes.Count(v => v.IsUpvote),
-                Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                IsUpvoted =
-                    notNullOrEmptyCurrentUserProfileId &&
-                    p.Votes.Any(v => v.IsUpvote && v.ProfileId == currentUserProfileId),
-                IsDownvoted =
-                    notNullOrEmptyCurrentUserProfileId &&
-                    p.Votes.Any(v => !v.IsUpvote && v.ProfileId == currentUserProfileId),
-                Comments = p.Comments.Count,
-                RelevanceScore = p.Embedding.CosineDistance(queryEmbeddings),
-                Medias = p.Medias.Select(m => new MediaObjectResponse
-                {
-                    Id = m.Id,
-                    Name = m.Name,
-                    Type = m.Type,
-                    Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
-                }).ToList()
-            })
-            .ToListAsync(cancellationToken);
-        return posts;
+        return await _searchService.SearchPosts(request, cancellationToken);
     }
 
+    /// <summary>
+    ///     Searches for users based on the specified query parameters.
+    ///     Retrieves a list of users that match the provided search criteria.
+    /// </summary>
+    /// <param name="request">The search query parameters for filtering users.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A list of users matching the search criteria.</returns>
     [HttpGet("users")]
     public async Task<List<SearchUserResponse>> SearchUsers(
         [FromQuery] SearchUserRequest request,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        ArgumentException.ThrowIfNullOrEmpty(request.Query, nameof(request.Query));
-
-        var normalizedQuery = request.Query.ToLower(CultureInfo.CurrentCulture).Trim();
-
-        var users = await _dbContext.Profiles
-            .AsNoTracking()
-            .Where(p =>
-                EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
-                    .Matches(EF.Functions.PhraseToTsQuery("english", request.Query)) ||
-                p.Email.Contains(normalizedQuery) ||
-                (p.Username != null && p.Username.Contains(normalizedQuery)))
-            .Take(request.Limit ?? _defaultLimit)
-            .Select(p => new SearchUserResponse
-            {
-                Id = p.Id,
-                Email = p.Email,
-                Username = p.Username,
-                PhoneNumber = p.PhoneNumber,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                ProfilePictureUrl = p.ProfilePictureUrl,
-                JobTitle = p.JobTitle,
-                Bio = p.Bio,
-                Rank = EF.Functions.ToTsVector("english", p.FirstName + " " + p.LastName)
-                    .Rank(EF.Functions.PhraseToTsQuery("english", normalizedQuery))
-            })
-            .OrderByDescending(p => p.Rank)
-            .ToListAsync(cancellationToken);
-        return users;
+        return await _searchService.SearchUsers(request, cancellationToken);
     }
 
+    /// <summary>
+    ///     Searches for job postings based on the specified search criteria provided in the request.
+    ///     Delegates the search operation to the underlying SearchService and retrieves matching job postings.
+    /// </summary>
+    /// <param name="request">
+    ///     The request containing search criteria for querying job postings.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     A token to observe while waiting for the task to complete. Optional, defaults to CancellationToken.None.
+    /// </param>
+    /// <returns>
+    ///     A list of job postings that match the search criteria, encapsulated in <see cref="JobPostingResponse" /> objects.
+    /// </returns>
     [HttpGet("jobs")]
     public async Task<List<JobPostingResponse>> SearchJobs(
         [FromQuery] SearchJobPostsRequest request,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-
-        var userProfileId = await _userService.GetCurrentUserProfileIdOrEmptyAsync();
-
-        var queryEmbedding = await _embeddingService.GenerateEmbedding(request.Query);
-
-        var query = _dbContext.JobPostings
-            .AsNoTracking()
-            .FullyPopulatedJobPostingQuery()
-            .AsQueryable();
-
-        if (request.IsRemote)
-        {
-            query = query.Where(j => j.Area.ToLower().Contains("remote"));
-        }
-        else if (!string.IsNullOrEmpty(request.Area))
-        {
-            request.Area = request.Area.Trim().ToLower(CultureInfo.CurrentCulture);
-            query = query.Where(j => j.Area.ToLower().Contains(request.Area));
-        }
-
-        if (request.MinBudget is >= 0)
-        {
-            query = query.Where(j => j.Budget >= request.MinBudget.Value);
-        }
-
-        if (request.MaxBudget is >= 0 &&
-            request.MaxBudget.Value > request.MinBudget.GetValueOrDefault(0))
-        {
-            query = query.Where(j => j.Budget <= request.MaxBudget.Value);
-        }
-
-        query = query
-            .Where(j => j.Embedding != null && j.Embedding.CosineDistance(queryEmbedding) < _cosineDistanceThreshold)
-            .OrderBy(j => j.Embedding.CosineDistance(queryEmbedding))
-            .Take(request.Limit ?? _defaultLimit);
-
-
-        var jobPosts = await query
-            .Select(p => new JobPostingResponse
-            {
-                IsUpvoted = p.Votes.Any(v => v.IsUpvote && v.ProfileId == userProfileId),
-                IsDownvoted = p.Votes.Any(v => !v.IsUpvote && v.ProfileId == userProfileId),
-                Title = p.Title,
-                Content = p.Content,
-                Area = p.Area,
-                Budget = p.Budget,
-                Language = p.Language,
-                Tags = p.JobPostingTags.Select(pt => pt.Tag.SelectTagResponseFromTag()).ToList(),
-                Author = p.Author.SelectAuthorResponseFromProfile(),
-                CreatedAt = p.CreatedAt,
-                LastModified = p.UpdatedAt,
-                Id = p.Id,
-                Upvotes = p.Votes.Count(v => v.IsUpvote),
-                Downvotes = p.Votes.Count(v => !v.IsUpvote),
-                Comments = p.Comments.Count,
-                IsAppliedFor = p.JobApplications.Any(ja => ja.ApplicantId == userProfileId),
-                Medias = p.Medias.Select(m => new MediaObjectResponse
-                {
-                    Id = m.Id,
-                    Name = m.Name,
-                    Type = m.Type,
-                    Url = $"https://expert-bridge-media.s3.amazonaws.com/{m.Key}"
-                }).ToList(),
-                RelevanceScore = p.Embedding.CosineDistance(queryEmbedding)
-            })
-            .ToListAsync(cancellationToken);
-
-        return jobPosts;
+        return await _searchService.SearchJobs(request, cancellationToken);
     }
 }

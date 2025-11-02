@@ -1,33 +1,33 @@
 import {
-  ActionCodeSettings,
-  AuthError,
-  CustomParameters,
-  UserCredential,
-} from 'firebase/auth';
+	ActionCodeSettings,
+	AuthError,
+	CustomParameters,
+	UserCredential,
+} from "firebase/auth";
 
 export type AuthActionHook<Callback> = [
-  Callback,
-  UserCredential | undefined,
-  boolean,
-  AuthError | undefined
+	Callback,
+	UserCredential | undefined,
+	boolean,
+	AuthError | undefined,
 ];
 
 export type CreateUserOptions = {
-  emailVerificationOptions?: ActionCodeSettings;
-  sendEmailVerification?: boolean;
+	emailVerificationOptions?: ActionCodeSettings;
+	sendEmailVerification?: boolean;
 };
 
 export type EmailAndPasswordActionHook = AuthActionHook<
-  (email: string, password: string) => Promise<UserCredential | undefined>
+	(email: string, password: string) => Promise<UserCredential | undefined>
 >;
 
 export type SignInWithEmailLinkHook = AuthActionHook<
-  (email: string, emailLink?: string) => Promise<UserCredential | undefined>
+	(email: string, emailLink?: string) => Promise<UserCredential | undefined>
 >;
 
 export type SignInWithPopupHook = AuthActionHook<
-  (
-    scopes?: string[],
-    customOAuthParameters?: CustomParameters
-  ) => Promise<UserCredential | undefined>
+	(
+		scopes?: string[],
+		customOAuthParameters?: CustomParameters
+	) => Promise<UserCredential | undefined>
 >;

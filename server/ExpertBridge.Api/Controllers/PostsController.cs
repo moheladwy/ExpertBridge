@@ -1,4 +1,4 @@
-using ExpertBridge.Application.DomainServices;
+using ExpertBridge.Api.Services;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Contract.Requests.CreatePost;
 using ExpertBridge.Contract.Requests.EditPost;
@@ -11,24 +11,34 @@ using Serilog;
 
 namespace ExpertBridge.Api.Controllers;
 
+/// <summary>
+///     Controller for managing posts in the ExpertBridge platform.
+///     Handles post-creation, retrieval, voting, editing, and deletion operations.
+/// </summary>
+/// <remarks>
+///     Most endpoints require authentication except for GetById, GetSimilarPosts, GetSuggestedPosts,
+///     GetCursorPaginated, and GetAllByProfileId, which allow anonymous access.
+/// </remarks>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize] // Ensure user is authenticated for all actions except GetById and GetSimilarPosts
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent)]
 public class PostsController : ControllerBase
 {
-    private readonly ILogger<PostsController> _logger;
     private readonly PostService _postService;
     private readonly UserService _userService;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PostsController" /> class.
+    /// </summary>
+    /// <param name="postService">The service for managing post operations.</param>
+    /// <param name="userService">The service for managing user operations.</param>
     public PostsController(
         PostService postService,
-        UserService userService,
-        ILogger<PostsController> logger)
+        UserService userService)
     {
         _postService = postService;
         _userService = userService;
-        _logger = logger;
     }
 
     /// <summary>
@@ -128,6 +138,27 @@ public class PostsController : ControllerBase
         return similarPosts;
     }
 
+    /// <summary>
+    ///     Retrieves a list of suggested posts for the current user based on their profile and interests.
+    ///     If the user is not authenticated, returns general suggested posts.
+    /// </summary>
+    /// <param name="limit">The maximum number of suggested posts to return. Defaults to 5 if not specified.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A list of suggested posts as <see cref="SimilarPostsResponse" /> objects.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the requestUri must be an absolute URI or BaseAddress must be
+    ///     set.
+    /// </exception>
+    /// <exception cref="HttpRequestException">
+    ///     Thrown when the request failed due to an underlying issue such as network
+    ///     connectivity, DNS failure, server certificate validation, or timeout.
+    /// </exception>
+    /// <exception cref="TaskCanceledException">
+    ///     Thrown when the request failed due to timeout (.NET Core and .NET 5 and later
+    ///     only).
+    /// </exception>
+    /// <exception cref="OperationCanceledException">Thrown when the CancellationToken is canceled.</exception>
+    /// <remarks>This endpoint allows anonymous access.</remarks>
     [AllowAnonymous]
     [HttpGet("suggested")]
     public async Task<ActionResult<List<SimilarPostsResponse>>> GetSuggestedPosts(
@@ -143,6 +174,41 @@ public class PostsController : ControllerBase
         return suggestedPosts;
     }
 
+    /// <summary>
+    ///     Retrieves a paginated feed of recommended posts using cursor-based pagination.
+    ///     Personalizes the feed based on the current user's profile if authenticated.
+    /// </summary>
+    /// <param name="request">
+    ///     The cursor pagination request containing pagination parameters such as cursor position and page
+    ///     size.
+    /// </param>
+    /// <returns>A paginated response containing posts and cursor information for the next page.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the request is null.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the requestUri must be an absolute URI or BaseAddress must be
+    ///     set.
+    /// </exception>
+    /// <exception cref="HttpRequestException">
+    ///     Thrown when the request failed due to an underlying issue such as network
+    ///     connectivity, DNS failure, server certificate validation, or timeout.
+    /// </exception>
+    /// <exception cref="TaskCanceledException">
+    ///     Thrown when the request failed due to timeout (.NET Core and .NET 5 and later
+    ///     only).
+    /// </exception>
+    /// <exception cref="Microsoft.EntityFrameworkCore.DbUpdateException">
+    ///     Thrown when an error is encountered while saving to
+    ///     the database.
+    /// </exception>
+    /// <exception cref="Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException">
+    ///     Thrown when a concurrency violation is
+    ///     encountered while saving to the database.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">Thrown when the CancellationToken is canceled.</exception>
+    /// <remarks>
+    ///     This endpoint allows anonymous access. Response caching is disabled (NoStore = true) to ensure fresh,
+    ///     personalized content is always returned.
+    /// </remarks>
     [AllowAnonymous]
     [HttpPost("feed")]
     [ResponseCache(NoStore = true)]
@@ -156,6 +222,23 @@ public class PostsController : ControllerBase
         return posts;
     }
 
+    /// <summary>
+    ///     Retrieves all posts created by a specific profile.
+    ///     If the requesting user is authenticated, the posts will include personalized data such as vote status.
+    /// </summary>
+    /// <param name="profileId">The unique identifier of the profile whose posts should be retrieved.</param>
+    /// <returns>A list of posts created by the specified profile as <see cref="PostResponse" /> objects.</returns>
+    /// <exception cref="ArgumentException">Thrown when the profileId is null or empty.</exception>
+    /// <exception cref="Microsoft.EntityFrameworkCore.DbUpdateException">
+    ///     Thrown when an error is encountered while saving to
+    ///     the database.
+    /// </exception>
+    /// <exception cref="Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException">
+    ///     Thrown when a concurrency violation is
+    ///     encountered while saving to the database.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">Thrown when the CancellationToken is canceled.</exception>
+    /// <remarks>This endpoint allows anonymous access and is accessible via the route /api/profiles/{profileId}/posts.</remarks>
     [AllowAnonymous]
     [HttpGet]
     [Route("/api/profiles/{profileId}/posts")]
