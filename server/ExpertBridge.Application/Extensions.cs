@@ -63,13 +63,10 @@ public static class Extensions
             .AddScoped<MediaAttachmentService>()
             .AddScoped<TaggingService>()
             .AddScoped<PostService>()
-            .AddScoped<JobPostingService>()
-            .AddScoped<JobService>()
             .AddScoped<MessagingService>()
             .AddScoped<AiPostTaggingService>()
             .AddScoped<AiTagProcessorService>()
             .AddScoped<NsfwContentDetectionService>()
-            .AddScoped<MediaService>()
             ;
 
         return services;

@@ -8,7 +8,7 @@ using ExpertBridge.Core.Entities.Media.MediaGrants;
 using ExpertBridge.Data.DatabaseContexts;
 using FluentValidation;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides functionality related to media services, such as generating presigned URLs for file uploads

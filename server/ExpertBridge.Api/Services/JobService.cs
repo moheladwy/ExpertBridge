@@ -11,9 +11,9 @@ using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using BadHttpRequestException = ExpertBridge.Core.Exceptions.BadHttpRequestException;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides comprehensive job lifecycle management including offers, applications, and job execution tracking.

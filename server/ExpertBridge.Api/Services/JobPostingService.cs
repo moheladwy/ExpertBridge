@@ -1,4 +1,5 @@
 ﻿using ExpertBridge.Application.DataGenerator;
+using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.ApplyToJobPosting;
@@ -19,11 +20,11 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.Logging;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
+using BadHttpRequestException = ExpertBridge.Core.Exceptions.BadHttpRequestException;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides comprehensive job posting management with AI-powered matching, recommendations, and application
@@ -244,9 +245,9 @@ public class JobPostingService
     ///         new() { FileName = "requirements.pdf", ContentType = "application/pdf" }
     ///     }
     /// };
-    /// 
+    ///
     /// var jobPosting = await jobPostingService.CreateAsync(request, clientProfile);
-    /// 
+    ///
     /// // Background processing begins automatically
     /// // After ~30 seconds: tags and embedding ready
     /// // Job appears in contractor recommendations

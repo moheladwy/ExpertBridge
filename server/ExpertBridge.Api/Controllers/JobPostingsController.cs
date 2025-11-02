@@ -1,3 +1,4 @@
+using ExpertBridge.Api.Services;
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Requests.ApplyToJobPosting;
 using ExpertBridge.Contract.Requests.CreateJobPosting;
