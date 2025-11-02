@@ -10,7 +10,6 @@
     <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching"/>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql"/>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client"/>
-    <PackageReference Include="Bogus"/>
     <PackageReference Include="FirebaseAdmin"/>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
