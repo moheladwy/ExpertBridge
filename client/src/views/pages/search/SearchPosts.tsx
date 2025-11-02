@@ -16,8 +16,7 @@ const SearchPosts = () => {
 		error,
 	} = useSearchPostsQuery(searchQuery, { skip: !searchQuery });
 
-	const [isLoggedIn, loginLoading, loginError, authUser, userProfile] =
-		useIsUserLoggedIn();
+	const [, , , , userProfile] = useIsUserLoggedIn();
 
 	// Render loading skeletons
 	const renderSkeletons = () => {
