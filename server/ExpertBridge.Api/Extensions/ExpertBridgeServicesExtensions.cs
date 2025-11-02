@@ -1,6 +1,5 @@
 ﻿using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
-using ExpertBridge.Application.Settings.Serilog;
 using ExpertBridge.Data;
 using ExpertBridge.Extensions.AWS;
 using ExpertBridge.Extensions.Caching;
@@ -83,9 +82,6 @@ public static class ExpertBridgeServicesExtensions
 
         builder.Services.Configure<AiSettings>(
             builder.Configuration.GetSection(AiSettings.Section));
-
-        builder.Services.Configure<SerilogSettings>(
-            builder.Configuration.GetSection(SerilogSettings.Section));
 
         builder.Services.Configure<ExpertBridgeRateLimitSettings>(
             builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
