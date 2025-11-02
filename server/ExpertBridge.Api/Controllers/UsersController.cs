@@ -3,17 +3,11 @@
 
 using System.Security.Claims;
 using ExpertBridge.Application.DomainServices;
-using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Requests.UpdateUserRequest;
-using ExpertBridge.Contract.Responses;
-using ExpertBridge.Core.Entities.Profiles;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Data.DatabaseContexts;
-using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Controllers;
 

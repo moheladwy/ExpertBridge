@@ -1,5 +1,4 @@
 using ExpertBridge.Api.Services;
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Requests.SearchJobPosts;
 using ExpertBridge.Contract.Requests.SearchPost;
 using ExpertBridge.Contract.Requests.SearchUser;
