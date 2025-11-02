@@ -111,9 +111,6 @@ public static class Extensions
     public static TBuilder ConfigureExpertBridgeSettings<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
     {
-        builder.Services.Configure<ConnectionStrings>(
-            builder.Configuration.GetSection(ConnectionStrings.Section));
-
         builder.Services.Configure<FirebaseSettings>(
             builder.Configuration.GetSection(FirebaseSettings.Section));
 

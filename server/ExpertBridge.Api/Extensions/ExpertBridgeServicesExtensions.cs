@@ -68,9 +68,6 @@ public static class ExpertBridgeServicesExtensions
     /// <returns>The modified WebApplicationBuilder with the configured application settings.</returns>
     private static WebApplicationBuilder ConfigureExpertBridgeSettings(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<ConnectionStrings>(
-            builder.Configuration.GetSection(ConnectionStrings.Section));
-
         builder.Services.Configure<FirebaseSettings>(
             builder.Configuration.GetSection(FirebaseSettings.Section));
 
