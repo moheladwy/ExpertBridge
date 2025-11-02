@@ -32,8 +32,6 @@ public class JobPostingsController : ControllerBase
     /// </summary>
     private readonly JobPostingService _jobPostingService;
 
-    private readonly ILogger<JobPostingsController> _logger;
-
     /// <summary>
     ///     Manages user-related operations and functionalities.
     ///     Handles authentication, user management, and user-specific data processing within the application.
@@ -50,12 +48,10 @@ public class JobPostingsController : ControllerBase
     /// </remarks>
     public JobPostingsController(
         JobPostingService jobPostingService,
-        UserService userService,
-        ILogger<JobPostingsController> logger)
+        UserService userService)
     {
         _jobPostingService = jobPostingService;
         _userService = userService;
-        _logger = logger;
     }
 
     /// <summary>
