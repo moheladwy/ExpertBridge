@@ -1,67 +1,84 @@
-﻿using ExpertBridge.Application.Helpers;
-using ExpertBridge.Contract.Queries;
+﻿using ExpertBridge.Api.Services;
+using ExpertBridge.Application.Helpers;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Data.DatabaseContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Controllers;
 
+/// <summary>
+///     Controller for managing user notifications.
+/// </summary>
+/// <remarks>
+///     All endpoints require authentication.
+/// </remarks>
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class NotificationsController : ControllerBase
 {
+    /// <summary>
+    ///     Provides methods to assist with user authorization and retrieval of the currently authenticated user.
+    /// </summary>
     private readonly AuthorizationHelper _authHelper;
-    private readonly ExpertBridgeDbContext _dbContext;
 
+    /// <summary>
+    ///     Provides methods for managing and interacting with user notifications, including retrieval and updates.
+    /// </summary>
+    private readonly NotificationsService _notificationsService;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NotificationsController" /> class.
+    /// </summary>
+    /// <param name="authHelper">The helper for authentication and authorization operations.</param>
+    /// <param name="notificationsService">The service for managing notifications.</param>
     public NotificationsController(
-        ExpertBridgeDbContext dbContext,
-        AuthorizationHelper authHelper)
+        AuthorizationHelper authHelper,
+        NotificationsService notificationsService)
     {
-        _dbContext = dbContext;
         _authHelper = authHelper;
+        _notificationsService = notificationsService;
     }
 
+    /// <summary>
+    ///     Retrieves all notifications for the current authenticated user.
+    /// </summary>
+    /// <returns>A list of notifications for the current user.</returns>
+    /// <exception cref="UnauthorizedException">Thrown when the user is not authenticated or has no profile.</exception>
     [HttpGet]
     public async Task<List<NotificationResponse>> GetAll()
     {
         var user = await _authHelper.GetCurrentUserAsync();
-
         if (user?.Profile == null)
         {
             throw new UnauthorizedException();
         }
 
-        var notifications = await _dbContext.Notifications
-            .Where(n => n.RecipientId == user.Profile.Id)
-            .SelectNotificationResopnse()
-            .ToListAsync();
-
-        return notifications;
+        return await _notificationsService.GetAll(user);
     }
 
+    /// <summary>
+    ///     Marks all unread notifications as read for the current authenticated user.
+    /// </summary>
+    /// <exception cref="UnauthorizedException">Thrown when the user is not authenticated or has no profile.</exception>
+    /// <exception cref="Microsoft.EntityFrameworkCore.DbUpdateException">
+    ///     Thrown when an error is encountered while saving to
+    ///     the database.
+    /// </exception>
+    /// <exception cref="Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException">
+    ///     Thrown when a concurrency violation is
+    ///     encountered while updating the database.
+    /// </exception>
     [HttpPatch]
     public async Task MarkAllRead()
     {
         var user = await _authHelper.GetCurrentUserAsync();
-
         if (user?.Profile == null)
         {
             throw new UnauthorizedException();
         }
 
-        var notifications = await _dbContext.Notifications
-            .Where(n => n.RecipientId == user.Profile.Id && !n.IsRead)
-            .ToListAsync();
-
-        foreach (var notification in notifications)
-        {
-            notification.IsRead = true;
-        }
-
-        await _dbContext.SaveChangesAsync();
+        await _notificationsService.MarkAllRead(user);
     }
 }
