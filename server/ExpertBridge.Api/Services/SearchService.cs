@@ -2,6 +2,7 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Globalization;
+using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.SearchJobPosts;
@@ -11,10 +12,9 @@ using ExpertBridge.Contract.Responses;
 using ExpertBridge.Data.DatabaseContexts;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Pgvector.EntityFrameworkCore;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides search functionality to retrieve posts based on query embeddings and cosine distance similarity.
