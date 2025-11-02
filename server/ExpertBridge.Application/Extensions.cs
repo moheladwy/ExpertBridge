@@ -123,9 +123,6 @@ public static class Extensions
         builder.Services.Configure<AwsSettings>(
             builder.Configuration.GetSection(AwsSettings.Section));
 
-        builder.Services.Configure<AiSettings>(
-            builder.Configuration.GetSection(AiSettings.Section));
-
         builder.Services.Configure<ExpertBridgeRateLimitSettings>(
             builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
 
