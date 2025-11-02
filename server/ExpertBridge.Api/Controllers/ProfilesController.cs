@@ -1,46 +1,51 @@
 using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Helpers;
 using ExpertBridge.Application.Settings;
-using ExpertBridge.Contract.Messages;
-using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.OnboardUser;
 using ExpertBridge.Contract.Requests.UpdateProfileRequest;
 using ExpertBridge.Contract.Responses;
-using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Exceptions;
-using ExpertBridge.Data.DatabaseContexts;
-using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpertBridge.Api.Controllers;
 
+/// <summary>
+///     Provides API endpoints for profile management, including retrieval, updates, onboarding, and skill management.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
 public class ProfilesController : ControllerBase
 {
     private readonly AuthorizationHelper _authHelper;
-    private readonly ExpertBridgeDbContext _dbContext;
     private readonly ProfileService _profileService;
-    private readonly IPublishEndpoint _publishEndpoint;
     private readonly UserService _userService;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ProfilesController" /> class.
+    /// </summary>
+    /// <param name="authHelper">Helper for user authorization operations.</param>
+    /// <param name="userService">Service for user-related operations.</param>
+    /// <param name="profileService">Service for profile management operations.</param>
     public ProfilesController(
-        ExpertBridgeDbContext dbContext,
         AuthorizationHelper authHelper,
         UserService userService,
-        ProfileService profileService,
-        IPublishEndpoint publishEndpoint)
+        ProfileService profileService)
     {
-        _dbContext = dbContext;
         _authHelper = authHelper;
         _userService = userService;
         _profileService = profileService;
-        _publishEndpoint = publishEndpoint;
     }
 
+    /// <summary>
+    ///     Retrieves the profile of the currently authenticated user.
+    /// </summary>
+    /// <returns>The <see cref="ProfileResponse" /> for the authenticated user.</returns>
+    /// <response code="200">Returns the user's profile.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="404">If the user's profile is not found.</response>
+    /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the user is not authenticated.</exception>
     [AllowAnonymous]
     [HttpGet]
     public async Task<ProfileResponse> GetProfile()
@@ -51,93 +56,61 @@ public class ProfilesController : ControllerBase
             throw new UnauthorizedGetMyProfileException();
         }
 
-        var profile = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync();
-
-        if (profile == null)
-        {
-            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
-        }
-
-        return profile;
+        return await _profileService.GetProfileByUserIdAsync(user.Id);
     }
 
+    /// <summary>
+    ///     Retrieves a profile by its ID. This endpoint is cached for performance.
+    /// </summary>
+    /// <param name="id">The ID of the profile to retrieve.</param>
+    /// <returns>The <see cref="ProfileResponse" /> for the specified profile ID.</returns>
+    /// <response code="200">Returns the profile with the specified ID.</response>
+    /// <response code="404">If the profile is not found.</response>
+    /// <exception cref="ProfileNotFoundException">Thrown when the profile with the specified ID is not found.</exception>
     [AllowAnonymous]
     [HttpGet("{id}")]
     [ResponseCache(CacheProfileName = CacheProfiles.Default)]
     public async Task<ProfileResponse> GetProfile(string id)
     {
-        var profile = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(profile => profile.Id == id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync();
-
-        if (profile == null)
-        {
-            throw new ProfileNotFoundException($"Profile with id={id} was not found");
-        }
-
-        return profile;
+        return await _profileService.GetProfileByIdAsync(id);
     }
 
+    /// <summary>
+    ///     Onboards a user by setting their interests and marking them as onboarded.
+    /// </summary>
+    /// <param name="request">The onboarding request containing the user's interest tags.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>The updated <see cref="ProfileResponse" /> after onboarding.</returns>
+    /// <response code="200">Returns the updated profile after successful onboarding.</response>
+    /// <response code="400">If the request validation fails.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="404">If the user's profile is not found.</response>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the user is not authenticated.</exception>
     [HttpPost("onboard")]
     public async Task<ProfileResponse> OnboardUser(
         [FromBody] OnboardUserRequest request,
         CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
         var user = await _authHelper.GetCurrentUserAsync();
         if (user is null)
         {
             throw new UnauthorizedAccessException("The user is not authorized.");
         }
 
-        var existingTags = await _dbContext.Tags
-            .AsNoTracking()
-            .Where(t =>
-                request.Tags.Contains(t.EnglishName) || request.Tags.Contains(t.ArabicName)
-            )
-            .ToListAsync(cancellationToken);
-
-        var existingTagIds = existingTags.Select(t => t.Id).ToList();
-
-        var existingUserInterests = await _dbContext.UserInterests
-            .AsNoTracking()
-            .Where(ui => ui.ProfileId == user.Profile.Id && existingTagIds.Contains(ui.TagId))
-            .Select(ui => ui.TagId)
-            .ToListAsync(cancellationToken);
-
-        var tagsToBeAddedToUserInterests = existingTagIds
-            .Where(tagId => !existingUserInterests.Contains(tagId))
-            .ToList();
-
-        await _dbContext.UserInterests.AddRangeAsync(tagsToBeAddedToUserInterests.Select(tagId =>
-                new UserInterest { ProfileId = user.Profile.Id, TagId = tagId })
-            , cancellationToken);
-
-        var newTagsToBeProcessed = request.Tags
-            .Where(t => !existingTags.Any(et => et.EnglishName == t || et.ArabicName == t))
-            .ToList();
-        user.IsOnboarded = true;
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        await _publishEndpoint.Publish(
-            new UserInterestsProsessingMessage
-            {
-                UserProfileId = user.Profile.Id, InterestsTags = newTagsToBeProcessed
-            }, cancellationToken);
-
-        var response = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        return response ?? throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
+        return await _profileService.OnboardUserAsync(user, request, cancellationToken);
     }
 
+    /// <summary>
+    ///     Updates the authenticated user's profile information including personal details and skills.
+    /// </summary>
+    /// <param name="request">The profile update request containing new field values.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>The updated <see cref="ProfileResponse" />.</returns>
+    /// <response code="200">Returns the updated profile.</response>
+    /// <response code="400">If the request validation fails or username/phone number already exists.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="404">If the user's profile is not found.</response>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the user is not authenticated.</exception>
     [Authorize]
     [HttpPut]
     public async Task<ProfileResponse> UpdateProfile(
@@ -158,6 +131,16 @@ public class ProfilesController : ControllerBase
         return profileResponse;
     }
 
+    /// <summary>
+    ///     Checks if a username is available for use by the authenticated user.
+    /// </summary>
+    /// <param name="username">The username to check availability for.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>True if the username is available, false if it's already taken or is the current user's username.</returns>
+    /// <response code="200">Returns true if the username is available, false otherwise.</response>
+    /// <response code="400">If the username is null, empty, or whitespace.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the user is not authenticated.</exception>
     [Authorize]
     [HttpGet("is-username-available/{username}")]
     public async Task<bool> IsUsernameAvailable(
@@ -170,24 +153,21 @@ public class ProfilesController : ControllerBase
             throw new UnauthorizedAccessException("The user is not authorized.");
         }
 
-        ArgumentException.ThrowIfNullOrEmpty(username, nameof(username));
-        ArgumentException.ThrowIfNullOrWhiteSpace(username, nameof(username));
-
-        // Check if the username is the same as the current user's username
-        // if so, return false since it's already taken by the current user.
-        if (user.Profile.Username == username)
-        {
-            return false;
-        }
-
-        return !await _dbContext.Profiles
-            .AsNoTracking()
-            .AnyAsync(
-                p => p.Username == username,
-                cancellationToken
-            );
+        return await _profileService.IsUsernameAvailableAsync(username, user.Profile, cancellationToken);
     }
 
+    /// <summary>
+    ///     Retrieves profiles similar to the current user based on AI vector embeddings.
+    ///     For anonymous users, returns random suggestions.
+    /// </summary>
+    /// <param name="limit">The maximum number of profiles to return. Defaults to 5 if not specified.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>A list of suggested <see cref="ProfileResponse" /> objects.</returns>
+    /// <response code="200">Returns a list of suggested profiles.</response>
+    /// <remarks>
+    ///     Uses cosine distance between UserInterestEmbedding vectors for authenticated users.
+    ///     Generates random embedding for anonymous users to provide diverse suggestions.
+    /// </remarks>
     [AllowAnonymous]
     [HttpGet("suggested")]
     public async Task<List<ProfileResponse>> GetSuggestedProfiles(
@@ -204,6 +184,18 @@ public class ProfilesController : ControllerBase
         return profiles;
     }
 
+    /// <summary>
+    ///     Retrieves profiles with the highest reputation scores.
+    ///     Excludes the current user's profile if authenticated.
+    /// </summary>
+    /// <param name="limit">The maximum number of profiles to return. Defaults to 5 if not specified.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>A list of top <see cref="ProfileResponse" /> objects ordered by reputation score descending.</returns>
+    /// <response code="200">Returns a list of top reputation profiles.</response>
+    /// <remarks>
+    ///     Reputation is derived from upvotes, completed jobs, ratings, and community contributions.
+    ///     The current user's profile is excluded from results when authenticated.
+    /// </remarks>
     [AllowAnonymous]
     [HttpGet("top-reputation")]
     public async Task<List<ProfileResponse>> GetTopReputationProfiles(
@@ -220,40 +212,41 @@ public class ProfilesController : ControllerBase
         return profiles;
     }
 
+    /// <summary>
+    ///     Retrieves the skills associated with the authenticated user's profile.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>A list of skill names associated with the user's profile.</returns>
+    /// <response code="200">Returns a list of skill names.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the user is not authenticated.</exception>
     [Authorize]
     [HttpGet("skills")]
     public async Task<List<string>> GetCurrentUserSkills(CancellationToken cancellationToken = default)
     {
-        // Current authenticated user.
         var user = await _userService.GetCurrentUserPopulatedModelAsync();
         if (user is null)
         {
             throw new UnauthorizedAccessException("The user is not authorized.");
         }
 
-        var skills = await _dbContext.ProfileSkills
-            .Include(ps => ps.Skill)
-            .Where(ps => ps.ProfileId == user.Profile.Id)
-            .Select(ps => ps.Skill.Name)
-            .ToListAsync(cancellationToken);
-
-        return skills;
+        return await _profileService.GetProfileSkillsAsync(user.Profile.Id, cancellationToken);
     }
 
+    /// <summary>
+    ///     Retrieves the skills associated with a specific profile by profile ID.
+    /// </summary>
+    /// <param name="profileId">The ID of the profile whose skills to retrieve.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>A list of skill names associated with the specified profile.</returns>
+    /// <response code="200">Returns a list of skill names.</response>
+    /// <response code="400">If the profileId is null or empty.</response>
     [AllowAnonymous]
     [HttpGet("{profileId}/skills")]
     public async Task<List<string>> GetProfileSkills(
         [FromRoute] string profileId,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
-
-        var skills = await _dbContext.ProfileSkills
-            .Include(ps => ps.Skill)
-            .Where(ps => ps.ProfileId == profileId)
-            .Select(ps => ps.Skill.Name)
-            .ToListAsync(cancellationToken);
-
-        return skills;
+        return await _profileService.GetProfileSkillsAsync(profileId, cancellationToken);
     }
 }
