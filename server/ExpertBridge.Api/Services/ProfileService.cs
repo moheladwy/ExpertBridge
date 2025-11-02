@@ -16,10 +16,9 @@ using ExpertBridge.Data.DatabaseContexts;
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Pgvector.EntityFrameworkCore;
 
-namespace ExpertBridge.Application.DomainServices;
+namespace ExpertBridge.Api.Services;
 
 /// <summary>
 ///     Provides profile management including updates, skill management, and AI-powered recommendations.

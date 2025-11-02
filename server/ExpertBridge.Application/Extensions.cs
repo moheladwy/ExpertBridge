@@ -65,7 +65,6 @@ public static class Extensions
             .AddScoped<TaggingService>()
             .AddScoped<PostService>()
             .AddScoped<JobPostingService>()
-            .AddScoped<ProfileService>()
             .AddScoped<JobService>()
             .AddScoped<MessagingService>()
             .AddScoped<AiPostTaggingService>()
