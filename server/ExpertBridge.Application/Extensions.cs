@@ -58,7 +58,6 @@ public static class Extensions
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
 
         services
-            .AddScoped<ModerationReportService>()
             .AddScoped<S3Service>()
             .AddScoped<IEmbeddingService, OllamaEmbeddingService>()
             .AddScoped<CommentService>()
