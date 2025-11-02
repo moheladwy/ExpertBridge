@@ -100,7 +100,7 @@ public static class Extensions
     ///     **Logging:**
     ///     - SerilogSettings: Structured logging configuration (log levels, sinks, enrichment)
     ///     **Rate Limiting:**
-    ///     - ExpertBridgeRateLimitSettings: API rate limiting policies (requests per minute, burst limits)
+    ///     - RateLimitOptions: API rate limiting policies (requests per minute, burst limits)
     ///     Each settings class defines its own Section constant for configuration binding.
     ///     Settings are validated at startup through data annotations and custom validators.
     ///     Typical usage in Program.cs:
@@ -120,8 +120,8 @@ public static class Extensions
         builder.Services.Configure<AwsSettings>(
             builder.Configuration.GetSection(AwsSettings.Section));
 
-        builder.Services.Configure<ExpertBridgeRateLimitSettings>(
-            builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
+        builder.Services.Configure<RateLimitOptions>(
+            builder.Configuration.GetSection(RateLimitOptions.SectionName));
 
         builder.Services.Configure<InappropriateLanguageThresholds>(
             builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));

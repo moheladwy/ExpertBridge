@@ -77,8 +77,8 @@ public static class ExpertBridgeServicesExtensions
         builder.Services.Configure<AwsSettings>(
             builder.Configuration.GetSection(AwsSettings.Section));
 
-        builder.Services.Configure<ExpertBridgeRateLimitSettings>(
-            builder.Configuration.GetSection(ExpertBridgeRateLimitSettings.SectionName));
+        builder.Services.Configure<RateLimitOptions>(
+            builder.Configuration.GetSection(RateLimitOptions.SectionName));
 
         builder.Services.Configure<InappropriateLanguageThresholds>(
             builder.Configuration.GetSection(InappropriateLanguageThresholds.Section));
