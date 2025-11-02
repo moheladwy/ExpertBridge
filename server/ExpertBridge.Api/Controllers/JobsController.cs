@@ -1,5 +1,4 @@
 using ExpertBridge.Api.Services;
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Requests.CreateJobOffer;
 using ExpertBridge.Contract.Requests.UpdateJobStatus;
 using ExpertBridge.Contract.Responses;

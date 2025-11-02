@@ -17,20 +17,18 @@ namespace ExpertBridge.Api.Services;
 /// <remarks>
 ///     This service wraps <see cref="AuthorizationHelper" /> to provide convenient methods for accessing
 ///     the currently authenticated user's information within the HTTP request context.
-///
 ///     Authentication is based on Firebase JWT claims where User.Claims["provider_id"] maps to User.ProviderId.
 ///     The service requires HttpContext and will not work in background workers.
-///
 ///     Method selection:
-///     - Use <see cref="GetCurrentUserPopulatedModelAsync"/> for full User entity with Profile
-///     - Use <see cref="GetCurrentUserProfileIdOrEmptyAsync"/> for optional authentication scenarios
-///     - Use <see cref="GetCurrentUserProfileOrThrowAsync"/> for endpoints requiring guaranteed authentication
-///     - Use <see cref="UpdateUserAsync"/> to create or update user information
+///     - Use <see cref="GetCurrentUserPopulatedModelAsync" /> for full User entity with Profile
+///     - Use <see cref="GetCurrentUserProfileIdOrEmptyAsync" /> for optional authentication scenarios
+///     - Use <see cref="GetCurrentUserProfileOrThrowAsync" /> for endpoints requiring guaranteed authentication
+///     - Use <see cref="UpdateUserAsync" /> to create or update user information
 /// </remarks>
 public class UserService
 {
     /// <summary>
-    /// Provides functionality to assist with user authorization and retrieval of current user information.
+    ///     Provides functionality to assist with user authorization and retrieval of current user information.
     /// </summary>
     private readonly AuthorizationHelper _authHelper;
 
@@ -45,7 +43,8 @@ public class UserService
     private readonly IPublishEndpoint _publishEndpoint;
 
     /// <summary>
-    /// Responsible for validating instances of <see cref="UpdateUserRequest"/> to ensure they meet defined rules and constraints.
+    ///     Responsible for validating instances of <see cref="UpdateUserRequest" /> to ensure they meet defined rules and
+    ///     constraints.
     /// </summary>
     private readonly IValidator<UpdateUserRequest> _updateUserRequestValidator;
 
@@ -56,13 +55,13 @@ public class UserService
     ///     The authorization helper providing authentication context and user retrieval capabilities.
     /// </param>
     /// <param name="dbContext">
-    ///   The database context for accessing the ExpertBridge database.
+    ///     The database context for accessing the ExpertBridge database.
     /// </param>
     /// <param name="publishEndpoint">
-    ///    The MassTransit publish endpoint for event publishing.
+    ///     The MassTransit publish endpoint for event publishing.
     /// </param>
     /// <param name="updateUserRequestValidator">
-    ///   The validator for validating UpdateUserRequest instances.
+    ///     The validator for validating UpdateUserRequest instances.
     /// </param>
     public UserService(AuthorizationHelper authHelper,
         ExpertBridgeDbContext dbContext,
@@ -79,7 +78,7 @@ public class UserService
     ///     Retrieves the current authenticated User entity with populated Profile navigation property.
     /// </summary>
     /// <returns>
-    ///     The authenticated <see cref="User"/> with Profile, or null if not authenticated.
+    ///     The authenticated <see cref="User" /> with Profile, or null if not authenticated.
     /// </returns>
     /// <remarks>
     ///     Use when you need full user data (email, provider ID) in addition to profile information.
@@ -94,7 +93,7 @@ public class UserService
     ///     Retrieves the Profile ID of the current authenticated user.
     /// </summary>
     /// <returns>
-    ///     The Profile ID if authenticated, or <see cref="string.Empty"/> if not authenticated or profile doesn't exist.
+    ///     The Profile ID if authenticated, or <see cref="string.Empty" /> if not authenticated or profile doesn't exist.
     /// </returns>
     /// <remarks>
     ///     Ideal for [AllowAnonymous] endpoints that provide personalized content when authenticated
@@ -107,19 +106,19 @@ public class UserService
     }
 
     /// <summary>
-    /// Updates a user entity in the database based on the provided request data.
+    ///     Updates a user entity in the database based on the provided request data.
     /// </summary>
     /// <param name="request">
-    /// The update user request containing the necessary information to update the user.
+    ///     The update user request containing the necessary information to update the user.
     /// </param>
     /// <returns>
-    /// The updated user entity.
+    ///     The updated user entity.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">
-    /// Thrown when the provided request is null.
+    ///     Thrown when the provided request is null.
     /// </exception>
     /// <exception cref="FluentValidation.ValidationException">
-    /// Thrown if the validation of the provided request fails.
+    ///     Thrown if the validation of the provided request fails.
     /// </exception>
     public async Task<User> UpdateUserAsync(UpdateUserRequest request)
     {
@@ -191,7 +190,7 @@ public class UserService
     ///     Retrieves the Profile of the current authenticated user, throwing an exception if not authenticated.
     /// </summary>
     /// <returns>
-    ///     The authenticated user's <see cref="Profile"/>.
+    ///     The authenticated user's <see cref="Profile" />.
     /// </returns>
     /// <exception cref="UnauthorizedException">
     ///     Thrown when the user is not authenticated or has no associated profile.

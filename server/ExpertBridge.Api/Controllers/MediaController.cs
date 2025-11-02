@@ -1,5 +1,4 @@
 using ExpertBridge.Api.Services;
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Requests.GeneratePresignedUrls;
 using ExpertBridge.Contract.Responses;
 using Microsoft.AspNetCore.Authorization;

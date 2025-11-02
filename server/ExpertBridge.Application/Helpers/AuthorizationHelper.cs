@@ -16,16 +16,16 @@ namespace ExpertBridge.Application.Helpers;
 /// public class PostService
 /// {
 ///     private readonly AuthorizationHelper _authHelper;
-///
+/// 
 ///     public async Task&lt;Post&gt; GetMyPostAsync(string postId)
 ///     {
 ///         var currentUser = await _authHelper.GetCurrentUserAsync();
 ///         if (currentUser == null) throw new UnauthorizedException();
-///
+/// 
 ///         var post = await _dbContext.Posts.FindAsync(postId);
 ///         if (post.AuthorId != currentUser.Profile.Id)
 ///             throw new ForbiddenException();
-///
+/// 
 ///         return post;
 ///     }
 /// }

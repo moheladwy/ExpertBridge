@@ -1,5 +1,5 @@
 ﻿using ExpertBridge.Application.DataGenerator;
-using ExpertBridge.Application.DomainServices;
+using ExpertBridge.Application.Services;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.ApplyToJobPosting;
@@ -245,9 +245,9 @@ public class JobPostingService
     ///         new() { FileName = "requirements.pdf", ContentType = "application/pdf" }
     ///     }
     /// };
-    ///
+    /// 
     /// var jobPosting = await jobPostingService.CreateAsync(request, clientProfile);
-    ///
+    /// 
     /// // Background processing begins automatically
     /// // After ~30 seconds: tags and embedding ready
     /// // Job appears in contractor recommendations

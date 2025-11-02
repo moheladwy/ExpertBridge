@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
@@ -59,8 +58,6 @@ public static class Extensions
         services
             .AddScoped<S3Service>()
             .AddScoped<IEmbeddingService, OllamaEmbeddingService>()
-            .AddScoped<ContentModerationService>()
-            .AddScoped<MediaAttachmentService>()
             .AddScoped<TaggingService>()
             .AddScoped<AiPostTaggingService>()
             .AddScoped<AiTagProcessorService>()

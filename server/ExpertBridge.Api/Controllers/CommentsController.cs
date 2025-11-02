@@ -1,5 +1,4 @@
 using ExpertBridge.Api.Services;
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Contract.Requests.CreateComment;
 using ExpertBridge.Contract.Requests.EditComment;

@@ -54,7 +54,7 @@ namespace ExpertBridge.Api.Services;
 /// hubConnection.on("ReceiveMessage", (message) => {
 ///     displayMessage(message);
 /// });
-///
+/// 
 /// // Server pushes to all connected clients
 /// await _hubContext.Clients.All.ReceiveMessage(messageDto);
 /// </code>
@@ -66,7 +66,7 @@ namespace ExpertBridge.Api.Services;
 ///   WorkerId: Profile FK (contractor)
 ///   JobId: Job FK
 ///   CreatedAt: DateTime
-///
+/// 
 /// Message:
 ///   Id: Guid
 ///   ChatId: Chat FK
@@ -81,7 +81,7 @@ namespace ExpertBridge.Api.Services;
 /// var chat = await _dbContext.Chats
 ///     .WhereProfileIsChatParticipant(userProfile.Id)
 ///     .FirstOrDefaultAsync(c => c.Id == chatId);
-///
+/// 
 /// if (chat == null)
 ///     throw new ChatNotFoundException();
 /// </code>

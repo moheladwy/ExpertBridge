@@ -2,7 +2,6 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using System.Globalization;
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Application.EmbeddingService;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.SearchJobPosts;

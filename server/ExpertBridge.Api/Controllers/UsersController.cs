@@ -3,7 +3,6 @@
 
 using System.Security.Claims;
 using ExpertBridge.Api.Services;
-using ExpertBridge.Application.DomainServices;
 using ExpertBridge.Contract.Requests.UpdateUserRequest;
 using ExpertBridge.Core.Entities.Users;
 using ExpertBridge.Core.Exceptions;
@@ -21,7 +20,7 @@ namespace ExpertBridge.Api.Controllers;
 public sealed class UsersController : ControllerBase
 {
     /// <summary>
-    /// Represents the service for handling user-related operations and business logic.
+    ///     Represents the service for handling user-related operations and business logic.
     /// </summary>
     private readonly UserService _userService;
 
