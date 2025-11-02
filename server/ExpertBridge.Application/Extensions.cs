@@ -59,7 +59,6 @@ public static class Extensions
         services
             .AddScoped<S3Service>()
             .AddScoped<IEmbeddingService, OllamaEmbeddingService>()
-            .AddScoped<CommentService>()
             .AddScoped<ContentModerationService>()
             .AddScoped<MediaAttachmentService>()
             .AddScoped<TaggingService>()
