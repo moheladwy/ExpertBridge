@@ -178,7 +178,9 @@ public partial class ModerationReportDetail : ComponentBase
             {
                 return await DbContext.Comments
                     .IgnoreQueryFilters()
-                    .FullyPopulatedCommentQuery()
+                    .AsNoTracking()
+                    .Include(c => c.Votes)
+                    .Include(c => c.Author)
                     .FirstOrDefaultAsync(c => c.Id == _report.ContentId, cancellationToken);
             });
 
