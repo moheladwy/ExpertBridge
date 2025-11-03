@@ -15,6 +15,7 @@ import {
 import { ThemeProvider } from "@/views/components/common/theme/ThemeProvider";
 import TokenMonitor from "@/views/components/common/ui/TokenMonitor";
 import AuthStateMonitor from "@/views/components/common/ui/AuthStateMonitor";
+import ErrorBoundary from "@/components/errors/ErrorBoundary";
 
 function AppContent() {
   const [updateUser] = useUpdateUserMutation();
