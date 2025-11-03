@@ -1,27 +1,64 @@
-import React from "react";
-import { MediaObject } from "@/features/media/types";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { array, object, TypeOf, z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import FileUpload from "./FileUpload";
+const imageUploadSchema = object({
+	imageCover: z.instanceof(File),
+	images: array(z.instanceof(File)),
+});
+
+type IUploadImage = TypeOf<typeof imageUploadSchema>;
 
 interface FileUploadFormProps {
 	onSubmit: (...args: any) => any;
 	setParentMediaList: (...args: any) => any;
 }
 
-// TODO: This component needs to be migrated from MUI to shadcn/ui
-// Temporary stub to allow build to succeed
 const FileUploadForm: React.FC<FileUploadFormProps> = ({
-	onSubmit,
 	setParentMediaList,
 }) => {
+	const methods = useForm<IUploadImage>({
+		resolver: zodResolver(imageUploadSchema),
+	});
+
+	const onSubmitHandler: SubmitHandler<IUploadImage> = async (values) => {
+		const formData = new FormData();
+		formData.append("imageCover", values.imageCover);
+
+		if (values.images.length > 0) {
+			values.images.forEach((el) => formData.append("images", el));
+		}
+	};
+
 	return (
-		<div className="w-full">
-			<FileUpload
-				limit={5}
-				multiple={true}
-				name="files"
-				setParentMediaList={setParentMediaList}
-			/>
-		</div>
+		<>
+			<div />
+			<div className="w-full max-w-full">
+				<div className="flex justify-center items-center h-[30vh]">
+					<div className="flex flex-col w-full">
+						{/* Single Image Upload */}
+						<FormProvider {...methods}>
+							<form
+								noValidate
+								autoComplete="off"
+								onSubmit={methods.handleSubmit(onSubmitHandler)}
+								className="w-full"
+							>
+								{/* Multiple Image Upload */}
+								<div className="flex justify-center items-center">
+									<FileUpload
+										limit={3}
+										multiple
+										name="images"
+										setParentMediaList={setParentMediaList}
+									/>
+								</div>
+							</form>
+						</FormProvider>
+					</div>
+				</div>
+			</div>
+		</>
 	);
 };
 
