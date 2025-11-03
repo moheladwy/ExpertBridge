@@ -52,3 +52,10 @@ coverage.xml
 *.bak
 my-db-compose
 /server/ExpertBridge.Data/last-version.sql
+client/audit-report/COMPREHENSIVE_AUDIT_REPORT.md
+client/audit-report/QUICK_START_GUIDE.md
+.gitignore
+client/audit-report/implementations/eslint.config.enhanced.js
+client/audit-report/implementations/TokenManager.ts
+client/audit-report/implementations/Feed.optimized.tsx
+client/audit-report/implementations/apiSlice.optimized.ts
