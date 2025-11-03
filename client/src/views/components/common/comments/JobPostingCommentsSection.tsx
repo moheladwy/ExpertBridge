@@ -10,7 +10,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/views/components/custom/dropdown-menu";
+} from "@/views/components/ui/dropdown-menu";
 import {
 	Field,
 	FieldDescription,

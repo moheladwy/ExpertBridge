@@ -26,7 +26,7 @@ import {
 	DialogContent,
 	DialogOverlay,
 	DialogPortal,
-} from "@/views/components/custom/dialog";
+} from "@/views/components/ui/dialog";
 import UpdateProfile from "@/views/components/common/profile/UpdateProfile";
 import { Comment } from "@/features/comments/types";
 

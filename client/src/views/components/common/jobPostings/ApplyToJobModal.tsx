@@ -6,7 +6,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/views/components/custom/dialog";
+} from "@/views/components/ui/dialog";
 
 import { Button } from "@/views/components/ui/button";
 import { Input } from "@/views/components/ui/input";

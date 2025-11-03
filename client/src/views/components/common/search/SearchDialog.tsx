@@ -1,12 +1,12 @@
-import { Button } from "@/views/components/custom/button";
+import { Button } from "@/views/components/ui/button";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
-} from "@/views/components/custom/dropdown-menu";
-import { CommandDialog, CommandInput } from "@/views/components/custom/command";
+} from "@/views/components/ui/dropdown-menu";
+import { CommandDialog, CommandInput } from "@/views/components/ui/command";
 import {
 	FileQuestion,
 	User,

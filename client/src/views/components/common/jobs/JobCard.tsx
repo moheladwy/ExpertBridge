@@ -1,5 +1,5 @@
 import { JobResponse } from "@/features/jobs/types";
-import { Button } from "../../custom/button";
+import { Button } from "@/views/components/ui/button";
 import {
 	Calendar,
 	CheckCircle,
@@ -8,7 +8,7 @@ import {
 	MessageCircle,
 	User,
 } from "lucide-react";
-import { Badge } from "../../ui/badge";
+import { Badge } from "@/views/components/ui/badge";
 
 export const JobCard: React.FC<{
 	job: JobResponse;

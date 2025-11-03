@@ -4,7 +4,7 @@ import {
 	useSendMessageMutation,
 } from "@/features/messages/messagesSlice";
 import { MessageResponse } from "@/features/messages/types";
-import { Button } from "@/views/components/custom/button";
+import { Button } from "@/views/components/ui/button";
 import { Send, Clock, CheckCircle } from "lucide-react";
 import { format, isToday, isYesterday, isSameDay, parseISO } from "date-fns";
 

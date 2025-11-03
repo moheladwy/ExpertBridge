@@ -1,4 +1,4 @@
-import { Button } from "@/views/components/custom/button";
+import { Button } from "@/views/components/ui/button";
 import { useEffect, useState, KeyboardEvent } from "react";
 import { useGetTagsQuery } from "@/features/tags/tagsSlice";
 import { useOnboardUserMutation } from "@/features/profiles/profilesSlice";
