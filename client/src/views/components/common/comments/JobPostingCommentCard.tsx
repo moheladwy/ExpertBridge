@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextField } from "@mui/material";
 import { Comment, DeleteCommentRequest } from "@/features/comments/types";
+import { Field } from "@/views/components/ui/field";
+import { Textarea } from "@/views/components/ui/textarea";
+import { Button } from "@/views/components/ui/button";
 import {
 	useCreateReplyMutation,
 	useUpdateCommentMutation,
@@ -252,35 +254,20 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 			<div className="w-full break-words">
 				{isEditing ? (
 					<div className="flex flex-col gap-2">
-						<TextField
-							fullWidth
-							multiline
-							size="small"
-							value={editedText}
-							onChange={(e) => setEditedText(e.target.value)}
-							disabled={editResult.isLoading}
-							slotProps={{ htmlInput: { dir: "auto" } }}
-							className="dark:text-white [&_.MuiOutlinedInput-root]:dark:text-white [&_.MuiInputBase-input]:dark:text-white [&_.MuiInputBase-input]::placeholder:dark:text-gray-300 [&_.MuiOutlinedInput-notchedOutline]:dark:border-gray-600"
-							inputProps={{
-								className:
-									"dark:text-white placeholder:dark:text-gray-300",
-							}}
-							sx={{
-								"& .MuiInputBase-input": {
-									color: "var(--tw-text-opacity: 1); color: rgb(255 255 255 / var(--tw-text-opacity))",
-								},
-								"& .MuiOutlinedInput-root": {
-									"&.Mui-focused fieldset": {
-										borderColor:
-											"var(--tw-border-opacity: 1); border-color: rgb(75 85 99 / var(--tw-border-opacity))",
-									},
-								},
-							}}
-						/>
+						<Field>
+							<Textarea
+								value={editedText}
+								onChange={(
+									e: React.ChangeEvent<HTMLTextAreaElement>
+								) => setEditedText(e.target.value)}
+								disabled={editResult.isLoading}
+								dir="auto"
+								className="resize-none dark:bg-gray-700 dark:text-white"
+							/>
+						</Field>
 						<div className="flex gap-2 justify-end">
 							<Button
-								size="small"
-								variant="contained"
+								size="sm"
 								className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
 								onClick={handleSaveEdit}
 								disabled={editResult.isLoading}
@@ -288,8 +275,8 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 								Save
 							</Button>
 							<Button
-								size="small"
-								variant="text"
+								size="sm"
+								variant="ghost"
 								onClick={() => setIsEditing(false)}
 								disabled={editResult.isLoading}
 								className="dark:text-gray-300 dark:hover:text-white"
@@ -318,7 +305,7 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 
 						{comment.replies && comment.replies.length > 0 && (
 							<Button
-								size="small"
+								size="sm"
 								onClick={() => setShowReplies((prev) => !prev)}
 								className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
 							>
@@ -330,44 +317,22 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 
 					{/* Reply Form */}
 					<div>
-						<TextField
-							fullWidth
-							multiline
-							size="small"
-							variant="outlined"
-							placeholder="Write a reply..."
-							value={replyText}
-							onChange={(e) => setReplyText(e.target.value)}
-							disabled={isLoading}
-							slotProps={{
-								htmlInput: {
-									dir: "auto",
-								},
-							}}
-							className="dark:text-white [&_.MuiOutlinedInput-root]:dark:text-white [&_.MuiInputBase-input]:dark:text-white [&_.MuiOutlinedInput-notchedOutline]:dark:border-gray-600"
-							inputProps={{
-								className:
-									"dark:text-white placeholder:dark:text-gray-300",
-							}}
-							sx={{
-								"& .MuiInputBase-input": {
-									"&::placeholder": {
-										color: "var(--tw-text-opacity: 1); color: rgb(209 213 219 / var(--tw-text-opacity))",
-									},
-								},
-								"& .MuiOutlinedInput-root": {
-									"&.Mui-focused fieldset": {
-										borderColor:
-											"var(--tw-border-opacity: 1); border-color: rgb(75 85 99 / var(--tw-border-opacity))",
-									},
-								},
-							}}
-						/>
+						<Field>
+							<Textarea
+								placeholder="Write a reply..."
+								value={replyText}
+								onChange={(
+									e: React.ChangeEvent<HTMLTextAreaElement>
+								) => setReplyText(e.target.value)}
+								disabled={isLoading}
+								dir="auto"
+								className="resize-none dark:bg-gray-700 dark:text-white"
+							/>
+						</Field>
 						<div className="w-full flex mt-2 justify-end">
 							<Button
 								onClick={handleReplySubmit}
-								variant="contained"
-								size="small"
+								size="sm"
 								className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
 								disabled={isLoading}
 							>

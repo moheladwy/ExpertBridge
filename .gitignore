@@ -60,3 +60,4 @@ client/audit-report/implementations/TokenManager.ts
 client/audit-report/implementations/Feed.optimized.tsx
 client/audit-report/implementations/apiSlice.optimized.ts
 client/analyze-bundle.cjs
+client/audit-report/fix-ui-plan.md

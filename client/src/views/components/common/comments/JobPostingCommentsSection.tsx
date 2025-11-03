@@ -3,16 +3,20 @@ import {
 	useDeleteCommentMutation,
 	useGetCommentsByJobPostingIdQuery,
 } from "@/features/comments/commentsSlice";
-import { AttachFile, Sort } from "@mui/icons-material";
+import { Paperclip, ArrowUpDown } from "lucide-react";
+import { Button } from "@/views/components/ui/button";
 import {
-	Button,
-	IconButton,
-	TextField,
-	Typography,
-	Menu,
-	MenuItem,
-	ListItemText,
-} from "@mui/material";
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/views/components/custom/dropdown-menu";
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+} from "@/views/components/ui/field";
+import { Textarea } from "@/views/components/ui/textarea";
 import { useEffect, useState } from "react";
 import JobPostingCommentCard from "./JobPostingCommentCard";
 import toast from "react-hot-toast";
@@ -64,7 +68,6 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 	const [sortOption, setSortOption] = useState<
 		"newest" | "oldest" | "mostUpvoted" | "mostReplies"
 	>("oldest");
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
 	// Map sort options to display names
 	const sortOptionLabels = {
@@ -93,7 +96,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 	// Calculate characters left
 	const charsLeft = MAX_COMMENT_LENGTH - commentText.length;
 
-	const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const newValue = e.target.value;
 		if (newValue.length <= MAX_COMMENT_LENGTH) {
 			setCommentText(newValue);
@@ -140,7 +143,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 		}
 	}, [deleteResult.isSuccess, deleteResult.isError]);
 
-	const handleAttachClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+	const handleAttachClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 		e.preventDefault();
 		if (!authUser) {
@@ -150,19 +153,10 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 		setShowMediaForm((prev) => !prev);
 	};
 
-	const handleSortMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handleSortMenuClose = () => {
-		setAnchorEl(null);
-	};
-
 	const handleSortChange = (
 		option: "newest" | "oldest" | "mostUpvoted" | "mostReplies"
 	) => {
 		setSortOption(option);
-		handleSortMenuClose();
 	};
 
 	const getSortedComments = () => {
@@ -221,42 +215,35 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 
 						<div className="flex flex-col gap-3 w-full">
 							{/* Comment Text Field */}
-							<TextField
-								fullWidth
-								multiline
-								size="small"
-								variant="outlined"
-								placeholder="Add a comment about this job posting..."
-								value={commentText}
-								slotProps={{
-									htmlInput: {
-										maxLength: MAX_COMMENT_LENGTH,
-										dir: "auto",
-									},
-								}}
-								onChange={handleCommentChange}
-								disabled={isLoading || uploadResult.isLoading}
-								error={!!commentError}
-								helperText={commentError}
-								className="dark:text-white [&_.MuiOutlinedInput-root]:dark:text-white [&_.MuiInputBase-input]:dark:text-white [&_.MuiInputBase-input]::placeholder:dark:text-gray-500 [&_.MuiOutlinedInput-notchedOutline]:dark:border-gray-600"
-								inputProps={{
-									className:
-										"dark:text-white placeholder:dark:text-gray-500",
-								}}
-								sx={{
-									"& .MuiInputBase-input": {
-										"&::placeholder": {
-											color: "var(--tw-text-opacity: 1); color: rgb(107 114 128 / var(--tw-text-opacity))",
-										},
-									},
-									"& .MuiOutlinedInput-root": {
-										"&.Mui-focused fieldset": {
-											borderColor:
-												"var(--tw-border-opacity: 1); border-color: rgb(75 85 99 / var(--tw-border-opacity))",
-										},
-									},
-								}}
-							/>
+							<Field>
+								<Textarea
+									placeholder="Add a comment about this job posting..."
+									value={commentText}
+									onChange={handleCommentChange}
+									disabled={
+										isLoading || uploadResult.isLoading
+									}
+									maxLength={MAX_COMMENT_LENGTH}
+									dir="auto"
+									className="resize-none dark:bg-gray-700 dark:text-white"
+								/>
+								{commentError && (
+									<FieldError>{commentError}</FieldError>
+								)}
+								{!commentError && (
+									<FieldDescription>
+										<span
+											className={
+												charsLeft === 0
+													? "text-red-500"
+													: ""
+											}
+										>
+											{charsLeft} characters left
+										</span>
+									</FieldDescription>
+								)}
+							</Field>
 
 							{showMediaForm && (
 								<div className="border p-2 rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
@@ -282,8 +269,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 							{/* Character counter */}
 							{!commentError && (
 								<div className="flex justify-end">
-									<Typography
-										variant="caption"
+									<div
 										color={
 											charsLeft === 0
 												? "error"
@@ -292,7 +278,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 										className="dark:text-gray-400"
 									>
 										{charsLeft} characters left
-									</Typography>
+									</div>
 								</div>
 							)}
 						</div>
@@ -302,98 +288,70 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 
 			<div className="flex items-center justify-between font-semibold text-lg my-3 dark:text-white">
 				<div className="flex items-center justify-start">
-					<Typography
-						variant="body2"
-						className="text-gray-600 dark:text-gray-400"
-					>
+					<div className="text-gray-600 dark:text-gray-400">
 						Sort by:
-					</Typography>
-					<Button
-						onClick={handleSortMenuOpen}
-						className="dark:text-gray-300 text-gray-700"
-						aria-label="Sort comments"
-						aria-controls="sort-menu"
-						aria-haspopup="true"
-						size="small"
-						endIcon={<Sort />}
-						variant="text"
-					>
-						{sortOptionLabels[sortOption]}
-					</Button>
-					<Menu
-						id="sort-menu"
-						anchorEl={anchorEl}
-						keepMounted
-						open={Boolean(anchorEl)}
-						onClose={handleSortMenuClose}
-						className="dark:text-gray-200"
-						PaperProps={{
-							className: "dark:bg-gray-800 dark:text-gray-200",
-							sx: {
-								"& .MuiMenuItem-root.Mui-selected": {
-									backgroundColor: "rgba(25, 118, 210, 0.12)",
-									"&.dark:text-gray-200": {
-										backgroundColor:
-											"rgba(59, 130, 246, 0.2)",
-									},
-								},
-							},
-						}}
-					>
-						<MenuItem
-							onClick={() => handleSortChange("newest")}
-							selected={sortOption === "newest"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Newest first"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-						<MenuItem
-							onClick={() => handleSortChange("oldest")}
-							selected={sortOption === "oldest"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Oldest first"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-						<MenuItem
-							onClick={() => handleSortChange("mostUpvoted")}
-							selected={sortOption === "mostUpvoted"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Most upvoted"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-						<MenuItem
-							onClick={() => handleSortChange("mostReplies")}
-							selected={sortOption === "mostReplies"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Most replies"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-					</Menu>
+					</div>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="ghost"
+								className="dark:text-gray-300 text-gray-700"
+							>
+								{sortOptionLabels[sortOption]}
+								<ArrowUpDown className="ml-2 h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("newest")}
+								className={
+									sortOption === "newest" ? "bg-accent" : ""
+								}
+							>
+								Newest first
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("oldest")}
+								className={
+									sortOption === "oldest" ? "bg-accent" : ""
+								}
+							>
+								Oldest first
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("mostUpvoted")}
+								className={
+									sortOption === "mostUpvoted"
+										? "bg-accent"
+										: ""
+								}
+							>
+								Most upvoted
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("mostReplies")}
+								className={
+									sortOption === "mostReplies"
+										? "bg-accent"
+										: ""
+								}
+							>
+								Most replies
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 				<div className="flex justify-end gap-2 items-center">
-					<IconButton
-						component="label"
+					<Button
+						variant="ghost"
+						size="icon"
 						onClick={handleAttachClick}
 						className="dark:text-gray-300"
 					>
-						<AttachFile />
-					</IconButton>
+						<Paperclip className="h-5 w-5" />
+					</Button>
 
 					<Button
-						variant="contained"
-						color="primary"
 						onClick={handleCommentSubmit}
 						disabled={isLoading || uploadResult.isLoading}
 						className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
