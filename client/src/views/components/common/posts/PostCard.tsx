@@ -1,8 +1,12 @@
 import { useDeletePostMutation } from "@/features/posts/postsSlice";
 import { Link } from "react-router-dom";
-import { MessageCircle } from "lucide-react";
-import { Ellipsis } from "lucide-react";
-import { Link2 } from "lucide-react";
+import {
+	MessageCircle,
+	Ellipsis,
+	Link2,
+	Edit as EditIcon,
+	Trash2,
+} from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -22,9 +26,7 @@ import {
 import toast from "react-hot-toast";
 import { useEffect, useMemo, useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
-import DeleteIcon from "@mui/icons-material/Delete";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
-import { Edit as EditIcon } from "lucide-react";
 import EditPostModal from "./EditPostModal";
 import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
@@ -56,7 +58,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 		}
 	}, [deleteResult.isSuccess, deleteResult.isError, deleteResult.error]);
 
-	if (!memoizedPost) return null;
+	if (!memoizedPost || !memoizedPost.author) return null;
 
 	const totalCommentsNumber = memoizedPost.comments;
 
@@ -67,7 +69,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 			.then(() => {
 				toast.success("Link copied successfully");
 			})
-			.catch((err) => {
+			.catch(() => {
 				toast.error("Failed to copy link");
 			});
 	};
@@ -150,7 +152,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 											}
 										>
 											<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
-												<DeleteIcon className="w-5 text-red-700" />
+												<Trash2 className="w-5 text-red-700" />
 												<h6 className="text-red-700">
 													Delete post
 												</h6>

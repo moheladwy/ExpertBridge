@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useSearchUsersQuery } from "@/features/search/searchSlice";
-import { Skeleton } from "@mui/material";
+import { Skeleton } from "@/views/components/ui/skeleton";
 import SearchUserCard from "@/views/components/common/search/SearchUserCard";
 import { useCallback } from "react";
 
@@ -19,7 +19,9 @@ const SearchUsers = () => {
 	const renderSkeletons = () => {
 		return Array(3)
 			.fill(0)
-			.map((_, index) => <Skeleton key={index} />);
+			.map((_, index) => (
+				<Skeleton key={index} className="h-32 w-full rounded-lg mb-4" />
+			));
 	};
 
 	// Render search results or appropriate message

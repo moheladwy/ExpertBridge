@@ -1,14 +1,17 @@
 import { useGetTopReputationProfilesQuery } from "@/features/profiles/profilesSlice";
-import Avatar from "@mui/material/Avatar";
-import { Skeleton } from "@mui/material";
+import {
+	Avatar,
+	AvatarImage,
+	AvatarFallback,
+} from "@/views/components/ui/avatar";
+import { Skeleton } from "@/views/components/ui/skeleton";
 import { ProfileResponse } from "@/features/profiles/types";
-import StarIcon from "@mui/icons-material/Star";
+import { Star, Trophy, Crown, Medal } from "lucide-react";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
-import { Trophy, Crown, Medal } from "lucide-react";
 import { Link } from "react-router";
 
 const TopReputationUsers = ({ limit = 5 }) => {
-	const { data, isLoading, isError, error, refetch } =
+	const { data, isLoading, isError, refetch } =
 		useGetTopReputationProfilesQuery(limit);
 
 	useRefetchOnLogin(refetch);
@@ -48,35 +51,18 @@ const TopReputationUsers = ({ limit = 5 }) => {
 						<div className="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
 							<Trophy className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
 						</div>
-						<Skeleton variant="text" width={120} height={24} />
+						<Skeleton className="h-6 w-[120px]" />
 					</div>
 				</div>
 				<div className="p-6 space-y-4">
 					{[...Array(limit)].map((_, i) => (
 						<div key={i} className="flex items-center gap-3">
-							<Skeleton
-								variant="circular"
-								width={48}
-								height={48}
-							/>
-							<div className="flex-1">
-								<Skeleton
-									variant="text"
-									width="70%"
-									height={20}
-								/>
-								<Skeleton
-									variant="text"
-									width="50%"
-									height={16}
-								/>
+							<Skeleton className="h-12 w-12 rounded-full" />
+							<div className="flex-1 space-y-2">
+								<Skeleton className="h-5 w-[70%]" />
+								<Skeleton className="h-4 w-[50%]" />
 							</div>
-							<Skeleton
-								variant="rectangular"
-								width={60}
-								height={24}
-								className="rounded-full"
-							/>
+							<Skeleton className="h-6 w-[60px] rounded-full" />
 						</div>
 					))}
 				</div>
@@ -145,10 +131,16 @@ const TopReputationUsers = ({ limit = 5 }) => {
 										</div>
 
 										<div className="relative">
-											<Avatar
-												src={user.profilePictureUrl}
-												className="w-12 h-12 ring-2 ring-white dark:ring-gray-700 shadow-md group-hover:ring-yellow-200 dark:group-hover:ring-yellow-700 transition-all duration-200"
-											/>
+											<Avatar className="w-12 h-12 ring-2 ring-white dark:ring-gray-700 shadow-md group-hover:ring-yellow-200 dark:group-hover:ring-yellow-700 transition-all duration-200">
+												<AvatarImage
+													src={user.profilePictureUrl}
+													alt={`${user.firstName} ${user.lastName}`}
+												/>
+												<AvatarFallback>
+													{user.firstName?.[0]}
+													{user.lastName?.[0]}
+												</AvatarFallback>
+											</Avatar>
 											{index < 3 && (
 												<div className="absolute -top-1 -right-1">
 													{getRankIcon(index)}
@@ -175,7 +167,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 									<div className="relative z-10 flex items-center gap-2">
 										<div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/50 dark:to-amber-900/50 rounded-full">
-											<StarIcon className="w-4 h-4 text-yellow-500" />
+											<Star className="w-4 h-4 text-yellow-500" />
 											<span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
 												{user.reputation?.toLocaleString() ||
 													0}

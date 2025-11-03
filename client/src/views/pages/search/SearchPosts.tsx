@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { useSearchPostsQuery } from "@/features/search/searchSlice";
-import { Skeleton } from "@mui/material";
+import { Skeleton } from "@/views/components/ui/skeleton";
 import PostCard from "@/views/components/common/posts/PostCard";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { useCallback } from "react";
@@ -22,7 +22,9 @@ const SearchPosts = () => {
 	const renderSkeletons = () => {
 		return Array(3)
 			.fill(0)
-			.map((_, index) => <Skeleton key={index} />);
+			.map((_, index) => (
+				<Skeleton key={index} className="h-48 w-full rounded-lg mb-4" />
+			));
 	};
 
 	// Render search results or appropriate message
@@ -45,7 +47,9 @@ const SearchPosts = () => {
 		}
 
 		const posts = searchResults
-			? Object.values(searchResults.entities)
+			? Object.values(searchResults.entities).filter(
+					(post) => post && post.author
+				)
 			: [];
 
 		if (posts.length === 0 && searchQuery) {
