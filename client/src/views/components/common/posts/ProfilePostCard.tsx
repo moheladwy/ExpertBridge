@@ -15,7 +15,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 	const netVotes = post.upvotes - post.downvotes;
 
 	return (
-		<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+		<div className="flex flex-col gap-3 bg-card shadow-md rounded-lg p-4 border border-border">
 			{/* Author Info */}
 			<div className="flex items-center space-x-3">
 				<Link to={`/profile/${post.author.id}`}>
@@ -38,7 +38,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 				<div className="flex w-full justify-between">
 					<div>
 						<Link to={`/profile/${post.author.id}`}>
-							<h3 className="text-md font-semibold dark:text-white">
+							<h3 className="text-md font-semibold text-card-foreground">
 								{post.author.firstName +
 									" " +
 									post.author.lastName}
@@ -55,7 +55,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 			{/* Post Title */}
 			<div className="break-words">
 				<h2
-					className="text-lg font-bold text-gray-700 dark:text-gray-200 whitespace-pre-wrap"
+					className="text-lg font-bold text-card-foreground whitespace-pre-wrap"
 					dir="auto"
 				>
 					{post.title}
@@ -65,7 +65,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 			{/* Post Content */}
 			<div className="break-words">
 				<p
-					className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap line-clamp-3"
+					className="text-muted-foreground whitespace-pre-wrap line-clamp-3"
 					dir="auto"
 				>
 					{post.content}
@@ -79,7 +79,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 					{post.tags.map((tag: any, index: number) => (
 						<span
 							key={index}
-							className="text-xs bg-gray-200 dark:bg-gray-700 dark:text-gray-200 px-2 py-1 rounded-full"
+							className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full"
 							dir="auto"
 						>
 							{tag.name}
@@ -92,15 +92,15 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 			<div className="flex justify-between items-center mt-2">
 				<div className="flex space-x-4">
 					{/* Votes Display */}
-					<div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+					<div className="flex items-center gap-1 text-muted-foreground">
 						<div className="flex items-center">
 							{netVotes >= 0 ? (
-								<ArrowBigUp className="text-gray-500 dark:text-gray-400 w-5 h-5" />
+								<ArrowBigUp className="text-muted-foreground w-5 h-5" />
 							) : (
-								<ArrowBigDown className="text-gray-500 dark:text-gray-400 w-5 h-5" />
+								<ArrowBigDown className="text-muted-foreground w-5 h-5" />
 							)}
 							<span
-								className={`ml-1 ${netVotes < 0 ? "text-red-500 dark:text-red-400" : "text-gray-500 dark:text-gray-400"}`}
+								className={`ml-1 ${netVotes < 0 ? "text-destructive" : "text-muted-foreground"}`}
 							>
 								{Math.abs(netVotes)}
 							</span>
@@ -108,7 +108,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 					</div>
 
 					{/* Comments */}
-					<div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+					<div className="flex items-center gap-1 text-muted-foreground">
 						<MessageCircle className="w-5 h-5" />
 						<span>{totalCommentsNumber}</span>
 					</div>
@@ -119,7 +119,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 					asChild
 					variant="outline"
 					size="sm"
-					className="text-gray-500 dark:text-gray-400 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700"
+					className="text-muted-foreground bg-background hover:bg-accent"
 				>
 					<Link to={`/feed/${post.id}`}>View Post</Link>
 				</Button>

@@ -104,15 +104,15 @@ const NavBar = () => {
 					<nav className="hidden lg:flex ml-5">
 						<Link
 							to="/home"
-							className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
-                ${location.pathname === "/home" ? "bg-blue-950" : ""}`}
+							className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
+                ${location.pathname === "/home" ? "bg-secondary" : ""}`}
 						>
 							<div className="text-white font-light">Home</div>
 						</Link>
 						<Link
 							to="/jobs"
-							className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
-              ${location.pathname === "/jobs" ? "bg-blue-950" : ""}`}
+							className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
+              ${location.pathname === "/jobs" ? "bg-secondary" : ""}`}
 						>
 							<div className="text-white font-light">Jobs</div>
 						</Link>
@@ -121,8 +121,8 @@ const NavBar = () => {
 							<>
 								<Link
 									to="/offers"
-									className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
-                  ${location.pathname === "/offers" ? "bg-blue-950" : ""}`}
+									className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
+                  ${location.pathname === "/offers" ? "bg-secondary" : ""}`}
 								>
 									<div className="text-white font-light">
 										Offers
@@ -130,8 +130,8 @@ const NavBar = () => {
 								</Link>
 								<Link
 									to="/my-jobs"
-									className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
-                  ${location.pathname === "/my-jobs" ? "bg-blue-950" : ""}`}
+									className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
+                  ${location.pathname === "/my-jobs" ? "bg-secondary" : ""}`}
 								>
 									<div className="text-white font-light">
 										My Jobs
@@ -141,8 +141,8 @@ const NavBar = () => {
 						) : (
 							<Link
 								to="/AboutUs"
-								className={`flex justify-center items-center py-5 px-3 hover:bg-blue-950 transition-colors
-                  ${location.pathname === "/AboutUs" ? "bg-blue-950" : ""}`}
+								className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
+                  ${location.pathname === "/AboutUs" ? "bg-secondary" : ""}`}
 							>
 								<div className="text-white font-light">
 									About Us
@@ -156,8 +156,8 @@ const NavBar = () => {
 				<div className="flex items-center text-center gap-2 sm:gap-3 lg:gap-5">
 					{/* Search Button */}
 					<Button
-						className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue transition-colors
-                       hidden sm:flex px-4 lg:px-9 shadow-sm border border-gray-200 dark:border-gray-600"
+						className="bg-secondary text-muted-foreground hover:bg-secondary hover:text-main-blue transition-colors
+                       hidden sm:flex px-4 lg:px-9 shadow-sm border border-border"
 						onClick={handleSearch}
 					>
 						<Search className="w-4 h-4" />
@@ -215,7 +215,7 @@ const NavBar = () => {
 									</div>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent
-									className="dark:bg-gray-800 w-48"
+									className="bg-card w-48"
 									align="end"
 								>
 									<DropdownMenuLabel>
@@ -335,9 +335,9 @@ const NavBar = () => {
 					className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-50"
 					onClick={closeMobileMenu}
 				>
-					<div className="fixed right-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out">
-						<div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
-							<h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+					<div className="fixed right-0 top-0 h-full w-64 bg-card shadow-lg transform transition-transform duration-300 ease-in-out">
+						<div className="flex items-center justify-between p-4 border-b border-border">
+							<h2 className="text-lg font-semibold text-card-foreground">
 								Menu
 							</h2>
 							<Button
@@ -353,7 +353,7 @@ const NavBar = () => {
 						<nav className="p-4 space-y-4">
 							<Link
 								to="/home"
-								className="flex items-center text-gray-800 dark:text-white hover:text-main-blue dark:hover:text-blue-400 transition-colors"
+								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Home className="w-5 h-5 mr-3" />
@@ -361,7 +361,7 @@ const NavBar = () => {
 							</Link>
 							<Link
 								to="/jobs"
-								className="flex items-center text-gray-800 dark:text-white hover:text-main-blue dark:hover:text-blue-400 transition-colors"
+								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Briefcase className="w-5 h-5 mr-3" />
@@ -369,7 +369,7 @@ const NavBar = () => {
 							</Link>
 							<Link
 								to="/AboutUs"
-								className="flex items-center text-gray-800 dark:text-white hover:text-main-blue dark:hover:text-blue-400 transition-colors"
+								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Info className="w-5 h-5 mr-3" />
@@ -377,16 +377,16 @@ const NavBar = () => {
 							</Link>
 							<Link
 								to="/privacy-policy"
-								className="flex items-center text-gray-800 dark:text-white hover:text-main-blue dark:hover:text-blue-400 transition-colors"
+								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Shield className="w-5 h-5 mr-3" />
 								Privacy Policy
 							</Link>
 
-							<div className="pt-4 border-t dark:border-gray-700 space-y-3">
+							<div className="pt-4 border-t border-border space-y-3">
 								<div className="flex items-center justify-between">
-									<span className="text-gray-800 dark:text-white">
+									<span className="text-card-foreground">
 										Theme
 									</span>
 									<ModeToggle />

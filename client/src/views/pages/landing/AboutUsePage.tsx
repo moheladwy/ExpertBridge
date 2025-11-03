@@ -1,33 +1,33 @@
 const AboutUsPage = () => {
 	return (
-		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
+		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 transition-colors duration-200">
 			{/* Hero Section */}
 			<div className="relative overflow-hidden">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
 					<div className="text-center">
-						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent transition-colors duration-200">
+						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-colors duration-200">
 							About ExpertBridge
 						</h1>
-						<p className="mt-6 text-xl sm:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto transition-colors duration-200">
+						<p className="mt-6 text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto transition-colors duration-200">
 							Connecting expertise with opportunity through
 							innovative technology
 						</p>
-						<div className="mt-8 w-24 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 mx-auto rounded-full"></div>
+						<div className="mt-8 w-24 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
 					</div>
 				</div>
 			</div>
 
 			{/* Mission Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-				<div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-800/20 p-8 sm:p-12 transition-all duration-200">
+				<div className="bg-card rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 					<div className="text-center mb-12">
-						<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
+						<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground transition-colors duration-200">
 							Our Mission
 						</h2>
 						<div className="mt-4 w-16 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
 					</div>
 					<div className="max-w-4xl mx-auto">
-						<p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed text-center transition-colors duration-200">
+						<p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-center transition-colors duration-200">
 							At ExpertBridge, we believe that every problem
 							deserves the right expert, and every expert deserves
 							the right opportunity. We're revolutionizing how
@@ -43,15 +43,15 @@ const AboutUsPage = () => {
 			{/* What We Do Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 				<div className="text-center mb-16">
-					<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
+					<h2 className="text-3xl sm:text-4xl font-bold text-foreground transition-colors duration-200">
 						What We Do
 					</h2>
-					<div className="mt-4 w-16 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 mx-auto rounded-full"></div>
+					<div className="mt-4 w-16 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{/* Feature 1 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 						<div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
@@ -67,10 +67,10 @@ const AboutUsPage = () => {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-4 transition-colors duration-200">
 							Professional Networking
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Connect with skilled professionals and technicians
 							across various industries. Build meaningful
 							relationships that drive your projects forward.
@@ -78,7 +78,7 @@ const AboutUsPage = () => {
 					</div>
 
 					{/* Feature 2 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 						<div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
@@ -94,10 +94,10 @@ const AboutUsPage = () => {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-4 transition-colors duration-200">
 							Smart Job Matching
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Our AI-powered system matches job requirements with
 							expert skills, ensuring the right professional for
 							every task.
@@ -105,7 +105,7 @@ const AboutUsPage = () => {
 					</div>
 
 					{/* Feature 3 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 						<div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
@@ -121,10 +121,10 @@ const AboutUsPage = () => {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-4 transition-colors duration-200">
 							Seamless Communication
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Built-in chat system with AI-powered content
 							moderation ensures safe, professional communication
 							between all users.
@@ -132,7 +132,7 @@ const AboutUsPage = () => {
 					</div>
 
 					{/* Feature 4 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 						<div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
@@ -148,10 +148,10 @@ const AboutUsPage = () => {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-4 transition-colors duration-200">
 							Reputation System
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Our dual-role reputation system helps build trust by
 							allowing both clients and professionals to rate each
 							other.
@@ -159,7 +159,7 @@ const AboutUsPage = () => {
 					</div>
 
 					{/* Feature 5 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 						<div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
@@ -175,10 +175,10 @@ const AboutUsPage = () => {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-4 transition-colors duration-200">
 							Personalized Feed
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Stay updated with relevant opportunities and
 							industry insights through our AI-curated
 							personalized content feed.
@@ -186,7 +186,7 @@ const AboutUsPage = () => {
 					</div>
 
 					{/* Feature 6 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 						<div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
@@ -202,10 +202,10 @@ const AboutUsPage = () => {
 								/>
 							</svg>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-4 transition-colors duration-200">
 							AI-Powered Innovation
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Leverage cutting-edge AI for content moderation,
 							smart recommendations, and automated tagging to
 							enhance your experience.
@@ -216,9 +216,9 @@ const AboutUsPage = () => {
 
 			{/* Our Values Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-				<div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-800/20 p-8 sm:p-12 transition-all duration-200">
+				<div className="bg-card rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 					<div className="text-center mb-12">
-						<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
+						<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground transition-colors duration-200">
 							Our Values
 						</h2>
 						<div className="mt-4 w-16 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
@@ -241,10 +241,10 @@ const AboutUsPage = () => {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
+							<h3 className="text-xl font-semibold text-card-foreground mb-2 transition-colors duration-200">
 								Trust
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+							<p className="text-muted-foreground transition-colors duration-200">
 								Building lasting relationships through
 								transparency, reliability, and authentic
 								connections.
@@ -267,10 +267,10 @@ const AboutUsPage = () => {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
+							<h3 className="text-xl font-semibold text-card-foreground mb-2 transition-colors duration-200">
 								Innovation
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+							<p className="text-muted-foreground transition-colors duration-200">
 								Continuously pushing boundaries with
 								cutting-edge technology and creative solutions.
 							</p>
@@ -292,10 +292,10 @@ const AboutUsPage = () => {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
+							<h3 className="text-xl font-semibold text-card-foreground mb-2 transition-colors duration-200">
 								Excellence
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+							<p className="text-muted-foreground transition-colors duration-200">
 								Empowering every user to achieve their highest
 								potential through quality connections.
 							</p>
@@ -306,7 +306,7 @@ const AboutUsPage = () => {
 
 			{/* Statistics Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-				<div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
+				<div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 					<div className="text-center mb-12">
 						<h2 className="text-3xl sm:text-4xl font-bold text-white">
 							ExpertBridge by the Numbers
@@ -348,11 +348,11 @@ const AboutUsPage = () => {
 			{/* Team Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 				<div className="text-center mb-16">
-					<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
+					<h2 className="text-3xl sm:text-4xl font-bold text-foreground transition-colors duration-200">
 						Meet Our Team
 					</h2>
 					<div className="mt-4 w-16 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto rounded-full"></div>
-					<p className="mt-6 text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto transition-colors duration-200">
+					<p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto transition-colors duration-200">
 						We're a passionate team of innovators, engineers, and
 						problem-solvers dedicated to revolutionizing
 						professional networking.
@@ -361,32 +361,32 @@ const AboutUsPage = () => {
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{/* Team Member 1 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 text-center hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-200">
 						<div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mx-auto mb-4 flex items-center justify-center">
 							<span className="text-2xl font-bold text-white">
 								EB
 							</span>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-2 transition-colors duration-200">
 							Engineering Team
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Building the future of professional connections with
 							cutting-edge technology and innovative solutions.
 						</p>
 					</div>
 
 					{/* Team Member 2 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 text-center hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-200">
 						<div className="w-24 h-24 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mx-auto mb-4 flex items-center justify-center">
 							<span className="text-2xl font-bold text-white">
 								AI
 							</span>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-2 transition-colors duration-200">
 							AI & ML Team
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Developing intelligent systems that power smart
 							matching, content moderation, and personalized
 							experiences.
@@ -394,16 +394,16 @@ const AboutUsPage = () => {
 					</div>
 
 					{/* Team Member 3 */}
-					<div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 text-center hover:shadow-xl dark:hover:shadow-gray-800/30 transition-all duration-200">
+					<div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-200">
 						<div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
 							<span className="text-2xl font-bold text-white">
 								UX
 							</span>
 						</div>
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
+						<h3 className="text-xl font-semibold text-card-foreground mb-2 transition-colors duration-200">
 							Design Team
 						</h3>
-						<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+						<p className="text-muted-foreground transition-colors duration-200">
 							Creating intuitive, beautiful experiences that make
 							professional networking effortless and enjoyable.
 						</p>
@@ -413,11 +413,11 @@ const AboutUsPage = () => {
 
 			{/* Call to Action Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-				<div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-800/20 p-8 sm:p-12 text-center transition-all duration-200">
-					<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-200">
+				<div className="bg-card rounded-2xl shadow-lg p-8 sm:p-12 text-center transition-all duration-200">
+					<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground mb-6 transition-colors duration-200">
 						Ready to Bridge the Gap?
 					</h2>
-					<p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 transition-colors duration-200">
+					<p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 transition-colors duration-200">
 						Join thousands of professionals who are already
 						transforming their careers and projects through
 						ExpertBridge. Whether you're seeking expertise or
@@ -428,7 +428,7 @@ const AboutUsPage = () => {
 						<button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
 							Get Started Today
 						</button>
-						<button className="px-8 py-3 bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 font-semibold rounded-lg transition-all duration-200">
+						<button className="px-8 py-3 bg-transparent border-2 border-border text-foreground hover:border-accent font-semibold rounded-lg transition-all duration-200">
 							Learn More
 						</button>
 					</div>
@@ -438,10 +438,10 @@ const AboutUsPage = () => {
 			{/* Contact Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 				<div className="text-center">
-					<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-200">
+					<h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 transition-colors duration-200">
 						Get in Touch
 					</h2>
-					<p className="text-lg text-gray-600 dark:text-gray-300 mb-8 transition-colors duration-200">
+					<p className="text-lg text-muted-foreground mb-8 transition-colors duration-200">
 						Have questions or want to learn more about ExpertBridge?
 						We'd love to hear from you.
 					</p>
@@ -463,10 +463,10 @@ const AboutUsPage = () => {
 								</svg>
 							</div>
 							<div>
-								<p className="text-gray-900 dark:text-white font-semibold transition-colors duration-200">
+								<p className="text-foreground font-semibold transition-colors duration-200">
 									Email
 								</p>
-								<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+								<p className="text-muted-foreground transition-colors duration-200">
 									support@expertbridge.com
 								</p>
 							</div>
@@ -494,10 +494,10 @@ const AboutUsPage = () => {
 								</svg>
 							</div>
 							<div>
-								<p className="text-gray-900 dark:text-white font-semibold transition-colors duration-200">
+								<p className="text-foreground font-semibold transition-colors duration-200">
 									Location
 								</p>
-								<p className="text-gray-600 dark:text-gray-300 transition-colors duration-200">
+								<p className="text-muted-foreground transition-colors duration-200">
 									Cairo, Egypt
 								</p>
 							</div>

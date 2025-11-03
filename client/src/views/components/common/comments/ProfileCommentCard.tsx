@@ -16,13 +16,13 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 	const netVotes = comment.upvotes - comment.downvotes;
 
 	return (
-		<div className="flex flex-col gap-3 p-3 border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700">
+		<div className="flex flex-col gap-3 p-3 border border-border rounded-lg bg-card">
 			{postTitle && (
-				<div className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+				<div className="mb-2 text-sm text-muted-foreground">
 					<span className="font-semibold">On Post: </span>
 					<Link
 						to={`/feed/${comment.postId}`}
-						className="hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
+						className="hover:text-blue-600 hover:underline"
 						dir="auto"
 					>
 						{postTitle}
@@ -51,13 +51,13 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 				)}
 				<div>
 					{/* Name */}
-					<h4 className="text-sm font-semibold dark:text-white">
+					<h4 className="text-sm font-semibold text-card-foreground">
 						{comment.author.firstName +
 							" " +
 							comment.author.lastName}
 					</h4>
 					{/* Date of creation */}
-					<p className="text-xs text-gray-500 dark:text-gray-400">
+					<p className="text-xs text-muted-foreground">
 						<TimeAgo timestamp={comment.createdAt} />
 					</p>
 				</div>
@@ -66,7 +66,7 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 			{/* Comment Content */}
 			<div className="w-full break-words">
 				<p
-					className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
+					className="text-card-foreground whitespace-pre-wrap"
 					dir="auto"
 				>
 					{comment.content}
@@ -75,20 +75,20 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 
 			{/* Vote Display */}
 			<div className="flex items-center space-x-3">
-				<div className="flex items-center text-gray-500 dark:text-gray-400">
+				<div className="flex items-center text-muted-foreground">
 					<span
 						className={`font-medium ${
 							netVotes > 0
-								? "text-green-600 dark:text-green-400"
+								? "text-green-600"
 								: netVotes < 0
-									? "text-red-600 dark:text-red-400"
-									: "dark:text-gray-400"
+									? "text-red-600"
+									: "text-muted-foreground"
 						}`}
 					>
 						{netVotes > 0 ? "+" : ""}
 						{netVotes}
 					</span>
-					<span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+					<span className="ml-1 text-xs text-muted-foreground">
 						votes
 					</span>
 				</div>
@@ -96,7 +96,7 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 				{/* View post link */}
 				<Link
 					to={`/feed/${comment.postId}`}
-					className="text-xs text-blue-600 dark:text-blue-400 hover:underline dark:hover:text-blue-300 ml-auto"
+					className="text-xs text-blue-600 hover:underline hover:text-blue-700 ml-auto"
 				>
 					View Discussion
 				</Link>

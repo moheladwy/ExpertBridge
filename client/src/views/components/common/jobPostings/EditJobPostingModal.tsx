@@ -205,7 +205,7 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 					<DialogTitle className="text-center text-2xl font-bold">
 						Edit Job Posting
 					</DialogTitle>
-					<Separator className="dark:bg-gray-600" />
+					<Separator className="bg-border" />
 				</DialogHeader>
 
 				<div className="flex flex-col gap-4 w-full mb-4 mt-4">
@@ -218,7 +218,6 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 							placeholder="e.g., Frontend Developer for E-commerce Platform"
 							maxLength={TITLE_MAX_LENGTH}
 							dir="auto"
-							className="dark:bg-gray-700"
 						/>
 						{titleError && <FieldError>{titleError}</FieldError>}
 						{!titleError && (
@@ -227,7 +226,7 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 									className={
 										titleCharsLeft < 1
 											? "text-red-500"
-											: "text-green-500 dark:text-green-400"
+											: "text-green-500"
 									}
 								>
 									{titleCharsLeft} characters left
@@ -246,7 +245,6 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 								onChange={handleBudgetChange}
 								placeholder="e.g., 5000"
 								type="number"
-								className="dark:bg-gray-700"
 							/>
 							{budgetError && (
 								<FieldError>{budgetError}</FieldError>
@@ -261,7 +259,6 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 								onChange={handleAreaChange}
 								placeholder="e.g., Remote, New York, London"
 								maxLength={AREA_MAX_LENGTH}
-								className="dark:bg-gray-700"
 							/>
 							{areaError && <FieldError>{areaError}</FieldError>}
 							{!areaError && area && (
@@ -270,7 +267,7 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 										className={
 											areaCharsLeft < 1
 												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												: "text-green-500"
 										}
 									>
 										{areaCharsLeft} characters left
@@ -291,7 +288,7 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 							placeholder="Describe the job requirements, expectations, and any other relevant details..."
 							maxLength={CONTENT_MAX_LENGTH}
 							dir="auto"
-							className="min-h-[150px] resize-none dark:bg-gray-700"
+							className="min-h-[150px] resize-none"
 						/>
 						{contentError && (
 							<FieldError>{contentError}</FieldError>
@@ -302,7 +299,7 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 									className={
 										contentCharsLeft < 1
 											? "text-red-500"
-											: "text-green-500 dark:text-green-400"
+											: "text-green-500"
 									}
 								>
 									{contentCharsLeft} characters left
@@ -314,17 +311,13 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 
 				{/* Action Buttons */}
 				<div className="flex justify-end space-x-3">
-					<Button
-						onClick={handleClose}
-						disabled={isLoading}
-						className="dark:text-gray-300 dark:border-gray-600"
-					>
+					<Button onClick={handleClose} disabled={isLoading}>
 						Cancel
 					</Button>
 					<Button
 						onClick={handleSubmit}
 						disabled={isLoading}
-						className="bg-[#162955] hover:bg-[#0e1c3b] dark:bg-blue-700 dark:hover:bg-blue-800"
+						className="bg-[#162955] hover:bg-[#0e1c3b]"
 					>
 						{isLoading ? "Updating..." : "Update Job Posting"}
 					</Button>

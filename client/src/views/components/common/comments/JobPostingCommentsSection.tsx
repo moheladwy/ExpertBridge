@@ -246,8 +246,8 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 							</Field>
 
 							{showMediaForm && (
-								<div className="border p-2 rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-									<p className="text-sm mb-2 dark:text-gray-200">
+								<div className="border border-border p-2 rounded-md bg-muted">
+									<p className="text-sm mb-2 text-card-foreground">
 										Attach files:
 									</p>
 

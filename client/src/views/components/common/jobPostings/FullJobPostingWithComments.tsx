@@ -142,9 +142,9 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 					<div className="w-5/6 max-lg:w-full">
 						{jobPosting ? (
 							<div className="flex flex-col gap-3">
-								<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+								<div className="flex flex-col gap-3 bg-card shadow-md rounded-lg p-6 border border-border">
 									{/* Job Posting Header */}
-									<div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-600">
+									<div className="flex items-center justify-between pb-3 border-b border-border">
 										{/* Back Icon */}
 										<div
 											onClick={() => {
@@ -152,19 +152,19 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 											}}
 											className="cursor-pointer"
 										>
-											<CircleArrowLeft className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
+											<CircleArrowLeft className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer" />
 										</div>
 
 										{/* More Options */}
 										<DropdownMenu>
 											<DropdownMenuTrigger>
-												<Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
+												<Ellipsis className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer" />
 											</DropdownMenuTrigger>
 											<DropdownMenuContent>
 												{/* Copy Link */}
 												<DropdownMenuItem>
 													<div
-														className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+														className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 														onClick={handleCopyLink}
 													>
 														<Link2 className="w-5" />
@@ -177,7 +177,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 												jobPosting.author.id ? (
 													<DropdownMenuItem>
 														<div
-															className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+															className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 															onClick={() =>
 																setIsEditModalOpen(
 																	true
@@ -202,7 +202,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 															)
 														}
 													>
-														<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
+														<div className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer">
 															<Trash2 className="w-5 text-red-700" />
 															<h6 className="text-red-700">
 																Delete job
@@ -285,7 +285,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 													<Link
 														to={`/profile/${jobPosting.author.id}`}
 													>
-														<h3 className="text-lg font-semibold dark:text-white">
+														<h3 className="text-lg font-semibold text-card-foreground">
 															{jobPosting.author
 																.firstName +
 																jobPosting
@@ -304,7 +304,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 																		.rating
 																)}
 															</div>
-															<span className="text-sm text-gray-600 dark:text-gray-400">
+															<span className="text-sm text-muted-foreground">
 																{jobPosting.author.rating.toFixed(
 																	1
 																)}
@@ -321,7 +321,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 											</div>
 
 											{/* Budget Badge */}
-											<div className="flex items-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-4 py-2 rounded-full">
+											<div className="flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full">
 												<CurrencyDollarIcon className="h-5 w-5 mr-1" />
 												<span className="font-bold text-lg">
 													{formatBudget(
@@ -334,7 +334,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 										{/* Job Title */}
 										<div className="break-words">
 											<h1
-												className="text-2xl font-bold text-gray-900 dark:text-white whitespace-pre-wrap"
+												className="text-2xl font-bold text-card-foreground whitespace-pre-wrap"
 												dir="auto"
 											>
 												{jobPosting.title}
@@ -343,7 +343,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 
 										{/* Location/Area */}
 										{jobPosting.area && (
-											<div className="flex items-center text-gray-600 dark:text-gray-400">
+											<div className="flex items-center text-muted-foreground">
 												<MapPinIcon className="h-5 w-5 mr-2" />
 												<span className="text-lg">
 													{jobPosting.area}
@@ -353,11 +353,11 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 
 										{/* Job Description */}
 										<div className="break-words">
-											<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+											<h3 className="text-lg font-semibold text-card-foreground mb-2">
 												Job Description
 											</h3>
 											<p
-												className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed"
+												className="text-card-foreground whitespace-pre-wrap leading-relaxed"
 												dir="auto"
 											>
 												{jobPosting.content}
@@ -377,7 +377,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 
 										{/* Application Action Button */}
 										{isLoggedIn && (
-											<div className="border-t border-gray-200 dark:border-gray-600 pt-4">
+											<div className="border-t border-border pt-4">
 												{isJobAuthor ? (
 													<Button
 														onClick={
@@ -438,7 +438,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 								/>
 							</div>
 						) : (
-							<p className="dark:text-white">
+							<p className="text-card-foreground">
 								Job posting not found.
 							</p>
 						)}

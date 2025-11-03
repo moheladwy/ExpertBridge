@@ -22,9 +22,9 @@ const SimilarJobs: React.FC<SimilarJobsProps> = ({ currentJobId }) => {
 				<div className="space-y-3">
 					{[...Array(3)].map((_, index) => (
 						<div key={index} className="animate-pulse">
-							<div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-							<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-							<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+							<div className="h-4 bg-muted rounded mb-2"></div>
+							<div className="h-3 bg-muted rounded w-3/4 mb-2"></div>
+							<div className="h-3 bg-muted rounded w-1/2"></div>
 						</div>
 					))}
 				</div>

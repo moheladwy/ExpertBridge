@@ -33,7 +33,7 @@ const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800">
+			<DialogContent className="sm:max-w-[425px] bg-card">
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 					<DialogDescription>{description}</DialogDescription>

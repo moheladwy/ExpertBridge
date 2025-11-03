@@ -126,7 +126,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 
 	return (
 		<div
-			className={`flex flex-col gap-3 p-3 border-t border-gray-300 dark:border-gray-600 ${isReply ? "ml-4 border-l-2 border-t-0 border-gray-300 dark:border-l-gray-600 pl-3" : ""}`}
+			className={`flex flex-col gap-3 p-3 border-t border-border ${isReply ? "ml-4 border-l-2 border-t-0 border-border pl-3" : ""}`}
 			id={`comment-${comment.id}`}
 		>
 			{/* Comment Author */}
@@ -155,7 +155,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 						)}
 					</Link>
 					<div>
-						<h4 className="text-sm font-semibold dark:text-white">
+						<h4 className="text-sm font-semibold text-card-foreground">
 							{comment.author.firstName +
 								" " +
 								comment.author.lastName}
@@ -163,7 +163,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 						<span className="text-xs text-gray-500">
 							@{comment.author.username}
 						</span>
-						<p className="text-xs text-gray-500 dark:text-gray-400">
+						<p className="text-xs text-muted-foreground">
 							<TimeAgo timestamp={comment.createdAt} />
 						</p>
 					</div>
@@ -172,12 +172,12 @@ const CommentCard: React.FC<CommentItemProps> = ({
 				{/* More Dropdown */}
 				<DropdownMenu>
 					<DropdownMenuTrigger>
-						<Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer w-4 h-4" />
+						<Ellipsis className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer w-4 h-4" />
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
 						<DropdownMenuItem>
 							<div
-								className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+								className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 								onClick={handleCopyCommentLink}
 							>
 								<Link2 className="w-4" />
@@ -189,7 +189,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 							<>
 								<DropdownMenuItem>
 									<div
-										className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+										className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 										onClick={handleEditComment}
 									>
 										<EditIcon className="w-4" />
@@ -199,7 +199,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 								<DropdownMenuItem
 									onClick={() => setShowDeleteDialog(true)}
 								>
-									<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
+									<div className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer">
 										<DeleteIcon className="w-4 text-red-700" />
 										<h6 className="text-sm text-red-700">
 											Delete
@@ -258,7 +258,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 						<div className="flex gap-2 justify-end">
 							<Button
 								size="sm"
-								className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
+								className="bg-main-blue hover:bg-blue-950"
 								onClick={handleSaveEdit}
 								disabled={editResult.isLoading}
 							>
@@ -269,7 +269,6 @@ const CommentCard: React.FC<CommentItemProps> = ({
 								variant="ghost"
 								onClick={() => setIsEditing(false)}
 								disabled={editResult.isLoading}
-								className="dark:text-gray-300 dark:hover:text-white"
 							>
 								Cancel
 							</Button>
@@ -277,7 +276,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 					</div>
 				) : (
 					<p
-						className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
+						className="text-card-foreground whitespace-pre-wrap"
 						dir="auto"
 					>
 						{comment.content}
@@ -298,7 +297,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 								size="sm"
 								variant="ghost"
 								onClick={() => setShowReplies((prev) => !prev)}
-								className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+								className="text-blue-500 hover:text-blue-700"
 							>
 								{showReplies ? "Hide Replies" : "Show Replies"}
 							</Button>
@@ -321,7 +320,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 							<Button
 								onClick={handleReplySubmit}
 								size="sm"
-								className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
+								className="bg-main-blue hover:bg-blue-950"
 								disabled={isLoading}
 							>
 								Reply

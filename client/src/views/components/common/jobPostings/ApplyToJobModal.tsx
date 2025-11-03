@@ -124,7 +124,7 @@ const ApplyToJobModal: React.FC<ApplyJobModalProps> = ({
 							placeholder="Enter your proposed cost"
 							disabled={isApplying}
 						/>
-						<p className="text-sm text-gray-500 dark:text-gray-400">
+						<p className="text-sm text-muted-foreground">
 							Job budget: {formatBudget(jobPosting.budget)}
 						</p>
 					</div>

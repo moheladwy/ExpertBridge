@@ -19,10 +19,7 @@ import { MediaObject } from "@/features/media/types";
 import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
 import { Button } from "@/views/components/ui/button";
 import { Textarea } from "@/views/components/ui/textarea";
-import {
-	Field,
-	FieldError,
-} from "@/views/components/ui/field";
+import { Field, FieldError } from "@/views/components/ui/field";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -184,7 +181,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 	};
 
 	return (
-		<div className="dark:text-gray-200">
+		<div className="text-card-foreground">
 			{/* Add Comment Form */}
 			<div className="mt-6">
 				<div onSubmit={handleCommentSubmit} className="space-y-3">
@@ -232,9 +229,9 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 							</Field>
 
 							{showMediaForm && (
-								<div className="border p-2 rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+								<div className="border border-border p-2 rounded-md bg-secondary">
 									{/* You can replace this div with your actual FileUploadForm component */}
-									<p className="text-sm mb-2 dark:text-gray-200">
+									<p className="text-sm mb-2 text-card-foreground">
 										Attach files:
 									</p>
 
@@ -244,7 +241,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 									/>
 
 									{media.length > 0 && (
-										<ul className="mt-2 list-disc pl-5 text-sm text-gray-600 dark:text-gray-300">
+										<ul className="mt-2 list-disc pl-5 text-sm text-muted-foreground">
 											{media.map((file, idx) => (
 												<li key={idx}>{file.name}</li>
 											))}
@@ -259,7 +256,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 									<p
 										className={`text-sm ${
 											charsLeft === 0
-												? "text-red-500 dark:text-red-400"
+												? "text-red-500"
 												: "text-muted-foreground"
 										}`}
 									>
@@ -272,17 +269,15 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between font-semibold text-lg my-3 dark:text-white">
+			<div className="flex items-center justify-between font-semibold text-lg my-3 text-card-foreground">
 				<div className="flex items-center justify-start gap-2">
-					<p className="text-sm text-gray-600 dark:text-gray-400">
-						Sort by:
-					</p>
+					<p className="text-sm text-muted-foreground">Sort by:</p>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
 								variant="ghost"
 								size="sm"
-								className="dark:text-gray-300 text-gray-700"
+								className="text-card-foreground"
 								aria-label="Sort comments"
 							>
 								{sortOptionLabels[sortOption]}
@@ -334,7 +329,6 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 						variant="ghost"
 						size="icon"
 						onClick={handleAttachClick}
-						className="dark:text-gray-300"
 						aria-label="Attach files"
 					>
 						<Paperclip className="h-5 w-5" />
@@ -343,7 +337,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 					<Button
 						onClick={handleCommentSubmit}
 						disabled={isLoading || uploadResult.isLoading}
-						className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
+						className="bg-main-blue hover:bg-blue-950"
 					>
 						Add Comment
 					</Button>
@@ -356,18 +350,18 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 				<div className="space-y-4">
 					{[1, 2, 3].map((i) => (
 						<div key={i} className="flex gap-3">
-							<Skeleton className="h-10 w-10 rounded-full dark:bg-gray-700" />
+							<Skeleton className="h-10 w-10 rounded-full bg-secondary" />
 							<div className="w-full">
-								<Skeleton className="h-4 w-32 mb-2 dark:bg-gray-700" />
-								<Skeleton className="h-3 w-20 mb-3 dark:bg-gray-700" />
-								<Skeleton className="h-12 w-full dark:bg-gray-700" />
+								<Skeleton className="h-4 w-32 mb-2 bg-secondary" />
+								<Skeleton className="h-3 w-20 mb-3 bg-secondary" />
+								<Skeleton className="h-12 w-full bg-secondary" />
 							</div>
 						</div>
 					))}
 				</div>
 			) : isCommentsError ? (
-				<div className="p-4 rounded-md bg-gray-50 dark:bg-gray-700 text-center">
-					<p className="text-gray-500 dark:text-gray-300">
+				<div className="p-4 rounded-md bg-secondary text-center">
+					<p className="text-muted-foreground">
 						Unable to load comments. Please try again later.
 					</p>
 				</div>
@@ -381,8 +375,8 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 					/>
 				))
 			) : (
-				<div className="p-4 rounded-md bg-gray-50 dark:bg-gray-700 text-center">
-					<p className="text-gray-500 dark:text-gray-300">
+				<div className="p-4 rounded-md bg-secondary text-center">
+					<p className="text-muted-foreground">
 						No comments yet. Be the first to share your thoughts!
 					</p>
 				</div>

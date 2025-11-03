@@ -45,11 +45,11 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 	if (isLoading) {
 		return (
-			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
-				<div className="p-6 border-b border-gray-100 dark:border-gray-700">
+			<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
+				<div className="p-6 border-b border-border">
 					<div className="flex items-center gap-3">
-						<div className="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
-							<Trophy className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+						<div className="p-2 bg-yellow-100 rounded-lg">
+							<Trophy className="w-5 h-5 text-yellow-600" />
 						</div>
 						<Skeleton className="h-6 w-[120px]" />
 					</div>
@@ -72,7 +72,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 	if (isError) {
 		return (
-			<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-100 dark:border-red-900 p-6">
+			<div className="bg-card rounded-2xl shadow-lg border border-red-100 p-6">
 				<div className="text-red-500 text-center">
 					<div className="text-red-400 mb-2">⚠️</div>
 					<div className="text-sm">Unable to load top users</div>
@@ -82,18 +82,18 @@ const TopReputationUsers = ({ limit = 5 }) => {
 	}
 
 	return (
-		<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl">
-			<div className="p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20">
+		<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl">
+			<div className="p-6 border-b border-border bg-gradient-to-r from-yellow-50 to-amber-50">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-3">
-						<div className="p-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
-							<Trophy className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+						<div className="p-2 bg-yellow-100 rounded-lg">
+							<Trophy className="w-5 h-5 text-yellow-600" />
 						</div>
-						<h3 className="font-semibold text-gray-900 dark:text-white">
+						<h3 className="font-semibold text-card-foreground">
 							Top Reputation
 						</h3>
 					</div>
-					<div className="text-xs text-yellow-600 dark:text-yellow-400 font-medium px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
+					<div className="text-xs text-yellow-600 font-medium px-2 py-1 bg-yellow-100 rounded-full">
 						This Week
 					</div>
 				</div>
@@ -114,13 +114,13 @@ const TopReputationUsers = ({ limit = 5 }) => {
 							<Link to={`/profile/${user.id}`}>
 								<div
 									key={user.id}
-									className="group flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer relative overflow-hidden"
+									className="group flex items-center gap-4 p-3 rounded-xl hover:bg-secondary transition-all duration-200 cursor-pointer relative overflow-hidden"
 									style={{
 										animationDelay: `${index * 100}ms`,
 									}}
 								>
 									{index < 3 && (
-										<div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50/30 to-transparent dark:via-yellow-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+										<div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 									)}
 
 									<div className="relative flex items-center gap-3">
@@ -131,7 +131,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 										</div>
 
 										<div className="relative">
-											<Avatar className="w-12 h-12 ring-2 ring-white dark:ring-gray-700 shadow-md group-hover:ring-yellow-200 dark:group-hover:ring-yellow-700 transition-all duration-200">
+											<Avatar className="w-12 h-12 ring-2 ring-white shadow-md group-hover:ring-yellow-200 transition-all duration-200">
 												<AvatarImage
 													src={user.profilePictureUrl}
 													alt={`${user.firstName} ${user.lastName}`}
@@ -151,24 +151,24 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 									<div className="flex-1 min-w-0 relative z-10">
 										<div className="flex items-center gap-2">
-											<h4 className="font-medium text-gray-900 dark:text-white truncate group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+											<h4 className="font-medium text-card-foreground truncate group-hover:text-yellow-600 transition-colors">
 												{user.firstName} {user.lastName}
 											</h4>
 											{index === 0 && (
-												<span className="text-xs bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-300 px-2 py-1 rounded-full font-medium">
+												<span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-medium">
 													Champion
 												</span>
 											)}
 										</div>
-										<p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+										<p className="text-sm text-muted-foreground truncate">
 											{user.jobTitle || "No title"}
 										</p>
 									</div>
 
 									<div className="relative z-10 flex items-center gap-2">
-										<div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/50 dark:to-amber-900/50 rounded-full">
+										<div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-full">
 											<Star className="w-4 h-4 text-yellow-500" />
-											<span className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
+											<span className="text-sm font-semibold text-yellow-700">
 												{user.reputation?.toLocaleString() ||
 													0}
 											</span>
@@ -179,8 +179,8 @@ const TopReputationUsers = ({ limit = 5 }) => {
 						))}
 				</div>
 
-				<div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-					<button className="w-full text-sm font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 py-2 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/30 transition-colors">
+				<div className="mt-6 pt-4 border-t border-border">
+					<button className="w-full text-sm font-medium text-yellow-600 hover:text-yellow-700 py-2 rounded-lg hover:bg-yellow-50 transition-colors">
 						View Full Leaderboard
 					</button>
 				</div>

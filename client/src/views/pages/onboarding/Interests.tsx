@@ -101,20 +101,20 @@ function Interests() {
 	}, [isSuccess, isError, navigate, error]);
 
 	return (
-		<div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4 transition-colors duration-200">
-			<div className="w-full max-w-3xl bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg dark:shadow-gray-800/20 backdrop-blur-sm overflow-hidden transition-colors duration-200">
+		<div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-b from-secondary to-muted p-4 transition-colors duration-200">
+			<div className="w-full max-w-3xl bg-card rounded-xl border border-border shadow-lg backdrop-blur-sm overflow-hidden transition-colors duration-200">
 				{/* Header Section */}
 				<div className="space-y-2 px-6 py-8">
-					<h1 className="text-center font-bold text-3xl bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent transition-colors duration-200">
+					<h1 className="text-center font-bold text-3xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-colors duration-200">
 						What are you good at / interested in?
 					</h1>
-					<h2 className="text-center text-lg text-gray-600 dark:text-gray-300 transition-colors duration-200">
+					<h2 className="text-center text-lg text-muted-foreground transition-colors duration-200">
 						Select topics to shape your personalized experience.
 					</h2>
 				</div>
 
 				{/* Divider */}
-				<div className="h-px bg-gray-200 dark:bg-gray-800 transition-colors duration-200" />
+				<div className="h-px bg-border transition-colors duration-200" />
 
 				{/* Input Section */}
 				<div className="p-6">
@@ -125,18 +125,18 @@ function Interests() {
 							value={inputValue}
 							onChange={handleInputChange}
 							onKeyDown={handleKeyDown}
-							className="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200"
+							className="w-full px-4 py-3 rounded-lg bg-input border border-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200"
 						/>
 					</div>
 
 					{/* Selected Tags Display */}
 					<div className="mb-6">
-						<h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-200">
+						<h3 className="text-sm font-medium text-card-foreground mb-2 transition-colors duration-200">
 							Selected Keywords
 						</h3>
 						<div className="flex flex-wrap gap-2">
 							{selectedTags.length === 0 ? (
-								<p className="text-sm text-gray-500 dark:text-gray-400 italic transition-colors duration-200">
+								<p className="text-sm text-muted-foreground italic transition-colors duration-200">
 									No keywords selected yet. Select at least 5
 									to continue.
 								</p>
@@ -145,7 +145,7 @@ function Interests() {
 									<button
 										key={index}
 										onClick={() => removeTag(tag)}
-										className="px-4 py-1.5 text-sm text-white rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200 dark:shadow-gray-900/40"
+										className="px-4 py-1.5 text-sm text-white rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200"
 									>
 										{tag}
 										<span className="ml-2">×</span>
@@ -158,7 +158,7 @@ function Interests() {
 					{/* Suggestions Section (if needed) */}
 					{inputValue.trim() !== "" && !isTagsLoading && (
 						<div className="mb-6">
-							<h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-200">
+							<h3 className="text-sm font-medium text-card-foreground mb-2 transition-colors duration-200">
 								Suggestions
 							</h3>
 							<div className="flex flex-wrap gap-2">
@@ -192,7 +192,7 @@ function Interests() {
 											onClick={() =>
 												addTag(tag.englishName)
 											}
-											className="px-4 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200"
+											className="px-4 py-1.5 text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 border border-border transition-all duration-200"
 										>
 											{tag.englishName}
 										</button>
@@ -206,8 +206,8 @@ function Interests() {
 						className={cn(
 							"w-full py-3 rounded-lg transition-all duration-200",
 							canSubmit
-								? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg dark:shadow-gray-900/30 dark:hover:shadow-gray-900/50"
-								: "bg-gray-400 dark:bg-gray-700 text-white dark:text-gray-300 cursor-not-allowed opacity-90 dark:opacity-80"
+								? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg"
+								: "bg-muted text-muted-foreground cursor-not-allowed opacity-90"
 						)}
 						disabled={!canSubmit || isUpdating}
 						onClick={handleSubmitInterests}

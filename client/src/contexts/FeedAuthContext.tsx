@@ -14,54 +14,56 @@
  * 3. Components will receive auth state without creating new subscriptions
  */
 
-import React, { createContext, useContext, ReactNode, useMemo } from 'react';
-import { User } from 'firebase/auth';
-import { useCurrentUser } from '@/lib/services/AuthStateManager';
-import { useAuthPrompt } from '@/contexts/AuthPromptContext';
+import React, { createContext, useContext, ReactNode, useMemo } from "react";
+import { User } from "firebase/auth";
+import { useCurrentUser } from "@/lib/services/AuthStateManager";
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
 interface FeedAuthContextType {
-  /**
-   * Current authenticated user or null if not logged in
-   */
-  authUser: User | null;
+	/**
+	 * Current authenticated user or null if not logged in
+	 */
+	authUser: User | null;
 
-  /**
-   * Quick boolean check for authentication status
-   */
-  isAuthenticated: boolean;
+	/**
+	 * Quick boolean check for authentication status
+	 */
+	isAuthenticated: boolean;
 
-  /**
-   * User ID for quick comparisons (e.g., checking if current user owns a post)
-   */
-  currentUserId: string | null;
+	/**
+	 * User ID for quick comparisons (e.g., checking if current user owns a post)
+	 */
+	currentUserId: string | null;
 
-  /**
-   * Function to show auth prompt modal (from AuthPromptContext)
-   * Call this when user tries to perform an action requiring auth
-   */
-  showAuthPrompt: () => void;
+	/**
+	 * Function to show auth prompt modal (from AuthPromptContext)
+	 * Call this when user tries to perform an action requiring auth
+	 */
+	showAuthPrompt: () => void;
 }
 
 // ============================================================================
 // CONTEXT
 // ============================================================================
 
-const FeedAuthContext = createContext<FeedAuthContextType | undefined>(undefined);
+const FeedAuthContext = createContext<FeedAuthContextType | undefined>(
+	undefined
+);
 
 // ============================================================================
 // PROVIDER
 // ============================================================================
 
 interface FeedAuthProviderProps {
-  children: ReactNode;
-  /**
-   * Optional: Override auth user for testing
-   */
-  overrideUser?: User | null;
+	children: ReactNode;
+	/**
+	 * Optional: Override auth user for testing
+	 */
+	overrideUser?: User | null;
 }
 
 /**
@@ -85,28 +87,32 @@ interface FeedAuthProviderProps {
  * ```
  */
 export const FeedAuthProvider: React.FC<FeedAuthProviderProps> = ({
-  children,
-  overrideUser
+	children,
+	overrideUser,
 }) => {
-  // SINGLE subscription for the entire feed - this is the key!
-  const authUser = overrideUser !== undefined ? overrideUser : useCurrentUser();
+	// SINGLE subscription for the entire feed - this is the key!
+	const authUser =
+		overrideUser !== undefined ? overrideUser : useCurrentUser();
 
-  // Get auth prompt function from existing context
-  const { showAuthPrompt } = useAuthPrompt();
+	// Get auth prompt function from existing context
+	const { showAuthPrompt } = useAuthPrompt();
 
-  // Memoize the context value to prevent unnecessary re-renders
-  const contextValue = useMemo<FeedAuthContextType>(() => ({
-    authUser,
-    isAuthenticated: authUser !== null,
-    currentUserId: authUser?.uid || null,
-    showAuthPrompt,
-  }), [authUser, showAuthPrompt]);
+	// Memoize the context value to prevent unnecessary re-renders
+	const contextValue = useMemo<FeedAuthContextType>(
+		() => ({
+			authUser,
+			isAuthenticated: authUser !== null,
+			currentUserId: authUser?.uid || null,
+			showAuthPrompt,
+		}),
+		[authUser, showAuthPrompt]
+	);
 
-  return (
-    <FeedAuthContext.Provider value={contextValue}>
-      {children}
-    </FeedAuthContext.Provider>
-  );
+	return (
+		<FeedAuthContext.Provider value={contextValue}>
+			{children}
+		</FeedAuthContext.Provider>
+	);
 };
 
 // ============================================================================
@@ -138,18 +144,18 @@ export const FeedAuthProvider: React.FC<FeedAuthProviderProps> = ({
  * ```
  */
 export const useFeedAuth = (): FeedAuthContextType => {
-  const context = useContext(FeedAuthContext);
+	const context = useContext(FeedAuthContext);
 
-  if (context === undefined) {
-    // Helpful error message for developers
-    throw new Error(
-      'useFeedAuth must be used within FeedAuthProvider. ' +
-      'Make sure your component is wrapped with <FeedAuthProvider> ' +
-      'at the feed/list level, not at individual item level.'
-    );
-  }
+	if (context === undefined) {
+		// Helpful error message for developers
+		throw new Error(
+			"useFeedAuth must be used within FeedAuthProvider. " +
+				"Make sure your component is wrapped with <FeedAuthProvider> " +
+				"at the feed/list level, not at individual item level."
+		);
+	}
 
-  return context;
+	return context;
 };
 
 /**
@@ -167,8 +173,8 @@ export const useFeedAuth = (): FeedAuthContextType => {
  * ```
  */
 export const useFeedAuthUser = (): User | null => {
-  const { authUser } = useFeedAuth();
-  return authUser;
+	const { authUser } = useFeedAuth();
+	return authUser;
 };
 
 /**
@@ -189,9 +195,11 @@ export const useFeedAuthUser = (): User | null => {
  * };
  * ```
  */
-export const useIsCurrentUser = (userId: string | null | undefined): boolean => {
-  const { currentUserId } = useFeedAuth();
-  return Boolean(userId && currentUserId && userId === currentUserId);
+export const useIsCurrentUser = (
+	userId: string | null | undefined
+): boolean => {
+	const { currentUserId } = useFeedAuth();
+	return Boolean(userId && currentUserId && userId === currentUserId);
 };
 
 // ============================================================================
@@ -213,22 +221,22 @@ export const useIsCurrentUser = (userId: string | null | undefined): boolean => 
  * ```
  */
 export function withFeedAuth<P extends Partial<FeedAuthContextType>>(
-  Component: React.ComponentType<P>
+	Component: React.ComponentType<P>
 ): React.ComponentType<Omit<P, keyof FeedAuthContextType>> {
-  const WrappedComponent = (props: Omit<P, keyof FeedAuthContextType>) => {
-    const feedAuth = useFeedAuth();
+	const WrappedComponent = (props: Omit<P, keyof FeedAuthContextType>) => {
+		const feedAuth = useFeedAuth();
 
-    const componentProps = {
-      ...props,
-      ...feedAuth,
-    } as P;
+		const componentProps = {
+			...props,
+			...feedAuth,
+		} as P;
 
-    return <Component {...componentProps} />;
-  };
+		return <Component {...componentProps} />;
+	};
 
-  WrappedComponent.displayName = `withFeedAuth(${Component.displayName || Component.name || 'Component'})`;
+	WrappedComponent.displayName = `withFeedAuth(${Component.displayName || Component.name || "Component"})`;
 
-  return WrappedComponent;
+	return WrappedComponent;
 }
 
 // ============================================================================
@@ -241,18 +249,18 @@ export function withFeedAuth<P extends Partial<FeedAuthContextType>>(
  * Shows current auth state in feed context for debugging
  */
 export const FeedAuthDebugger: React.FC = () => {
-  if (process.env.NODE_ENV !== 'development') {
-    return null;
-  }
+	if (process.env.NODE_ENV !== "development") {
+		return null;
+	}
 
-  const { authUser, isAuthenticated, currentUserId } = useFeedAuth();
+	const { authUser, isAuthenticated, currentUserId } = useFeedAuth();
 
-  return (
-    <div className="fixed bottom-20 right-4 bg-purple-100 dark:bg-purple-900 p-2 rounded text-xs z-50">
-      <div className="font-bold text-purple-900 dark:text-purple-100">Feed Auth</div>
-      <div>Authenticated: {isAuthenticated ? '✅' : '❌'}</div>
-      <div>User ID: {currentUserId || 'None'}</div>
-      <div>Email: {authUser?.email || 'None'}</div>
-    </div>
-  );
+	return (
+		<div className="fixed bottom-20 right-4 bg-accent p-2 rounded text-xs z-50">
+			<div className="font-bold text-accent-foreground">Feed Auth</div>
+			<div>Authenticated: {isAuthenticated ? "✅" : "❌"}</div>
+			<div>User ID: {currentUserId || "None"}</div>
+			<div>Email: {authUser?.email || "None"}</div>
+		</div>
+	);
 };

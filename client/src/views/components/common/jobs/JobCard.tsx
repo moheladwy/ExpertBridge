@@ -28,15 +28,15 @@ export const JobCard: React.FC<{
 	};
 
 	return (
-		<div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 hover:shadow-md transition-shadow">
+		<div className="bg-card rounded-lg shadow-sm border border-border hover:shadow-md transition-shadow">
 			<div className="p-6">
 				{/* Header */}
 				<div className="flex items-start justify-between mb-4">
 					<div className="flex-1">
-						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 line-clamp-2">
+						<h3 className="text-lg font-semibold text-card-foreground mb-1 line-clamp-2">
 							{job.title}
 						</h3>
-						<div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+						<div className="flex items-center text-sm text-muted-foreground">
 							<User size={14} className="mr-1" />
 							{isWorker ? "Hired by" : "Working with"}{" "}
 							{otherParty.firstName}
@@ -44,13 +44,13 @@ export const JobCard: React.FC<{
 					</div>
 					<div className="flex items-center space-x-1">
 						{job.isCompleted && (
-							<Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+							<Badge className="bg-green-100 text-green-800">
 								<CheckCircle size={12} className="mr-1" />
 								Completed
 							</Badge>
 						)}
 						{job.isPaid && (
-							<Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+							<Badge className="bg-blue-100 text-blue-800">
 								<DollarSign size={12} className="mr-1" />
 								Paid
 							</Badge>
@@ -60,33 +60,24 @@ export const JobCard: React.FC<{
 
 				{/* Details */}
 				<div className="space-y-3">
-					<div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-						<DollarSign
-							size={16}
-							className="mr-2 text-green-600 dark:text-green-400"
-						/>
+					<div className="flex items-center text-sm text-card-foreground">
+						<DollarSign size={16} className="mr-2 text-green-600" />
 						<span className="font-medium">${job.actualCost}</span>
 					</div>
 
-					<div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-						<MapPin
-							size={16}
-							className="mr-2 text-blue-600 dark:text-blue-400"
-						/>
+					<div className="flex items-center text-sm text-card-foreground">
+						<MapPin size={16} className="mr-2 text-blue-600" />
 						<span>{job.area}</span>
 					</div>
 
-					<div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-						<Calendar
-							size={16}
-							className="mr-2 text-purple-600 dark:text-purple-400"
-						/>
+					<div className="flex items-center text-sm text-card-foreground">
+						<Calendar size={16} className="mr-2 text-purple-600" />
 						<span>Started: {formatDate(job.startedAt)}</span>
 					</div>
 				</div>
 
 				{/* Description */}
-				<p className="text-sm text-gray-600 dark:text-gray-300 mt-3 line-clamp-2">
+				<p className="text-sm text-card-foreground mt-3 line-clamp-2">
 					{job.description}
 				</p>
 
@@ -94,7 +85,7 @@ export const JobCard: React.FC<{
 				<div className="mt-6">
 					<Button
 						onClick={onViewDetails}
-						className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white"
+						className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
 					>
 						<MessageCircle size={16} className="mr-2" />
 						View Details

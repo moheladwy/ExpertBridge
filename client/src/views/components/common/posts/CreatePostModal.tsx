@@ -148,11 +148,11 @@ const CreatePostModal: React.FC = () => {
 	return (
 		<>
 			<div
-				className="flex justify-center items-center gap-2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700"
+				className="flex justify-center items-center gap-2 bg-card shadow-md rounded-lg p-4 border border-border"
 				onClick={handleOpen}
 			>
 				{isLoggedIn && (
-					<div className="bg-white dark:bg-gray-800 flex justify-center items-center">
+					<div className="bg-card flex justify-center items-center">
 						{userProfile?.profilePictureUrl ? (
 							<img
 								src={userProfile.profilePictureUrl}
@@ -172,7 +172,7 @@ const CreatePostModal: React.FC = () => {
 						)}
 					</div>
 				)}
-				<Button className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 px-5 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue dark:hover:text-blue-400 w-full rounded-full">
+				<Button className="bg-muted text-muted-foreground px-5 hover:bg-accent hover:text-primary w-full rounded-full">
 					<div className="w-full text-left">
 						What do you want to ask?
 					</div>
@@ -181,13 +181,13 @@ const CreatePostModal: React.FC = () => {
 
 			{/* New Dialog */}
 			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent className="bg-white dark:bg-gray-800 w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 max-w-4xl max-h-[90vh] overflow-y-auto">
+				<DialogContent className="bg-card w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 max-w-4xl max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
-						<DialogTitle className="text-xl max-sm:text-lg dark:text-white">
+						<DialogTitle className="text-xl max-sm:text-lg text-card-foreground">
 							Ask Your Question
 						</DialogTitle>
 					</DialogHeader>
-					<Separator className="dark:bg-gray-600" />{" "}
+					<Separator className="bg-border" />{" "}
 					{/* User Profile Info */}
 					<div className="flex items-center mb-4 mt-2">
 						<div className="mr-2">
@@ -209,9 +209,9 @@ const CreatePostModal: React.FC = () => {
 								/>
 							)}
 						</div>
-						<div className="font-medium dark:text-white">
+						<div className="font-medium text-card-foreground">
 							{authUser?.displayName || "User"}
-							<span className="text-gray-500 dark:text-gray-400 block text-sm">
+							<span className="text-muted-foreground block text-sm">
 								{` @${userProfile?.username || "username"}`}
 							</span>
 						</div>
@@ -239,8 +239,8 @@ const CreatePostModal: React.FC = () => {
 								<FieldDescription
 									className={
 										titleCharsLeft < 1
-											? "text-red-500 dark:text-red-400"
-											: "text-green-500 dark:text-green-400"
+											? "text-destructive"
+											: "text-green-500"
 									}
 								>
 									{titleCharsLeft} characters left
@@ -253,7 +253,7 @@ const CreatePostModal: React.FC = () => {
 								id="post-content"
 								value={body}
 								onChange={handleBodyChange}
-								className="min-h-[120px] resize-none dark:bg-gray-700 dark:rounded"
+								className="min-h-[120px] resize-none bg-muted rounded"
 								required
 							/>
 							{!bodyError && (
@@ -266,8 +266,8 @@ const CreatePostModal: React.FC = () => {
 										}
 										className={
 											bodyCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-500"
 										}
 									>
 										{bodyCharsLeft} characters left
@@ -277,12 +277,12 @@ const CreatePostModal: React.FC = () => {
 						</div>
 						{/* Media Upload Section */}
 						<div className="w-full">
-							<div className="border border-gray-300 dark:border-gray-600 rounded p-3 mt-2">
+							<div className="border border-border rounded p-3 mt-2">
 								<div className="flex items-center justify-between">
-									<div className="dark:text-gray-200">
+									<div className="text-card-foreground">
 										Add to your question
 									</div>
-									<div className="dark:text-gray-400">
+									<div className="text-muted-foreground">
 										You can upload up to 3 images or videos
 									</div>
 
@@ -297,7 +297,7 @@ const CreatePostModal: React.FC = () => {
 														?.click()
 												}
 												size="sm"
-												className="dark:text-blue-400"
+												className="text-primary"
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -319,7 +319,7 @@ const CreatePostModal: React.FC = () => {
 														?.click()
 												}
 												size="sm"
-												className="dark:text-blue-400"
+												className="text-primary"
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -348,7 +348,7 @@ const CreatePostModal: React.FC = () => {
 					</div>
 					{/* Publish Button */}
 					<Button
-						className="w-full bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800 py-3"
+						className="w-full bg-main-blue hover:bg-blue-950 py-3"
 						onClick={handleSubmit}
 						disabled={isLoading || uploadResult.isLoading}
 					>

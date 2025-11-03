@@ -1,11 +1,8 @@
-import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
-import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { auth } from "@/lib/firebase";
-import useAuthSubscribtion from "@/lib/firebase/useAuthSubscribtion";
 import useSignOut from "@/lib/firebase/useSignOut";
-import { useCallback, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ✅ Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -60,8 +57,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	// ⏳ Still verifying auth state
 	if (loginLoading) {
 		return (
-			<div className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
-				<div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600 dark:border-t-blue-400 shadow-lg"></div>
+			<div className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-b from-secondary to-muted transition-colors duration-200">
+				<div className="animate-spin rounded-full h-16 w-16 border-4 border-border border-t-primary shadow-lg"></div>
 			</div>
 		);
 	}

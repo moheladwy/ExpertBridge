@@ -223,7 +223,7 @@ const CreateJobModal: React.FC = () => {
 						)}
 					</div>
 				)}
-				<Button className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 px-5 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue dark:hover:text-blue-400 w-full rounded-full">
+				<Button className="bg-muted text-muted-foreground px-5 hover:bg-accent hover:text-primary w-full rounded-full">
 					<div className="w-full text-left">
 						Post a job opportunity
 					</div>

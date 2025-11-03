@@ -375,7 +375,7 @@ const LoginPage: React.FC = () => {
 							<Button
 								type="button"
 								variant="outline"
-								className="w-full border-gray-700 text-black hover:text-white dark:bg-white dark:hover:bg-gray-700 hover:bg-gray-700"
+								className="w-full"
 								disabled={loading}
 								onClick={handleGoogleSignIn}
 							>

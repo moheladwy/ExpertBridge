@@ -37,15 +37,13 @@ const SimilarPosts: React.FC<SimilarPostsProps> = ({ currentPostId }) => {
 		similarPosts.length == 0
 	) {
 		return (
-			<div className="text-gray-500 dark:text-gray-400">
-				No similar posts found.
-			</div>
+			<div className="text-muted-foreground">No similar posts found.</div>
 		);
 	}
 
 	return (
-		<div className="sticky top-4 bg-white dark:bg-gray-800 p-2 rounded-xl shadow-md">
-			<h3 className="text-center font-semibold text-gray-900 dark:text-gray-100 mb-3">
+		<div className="sticky top-4 bg-card p-2 rounded-xl shadow-md">
+			<h3 className="text-center font-semibold text-card-foreground mb-3">
 				Similar Posts
 			</h3>
 			<div className="space-y-3">
@@ -53,17 +51,17 @@ const SimilarPosts: React.FC<SimilarPostsProps> = ({ currentPostId }) => {
 					<Link
 						key={post.postId}
 						to={`/posts/${post.postId}`}
-						className="block p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-sm dark:hover:shadow-gray-900/30 transition-all"
+						className="block p-3 border border-border rounded-lg hover:border-primary hover:shadow-sm transition-all"
 						dir="auto"
 					>
-						<h4 className="font-medium text-sm text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">
+						<h4 className="font-medium text-sm text-card-foreground mb-1 line-clamp-2">
 							{post.title}
 						</h4>
-						<p className="text-xs text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
+						<p className="text-xs text-muted-foreground mb-2 line-clamp-2">
 							{post.content}
 						</p>
 
-						<div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+						<div className="flex items-center justify-between text-xs text-muted-foreground">
 							<span className="flex items-center">
 								<Clock className="w-3 h-3 mr-1" />
 								{new Date(

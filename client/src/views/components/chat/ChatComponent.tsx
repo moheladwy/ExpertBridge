@@ -115,8 +115,8 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 				{/* Date Separator */}
 				{showDateSeparator && (
 					<div className="flex justify-center my-4">
-						<div className="bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1">
-							<span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+						<div className="bg-secondary rounded-full px-3 py-1">
+							<span className="text-xs text-muted-foreground font-medium">
 								{formatDateSeparator(msg.createdAt)}
 							</span>
 						</div>
@@ -126,13 +126,13 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 				{/* Confirmation Message */}
 				{msg.isConfirmationMessage ? (
 					<div className="flex justify-center my-4">
-						<div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg px-4 py-2 max-w-md">
+						<div className="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2 max-w-md">
 							<div className="flex items-center justify-center space-x-2">
 								<CheckCircle
 									size={16}
-									className="text-yellow-600 dark:text-yellow-400"
+									className="text-yellow-600"
 								/>
-								<span className="text-sm text-yellow-800 dark:text-yellow-200 font-medium text-center">
+								<span className="text-sm text-yellow-800 font-medium text-center">
 									{msg.content}
 								</span>
 							</div>
@@ -150,7 +150,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 								className={`relative rounded-2xl px-4 py-2 shadow-sm ${
 									isCurrentUser
 										? "bg-blue-500 text-white rounded-br-sm"
-										: "bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600 rounded-bl-sm"
+										: "bg-card text-card-foreground border border-border rounded-bl-sm"
 								}`}
 							>
 								<p className="text-sm leading-relaxed break-words">
@@ -160,7 +160,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 									className={`flex items-center justify-end mt-1 space-x-1 ${
 										isCurrentUser
 											? "text-blue-100"
-											: "text-gray-500 dark:text-gray-400"
+											: "text-muted-foreground"
 									}`}
 								>
 									<Clock size={12} />
@@ -178,7 +178,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
 	if (isLoading) {
 		return (
-			<div className="flex flex-col h-96 bg-gray-50 dark:bg-gray-900 rounded-lg">
+			<div className="flex flex-col h-96 bg-secondary rounded-lg">
 				<div className="flex-1 flex items-center justify-center">
 					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
 				</div>
@@ -188,20 +188,18 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
 	if (error) {
 		return (
-			<div className="flex flex-col h-96 bg-gray-50 dark:bg-gray-900 rounded-lg">
+			<div className="flex flex-col h-96 bg-secondary rounded-lg">
 				<div className="flex-1 flex items-center justify-center">
-					<p className="text-red-500 dark:text-red-400">
-						Failed to load messages
-					</p>
+					<p className="text-red-500">Failed to load messages</p>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex flex-col h-96 bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden">
+		<div className="flex flex-col h-96 bg-secondary rounded-lg overflow-hidden">
 			{/* Chat Header */}
-			<div className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 px-4 py-3 flex-shrink-0">
+			<div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
 				<div className="flex items-center space-x-3">
 					<div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
 						<span className="text-white font-semibold text-sm">
@@ -209,10 +207,10 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 						</span>
 					</div>
 					<div>
-						<h3 className="font-semibold text-gray-900 dark:text-white">
+						<h3 className="font-semibold text-card-foreground">
 							{otherPartyName}
 						</h3>
-						<p className="text-xs text-gray-500 dark:text-gray-400">
+						<p className="text-xs text-muted-foreground">
 							{messages.length === 0
 								? "No messages yet"
 								: `${messages.length} message${messages.length !== 1 ? "s" : ""}`}
@@ -229,16 +227,13 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 			>
 				{messages.length === 0 ? (
 					<div className="flex flex-col items-center justify-center h-full text-center">
-						<div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-							<Send
-								size={24}
-								className="text-gray-400 dark:text-gray-500"
-							/>
+						<div className="w-16 h-16 bg-border rounded-full flex items-center justify-center mb-4">
+							<Send size={24} className="text-muted-foreground" />
 						</div>
-						<p className="text-gray-500 dark:text-gray-400 font-medium">
+						<p className="text-muted-foreground font-medium">
 							No messages yet
 						</p>
-						<p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+						<p className="text-sm text-muted-foreground mt-1">
 							Start the conversation with {otherPartyName}
 						</p>
 					</div>
@@ -249,7 +244,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 			</div>
 
 			{/* Message Input */}
-			<div className="bg-white dark:bg-gray-800 border-t dark:border-gray-700 p-4 flex-shrink-0">
+			<div className="bg-card border-t border-border p-4 flex-shrink-0">
 				<form onSubmit={handleSendMessage} className="flex space-x-2">
 					<input
 						ref={inputRef}
@@ -258,10 +253,10 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 						onChange={(e) => setMessage(e.target.value)}
 						onKeyPress={handleKeyPress}
 						placeholder={`Message ${otherPartyName}...`}
-						className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full 
-                     bg-white dark:bg-gray-700 text-gray-900 dark:text-white 
-                     placeholder-gray-500 dark:placeholder-gray-400 
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 
+						className="flex-1 px-4 py-2 border border-border rounded-full 
+                     bg-card text-card-foreground 
+                     placeholder-muted-foreground 
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 
                      focus:border-transparent transition-all duration-200"
 						disabled={isSending}
 					/>
@@ -269,7 +264,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 						type="submit"
 						disabled={!message.trim() || isSending}
 						className="w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 
-                     disabled:bg-gray-300 dark:disabled:bg-gray-600 
+                     disabled:bg-border 
                      disabled:cursor-not-allowed transition-all duration-200 
                      flex items-center justify-center p-0"
 					>

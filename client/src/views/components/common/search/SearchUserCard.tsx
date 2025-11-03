@@ -16,7 +16,7 @@ export default function SearchUserCard({
 
 	return (
 		<Link to={`/profile/${id}`} className="block">
-			<div className="flex p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+			<div className="flex p-4 rounded-lg hover:bg-secondary transition-colors">
 				<div className="flex-shrink-0">
 					{profilePictureUrl ? (
 						<img
@@ -39,23 +39,23 @@ export default function SearchUserCard({
 
 				<div className="ml-4 flex-1 overflow-hidden">
 					{/* Name */}
-					<h3 className="text-md font-semibold text-gray-800 dark:text-gray-100">
+					<h3 className="text-md font-semibold text-card-foreground">
 						{fullName}
 					</h3>
 
 					{/* Username and Job Title row */}
 					<div className="flex flex-wrap items-center gap-x-2 text-sm">
 						{username && (
-							<span className="text-gray-500 dark:text-gray-400">
+							<span className="text-muted-foreground">
 								@{username}
 							</span>
 						)}
 						-
-						<span className="text-gray-600 dark:text-gray-300 font-medium">
+						<span className="text-muted-foreground font-medium">
 							{jobTitle ? jobTitle : "No Job Title"}
 						</span>
 					</div>
-					<p className="mt-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+					<p className="mt-1 text-sm text-muted-foreground line-clamp-2">
 						{bio ? bio : "No Bio Avaliable"}
 					</p>
 				</div>

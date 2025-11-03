@@ -87,7 +87,7 @@ function AppContent() {
         <NavBar />
       </div>
 
-      <div className="pt-16 dark:bg-gray-900 bg-gray-100 min-h-screen">
+      <div className="pt-16 bg-background min-h-screen">
         <Toaster />
         <Outlet /> {/* Renders the current route's element */}
       </div>

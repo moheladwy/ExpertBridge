@@ -80,7 +80,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 
 	return (
 		<>
-			<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+			<div className="flex flex-col gap-3 bg-card shadow-md rounded-lg p-4 border border-border">
 				{/* Author Info */}
 				<div className="flex items-center space-x-3">
 					<Link to={`/profile/${memoizedPost.author.id}`}>
@@ -104,7 +104,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 						<div>
 							<Link to={`/profile/${memoizedPost.author.id}`}>
 								{/* Name */}
-								<span className="text-md font-semibold text-gray-800 dark:text-gray-100 block">
+								<span className="text-md font-semibold text-card-foreground block">
 									{memoizedPost.author.firstName +
 										" " +
 										memoizedPost.author.lastName}
@@ -119,12 +119,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 						{/* More */}
 						<DropdownMenu>
 							<DropdownMenuTrigger>
-								<Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:cursor-pointer" />
+								<Ellipsis className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer" />
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
 								<DropdownMenuItem>
 									<div
-										className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+										className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 										onClick={handleCopyLink}
 									>
 										<Link2 className="w-5" />
@@ -136,7 +136,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 										{/* Edit */}
 										<DropdownMenuItem>
 											<div
-												className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+												className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 												onClick={() =>
 													setIsEditModalOpen(true)
 												}
@@ -151,7 +151,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 												setShowDeleteDialog(true)
 											}
 										>
-											<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
+											<div className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer">
 												<Trash2 className="w-5 text-red-700" />
 												<h6 className="text-red-700">
 													Delete post
@@ -201,7 +201,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 				<Link to={`/feed/${memoizedPost.id}`}>
 					<div className="break-words">
 						<h2
-							className="text-lg font-bold text-gray-700 dark:text-gray-100 whitespace-pre-wrap"
+							className="text-lg font-bold text-card-foreground whitespace-pre-wrap"
 							dir="auto"
 						>
 							{memoizedPost.title}
@@ -211,7 +211,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 					{/* Post Content */}
 					<div className="break-words">
 						<p
-							className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap"
+							className="text-muted-foreground whitespace-pre-wrap"
 							dir="auto"
 						>
 							{memoizedPost.content.substring(0, 100)}...
@@ -237,9 +237,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 
 						{/* Comments */}
 						<Link to={`/feed/${memoizedPost.id}`}>
-							<div className="flex items-center gap-2 rounded-full p-1 px-2 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer">
-								<MessageCircle className="text-gray-500 dark:text-gray-400" />
-								<div className="text-gray-500 dark:text-gray-400 text-md font-bold">
+							<div className="flex items-center gap-2 rounded-full p-1 px-2 hover:bg-accent hover:cursor-pointer">
+								<MessageCircle className="text-muted-foreground" />
+								<div className="text-muted-foreground text-md font-bold">
 									{totalCommentsNumber}
 								</div>
 							</div>

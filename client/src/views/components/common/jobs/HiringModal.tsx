@@ -204,9 +204,9 @@ const HiringModal = ({
 				</DialogHeader>
 
 				{/* Expert Summary */}
-				<div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4">
+				<div className="bg-secondary rounded-lg p-4 mb-4">
 					<div className="flex items-center gap-3 mb-3">
-						<div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+						<div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
 							{expertProfile.profilePictureUrl ? (
 								<img
 									src={expertProfile.profilePictureUrl}
@@ -218,7 +218,7 @@ const HiringModal = ({
 							)}
 						</div>
 						<div>
-							<h4 className="font-medium text-gray-900 dark:text-white">
+							<h4 className="font-medium text-card-foreground">
 								{expertProfile.firstName}
 							</h4>
 						</div>
@@ -410,11 +410,11 @@ const HiringModal = ({
 								{formData.attachments.map((file, index) => (
 									<div
 										key={index}
-										className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded"
+										className="flex items-center justify-between bg-secondary p-2 rounded"
 									>
 										<div className="flex items-center gap-2">
 											<FileText className="h-4 w-4 text-gray-500" />
-											<span className="text-sm text-gray-700 dark:text-gray-300">
+											<span className="text-sm text-card-foreground">
 												{file.name}
 											</span>
 											<span className="text-xs text-gray-500">

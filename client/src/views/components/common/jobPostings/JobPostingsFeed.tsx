@@ -98,7 +98,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 
 	if (!data?.pages.length || data?.pages.length < 1) {
 		return (
-			<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+			<div className="min-h-screen bg-secondary">
 				<div className="flex gap-4 max-w-9xl mx-2 p-4">
 					{/* Left Sidebar */}
 					<div className="w-100 max-xl:w-72 max-lg:hidden">
@@ -136,7 +136,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+		<div className="min-h-screen bg-secondary">
 			<div className="flex gap-6 max-w-9xl mx-auto p-6">
 				{/* Left Sidebar - Users */}
 				<div className="w-90 max-xl:w-72 max-lg:hidden">
@@ -170,7 +170,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 								</div>
 							</div>
 
-							<div className="flex flex-wrap items-center justify-center w-full gap-9 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
+							<div className="flex flex-wrap items-center justify-center w-full gap-9 p-1 bg-muted rounded-xl">
 								{[
 									"Recommended",
 									"Recent",
@@ -285,7 +285,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 										className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
 											hasNextPage && !isFetchingNextPage
 												? "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl"
-												: "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+												: "bg-muted text-muted-foreground cursor-not-allowed"
 										}`}
 									>
 										{isFetchingNextPage

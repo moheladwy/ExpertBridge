@@ -69,7 +69,7 @@ const Feed = ({ startingPost = { id: null } }) => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+		<div className="min-h-screen bg-secondary">
 			<div className="flex gap-4 max-w-9xl mx-2 p-4">
 				{/* Left Sidebar - Users */}
 				<div className="w-90 max-xl:w-72 max-lg:hidden">
@@ -82,14 +82,14 @@ const Feed = ({ startingPost = { id: null } }) => {
 				{/* Main Feed Content */}
 				<div className="flex-1 max-w-4xl mx-auto space-y-6">
 					{/* Create Post Section */}
-					<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+					<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
 						<CreatePostModal />
 					</div>
 
 					{/* Filter Section */}
-					<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+					<div className="bg-card rounded-2xl shadow-lg border border-border p-6">
 						{/* <div className="flex flex-col sm:flex-row items-center justify-between gap-4"> */}
-						<div className="flex justify-between items-center gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
+						<div className="flex justify-between items-center gap-2 p-1 bg-muted rounded-xl">
 							{[
 								"Recommended",
 								"Recent",
@@ -101,8 +101,8 @@ const Feed = ({ startingPost = { id: null } }) => {
 									onClick={() => setFilter(filterOption)}
 									className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
 										filter === filterOption
-											? "text-blue-600 dark:text-blue-400"
-											: "hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/50 dark:hover:bg-gray-600/50"
+											? "text-primary"
+											: "hover:text-primary hover:bg-card/50"
 									}`}
 								>
 									{getFilterIcon(filterOption)}
@@ -121,15 +121,15 @@ const Feed = ({ startingPost = { id: null } }) => {
 							<LoadingSkeleton count={7} />
 						</div>
 					) : isError ? (
-						<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-100 dark:border-red-900 p-8">
+						<div className="bg-card rounded-2xl shadow-lg border border-destructive p-8">
 							<div className="text-center">
 								<div className="text-red-400 text-4xl mb-4">
 									⚠️
 								</div>
-								<div className="text-red-600 dark:text-red-400 font-medium">
+								<div className="text-destructive font-medium">
 									Unable to load posts
 								</div>
-								<p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+								<p className="text-muted-foreground text-sm mt-2">
 									Please try refreshing the page
 								</p>
 							</div>
@@ -224,7 +224,7 @@ const Feed = ({ startingPost = { id: null } }) => {
 										className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
 											hasNextPage && !isFetchingNextPage
 												? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
-												: "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+												: "bg-muted text-muted-foreground cursor-not-allowed"
 										}`}
 									>
 										{isFetchingNextPage

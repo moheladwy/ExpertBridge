@@ -60,8 +60,8 @@ const JobPostingCommentVoteButtons: React.FC<JobCommentVoteButtonsProps> = ({
 				onClick={handleUpvote}
 				className={`flex items-center space-x-1 px-2 py-1 rounded-lg transition-colors duration-200 ${
 					comment.isUpvoted
-						? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300"
-						: "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+						? "bg-green-100 text-green-700"
+						: "hover:bg-secondary text-muted-foreground"
 				}`}
 			>
 				{comment.isUpvoted ? (
@@ -77,8 +77,8 @@ const JobPostingCommentVoteButtons: React.FC<JobCommentVoteButtonsProps> = ({
 				onClick={handleDownvote}
 				className={`flex items-center space-x-1 px-2 py-1 rounded-lg transition-colors duration-200 ${
 					comment.isDownvoted
-						? "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300"
-						: "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+						? "bg-red-100 text-red-700"
+						: "hover:bg-secondary text-muted-foreground"
 				}`}
 			>
 				{comment.isDownvoted ? (

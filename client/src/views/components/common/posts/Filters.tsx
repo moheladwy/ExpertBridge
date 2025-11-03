@@ -13,15 +13,9 @@ const Filters = () => {
 			value={filter}
 			onValueChange={(value) => value && setFilter(value)}
 		>
-			<ToggleGroupItem value="Recent" className="dark:text-white">
-				Recent
-			</ToggleGroupItem>
-			<ToggleGroupItem value="Most Upvoted" className="dark:text-white">
-				Most Upvoted
-			</ToggleGroupItem>
-			<ToggleGroupItem value="Trending" className="dark:text-white">
-				Trending
-			</ToggleGroupItem>
+			<ToggleGroupItem value="Recent">Recent</ToggleGroupItem>
+			<ToggleGroupItem value="Most Upvoted">Most Upvoted</ToggleGroupItem>
+			<ToggleGroupItem value="Trending">Trending</ToggleGroupItem>
 		</ToggleGroup>
 	);
 };

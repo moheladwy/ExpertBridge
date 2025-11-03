@@ -106,10 +106,10 @@ const MyProfilePage = () => {
 	if (userLoading) {
 		return (
 			<div className="w-full flex justify-center">
-				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-6">
+				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-6">
 					<div className="flex flex-col items-center justify-center py-12">
-						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
-						<p className="mt-4 text-gray-600 dark:text-gray-300">
+						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+						<p className="mt-4 text-muted-foreground">
 							Loading your profile...
 						</p>
 					</div>
@@ -121,9 +121,9 @@ const MyProfilePage = () => {
 	if (userError) {
 		return (
 			<div className="w-full flex justify-center">
-				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-6">
+				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-6">
 					<div className="flex flex-col items-center justify-center py-12">
-						<div className="text-red-500 dark:text-red-400 mb-4">
+						<div className="text-red-500 mb-4">
 							<svg
 								className="w-16 h-16"
 								fill="none"
@@ -138,16 +138,16 @@ const MyProfilePage = () => {
 								/>
 							</svg>
 						</div>
-						<h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+						<h2 className="text-xl font-semibold text-card-foreground mb-2">
 							Authentication Error
 						</h2>
-						<p className="text-gray-600 dark:text-gray-300 text-center mb-4">
+						<p className="text-muted-foreground text-center mb-4">
 							There was an error loading your profile. Please try
 							signing in again.
 						</p>
 						<Button
 							onClick={() => window.location.reload()}
-							className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+							className="bg-indigo-600 hover:bg-indigo-700"
 						>
 							Reload Page
 						</Button>
@@ -160,14 +160,14 @@ const MyProfilePage = () => {
 	return (
 		<>
 			<div className="w-full flex justify-center">
-				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-3">
+				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-3">
 					{/* Profile Header */}
-					<div className="border-gray-200 dark:border-gray-700">
+					<div className="border-border">
 						{/* Cover Photo */}
 						{isLoading ? (
 							<Skeleton className="h-48 rounded-t-lg" />
 						) : (
-							<div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
+							<div className="h-48 bg-secondary rounded-t-lg"></div>
 						)}
 
 						{/* Profile Info Section */}
@@ -175,9 +175,9 @@ const MyProfilePage = () => {
 							{/* Avatar */}
 							<div className="absolute -top-16 left-8">
 								{isLoading ? (
-									<Skeleton className="rounded-full w-[110px] h-[110px] border-white dark:border-gray-800 border-4" />
+									<Skeleton className="rounded-full w-[110px] h-[110px] border-background border-4" />
 								) : (
-									<div className="flex justify-center items-center rounded-full border-white dark:border-gray-800 border-4 text-white text-4xl font-bold">
+									<div className="flex justify-center items-center rounded-full border-background border-4 text-white text-4xl font-bold">
 										{profile?.profilePictureUrl ? (
 											<img
 												src={profile.profilePictureUrl}
@@ -206,7 +206,7 @@ const MyProfilePage = () => {
 									<Button
 										variant="outline"
 										size="sm"
-										className="gap-2 dark:bg-gray-800 dark:text-white dark:border-gray-800"
+										className="gap-2"
 										onClick={handleEditProfile}
 									>
 										<Pencil size={16} />
@@ -232,15 +232,15 @@ const MyProfilePage = () => {
 								) : (
 									<>
 										<div className="flex items-center">
-											<h1 className="text-2xl font-bold mr-4 dark:text-white">
+											<h1 className="text-2xl font-bold mr-4 text-card-foreground">
 												{fullName}
 											</h1>
-											<Badge className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+											<Badge className="bg-indigo-600 hover:bg-indigo-700">
 												Top Rated
 											</Badge>
 										</div>
 
-										<div className="flex items-center text-gray-500 dark:text-gray-400 mt-2">
+										<div className="flex items-center text-muted-foreground mt-2">
 											<span className="mr-1">
 												@{username}
 											</span>
@@ -250,7 +250,7 @@ const MyProfilePage = () => {
 											</span>
 										</div>
 
-										<div className="mt-4 whitespace-pre-line text-gray-700 dark:text-gray-300">
+										<div className="mt-4 whitespace-pre-line text-muted-foreground">
 											{bio}
 										</div>
 									</>
@@ -260,7 +260,7 @@ const MyProfilePage = () => {
 					</div>
 
 					<Separator
-						className="my-3 dark:bg-gray-700"
+						className="my-3 bg-border"
 						style={{ height: "2px" }}
 					/>
 
@@ -292,42 +292,42 @@ const MyProfilePage = () => {
 						) : (
 							<>
 								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
+									<div className="text-3xl font-semibold text-card-foreground">
 										{stats.questions}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
+									<div className="text-sm text-muted-foreground">
 										Questions Asked
 									</div>
 								</div>
 								<div className="text-center">
-									<div className="text-3xl font-semibold text-green-500 dark:text-green-400">
+									<div className="text-3xl font-semibold text-green-500">
 										{stats.upvotes}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
+									<div className="text-sm text-muted-foreground">
 										Total Up Votes
 									</div>
 								</div>
 								<div className="text-center">
-									<div className="text-3xl font-semibold text-red-600 dark:text-red-400">
+									<div className="text-3xl font-semibold text-red-600">
 										{stats.downvotes}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
+									<div className="text-sm text-muted-foreground">
 										Total Down Votes
 									</div>
 								</div>
 								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
+									<div className="text-3xl font-semibold text-card-foreground">
 										{stats.answers}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
+									<div className="text-sm text-muted-foreground">
 										Given Answers
 									</div>
 								</div>
 								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
+									<div className="text-3xl font-semibold text-card-foreground">
 										{stats.skills}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
+									<div className="text-sm text-muted-foreground">
 										Skills
 									</div>
 								</div>
@@ -336,7 +336,7 @@ const MyProfilePage = () => {
 					</div>
 
 					<Separator
-						className="my-3 dark:bg-gray-700"
+						className="my-3 bg-border"
 						style={{ height: "2px" }}
 					/>
 
@@ -350,7 +350,7 @@ const MyProfilePage = () => {
 									{[1, 2, 3].map((i) => (
 										<div
 											key={i}
-											className="border-b dark:border-gray-700 pb-4"
+											className="border-b border-border pb-4"
 										>
 											<Skeleton className="h-6 w-3/4 mb-2" />
 											<div className="flex my-1">
@@ -368,41 +368,37 @@ const MyProfilePage = () => {
 								onValueChange={setActiveTab}
 								className="w-full"
 							>
-								<TabsList className="grid grid-cols-3 mb-6 dark:bg-gray-700">
+								<TabsList className="grid grid-cols-3 mb-6 bg-secondary">
 									<TabsTrigger
 										value="questions"
-										className="data-[state=active]:bg-white
-									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background"
 									>
 										My Questions
 									</TabsTrigger>
 									<TabsTrigger
 										value="answers"
-										className="data-[state=active]:bg-white
-									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background"
 									>
 										My Answers
 									</TabsTrigger>
 									<TabsTrigger
 										value="skills"
-										className="data-[state=active]:bg-white
-									 	dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background"
 									>
 										My Skills
 									</TabsTrigger>
-								</TabsList>
-
+								</TabsList>{" "}
 								{/* Latest Questions (Posts) Tab Content */}
 								<TabsContent
 									value="questions"
 									className="space-y-4"
 								>
-									{isPostsLoading ? (
+									{isCommentsLoading ? (
 										<div className="space-y-4">
 											{[1, 2, 3].map((i) => (
 												<div
 													key={i}
-													className="border rounded-lg p-4 dark:border-gray-700"
+													className="border rounded-lg p-4 border-border"
 												>
 													<Skeleton className="h-6 w-3/4 mb-2" />
 													<div className="flex my-1">
@@ -432,12 +428,11 @@ const MyProfilePage = () => {
 											});
 										})()
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
+										<div className="text-center py-8 text-muted-foreground">
 											You haven't asked any questions yet.
 										</div>
 									)}
 								</TabsContent>
-
 								{/* Answered Questions (Comments) Tab Content */}
 								<TabsContent
 									value="answers"
@@ -448,7 +443,7 @@ const MyProfilePage = () => {
 											{[1, 2, 3].map((i) => (
 												<div
 													key={i}
-													className="border rounded-lg p-4 dark:border-gray-700"
+													className="border rounded-lg p-4 border-border"
 												>
 													<Skeleton className="h-6 w-3/4 mb-2" />
 													<div className="flex my-1">
@@ -482,13 +477,12 @@ const MyProfilePage = () => {
 											);
 										})()
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
+										<div className="text-center py-8 text-muted-foreground">
 											You haven't answered any questions
 											yet.
 										</div>
 									)}
 								</TabsContent>
-
 								{/* Skills Tab Content */}
 								<TabsContent value="skills" className="py-4">
 									{isSkillsLoading ? (
@@ -507,7 +501,7 @@ const MyProfilePage = () => {
 												(skill, index) => (
 													<div
 														key={index}
-														className="rounded-full px-1 py-2 text-white text-center font-medium bg-indigo-700 dark:bg-indigo-500 bg-gradient-to-r"
+														className="rounded-full px-1 py-2 text-white text-center font-medium bg-indigo-700 bg-gradient-to-r"
 													>
 														{skill}
 													</div>
@@ -515,7 +509,7 @@ const MyProfilePage = () => {
 											)}
 										</div>
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
+										<div className="text-center py-8 text-muted-foreground">
 											You haven't added any skills yet.
 										</div>
 									)}

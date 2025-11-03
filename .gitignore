@@ -61,3 +61,5 @@ client/audit-report/implementations/Feed.optimized.tsx
 client/audit-report/implementations/apiSlice.optimized.ts
 client/analyze-bundle.cjs
 client/audit-report/fix-ui-plan.md
+client/audit-report/DARK_MODE_REFACTORING_PLAN.md
+client/audit-report/DARK_MODE_REFACTORING_PLAN_COMPLETE.md

@@ -8,7 +8,7 @@ function PostTimeStamp({
 	lastModified?: string | null | undefined;
 }) {
 	return (
-		<div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+		<div className="flex justify-between items-center text-sm text-muted-foreground">
 			<span>
 				<TimeAgo timestamp={createdAt} />
 				{lastModified && (

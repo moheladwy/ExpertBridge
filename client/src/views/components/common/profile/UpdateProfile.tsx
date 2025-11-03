@@ -223,7 +223,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 	}
 
 	return (
-		<Card className="w-full max-w-2xl mx-auto dark:bg-gray-900 dark:text-white dark:border-gray-700">
+		<Card className="w-full max-w-2xl mx-auto bg-card text-card-foreground border-border">
 			<CardHeader>
 				<CardTitle className="text-xl text-center">
 					Update Your Profile

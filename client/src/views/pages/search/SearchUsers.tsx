@@ -32,11 +32,11 @@ const SearchUsers = () => {
 
 		if (isError) {
 			return (
-				<div className="p-6 text-center bg-white dark:bg-gray-800 rounded-lg shadow">
+				<div className="p-6 text-center bg-card rounded-lg shadow">
 					<h3 className="text-lg font-medium text-red-600">
 						Error loading search results
 					</h3>
-					<p className="mt-2 text-gray-600 dark:text-gray-300">
+					<p className="mt-2 text-muted-foreground">
 						{error ? String(error) : "An unknown error occurred"}
 					</p>
 				</div>
@@ -47,9 +47,9 @@ const SearchUsers = () => {
 
 		if (users.length === 0 && searchQuery) {
 			return (
-				<div className="p-6 text-center bg-white dark:bg-gray-800 rounded-lg shadow">
+				<div className="p-6 text-center bg-card rounded-lg shadow">
 					<h3 className="text-lg font-medium">No results found</h3>
-					<p className="mt-2 text-gray-600 dark:text-gray-300">
+					<p className="mt-2 text-muted-foreground">
 						We couldn't find any users matching: "{searchQuery}"
 					</p>
 				</div>
@@ -78,7 +78,7 @@ const SearchUsers = () => {
 
 	return (
 		<div className="container mx-auto px-4 py-8 max-w-5xl">
-			<div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+			<div className="p-6 bg-card rounded-lg shadow">
 				<h2 className="text-2xl font-semibold mb-4">
 					Search Results for: {searchQuery}
 				</h2>

@@ -76,20 +76,17 @@ const JobOfferCard = ({
 	};
 
 	return (
-		<Card className="hover:shadow-md transition-shadow dark:border-gray-700">
+		<Card className="hover:shadow-md transition-shadow border-border">
 			<CardHeader className="pb-3">
 				<div className="flex justify-between items-start">
-					<CardTitle className="text-lg font-semibold dark:text-gray-100">
+					<CardTitle className="text-lg font-semibold text-card-foreground">
 						{offer.title}
 					</CardTitle>
-					<Badge
-						variant="secondary"
-						className="ml-2 dark:bg-gray-700"
-					>
+					<Badge variant="secondary" className="ml-2">
 						{formatCurrency(offer.budget)}
 					</Badge>
 				</div>
-				<div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+				<div className="flex items-center gap-4 text-sm text-muted-foreground">
 					<div className="flex items-center gap-1">
 						<User className="h-4 w-4" />
 						{offer.author.firstName} {offer.author.lastName}
@@ -105,7 +102,7 @@ const JobOfferCard = ({
 				</div>
 			</CardHeader>
 			<CardContent>
-				<p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3">
+				<p className="text-card-foreground mb-4 line-clamp-3">
 					{offer.description}
 				</p>
 				<div className="flex gap-2 flex-wrap">
@@ -135,7 +132,7 @@ const JobOfferCard = ({
 								variant="outline"
 								onClick={handleDeclineOffer}
 								disabled={isAccepting}
-								className="flex items-center gap-1 dark:border-gray-600"
+								className="flex items-center gap-1"
 							>
 								<XCircle className="h-4 w-4" />
 								Decline
@@ -147,7 +144,7 @@ const JobOfferCard = ({
 							size="sm"
 							variant="destructive"
 							onClick={() => onDelete(offer.id)}
-							className="flex items-center gap-1 dark:bg-red-900 dark:hover:bg-red-800"
+							className="flex items-center gap-1"
 						>
 							<Trash2 className="h-4 w-4" />
 							Delete

@@ -62,7 +62,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 	};
 
 	return (
-		<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-100 dark:border-gray-700">
+		<div className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-border">
 			<Link to={`/jobs/${job.id}`}>
 				{/* Header with Client Info */}
 				<div className="flex items-start justify-between mb-4">
@@ -76,7 +76,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 							className="w-12 h-12 rounded-full object-cover"
 						/>
 						<div>
-							<h4 className="font-semibold text-gray-900 dark:text-white">
+							<h4 className="font-semibold text-card-foreground">
 								{job.author.firstName + job.author.lastName}
 							</h4>
 							<div className="flex items-center space-x-2">
@@ -85,12 +85,12 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 										<div className="flex">
 											{renderStars(job.author.rating)}
 										</div>
-										<span className="text-sm text-gray-600 dark:text-gray-400">
+										<span className="text-sm text-muted-foreground">
 											{job.author.rating.toFixed(1)}
 										</span>
 									</div>
 								)}
-								<span className="text-sm text-gray-500 dark:text-gray-400">
+								<span className="text-sm text-muted-foreground">
 									<TimeAgo timestamp={job.createdAt} />
 								</span>
 							</div>
@@ -98,7 +98,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 					</div>
 
 					{/* Budget Badge */}
-					<div className="flex items-center bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-3 py-1 rounded-full">
+					<div className="flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full">
 						<CurrencyDollarIcon className="h-4 w-4 mr-1" />
 						<span className="font-semibold">
 							{formatBudget(job.budget)}
@@ -107,18 +107,18 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 				</div>
 
 				{/* Job Title */}
-				<h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2">
+				<h3 className="text-xl font-bold text-card-foreground mb-3 line-clamp-2">
 					{job.title}
 				</h3>
 
 				{/* Job Description */}
-				<p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3">
+				<p className="text-card-foreground mb-4 line-clamp-3">
 					{job.content.substring(0, 100)}...
 				</p>
 
 				{/* Area/Location */}
 				{job.area && (
-					<div className="flex items-center text-gray-600 dark:text-gray-400 mb-4">
+					<div className="flex items-center text-muted-foreground mb-4">
 						<MapPinIcon className="h-4 w-4 mr-1" />
 						<span className="text-sm">{job.area}</span>
 					</div>
@@ -129,8 +129,8 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 			</Link>
 
 			{/* Footer with Actions and Stats */}
-			<div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-				<div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+			<div className="flex items-center justify-between pt-4 border-t border-border">
+				<div className="flex items-center space-x-4 text-sm text-muted-foreground">
 					<JobPostingVoteButtons jobPosting={job} />
 					<div className="flex items-center space-x-1">
 						<ChatBubbleLeftIcon className="h-4 w-4" />

@@ -26,7 +26,7 @@ function LandingPage() {
 	return (
 		<div className="overflow-x-hidden">
 			{/* Hero Section - Enhanced */}
-			<div className="min-h-screen bg-gradient-to-b from-main-blue to-indigo-800 dark:from-main-blue dark:to-indigo-900 w-full flex items-center justify-center transition-colors duration-200">
+			<div className="min-h-screen bg-gradient-to-b from-main-blue to-indigo-800 w-full flex items-center justify-center transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8 py-12 md:py-20">
 					<div className="flex flex-col lg:flex-row items-center justify-between gap-12">
 						<div className="flex flex-col items-start gap-6 text-white lg:text-center max-w-2xl">
@@ -68,14 +68,14 @@ function LandingPage() {
 			</div>
 
 			{/* What We Do Section */}
-			<div className="py-20 bg-white dark:bg-gray-900 transition-colors duration-200">
+			<div className="py-20 bg-background transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8">
 					<div className="text-center mb-16">
-						<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+						<h2 className="text-3xl sm:text-4xl font-bold text-foreground">
 							What We Do
 						</h2>
-						<div className="mt-4 w-16 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 mx-auto rounded-full"></div>
-						<p className="mt-6 text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+						<div className="mt-4 w-16 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
+						<p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto">
 							ExpertBridge is revolutionizing how professionals
 							connect by creating a platform where expertise meets
 							demand, fostering meaningful relationships.
@@ -84,7 +84,7 @@ function LandingPage() {
 
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 						{/* Feature 1 */}
-						<div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl transition-all duration-200">
+						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 							<div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
@@ -100,10 +100,10 @@ function LandingPage() {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+							<h3 className="text-xl font-semibold text-card-foreground mb-4">
 								Professional Networking
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300">
+							<p className="text-muted-foreground">
 								Connect with skilled professionals and
 								technicians across various industries. Build
 								meaningful relationships that drive your
@@ -112,7 +112,7 @@ function LandingPage() {
 						</div>
 
 						{/* Feature 2 */}
-						<div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl transition-all duration-200">
+						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 							<div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
@@ -128,10 +128,10 @@ function LandingPage() {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+							<h3 className="text-xl font-semibold text-card-foreground mb-4">
 								Smart Job Matching
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300">
+							<p className="text-muted-foreground">
 								Our AI-powered system matches job requirements
 								with expert skills, ensuring the right
 								professional for every task.
@@ -139,7 +139,7 @@ function LandingPage() {
 						</div>
 
 						{/* Feature 3 */}
-						<div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl transition-all duration-200">
+						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 							<div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
@@ -155,10 +155,10 @@ function LandingPage() {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+							<h3 className="text-xl font-semibold text-card-foreground mb-4">
 								Seamless Communication
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300">
+							<p className="text-muted-foreground">
 								Built-in chat system with AI-powered content
 								moderation ensures safe, professional
 								communication between all users.
@@ -166,7 +166,7 @@ function LandingPage() {
 						</div>
 
 						{/* Feature 4 */}
-						<div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl transition-all duration-200">
+						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 							<div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
@@ -182,10 +182,10 @@ function LandingPage() {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+							<h3 className="text-xl font-semibold text-card-foreground mb-4">
 								Reputation System
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300">
+							<p className="text-muted-foreground">
 								Our dual-role reputation system helps build
 								trust by allowing both clients and professionals
 								to rate each other.
@@ -193,7 +193,7 @@ function LandingPage() {
 						</div>
 
 						{/* Feature 5 */}
-						<div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl transition-all duration-200">
+						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 							<div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
@@ -209,10 +209,10 @@ function LandingPage() {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+							<h3 className="text-xl font-semibold text-card-foreground mb-4">
 								Personalized Feed
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300">
+							<p className="text-muted-foreground">
 								Stay updated with relevant opportunities and
 								industry insights through our AI-curated
 								personalized content feed.
@@ -220,7 +220,7 @@ function LandingPage() {
 						</div>
 
 						{/* Feature 6 */}
-						<div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-800/20 p-8 hover:shadow-xl transition-all duration-200">
+						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
 							<div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
@@ -236,10 +236,10 @@ function LandingPage() {
 									/>
 								</svg>
 							</div>
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+							<h3 className="text-xl font-semibold text-card-foreground mb-4">
 								AI-Powered Innovation
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300">
+							<p className="text-muted-foreground">
 								Leverage cutting-edge AI for content moderation,
 								smart recommendations, and automated tagging to
 								enhance your experience.
@@ -250,17 +250,17 @@ function LandingPage() {
 			</div>
 
 			{/* Mission Section */}
-			<div className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
+			<div className="py-16 bg-secondary transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8">
-					<div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg dark:shadow-gray-800/20 p-8 sm:p-12 transition-all duration-200">
+					<div className="bg-card rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 						<div className="text-center mb-12">
-							<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
+							<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground transition-colors duration-200">
 								Our Mission
 							</h2>
 							<div className="mt-4 w-16 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
 						</div>
 						<div className="max-w-4xl mx-auto">
-							<p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed text-center transition-colors duration-200">
+							<p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-center transition-colors duration-200">
 								At ExpertBridge, we believe that every problem
 								deserves the right expert, and every expert
 								deserves the right opportunity. We're
@@ -276,9 +276,9 @@ function LandingPage() {
 			</div>
 
 			{/* Statistics Section */}
-			<div className="py-16 bg-white dark:bg-gray-900 transition-colors duration-200">
+			<div className="py-16 bg-background transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8">
-					<div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
+					<div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 						<div className="text-center mb-12">
 							<h2 className="text-3xl sm:text-4xl font-bold text-white">
 								ExpertBridge by the Numbers
