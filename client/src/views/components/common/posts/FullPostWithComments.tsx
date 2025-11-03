@@ -3,10 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Post } from "@/features/posts/types";
 import CommentsSection from "../comments/CommentsSection";
 import PostVoteButtons from "./PostVoteButtons";
-import { CircleArrowLeft } from "lucide-react";
-import { Ellipsis } from "lucide-react";
-import { Link2 } from "lucide-react";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { CircleArrowLeft, Ellipsis, Link2, Trash2 } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -132,7 +129,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 														}
 													>
 														<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
-															<DeleteIcon className="w-5 text-red-700" />
+															<Trash2 className="w-5 text-red-700" />
 															<h6 className="text-red-700">
 																Delete post
 															</h6>

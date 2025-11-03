@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeftCircle as CircleArrowLeft } from "lucide-react";
-import { CircleEllipsis as Ellipsis } from "lucide-react";
-import { Link2 } from "lucide-react";
-import DeleteIcon from "@mui/icons-material/Delete";
+import {
+	ArrowLeftCircle as CircleArrowLeft,
+	CircleEllipsis as Ellipsis,
+	Link2,
+	Trash2,
+} from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -201,7 +203,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 														}
 													>
 														<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
-															<DeleteIcon className="w-5 text-red-700" />
+															<Trash2 className="w-5 text-red-700" />
 															<h6 className="text-red-700">
 																Delete job
 																posting
