@@ -1,25 +1,24 @@
 import { Outlet } from "react-router";
 import NavBar from "@/views/components/common/ui/NavBar";
 import { Toaster } from "react-hot-toast";
-import { auth } from "./lib/firebase";
 import { UpdateUserRequest } from "./features/users/types";
 import { useUpdateUserMutation } from "./features/users/usersSlice";
 import { useEffect, useState } from "react";
 import { tokenManager } from "@/lib/services/TokenManager";
 import { useLocation } from "react-router-dom";
 import AuthPromptModal from "@/views/components/common/ui/AuthPromptModal";
-import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
+import { useCurrentUser } from "@/lib/services/AuthStateManager";
 import {
   AuthPromptProvider,
   useAuthPrompt,
 } from "@/contexts/AuthPromptContext";
 import { ThemeProvider } from "@/views/components/common/theme/ThemeProvider";
-import ApiHealthGuard from "@/views/components/common/ui/ApiHealthGuard";
 import TokenMonitor from "@/views/components/common/ui/TokenMonitor";
+import AuthStateMonitor from "@/views/components/common/ui/AuthStateMonitor";
 
 function AppContent() {
   const [updateUser] = useUpdateUserMutation();
-  const authUser = useCurrentAuthUser();
+  const authUser = useCurrentUser(); // Now using centralized auth - no duplicate listener!
 
   const [showInitialAuthPrompt, setShowInitialAuthPrompt] = useState(false);
   const location = useLocation();
@@ -56,29 +55,30 @@ function AppContent() {
 
     // Update user profile when auth state changes
     const updateUserProfile = async () => {
-      const user = auth.currentUser;
-      if (!user) return;
+      if (!authUser) return;
 
       console.log("Updating user profile...");
       const token = await tokenManager.getToken();
-      const name = user.displayName?.split(" ") || [];
+      const name = authUser.displayName?.split(" ") || [];
       const request: UpdateUserRequest = {
         firstName: name[0],
         lastName: name[1],
-        email: user.email!,
-        phoneNumber: user.phoneNumber,
-        providerId: user.uid,
-        profilePictureUrl: user.photoURL,
-        isEmailVerified: user.emailVerified,
+        email: authUser.email!,
+        phoneNumber: authUser.phoneNumber,
+        providerId: authUser.uid,
+        profilePictureUrl: authUser.photoURL,
+        isEmailVerified: authUser.emailVerified,
         token: token || undefined,
       };
 
       await updateUser(request);
     };
 
-    // Update profile on mount and when auth changes
-    updateUserProfile().catch(console.error);
-  }, [updateUser]);
+    // Update profile when auth user changes
+    if (authUser) {
+      updateUserProfile().catch(console.error);
+    }
+  }, [authUser, updateUser]);
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -107,6 +107,9 @@ function AppContent() {
 
       {/* Token Monitor - Development Only */}
       {process.env.NODE_ENV === "development" && <TokenMonitor />}
+
+      {/* Auth State Monitor - Development Only */}
+      {process.env.NODE_ENV === "development" && <AuthStateMonitor />}
     </ThemeProvider>
   );
 }
@@ -114,9 +117,7 @@ function AppContent() {
 function App() {
   return (
     <AuthPromptProvider>
-      <ApiHealthGuard>
-        <AppContent />
-      </ApiHealthGuard>
+      <AppContent />
     </AuthPromptProvider>
   );
 }
