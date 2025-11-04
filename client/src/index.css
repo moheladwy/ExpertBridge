@@ -120,8 +120,8 @@
 	--card-foreground: oklch(0.141 0.005 285.823);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.141 0.005 285.823);
-	--primary: oklch(0.586 0.253 17.585);
-	--primary-foreground: oklch(0.969 0.015 12.422);
+	--primary: oklch(0.541 0.281 293.009);
+	--primary-foreground: oklch(0.969 0.016 293.756);
 	--secondary: oklch(0.967 0.001 286.375);
 	--secondary-foreground: oklch(0.21 0.006 285.885);
 	--muted: oklch(0.967 0.001 286.375);
@@ -129,23 +129,22 @@
 	--accent: oklch(0.967 0.001 286.375);
 	--accent-foreground: oklch(0.21 0.006 285.885);
 	--destructive: oklch(0.577 0.245 27.325);
-	--destructive-foreground: oklch(0.99 0 0);
 	--border: oklch(0.92 0.004 286.32);
 	--input: oklch(0.92 0.004 286.32);
-	--ring: oklch(0.712 0.194 13.428);
-	--chart-1: oklch(0.81 0.117 11.638);
-	--chart-2: oklch(0.645 0.246 16.439);
-	--chart-3: oklch(0.586 0.253 17.585);
-	--chart-4: oklch(0.514 0.222 16.935);
-	--chart-5: oklch(0.455 0.188 13.697);
+	--ring: oklch(0.702 0.183 293.541);
+	--chart-1: oklch(0.811 0.111 293.571);
+	--chart-2: oklch(0.606 0.25 292.717);
+	--chart-3: oklch(0.541 0.281 293.009);
+	--chart-4: oklch(0.491 0.27 292.581);
+	--chart-5: oklch(0.432 0.232 292.759);
 	--sidebar: oklch(0.985 0 0);
 	--sidebar-foreground: oklch(0.141 0.005 285.823);
-	--sidebar-primary: oklch(0.586 0.253 17.585);
-	--sidebar-primary-foreground: oklch(0.969 0.015 12.422);
+	--sidebar-primary: oklch(0.541 0.281 293.009);
+	--sidebar-primary-foreground: oklch(0.969 0.016 293.756);
 	--sidebar-accent: oklch(0.967 0.001 286.375);
 	--sidebar-accent-foreground: oklch(0.21 0.006 285.885);
 	--sidebar-border: oklch(0.92 0.004 286.32);
-	--sidebar-ring: oklch(0.712 0.194 13.428);
+	--sidebar-ring: oklch(0.702 0.183 293.541);
 
 	/* Success State Colors - Green */
 	--success: oklch(0.65 0.18 145);
@@ -204,8 +203,8 @@
 	--card-foreground: oklch(0.985 0 0);
 	--popover: oklch(0.21 0.006 285.885);
 	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.645 0.246 16.439);
-	--primary-foreground: oklch(0.969 0.015 12.422);
+	--primary: oklch(0.606 0.25 292.717);
+	--primary-foreground: oklch(0.969 0.016 293.756);
 	--secondary: oklch(0.274 0.006 286.033);
 	--secondary-foreground: oklch(0.985 0 0);
 	--muted: oklch(0.274 0.006 286.033);
@@ -213,23 +212,22 @@
 	--accent: oklch(0.274 0.006 286.033);
 	--accent-foreground: oklch(0.985 0 0);
 	--destructive: oklch(0.704 0.191 22.216);
-	--destructive-foreground: oklch(0.99 0 0);
-	--border: oklch(1 0 0 / 0.1);
-	--input: oklch(1 0 0 / 0.15);
-	--ring: oklch(0.41 0.159 10.272);
-	--chart-1: oklch(0.81 0.117 11.638);
-	--chart-2: oklch(0.645 0.246 16.439);
-	--chart-3: oklch(0.586 0.253 17.585);
-	--chart-4: oklch(0.514 0.222 16.935);
-	--chart-5: oklch(0.455 0.188 13.697);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.38 0.189 293.745);
+	--chart-1: oklch(0.811 0.111 293.571);
+	--chart-2: oklch(0.606 0.25 292.717);
+	--chart-3: oklch(0.541 0.281 293.009);
+	--chart-4: oklch(0.491 0.27 292.581);
+	--chart-5: oklch(0.432 0.232 292.759);
 	--sidebar: oklch(0.21 0.006 285.885);
 	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.645 0.246 16.439);
-	--sidebar-primary-foreground: oklch(0.969 0.015 12.422);
+	--sidebar-primary: oklch(0.606 0.25 292.717);
+	--sidebar-primary-foreground: oklch(0.969 0.016 293.756);
 	--sidebar-accent: oklch(0.274 0.006 286.033);
 	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(1 0 0 / 0.1);
-	--sidebar-ring: oklch(0.41 0.159 10.272);
+	--sidebar-border: oklch(1 0 0 / 10%);
+	--sidebar-ring: oklch(0.38 0.189 293.745);
 
 	/* Success State Colors - Brighter Green for dark mode */
 	--success: oklch(0.7 0.18 145);
@@ -279,6 +277,222 @@
 	--transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 	--transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 	--transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Navbar Component Styles */
+@layer components {
+	/* Navbar Container */
+	.navbar-container {
+		background-color: var(--color-primary);
+		color: var(--color-primary-foreground);
+		height: 4rem;
+	}
+
+	/* Logo */
+	.navbar-logo {
+		color: var(--color-primary-foreground);
+		font-size: 1.5rem;
+		line-height: 2rem;
+		font-weight: 700;
+		position: relative;
+		z-index: 20;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.25rem 0.5rem;
+		cursor: pointer;
+	}
+
+	@media (min-width: 1024px) {
+		.navbar-logo {
+			font-size: 1.875rem;
+			line-height: 2.25rem;
+		}
+	}
+
+	/* Search Bar */
+	.navbar-search {
+		width: 100%;
+		background-color: rgb(255 255 255 / 0.1);
+		color: rgb(255 255 255 / 0.8);
+		padding: 0 1rem;
+		box-shadow: var(--shadow-sm);
+		border: 1px solid rgb(255 255 255 / 0.2);
+		border-radius: 9999px;
+		justify-content: flex-start;
+		transition-property: all;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: var(--transition-base);
+	}
+
+	.navbar-search:hover {
+		background-color: rgb(255 255 255 / 0.2);
+	}
+
+	/* Search Icon Button */
+	.navbar-search-icon {
+		background-color: transparent;
+		color: var(--color-primary-foreground);
+		padding: 0.5rem;
+	}
+
+	.navbar-search-icon:hover {
+		background-color: var(--color-nav-brand-hover);
+	}
+
+	/* Notification Link */
+	.navbar-notification {
+		color: var(--color-primary-foreground);
+		transition-property: color;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: var(--transition-base);
+		position: relative;
+	}
+
+	.navbar-notification:hover {
+		color: var(--color-primary-foreground);
+		opacity: 0.9;
+	}
+
+	/* Notification Badge */
+	.navbar-notification-badge {
+		position: absolute;
+		top: -0.25rem;
+		right: -0.25rem;
+		width: 0.75rem;
+		height: 0.75rem;
+		background-color: var(--color-destructive);
+		border-radius: 9999px;
+	}
+
+	/* Auth Buttons */
+	.navbar-login-btn {
+		color: var(--color-primary-foreground);
+		border: 2px solid var(--color-primary-foreground);
+		border-radius: 9999px;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.navbar-login-btn:hover {
+		background-color: var(--color-primary-foreground);
+		color: var(--color-primary);
+	}
+
+	.navbar-register-btn {
+		background-color: var(--color-primary-foreground);
+		color: var(--color-primary);
+		border-radius: 9999px;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.navbar-register-btn:hover {
+		background-color: rgb(255 255 255 / 0.9);
+	}
+
+	/* Mobile Menu Links */
+	.navbar-mobile-link {
+		display: flex;
+		align-items: center;
+		color: var(--color-muted-foreground);
+		padding: 0.75rem 0.5rem;
+	}
+
+	.navbar-mobile-link-active {
+		color: var(--color-primary);
+		font-weight: 600;
+	}
+
+	/* Mobile Menu Item */
+	.navbar-mobile-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--color-muted-foreground);
+		padding: 0.5rem;
+	}
+
+	.navbar-mobile-theme-label {
+		color: var(--color-muted-foreground);
+	}
+
+	/* Nav Items Container */
+	.nav-items-container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.25rem 0;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-weight: 400;
+		width: auto;
+		background-color: var(--color-primary);
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.nav-items-container-scrolled {
+		border-radius: 9999px;
+	}
+
+	.nav-items-container-top {
+		border-bottom-left-radius: 9999px;
+		border-bottom-right-radius: 9999px;
+	}
+
+	/* Nav Item Button */
+	.nav-item-btn {
+		position: relative;
+		cursor: pointer;
+		padding: 0.375rem 1.25rem;
+		color: rgb(var(--color-primary-foreground) / 0.9);
+		transition-property: color;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: var(--transition-base);
+	}
+
+	.nav-item-btn:hover {
+		color: var(--color-primary-foreground);
+	}
+
+	.nav-item-btn-active {
+		font-weight: 500;
+		color: var(--color-primary-foreground);
+	}
+
+	/* Nav Item Hover Background */
+	.nav-item-hover-bg {
+		position: absolute;
+		inset: 0;
+		height: 100%;
+		width: 100%;
+		border-radius: 0.375rem;
+		background-color: rgb(255 255 255 / 0.1);
+	}
+
+	/* Nav Item Active Indicator */
+	.nav-item-active-indicator {
+		position: absolute;
+		bottom: 0;
+		left: 0.25rem;
+		right: 0.25rem;
+		height: 0.125rem;
+		background-color: var(--color-primary-foreground);
+	}
+
+	/* Mode Toggle Button */
+	.mode-toggle-btn {
+		border-radius: 9999px;
+		background-color: var(--color-secondary);
+		color: var(--color-primary-foreground);
+		border: 0;
+	}
+
+	.mode-toggle-btn:hover {
+		background-color: rgb(var(--color-secondary) / 0.8);
+	}
 }
 
 body {
