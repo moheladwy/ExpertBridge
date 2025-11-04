@@ -16,13 +16,13 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 	const netVotes = comment.upvotes - comment.downvotes;
 
 	return (
-		<div className="flex flex-col gap-3 p-3 border border-border rounded-lg bg-card">
+		<div className="group flex flex-col gap-3 p-4 border border-border rounded-xl bg-card hover:border-primary/50 hover:shadow-lg transition-all duration-300">
 			{postTitle && (
 				<div className="mb-2 text-sm text-muted-foreground">
 					<span className="font-semibold">On Post: </span>
 					<Link
 						to={`/feed/${comment.postId}`}
-						className="hover:text-blue-600 hover:underline"
+						className="hover:text-primary hover:underline transition-colors"
 						dir="auto"
 					>
 						{postTitle}
@@ -66,7 +66,7 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 			{/* Comment Content */}
 			<div className="w-full wrap-break-word">
 				<p
-					className="text-card-foreground whitespace-pre-wrap"
+					className="text-card-foreground whitespace-pre-wrap leading-relaxed"
 					dir="auto"
 				>
 					{comment.content}
@@ -74,31 +74,28 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 			</div>
 
 			{/* Vote Display */}
-			<div className="flex items-center space-x-3">
-				<div className="flex items-center text-muted-foreground">
+			<div className="flex items-center justify-between pt-2">
+				<div className="flex items-center gap-1">
 					<span
-						className={`font-medium ${
+						className={`font-medium text-sm px-2 py-1 rounded-full ${
 							netVotes > 0
-								? "text-green-600"
+								? "bg-green-100 text-green-700"
 								: netVotes < 0
-									? "text-red-600"
-									: "text-muted-foreground"
+									? "bg-red-100 text-red-700"
+									: "bg-muted text-muted-foreground"
 						}`}
 					>
 						{netVotes > 0 ? "+" : ""}
-						{netVotes}
-					</span>
-					<span className="ml-1 text-xs text-muted-foreground">
-						votes
+						{netVotes} votes
 					</span>
 				</div>
 
 				{/* View post link */}
 				<Link
 					to={`/feed/${comment.postId}`}
-					className="text-xs text-blue-600 hover:underline hover:text-blue-700 ml-auto"
+					className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
 				>
-					View Discussion
+					View Discussion →
 				</Link>
 			</div>
 		</div>

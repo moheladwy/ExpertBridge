@@ -268,66 +268,66 @@ const MyProfilePage = () => {
 					<div className="grid grid-cols-5 gap-4 my-6">
 						{isLoading || isCommentsLoading ? (
 							<>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
 							</>
 						) : (
 							<>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-card-foreground">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+									<div className="text-3xl font-bold text-card-foreground mb-1">
 										{stats.questions}
 									</div>
-									<div className="text-sm text-muted-foreground">
-										Questions Asked
+									<div className="text-sm text-muted-foreground font-medium">
+										Questions
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-green-500">
+								<div className="text-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-colors">
+									<div className="text-3xl font-bold text-green-700 mb-1">
 										{stats.upvotes}
 									</div>
-									<div className="text-sm text-muted-foreground">
-										Total Up Votes
+									<div className="text-sm text-green-600 font-medium">
+										Upvotes
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-red-600">
+								<div className="text-center p-4 rounded-xl bg-red-50 hover:bg-red-100 transition-colors">
+									<div className="text-3xl font-bold text-red-700 mb-1">
 										{stats.downvotes}
 									</div>
-									<div className="text-sm text-muted-foreground">
-										Total Down Votes
+									<div className="text-sm text-red-600 font-medium">
+										Downvotes
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-card-foreground">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+									<div className="text-3xl font-bold text-card-foreground mb-1">
 										{stats.answers}
 									</div>
-									<div className="text-sm text-muted-foreground">
-										Given Answers
+									<div className="text-sm text-muted-foreground font-medium">
+										Answers
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-card-foreground">
+								<div className="text-center p-4 rounded-xl bg-primary/10 hover:bg-primary/20 transition-colors">
+									<div className="text-3xl font-bold text-primary mb-1">
 										{stats.skills}
 									</div>
-									<div className="text-sm text-muted-foreground">
+									<div className="text-sm text-primary font-medium">
 										Skills
 									</div>
 								</div>
@@ -368,22 +368,22 @@ const MyProfilePage = () => {
 								onValueChange={setActiveTab}
 								className="w-full"
 							>
-								<TabsList className="grid grid-cols-3 mb-6 bg-secondary">
+								<TabsList className="grid grid-cols-3 mb-6 bg-muted">
 									<TabsTrigger
 										value="questions"
-										className="data-[state=active]:bg-background"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										My Questions
 									</TabsTrigger>
 									<TabsTrigger
 										value="answers"
-										className="data-[state=active]:bg-background"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										My Answers
 									</TabsTrigger>
 									<TabsTrigger
 										value="skills"
-										className="data-[state=active]:bg-background"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										My Skills
 									</TabsTrigger>

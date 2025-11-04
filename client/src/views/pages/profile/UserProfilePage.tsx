@@ -231,56 +231,57 @@ const UserProfilePage = () => {
 					<div className="grid grid-cols-4 gap-4 my-6">
 						{isProfileLoading || isCommentsLoading ? (
 							<>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
 							</>
 						) : (
 							<>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-card-foreground">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+									<div className="text-3xl font-bold text-card-foreground mb-1">
 										{stats.questions}
 									</div>
-									<div className="text-sm text-muted-foreground">
-										Questions Asked
+									<div className="text-sm text-muted-foreground font-medium">
+										Questions
 									</div>
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
 									<div
-										className={`text-3xl font-semibold ${stats.votes < 0 ? "text-red-500" : "text-card-foreground"}`}
+										className={`text-3xl font-bold mb-1 ${stats.votes < 0 ? "text-red-700" : stats.votes > 0 ? "text-green-700" : "text-card-foreground"}`}
 									>
+										{stats.votes > 0 ? "+" : ""}
 										{stats.votes}
 									</div>
-									<div className="text-sm text-muted-foreground">
+									<div className="text-sm text-muted-foreground font-medium">
 										Total Votes
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-card-foreground">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+									<div className="text-3xl font-bold text-card-foreground mb-1">
 										{stats.answers}
 									</div>
-									<div className="text-sm text-muted-foreground">
-										Given Answers
+									<div className="text-sm text-muted-foreground font-medium">
+										Answers
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold text-card-foreground">
+								<div className="text-center p-4 rounded-xl bg-primary/10 hover:bg-primary/20 transition-colors">
+									<div className="text-3xl font-bold text-primary mb-1">
 										{stats.skills}
 									</div>
-									<div className="text-sm text-muted-foreground">
+									<div className="text-sm text-primary font-medium">
 										Skills
 									</div>
 								</div>
@@ -321,22 +322,22 @@ const UserProfilePage = () => {
 								onValueChange={setActiveTab}
 								className="w-full"
 							>
-								<TabsList className="grid grid-cols-3 mb-6 dark:bg-gray-700">
+								<TabsList className="grid grid-cols-3 mb-6 bg-muted">
 									<TabsTrigger
 										value="questions"
-										className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										Latest Questions
 									</TabsTrigger>
 									<TabsTrigger
 										value="answers"
-										className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										Answered Questions
 									</TabsTrigger>
 									<TabsTrigger
 										value="skills"
-										className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										Skills
 									</TabsTrigger>
@@ -377,9 +378,11 @@ const UserProfilePage = () => {
 												/>
 											))
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											This user hasn't asked any questions
-											yet.
+										<div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-xl">
+											<p className="text-lg">
+												This user hasn't asked any
+												questions yet.
+											</p>
 										</div>
 									)}
 								</TabsContent>
@@ -394,7 +397,7 @@ const UserProfilePage = () => {
 											{[1, 2, 3].map((i) => (
 												<div
 													key={i}
-													className="border rounded-lg p-4 dark:border-gray-700"
+													className="border rounded-xl p-4 border-border"
 												>
 													<Skeleton className="h-6 w-3/4 mb-2" />
 													<div className="flex my-1">
@@ -423,9 +426,11 @@ const UserProfilePage = () => {
 												/>
 											))
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											This user hasn't answered any
-											questions yet.
+										<div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-xl">
+											<p className="text-lg">
+												This user hasn't answered any
+												questions yet.
+											</p>
 										</div>
 									)}
 								</TabsContent>
@@ -448,7 +453,7 @@ const UserProfilePage = () => {
 												(skill, index) => (
 													<div
 														key={index}
-														className="rounded-full px-1 py-2 text-white text-center font-medium bg-indigo-700 dark:bg-indigo-500 bg-linear-to-r"
+														className="rounded-full px-4 py-2 text-primary-foreground text-center font-medium bg-primary hover:bg-primary/90 transition-colors"
 													>
 														{skill}
 													</div>
@@ -456,9 +461,11 @@ const UserProfilePage = () => {
 											)}
 										</div>
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											This user hasn't added any skills
-											yet.
+										<div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-xl">
+											<p className="text-lg">
+												This user hasn't added any
+												skills yet.
+											</p>
 										</div>
 									)}
 								</TabsContent>
