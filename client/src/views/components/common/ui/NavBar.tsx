@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/resizable-navbar";
 import CustomNavbarLogo from "./CustomNavbarLogo";
 import CustomNavItems from "./CustomNavItems";
+import { AuthButtons } from "@/views/components/custom/AuthButtons";
 
 const NavBar = () => {
 	useGetCurrentUserProfileQuery();
@@ -205,19 +206,8 @@ const NavBar = () => {
 
 							{/* Conditional: NOT Logged In */}
 							{!isLoggedIn && (
-								<div className="hidden lg:flex items-center gap-2">
-									<Button
-										className="bg-transparent text-primary-foreground border-2 border-primary-foreground hover:bg-primary-foreground hover:text-primary rounded-full px-6"
-										onClick={() => navigate("/login")}
-									>
-										Login
-									</Button>
-									<Button
-										className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-full px-6"
-										onClick={() => navigate("/signup")}
-									>
-										Register
-									</Button>
+								<div className="hidden lg:flex">
+									<AuthButtons />
 								</div>
 							)}
 						</div>
