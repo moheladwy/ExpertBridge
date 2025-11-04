@@ -88,7 +88,7 @@ const NavBar = () => {
 
 	return (
 		<>
-			<div className="flex items-center justify-between w-full bg-main-blue h-16 drop-shadow-md px-4 lg:px-9">
+			<div className="flex items-center justify-between w-full bg-nav-brand h-16 drop-shadow-md px-4 lg:px-9">
 				{/* Left side - Logo and Desktop Navigation */}
 				<div className="flex items-center">
 					<h1
@@ -104,15 +104,15 @@ const NavBar = () => {
 					<nav className="hidden lg:flex ml-5">
 						<Link
 							to="/home"
-							className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
-                ${location.pathname === "/home" ? "bg-secondary" : ""}`}
+							className={`flex justify-center items-center py-5 px-3 hover:bg-nav-brand-hover transition-colors
+                ${location.pathname === "/home" ? "bg-nav-brand-hover" : ""}`}
 						>
 							<div className="text-white font-light">Home</div>
 						</Link>
 						<Link
 							to="/jobs"
-							className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
-              ${location.pathname === "/jobs" ? "bg-secondary" : ""}`}
+							className={`flex justify-center items-center py-5 px-3 hover:bg-nav-brand-hover transition-colors
+              ${location.pathname === "/jobs" ? "bg-nav-brand-hover" : ""}`}
 						>
 							<div className="text-white font-light">Jobs</div>
 						</Link>
@@ -121,8 +121,8 @@ const NavBar = () => {
 							<>
 								<Link
 									to="/offers"
-									className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
-                  ${location.pathname === "/offers" ? "bg-secondary" : ""}`}
+									className={`flex justify-center items-center py-5 px-3 hover:bg-nav-brand-hover transition-colors
+                  ${location.pathname === "/offers" ? "bg-nav-brand-hover" : ""}`}
 								>
 									<div className="text-white font-light">
 										Offers
@@ -130,8 +130,8 @@ const NavBar = () => {
 								</Link>
 								<Link
 									to="/my-jobs"
-									className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
-                  ${location.pathname === "/my-jobs" ? "bg-secondary" : ""}`}
+									className={`flex justify-center items-center py-5 px-3 hover:bg-nav-brand-hover transition-colors
+                  ${location.pathname === "/my-jobs" ? "bg-nav-brand-hover" : ""}`}
 								>
 									<div className="text-white font-light">
 										My Jobs
@@ -141,8 +141,8 @@ const NavBar = () => {
 						) : (
 							<Link
 								to="/AboutUs"
-								className={`flex justify-center items-center py-5 px-3 hover:bg-secondary transition-colors
-                  ${location.pathname === "/AboutUs" ? "bg-secondary" : ""}`}
+								className={`flex justify-center items-center py-5 px-3 hover:bg-nav-brand-hover transition-colors
+                  ${location.pathname === "/AboutUs" ? "bg-nav-brand-hover" : ""}`}
 							>
 								<div className="text-white font-light">
 									About Us
@@ -156,7 +156,7 @@ const NavBar = () => {
 				<div className="flex items-center text-center gap-2 sm:gap-3 lg:gap-5">
 					{/* Search Button */}
 					<Button
-						className="bg-secondary text-muted-foreground hover:bg-secondary hover:text-main-blue transition-colors
+						className="bg-secondary text-muted-foreground hover:bg-accent hover:text-primary transition-colors
                        hidden sm:flex px-4 lg:px-9 shadow-sm border border-border"
 						onClick={handleSearch}
 					>
@@ -169,7 +169,7 @@ const NavBar = () => {
 
 					{/* Mobile Search Button */}
 					<Button
-						className="sm:hidden bg-transparent hover:bg-blue-950 text-white p-2"
+						className="sm:hidden bg-transparent hover:bg-nav-brand-hover text-white p-2"
 						onClick={handleSearch}
 					>
 						<Search className="w-5 h-5" />
@@ -185,11 +185,11 @@ const NavBar = () => {
 							{/* Notifications - Hidden on mobile */}
 							<Link
 								to="/notifications"
-								className="text-white hover:text-blue-300 relative hidden sm:block"
+								className="text-white hover:text-primary-foreground transition-colors relative hidden sm:block"
 							>
 								<Bell className="w-6 h-6" />
 								{hasNewNotifications ? (
-									<span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+									<span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full" />
 								) : null}
 							</Link>
 
@@ -297,7 +297,7 @@ const NavBar = () => {
 
 									<DropdownMenuSeparator />
 									<DropdownMenuItem
-										className="text-red-600 hover:cursor-pointer focus:text-red-600"
+										className="text-destructive hover:cursor-pointer focus:text-destructive"
 										onClick={handleSignOut}
 									>
 										Sign Out
@@ -312,7 +312,7 @@ const NavBar = () => {
 								<Button
 									variant="ghost"
 									size="sm"
-									className="text-white hover:bg-blue-950 p-2"
+									className="text-white hover:bg-nav-brand-hover p-2"
 									onClick={() => setMobileMenuOpen(true)}
 								>
 									<Menu className="w-5 h-5" />
@@ -353,7 +353,7 @@ const NavBar = () => {
 						<nav className="p-4 space-y-4">
 							<Link
 								to="/home"
-								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
+								className="flex items-center text-card-foreground hover:text-primary transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Home className="w-5 h-5 mr-3" />
@@ -361,7 +361,7 @@ const NavBar = () => {
 							</Link>
 							<Link
 								to="/jobs"
-								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
+								className="flex items-center text-card-foreground hover:text-primary transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Briefcase className="w-5 h-5 mr-3" />
@@ -369,7 +369,7 @@ const NavBar = () => {
 							</Link>
 							<Link
 								to="/AboutUs"
-								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
+								className="flex items-center text-card-foreground hover:text-primary transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Info className="w-5 h-5 mr-3" />
@@ -377,7 +377,7 @@ const NavBar = () => {
 							</Link>
 							<Link
 								to="/privacy-policy"
-								className="flex items-center text-card-foreground hover:text-main-blue transition-colors"
+								className="flex items-center text-card-foreground hover:text-primary transition-colors"
 								onClick={closeMobileMenu}
 							>
 								<Shield className="w-5 h-5 mr-3" />

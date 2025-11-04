@@ -239,7 +239,7 @@ const LoginPage: React.FC = () => {
 						<div className="flex flex-col gap-6">
 							{/* Header with Logo and Title */}
 							<div className="flex flex-col items-center gap-3">
-								<div className="flex h-14 w-14 items-center justify-center rounded-md bg-indigo-600">
+								<div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary">
 									<img
 										src={LogoIcon}
 										alt="Logo"
@@ -249,11 +249,11 @@ const LoginPage: React.FC = () => {
 								<h1 className="text-2xl font-bold">
 									Welcome Back
 								</h1>
-								<div className="text-center text-sm text-gray-400">
+								<div className="text-center text-sm text-muted-foreground">
 									Don&apos;t have an account?{" "}
 									<Link
 										to="/signup"
-										className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300"
+										className="text-primary underline underline-offset-4 hover:text-primary/80"
 									>
 										Register
 									</Link>
@@ -310,7 +310,7 @@ const LoginPage: React.FC = () => {
 										</Label>
 										<Link
 											to="/forgot-password"
-											className="text-xs text-indigo-400 hover:underline"
+											className="text-xs text-primary hover:text-primary/80 hover:underline"
 										>
 											Forget Password?
 										</Link>
@@ -357,7 +357,7 @@ const LoginPage: React.FC = () => {
 								{/* Login Button */}
 								<Button
 									type="submit"
-									className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+									className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
 									disabled={loading}
 								>
 									{loginLoading ? "Logging in..." : "Login"}
@@ -395,12 +395,12 @@ const LoginPage: React.FC = () => {
 						</div>
 					</form>
 
-					<div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">
+					<div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
 						<Link to="/home"> Continue as a guest </Link>
 					</div>
 
 					{/* Terms of Service and Privacy Policy Footer */}
-					<div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">
+					<div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
 						By clicking continue, you agree to our{" "}
 						<Link to="/privacy-policy">Terms of Service</Link> and{" "}
 						<Link to="/privacy-policy">Privacy Policy</Link>.
