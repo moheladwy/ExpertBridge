@@ -213,7 +213,7 @@ function Interests() {
 						className={cn(
 							"w-full py-3 rounded-full transition-all duration-200 font-semibold text-base",
 							canSubmit
-								? "bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-md hover:shadow-lg"
+								? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg"
 								: "bg-muted text-muted-foreground cursor-not-allowed"
 						)}
 						disabled={!canSubmit || isUpdating}

@@ -149,9 +149,9 @@ const NavBar = () => {
 										className="text-primary-foreground hover:text-primary-foreground/90 transition-colors relative hidden sm:block"
 									>
 										<Bell className="w-6 h-6" />
-										{hasNewNotifications && (
+										{hasNewNotifications ? (
 											<span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full" />
-										)}
+										) : null}
 									</Link>
 
 									{/* Profile Dropdown */}
@@ -279,17 +279,15 @@ const NavBar = () => {
 										<span>My Profile</span>
 									</Link>
 
-									{/* Notifications Link */}
+									{/* Notifications - Hidden on mobile */}
 									<Link
 										to="/notifications"
-										onClick={() => setMobileMenuOpen(false)}
-										className="flex items-center gap-2 text-muted-foreground px-2 py-2"
+										className="relative hidden sm:block text-muted-foreground px-2 py-2 gap-2"
 									>
-										<Bell className="w-5 h-5" />
-										<span>Notifications</span>
-										{hasNewNotifications && (
-											<span className="ml-auto w-2 h-2 bg-destructive rounded-full" />
-										)}
+										<Bell className="w-6 h-6" />
+										{hasNewNotifications ? (
+											<span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full" />
+										) : null}
 									</Link>
 
 									{/* Theme Toggle */}

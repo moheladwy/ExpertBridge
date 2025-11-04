@@ -169,7 +169,7 @@ const UserProfilePage = () => {
 									<Skeleton className="h-9 w-28" />
 								) : (
 									<Button
-										className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2"
+										className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 rounded-full"
 										onClick={handleHireClick}
 									>
 										<UserPlusIcon size={16} />
@@ -198,7 +198,7 @@ const UserProfilePage = () => {
 											<h1 className="text-2xl font-bold mr-4 text-card-foreground">
 												{fullName}
 											</h1>
-											<Badge className="bg-indigo-600 hover:bg-indigo-700">
+											<Badge className="bg-primary hover:bg-primary/90 text-primary-foreground">
 												Top Rated
 											</Badge>
 										</div>
@@ -260,7 +260,7 @@ const UserProfilePage = () => {
 								</div>
 								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
 									<div
-										className={`text-3xl font-bold mb-1 ${stats.votes < 0 ? "text-red-700" : stats.votes > 0 ? "text-green-700" : "text-card-foreground"}`}
+										className={`text-3xl font-bold mb-1 ${stats.votes < 0 ? "text-red-600" : stats.votes > 0 ? "text-green-600" : "text-card-foreground"}`}
 									>
 										{stats.votes > 0 ? "+" : ""}
 										{stats.votes}
@@ -304,7 +304,7 @@ const UserProfilePage = () => {
 									{[1, 2, 3].map((i) => (
 										<div
 											key={i}
-											className="border-b dark:border-gray-700 pb-4"
+											className="border-b border-border pb-4"
 										>
 											<Skeleton className="h-6 w-3/4 mb-2" />
 											<div className="flex my-1">
@@ -353,7 +353,7 @@ const UserProfilePage = () => {
 											{[1, 2, 3].map((i) => (
 												<div
 													key={i}
-													className="border rounded-lg p-4 dark:border-gray-700"
+													className="border rounded-lg p-4 border-border"
 												>
 													<Skeleton className="h-6 w-3/4 mb-2" />
 													<div className="flex my-1">

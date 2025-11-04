@@ -108,7 +108,7 @@ const MyProfilePage = () => {
 			<div className="w-full flex justify-center">
 				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-6">
 					<div className="flex flex-col items-center justify-center py-12">
-						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
 						<p className="mt-4 text-muted-foreground">
 							Loading your profile...
 						</p>
@@ -123,7 +123,7 @@ const MyProfilePage = () => {
 			<div className="w-full flex justify-center">
 				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-6">
 					<div className="flex flex-col items-center justify-center py-12">
-						<div className="text-red-500 mb-4">
+						<div className="text-destructive mb-4">
 							<svg
 								className="w-16 h-16"
 								fill="none"
@@ -147,7 +147,7 @@ const MyProfilePage = () => {
 						</p>
 						<Button
 							onClick={() => window.location.reload()}
-							className="bg-indigo-600 hover:bg-indigo-700"
+							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
 						>
 							Reload Page
 						</Button>
@@ -235,7 +235,7 @@ const MyProfilePage = () => {
 											<h1 className="text-2xl font-bold mr-4 text-card-foreground">
 												{fullName}
 											</h1>
-											<Badge className="bg-indigo-600 hover:bg-indigo-700">
+											<Badge className="bg-primary hover:bg-primary/90 text-primary-foreground">
 												Top Rated
 											</Badge>
 										</div>
@@ -299,16 +299,16 @@ const MyProfilePage = () => {
 										Questions
 									</div>
 								</div>
-								<div className="text-center p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-colors">
-									<div className="text-3xl font-bold text-green-700 mb-1">
+								<div className="text-center p-4 rounded-xl bg-green-500/10 hover:bg-green-500/20 transition-colors">
+									<div className="text-3xl font-bold text-green-600 mb-1">
 										{stats.upvotes}
 									</div>
 									<div className="text-sm text-green-600 font-medium">
 										Upvotes
 									</div>
 								</div>
-								<div className="text-center p-4 rounded-xl bg-red-50 hover:bg-red-100 transition-colors">
-									<div className="text-3xl font-bold text-red-700 mb-1">
+								<div className="text-center p-4 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition-colors">
+									<div className="text-3xl font-bold text-red-600 mb-1">
 										{stats.downvotes}
 									</div>
 									<div className="text-sm text-red-600 font-medium">
@@ -527,7 +527,7 @@ const MyProfilePage = () => {
 			>
 				<DialogPortal>
 					<DialogOverlay className="bg-black/50" />
-					<DialogContent className="sm:max-w-[600px] p-0">
+					<DialogContent className="sm:max-w-[600px] p-0 max-h-[90vh] overflow-y-auto">
 						<UpdateProfile onClose={handleCloseEditProfile} />
 					</DialogContent>
 				</DialogPortal>

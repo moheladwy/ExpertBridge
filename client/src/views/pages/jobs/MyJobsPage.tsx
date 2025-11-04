@@ -67,7 +67,7 @@ const MyJobsPage: React.FC = () => {
 	if (error) {
 		toast.error("Error loading jobs. Please try again.");
 		return (
-			<div className="text-center text-red-600 p-8">
+			<div className="text-center text-destructive p-8">
 				<p>Error loading jobs. Please try again.</p>
 			</div>
 		);
@@ -80,7 +80,7 @@ const MyJobsPage: React.FC = () => {
 		<div className="w-full flex justify-center">
 			<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-6">
 				<div className="flex flex-col items-center mb-4">
-					<h1 className="text-3xl font-bold text-card-foreground mb-2">
+					<h1 className="text-3xl font-bold text-foreground mb-2">
 						My Jobs
 					</h1>
 					<p className="text-muted-foreground">
@@ -130,7 +130,7 @@ const MyJobsPage: React.FC = () => {
 									size={48}
 									className="mx-auto text-muted-foreground mb-4"
 								/>
-								<h3 className="text-lg font-medium text-card-foreground mb-2">
+								<h3 className="text-lg font-medium text-foreground mb-2">
 									No active jobs
 								</h3>
 								<p className="text-muted-foreground">
@@ -161,7 +161,7 @@ const MyJobsPage: React.FC = () => {
 									size={48}
 									className="mx-auto text-muted-foreground mb-4"
 								/>
-								<h3 className="text-lg font-medium text-card-foreground mb-2">
+								<h3 className="text-lg font-medium text-foreground mb-2">
 									No completed jobs
 								</h3>
 								<p className="text-muted-foreground">

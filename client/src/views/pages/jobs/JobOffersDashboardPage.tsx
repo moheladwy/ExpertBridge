@@ -104,7 +104,7 @@ const JobOffersDashboardPage = () => {
 	return (
 		<div className="container mx-auto px-4 py-8">
 			<div className="flex flex-col items-center mb-8">
-				<h1 className="text-3xl font-bold text-card-foreground mb-2">
+				<h1 className="text-3xl font-bold text-foreground mb-2">
 					Job Offers
 				</h1>
 				<p className="text-muted-foreground">
@@ -138,9 +138,9 @@ const JobOffersDashboardPage = () => {
 					{sentLoading && <JobOffersSkeleton />}
 
 					{sentError && (
-						<div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-							<AlertTriangle className="h-5 w-5 text-red-600" />
-							<p className="text-red-800">
+						<div className="flex items-center gap-2 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+							<AlertTriangle className="h-5 w-5 text-destructive" />
+							<p className="text-destructive">
 								Failed to load sent job offers.
 							</p>
 						</div>
@@ -168,9 +168,9 @@ const JobOffersDashboardPage = () => {
 					{receivedLoading && <JobOffersSkeleton />}
 
 					{receivedError && (
-						<div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-							<AlertTriangle className="h-5 w-5 text-red-600" />
-							<p className="text-red-800">
+						<div className="flex items-center gap-2 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+							<AlertTriangle className="h-5 w-5 text-destructive" />
+							<p className="text-destructive">
 								Failed to load received job offers.
 							</p>
 						</div>

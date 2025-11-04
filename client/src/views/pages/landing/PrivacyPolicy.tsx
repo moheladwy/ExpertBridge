@@ -242,7 +242,7 @@ const PrivacyPolicy = () => {
 				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					13. Contact Us
 				</h2>
-				<p>
+				<p className="text-muted-foreground">
 					For any questions or concerns, contact:
 					<br />
 					<strong>ExpertBridge Team</strong>

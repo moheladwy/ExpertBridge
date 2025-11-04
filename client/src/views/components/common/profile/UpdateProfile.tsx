@@ -10,6 +10,7 @@ import {
 	CardTitle,
 	CardContent,
 	CardFooter,
+	CardDescription,
 } from "@/views/components/ui/card";
 import { Button } from "@/views/components/ui/button";
 import { Input } from "@/views/components/ui/input";
@@ -228,6 +229,10 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 				<CardTitle className="text-xl text-center">
 					Update Your Profile
 				</CardTitle>
+				<CardDescription className="text-center">
+					Update to your profile information below by only changing
+					what you want to update.
+				</CardDescription>
 			</CardHeader>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<CardContent className="space-y-4">
@@ -320,10 +325,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 								{errors.username.message}
 							</p>
 						)}
-						{username === profile?.username && (
-							<Check className="absolute right-3 top-2.5 h-5 w-5 text-green-600" />
-						)}
-						{isUsernameAvailable === false &&
+						{isUsernameAvailableSuccess &&
 							username !== profile?.username &&
 							!errors.username && (
 								<p className="text-destructive text-xs mt-1">

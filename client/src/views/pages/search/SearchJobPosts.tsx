@@ -205,7 +205,7 @@ const SearchJobPosts = () => {
 							</span>
 						)}
 						{isRemote && (
-							<span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+							<span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600">
 								Remote
 							</span>
 						)}
