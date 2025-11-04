@@ -45,9 +45,9 @@ const PostFromUrlPage: React.FC = () => {
 		return (
 			<div className="w-full flex justify-center">
 				<div className="w-2/5 mx-auto p-4 gap-5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
-					<div className="flex flex-col gap-3 bg-white shadow-md rounded-lg p-4 border border-gray-200">
+					<div className="flex flex-col gap-3 bg-card rounded-xl p-6 border border-border shadow-lg">
 						{/* Post Header Skeleton */}
-						<div className="flex items-center justify-between pb-3 border-b border-gray-300">
+						<div className="flex items-center justify-between pb-3 border-b border-border">
 							<Skeleton className="h-8 w-8 rounded-full" />
 							<Skeleton className="h-8 w-8 rounded-full" />
 						</div>
@@ -70,12 +70,12 @@ const PostFromUrlPage: React.FC = () => {
 						</div>
 
 						{/* Media Skeleton */}
-						<Skeleton className="h-72 w-full rounded-md mt-2" />
+						<Skeleton className="h-72 w-full rounded-xl mt-2" />
 
 						{/* Post Actions Skeleton */}
 						<div className="flex justify-between mt-2">
-							<Skeleton className="h-8 w-24" />
-							<Skeleton className="h-8 w-24" />
+							<Skeleton className="h-8 w-24 rounded-full" />
+							<Skeleton className="h-8 w-24 rounded-full" />
 						</div>
 
 						{/* Comments Section Skeleton */}
@@ -83,7 +83,7 @@ const PostFromUrlPage: React.FC = () => {
 							<Skeleton className="h-5 w-32" />
 							<div className="flex gap-3">
 								<Skeleton className="h-10 w-10 rounded-full" />
-								<Skeleton className="h-20 w-full rounded-md" />
+								<Skeleton className="h-20 w-full rounded-xl" />
 							</div>
 						</div>
 					</div>
@@ -96,17 +96,34 @@ const PostFromUrlPage: React.FC = () => {
 		return (
 			<div className="w-full flex justify-center mt-10">
 				<div className="w-2/5 mx-auto p-4 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full">
-					<div className="bg-white shadow-md rounded-lg p-8 border border-gray-200 text-center">
-						<h2 className="text-2xl font-bold text-gray-700 mb-3">
+					<div className="bg-card rounded-xl p-8 border border-border shadow-lg text-center">
+						<div className="mb-4">
+							<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mb-4">
+								<svg
+									className="w-8 h-8 text-muted-foreground"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+									/>
+								</svg>
+							</div>
+						</div>
+						<h2 className="text-2xl font-bold text-card-foreground mb-3">
 							Post Not Found
 						</h2>
-						<p className="text-gray-600 mb-6">
+						<p className="text-muted-foreground mb-6">
 							The post you're looking for might have been removed
 							or is temporarily unavailable.
 						</p>
 						<button
 							onClick={() => navigate("/home")}
-							className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+							className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-200 font-medium"
 						>
 							Return to Home
 						</button>

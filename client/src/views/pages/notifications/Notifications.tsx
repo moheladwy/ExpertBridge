@@ -55,20 +55,47 @@ function Notifications() {
 
 	return (
 		<div className="max-w-3xl mx-auto px-4 py-6">
-			<h1 className="text-2xl text-center font-semibold mb-4">
-				Notifications
-			</h1>
+			<div className="mb-6">
+				<h1 className="text-3xl font-bold text-card-foreground mb-2">
+					Notifications
+				</h1>
+				<p className="text-muted-foreground">
+					Stay updated with your latest activity
+				</p>
+			</div>
 			{isFetching ? (
-				<div className="flex flex-col items-center justify-center py-12">
+				<div className="flex flex-col items-center justify-center py-16 bg-card rounded-xl border border-border">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-					<p className="mt-4 text-muted-foreground">
+					<p className="mt-4 text-muted-foreground font-medium">
 						Loading notifications...
 					</p>
 				</div>
 			) : notifications.length === 0 ? (
-				<p className="text-center">No notifications yet.</p>
+				<div className="flex flex-col items-center justify-center py-16 bg-card rounded-xl border border-border">
+					<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mb-4">
+						<svg
+							className="w-8 h-8 text-muted-foreground"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+							/>
+						</svg>
+					</div>
+					<p className="text-center text-lg font-medium text-card-foreground mb-1">
+						No notifications yet
+					</p>
+					<p className="text-center text-muted-foreground text-sm">
+						We'll notify you when something new happens
+					</p>
+				</div>
 			) : (
-				<ul className="space-y-4">
+				<ul className="space-y-3">
 					{[...notifications]
 						.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 						.map((notification: NotificationResponse) => (

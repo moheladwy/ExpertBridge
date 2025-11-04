@@ -101,11 +101,11 @@ function Interests() {
 	}, [isSuccess, isError, navigate, error]);
 
 	return (
-		<div className="min-h-screen w-full flex justify-center items-center bg-linear-to-b from-secondary to-muted p-4 transition-colors duration-200">
-			<div className="w-full max-w-3xl bg-card rounded-xl border border-border shadow-lg backdrop-blur-xs overflow-hidden transition-colors duration-200">
+		<div className="min-h-screen w-full flex justify-center items-center bg-linear-to-b from-muted/30 to-muted/50 p-4 transition-colors duration-200">
+			<div className="w-full max-w-3xl bg-card rounded-xl border border-border shadow-xl backdrop-blur-sm overflow-hidden transition-colors duration-200">
 				{/* Header Section */}
-				<div className="space-y-2 px-6 py-8">
-					<h1 className="text-center font-bold text-3xl bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-colors duration-200">
+				<div className="space-y-3 px-6 py-8 bg-linear-to-r from-primary/5 to-primary/10">
+					<h1 className="text-center font-bold text-3xl text-card-foreground transition-colors duration-200">
 						What are you good at / interested in?
 					</h1>
 					<h2 className="text-center text-lg text-muted-foreground transition-colors duration-200">
@@ -125,18 +125,23 @@ function Interests() {
 							value={inputValue}
 							onChange={handleInputChange}
 							onKeyDown={handleKeyDown}
-							className="w-full px-4 py-3 rounded-lg bg-input border border-input text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring transition-all duration-200"
+							className="w-full px-4 py-3 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
 						/>
 					</div>
 
 					{/* Selected Tags Display */}
 					<div className="mb-6">
-						<h3 className="text-sm font-medium text-card-foreground mb-2 transition-colors duration-200">
-							Selected Keywords
-						</h3>
-						<div className="flex flex-wrap gap-2">
+						<div className="flex items-center justify-between mb-3">
+							<h3 className="text-sm font-semibold text-card-foreground transition-colors duration-200">
+								Selected Keywords
+							</h3>
+							<span className="text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+								{selectedTags.length} / 5 min
+							</span>
+						</div>
+						<div className="flex flex-wrap gap-2 min-h-[60px] p-4 rounded-lg border border-border bg-muted/30">
 							{selectedTags.length === 0 ? (
-								<p className="text-sm text-muted-foreground italic transition-colors duration-200">
+								<p className="text-sm text-muted-foreground italic transition-colors duration-200 w-full text-center py-2">
 									No keywords selected yet. Select at least 5
 									to continue.
 								</p>
@@ -145,10 +150,12 @@ function Interests() {
 									<button
 										key={index}
 										onClick={() => removeTag(tag)}
-										className="px-4 py-1.5 text-sm text-white rounded-full bg-linear-to-r from-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200"
+										className="px-4 py-1.5 text-sm text-primary-foreground rounded-full bg-primary shadow-sm hover:shadow-md hover:bg-primary/90 transition-all duration-200 font-medium"
 									>
 										{tag}
-										<span className="ml-2">×</span>
+										<span className="ml-2 text-base">
+											×
+										</span>
 									</button>
 								))
 							)}
@@ -158,7 +165,7 @@ function Interests() {
 					{/* Suggestions Section (if needed) */}
 					{inputValue.trim() !== "" && !isTagsLoading && (
 						<div className="mb-6">
-							<h3 className="text-sm font-medium text-card-foreground mb-2 transition-colors duration-200">
+							<h3 className="text-sm font-semibold text-card-foreground mb-3 transition-colors duration-200">
 								Suggestions
 							</h3>
 							<div className="flex flex-wrap gap-2">
@@ -192,7 +199,7 @@ function Interests() {
 											onClick={() =>
 												addTag(tag.englishName)
 											}
-											className="px-4 py-1.5 text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 border border-border transition-all duration-200"
+											className="px-4 py-1.5 text-sm bg-muted text-card-foreground rounded-full hover:bg-primary/10 hover:text-primary border border-border hover:border-primary/50 transition-all duration-200 font-medium"
 										>
 											{tag.englishName}
 										</button>
@@ -204,10 +211,10 @@ function Interests() {
 					{/* Submit Button */}
 					<Button
 						className={cn(
-							"w-full py-3 rounded-lg transition-all duration-200",
+							"w-full py-3 rounded-full transition-all duration-200 font-semibold text-base",
 							canSubmit
-								? "bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg"
-								: "bg-muted text-muted-foreground cursor-not-allowed opacity-90"
+								? "bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-md hover:shadow-lg"
+								: "bg-muted text-muted-foreground cursor-not-allowed"
 						)}
 						disabled={!canSubmit || isUpdating}
 						onClick={handleSubmitInterests}
@@ -215,7 +222,7 @@ function Interests() {
 						{isUpdating ? (
 							<span className="flex items-center justify-center">
 								<svg
-									className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+									className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
@@ -229,7 +236,7 @@ function Interests() {
 										strokeWidth="4"
 									></circle>
 									<path
-										className="opacity-75 dark:opacity-90"
+										className="opacity-75"
 										fill="currentColor"
 										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 									></path>
