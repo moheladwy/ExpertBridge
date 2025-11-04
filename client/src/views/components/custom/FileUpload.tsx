@@ -118,7 +118,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 	return (
 		<>
 			<div className="flex">
-				<div className="bg-white rounded-[2rem] shadow-[rgba(149,157,165,0.2)_0px_8px_24px] p-4 hover:opacity-60 transition-opacity">
+				<div className="bg-white rounded-4xl shadow-[rgba(149,157,165,0.2)_0px_8px_24px] p-4 hover:opacity-60 transition-opacity">
 					<div
 						className="flex justify-center items-center relative w-full h-[25vh] border-2 border-dashed border-[#4267b2] rounded-[20px] p-5"
 						ref={wrapperRef}

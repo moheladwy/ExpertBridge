@@ -332,7 +332,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 										</div>
 
 										{/* Job Title */}
-										<div className="break-words">
+										<div className="wrap-break-word">
 											<h1
 												className="text-2xl font-bold text-card-foreground whitespace-pre-wrap"
 												dir="auto"
@@ -352,7 +352,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 										)}
 
 										{/* Job Description */}
-										<div className="break-words">
+										<div className="wrap-break-word">
 											<h3 className="text-lg font-semibold text-card-foreground mb-2">
 												Job Description
 											</h3>

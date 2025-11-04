@@ -31,15 +31,15 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 	const getRankBadge = (index: number) => {
 		const badges = [
-			"bg-gradient-to-r from-yellow-400 to-yellow-600 text-white",
-			"bg-gradient-to-r from-gray-300 to-gray-500 text-white",
-			"bg-gradient-to-r from-amber-400 to-amber-600 text-white",
-			"bg-gradient-to-r from-blue-400 to-blue-600 text-white",
-			"bg-gradient-to-r from-purple-400 to-purple-600 text-white",
+			"bg-linear-to-r from-yellow-400 to-yellow-600 text-white",
+			"bg-linear-to-r from-gray-300 to-gray-500 text-white",
+			"bg-linear-to-r from-amber-400 to-amber-600 text-white",
+			"bg-linear-to-r from-blue-400 to-blue-600 text-white",
+			"bg-linear-to-r from-purple-400 to-purple-600 text-white",
 		];
 		return (
 			badges[index] ||
-			"bg-gradient-to-r from-gray-400 to-gray-600 text-white"
+			"bg-linear-to-r from-gray-400 to-gray-600 text-white"
 		);
 	};
 
@@ -83,7 +83,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 	return (
 		<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl">
-			<div className="p-6 border-b border-border bg-gradient-to-r from-yellow-50 to-amber-50">
+			<div className="p-6 border-b border-border bg-linear-to-r from-yellow-50 to-amber-50">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-3">
 						<div className="p-2 bg-yellow-100 rounded-lg">
@@ -120,7 +120,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 									}}
 								>
 									{index < 3 && (
-										<div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+										<div className="absolute inset-0 bg-linear-to-r from-transparent via-yellow-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 									)}
 
 									<div className="relative flex items-center gap-3">
@@ -166,7 +166,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 									</div>
 
 									<div className="relative z-10 flex items-center gap-2">
-										<div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-full">
+										<div className="flex items-center gap-1 px-3 py-1 bg-linear-to-r from-yellow-100 to-amber-100 rounded-full">
 											<Star className="w-4 h-4 text-yellow-500" />
 											<span className="text-sm font-semibold text-yellow-700">
 												{user.reputation?.toLocaleString() ||

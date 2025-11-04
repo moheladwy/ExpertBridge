@@ -26,7 +26,7 @@ function LandingPage() {
 	return (
 		<div className="overflow-x-hidden">
 			{/* Hero Section - Enhanced */}
-			<div className="min-h-screen bg-gradient-to-b from-main-blue to-indigo-800 w-full flex items-center justify-center transition-colors duration-200">
+			<div className="min-h-screen bg-linear-to-b from-main-blue to-indigo-800 w-full flex items-center justify-center transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8 py-12 md:py-20">
 					<div className="flex flex-col lg:flex-row items-center justify-between gap-12">
 						<div className="flex flex-col items-start gap-6 text-white lg:text-center max-w-2xl">
@@ -74,7 +74,7 @@ function LandingPage() {
 						<h2 className="text-3xl sm:text-4xl font-bold text-foreground">
 							What We Do
 						</h2>
-						<div className="mt-4 w-16 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
+						<div className="mt-4 w-16 h-1 bg-linear-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
 						<p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto">
 							ExpertBridge is revolutionizing how professionals
 							connect by creating a platform where expertise meets
@@ -85,7 +85,7 @@ function LandingPage() {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 						{/* Feature 1 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-linear-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -113,7 +113,7 @@ function LandingPage() {
 
 						{/* Feature 2 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-linear-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -140,7 +140,7 @@ function LandingPage() {
 
 						{/* Feature 3 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-linear-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -167,7 +167,7 @@ function LandingPage() {
 
 						{/* Feature 4 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-linear-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -194,7 +194,7 @@ function LandingPage() {
 
 						{/* Feature 5 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-linear-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -221,7 +221,7 @@ function LandingPage() {
 
 						{/* Feature 6 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-linear-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -257,7 +257,7 @@ function LandingPage() {
 							<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground transition-colors duration-200">
 								Our Mission
 							</h2>
-							<div className="mt-4 w-16 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
+							<div className="mt-4 w-16 h-1 bg-linear-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
 						</div>
 						<div className="max-w-4xl mx-auto">
 							<p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-center transition-colors duration-200">
@@ -278,7 +278,7 @@ function LandingPage() {
 			{/* Statistics Section */}
 			<div className="py-16 bg-background transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8">
-					<div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
+					<div className="bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 						<div className="text-center mb-12">
 							<h2 className="text-3xl sm:text-4xl font-bold text-white">
 								ExpertBridge by the Numbers

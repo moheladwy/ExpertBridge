@@ -28,7 +28,7 @@ export function NotificationCard({
 					<img
 						src={notification.iconUrl}
 						alt="Notification icon"
-						className="w-8 h-8 rounded-full flex-shrink-0"
+						className="w-8 h-8 rounded-full shrink-0"
 					/>
 				)}
 

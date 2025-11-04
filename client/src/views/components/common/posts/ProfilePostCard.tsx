@@ -53,7 +53,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 			</div>
 
 			{/* Post Title */}
-			<div className="break-words">
+			<div className="wrap-break-word">
 				<h2
 					className="text-lg font-bold text-card-foreground whitespace-pre-wrap"
 					dir="auto"
@@ -63,7 +63,7 @@ const ProfilePostCard: React.FC<ProfilePostCardProps> = ({ post }) => {
 			</div>
 
 			{/* Post Content */}
-			<div className="break-words">
+			<div className="wrap-break-word">
 				<p
 					className="text-muted-foreground whitespace-pre-wrap line-clamp-3"
 					dir="auto"

@@ -101,11 +101,11 @@ function Interests() {
 	}, [isSuccess, isError, navigate, error]);
 
 	return (
-		<div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-b from-secondary to-muted p-4 transition-colors duration-200">
-			<div className="w-full max-w-3xl bg-card rounded-xl border border-border shadow-lg backdrop-blur-sm overflow-hidden transition-colors duration-200">
+		<div className="min-h-screen w-full flex justify-center items-center bg-linear-to-b from-secondary to-muted p-4 transition-colors duration-200">
+			<div className="w-full max-w-3xl bg-card rounded-xl border border-border shadow-lg backdrop-blur-xs overflow-hidden transition-colors duration-200">
 				{/* Header Section */}
 				<div className="space-y-2 px-6 py-8">
-					<h1 className="text-center font-bold text-3xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-colors duration-200">
+					<h1 className="text-center font-bold text-3xl bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-colors duration-200">
 						What are you good at / interested in?
 					</h1>
 					<h2 className="text-center text-lg text-muted-foreground transition-colors duration-200">
@@ -125,7 +125,7 @@ function Interests() {
 							value={inputValue}
 							onChange={handleInputChange}
 							onKeyDown={handleKeyDown}
-							className="w-full px-4 py-3 rounded-lg bg-input border border-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200"
+							className="w-full px-4 py-3 rounded-lg bg-input border border-input text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring transition-all duration-200"
 						/>
 					</div>
 
@@ -145,7 +145,7 @@ function Interests() {
 									<button
 										key={index}
 										onClick={() => removeTag(tag)}
-										className="px-4 py-1.5 text-sm text-white rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200"
+										className="px-4 py-1.5 text-sm text-white rounded-full bg-linear-to-r from-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200"
 									>
 										{tag}
 										<span className="ml-2">×</span>
@@ -206,7 +206,7 @@ function Interests() {
 						className={cn(
 							"w-full py-3 rounded-lg transition-all duration-200",
 							canSubmit
-								? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg"
+								? "bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg"
 								: "bg-muted text-muted-foreground cursor-not-allowed opacity-90"
 						)}
 						disabled={!canSubmit || isUpdating}

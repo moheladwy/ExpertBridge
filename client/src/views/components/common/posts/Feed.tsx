@@ -223,7 +223,7 @@ const Feed = ({ startingPost = { id: null } }) => {
 										}
 										className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
 											hasNextPage && !isFetchingNextPage
-												? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
+												? "bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
 												: "bg-muted text-muted-foreground cursor-not-allowed"
 										}`}
 									>

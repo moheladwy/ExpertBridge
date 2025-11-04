@@ -57,7 +57,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	// ⏳ Still verifying auth state
 	if (loginLoading) {
 		return (
-			<div className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-b from-secondary to-muted transition-colors duration-200">
+			<div className="min-h-screen w-full flex flex-col justify-center items-center bg-linear-to-b from-secondary to-muted transition-colors duration-200">
 				<div className="animate-spin rounded-full h-16 w-16 border-4 border-border border-t-primary shadow-lg"></div>
 			</div>
 		);

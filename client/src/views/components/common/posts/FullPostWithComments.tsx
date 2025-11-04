@@ -227,7 +227,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 									</div>
 
 									{/* Post Header */}
-									<div className="break-words">
+									<div className="wrap-break-word">
 										<h2
 											className="text-lg font-bold text-card-foreground whitespace-pre-wrap"
 											dir="auto"
@@ -237,7 +237,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 									</div>
 
 									{/* Post Content */}
-									<div className="break-words">
+									<div className="wrap-break-word">
 										<p
 											className="text-muted-foreground whitespace-pre-wrap"
 											dir="auto"

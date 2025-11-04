@@ -501,7 +501,7 @@ const MyProfilePage = () => {
 												(skill, index) => (
 													<div
 														key={index}
-														className="rounded-full px-1 py-2 text-white text-center font-medium bg-indigo-700 bg-gradient-to-r"
+														className="rounded-full px-1 py-2 text-white text-center font-medium bg-indigo-700 bg-linear-to-r"
 													>
 														{skill}
 													</div>

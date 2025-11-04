@@ -133,8 +133,8 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-			{/* Added backdrop-blur-sm for better background effect */}
+		<div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-xs">
+			{/* Added backdrop-blur-xs for better background effect */}
 			<Card className="w-full max-w-lg mx-auto bg-card text-card-foreground relative">
 				{/* Close Button */}
 				<div className="absolute top-3 right-3 z-10">

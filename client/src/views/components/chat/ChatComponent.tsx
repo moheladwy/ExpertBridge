@@ -153,7 +153,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 										: "bg-card text-card-foreground border border-border rounded-bl-sm"
 								}`}
 							>
-								<p className="text-sm leading-relaxed break-words">
+								<p className="text-sm leading-relaxed wrap-break-word">
 									{msg.content}
 								</p>
 								<div
@@ -199,9 +199,9 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 	return (
 		<div className="flex flex-col h-96 bg-secondary rounded-lg overflow-hidden">
 			{/* Chat Header */}
-			<div className="bg-card border-b border-border px-4 py-3 flex-shrink-0">
+			<div className="bg-card border-b border-border px-4 py-3 shrink-0">
 				<div className="flex items-center space-x-3">
-					<div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+					<div className="w-8 h-8 bg-linear-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
 						<span className="text-white font-semibold text-sm">
 							{otherPartyName.charAt(0).toUpperCase()}
 						</span>
@@ -244,7 +244,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 			</div>
 
 			{/* Message Input */}
-			<div className="bg-card border-t border-border p-4 flex-shrink-0">
+			<div className="bg-card border-t border-border p-4 shrink-0">
 				<form onSubmit={handleSendMessage} className="flex space-x-2">
 					<input
 						ref={inputRef}
@@ -256,7 +256,7 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 						className="flex-1 px-4 py-2 border border-border rounded-full 
                      bg-card text-card-foreground 
                      placeholder-muted-foreground 
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 
+                     focus:outline-hidden focus:ring-2 focus:ring-blue-500 
                      focus:border-transparent transition-all duration-200"
 						disabled={isSending}
 					/>

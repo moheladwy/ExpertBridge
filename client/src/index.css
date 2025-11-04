@@ -1,6 +1,116 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+	--color-border: oklch(var(--border));
+	--color-input: oklch(var(--input));
+	--color-ring: oklch(var(--ring));
+	--color-background: oklch(var(--background));
+	--color-foreground: oklch(var(--foreground));
+
+	--color-primary: oklch(var(--primary));
+	--color-primary-foreground: oklch(var(--primary-foreground));
+
+	--color-secondary: oklch(var(--secondary));
+	--color-secondary-foreground: oklch(var(--secondary-foreground));
+
+	--color-destructive: oklch(var(--destructive));
+	--color-destructive-foreground: oklch(var(--destructive-foreground));
+
+	--color-muted: oklch(var(--muted));
+	--color-muted-foreground: oklch(var(--muted-foreground));
+
+	--color-accent: oklch(var(--accent));
+	--color-accent-foreground: oklch(var(--accent-foreground));
+
+	--color-card: oklch(var(--card));
+	--color-card-foreground: oklch(var(--card-foreground));
+
+	--color-popover: oklch(var(--popover));
+	--color-popover-foreground: oklch(var(--popover-foreground));
+
+	--color-success: oklch(var(--success));
+	--color-success-foreground: oklch(var(--success-foreground));
+	--color-success-muted: oklch(var(--success-muted));
+
+	--color-warning: oklch(var(--warning));
+	--color-warning-foreground: oklch(var(--warning-foreground));
+	--color-warning-muted: oklch(var(--warning-muted));
+
+	--color-info: oklch(var(--info));
+	--color-info-foreground: oklch(var(--info-foreground));
+	--color-info-muted: oklch(var(--info-muted));
+
+	--color-upvote: oklch(var(--upvote));
+	--color-upvote-active: oklch(var(--upvote-active));
+
+	--color-downvote: oklch(var(--downvote));
+	--color-downvote-active: oklch(var(--downvote-active));
+
+	--color-vote-neutral: oklch(var(--vote-neutral));
+
+	--color-badge: oklch(var(--badge-default));
+	--color-badge-foreground: oklch(var(--badge-foreground));
+	--color-badge-skill: oklch(var(--badge-skill));
+	--color-badge-skill-foreground: oklch(var(--badge-skill-foreground));
+	--color-badge-language: oklch(var(--badge-language));
+	--color-badge-language-foreground: oklch(var(--badge-language-foreground));
+
+	--color-nav-brand: oklch(var(--nav-brand));
+	--color-nav-brand-hover: oklch(var(--nav-brand-hover));
+
+	--color-chart-1: oklch(var(--chart-1));
+	--color-chart-2: oklch(var(--chart-2));
+	--color-chart-3: oklch(var(--chart-3));
+	--color-chart-4: oklch(var(--chart-4));
+	--color-chart-5: oklch(var(--chart-5));
+
+	--color-sidebar: oklch(var(--sidebar));
+	--color-sidebar-foreground: oklch(var(--sidebar-foreground));
+	--color-sidebar-primary: oklch(var(--sidebar-primary));
+	--color-sidebar-primary-foreground: oklch(
+		var(--sidebar-primary-foreground)
+	);
+	--color-sidebar-accent: oklch(var(--sidebar-accent));
+	--color-sidebar-accent-foreground: oklch(var(--sidebar-accent-foreground));
+	--color-sidebar-border: oklch(var(--sidebar-border));
+	--color-sidebar-ring: oklch(var(--sidebar-ring));
+
+	--radius-lg: var(--radius);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-sm: calc(var(--radius) - 4px);
+
+	--shadow-sm: var(--shadow-sm);
+	--shadow: var(--shadow);
+	--shadow-md: var(--shadow-md);
+	--shadow-lg: var(--shadow-lg);
+	--shadow-xl: var(--shadow-xl);
+
+	--transition-duration-fast: var(--transition-fast);
+	--transition-duration-base: var(--transition-base);
+	--transition-duration-slow: var(--transition-slow);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentcolor);
+	}
+}
 
 :root {
 	--radius: 0.65rem;

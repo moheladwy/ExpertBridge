@@ -1,18 +1,18 @@
 const AboutUsPage = () => {
 	return (
-		<div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 transition-colors duration-200">
+		<div className="min-h-screen bg-linear-to-b from-gray-50 to-gray-100 transition-colors duration-200">
 			{/* Hero Section */}
 			<div className="relative overflow-hidden">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
 					<div className="text-center">
-						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-colors duration-200">
+						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-colors duration-200">
 							About ExpertBridge
 						</h1>
 						<p className="mt-6 text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto transition-colors duration-200">
 							Connecting expertise with opportunity through
 							innovative technology
 						</p>
-						<div className="mt-8 w-24 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
+						<div className="mt-8 w-24 h-1 bg-linear-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
 					</div>
 				</div>
 			</div>
@@ -24,7 +24,7 @@ const AboutUsPage = () => {
 						<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground transition-colors duration-200">
 							Our Mission
 						</h2>
-						<div className="mt-4 w-16 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
+						<div className="mt-4 w-16 h-1 bg-linear-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
 					</div>
 					<div className="max-w-4xl mx-auto">
 						<p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-center transition-colors duration-200">
@@ -46,13 +46,13 @@ const AboutUsPage = () => {
 					<h2 className="text-3xl sm:text-4xl font-bold text-foreground transition-colors duration-200">
 						What We Do
 					</h2>
-					<div className="mt-4 w-16 h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
+					<div className="mt-4 w-16 h-1 bg-linear-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{/* Feature 1 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-						<div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
+						<div className="w-12 h-12 bg-linear-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
 								fill="none"
@@ -79,7 +79,7 @@ const AboutUsPage = () => {
 
 					{/* Feature 2 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-						<div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-6">
+						<div className="w-12 h-12 bg-linear-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
 								fill="none"
@@ -106,7 +106,7 @@ const AboutUsPage = () => {
 
 					{/* Feature 3 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-						<div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-6">
+						<div className="w-12 h-12 bg-linear-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
 								fill="none"
@@ -133,7 +133,7 @@ const AboutUsPage = () => {
 
 					{/* Feature 4 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-						<div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mb-6">
+						<div className="w-12 h-12 bg-linear-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
 								fill="none"
@@ -160,7 +160,7 @@ const AboutUsPage = () => {
 
 					{/* Feature 5 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-						<div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
+						<div className="w-12 h-12 bg-linear-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
 								fill="none"
@@ -187,7 +187,7 @@ const AboutUsPage = () => {
 
 					{/* Feature 6 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-						<div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mb-6">
+						<div className="w-12 h-12 bg-linear-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mb-6">
 							<svg
 								className="w-6 h-6 text-white"
 								fill="none"
@@ -221,12 +221,12 @@ const AboutUsPage = () => {
 						<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground transition-colors duration-200">
 							Our Values
 						</h2>
-						<div className="mt-4 w-16 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
+						<div className="mt-4 w-16 h-1 bg-linear-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
 					</div>
 
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 						<div className="text-center">
-							<div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+							<div className="w-16 h-16 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
 								<svg
 									className="w-8 h-8 text-white"
 									fill="none"
@@ -252,7 +252,7 @@ const AboutUsPage = () => {
 						</div>
 
 						<div className="text-center">
-							<div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+							<div className="w-16 h-16 bg-linear-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
 								<svg
 									className="w-8 h-8 text-white"
 									fill="none"
@@ -277,7 +277,7 @@ const AboutUsPage = () => {
 						</div>
 
 						<div className="text-center">
-							<div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+							<div className="w-16 h-16 bg-linear-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
 								<svg
 									className="w-8 h-8 text-white"
 									fill="none"
@@ -306,7 +306,7 @@ const AboutUsPage = () => {
 
 			{/* Statistics Section */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-				<div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
+				<div className="bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 					<div className="text-center mb-12">
 						<h2 className="text-3xl sm:text-4xl font-bold text-white">
 							ExpertBridge by the Numbers
@@ -351,7 +351,7 @@ const AboutUsPage = () => {
 					<h2 className="text-3xl sm:text-4xl font-bold text-foreground transition-colors duration-200">
 						Meet Our Team
 					</h2>
-					<div className="mt-4 w-16 h-1 bg-gradient-to-r from-orange-500 to-red-500 mx-auto rounded-full"></div>
+					<div className="mt-4 w-16 h-1 bg-linear-to-r from-orange-500 to-red-500 mx-auto rounded-full"></div>
 					<p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto transition-colors duration-200">
 						We're a passionate team of innovators, engineers, and
 						problem-solvers dedicated to revolutionizing
@@ -362,7 +362,7 @@ const AboutUsPage = () => {
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{/* Team Member 1 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-200">
-						<div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+						<div className="w-24 h-24 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full mx-auto mb-4 flex items-center justify-center">
 							<span className="text-2xl font-bold text-white">
 								EB
 							</span>
@@ -378,7 +378,7 @@ const AboutUsPage = () => {
 
 					{/* Team Member 2 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-200">
-						<div className="w-24 h-24 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+						<div className="w-24 h-24 bg-linear-to-r from-emerald-500 to-teal-500 rounded-full mx-auto mb-4 flex items-center justify-center">
 							<span className="text-2xl font-bold text-white">
 								AI
 							</span>
@@ -395,7 +395,7 @@ const AboutUsPage = () => {
 
 					{/* Team Member 3 */}
 					<div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-200">
-						<div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+						<div className="w-24 h-24 bg-linear-to-r from-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
 							<span className="text-2xl font-bold text-white">
 								UX
 							</span>
@@ -425,7 +425,7 @@ const AboutUsPage = () => {
 						right opportunities.
 					</p>
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
-						<button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+						<button className="px-8 py-3 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
 							Get Started Today
 						</button>
 						<button className="px-8 py-3 bg-transparent border-2 border-border text-foreground hover:border-accent font-semibold rounded-lg transition-all duration-200">
@@ -447,7 +447,7 @@ const AboutUsPage = () => {
 					</p>
 					<div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
 						<div className="flex items-center gap-3">
-							<div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+							<div className="w-10 h-10 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
 								<svg
 									className="w-5 h-5 text-white"
 									fill="none"
@@ -472,7 +472,7 @@ const AboutUsPage = () => {
 							</div>
 						</div>
 						<div className="flex items-center gap-3">
-							<div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
+							<div className="w-10 h-10 bg-linear-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
 								<svg
 									className="w-5 h-5 text-white"
 									fill="none"

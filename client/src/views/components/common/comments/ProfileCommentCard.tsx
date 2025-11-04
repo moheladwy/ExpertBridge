@@ -64,7 +64,7 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 			</div>
 
 			{/* Comment Content */}
-			<div className="w-full break-words">
+			<div className="w-full wrap-break-word">
 				<p
 					className="text-card-foreground whitespace-pre-wrap"
 					dir="auto"

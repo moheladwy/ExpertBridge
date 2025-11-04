@@ -37,7 +37,7 @@ export default function TimeAgo({ timestamp }: TimeAgoProps) {
       className="transition-all duration-200 relative cursor-pointer text-gray-500 hover:text-black"
     >
       <span
-        className="inline-block after:content-[''] after:block after:h-[1px] after:bg-gray-400 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
+        className="inline-block after:content-[''] after:block after:h-px after:bg-gray-400 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
       >
         <i>{isHovered ? dateFormatted : content}</i>
       </span>

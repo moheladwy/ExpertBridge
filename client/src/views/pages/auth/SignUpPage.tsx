@@ -393,7 +393,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 									<button
 										type="button"
 										onClick={handleCloseErrorMessage}
-										className="ml-2 text-white hover:text-gray-200 focus:outline-none"
+										className="ml-2 text-white hover:text-gray-200 focus:outline-hidden"
 										aria-label="Close error message"
 									>
 										<svg
@@ -721,7 +721,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 					</form>
 
 					{/* Terms of Service and Privacy Policy Footer */}
-					<div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
+					<div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
 						By clicking continue, you agree to our{" "}
 						<Link to="/privacy-policy">Terms of Service</Link> and{" "}
 						<Link to="/privacy-policy">Privacy Policy</Link>.

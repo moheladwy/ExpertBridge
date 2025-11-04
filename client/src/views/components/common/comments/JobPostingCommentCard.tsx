@@ -251,7 +251,7 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 			</div>
 
 			{/* Comment Content */}
-			<div className="w-full break-words">
+			<div className="w-full wrap-break-word">
 				{isEditing ? (
 					<div className="flex flex-col gap-2">
 						<Field>

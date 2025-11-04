@@ -17,7 +17,7 @@ export default function SearchUserCard({
 	return (
 		<Link to={`/profile/${id}`} className="block">
 			<div className="flex p-4 rounded-lg hover:bg-secondary transition-colors">
-				<div className="flex-shrink-0">
+				<div className="shrink-0">
 					{profilePictureUrl ? (
 						<img
 							src={profilePictureUrl}

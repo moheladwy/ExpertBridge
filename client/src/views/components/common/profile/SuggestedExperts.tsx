@@ -52,7 +52,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 	return (
 		<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl">
-			<div className="p-6 border-b text-center border-border bg-gradient-to-r from-yellow-50 to-amber-50">
+			<div className="p-6 border-b text-center border-border bg-linear-to-r from-yellow-50 to-amber-50">
 				<div className="flex items-center justify-center text-center">
 					<div className="flex text-center justify-center items-center gap-3">
 						<h3 className="font-semibold justify-center text-center text-card-foreground">
@@ -83,7 +83,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 									}}
 								>
 									{index < 3 && (
-										<div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+										<div className="absolute inset-0 bg-linear-to-r from-transparent via-yellow-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 									)}
 
 									<div className="relative flex items-center gap-3">
@@ -113,7 +113,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 									</div>
 
 									<div className="relative z-10 flex items-center gap-2">
-										<div className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-full">
+										<div className="flex items-center gap-1 px-3 py-1 bg-linear-to-r from-yellow-100 to-amber-100 rounded-full">
 											<span className="text-sm font-semibold text-yellow-700">
 												{user.reputation?.toLocaleString() ||
 													0}
