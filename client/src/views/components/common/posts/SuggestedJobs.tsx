@@ -55,7 +55,7 @@ const SuggestedJobs = () => {
 			</div>
 			<Link
 				to="/jobs"
-				className="block w-full mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline text-center"
+				className="block w-full mt-4 text-sm text-primary hover:underline text-center"
 			>
 				View all jobs →
 			</Link>

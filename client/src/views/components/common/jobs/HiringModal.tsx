@@ -192,7 +192,9 @@ const HiringModal = ({
 			<DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-3">
-						<Briefcase className="h-5 w-5 text-indigo-600" />
+						<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+							<Briefcase className="h-5 w-5 text-primary" />
+						</div>
 						<div>
 							<span>Hire {expertProfile.firstName}</span>
 							<p className="text-sm font-normal text-gray-500 mt-1">
@@ -204,9 +206,9 @@ const HiringModal = ({
 				</DialogHeader>
 
 				{/* Expert Summary */}
-				<div className="bg-secondary rounded-lg p-4 mb-4">
+				<div className="bg-muted/50 border border-border rounded-xl p-4 mb-4">
 					<div className="flex items-center gap-3 mb-3">
-						<div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+						<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
 							{expertProfile.profilePictureUrl ? (
 								<img
 									src={expertProfile.profilePictureUrl}
@@ -235,7 +237,11 @@ const HiringModal = ({
 							onChange={(e) =>
 								handleInputChange("title", e.target.value)
 							}
-							className={errors.title ? "border-red-500" : ""}
+							className={
+								errors.title
+									? "border-destructive focus:ring-destructive"
+									: ""
+							}
 						/>
 						{errors.title && (
 							<p className="text-sm text-red-500">
@@ -257,7 +263,9 @@ const HiringModal = ({
 							}
 							rows={4}
 							className={
-								errors.description ? "border-red-500" : ""
+								errors.description
+									? "border-destructive focus:ring-destructive"
+									: ""
 							}
 						/>
 						{errors.description && (
@@ -324,7 +332,7 @@ const HiringModal = ({
 					<div className="space-y-2">
 						<Label htmlFor="area">Location *</Label>
 						<div className="relative">
-							<MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+							<MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
 							<Input
 								id="area"
 								placeholder="e.g., Remote, New York, On-site, etc."
@@ -332,7 +340,7 @@ const HiringModal = ({
 								onChange={(e) =>
 									handleInputChange("area", e.target.value)
 								}
-								className={`pl-10 ${errors.area ? "border-red-500" : ""}`}
+								className={`pl-10 ${errors.area ? "border-destructive focus:ring-destructive" : ""}`}
 							/>
 						</div>
 						{errors.area && (

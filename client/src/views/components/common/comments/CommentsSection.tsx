@@ -3,7 +3,7 @@ import {
 	useDeleteCommentMutation,
 	useGetCommentsByPostIdQuery,
 } from "@/features/comments/commentsSlice";
-import { Paperclip, ArrowUpDown } from "lucide-react";
+import { Paperclip, ArrowUpDown, XCircle, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import CommentCard from "./CommentCard";
 import toast from "react-hot-toast";
@@ -269,9 +269,11 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between font-semibold text-lg my-3 text-card-foreground">
+			<div className="flex items-center justify-between font-semibold text-lg my-4 text-card-foreground">
 				<div className="flex items-center justify-start gap-2">
-					<p className="text-sm text-muted-foreground">Sort by:</p>
+					<p className="text-sm font-normal text-muted-foreground">
+						Sort by:
+					</p>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
@@ -337,7 +339,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 					<Button
 						onClick={handleCommentSubmit}
 						disabled={isLoading || uploadResult.isLoading}
-						className="bg-main-blue hover:bg-blue-950"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-5"
 					>
 						Add Comment
 					</Button>
@@ -350,18 +352,21 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 				<div className="space-y-4">
 					{[1, 2, 3].map((i) => (
 						<div key={i} className="flex gap-3">
-							<Skeleton className="h-10 w-10 rounded-full bg-secondary" />
+							<Skeleton className="h-10 w-10 rounded-full bg-muted" />
 							<div className="w-full">
-								<Skeleton className="h-4 w-32 mb-2 bg-secondary" />
-								<Skeleton className="h-3 w-20 mb-3 bg-secondary" />
-								<Skeleton className="h-12 w-full bg-secondary" />
+								<Skeleton className="h-4 w-32 mb-2 bg-muted" />
+								<Skeleton className="h-3 w-20 mb-3 bg-muted" />
+								<Skeleton className="h-12 w-full bg-muted" />
 							</div>
 						</div>
 					))}
 				</div>
 			) : isCommentsError ? (
-				<div className="p-4 rounded-md bg-secondary text-center">
-					<p className="text-muted-foreground">
+				<div className="flex flex-col items-center justify-center p-8 rounded-xl bg-destructive/10 border border-destructive/20 text-center">
+					<div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center mb-3">
+						<XCircle className="w-6 h-6 text-destructive" />
+					</div>
+					<p className="text-destructive font-medium">
 						Unable to load comments. Please try again later.
 					</p>
 				</div>
@@ -375,7 +380,10 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 					/>
 				))
 			) : (
-				<div className="p-4 rounded-md bg-secondary text-center">
+				<div className="flex flex-col items-center justify-center p-8 rounded-xl bg-muted/30 border border-border text-center">
+					<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+						<MessageCircle className="w-6 h-6 text-primary" />
+					</div>
 					<p className="text-muted-foreground">
 						No comments yet. Be the first to share your thoughts!
 					</p>

@@ -39,7 +39,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 		if (hasHalfStar) {
 			stars.push(
 				<div key="half" className="relative">
-					<StarIcon className="h-4 w-4 text-gray-300" />
+					<StarIcon className="h-4 w-4 text-muted" />
 					<StarIconSolid
 						className="absolute inset-0 h-4 w-4 text-yellow-400 overflow-hidden"
 						style={{ width: "50%" }}
@@ -51,10 +51,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 		const remainingStars = 5 - Math.ceil(rating);
 		for (let i = 0; i < remainingStars; i++) {
 			stars.push(
-				<StarIcon
-					key={`empty-${i}`}
-					className="h-4 w-4 text-gray-300"
-				/>
+				<StarIcon key={`empty-${i}`} className="h-4 w-4 text-muted" />
 			);
 		}
 
@@ -98,7 +95,7 @@ const JobPostingCard: React.FC<JobCardProps> = ({ job, currUserId }) => {
 					</div>
 
 					{/* Budget Badge */}
-					<div className="flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full">
+					<div className="flex items-center bg-green-500/10 text-green-600 px-3 py-1 rounded-full border border-green-200">
 						<CurrencyDollarIcon className="h-4 w-4 mr-1" />
 						<span className="font-semibold">
 							{formatBudget(job.budget)}

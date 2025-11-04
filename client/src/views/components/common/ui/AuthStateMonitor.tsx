@@ -70,7 +70,7 @@ const AuthStateMonitor: React.FC = () => {
 					onClick={() => setIsExpanded(true)}
 					className={`px-3 py-2 rounded-lg shadow-lg text-xs font-medium transition-all ${
 						isDanger
-							? "bg-red-600 text-white animate-pulse"
+							? "bg-destructive text-destructive-foreground animate-pulse"
 							: isHealthy
 								? "bg-green-600 text-white"
 								: "bg-yellow-600 text-white"
@@ -106,10 +106,10 @@ const AuthStateMonitor: React.FC = () => {
 				<div
 					className={`p-2 rounded-md ${
 						isDanger
-							? "bg-red-100 border border-red-300"
+							? "bg-destructive/10 border border-destructive/20"
 							: isHealthy
-								? "bg-green-100 border border-green-300"
-								: "bg-yellow-100 border border-yellow-300"
+								? "bg-green-500/10 border border-green-200"
+								: "bg-yellow-500/10 border border-yellow-200"
 					}`}
 				>
 					<div className="flex items-center justify-between mb-1">
@@ -117,7 +117,7 @@ const AuthStateMonitor: React.FC = () => {
 						<span
 							className={`font-bold text-lg ${
 								isDanger
-									? "text-red-600"
+									? "text-destructive"
 									: isHealthy
 										? "text-green-600"
 										: "text-yellow-600"
@@ -137,7 +137,7 @@ const AuthStateMonitor: React.FC = () => {
 						</div>
 					</div>
 					{isDanger && (
-						<div className="mt-2 text-red-600 font-semibold">
+						<div className="mt-2 text-destructive font-semibold">
 							⚠️ Too many listeners! Check for duplicate hooks.
 						</div>
 					)}
@@ -219,8 +219,8 @@ const AuthStateMonitor: React.FC = () => {
 
 				{/* Error State */}
 				{error && (
-					<div className="pt-2 mt-2 border-t border-red-200">
-						<div className="text-red-600">
+					<div className="pt-2 mt-2 border-t border-destructive/20">
+						<div className="text-destructive">
 							<span className="font-semibold">Error:</span>{" "}
 							{error.message}
 						</div>
@@ -243,7 +243,7 @@ const AuthStateMonitor: React.FC = () => {
 				<div className="flex gap-2 pt-2">
 					<button
 						onClick={handleRefreshUser}
-						className="flex-1 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+						className="flex-1 px-2 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
 					>
 						Refresh User
 					</button>
@@ -256,7 +256,7 @@ const AuthStateMonitor: React.FC = () => {
 							);
 							setLastAction("Stats logged to console");
 						}}
-						className="flex-1 px-2 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+						className="flex-1 px-2 py-1 text-xs bg-muted text-muted-foreground rounded hover:bg-muted/80 transition-colors"
 					>
 						Log Stats
 					</button>
@@ -278,7 +278,7 @@ const AuthStateMonitor: React.FC = () => {
 								⚠️ Good - But could be optimized
 							</div>
 						) : (
-							<div className="text-red-600 font-semibold">
+							<div className="text-destructive font-semibold">
 								❌ Problem - Multiple duplicate listeners
 								detected
 							</div>

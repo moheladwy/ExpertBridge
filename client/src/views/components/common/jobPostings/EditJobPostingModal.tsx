@@ -14,6 +14,7 @@ import {
 } from "@/views/components/ui/field";
 import { Input } from "@/views/components/ui/input";
 import { Textarea } from "@/views/components/ui/textarea";
+import { Briefcase } from "lucide-react";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { Separator } from "@/views/components/ui/separator";
@@ -202,7 +203,10 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 		<Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
 			<DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle className="text-center text-2xl font-bold">
+					<DialogTitle className="flex items-center gap-3 text-2xl font-bold">
+						<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+							<Briefcase className="w-5 h-5 text-primary" />
+						</div>
 						Edit Job Posting
 					</DialogTitle>
 					<Separator className="bg-border" />
@@ -225,8 +229,8 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 								<span
 									className={
 										titleCharsLeft < 1
-											? "text-red-500"
-											: "text-green-500"
+											? "text-destructive"
+											: "text-green-600"
 									}
 								>
 									{titleCharsLeft} characters left
@@ -266,8 +270,8 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 									<span
 										className={
 											areaCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{areaCharsLeft} characters left
@@ -298,8 +302,8 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 								<span
 									className={
 										contentCharsLeft < 1
-											? "text-red-500"
-											: "text-green-500"
+											? "text-destructive"
+											: "text-green-600"
 									}
 								>
 									{contentCharsLeft} characters left
@@ -310,14 +314,19 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 				</div>
 
 				{/* Action Buttons */}
-				<div className="flex justify-end space-x-3">
-					<Button onClick={handleClose} disabled={isLoading}>
+				<div className="flex justify-end gap-3">
+					<Button
+						variant="outline"
+						onClick={handleClose}
+						disabled={isLoading}
+						className="rounded-full"
+					>
 						Cancel
 					</Button>
 					<Button
 						onClick={handleSubmit}
 						disabled={isLoading}
-						className="bg-[#162955] hover:bg-[#0e1c3b]"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
 					>
 						{isLoading ? "Updating..." : "Update Job Posting"}
 					</Button>

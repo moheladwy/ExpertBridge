@@ -28,29 +28,31 @@ export const JobCard: React.FC<{
 	};
 
 	return (
-		<div className="bg-card rounded-lg shadow-sm border border-border hover:shadow-md transition-shadow">
+		<div className="group bg-card rounded-xl shadow-sm border border-border hover:border-primary/50 hover:shadow-lg transition-all duration-200">
 			<div className="p-6">
 				{/* Header */}
 				<div className="flex items-start justify-between mb-4">
 					<div className="flex-1">
-						<h3 className="text-lg font-semibold text-card-foreground mb-1 line-clamp-2">
+						<h3 className="text-lg font-semibold text-card-foreground group-hover:text-primary mb-1 line-clamp-2 transition-colors">
 							{job.title}
 						</h3>
 						<div className="flex items-center text-sm text-muted-foreground">
 							<User size={14} className="mr-1" />
 							{isWorker ? "Hired by" : "Working with"}{" "}
-							{otherParty.firstName}
+							<span className="font-medium ml-1">
+								{otherParty.firstName}
+							</span>
 						</div>
 					</div>
-					<div className="flex items-center space-x-1">
+					<div className="flex flex-col items-end gap-1">
 						{job.isCompleted && (
-							<Badge className="bg-green-100 text-green-800">
+							<Badge className="bg-green-100 text-green-800 border-green-200">
 								<CheckCircle size={12} className="mr-1" />
 								Completed
 							</Badge>
 						)}
 						{job.isPaid && (
-							<Badge className="bg-blue-100 text-blue-800">
+							<Badge className="bg-blue-100 text-blue-800 border-blue-200">
 								<DollarSign size={12} className="mr-1" />
 								Paid
 							</Badge>
@@ -59,25 +61,33 @@ export const JobCard: React.FC<{
 				</div>
 
 				{/* Details */}
-				<div className="space-y-3">
+				<div className="space-y-2.5 bg-muted/30 rounded-lg p-3">
 					<div className="flex items-center text-sm text-card-foreground">
-						<DollarSign size={16} className="mr-2 text-green-600" />
-						<span className="font-medium">${job.actualCost}</span>
+						<div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
+							<DollarSign size={16} className="text-green-600" />
+						</div>
+						<span className="font-semibold text-green-700">
+							${job.actualCost}
+						</span>
 					</div>
 
 					<div className="flex items-center text-sm text-card-foreground">
-						<MapPin size={16} className="mr-2 text-blue-600" />
+						<div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+							<MapPin size={16} className="text-blue-600" />
+						</div>
 						<span>{job.area}</span>
 					</div>
 
 					<div className="flex items-center text-sm text-card-foreground">
-						<Calendar size={16} className="mr-2 text-purple-600" />
+						<div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+							<Calendar size={16} className="text-purple-600" />
+						</div>
 						<span>Started: {formatDate(job.startedAt)}</span>
 					</div>
 				</div>
 
 				{/* Description */}
-				<p className="text-sm text-card-foreground mt-3 line-clamp-2">
+				<p className="text-sm text-muted-foreground mt-4 line-clamp-2 leading-relaxed">
 					{job.description}
 				</p>
 
@@ -85,7 +95,7 @@ export const JobCard: React.FC<{
 				<div className="mt-6">
 					<Button
 						onClick={onViewDetails}
-						className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+						className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-medium"
 					>
 						<MessageCircle size={16} className="mr-2" />
 						View Details

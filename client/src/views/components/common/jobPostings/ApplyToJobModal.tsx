@@ -12,6 +12,7 @@ import { Button } from "@/views/components/ui/button";
 import { Input } from "@/views/components/ui/input";
 import { Textarea } from "@/views/components/ui/textarea";
 import { Label } from "@/views/components/ui/label";
+import { Briefcase } from "lucide-react";
 import toast from "react-hot-toast";
 import {
 	JobPosting,
@@ -91,8 +92,13 @@ const ApplyToJobModal: React.FC<ApplyJobModalProps> = ({
 		<Dialog open={isOpen} onOpenChange={handleClose}>
 			<DialogContent className="sm:max-w-md">
 				<DialogHeader>
-					<DialogTitle>Apply for Job</DialogTitle>
-					<DialogDescription>
+					<DialogTitle className="flex items-center gap-2">
+						<div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+							<Briefcase className="w-4 h-4 text-primary" />
+						</div>
+						Apply for Job
+					</DialogTitle>
+					<DialogDescription className="text-muted-foreground">
 						Submit your application for "{jobPosting.title}"
 					</DialogDescription>
 				</DialogHeader>
@@ -134,6 +140,7 @@ const ApplyToJobModal: React.FC<ApplyJobModalProps> = ({
 						variant="outline"
 						onClick={handleClose}
 						disabled={isApplying}
+						className="rounded-full"
 					>
 						Cancel
 					</Button>
@@ -144,7 +151,7 @@ const ApplyToJobModal: React.FC<ApplyJobModalProps> = ({
 							!coverLetter.trim() ||
 							offeredCost <= 0
 						}
-						className="bg-green-600 hover:bg-green-700"
+						className="bg-green-600 hover:bg-green-700 text-white rounded-full"
 					>
 						{isApplying ? "Submitting..." : "Submit Application"}
 					</Button>

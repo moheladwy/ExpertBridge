@@ -118,27 +118,27 @@ const FileUpload: React.FC<FileUploadProps> = ({
 	return (
 		<>
 			<div className="flex">
-				<div className="bg-white rounded-4xl shadow-[rgba(149,157,165,0.2)_0px_8px_24px] p-4 hover:opacity-60 transition-opacity">
+				<div className="bg-card rounded-xl border border-border shadow-lg p-4 hover:border-primary/50 transition-all duration-200">
 					<div
-						className="flex justify-center items-center relative w-full h-[25vh] border-2 border-dashed border-[#4267b2] rounded-[20px] p-5"
+						className="flex justify-center items-center relative w-full h-[25vh] border-2 border-dashed border-primary/30 rounded-xl p-5 bg-muted/30 hover:bg-muted/50 transition-colors"
 						ref={wrapperRef}
 						onDragEnter={onDragEnter}
 						onDragLeave={onDragLeave}
 						onDrop={onDragLeave}
 					>
 						<div className="flex justify-center p-1 text-center">
-							<div className="font-bold max-md:text-sm max-md:w-full">
+							<div className="font-bold text-card-foreground max-md:text-sm max-md:w-full">
 								{limit > 1
 									? "Browse to upload files"
 									: "Browse to upload file"}
 							</div>
 
 							<div className="max-md:hidden">
-								<div className="text-slate-600 max-md:text-sm">
+								<div className="text-muted-foreground max-md:text-sm">
 									Supported Files
 								</div>
-								<div className="text-slate-600 max-md:text-sm">
-									JPG, JPEG, PNG
+								<div className="text-muted-foreground max-md:text-sm">
+									JPG, JPEG, PNG, MP4
 								</div>
 							</div>
 						</div>
@@ -191,10 +191,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
 									return (
 										<div
 											key={index}
-											className="relative bg-[#f5f8ff] rounded-xl p-2"
+											className="relative bg-card border border-border rounded-xl p-3 hover:shadow-md transition-all duration-200"
 										>
 											<div className="flex items-center justify-between w-full">
-												<div className="flex">
+												<div className="flex items-center gap-3">
 													{isImage ? (
 														<img
 															src={
@@ -206,6 +206,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 																objectFit:
 																	"contain",
 															}}
+															className="rounded-lg"
 														/>
 													) : isVideo ? (
 														<ReactPlayer
@@ -218,11 +219,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
 														/>
 													) : null}
 
-													<div className="mx-4 w-2/4">
-														<div className="text-sm max-xl:hidden">
+													<div className="flex-1">
+														<div className="text-sm font-medium text-card-foreground max-xl:hidden">
 															{item.name}
 														</div>
-														<div className="text-sm max-xl:hidden">
+														<div className="text-xs text-muted-foreground max-xl:hidden">
 															{calcSize(
 																item.size
 															)}
@@ -238,9 +239,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
 															fileSingleRemove();
 														}
 													}}
-													className="max-lg:w-7 max-md:w-4 text-[#df2c0e] hover:text-red-700 transition-colors"
+													className="max-lg:w-7 max-md:w-4 text-destructive hover:text-destructive/80 transition-colors p-2 hover:bg-destructive/10 rounded-lg"
 												>
-													<Trash2 className="max-lg:w-5" />
+													<Trash2 className="max-lg:w-5 w-5 h-5" />
 												</button>
 											</div>
 										</div>

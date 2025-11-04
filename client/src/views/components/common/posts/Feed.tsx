@@ -121,9 +121,9 @@ const Feed = ({ startingPost = { id: null } }) => {
 							<LoadingSkeleton count={7} />
 						</div>
 					) : isError ? (
-						<div className="bg-card rounded-2xl shadow-lg border border-destructive p-8">
+						<div className="bg-card rounded-2xl shadow-lg border border-destructive/20 p-8">
 							<div className="text-center">
-								<div className="text-red-400 text-4xl mb-4">
+								<div className="text-destructive text-4xl mb-4">
 									⚠️
 								</div>
 								<div className="text-destructive font-medium">
@@ -221,9 +221,9 @@ const Feed = ({ startingPost = { id: null } }) => {
 										disabled={
 											!hasNextPage || isFetchingNextPage
 										}
-										className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
+										className={`px-8 py-4 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
 											hasNextPage && !isFetchingNextPage
-												? "bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
+												? "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-lg hover:shadow-xl"
 												: "bg-muted text-muted-foreground cursor-not-allowed"
 										}`}
 									>

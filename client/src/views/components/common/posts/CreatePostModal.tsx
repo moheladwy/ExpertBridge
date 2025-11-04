@@ -259,15 +259,10 @@ const CreatePostModal: React.FC = () => {
 							{!bodyError && (
 								<div className="flex justify-end mt-1">
 									<div
-										color={
-											bodyCharsLeft < 1
-												? "error"
-												: "green"
-										}
 										className={
 											bodyCharsLeft < 1
 												? "text-destructive"
-												: "text-green-500"
+												: "text-green-600"
 										}
 									>
 										{bodyCharsLeft} characters left
@@ -348,7 +343,7 @@ const CreatePostModal: React.FC = () => {
 					</div>
 					{/* Publish Button */}
 					<Button
-						className="w-full bg-main-blue hover:bg-blue-950 py-3"
+						className="w-full bg-primary hover:bg-primary/90 py-3 rounded-full text-lg font-semibold"
 						onClick={handleSubmit}
 						disabled={isLoading || uploadResult.isLoading}
 					>

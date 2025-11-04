@@ -24,6 +24,7 @@ import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Separator } from "@/views/components/ui/separator";
 import { useCreateJobPostingMutation } from "@/features/jobPostings/jobPostingsSlice";
+import { Briefcase } from "lucide-react";
 
 // Character limits
 const TITLE_MAX_LENGTH = 256;
@@ -199,17 +200,17 @@ const CreateJobModal: React.FC = () => {
 	return (
 		<>
 			<div
-				className="flex justify-center items-center gap-2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700"
+				className="flex justify-center items-center gap-3 bg-card border border-border shadow-sm hover:shadow-md rounded-xl p-4 cursor-pointer transition-all duration-200"
 				onClick={handleOpen}
 			>
 				{isLoggedIn && (
-					<div className="bg-white dark:bg-gray-800 flex justify-center items-center">
+					<div className="flex justify-center items-center">
 						{userProfile?.profilePictureUrl ? (
 							<img
 								src={userProfile.profilePictureUrl}
 								width={45}
 								height={45}
-								className="rounded-full"
+								className="rounded-full ring-2 ring-border"
 								alt="Profile Picture"
 							/>
 						) : (
@@ -218,12 +219,12 @@ const CreateJobModal: React.FC = () => {
 								alt="Profile Picture"
 								width={45}
 								height={45}
-								className="rounded-full"
+								className="rounded-full ring-2 ring-border"
 							/>
 						)}
 					</div>
 				)}
-				<Button className="bg-muted text-muted-foreground px-5 hover:bg-accent hover:text-primary w-full rounded-full">
+				<Button className="bg-muted text-muted-foreground px-5 hover:bg-primary/10 hover:text-primary w-full rounded-full font-medium">
 					<div className="w-full text-left">
 						Post a job opportunity
 					</div>
@@ -237,21 +238,24 @@ const CreateJobModal: React.FC = () => {
 			>
 				<DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
-						<DialogTitle className="text-center text-2xl font-bold">
+						<DialogTitle className="flex items-center gap-3 text-2xl font-bold">
+							<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+								<Briefcase className="w-5 h-5 text-primary" />
+							</div>
 							Post a Job Opportunity
 						</DialogTitle>
-						<Separator className="dark:bg-gray-600" />
+						<Separator className="bg-border" />
 					</DialogHeader>
 
 					{/* User Profile Info */}
-					<div className="flex items-center mb-4 mt-2">
-						<div className="mr-2">
+					<div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg mb-4 mt-2">
+						<div>
 							{userProfile?.profilePictureUrl ? (
 								<img
 									src={userProfile.profilePictureUrl}
 									width={40}
 									height={40}
-									className="rounded-full"
+									className="rounded-full ring-2 ring-border"
 									alt="Profile"
 								/>
 							) : (
@@ -260,13 +264,13 @@ const CreateJobModal: React.FC = () => {
 									alt="Profile Picture"
 									width={40}
 									height={40}
-									className="rounded-full"
+									className="rounded-full ring-2 ring-border"
 								/>
 							)}
 						</div>
-						<div className="font-medium dark:text-white">
+						<div className="font-medium text-card-foreground">
 							{authUser?.displayName || "User"}
-							<span className="text-gray-500 dark:text-gray-400 block text-sm">
+							<span className="text-muted-foreground block text-sm">
 								{` @${userProfile?.username || "username"}`}
 							</span>
 						</div>
@@ -282,7 +286,6 @@ const CreateJobModal: React.FC = () => {
 								placeholder="e.g., Frontend Developer for E-commerce Platform"
 								maxLength={TITLE_MAX_LENGTH}
 								dir="auto"
-								className="dark:bg-gray-700"
 							/>
 							{titleError && (
 								<FieldError>{titleError}</FieldError>
@@ -292,8 +295,8 @@ const CreateJobModal: React.FC = () => {
 									<span
 										className={
 											titleCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{titleCharsLeft} characters left
@@ -312,7 +315,6 @@ const CreateJobModal: React.FC = () => {
 									onChange={handleBudgetChange}
 									placeholder="e.g., 5000"
 									type="number"
-									className="dark:bg-gray-700"
 								/>
 								{budgetError && (
 									<FieldError>{budgetError}</FieldError>
@@ -327,7 +329,6 @@ const CreateJobModal: React.FC = () => {
 									onChange={handleAreaChange}
 									placeholder="e.g., Remote, New York, London"
 									maxLength={AREA_MAX_LENGTH}
-									className="dark:bg-gray-700"
 								/>
 								{areaError && (
 									<FieldError>{areaError}</FieldError>
@@ -337,8 +338,8 @@ const CreateJobModal: React.FC = () => {
 										<span
 											className={
 												areaCharsLeft < 1
-													? "text-red-500"
-													: "text-green-500 dark:text-green-400"
+													? "text-destructive"
+													: "text-green-600"
 											}
 										>
 											{areaCharsLeft} characters left
@@ -359,7 +360,7 @@ const CreateJobModal: React.FC = () => {
 								placeholder="Describe the job requirements, expectations, and any other relevant details..."
 								maxLength={CONTENT_MAX_LENGTH}
 								dir="auto"
-								className="min-h-[150px] resize-none dark:bg-gray-700"
+								className="min-h-[150px] resize-none"
 							/>
 							{contentError && (
 								<FieldError>{contentError}</FieldError>
@@ -369,8 +370,8 @@ const CreateJobModal: React.FC = () => {
 									<span
 										className={
 											contentCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{contentCharsLeft} characters left
@@ -381,12 +382,12 @@ const CreateJobModal: React.FC = () => {
 
 						{/* Media Upload Section */}
 						<div className="w-full">
-							<div className="border border-gray-300 dark:border-gray-600 rounded p-3 mt-2">
-								<div className="flex items-center justify-between">
-									<div className="dark:text-gray-200">
+							<div className="border border-border rounded-lg p-4 mt-2 bg-muted/20">
+								<div className="flex items-center justify-between mb-2">
+									<div className="text-card-foreground font-medium">
 										Add to your job posting
 									</div>
-									<div className="dark:text-gray-400">
+									<div className="text-muted-foreground text-sm">
 										You can upload up to 3 images or videos
 									</div>
 
@@ -455,7 +456,7 @@ const CreateJobModal: React.FC = () => {
 					<Button
 						onClick={handleSubmit}
 						disabled={isLoading || uploadResult.isLoading}
-						className="w-full py-6 bg-[#162955] hover:bg-[#0e1c3b] dark:bg-blue-700 dark:hover:bg-blue-800"
+						className="w-full py-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-semibold text-lg"
 					>
 						Post Job Opportunity
 					</Button>

@@ -200,7 +200,7 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 										className={
 											titleCharsLeft < 1
 												? "text-destructive"
-												: "text-green-500"
+												: "text-green-600"
 										}
 									>
 										{titleCharsLeft} characters left
@@ -227,7 +227,7 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 										className={
 											bodyCharsLeft < 1
 												? "text-destructive"
-												: "text-green-500"
+												: "text-green-600"
 										}
 									>
 										{bodyCharsLeft} characters left
@@ -242,7 +242,7 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 							disabled={
 								isLoading || Object.keys(errors).length > 0
 							}
-							className="w-full py-6 bg-[#162955] hover:bg-[#0e1c3b]"
+							className="w-full py-6 bg-primary hover:bg-primary/90 rounded-full text-lg font-semibold"
 						>
 							{isLoading ? (
 								<>

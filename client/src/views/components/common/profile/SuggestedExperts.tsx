@@ -41,9 +41,9 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 	if (isError) {
 		return (
-			<div className="bg-card rounded-2xl shadow-lg border border-red-100 p-6">
-				<div className="text-red-500 text-center">
-					<div className="text-red-400 mb-2">⚠️</div>
+			<div className="bg-card rounded-2xl shadow-lg border border-destructive/20 p-6">
+				<div className="text-destructive text-center">
+					<div className="mb-2">⚠️</div>
 					<div className="text-sm">Unable to load top users</div>
 				</div>
 			</div>

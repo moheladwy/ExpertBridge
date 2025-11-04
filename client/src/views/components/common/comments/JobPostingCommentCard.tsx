@@ -168,7 +168,7 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 								" " +
 								comment.author.lastName}
 						</h4>
-						<span className="text-xs text-gray-500">
+						<span className="text-xs text-muted-foreground">
 							@{comment.author.username}
 						</span>
 						<p className="text-xs text-muted-foreground">
@@ -207,11 +207,9 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 								<DropdownMenuItem
 									onClick={() => setShowDeleteDialog(true)}
 								>
-									<div className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer">
-										<DeleteIcon className="w-4 text-red-700" />
-										<h6 className="text-sm text-red-700">
-											Delete
-										</h6>
+									<div className="flex items-center justify-center gap-2 cursor-pointer text-destructive">
+										<DeleteIcon className="w-4" />
+										<h6 className="text-sm">Delete</h6>
 									</div>
 								</DropdownMenuItem>
 							</>
@@ -241,7 +239,7 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 									handleDeleteComment();
 									setShowDeleteDialog(false);
 								}}
-								className="bg-red-700 hover:bg-red-900"
+								className="bg-destructive hover:bg-destructive/90"
 							>
 								Delete
 							</AlertDialogAction>
@@ -268,7 +266,7 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 						<div className="flex gap-2 justify-end">
 							<Button
 								size="sm"
-								className="bg-main-blue hover:bg-blue-950"
+								className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
 								onClick={handleSaveEdit}
 								disabled={editResult.isLoading}
 							>
@@ -279,6 +277,7 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 								variant="ghost"
 								onClick={() => setIsEditing(false)}
 								disabled={editResult.isLoading}
+								className="rounded-full"
 							>
 								Cancel
 							</Button>
@@ -305,8 +304,9 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 						{comment.replies && comment.replies.length > 0 && (
 							<Button
 								size="sm"
+								variant="ghost"
 								onClick={() => setShowReplies((prev) => !prev)}
-								className="text-blue-500 hover:text-blue-700"
+								className="text-primary hover:text-primary/80 hover:bg-primary/10 rounded-full"
 							>
 								{showReplies ? "Hide Replies" : "Show Replies"}{" "}
 								({comment.replies.length})
@@ -332,7 +332,7 @@ const JobPostingCommentCard: React.FC<JobCommentItemProps> = ({
 							<Button
 								onClick={handleReplySubmit}
 								size="sm"
-								className="bg-main-blue hover:bg-blue-950"
+								className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
 								disabled={isLoading}
 							>
 								Reply

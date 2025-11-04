@@ -126,7 +126,7 @@ const TokenMonitor: React.FC = () => {
 			<div className="fixed bottom-4 right-4 z-50">
 				<button
 					onClick={() => setIsExpanded(true)}
-					className="px-3 py-2 rounded-lg shadow-lg text-xs font-medium transition-all bg-blue-600 text-white hover:bg-blue-700"
+					className="px-3 py-2 rounded-lg shadow-lg text-xs font-medium transition-all bg-primary text-primary-foreground hover:bg-primary/90"
 				>
 					🔐 Token: {tokenFetches} fetches
 				</button>
@@ -161,7 +161,9 @@ const TokenMonitor: React.FC = () => {
 					</span>
 					<span
 						className={
-							isAuthenticated ? "text-green-600" : "text-red-600"
+							isAuthenticated
+								? "text-green-600"
+								: "text-destructive"
 						}
 					>
 						{isAuthenticated ? "✅ Yes" : "❌ No"}
@@ -248,13 +250,13 @@ const TokenMonitor: React.FC = () => {
 				<div className="grid grid-cols-2 gap-2 pt-2 mt-2 border-t border-border">
 					<button
 						onClick={handleGetToken}
-						className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+						className="px-2 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
 					>
 						Get Token
 					</button>
 					<button
 						onClick={handleClearCache}
-						className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+						className="px-2 py-1 text-xs bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition-colors"
 					>
 						Clear Cache
 					</button>
@@ -284,7 +286,7 @@ const TokenMonitor: React.FC = () => {
 									? "text-green-600 font-semibold"
 									: actionTime && actionTime < 100
 										? "text-yellow-600"
-										: "text-gray-500"
+										: "text-muted-foreground"
 							}`}
 						>
 							{actionTime && actionTime < 10

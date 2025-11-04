@@ -3,7 +3,7 @@ import {
 	useDeleteCommentMutation,
 	useGetCommentsByJobPostingIdQuery,
 } from "@/features/comments/commentsSlice";
-import { Paperclip, ArrowUpDown } from "lucide-react";
+import { Paperclip, ArrowUpDown, XCircle, Briefcase } from "lucide-react";
 import { Button } from "@/views/components/ui/button";
 import {
 	DropdownMenu,
@@ -189,7 +189,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 	};
 
 	return (
-		<div className="dark:text-gray-200">
+		<div className="text-card-foreground">
 			{/* Add Comment Form */}
 			<div className="mt-6">
 				<div onSubmit={handleCommentSubmit} className="space-y-3">
@@ -225,7 +225,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 									}
 									maxLength={MAX_COMMENT_LENGTH}
 									dir="auto"
-									className="resize-none dark:bg-gray-700 dark:text-white"
+									className="resize-none"
 								/>
 								{commentError && (
 									<FieldError>{commentError}</FieldError>
@@ -235,7 +235,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 										<span
 											className={
 												charsLeft === 0
-													? "text-red-500"
+													? "text-destructive"
 													: ""
 											}
 										>
@@ -257,7 +257,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 									/>
 
 									{media.length > 0 && (
-										<ul className="mt-2 list-disc pl-5 text-sm text-gray-600 dark:text-gray-300">
+										<ul className="mt-2 list-disc pl-5 text-sm text-muted-foreground">
 											{media.map((file, idx) => (
 												<li key={idx}>{file.name}</li>
 											))}
@@ -270,12 +270,11 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 							{!commentError && (
 								<div className="flex justify-end">
 									<div
-										color={
+										className={
 											charsLeft === 0
-												? "error"
-												: "text.secondary"
+												? "text-destructive"
+												: "text-muted-foreground"
 										}
-										className="dark:text-gray-400"
 									>
 										{charsLeft} characters left
 									</div>
@@ -286,16 +285,16 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between font-semibold text-lg my-3 dark:text-white">
-				<div className="flex items-center justify-start">
-					<div className="text-gray-600 dark:text-gray-400">
+			<div className="flex items-center justify-between font-semibold text-lg my-4 text-card-foreground">
+				<div className="flex items-center justify-start gap-2">
+					<p className="text-sm font-normal text-muted-foreground">
 						Sort by:
-					</div>
+					</p>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
 								variant="ghost"
-								className="dark:text-gray-300 text-gray-700"
+								className="text-card-foreground"
 							>
 								{sortOptionLabels[sortOption]}
 								<ArrowUpDown className="ml-2 h-4 w-4" />
@@ -346,7 +345,6 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 						variant="ghost"
 						size="icon"
 						onClick={handleAttachClick}
-						className="dark:text-gray-300"
 					>
 						<Paperclip className="h-5 w-5" />
 					</Button>
@@ -354,7 +352,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 					<Button
 						onClick={handleCommentSubmit}
 						disabled={isLoading || uploadResult.isLoading}
-						className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-5"
 					>
 						Add Comment
 					</Button>
@@ -367,18 +365,21 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 				<div className="space-y-4">
 					{[1, 2, 3].map((i) => (
 						<div key={i} className="flex gap-3">
-							<Skeleton className="h-10 w-10 rounded-full dark:bg-gray-700" />
+							<Skeleton className="h-10 w-10 rounded-full bg-muted" />
 							<div className="w-full">
-								<Skeleton className="h-4 w-32 mb-2 dark:bg-gray-700" />
-								<Skeleton className="h-3 w-20 mb-3 dark:bg-gray-700" />
-								<Skeleton className="h-12 w-full dark:bg-gray-700" />
+								<Skeleton className="h-4 w-32 mb-2 bg-muted" />
+								<Skeleton className="h-3 w-20 mb-3 bg-muted" />
+								<Skeleton className="h-12 w-full bg-muted" />
 							</div>
 						</div>
 					))}
 				</div>
 			) : isCommentsError ? (
-				<div className="p-4 rounded-md bg-gray-50 dark:bg-gray-700 text-center">
-					<p className="text-gray-500 dark:text-gray-300">
+				<div className="flex flex-col items-center justify-center p-8 rounded-xl bg-destructive/10 border border-destructive/20 text-center">
+					<div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center mb-3">
+						<XCircle className="w-6 h-6 text-destructive" />
+					</div>
+					<p className="text-destructive font-medium">
 						Unable to load comments. Please try again later.
 					</p>
 				</div>
@@ -393,8 +394,11 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 					/>
 				))
 			) : (
-				<div className="p-4 rounded-md bg-gray-50 dark:bg-gray-700 text-center">
-					<p className="text-gray-500 dark:text-gray-300">
+				<div className="flex flex-col items-center justify-center p-8 rounded-xl bg-muted/30 border border-border text-center">
+					<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+						<Briefcase className="w-6 h-6 text-primary" />
+					</div>
+					<p className="text-muted-foreground">
 						No comments yet. Be the first to share your thoughts
 						about this job posting!
 					</p>

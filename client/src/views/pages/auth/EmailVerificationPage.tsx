@@ -39,11 +39,11 @@ const EmailVerificationPage = () => {
 	};
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen p-4">
-			<div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-				<h1 className="text-2xl font-bold mb-4">
+			<div className="max-w-md w-full bg-card p-8 rounded-lg shadow-md border border-border">
+				<h1 className="text-2xl font-bold mb-4 text-card-foreground">
 					Email Verification Required
 				</h1>
-				<p className="mb-6">
+				<p className="mb-6 text-muted-foreground">
 					Please verify your email address to continue using the
 					application. Check your inbox for a verification link.
 				</p>
@@ -52,7 +52,7 @@ const EmailVerificationPage = () => {
 					<button
 						onClick={handleSendVerificationEmail}
 						disabled={sendingEmail}
-						className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded disabled:bg-gray-400"
+						className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 					>
 						{sendingEmail
 							? "Sending..."
@@ -63,7 +63,7 @@ const EmailVerificationPage = () => {
 
 					<button
 						onClick={handleCheckVerification}
-						className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded"
+						className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground py-2 px-4 rounded-full transition-colors"
 					>
 						I've Verified My Email
 					</button>

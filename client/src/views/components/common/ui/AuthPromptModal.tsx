@@ -44,18 +44,24 @@ const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
 							type="button"
 							variant="outline"
 							onClick={() => handleNavigate("/login")}
+							className="rounded-full"
 						>
 							Log In
 						</Button>
 						<Button
 							type="button"
 							onClick={() => handleNavigate("/signup")}
+							className="bg-primary hover:bg-primary/90 rounded-full"
 						>
 							Sign Up
 						</Button>
 					</div>
 					<DialogClose asChild>
-						<Button type="button" variant="ghost">
+						<Button
+							type="button"
+							variant="ghost"
+							className="rounded-full"
+						>
 							Skip
 						</Button>
 					</DialogClose>

@@ -79,9 +79,9 @@ const ProfileCommentCard: React.FC<ProfileCommentCardProps> = ({
 					<span
 						className={`font-medium text-sm px-2 py-1 rounded-full ${
 							netVotes > 0
-								? "bg-green-100 text-green-700"
+								? "bg-green-500/10 text-green-600 border border-green-200"
 								: netVotes < 0
-									? "bg-red-100 text-red-700"
+									? "bg-destructive/10 text-destructive border border-destructive/20"
 									: "bg-muted text-muted-foreground"
 						}`}
 					>

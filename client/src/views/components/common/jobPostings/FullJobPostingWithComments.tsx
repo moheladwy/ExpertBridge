@@ -202,9 +202,9 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 															)
 														}
 													>
-														<div className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer">
-															<Trash2 className="w-5 text-red-700" />
-															<h6 className="text-red-700">
+														<div className="flex items-center justify-center gap-2 cursor-pointer text-destructive">
+															<Trash2 className="w-5" />
+															<h6>
 																Delete job
 																posting
 															</h6>
@@ -232,7 +232,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 													</AlertDialogDescription>
 												</AlertDialogHeader>
 												<AlertDialogFooter>
-													<AlertDialogCancel>
+													<AlertDialogCancel className="rounded-full">
 														Cancel
 													</AlertDialogCancel>
 													<AlertDialogAction
@@ -242,7 +242,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 																false
 															);
 														}}
-														className="bg-red-700 hover:bg-red-900"
+														className="bg-destructive hover:bg-destructive/90 rounded-full"
 													>
 														Delete
 													</AlertDialogAction>
@@ -321,7 +321,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 											</div>
 
 											{/* Budget Badge */}
-											<div className="flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full">
+											<div className="flex items-center bg-green-500/10 text-green-600 px-4 py-2 rounded-full border border-green-200">
 												<CurrencyDollarIcon className="h-5 w-5 mr-1" />
 												<span className="font-bold text-lg">
 													{formatBudget(
@@ -383,7 +383,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 														onClick={
 															handleViewApplicants
 														}
-														className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold"
+														className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-lg font-semibold rounded-full"
 													>
 														<UserGroupIcon className="h-5 w-5 mr-2" />
 														View Applicants
@@ -393,7 +393,7 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 														onClick={
 															handleOpenApplyModal
 														}
-														className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg font-semibold"
+														className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg font-semibold rounded-full"
 														disabled={
 															jobPosting.isAppliedFor
 														}

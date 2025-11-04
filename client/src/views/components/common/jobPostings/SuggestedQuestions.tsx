@@ -61,7 +61,7 @@ const SuggestedQuestions = () => {
 			</div>
 			<Link
 				to="/posts"
-				className="block w-full mt-4 text-sm text-blue-600 hover:underline text-center"
+				className="block w-full mt-4 text-sm text-primary hover:underline text-center"
 			>
 				View all questions →
 			</Link>

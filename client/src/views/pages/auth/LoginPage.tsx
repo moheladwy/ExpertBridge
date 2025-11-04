@@ -228,11 +228,8 @@ const LoginPage: React.FC = () => {
 	};
 
 	return (
-		<div
-			className="flex justify-center items-center min-h-screen"
-			style={{ backgroundColor: "rgb(15 23 42 / 1)" }}
-		>
-			<div className="p-8 w-full h-screen sm:h-auto sm:max-w-md bg-gray-800 sm:rounded-lg sm:shadow-lg text-white">
+		<div className="flex justify-center items-center min-h-screen bg-background">
+			<div className="p-8 w-full h-screen sm:h-auto sm:max-w-md bg-card sm:rounded-lg sm:shadow-lg text-card-foreground border-0 sm:border sm:border-border">
 				<div className="flex flex-col gap-6">
 					{/* Login Form */}
 					<form onSubmit={handleSubmit}>
@@ -262,7 +259,7 @@ const LoginPage: React.FC = () => {
 
 							{/* Error Message Box */}
 							{signInError && (
-								<div className="bg-red-900/50 border border-red-500 text-red-100 px-4 py-3 rounded-md mb-2">
+								<div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-md mb-2">
 									<p className="text-sm">{signInError}</p>
 								</div>
 							)}
@@ -273,7 +270,7 @@ const LoginPage: React.FC = () => {
 								<div className="grid gap-2">
 									<Label
 										htmlFor="email"
-										className="text-gray-300"
+										className="text-muted-foreground"
 									>
 										Email
 									</Label>
@@ -285,15 +282,15 @@ const LoginPage: React.FC = () => {
 										onChange={handleChange}
 										placeholder="Enter your email"
 										disabled={loading}
-										className={`border-gray-700 bg-gray-700 text-white ${
+										className={`border-border bg-input text-foreground ${
 											errors.email
-												? "border-red-500 focus:border-red-500"
+												? "border-destructive focus:border-destructive"
 												: ""
 										}`}
 										required
 									/>
 									{errors.email && (
-										<p className="text-red-400 text-sm">
+										<p className="text-destructive text-sm">
 											{errors.email}
 										</p>
 									)}
@@ -304,7 +301,7 @@ const LoginPage: React.FC = () => {
 									<div className="flex items-center justify-between">
 										<Label
 											htmlFor="password"
-											className="text-gray-300"
+											className="text-muted-foreground"
 										>
 											Password
 										</Label>
@@ -328,16 +325,16 @@ const LoginPage: React.FC = () => {
 											onChange={handleChange}
 											placeholder="Enter password"
 											disabled={loading}
-											className={`border-gray-700 bg-gray-700 text-white pr-10 ${
+											className={`border-border bg-input text-foreground pr-10 ${
 												errors.password
-													? "border-red-500 focus:border-red-500"
+													? "border-destructive focus:border-destructive"
 													: ""
 											}`}
 											required
 										/>
 										<button
 											type="button"
-											className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+											className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-card-foreground"
 											onClick={togglePasswordVisibility}
 										>
 											{showPassword ? (
@@ -348,7 +345,7 @@ const LoginPage: React.FC = () => {
 										</button>
 									</div>
 									{errors.password && (
-										<p className="text-red-400 text-sm">
+										<p className="text-destructive text-sm">
 											{errors.password}
 										</p>
 									)}
@@ -357,7 +354,7 @@ const LoginPage: React.FC = () => {
 								{/* Login Button */}
 								<Button
 									type="submit"
-									className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+									className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
 									disabled={loading}
 								>
 									{loginLoading ? "Logging in..." : "Login"}
@@ -365,8 +362,8 @@ const LoginPage: React.FC = () => {
 							</div>
 
 							{/* Separator Line with "Or" Text */}
-							<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-gray-700">
-								<span className="relative z-10 bg-gray-800 px-2 text-gray-400">
+							<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+								<span className="relative z-10 bg-card px-2 text-muted-foreground">
 									Or
 								</span>
 							</div>
@@ -375,7 +372,7 @@ const LoginPage: React.FC = () => {
 							<Button
 								type="button"
 								variant="outline"
-								className="w-full"
+								className="w-full rounded-full"
 								disabled={loading}
 								onClick={handleGoogleSignIn}
 							>

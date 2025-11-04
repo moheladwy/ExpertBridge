@@ -128,11 +128,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 															)
 														}
 													>
-														<div className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer">
-															<Trash2 className="w-5 text-red-700" />
-															<h6 className="text-red-700">
-																Delete post
-															</h6>
+														<div className="flex items-center justify-center gap-2 cursor-pointer text-destructive">
+															<Trash2 className="w-5" />
+															<h6>Delete post</h6>
 														</div>
 													</DropdownMenuItem>
 												)}
@@ -157,7 +155,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 													</AlertDialogDescription>
 												</AlertDialogHeader>
 												<AlertDialogFooter>
-													<AlertDialogCancel>
+													<AlertDialogCancel className="rounded-full">
 														Cancel
 													</AlertDialogCancel>
 													<AlertDialogAction
@@ -167,7 +165,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 																false
 															);
 														}}
-														className="bg-red-700 hover:bg-red-900"
+														className="bg-destructive hover:bg-destructive/90 rounded-full"
 													>
 														Delete
 													</AlertDialogAction>

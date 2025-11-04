@@ -110,13 +110,13 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 
 					{/* Main Content - Loading */}
 					<div className="flex-1 max-w-4xl mx-auto space-y-6">
-						<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+						<div className="bg-card rounded-2xl shadow-lg border border-border p-8">
 							<div className="text-center">
-								<Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-								<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+								<Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+								<h3 className="text-lg font-semibold text-card-foreground mb-2">
 									Loading Job Opportunities
 								</h3>
-								<p className="text-gray-500 dark:text-gray-400">
+								<p className="text-muted-foreground">
 									Please wait while we fetch the latest job
 									postings...
 								</p>
@@ -149,22 +149,22 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 				{/* Main Jobs Feed Content */}
 				<div className="flex-1 max-w-4xl mx-auto space-y-6">
 					{/* Create Job Section */}
-					<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+					<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
 						<CreateJobModal />
 					</div>
 
 					{/* Filter Section */}
-					<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4">
+					<div className="bg-card rounded-2xl shadow-lg border border-border p-4">
 						<div className="flex flex-col justify-center items-center gap-3">
 							<div className="flex flex-row text-center items-center justify-center sm:justify-start gap-3">
-								<div className="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg">
-									<Briefcase className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+								<div className="p-2 bg-green-500/10 rounded-lg">
+									<Briefcase className="w-6 h-6 text-green-600" />
 								</div>
 								<div className="flex flex-col justify-center text-center sm:text-left">
-									<h2 className="text-lg text-center font-semibold text-gray-900 dark:text-white">
+									<h2 className="text-lg text-center font-semibold text-card-foreground">
 										Job Opportunities
 									</h2>
-									<p className="text-sm text-gray-500 dark:text-gray-400">
+									<p className="text-sm text-muted-foreground">
 										Discover your next career move
 									</p>
 								</div>
@@ -182,8 +182,8 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 										onClick={() => setFilter(filterOption)}
 										className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
 											filter === filterOption
-												? "text-emerald-600 dark:text-emerald-400"
-												: "hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-white/50 dark:hover:bg-gray-600/50"
+												? "text-green-600 bg-green-500/10"
+												: "text-muted-foreground hover:text-green-600 hover:bg-green-500/5"
 										}`}
 									>
 										{getFilterIcon(filterOption)}
@@ -200,21 +200,21 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 							<LoadingSkeleton count={7} />
 						</div>
 					) : isError ? (
-						<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-100 dark:border-red-900 p-8">
+						<div className="bg-card rounded-2xl shadow-lg border border-destructive/20 p-8">
 							<div className="text-center">
-								<div className="text-red-400 text-4xl mb-4">
+								<div className="text-destructive text-4xl mb-4">
 									⚠️
 								</div>
-								<div className="text-red-600 dark:text-red-400 font-medium">
+								<div className="text-destructive font-medium">
 									Unable to load job postings
 								</div>
-								<p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+								<p className="text-muted-foreground text-sm mt-2">
 									{error?.message ||
 										"Failed to load job postings"}
 								</p>
 								<button
 									onClick={() => refetch()}
-									className="mt-4 px-6 py-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+									className="mt-4 px-6 py-2 bg-destructive/10 text-destructive rounded-full hover:bg-destructive/20 transition-colors"
 								>
 									Try Again
 								</button>
@@ -282,9 +282,9 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 										disabled={
 											!hasNextPage || isFetchingNextPage
 										}
-										className={`px-8 py-4 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
+										className={`px-8 py-4 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
 											hasNextPage && !isFetchingNextPage
-												? "bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl"
+												? "bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl"
 												: "bg-muted text-muted-foreground cursor-not-allowed"
 										}`}
 									>
