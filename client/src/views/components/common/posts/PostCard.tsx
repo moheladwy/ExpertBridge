@@ -1,14 +1,18 @@
 import { useDeletePostMutation } from "@/features/posts/postsSlice";
 import { Link } from "react-router-dom";
-import { MessageCircle } from "lucide-react";
-import { Ellipsis } from "lucide-react";
-import { Link2 } from "lucide-react";
+import {
+	MessageCircle,
+	Ellipsis,
+	Link2,
+	Edit as EditIcon,
+	Trash2,
+} from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/views/components/custom/dropdown-menu";
+} from "@/views/components/ui/dropdown-menu";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -22,9 +26,7 @@ import {
 import toast from "react-hot-toast";
 import { useEffect, useMemo, useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
-import DeleteIcon from "@mui/icons-material/Delete";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
-import { Edit as EditIcon } from "lucide-react";
 import EditPostModal from "./EditPostModal";
 import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
@@ -56,7 +58,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 		}
 	}, [deleteResult.isSuccess, deleteResult.isError, deleteResult.error]);
 
-	if (!memoizedPost) return null;
+	if (!memoizedPost || !memoizedPost.author) return null;
 
 	const totalCommentsNumber = memoizedPost.comments;
 
@@ -67,7 +69,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 			.then(() => {
 				toast.success("Link copied successfully");
 			})
-			.catch((err) => {
+			.catch(() => {
 				toast.error("Failed to copy link");
 			});
 	};
@@ -78,7 +80,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 
 	return (
 		<>
-			<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+			<div className="flex flex-col gap-3 bg-card shadow-md rounded-lg p-4 border border-border">
 				{/* Author Info */}
 				<div className="flex items-center space-x-3">
 					<Link to={`/profile/${memoizedPost.author.id}`}>
@@ -102,7 +104,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 						<div>
 							<Link to={`/profile/${memoizedPost.author.id}`}>
 								{/* Name */}
-								<span className="text-md font-semibold text-gray-800 dark:text-gray-100 block">
+								<span className="text-md font-semibold text-card-foreground block">
 									{memoizedPost.author.firstName +
 										" " +
 										memoizedPost.author.lastName}
@@ -117,12 +119,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 						{/* More */}
 						<DropdownMenu>
 							<DropdownMenuTrigger>
-								<Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:cursor-pointer" />
+								<Ellipsis className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer" />
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
 								<DropdownMenuItem>
 									<div
-										className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+										className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 										onClick={handleCopyLink}
 									>
 										<Link2 className="w-5" />
@@ -134,7 +136,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 										{/* Edit */}
 										<DropdownMenuItem>
 											<div
-												className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+												className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 												onClick={() =>
 													setIsEditModalOpen(true)
 												}
@@ -149,11 +151,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 												setShowDeleteDialog(true)
 											}
 										>
-											<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
-												<DeleteIcon className="w-5 text-red-700" />
-												<h6 className="text-red-700">
-													Delete post
-												</h6>
+											<div className="flex items-center justify-center gap-2 cursor-pointer text-destructive">
+												<Trash2 className="w-5" />
+												<h6>Delete post</h6>
 											</div>
 										</DropdownMenuItem>
 									</>
@@ -177,7 +177,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 									</AlertDialogDescription>
 								</AlertDialogHeader>
 								<AlertDialogFooter>
-									<AlertDialogCancel>
+									<AlertDialogCancel className="rounded-full">
 										Cancel
 									</AlertDialogCancel>
 									<AlertDialogAction
@@ -185,7 +185,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 											handleDeletePost();
 											setShowDeleteDialog(false);
 										}}
-										className="bg-red-700 hover:bg-red-900"
+										className="bg-destructive hover:bg-destructive/90 rounded-full"
 									>
 										Delete
 									</AlertDialogAction>
@@ -197,9 +197,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 
 				{/* Post Title */}
 				<Link to={`/feed/${memoizedPost.id}`}>
-					<div className="break-words">
+					<div className="wrap-break-word">
 						<h2
-							className="text-lg font-bold text-gray-700 dark:text-gray-100 whitespace-pre-wrap"
+							className="text-lg font-bold text-card-foreground whitespace-pre-wrap"
 							dir="auto"
 						>
 							{memoizedPost.title}
@@ -207,9 +207,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 					</div>
 
 					{/* Post Content */}
-					<div className="break-words">
+					<div className="wrap-break-word">
 						<p
-							className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap"
+							className="text-muted-foreground whitespace-pre-wrap"
 							dir="auto"
 						>
 							{memoizedPost.content.substring(0, 100)}...
@@ -235,9 +235,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 
 						{/* Comments */}
 						<Link to={`/feed/${memoizedPost.id}`}>
-							<div className="flex items-center gap-2 rounded-full p-1 px-2 hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer">
-								<MessageCircle className="text-gray-500 dark:text-gray-400" />
-								<div className="text-gray-500 dark:text-gray-400 text-md font-bold">
+							<div className="flex items-center gap-2 rounded-full p-1 px-2 hover:bg-accent hover:cursor-pointer">
+								<MessageCircle className="text-muted-foreground" />
+								<div className="text-muted-foreground text-md font-bold">
 									{totalCommentsNumber}
 								</div>
 							</div>

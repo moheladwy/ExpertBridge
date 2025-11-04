@@ -14,7 +14,7 @@ import {
 } from "@/views/components/ui/tabs";
 
 // Jobs List Page Component
-export const MyJobsPage: React.FC = () => {
+const MyJobsPage: React.FC = () => {
 	const { data: jobs, isLoading, error } = useGetMyJobsQuery();
 	const [selectedTab, setSelectedTab] = useState<"active" | "completed">(
 		"active"
@@ -26,7 +26,7 @@ export const MyJobsPage: React.FC = () => {
 	if (!authUser || !appUser) {
 		return (
 			<div className="text-center p-8">
-				<p className="text-gray-600 dark:text-gray-400">
+				<p className="text-muted-foreground">
 					Please log in to view your jobs.
 				</p>
 			</div>
@@ -48,7 +48,7 @@ export const MyJobsPage: React.FC = () => {
 					{[1, 2, 3].map((i) => (
 						<div
 							key={i}
-							className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6"
+							className="bg-card rounded-lg shadow-sm border border-border p-6"
 						>
 							<Skeleton className="h-6 w-3/4 mb-4" />
 							<div className="space-y-3">
@@ -67,7 +67,7 @@ export const MyJobsPage: React.FC = () => {
 	if (error) {
 		toast.error("Error loading jobs. Please try again.");
 		return (
-			<div className="text-center text-red-600 dark:text-red-400 p-8">
+			<div className="text-center text-destructive p-8">
 				<p>Error loading jobs. Please try again.</p>
 			</div>
 		);
@@ -78,12 +78,12 @@ export const MyJobsPage: React.FC = () => {
 
 	return (
 		<div className="w-full flex justify-center">
-			<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-6">
+			<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-6">
 				<div className="flex flex-col items-center mb-4">
-					<h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+					<h1 className="text-3xl font-bold text-foreground mb-2">
 						My Jobs
 					</h1>
-					<p className="text-gray-600 dark:text-gray-400">
+					<p className="text-muted-foreground">
 						Manage your active and completed jobs
 					</p>
 				</div>
@@ -95,16 +95,16 @@ export const MyJobsPage: React.FC = () => {
 						setSelectedTab(value as "active" | "completed")
 					}
 				>
-					<TabsList className="grid grid-cols-2 mb-6 dark:bg-gray-700">
+					<TabsList className="grid grid-cols-2 mb-6 bg-secondary">
 						<TabsTrigger
 							value="active"
-							className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+							className="data-[state=active]:bg-background"
 						>
 							Active Jobs ({activeJobs.length})
 						</TabsTrigger>
 						<TabsTrigger
 							value="completed"
-							className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+							className="data-[state=active]:bg-background"
 						>
 							Completed ({completedJobs.length})
 						</TabsTrigger>
@@ -128,12 +128,12 @@ export const MyJobsPage: React.FC = () => {
 							<div className="text-center py-12">
 								<Clock
 									size={48}
-									className="mx-auto text-gray-400 dark:text-gray-500 mb-4"
+									className="mx-auto text-muted-foreground mb-4"
 								/>
-								<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+								<h3 className="text-lg font-medium text-foreground mb-2">
 									No active jobs
 								</h3>
-								<p className="text-gray-500 dark:text-gray-400">
+								<p className="text-muted-foreground">
 									You don't have any active jobs at the
 									moment.
 								</p>
@@ -159,12 +159,12 @@ export const MyJobsPage: React.FC = () => {
 							<div className="text-center py-12">
 								<CheckCircle
 									size={48}
-									className="mx-auto text-gray-400 dark:text-gray-500 mb-4"
+									className="mx-auto text-muted-foreground mb-4"
 								/>
-								<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+								<h3 className="text-lg font-medium text-foreground mb-2">
 									No completed jobs
 								</h3>
-								<p className="text-gray-500 dark:text-gray-400">
+								<p className="text-muted-foreground">
 									You haven't completed any jobs yet.
 								</p>
 							</div>
@@ -175,3 +175,5 @@ export const MyJobsPage: React.FC = () => {
 		</div>
 	);
 };
+
+export default MyJobsPage;

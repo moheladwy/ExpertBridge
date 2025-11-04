@@ -10,6 +10,7 @@ import {
 	CardTitle,
 	CardContent,
 	CardFooter,
+	CardDescription,
 } from "@/views/components/ui/card";
 import { Button } from "@/views/components/ui/button";
 import { Input } from "@/views/components/ui/input";
@@ -206,9 +207,9 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 	const getUsernameInputClass = () => {
 		if (username === profile?.username) return "";
 		if (isUsernameAvailable === true)
-			return "border-green-500 focus-visible:ring-green-500";
+			return "border-green-600 focus-visible:ring-green-600";
 		if (isUsernameAvailable === false)
-			return "border-red-500 focus-visible:ring-red-500";
+			return "border-destructive focus-visible:ring-destructive";
 		return "";
 	};
 
@@ -223,11 +224,15 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 	}
 
 	return (
-		<Card className="w-full max-w-2xl mx-auto dark:bg-gray-900 dark:text-white dark:border-gray-700">
+		<Card className="w-full max-w-2xl mx-auto bg-card text-card-foreground border-border">
 			<CardHeader>
 				<CardTitle className="text-xl text-center">
 					Update Your Profile
 				</CardTitle>
+				<CardDescription className="text-center">
+					Update to your profile information below by only changing
+					what you want to update.
+				</CardDescription>
 			</CardHeader>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<CardContent className="space-y-4">
@@ -237,7 +242,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 							<Label
 								htmlFor="firstName"
 								className={
-									errors.firstName ? "text-red-500" : ""
+									errors.firstName ? "text-destructive" : ""
 								}
 							>
 								First Name
@@ -247,13 +252,13 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 								{...register("firstName")}
 								className={
 									errors.firstName
-										? "border-red-500 focus-visible:ring-red-500"
+										? "border-destructive focus-visible:ring-destructive"
 										: ""
 								}
 								dir="auto"
 							/>
 							{errors.firstName && (
-								<p className="text-red-500 text-xs mt-1">
+								<p className="text-destructive text-xs mt-1">
 									{errors.firstName.message}
 								</p>
 							)}
@@ -262,7 +267,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 							<Label
 								htmlFor="lastName"
 								className={
-									errors.lastName ? "text-red-500" : ""
+									errors.lastName ? "text-destructive" : ""
 								}
 							>
 								Last Name
@@ -272,13 +277,13 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 								{...register("lastName")}
 								className={
 									errors.lastName
-										? "border-red-500 focus-visible:ring-red-500"
+										? "border-destructive focus-visible:ring-destructive"
 										: ""
 								}
 								dir="auto"
 							/>
 							{errors.lastName && (
-								<p className="text-red-500 text-xs mt-1">
+								<p className="text-destructive text-xs mt-1">
 									{errors.lastName.message}
 								</p>
 							)}
@@ -289,7 +294,9 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 					<div className="space-y-2">
 						<Label
 							htmlFor="username"
-							className={errors.username ? "text-red-500" : ""}
+							className={
+								errors.username ? "text-destructive" : ""
+							}
 						>
 							Username
 						</Label>
@@ -299,32 +306,29 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 									id="username"
 									{...register("username")}
 									dir="auto"
-									className={`pr-10 ${getUsernameInputClass()} ${errors.username ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+									className={`pr-10 ${getUsernameInputClass()} ${errors.username ? "border-destructive focus-visible:ring-destructive" : ""}`}
 								/>
 								{isCheckingUsername ? (
-									<Loader2 className="absolute right-3 top-2.5 h-5 w-5 animate-spin text-gray-400" />
+									<Loader2 className="absolute right-3 top-2.5 h-5 w-5 animate-spin text-muted-foreground" />
 								) : username === profile?.username ? (
-									<Check className="absolute right-3 top-2.5 h-5 w-5 text-green-500" />
+									<Check className="absolute right-3 top-2.5 h-5 w-5 text-green-600" />
 								) : isUsernameAvailable === true &&
 								  username !== profile?.username ? (
-									<Check className="absolute right-3 top-2.5 h-5 w-5 text-green-500" />
+									<Check className="absolute right-3 top-2.5 h-5 w-5 text-green-600" />
 								) : isUsernameAvailable === false ? (
-									<X className="absolute right-3 top-2.5 h-5 w-5 text-red-500" />
+									<X className="absolute right-3 top-2.5 h-5 w-5 text-destructive" />
 								) : null}
 							</div>
 						</div>
 						{errors.username && (
-							<p className="text-red-500 text-xs mt-1">
+							<p className="text-destructive text-xs mt-1">
 								{errors.username.message}
 							</p>
 						)}
-						{username === profile?.username && (
-							<Check className="absolute right-3 top-2.5 h-5 w-5 text-green-500" />
-						)}
-						{isUsernameAvailable === false &&
+						{isUsernameAvailableSuccess &&
 							username !== profile?.username &&
 							!errors.username && (
-								<p className="text-red-500 text-xs mt-1">
+								<p className="text-destructive text-xs mt-1">
 									Username is already taken
 								</p>
 							)}
@@ -334,7 +338,9 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 					<div className="space-y-2">
 						<Label
 							htmlFor="jobTitle"
-							className={errors.jobTitle ? "text-red-500" : ""}
+							className={
+								errors.jobTitle ? "text-destructive" : ""
+							}
 						>
 							Job Title
 						</Label>
@@ -343,13 +349,13 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 							{...register("jobTitle")}
 							className={
 								errors.jobTitle
-									? "border-red-500 focus-visible:ring-red-500"
+									? "border-destructive focus-visible:ring-destructive"
 									: ""
 							}
 							dir="auto"
 						/>
 						{errors.jobTitle && (
-							<p className="text-red-500 text-xs mt-1">
+							<p className="text-destructive text-xs mt-1">
 								{errors.jobTitle.message}
 							</p>
 						)}
@@ -359,7 +365,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 					<div className="space-y-2">
 						<Label
 							htmlFor="bio"
-							className={errors.bio ? "text-red-500" : ""}
+							className={errors.bio ? "text-destructive" : ""}
 						>
 							Bio
 						</Label>
@@ -370,13 +376,13 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 							rows={4}
 							className={
 								errors.bio
-									? "border-red-500 focus-visible:ring-red-500"
+									? "border-destructive focus-visible:ring-destructive"
 									: ""
 							}
 							dir="auto"
 						/>
 						{errors.bio && (
-							<p className="text-red-500 text-xs mt-1">
+							<p className="text-destructive text-xs mt-1">
 								{errors.bio.message}
 							</p>
 						)}
@@ -414,7 +420,7 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 							</div>
 							<div className="flex flex-wrap gap-2 mt-2">
 								{skills.length === 0 && (
-									<p className="text-gray-500 text-sm">
+									<p className="text-muted-foreground text-sm">
 										No skills added yet
 									</p>
 								)}
@@ -440,10 +446,15 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 						variant="outline"
 						onClick={onClose}
 						disabled={isUpdating}
+						className="rounded-full"
 					>
 						Cancel
 					</Button>
-					<Button type="submit" disabled={isUpdating}>
+					<Button
+						type="submit"
+						disabled={isUpdating}
+						className="bg-primary hover:bg-primary/90 rounded-full"
+					>
 						{isUpdating ? (
 							<>
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -45,11 +45,11 @@ const JobOffersSkeleton = () => (
 
 const EmptyState = ({ type }: { type: "sent" | "received" }) => (
 	<div className="text-center py-12">
-		<Briefcase className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
-		<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+		<Briefcase className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+		<h3 className="text-lg font-semibold text-card-foreground mb-2">
 			No {type} job offers
 		</h3>
-		<p className="text-gray-600 dark:text-gray-400">
+		<p className="text-muted-foreground">
 			{type === "sent"
 				? "You haven't sent any job offers yet."
 				: "You haven't received any job offers yet."}
@@ -57,7 +57,7 @@ const EmptyState = ({ type }: { type: "sent" | "received" }) => (
 	</div>
 );
 
-export const JobOffersDashboardPage = () => {
+const JobOffersDashboardPage = () => {
 	const [activeTab, setActiveTab] = useState("sent");
 
 	const {
@@ -104,10 +104,10 @@ export const JobOffersDashboardPage = () => {
 	return (
 		<div className="container mx-auto px-4 py-8">
 			<div className="flex flex-col items-center mb-8">
-				<h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+				<h1 className="text-3xl font-bold text-foreground mb-2">
 					Job Offers
 				</h1>
-				<p className="text-gray-600 dark:text-gray-400">
+				<p className="text-muted-foreground">
 					Manage your sent and received job offers
 				</p>
 			</div>
@@ -117,17 +117,17 @@ export const JobOffersDashboardPage = () => {
 				onValueChange={setActiveTab}
 				className="w-full"
 			>
-				<TabsList className="grid w-full grid-cols-2 dark:bg-gray-800">
+				<TabsList className="grid w-full grid-cols-2 bg-secondary">
 					<TabsTrigger
 						value="sent"
-						className="flex items-center gap-2 dark:data-[state=active]:bg-gray-700 dark:text-gray-300"
+						className="flex items-center gap-2 data-[state=active]:bg-background"
 					>
 						<Briefcase className="h-4 w-4" />
 						Sent ({sentOffers.length})
 					</TabsTrigger>
 					<TabsTrigger
 						value="received"
-						className="flex items-center gap-2 dark:data-[state=active]:bg-gray-700 dark:text-gray-300"
+						className="flex items-center gap-2 data-[state=active]:bg-background"
 					>
 						<User className="h-4 w-4" />
 						Received ({receivedOffers.length})
@@ -138,9 +138,9 @@ export const JobOffersDashboardPage = () => {
 					{sentLoading && <JobOffersSkeleton />}
 
 					{sentError && (
-						<div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-							<AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
-							<p className="text-red-800 dark:text-red-300">
+						<div className="flex items-center gap-2 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+							<AlertTriangle className="h-5 w-5 text-destructive" />
+							<p className="text-destructive">
 								Failed to load sent job offers.
 							</p>
 						</div>
@@ -168,9 +168,9 @@ export const JobOffersDashboardPage = () => {
 					{receivedLoading && <JobOffersSkeleton />}
 
 					{receivedError && (
-						<div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-							<AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
-							<p className="text-red-800 dark:text-red-300">
+						<div className="flex items-center gap-2 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+							<AlertTriangle className="h-5 w-5 text-destructive" />
+							<p className="text-destructive">
 								Failed to load received job offers.
 							</p>
 						</div>
@@ -201,3 +201,5 @@ export const JobOffersDashboardPage = () => {
 		</div>
 	);
 };
+
+export default JobOffersDashboardPage;

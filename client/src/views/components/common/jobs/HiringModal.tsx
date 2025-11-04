@@ -4,7 +4,7 @@ import {
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
-} from "@/views/components/custom/dialog";
+} from "@/views/components/ui/dialog";
 import { Button } from "@/views/components/ui/button";
 import { Input } from "@/views/components/ui/input";
 import { Label } from "@/views/components/ui/label";
@@ -192,7 +192,9 @@ const HiringModal = ({
 			<DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-3">
-						<Briefcase className="h-5 w-5 text-indigo-600" />
+						<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+							<Briefcase className="h-5 w-5 text-primary" />
+						</div>
 						<div>
 							<span>Hire {expertProfile.firstName}</span>
 							<p className="text-sm font-normal text-gray-500 mt-1">
@@ -204,9 +206,9 @@ const HiringModal = ({
 				</DialogHeader>
 
 				{/* Expert Summary */}
-				<div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4">
+				<div className="bg-muted/50 border border-border rounded-xl p-4 mb-4">
 					<div className="flex items-center gap-3 mb-3">
-						<div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+						<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
 							{expertProfile.profilePictureUrl ? (
 								<img
 									src={expertProfile.profilePictureUrl}
@@ -218,7 +220,7 @@ const HiringModal = ({
 							)}
 						</div>
 						<div>
-							<h4 className="font-medium text-gray-900 dark:text-white">
+							<h4 className="font-medium text-card-foreground">
 								{expertProfile.firstName}
 							</h4>
 						</div>
@@ -235,7 +237,11 @@ const HiringModal = ({
 							onChange={(e) =>
 								handleInputChange("title", e.target.value)
 							}
-							className={errors.title ? "border-red-500" : ""}
+							className={
+								errors.title
+									? "border-destructive focus:ring-destructive"
+									: ""
+							}
 						/>
 						{errors.title && (
 							<p className="text-sm text-red-500">
@@ -257,7 +263,9 @@ const HiringModal = ({
 							}
 							rows={4}
 							className={
-								errors.description ? "border-red-500" : ""
+								errors.description
+									? "border-destructive focus:ring-destructive"
+									: ""
 							}
 						/>
 						{errors.description && (
@@ -324,7 +332,7 @@ const HiringModal = ({
 					<div className="space-y-2">
 						<Label htmlFor="area">Location *</Label>
 						<div className="relative">
-							<MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+							<MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
 							<Input
 								id="area"
 								placeholder="e.g., Remote, New York, On-site, etc."
@@ -332,7 +340,7 @@ const HiringModal = ({
 								onChange={(e) =>
 									handleInputChange("area", e.target.value)
 								}
-								className={`pl-10 ${errors.area ? "border-red-500" : ""}`}
+								className={`pl-10 ${errors.area ? "border-destructive focus:ring-destructive" : ""}`}
 							/>
 						</div>
 						{errors.area && (
@@ -410,11 +418,11 @@ const HiringModal = ({
 								{formData.attachments.map((file, index) => (
 									<div
 										key={index}
-										className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded"
+										className="flex items-center justify-between bg-secondary p-2 rounded"
 									>
 										<div className="flex items-center gap-2">
 											<FileText className="h-4 w-4 text-gray-500" />
-											<span className="text-sm text-gray-700 dark:text-gray-300">
+											<span className="text-sm text-card-foreground">
 												{file.name}
 											</span>
 											<span className="text-xs text-gray-500">

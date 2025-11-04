@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextField } from "@mui/material";
 import { Comment, DeleteCommentRequest } from "@/features/comments/types";
 import {
 	useCreateReplyMutation,
@@ -12,12 +11,15 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Link } from "react-router";
+import { Button } from "@/views/components/ui/button";
+import { Textarea } from "@/views/components/ui/textarea";
+import { Field } from "@/views/components/ui/field";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/views/components/custom/dropdown-menu";
+} from "@/views/components/ui/dropdown-menu";
 import { DeleteIcon, EditIcon, Ellipsis, Link2 } from "lucide-react";
 import {
 	AlertDialog,
@@ -124,7 +126,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 
 	return (
 		<div
-			className={`flex flex-col gap-3 p-3 border-t border-gray-300 dark:border-gray-600 ${isReply ? "ml-4 border-l-2 border-t-0 border-gray-300 dark:border-l-gray-600 pl-3" : ""}`}
+			className={`flex flex-col gap-3 p-3 border-t border-border ${isReply ? "ml-4 border-l-2 border-t-0 border-border pl-3" : ""}`}
 			id={`comment-${comment.id}`}
 		>
 			{/* Comment Author */}
@@ -153,7 +155,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 						)}
 					</Link>
 					<div>
-						<h4 className="text-sm font-semibold dark:text-white">
+						<h4 className="text-sm font-semibold text-card-foreground">
 							{comment.author.firstName +
 								" " +
 								comment.author.lastName}
@@ -161,7 +163,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 						<span className="text-xs text-gray-500">
 							@{comment.author.username}
 						</span>
-						<p className="text-xs text-gray-500 dark:text-gray-400">
+						<p className="text-xs text-muted-foreground">
 							<TimeAgo timestamp={comment.createdAt} />
 						</p>
 					</div>
@@ -170,12 +172,12 @@ const CommentCard: React.FC<CommentItemProps> = ({
 				{/* More Dropdown */}
 				<DropdownMenu>
 					<DropdownMenuTrigger>
-						<Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer w-4 h-4" />
+						<Ellipsis className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer w-4 h-4" />
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
 						<DropdownMenuItem>
 							<div
-								className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+								className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 								onClick={handleCopyCommentLink}
 							>
 								<Link2 className="w-4" />
@@ -187,7 +189,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 							<>
 								<DropdownMenuItem>
 									<div
-										className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+										className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 										onClick={handleEditComment}
 									>
 										<EditIcon className="w-4" />
@@ -197,7 +199,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 								<DropdownMenuItem
 									onClick={() => setShowDeleteDialog(true)}
 								>
-									<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
+									<div className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer">
 										<DeleteIcon className="w-4 text-red-700" />
 										<h6 className="text-sm text-red-700">
 											Delete
@@ -241,50 +243,32 @@ const CommentCard: React.FC<CommentItemProps> = ({
 			</div>
 
 			{/* Comment Content */}
-			<div className="w-full break-words">
+			<div className="w-full wrap-break-word">
 				{isEditing ? (
 					<div className="flex flex-col gap-2">
-						<TextField
-							fullWidth
-							multiline
-							size="small"
-							value={editedText}
-							onChange={(e) => setEditedText(e.target.value)}
-							disabled={editResult.isLoading}
-							slotProps={{ htmlInput: { dir: "auto" } }}
-							className="dark:text-white [&_.MuiOutlinedInput-root]:dark:text-white [&_.MuiInputBase-input]:dark:text-white [&_.MuiInputBase-input]::placeholder:dark:text-gray-300 [&_.MuiOutlinedInput-notchedOutline]:dark:border-gray-600"
-							inputProps={{
-								className:
-									"dark:text-white placeholder:dark:text-gray-300",
-							}}
-							sx={{
-								"& .MuiInputBase-input": {
-									color: "var(--tw-text-opacity: 1); color: rgb(255 255 255 / var(--tw-text-opacity))",
-								},
-								"& .MuiOutlinedInput-root": {
-									"&.Mui-focused fieldset": {
-										borderColor:
-											"var(--tw-border-opacity: 1); border-color: rgb(75 85 99 / var(--tw-border-opacity))",
-									},
-								},
-							}}
-						/>
+						<Field className="w-full">
+							<Textarea
+								value={editedText}
+								onChange={(e) => setEditedText(e.target.value)}
+								disabled={editResult.isLoading}
+								dir="auto"
+								className="min-h-[80px] resize-none"
+							/>
+						</Field>
 						<div className="flex gap-2 justify-end">
 							<Button
-								size="small"
-								variant="contained"
-								className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
+								size="sm"
+								className="bg-main-blue hover:bg-blue-950"
 								onClick={handleSaveEdit}
 								disabled={editResult.isLoading}
 							>
 								Save
 							</Button>
 							<Button
-								size="small"
-								variant="text"
+								size="sm"
+								variant="ghost"
 								onClick={() => setIsEditing(false)}
 								disabled={editResult.isLoading}
-								className="dark:text-gray-300 dark:hover:text-white"
 							>
 								Cancel
 							</Button>
@@ -292,7 +276,7 @@ const CommentCard: React.FC<CommentItemProps> = ({
 					</div>
 				) : (
 					<p
-						className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
+						className="text-card-foreground whitespace-pre-wrap"
 						dir="auto"
 					>
 						{comment.content}
@@ -310,9 +294,10 @@ const CommentCard: React.FC<CommentItemProps> = ({
 
 						{comment.replies && comment.replies.length > 0 && (
 							<Button
-								size="small"
+								size="sm"
+								variant="ghost"
 								onClick={() => setShowReplies((prev) => !prev)}
-								className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+								className="text-blue-500 hover:text-blue-700"
 							>
 								{showReplies ? "Hide Replies" : "Show Replies"}
 							</Button>
@@ -321,45 +306,21 @@ const CommentCard: React.FC<CommentItemProps> = ({
 
 					{/* Reply Form */}
 					<div>
-						<TextField
-							fullWidth
-							multiline
-							size="small"
-							variant="outlined"
-							placeholder="Write a reply..."
-							value={replyText}
-							onChange={(e) => setReplyText(e.target.value)}
-							disabled={isLoading}
-							slotProps={{
-								htmlInput: {
-									dir: "auto",
-								},
-							}}
-							className="dark:text-white [&_.MuiOutlinedInput-root]:dark:text-white [&_.MuiInputBase-input]:dark:text-white [&_.MuiOutlinedInput-notchedOutline]:dark:border-gray-600"
-							inputProps={{
-								className:
-									"dark:text-white placeholder:dark:text-gray-300",
-							}}
-							sx={{
-								"& .MuiInputBase-input": {
-									"&::placeholder": {
-										color: "var(--tw-text-opacity: 1); color: rgb(209 213 219 / var(--tw-text-opacity))",
-									},
-								},
-								"& .MuiOutlinedInput-root": {
-									"&.Mui-focused fieldset": {
-										borderColor:
-											"var(--tw-border-opacity: 1); border-color: rgb(75 85 99 / var(--tw-border-opacity))",
-									},
-								},
-							}}
-						/>
+						<Field className="w-full">
+							<Textarea
+								placeholder="Write a reply..."
+								value={replyText}
+								onChange={(e) => setReplyText(e.target.value)}
+								disabled={isLoading}
+								dir="auto"
+								className="min-h-[60px] resize-none"
+							/>
+						</Field>
 						<div className="w-full flex mt-2 justify-end">
 							<Button
 								onClick={handleReplySubmit}
-								variant="contained"
-								size="small"
-								className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
+								size="sm"
+								className="bg-main-blue hover:bg-blue-950"
 								disabled={isLoading}
 							>
 								Reply

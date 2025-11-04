@@ -351,11 +351,8 @@ const SignUpPage: React.FC = (): JSX.Element => {
 	}, [createUserLoading]);
 
 	return (
-		<div
-			className="flex justify-center items-center min-h-screen"
-			style={{ backgroundColor: "rgb(15 23 42 / 1)" }}
-		>
-			<div className="p-8 w-full h-screen sm:h-auto sm:max-w-md bg-gray-800 sm:rounded-lg sm:shadow-lg text-white">
+		<div className="flex justify-center items-center min-h-screen bg-background">
+			<div className="p-8 w-full h-screen sm:h-auto sm:max-w-md bg-card sm:rounded-lg sm:shadow-lg text-card-foreground border-0 sm:border sm:border-border">
 				<div className="flex flex-col gap-6">
 					{/* Sign-Up Form */}
 					<form onSubmit={handleSubmit}>
@@ -363,7 +360,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 							{/* Header with Logo and Title */}
 							<div className="flex flex-col items-center gap-3">
 								{/* Logo and title content remains the same */}
-								<div className="flex h-14 w-14 items-center justify-center rounded-md bg-indigo-600">
+								<div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary">
 									<img
 										src={LogoIcon}
 										alt="Logo"
@@ -373,11 +370,11 @@ const SignUpPage: React.FC = (): JSX.Element => {
 								<h1 className="text-2xl font-bold">
 									Create Your Account
 								</h1>
-								<div className="text-center text-sm text-gray-400">
+								<div className="text-center text-sm text-muted-foreground">
 									Already have an account?{" "}
 									<Link
 										to="/login"
-										className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300"
+										className="text-primary underline underline-offset-4 hover:text-primary/80"
 									>
 										Login
 									</Link>
@@ -386,14 +383,14 @@ const SignUpPage: React.FC = (): JSX.Element => {
 
 							{/* Error Message Box */}
 							{showErrorMessage && signUpError && (
-								<div className="bg-red-600 text-white p-4 rounded-md flex justify-between items-center">
+								<div className="bg-destructive/10 border border-destructive/20 text-destructive p-4 rounded-md flex justify-between items-center">
 									<span className="text-sm">
 										{signUpError}
 									</span>
 									<button
 										type="button"
 										onClick={handleCloseErrorMessage}
-										className="ml-2 text-white hover:text-gray-200 focus:outline-none"
+										className="ml-2 text-destructive hover:text-destructive/80 focus:outline-hidden"
 										aria-label="Close error message"
 									>
 										<svg
@@ -420,7 +417,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 									<div className="grid gap-2">
 										<Label
 											htmlFor="firstName"
-											className="text-gray-300"
+											className="text-muted-foreground"
 										>
 											First Name
 										</Label>
@@ -432,7 +429,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 											onChange={handleChange}
 											placeholder="Enter your first name"
 											disabled={loading}
-											className="border-gray-700 bg-gray-700 text-white"
+											className={`border-border bg-input text-foreground ${errors.firstName ? "border-destructive focus:border-destructive" : ""}`}
 											required
 										/>
 									</div>
@@ -441,7 +438,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 									<div className="grid gap-2">
 										<Label
 											htmlFor="lastName"
-											className="text-gray-300"
+											className="text-muted-foreground"
 										>
 											Last Name
 										</Label>
@@ -453,7 +450,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 											onChange={handleChange}
 											placeholder="Enter your last name"
 											disabled={loading}
-											className="border-gray-700 bg-gray-700 text-white"
+											className={`border-border bg-input text-foreground ${errors.lastName ? "border-destructive focus:border-destructive" : ""}`}
 											required
 										/>
 									</div>
@@ -462,14 +459,14 @@ const SignUpPage: React.FC = (): JSX.Element => {
 									<div className="grid grid-cols-2 gap-4 col-span-2 mt-1">
 										<div>
 											{errors.firstName && (
-												<p className="text-red-400 text-sm">
+												<p className="text-destructive text-sm">
 													{errors.firstName}
 												</p>
 											)}
 										</div>
 										<div>
 											{errors.lastName && (
-												<p className="text-red-400 text-sm">
+												<p className="text-destructive text-sm">
 													{errors.lastName}
 												</p>
 											)}
@@ -481,7 +478,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 								<div className="grid gap-2">
 									<Label
 										htmlFor="email"
-										className="text-gray-300"
+										className="text-muted-foreground"
 									>
 										Email Address
 									</Label>
@@ -493,11 +490,11 @@ const SignUpPage: React.FC = (): JSX.Element => {
 										onChange={handleChange}
 										placeholder="Enter your email"
 										disabled={loading}
-										className="border-gray-700 bg-gray-700 text-white"
+										className={`border-border bg-input text-foreground ${errors.email ? "border-destructive focus:border-destructive" : ""}`}
 										required
 									/>
 									{errors.email && (
-										<p className="text-red-400 text-sm">
+										<p className="text-destructive text-sm">
 											{errors.email}
 										</p>
 									)}
@@ -507,7 +504,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 								<div className="grid gap-2">
 									<Label
 										htmlFor="password"
-										className="text-gray-300"
+										className="text-muted-foreground"
 									>
 										Create Password
 									</Label>
@@ -524,12 +521,12 @@ const SignUpPage: React.FC = (): JSX.Element => {
 											onChange={handleChange}
 											placeholder="Enter password"
 											disabled={loading}
-											className="border-gray-700 bg-gray-700 text-white pr-10"
+											className={`border-border bg-input text-foreground pr-10 ${errors.password ? "border-destructive focus:border-destructive" : ""}`}
 											required
 										/>
 										<button
 											type="button"
-											className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+											className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-card-foreground"
 											onClick={() =>
 												setShowPassword(!showPassword)
 											}
@@ -584,7 +581,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 										</button>
 									</div>
 									{errors.password && (
-										<p className="text-red-400 text-sm">
+										<p className="text-destructive text-sm">
 											{errors.password}
 										</p>
 									)}
@@ -594,7 +591,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 								<div className="grid gap-2">
 									<Label
 										htmlFor="confirmPassword"
-										className="text-gray-300"
+										className="text-muted-foreground"
 									>
 										Confirm Password
 									</Label>
@@ -611,12 +608,12 @@ const SignUpPage: React.FC = (): JSX.Element => {
 											onChange={handleChange}
 											placeholder="Confirm your password"
 											disabled={loading}
-											className="border-gray-700 bg-gray-700 text-white pr-10"
+											className={`border-border bg-input text-foreground pr-10 ${errors.confirmPassword ? "border-destructive focus:border-destructive" : ""}`}
 											required
 										/>
 										<button
 											type="button"
-											className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+											className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-card-foreground"
 											onClick={() =>
 												setShowConfirmPassword(
 													!showConfirmPassword
@@ -673,7 +670,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 										</button>
 									</div>
 									{errors.confirmPassword && (
-										<p className="text-red-400 text-sm">
+										<p className="text-destructive text-sm">
 											{errors.confirmPassword}
 										</p>
 									)}
@@ -682,7 +679,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 								{/* Sign-Up Button */}
 								<Button
 									type="submit"
-									className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+									className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
 									disabled={loading}
 								>
 									{createUserLoading
@@ -692,8 +689,8 @@ const SignUpPage: React.FC = (): JSX.Element => {
 							</div>
 
 							{/* Separator Line with "Or" Text */}
-							<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-gray-700">
-								<span className="relative z-10 bg-gray-800 px-2 text-gray-400">
+							<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+								<span className="relative z-10 bg-card px-2 text-muted-foreground">
 									Or
 								</span>
 							</div>
@@ -702,7 +699,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 							<Button
 								type="button"
 								variant="outline"
-								className="w-full border-gray-700 text-black hover:text-white dark:hover:text-white dark:bg-white dark:hover:bg-gray-700 hover:bg-gray-700"
+								className="w-full rounded-full"
 								disabled={loading}
 								onClick={handleGoogleSignIn}
 							>
@@ -721,7 +718,7 @@ const SignUpPage: React.FC = (): JSX.Element => {
 					</form>
 
 					{/* Terms of Service and Privacy Policy Footer */}
-					<div className="text-balance text-center text-xs text-gray-400 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-indigo-400">
+					<div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
 						By clicking continue, you agree to our{" "}
 						<Link to="/privacy-policy">Terms of Service</Link> and{" "}
 						<Link to="/privacy-policy">Privacy Policy</Link>.

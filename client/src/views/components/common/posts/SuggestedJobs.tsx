@@ -13,8 +13,8 @@ const SuggestedJobs = () => {
 
 	if (isLoading) {
 		return (
-			<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sticky top-4">
-				<h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+			<div className="bg-card rounded-lg shadow-md p-4 sticky top-4">
+				<h3 className="text-lg font-semibold mb-4 text-card-foreground">
 					{isLoggedIn
 						? "See Jobs That Match Your Profile"
 						: "Suggested Jobs"}
@@ -27,8 +27,8 @@ const SuggestedJobs = () => {
 	const jobPostings = jobs || [];
 
 	return (
-		<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sticky top-4">
-			<h3 className="text-lg text-center font-semibold mb-4 text-gray-900 dark:text-white">
+		<div className="bg-card rounded-lg shadow-md p-4 sticky top-4">
+			<h3 className="text-lg text-center font-semibold mb-4 text-card-foreground">
 				{isLoggedIn
 					? "See Jobs That Match Your Profile"
 					: "Suggested Jobs"}
@@ -37,16 +37,16 @@ const SuggestedJobs = () => {
 				{jobPostings.map((job) => (
 					<div
 						key={job.jobPostingId}
-						className="p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+						className="p-3 border border-border rounded-lg hover:bg-accent cursor-pointer transition-colors"
 					>
 						<Link to={`/job/${job.jobPostingId}`}>
-							<h4 className="font-medium text-sm text-gray-900 dark:text-white mb-2 line-clamp-2">
+							<h4 className="font-medium text-sm text-card-foreground mb-2 line-clamp-2">
 								{job.title}
 							</h4>
-							<p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+							<p className="text-xs text-muted-foreground mb-1">
 								By {job.authorName}
 							</p>
-							<p className="text-xs text-gray-500 dark:text-gray-500 mb-2">
+							<p className="text-xs text-muted-foreground mb-2">
 								{job.area} • ${job.budget}
 							</p>
 						</Link>
@@ -55,7 +55,7 @@ const SuggestedJobs = () => {
 			</div>
 			<Link
 				to="/jobs"
-				className="block w-full mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline text-center"
+				className="block w-full mt-4 text-sm text-primary hover:underline text-center"
 			>
 				View all jobs →
 			</Link>

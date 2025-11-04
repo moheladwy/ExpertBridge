@@ -20,7 +20,7 @@ const PostingTags: React.FC<PostingTagsProps> = ({
 			{tags.map((tag, index) => (
 				<span
 					key={index}
-					className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full font-medium border border-purple-200 dark:border-purple-700 hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors cursor-pointer"
+					className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer"
 				>
 					{language === "Arabic" ? tag.arabicName : tag.englishName}
 				</span>

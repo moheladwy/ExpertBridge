@@ -3,16 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Post } from "@/features/posts/types";
 import CommentsSection from "../comments/CommentsSection";
 import PostVoteButtons from "./PostVoteButtons";
-import { CircleArrowLeft } from "lucide-react";
-import { Ellipsis } from "lucide-react";
-import { Link2 } from "lucide-react";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { CircleArrowLeft, Ellipsis, Link2, Trash2 } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/views/components/custom/dropdown-menu";
+} from "@/views/components/ui/dropdown-menu";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -74,9 +71,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 					<div className="w-5/6 max-lg:w-full">
 						{post ? (
 							<div className="flex flex-col gap-3">
-								<div className="flex flex-col gap-3 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+								<div className="flex flex-col gap-3 bg-card shadow-md rounded-lg p-4 border border-border">
 									{/* Post Header */}
-									<div className="flex items-center justify-between pb-3 border-b border-gray-300 dark:border-gray-600">
+									<div className="flex items-center justify-between pb-3 border-b border-border">
 										{/* Back Icon */}
 										<div
 											onClick={() => {
@@ -84,19 +81,19 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 											}}
 											className="cursor-pointer"
 										>
-											<CircleArrowLeft className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
+											<CircleArrowLeft className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer" />
 										</div>
 
 										{/* More */}
 										<DropdownMenu>
 											<DropdownMenuTrigger>
-												<Ellipsis className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:cursor-pointer" />
+												<Ellipsis className="text-muted-foreground hover:text-card-foreground hover:cursor-pointer" />
 											</DropdownMenuTrigger>
 											<DropdownMenuContent>
 												{/* Copy */}
 												<DropdownMenuItem>
 													<div
-														className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+														className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 														onClick={handleCopyLink}
 													>
 														<Link2 className="w-5" />
@@ -108,7 +105,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 												post.author.id ? (
 													<DropdownMenuItem>
 														<div
-															className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer"
+															className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 															onClick={() =>
 																setIsEditModalOpen(
 																	true
@@ -131,11 +128,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 															)
 														}
 													>
-														<div className="flex items-center text-gray-800 dark:text-gray-200 justify-center gap-2 cursor-pointer">
-															<DeleteIcon className="w-5 text-red-700" />
-															<h6 className="text-red-700">
-																Delete post
-															</h6>
+														<div className="flex items-center justify-center gap-2 cursor-pointer text-destructive">
+															<Trash2 className="w-5" />
+															<h6>Delete post</h6>
 														</div>
 													</DropdownMenuItem>
 												)}
@@ -160,7 +155,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 													</AlertDialogDescription>
 												</AlertDialogHeader>
 												<AlertDialogFooter>
-													<AlertDialogCancel>
+													<AlertDialogCancel className="rounded-full">
 														Cancel
 													</AlertDialogCancel>
 													<AlertDialogAction
@@ -170,7 +165,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 																false
 															);
 														}}
-														className="bg-red-700 hover:bg-red-900"
+														className="bg-destructive hover:bg-destructive/90 rounded-full"
 													>
 														Delete
 													</AlertDialogAction>
@@ -211,7 +206,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 												<Link
 													to={`/profile/${post.author.id}`}
 												>
-													<h3 className="text-md font-semibold dark:text-white">
+													<h3 className="text-md font-semibold text-card-foreground">
 														{post.author.firstName +
 															" " +
 															post.author
@@ -230,9 +225,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 									</div>
 
 									{/* Post Header */}
-									<div className="break-words">
+									<div className="wrap-break-word">
 										<h2
-											className="text-lg font-bold text-gray-700 dark:text-gray-200 whitespace-pre-wrap"
+											className="text-lg font-bold text-card-foreground whitespace-pre-wrap"
 											dir="auto"
 										>
 											{post.title}
@@ -240,9 +235,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 									</div>
 
 									{/* Post Content */}
-									<div className="break-words">
+									<div className="wrap-break-word">
 										<p
-											className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap"
+											className="text-muted-foreground whitespace-pre-wrap"
 											dir="auto"
 										>
 											{post.content}
@@ -275,7 +270,9 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 								) : null}
 							</div>
 						) : (
-							<p className="dark:text-white">Post not found.</p>
+							<p className="text-card-foreground">
+								Post not found.
+							</p>
 						)}
 					</div>
 

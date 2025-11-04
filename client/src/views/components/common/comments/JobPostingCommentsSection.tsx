@@ -3,16 +3,20 @@ import {
 	useDeleteCommentMutation,
 	useGetCommentsByJobPostingIdQuery,
 } from "@/features/comments/commentsSlice";
-import { AttachFile, Sort } from "@mui/icons-material";
+import { Paperclip, ArrowUpDown, XCircle, Briefcase } from "lucide-react";
+import { Button } from "@/views/components/ui/button";
 import {
-	Button,
-	IconButton,
-	TextField,
-	Typography,
-	Menu,
-	MenuItem,
-	ListItemText,
-} from "@mui/material";
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/views/components/ui/dropdown-menu";
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+} from "@/views/components/ui/field";
+import { Textarea } from "@/views/components/ui/textarea";
 import { useEffect, useState } from "react";
 import JobPostingCommentCard from "./JobPostingCommentCard";
 import toast from "react-hot-toast";
@@ -64,7 +68,6 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 	const [sortOption, setSortOption] = useState<
 		"newest" | "oldest" | "mostUpvoted" | "mostReplies"
 	>("oldest");
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
 	// Map sort options to display names
 	const sortOptionLabels = {
@@ -93,7 +96,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 	// Calculate characters left
 	const charsLeft = MAX_COMMENT_LENGTH - commentText.length;
 
-	const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const newValue = e.target.value;
 		if (newValue.length <= MAX_COMMENT_LENGTH) {
 			setCommentText(newValue);
@@ -140,7 +143,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 		}
 	}, [deleteResult.isSuccess, deleteResult.isError]);
 
-	const handleAttachClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+	const handleAttachClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 		e.preventDefault();
 		if (!authUser) {
@@ -150,19 +153,10 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 		setShowMediaForm((prev) => !prev);
 	};
 
-	const handleSortMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handleSortMenuClose = () => {
-		setAnchorEl(null);
-	};
-
 	const handleSortChange = (
 		option: "newest" | "oldest" | "mostUpvoted" | "mostReplies"
 	) => {
 		setSortOption(option);
-		handleSortMenuClose();
 	};
 
 	const getSortedComments = () => {
@@ -195,7 +189,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 	};
 
 	return (
-		<div className="dark:text-gray-200">
+		<div className="text-card-foreground">
 			{/* Add Comment Form */}
 			<div className="mt-6">
 				<div onSubmit={handleCommentSubmit} className="space-y-3">
@@ -221,46 +215,39 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 
 						<div className="flex flex-col gap-3 w-full">
 							{/* Comment Text Field */}
-							<TextField
-								fullWidth
-								multiline
-								size="small"
-								variant="outlined"
-								placeholder="Add a comment about this job posting..."
-								value={commentText}
-								slotProps={{
-									htmlInput: {
-										maxLength: MAX_COMMENT_LENGTH,
-										dir: "auto",
-									},
-								}}
-								onChange={handleCommentChange}
-								disabled={isLoading || uploadResult.isLoading}
-								error={!!commentError}
-								helperText={commentError}
-								className="dark:text-white [&_.MuiOutlinedInput-root]:dark:text-white [&_.MuiInputBase-input]:dark:text-white [&_.MuiInputBase-input]::placeholder:dark:text-gray-500 [&_.MuiOutlinedInput-notchedOutline]:dark:border-gray-600"
-								inputProps={{
-									className:
-										"dark:text-white placeholder:dark:text-gray-500",
-								}}
-								sx={{
-									"& .MuiInputBase-input": {
-										"&::placeholder": {
-											color: "var(--tw-text-opacity: 1); color: rgb(107 114 128 / var(--tw-text-opacity))",
-										},
-									},
-									"& .MuiOutlinedInput-root": {
-										"&.Mui-focused fieldset": {
-											borderColor:
-												"var(--tw-border-opacity: 1); border-color: rgb(75 85 99 / var(--tw-border-opacity))",
-										},
-									},
-								}}
-							/>
+							<Field>
+								<Textarea
+									placeholder="Add a comment about this job posting..."
+									value={commentText}
+									onChange={handleCommentChange}
+									disabled={
+										isLoading || uploadResult.isLoading
+									}
+									maxLength={MAX_COMMENT_LENGTH}
+									dir="auto"
+									className="resize-none"
+								/>
+								{commentError && (
+									<FieldError>{commentError}</FieldError>
+								)}
+								{!commentError && (
+									<FieldDescription>
+										<span
+											className={
+												charsLeft === 0
+													? "text-destructive"
+													: ""
+											}
+										>
+											{charsLeft} characters left
+										</span>
+									</FieldDescription>
+								)}
+							</Field>
 
 							{showMediaForm && (
-								<div className="border p-2 rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-									<p className="text-sm mb-2 dark:text-gray-200">
+								<div className="border border-border p-2 rounded-md bg-muted">
+									<p className="text-sm mb-2 text-card-foreground">
 										Attach files:
 									</p>
 
@@ -270,7 +257,7 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 									/>
 
 									{media.length > 0 && (
-										<ul className="mt-2 list-disc pl-5 text-sm text-gray-600 dark:text-gray-300">
+										<ul className="mt-2 list-disc pl-5 text-sm text-muted-foreground">
 											{media.map((file, idx) => (
 												<li key={idx}>{file.name}</li>
 											))}
@@ -282,17 +269,15 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 							{/* Character counter */}
 							{!commentError && (
 								<div className="flex justify-end">
-									<Typography
-										variant="caption"
-										color={
+									<div
+										className={
 											charsLeft === 0
-												? "error"
-												: "text.secondary"
+												? "text-destructive"
+												: "text-muted-foreground"
 										}
-										className="dark:text-gray-400"
 									>
 										{charsLeft} characters left
-									</Typography>
+									</div>
 								</div>
 							)}
 						</div>
@@ -300,103 +285,74 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between font-semibold text-lg my-3 dark:text-white">
-				<div className="flex items-center justify-start">
-					<Typography
-						variant="body2"
-						className="text-gray-600 dark:text-gray-400"
-					>
+			<div className="flex items-center justify-between font-semibold text-lg my-4 text-card-foreground">
+				<div className="flex items-center justify-start gap-2">
+					<p className="text-sm font-normal text-muted-foreground">
 						Sort by:
-					</Typography>
-					<Button
-						onClick={handleSortMenuOpen}
-						className="dark:text-gray-300 text-gray-700"
-						aria-label="Sort comments"
-						aria-controls="sort-menu"
-						aria-haspopup="true"
-						size="small"
-						endIcon={<Sort />}
-						variant="text"
-					>
-						{sortOptionLabels[sortOption]}
-					</Button>
-					<Menu
-						id="sort-menu"
-						anchorEl={anchorEl}
-						keepMounted
-						open={Boolean(anchorEl)}
-						onClose={handleSortMenuClose}
-						className="dark:text-gray-200"
-						PaperProps={{
-							className: "dark:bg-gray-800 dark:text-gray-200",
-							sx: {
-								"& .MuiMenuItem-root.Mui-selected": {
-									backgroundColor: "rgba(25, 118, 210, 0.12)",
-									"&.dark:text-gray-200": {
-										backgroundColor:
-											"rgba(59, 130, 246, 0.2)",
-									},
-								},
-							},
-						}}
-					>
-						<MenuItem
-							onClick={() => handleSortChange("newest")}
-							selected={sortOption === "newest"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Newest first"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-						<MenuItem
-							onClick={() => handleSortChange("oldest")}
-							selected={sortOption === "oldest"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Oldest first"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-						<MenuItem
-							onClick={() => handleSortChange("mostUpvoted")}
-							selected={sortOption === "mostUpvoted"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Most upvoted"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-						<MenuItem
-							onClick={() => handleSortChange("mostReplies")}
-							selected={sortOption === "mostReplies"}
-							className="dark:text-gray-200 dark:hover:bg-gray-700"
-						>
-							<ListItemText
-								primary="Most replies"
-								className="dark:text-gray-200"
-							/>
-						</MenuItem>
-					</Menu>
+					</p>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="ghost"
+								className="text-card-foreground"
+							>
+								{sortOptionLabels[sortOption]}
+								<ArrowUpDown className="ml-2 h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("newest")}
+								className={
+									sortOption === "newest" ? "bg-accent" : ""
+								}
+							>
+								Newest first
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("oldest")}
+								className={
+									sortOption === "oldest" ? "bg-accent" : ""
+								}
+							>
+								Oldest first
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("mostUpvoted")}
+								className={
+									sortOption === "mostUpvoted"
+										? "bg-accent"
+										: ""
+								}
+							>
+								Most upvoted
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => handleSortChange("mostReplies")}
+								className={
+									sortOption === "mostReplies"
+										? "bg-accent"
+										: ""
+								}
+							>
+								Most replies
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 				<div className="flex justify-end gap-2 items-center">
-					<IconButton
-						component="label"
+					<Button
+						variant="ghost"
+						size="icon"
 						onClick={handleAttachClick}
-						className="dark:text-gray-300"
 					>
-						<AttachFile />
-					</IconButton>
+						<Paperclip className="h-5 w-5" />
+					</Button>
 
 					<Button
-						variant="contained"
-						color="primary"
 						onClick={handleCommentSubmit}
 						disabled={isLoading || uploadResult.isLoading}
-						className="bg-main-blue hover:bg-blue-950 dark:bg-blue-700 dark:hover:bg-blue-800"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-5"
 					>
 						Add Comment
 					</Button>
@@ -409,18 +365,21 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 				<div className="space-y-4">
 					{[1, 2, 3].map((i) => (
 						<div key={i} className="flex gap-3">
-							<Skeleton className="h-10 w-10 rounded-full dark:bg-gray-700" />
+							<Skeleton className="h-10 w-10 rounded-full bg-muted" />
 							<div className="w-full">
-								<Skeleton className="h-4 w-32 mb-2 dark:bg-gray-700" />
-								<Skeleton className="h-3 w-20 mb-3 dark:bg-gray-700" />
-								<Skeleton className="h-12 w-full dark:bg-gray-700" />
+								<Skeleton className="h-4 w-32 mb-2 bg-muted" />
+								<Skeleton className="h-3 w-20 mb-3 bg-muted" />
+								<Skeleton className="h-12 w-full bg-muted" />
 							</div>
 						</div>
 					))}
 				</div>
 			) : isCommentsError ? (
-				<div className="p-4 rounded-md bg-gray-50 dark:bg-gray-700 text-center">
-					<p className="text-gray-500 dark:text-gray-300">
+				<div className="flex flex-col items-center justify-center p-8 rounded-xl bg-destructive/10 border border-destructive/20 text-center">
+					<div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center mb-3">
+						<XCircle className="w-6 h-6 text-destructive" />
+					</div>
+					<p className="text-destructive font-medium">
 						Unable to load comments. Please try again later.
 					</p>
 				</div>
@@ -435,8 +394,11 @@ const JobPostingCommentsSection: React.FC<JobCommentsSectionProps> = ({
 					/>
 				))
 			) : (
-				<div className="p-4 rounded-md bg-gray-50 dark:bg-gray-700 text-center">
-					<p className="text-gray-500 dark:text-gray-300">
+				<div className="flex flex-col items-center justify-center p-8 rounded-xl bg-muted/30 border border-border text-center">
+					<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+						<Briefcase className="w-6 h-6 text-primary" />
+					</div>
+					<p className="text-muted-foreground">
 						No comments yet. Be the first to share your thoughts
 						about this job posting!
 					</p>

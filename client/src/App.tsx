@@ -1,24 +1,25 @@
 import { Outlet } from "react-router";
 import NavBar from "@/views/components/common/ui/NavBar";
 import { Toaster } from "react-hot-toast";
-import { auth } from "./lib/firebase";
 import { UpdateUserRequest } from "./features/users/types";
 import { useUpdateUserMutation } from "./features/users/usersSlice";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { tokenManager } from "@/lib/services/TokenManager";
 import { useLocation } from "react-router-dom";
 import AuthPromptModal from "@/views/components/common/ui/AuthPromptModal";
-import { useCurrentAuthUser } from "@/hooks/useCurrentAuthUser";
+import { useCurrentUser } from "@/lib/services/AuthStateManager";
 import {
 	AuthPromptProvider,
 	useAuthPrompt,
 } from "@/contexts/AuthPromptContext";
-import { ThemeProvider } from "@/views/components/common/theme/ThemeProvider";
-import ApiHealthGuard from "@/views/components/common/ui/ApiHealthGuard";
+import { ThemeProvider } from "@/components/theme-provider";
+import TokenMonitor from "@/views/components/common/ui/TokenMonitor";
+import AuthStateMonitor from "@/views/components/common/ui/AuthStateMonitor";
+import ErrorBoundary from "@/components/errors/ErrorBoundary";
 
 function AppContent() {
 	const [updateUser] = useUpdateUserMutation();
-	const authUser = useCurrentAuthUser();
+	const authUser = useCurrentUser(); // Now using centralized auth - no duplicate listener!
 
 	const [showInitialAuthPrompt, setShowInitialAuthPrompt] = useState(false);
 	const location = useLocation();
@@ -51,29 +52,36 @@ function AppContent() {
 	}, [authUser, isLandingPage, isAuthPromptOpen]);
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, async (user) => {
-			if (!user) return;
-			console.log(
-				"invalidating profile cache!........................................."
-			);
-			const token = await user.getIdToken();
-			const name = user.displayName?.split(" ") || [];
+		// Token manager handles auth state internally
+		// This ensures we have a fresh token ready for API calls
+		tokenManager.ensureFreshToken().catch(console.error);
+
+		// Update user profile when auth state changes
+		const updateUserProfile = async () => {
+			if (!authUser) return;
+
+			console.log("Updating user profile...");
+			const token = await tokenManager.getToken();
+			const name = authUser.displayName?.split(" ") || [];
 			const request: UpdateUserRequest = {
 				firstName: name[0],
 				lastName: name[1],
-				email: user.email!,
-				phoneNumber: user.phoneNumber,
-				providerId: user.uid,
-				profilePictureUrl: user.photoURL,
-				isEmailVerified: user.emailVerified,
-				token,
+				email: authUser.email!,
+				phoneNumber: authUser.phoneNumber,
+				providerId: authUser.uid,
+				profilePictureUrl: authUser.photoURL,
+				isEmailVerified: authUser.emailVerified,
+				token: token || undefined,
 			};
 
 			await updateUser(request);
-		});
+		};
 
-		return () => unsubscribe();
-	}, []);
+		// Update profile when auth user changes
+		if (authUser) {
+			updateUserProfile().catch(console.error);
+		}
+	}, [authUser, updateUser]);
 
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -81,7 +89,7 @@ function AppContent() {
 				<NavBar />
 			</div>
 
-			<div className="pt-16 dark:bg-gray-900 bg-gray-100 min-h-screen">
+			<div className="pt-16 bg-background min-h-screen">
 				<Toaster />
 				<Outlet /> {/* Renders the current route's element */}
 			</div>
@@ -99,6 +107,12 @@ function AppContent() {
 				title="Authentication Required"
 				description="Please log in or sign up to continue with this action."
 			/>
+
+			{/* Token Monitor - Development Only */}
+			{process.env.NODE_ENV === "development" && <TokenMonitor />}
+
+			{/* Auth State Monitor - Development Only */}
+			{process.env.NODE_ENV === "development" && <AuthStateMonitor />}
 		</ThemeProvider>
 	);
 }
@@ -106,9 +120,7 @@ function AppContent() {
 function App() {
 	return (
 		<AuthPromptProvider>
-			<ApiHealthGuard>
-				<AppContent />
-			</ApiHealthGuard>
+			<AppContent />
 		</AuthPromptProvider>
 	);
 }

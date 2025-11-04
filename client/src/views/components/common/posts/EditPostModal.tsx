@@ -15,8 +15,15 @@ import toast from "react-hot-toast";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { Separator } from "@/views/components/ui/separator";
-import { Box, Typography, TextField, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldLabel,
+} from "@/views/components/ui/field";
+import { Input } from "@/views/components/ui/input";
+import { Textarea } from "@/views/components/ui/textarea";
+import { X } from "lucide-react";
 
 // Character limits
 const TITLE_MAX_LENGTH = 256;
@@ -126,25 +133,25 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-			{/* Added backdrop-blur-sm for better background effect */}
-			<Card className="w-full max-w-lg mx-auto dark:bg-gray-800 dark:text-white relative">
+		<div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-xs">
+			{/* Added backdrop-blur-xs for better background effect */}
+			<Card className="w-full max-w-lg mx-auto bg-card text-card-foreground relative">
 				{/* Close Button */}
 				<div className="absolute top-3 right-3 z-10">
-					<IconButton onClick={onClose}>
-						<CloseIcon className="dark:text-gray-300" />
-					</IconButton>
+					<Button onClick={onClose} variant="ghost" size="icon">
+						<X className="h-4 w-4 text-muted-foreground" />
+					</Button>
 				</div>
 
 				<CardHeader>
 					{/* Centered, larger, and bold title */}
-					<CardTitle className="text-center text-2xl font-bold dark:text-white">
+					<CardTitle className="text-center text-2xl font-bold text-card-foreground">
 						Edit Post
 					</CardTitle>
-					<Separator className="dark:bg-gray-600 mt-2" />
+					<Separator className="bg-border mt-2" />
 
 					{/* User Profile Info */}
-					<Box className="flex items-center mb-2 mt-2">
+					<div className="flex items-center mb-2 mt-2">
 						<div className="mr-2">
 							{userProfile?.profilePictureUrl ? (
 								<img
@@ -164,115 +171,78 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 								/>
 							)}
 						</div>
-						<Typography
-							variant="subtitle1"
-							className="font-medium dark:text-white"
-						>
+						<div className="font-medium text-card-foreground">
 							{authUser?.displayName || "User"}
-							<span className="text-gray-500 dark:text-gray-400 block text-sm">
+							<span className="text-muted-foreground block text-sm">
 								{` @${userProfile?.username || "username"}`}
 							</span>
-						</Typography>
-					</Box>
+						</div>
+					</div>
 				</CardHeader>
 				<form onSubmit={handleSubmit}>
 					<CardContent className="space-y-4">
-						<div className="space-y-2">
-							<TextField
-								fullWidth
-								required
-								label="Title"
-								variant="outlined"
+						<Field>
+							<FieldLabel>Title *</FieldLabel>
+							<Input
 								value={formData.title}
 								onChange={handleTitleChange}
-								error={!!errors.title}
-								helperText={errors.title || ""}
 								disabled={isLoading}
-								slotProps={{
-									htmlInput: {
-										maxLength: TITLE_MAX_LENGTH,
-										dir: "auto",
-										className: "text-lg dark:text-white",
-									},
-								}}
-								className="dark:bg-gray-700 dark:rounded"
-								InputLabelProps={{
-									className: "dark:text-gray-300",
-								}}
+								maxLength={TITLE_MAX_LENGTH}
+								dir="auto"
+								className="text-lg bg-muted text-card-foreground"
 							/>
+							{errors.title && (
+								<FieldError>{errors.title}</FieldError>
+							)}
 							{!errors.title && (
-								<div className="flex justify-end mt-1">
-									<Typography
-										variant="caption"
-										color={
-											titleCharsLeft < 1
-												? "error"
-												: "green"
-										}
+								<FieldDescription>
+									<span
 										className={
 											titleCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{titleCharsLeft} characters left
-									</Typography>
-								</div>
+									</span>
+								</FieldDescription>
 							)}
-						</div>
-						<div className="space-y-2">
-							<TextField
-								fullWidth
-								required
-								label="Describe Your problem"
-								variant="outlined"
-								multiline
-								rows={7}
+						</Field>
+						<Field>
+							<FieldLabel>Describe Your Problem *</FieldLabel>
+							<Textarea
 								value={formData.content}
 								onChange={handleContentChange}
-								error={!!errors.content}
-								helperText={errors.content || ""}
 								disabled={isLoading}
-								slotProps={{
-									htmlInput: {
-										maxLength: BODY_MAX_LENGTH,
-										dir: "auto",
-										className: "text-md dark:text-white",
-									},
-								}}
-								className="dark:bg-gray-700 dark:rounded"
-								InputLabelProps={{
-									className: "dark:text-gray-300",
-								}}
+								maxLength={BODY_MAX_LENGTH}
+								dir="auto"
+								className="min-h-[180px] resize-none bg-muted text-card-foreground"
 							/>
+							{errors.content && (
+								<FieldError>{errors.content}</FieldError>
+							)}
 							{!errors.content && (
-								<div className="flex justify-end mt-1">
-									<Typography
-										variant="caption"
-										color={
-											bodyCharsLeft < 1
-												? "error"
-												: "green"
-										}
+								<FieldDescription>
+									<span
 										className={
 											bodyCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{bodyCharsLeft} characters left
-									</Typography>
-								</div>
+									</span>
+								</FieldDescription>
 							)}
-						</div>
+						</Field>
 					</CardContent>
-					<CardFooter className="flex justify-center dark:bg-gray-800">
+					<CardFooter className="flex justify-center bg-card">
 						<Button
 							type="submit"
 							disabled={
 								isLoading || Object.keys(errors).length > 0
 							}
-							className="w-full py-6 dark:bg-blue-700 dark:hover:bg-blue-800 dark:text-white bg-[#162955] hover:bg-[#0e1c3b]"
+							className="w-full py-6 bg-primary hover:bg-primary/90 rounded-full text-lg font-semibold"
 						>
 							{isLoading ? (
 								<>

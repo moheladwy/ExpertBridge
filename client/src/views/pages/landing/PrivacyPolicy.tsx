@@ -1,22 +1,22 @@
 const PrivacyPolicy = () => {
 	return (
-		<div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 mt-5 rounded-2xl shadow-lg max-w-4xl mx-auto p-6">
-			<h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+		<div className="bg-card text-card-foreground mt-5 rounded-2xl shadow-lg max-w-4xl mx-auto p-6">
+			<h1 className="text-3xl font-bold mb-6 text-card-foreground">
 				Privacy Policy
 			</h1>
 
-			<p className="mb-4 text-gray-700 dark:text-gray-300">
+			<p className="mb-4 text-muted-foreground">
 				Effective Date: July 3rd, 2025
 			</p>
-			<p className="mb-8 text-gray-700 dark:text-gray-300">
+			<p className="mb-8 text-muted-foreground">
 				Last Updated: July 3rd, 2025
 			</p>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					1. Introduction
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					Welcome to <strong>ExpertBridge</strong> ("we," "our," or
 					"us"). Your privacy is important to us. This Privacy Policy
 					explains how we collect, use, disclose, and safeguard your
@@ -24,7 +24,7 @@ const PrivacyPolicy = () => {
 					via web and mobile ("the Platform"), and your rights
 					regarding that information.
 				</p>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					By using ExpertBridge, you agree to the practices described
 					in this Privacy Policy. If you do not agree, please do not
 					use the Platform.
@@ -32,13 +32,13 @@ const PrivacyPolicy = () => {
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					2. Information We Collect
 				</h2>
-				<h3 className="text-xl font-medium mt-4 text-gray-800 dark:text-gray-200">
+				<h3 className="text-xl font-medium mt-4 text-foreground">
 					A. Information You Provide
 				</h3>
-				<ul className="list-disc list-inside ml-4 text-gray-700 dark:text-gray-300">
+				<ul className="list-disc list-inside ml-4 text-muted-foreground">
 					<li>
 						Account Information: Name, email, phone number,
 						location, password.
@@ -60,10 +60,10 @@ const PrivacyPolicy = () => {
 						job completion.
 					</li>
 				</ul>
-				<h3 className="text-xl font-medium mt-4 text-gray-800 dark:text-gray-200">
+				<h3 className="text-xl font-medium mt-4 text-foreground">
 					B. Automatically Collected Information
 				</h3>
-				<ul className="list-disc list-inside ml-4 text-gray-700 dark:text-gray-300">
+				<ul className="list-disc list-inside ml-4 text-muted-foreground">
 					<li>
 						Device Information: IP address, browser type, operating
 						system, device identifiers.
@@ -77,10 +77,10 @@ const PrivacyPolicy = () => {
 						preferences, authentication tokens.
 					</li>
 				</ul>
-				<h3 className="text-xl font-medium mt-4 text-gray-800 dark:text-gray-200">
+				<h3 className="text-xl font-medium mt-4 text-foreground">
 					C. Information from Third Parties
 				</h3>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					If you sign in or link your account with services like
 					Google or Facebook, we may receive associated information
 					(with your consent).
@@ -88,10 +88,10 @@ const PrivacyPolicy = () => {
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					3. How We Use Your Information
 				</h2>
-				<ul className="list-disc list-inside ml-4 text-gray-700 dark:text-gray-300">
+				<ul className="list-disc list-inside ml-4 text-muted-foreground">
 					<li>Operate, maintain, and improve the Platform.</li>
 					<li>
 						Facilitate job posting, search, communication, and
@@ -118,47 +118,47 @@ const PrivacyPolicy = () => {
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					4. Sharing Your Information
 				</h2>
-				<h3 className="text-xl font-medium mt-4 text-gray-800 dark:text-gray-200">
+				<h3 className="text-xl font-medium mt-4 text-foreground">
 					A. With Other Users
 				</h3>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					Your profile, job posts, comments, ratings, and media may be
 					visible to others as part of the Platform's functionality.
 				</p>
 
-				<h3 className="text-xl font-medium mt-4 text-gray-800 dark:text-gray-200">
+				<h3 className="text-xl font-medium mt-4 text-foreground">
 					B. With Service Providers
 				</h3>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					Hosting providers, analytics tools, customer support,
 					payment processors, and AI moderation services.
 				</p>
 
-				<h3 className="text-xl font-medium mt-4 text-gray-800 dark:text-gray-200">
+				<h3 className="text-xl font-medium mt-4 text-foreground">
 					C. Legal and Safety Obligations
 				</h3>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					To comply with applicable laws or protect the safety and
 					rights of users or the public.
 				</p>
 
-				<h3 className="text-xl font-medium mt-4 text-gray-800 dark:text-gray-200">
+				<h3 className="text-xl font-medium mt-4 text-foreground">
 					D. Business Transfers
 				</h3>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					If we undergo a merger, acquisition, or sale, your data may
 					be part of the transferred assets.
 				</p>
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					5. Data Retention
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					We retain your personal information as long as necessary for
 					service provision, legal compliance, and dispute resolution.
 					You may request deletion under Section 8.
@@ -166,20 +166,20 @@ const PrivacyPolicy = () => {
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					6. Cookies and Tracking
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					We use cookies for authentication, preferences, and
 					analytics. You can manage cookies in your browser settings.
 				</p>
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					7. AI and Automated Processing
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					ExpertBridge uses AI to recommend content, tag posts, and
 					moderate content. We regularly audit these systems for
 					fairness and accuracy.
@@ -187,10 +187,10 @@ const PrivacyPolicy = () => {
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					8. Your Rights and Choices
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					Depending on your location, you may have rights including
 					access, correction, deletion, objection, and portability. To
 					exercise these rights, email us at{" "}
@@ -199,50 +199,50 @@ const PrivacyPolicy = () => {
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					9. Security
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					We use encryption, access control, and monitoring to protect
 					your information, though no method is 100% secure.
 				</p>
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					10. Children's Privacy
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					ExpertBridge is not intended for those under 18. We do not
 					knowingly collect data from minors.
 				</p>
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					11. International Transfers
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					Your data may be processed in jurisdictions outside your
 					own. We implement safeguards to protect it.
 				</p>
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					12. Changes to This Policy
 				</h2>
-				<p className="text-gray-700 dark:text-gray-300">
+				<p className="text-muted-foreground">
 					We may update this policy. Material changes will be
 					communicated via email or in-app notices.
 				</p>
 			</section>
 
 			<section>
-				<h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+				<h2 className="text-2xl font-semibold mb-2 text-card-foreground">
 					13. Contact Us
 				</h2>
-				<p>
+				<p className="text-muted-foreground">
 					For any questions or concerns, contact:
 					<br />
 					<strong>ExpertBridge Team</strong>

@@ -1,15 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import toast from "react-hot-toast";
+import { Button } from "@/views/components/ui/button";
 import {
-	Button,
-	TextField,
-	Typography,
-	Box,
-	Modal,
-	IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/views/components/ui/dialog";
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldLabel,
+} from "@/views/components/ui/field";
+import { Input } from "@/views/components/ui/input";
+import { Textarea } from "@/views/components/ui/textarea";
 import useCallbackOnMediaUploadSuccess from "@/hooks/useCallbackOnMediaUploadSuccess";
 import FileUploadForm from "@/views/components/custom/FileUploadForm";
 import { MediaObject } from "@/features/media/types";
@@ -18,6 +24,7 @@ import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 import { Separator } from "@/views/components/ui/separator";
 import { useCreateJobPostingMutation } from "@/features/jobPostings/jobPostingsSlice";
+import { Briefcase } from "lucide-react";
 
 // Character limits
 const TITLE_MAX_LENGTH = 256;
@@ -77,23 +84,6 @@ const CreateJobModal: React.FC = () => {
 
 	const { isSuccess, isError, isLoading } = createJobResult;
 
-	useEffect(() => {
-		if (isError)
-			toast.error("An error occurred while creating your job posting");
-		if (isSuccess) {
-			toast.success("Job posting created successfully");
-			handleClose();
-		}
-	}, [isSuccess, isError]);
-
-	const handleOpen = () => {
-		if (isLoggedIn) {
-			setOpen(true);
-		} else {
-			showAuthPrompt();
-		}
-	};
-
 	const resetForm = useCallback(() => {
 		setTitle("");
 		setContent("");
@@ -109,6 +99,23 @@ const CreateJobModal: React.FC = () => {
 		setOpen(false);
 		resetForm();
 	}, [setOpen, resetForm]);
+
+	useEffect(() => {
+		if (isError)
+			toast.error("An error occurred while creating your job posting");
+		if (isSuccess) {
+			toast.success("Job posting created successfully");
+			handleClose();
+		}
+	}, [isSuccess, isError, handleClose]);
+
+	const handleOpen = () => {
+		if (isLoggedIn) {
+			setOpen(true);
+		} else {
+			showAuthPrompt();
+		}
+	};
 
 	const handleSubmit = async () => {
 		try {
@@ -153,7 +160,7 @@ const CreateJobModal: React.FC = () => {
 	};
 
 	// Handle content input with character limit
-	const handleContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const newValue = e.target.value;
 		if (newValue.length <= CONTENT_MAX_LENGTH) {
 			setContent(newValue);
@@ -193,17 +200,17 @@ const CreateJobModal: React.FC = () => {
 	return (
 		<>
 			<div
-				className="flex justify-center items-center gap-2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 border border-gray-200 dark:border-gray-700"
+				className="flex justify-center items-center gap-3 bg-card border border-border shadow-sm hover:shadow-md rounded-xl p-4 cursor-pointer transition-all duration-200"
 				onClick={handleOpen}
 			>
 				{isLoggedIn && (
-					<div className="bg-white dark:bg-gray-800 flex justify-center items-center">
+					<div className="flex justify-center items-center">
 						{userProfile?.profilePictureUrl ? (
 							<img
 								src={userProfile.profilePictureUrl}
 								width={45}
 								height={45}
-								className="rounded-full"
+								className="rounded-full ring-2 ring-border"
 								alt="Profile Picture"
 							/>
 						) : (
@@ -212,12 +219,12 @@ const CreateJobModal: React.FC = () => {
 								alt="Profile Picture"
 								width={45}
 								height={45}
-								className="rounded-full"
+								className="rounded-full ring-2 ring-border"
 							/>
 						)}
 					</div>
 				)}
-				<Button className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 px-5 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-main-blue dark:hover:text-blue-400 w-full rounded-full">
+				<Button className="bg-muted text-muted-foreground px-5 hover:bg-primary/10 hover:text-primary w-full rounded-full font-medium">
 					<div className="w-full text-left">
 						Post a job opportunity
 					</div>
@@ -225,41 +232,30 @@ const CreateJobModal: React.FC = () => {
 			</div>
 
 			{/* Job Posting Modal */}
-			<Modal
+			<Dialog
 				open={open}
-				onClose={handleClose}
-				aria-labelledby="create-job-modal"
-				aria-disabled={isLoading || uploadResult.isLoading}
-				className="flex items-center justify-center"
+				onOpenChange={(isOpen) => !isOpen && handleClose()}
 			>
-				<div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 relative dark:text-white max-h-[90vh] overflow-y-auto">
-					{/* Close Button */}
-					<div className="absolute top-3 right-3">
-						<IconButton onClick={handleClose}>
-							<CloseIcon className="dark:text-gray-300" />
-						</IconButton>
-					</div>
-
-					<Typography
-						variant="h6"
-						gutterBottom
-						id="create-job-modal"
-						className="max-sm:text-md dark:text-white"
-					>
-						Post a Job Opportunity
-					</Typography>
-
-					<Separator className="dark:bg-gray-600" />
+				<DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+					<DialogHeader>
+						<DialogTitle className="flex items-center gap-3 text-2xl font-bold">
+							<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+								<Briefcase className="w-5 h-5 text-primary" />
+							</div>
+							Post a Job Opportunity
+						</DialogTitle>
+						<Separator className="bg-border" />
+					</DialogHeader>
 
 					{/* User Profile Info */}
-					<Box className="flex items-center mb-4 mt-2">
-						<div className="mr-2">
+					<div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg mb-4 mt-2">
+						<div>
 							{userProfile?.profilePictureUrl ? (
 								<img
 									src={userProfile.profilePictureUrl}
 									width={40}
 									height={40}
-									className="rounded-full"
+									className="rounded-full ring-2 ring-border"
 									alt="Profile"
 								/>
 							) : (
@@ -268,212 +264,136 @@ const CreateJobModal: React.FC = () => {
 									alt="Profile Picture"
 									width={40}
 									height={40}
-									className="rounded-full"
+									className="rounded-full ring-2 ring-border"
 								/>
 							)}
 						</div>
-						<Typography
-							variant="subtitle1"
-							className="font-medium dark:text-white"
-						>
+						<div className="font-medium text-card-foreground">
 							{authUser?.displayName || "User"}
-							<span className="text-gray-500 dark:text-gray-400 block text-sm">
+							<span className="text-muted-foreground block text-sm">
 								{` @${userProfile?.username || "username"}`}
 							</span>
-						</Typography>
-					</Box>
+						</div>
+					</div>
 
-					<Box className="flex flex-col gap-4 w-full mb-4">
+					<div className="flex flex-col gap-4 w-full mb-4">
 						{/* Job Title Input */}
-						<div className="w-full">
-							<TextField
-								fullWidth
-								label="Job Title"
-								variant="outlined"
+						<Field>
+							<FieldLabel>Job Title *</FieldLabel>
+							<Input
 								value={title}
 								onChange={handleTitleChange}
 								placeholder="e.g., Frontend Developer for E-commerce Platform"
-								slotProps={{
-									htmlInput: {
-										maxLength: TITLE_MAX_LENGTH,
-										dir: "auto",
-										className: "text-lg dark:text-white",
-									},
-								}}
-								required
-								error={!!titleError}
-								helperText={titleError || ""}
-								className="dark:bg-gray-700 dark:rounded"
-								InputLabelProps={{
-									className: "dark:text-gray-300",
-								}}
+								maxLength={TITLE_MAX_LENGTH}
+								dir="auto"
 							/>
+							{titleError && (
+								<FieldError>{titleError}</FieldError>
+							)}
 							{!titleError && (
-								<div className="flex justify-end mt-1">
-									<Typography
-										variant="caption"
-										color={
-											titleCharsLeft < 1
-												? "error"
-												: "green"
-										}
+								<FieldDescription>
+									<span
 										className={
 											titleCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{titleCharsLeft} characters left
-									</Typography>
-								</div>
+									</span>
+								</FieldDescription>
 							)}
-						</div>
+						</Field>
 
 						{/* Budget and Area Row */}
 						<div className="flex gap-4 w-full">
 							{/* Budget Input */}
-							<div className="flex-1">
-								<TextField
-									fullWidth
-									label="Budget ($)"
-									variant="outlined"
+							<Field className="flex-1">
+								<FieldLabel>Budget (USD) *</FieldLabel>
+								<Input
 									value={budget}
 									onChange={handleBudgetChange}
 									placeholder="e.g., 5000"
 									type="number"
-									slotProps={{
-										htmlInput: {
-											min: 1,
-											max: 1000000,
-											className:
-												"text-lg dark:text-white",
-										},
-									}}
-									required
-									error={!!budgetError}
-									helperText={budgetError || ""}
-									className="dark:bg-gray-700 dark:rounded"
-									InputLabelProps={{
-										className: "dark:text-gray-300",
-									}}
 								/>
-							</div>
+								{budgetError && (
+									<FieldError>{budgetError}</FieldError>
+								)}
+							</Field>
 
 							{/* Area/Location Input */}
-							<div className="flex-1">
-								<TextField
-									fullWidth
-									label="Location/Area"
-									variant="outlined"
+							<Field className="flex-1">
+								<FieldLabel>Location</FieldLabel>
+								<Input
 									value={area}
 									onChange={handleAreaChange}
 									placeholder="e.g., Remote, New York, London"
-									slotProps={{
-										htmlInput: {
-											maxLength: AREA_MAX_LENGTH,
-											dir: "auto",
-											className:
-												"text-lg dark:text-white",
-										},
-									}}
-									error={!!areaError}
-									helperText={areaError || ""}
-									className="dark:bg-gray-700 dark:rounded"
-									InputLabelProps={{
-										className: "dark:text-gray-300",
-									}}
+									maxLength={AREA_MAX_LENGTH}
 								/>
+								{areaError && (
+									<FieldError>{areaError}</FieldError>
+								)}
 								{!areaError && area && (
-									<div className="flex justify-end mt-1">
-										<Typography
-											variant="caption"
-											color={
-												areaCharsLeft < 1
-													? "error"
-													: "green"
-											}
+									<FieldDescription>
+										<span
 											className={
 												areaCharsLeft < 1
-													? "text-red-500"
-													: "text-green-500 dark:text-green-400"
+													? "text-destructive"
+													: "text-green-600"
 											}
 										>
 											{areaCharsLeft} characters left
-										</Typography>
-									</div>
+										</span>
+									</FieldDescription>
 								)}
-							</div>
+							</Field>
 						</div>
 
 						{/* Job Description Input */}
-						<div className="w-full">
-							<TextField
-								fullWidth
-								label="Job Description"
-								variant="outlined"
-								multiline
-								rows={6}
+						<Field>
+							<FieldLabel>Job Description *</FieldLabel>
+							<Textarea
 								value={content}
-								onChange={handleContentChange}
+								onChange={(
+									e: React.ChangeEvent<HTMLTextAreaElement>
+								) => handleContentChange(e as any)}
 								placeholder="Describe the job requirements, expectations, and any other relevant details..."
-								slotProps={{
-									htmlInput: {
-										maxLength: CONTENT_MAX_LENGTH,
-										dir: "auto",
-										className: "text-md dark:text-white",
-									},
-								}}
-								required
-								error={!!contentError}
-								helperText={contentError || ""}
-								className="dark:bg-gray-700 dark:rounded"
-								InputLabelProps={{
-									className: "dark:text-gray-300",
-								}}
+								maxLength={CONTENT_MAX_LENGTH}
+								dir="auto"
+								className="min-h-[150px] resize-none"
 							/>
+							{contentError && (
+								<FieldError>{contentError}</FieldError>
+							)}
 							{!contentError && (
-								<div className="flex justify-end mt-1">
-									<Typography
-										variant="caption"
-										color={
-											contentCharsLeft < 1
-												? "error"
-												: "green"
-										}
+								<FieldDescription>
+									<span
 										className={
 											contentCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{contentCharsLeft} characters left
-									</Typography>
-								</div>
+									</span>
+								</FieldDescription>
 							)}
-						</div>
+						</Field>
 
 						{/* Media Upload Section */}
 						<div className="w-full">
-							<Box className="border border-gray-300 dark:border-gray-600 rounded p-3 mt-2">
-								<Box className="flex items-center justify-between">
-									<Typography
-										variant="body2"
-										className="dark:text-gray-200"
-									>
+							<div className="border border-border rounded-lg p-4 mt-2 bg-muted/20">
+								<div className="flex items-center justify-between mb-2">
+									<div className="text-card-foreground font-medium">
 										Add to your job posting
-									</Typography>
-									<Typography
-										variant="caption"
-										color="textSecondary"
-										className="dark:text-gray-400"
-									>
+									</div>
+									<div className="text-muted-foreground text-sm">
 										You can upload up to 3 images or videos
-									</Typography>
+									</div>
 
-									<Box className="flex items-center gap-2">
-										<Box className="flex gap-1">
-											<IconButton
-												color="primary"
+									<div className="flex items-center gap-2">
+										<div className="flex gap-1">
+											<Button
 												onClick={() =>
 													document
 														.getElementById(
@@ -481,7 +401,7 @@ const CreateJobModal: React.FC = () => {
 														)
 														?.click()
 												}
-												size="small"
+												size="sm"
 												className="dark:text-blue-400"
 											>
 												<svg
@@ -494,9 +414,8 @@ const CreateJobModal: React.FC = () => {
 													<path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
 													<path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
 												</svg>
-											</IconButton>
-											<IconButton
-												color="primary"
+											</Button>
+											<Button
 												onClick={() =>
 													document
 														.getElementById(
@@ -504,7 +423,7 @@ const CreateJobModal: React.FC = () => {
 														)
 														?.click()
 												}
-												size="small"
+												size="sm"
 												className="dark:text-blue-400"
 											>
 												<svg
@@ -516,10 +435,10 @@ const CreateJobModal: React.FC = () => {
 												>
 													<path d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z" />
 												</svg>
-											</IconButton>
-										</Box>
-									</Box>
-								</Box>
+											</Button>
+										</div>
+									</div>
+								</div>
 
 								{/* Hidden file input that will be triggered by the IconButtons */}
 								<div style={{}}>
@@ -529,27 +448,20 @@ const CreateJobModal: React.FC = () => {
 										setParentMediaList={setMediaList}
 									/>
 								</div>
-							</Box>
+							</div>
 						</div>
-					</Box>
+					</div>
 
 					{/* Publish Button */}
 					<Button
-						variant="contained"
-						fullWidth
 						onClick={handleSubmit}
 						disabled={isLoading || uploadResult.isLoading}
-						sx={{
-							backgroundColor: "#162955",
-							"&:hover": { backgroundColor: "#0e1c3b" },
-							py: 1.5,
-						}}
-						className="dark:bg-blue-700 dark:hover:bg-blue-800"
+						className="w-full py-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-semibold text-lg"
 					>
 						Post Job Opportunity
 					</Button>
-				</div>
-			</Modal>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 };

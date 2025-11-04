@@ -14,7 +14,7 @@ interface CommentVoteButtonsProps {
 }
 
 const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
-	const authUser = useCurrentAuthUser();
+	const authUser = useCurrentAuthUser(); // Now using singleton - no new subscription!
 	const { showAuthPrompt } = useAuthPrompt();
 
 	const [upvoteComment, upvoteResult] = useUpvoteCommentMutation();
@@ -46,7 +46,7 @@ const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
 				: (null as "upvote" | "downvote" | null),
 	});
 
-	const voteDifference = commentVotes.upvotes - commentVotes.downvotes;
+	const voteDifference = comment.upvotes - comment.downvotes;
 
 	const handleUpvote = async () => {
 		if (!authUser) {
@@ -65,42 +65,47 @@ const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
 	};
 
 	return (
-		<div className="flex gap-2 items-stretch bg-gray-100 rounded-full w-fit">
+		<div className="flex gap-1 items-stretch bg-muted/50 rounded-full w-fit border border-border">
 			<div
-				className={`rounded-l-full p-1 hover:bg-green-100 hover:cursor-pointer ${
-					commentVotes.userVote === "upvote" ? "bg-green-200" : ""
+				className={`rounded-l-full p-1.5 hover:bg-green-100 hover:cursor-pointer transition-colors ${
+					commentVotes.userVote === "upvote" ? "bg-green-100" : ""
 				}`}
 				onClick={handleUpvote}
 			>
 				<ArrowBigUp
-					className={`${
+					className={`w-5 h-5 ${
 						commentVotes.userVote === "upvote"
-							? "text-green-600"
-							: "text-gray-500 hover:text-green-400"
-					}`}
+							? "text-green-600 fill-green-600"
+							: "text-muted-foreground hover:text-green-500"
+					} transition-colors`}
 				/>
 			</div>
 
 			<div
-				className={`flex justify-center items-center text-sm font-bold ${
-					voteDifference >= 0 ? "text-green-600" : "text-red-600"
+				className={`flex justify-center items-center text-sm font-semibold px-2 ${
+					voteDifference > 0
+						? "text-green-600"
+						: voteDifference < 0
+							? "text-red-600"
+							: "text-muted-foreground"
 				}`}
 			>
+				{voteDifference > 0 ? "+" : ""}
 				{voteDifference}
 			</div>
 
 			<div
-				className={`rounded-l-full p-1 rotate-180 hover:bg-red-100 hover:cursor-pointer ${
-					commentVotes.userVote === "downvote" ? "bg-red-200" : ""
+				className={`rounded-r-full p-1.5 rotate-180 hover:bg-red-100 hover:cursor-pointer transition-colors ${
+					commentVotes.userVote === "downvote" ? "bg-red-100" : ""
 				}`}
 				onClick={handleDownvote}
 			>
 				<ArrowBigUp
-					className={`${
+					className={`w-5 h-5 ${
 						commentVotes.userVote === "downvote"
-							? "text-red-600"
-							: "text-gray-500 hover:text-red-400"
-					}`}
+							? "text-red-600 fill-red-600"
+							: "text-muted-foreground hover:text-red-500"
+					} transition-colors`}
 				/>
 			</div>
 		</div>

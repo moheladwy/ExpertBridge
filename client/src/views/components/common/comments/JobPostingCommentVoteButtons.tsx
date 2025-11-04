@@ -54,14 +54,14 @@ const JobPostingCommentVoteButtons: React.FC<JobCommentVoteButtonsProps> = ({
 	};
 
 	return (
-		<div className="flex items-center space-x-4">
+		<div className="flex items-center gap-2">
 			{/* Upvote Button */}
 			<button
 				onClick={handleUpvote}
-				className={`flex items-center space-x-1 px-2 py-1 rounded-lg transition-colors duration-200 ${
+				className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-200 ${
 					comment.isUpvoted
-						? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300"
-						: "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+						? "bg-green-100 text-green-700 border-green-200"
+						: "bg-muted/50 hover:bg-green-50 text-muted-foreground hover:text-green-600 border-border hover:border-green-200"
 				}`}
 			>
 				{comment.isUpvoted ? (
@@ -69,16 +69,16 @@ const JobPostingCommentVoteButtons: React.FC<JobCommentVoteButtonsProps> = ({
 				) : (
 					<HandThumbUpIcon className="h-4 w-4" />
 				)}
-				<span className="text-sm font-medium">{comment.upvotes}</span>
+				<span className="text-sm font-semibold">{comment.upvotes}</span>
 			</button>
 
 			{/* Downvote Button */}
 			<button
 				onClick={handleDownvote}
-				className={`flex items-center space-x-1 px-2 py-1 rounded-lg transition-colors duration-200 ${
+				className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-200 ${
 					comment.isDownvoted
-						? "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300"
-						: "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+						? "bg-red-100 text-red-700 border-red-200"
+						: "bg-muted/50 hover:bg-red-50 text-muted-foreground hover:text-red-600 border-border hover:border-red-200"
 				}`}
 			>
 				{comment.isDownvoted ? (
@@ -86,7 +86,9 @@ const JobPostingCommentVoteButtons: React.FC<JobCommentVoteButtonsProps> = ({
 				) : (
 					<HandThumbDownIcon className="h-4 w-4" />
 				)}
-				<span className="text-sm font-medium">{comment.downvotes}</span>
+				<span className="text-sm font-semibold">
+					{comment.downvotes}
+				</span>
 			</button>
 		</div>
 	);

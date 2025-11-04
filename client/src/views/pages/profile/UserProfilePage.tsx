@@ -125,14 +125,14 @@ const UserProfilePage = () => {
 	return (
 		<>
 			<div className="w-full flex justify-center">
-				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border dark:border-gray-700 p-3">
+				<div className="mt-5 w-3/5 max-xl:w-3/5 max-lg:w-4/5 max-sm:w-full bg-card rounded-lg shadow-md border border-border p-3">
 					{/* Profile Header */}
-					<div className="border-gray-200 dark:border-gray-700">
+					<div className="border-border">
 						{/* Cover Photo */}
 						{isProfileLoading ? (
 							<Skeleton className="h-48 rounded-t-lg" />
 						) : (
-							<div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg"></div>
+							<div className="h-48 bg-secondary rounded-t-lg"></div>
 						)}
 
 						{/* Profile Info Section */}
@@ -140,9 +140,9 @@ const UserProfilePage = () => {
 							{/* Avatar */}
 							<div className="absolute -top-16 left-8">
 								{isProfileLoading ? (
-									<Skeleton className="rounded-full w-[110px] h-[110px] border-white dark:border-gray-800 border-4" />
+									<Skeleton className="rounded-full w-[110px] h-[110px] border-background border-4" />
 								) : (
-									<div className="flex justify-center items-center rounded-full border-white dark:border-gray-800 border-4 text-white text-4xl font-bold">
+									<div className="flex justify-center items-center rounded-full border-background border-4 text-white text-4xl font-bold">
 										{profile?.profilePictureUrl ? (
 											<img
 												src={profile.profilePictureUrl}
@@ -169,7 +169,7 @@ const UserProfilePage = () => {
 									<Skeleton className="h-9 w-28" />
 								) : (
 									<Button
-										className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white gap-2"
+										className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 rounded-full"
 										onClick={handleHireClick}
 									>
 										<UserPlusIcon size={16} />
@@ -195,15 +195,15 @@ const UserProfilePage = () => {
 								) : (
 									<>
 										<div className="flex items-center">
-											<h1 className="text-2xl font-bold mr-4 dark:text-white">
+											<h1 className="text-2xl font-bold mr-4 text-card-foreground">
 												{fullName}
 											</h1>
-											<Badge className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+											<Badge className="bg-primary hover:bg-primary/90 text-primary-foreground">
 												Top Rated
 											</Badge>
 										</div>
 
-										<div className="flex items-center text-gray-500 dark:text-gray-400 mt-2">
+										<div className="flex items-center text-muted-foreground mt-2">
 											<span className="mr-1">
 												@{username}
 											</span>
@@ -213,7 +213,7 @@ const UserProfilePage = () => {
 											</span>
 										</div>
 
-										<div className="mt-4 whitespace-pre-line text-gray-700 dark:text-gray-300">
+										<div className="mt-4 whitespace-pre-line text-muted-foreground">
 											{bio}
 										</div>
 									</>
@@ -223,7 +223,7 @@ const UserProfilePage = () => {
 					</div>
 
 					<Separator
-						className="my-3 dark:bg-gray-700"
+						className="my-3 bg-border"
 						style={{ height: "2px" }}
 					/>
 
@@ -231,56 +231,57 @@ const UserProfilePage = () => {
 					<div className="grid grid-cols-4 gap-4 my-6">
 						{isProfileLoading || isCommentsLoading ? (
 							<>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30">
 									<Skeleton className="h-10 w-16 mx-auto mb-2" />
 									<Skeleton className="h-5 w-24 mx-auto" />
 								</div>
 							</>
 						) : (
 							<>
-								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+									<div className="text-3xl font-bold text-card-foreground mb-1">
 										{stats.questions}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
-										Questions Asked
+									<div className="text-sm text-muted-foreground font-medium">
+										Questions
 									</div>
 								</div>
-								<div className="text-center">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
 									<div
-										className={`text-3xl font-semibold ${stats.votes < 0 ? "text-red-500 dark:text-red-400" : "dark:text-white"}`}
+										className={`text-3xl font-bold mb-1 ${stats.votes < 0 ? "text-red-600" : stats.votes > 0 ? "text-green-600" : "text-card-foreground"}`}
 									>
+										{stats.votes > 0 ? "+" : ""}
 										{stats.votes}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
+									<div className="text-sm text-muted-foreground font-medium">
 										Total Votes
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
+								<div className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+									<div className="text-3xl font-bold text-card-foreground mb-1">
 										{stats.answers}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
-										Given Answers
+									<div className="text-sm text-muted-foreground font-medium">
+										Answers
 									</div>
 								</div>
-								<div className="text-center">
-									<div className="text-3xl font-semibold dark:text-white">
+								<div className="text-center p-4 rounded-xl bg-primary/10 hover:bg-primary/20 transition-colors">
+									<div className="text-3xl font-bold text-primary mb-1">
 										{stats.skills}
 									</div>
-									<div className="text-sm text-gray-500 dark:text-gray-400">
+									<div className="text-sm text-primary font-medium">
 										Skills
 									</div>
 								</div>
@@ -289,7 +290,7 @@ const UserProfilePage = () => {
 					</div>
 
 					<Separator
-						className="my-3 dark:bg-gray-700"
+						className="my-3 bg-border"
 						style={{ height: "2px" }}
 					/>
 
@@ -303,7 +304,7 @@ const UserProfilePage = () => {
 									{[1, 2, 3].map((i) => (
 										<div
 											key={i}
-											className="border-b dark:border-gray-700 pb-4"
+											className="border-b border-border pb-4"
 										>
 											<Skeleton className="h-6 w-3/4 mb-2" />
 											<div className="flex my-1">
@@ -321,22 +322,22 @@ const UserProfilePage = () => {
 								onValueChange={setActiveTab}
 								className="w-full"
 							>
-								<TabsList className="grid grid-cols-3 mb-6 dark:bg-gray-700">
+								<TabsList className="grid grid-cols-3 mb-6 bg-muted">
 									<TabsTrigger
 										value="questions"
-										className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										Latest Questions
 									</TabsTrigger>
 									<TabsTrigger
 										value="answers"
-										className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										Answered Questions
 									</TabsTrigger>
 									<TabsTrigger
 										value="skills"
-										className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-600 dark:text-gray-200"
+										className="data-[state=active]:bg-background data-[state=active]:text-primary"
 									>
 										Skills
 									</TabsTrigger>
@@ -352,7 +353,7 @@ const UserProfilePage = () => {
 											{[1, 2, 3].map((i) => (
 												<div
 													key={i}
-													className="border rounded-lg p-4 dark:border-gray-700"
+													className="border rounded-lg p-4 border-border"
 												>
 													<Skeleton className="h-6 w-3/4 mb-2" />
 													<div className="flex my-1">
@@ -377,9 +378,11 @@ const UserProfilePage = () => {
 												/>
 											))
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											This user hasn't asked any questions
-											yet.
+										<div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-xl">
+											<p className="text-lg">
+												This user hasn't asked any
+												questions yet.
+											</p>
 										</div>
 									)}
 								</TabsContent>
@@ -394,7 +397,7 @@ const UserProfilePage = () => {
 											{[1, 2, 3].map((i) => (
 												<div
 													key={i}
-													className="border rounded-lg p-4 dark:border-gray-700"
+													className="border rounded-xl p-4 border-border"
 												>
 													<Skeleton className="h-6 w-3/4 mb-2" />
 													<div className="flex my-1">
@@ -423,9 +426,11 @@ const UserProfilePage = () => {
 												/>
 											))
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											This user hasn't answered any
-											questions yet.
+										<div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-xl">
+											<p className="text-lg">
+												This user hasn't answered any
+												questions yet.
+											</p>
 										</div>
 									)}
 								</TabsContent>
@@ -448,7 +453,7 @@ const UserProfilePage = () => {
 												(skill, index) => (
 													<div
 														key={index}
-														className="rounded-full px-1 py-2 text-white text-center font-medium bg-indigo-700 dark:bg-indigo-500 bg-gradient-to-r"
+														className="rounded-full px-4 py-2 text-primary-foreground text-center font-medium bg-primary hover:bg-primary/90 transition-colors"
 													>
 														{skill}
 													</div>
@@ -456,9 +461,11 @@ const UserProfilePage = () => {
 											)}
 										</div>
 									) : (
-										<div className="text-center py-8 text-gray-500 dark:text-gray-400">
-											This user hasn't added any skills
-											yet.
+										<div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-xl">
+											<p className="text-lg">
+												This user hasn't added any
+												skills yet.
+											</p>
 										</div>
 									)}
 								</TabsContent>

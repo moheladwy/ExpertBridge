@@ -74,7 +74,7 @@ const JobApplicationsPage: React.FC = () => {
 		if (hasHalfStar) {
 			stars.push(
 				<div key="half" className="relative">
-					<StarIcon className="h-4 w-4 text-gray-300" />
+					<StarIcon className="h-4 w-4 text-muted" />
 					<StarIconSolid
 						className="absolute inset-0 h-4 w-4 text-yellow-400 overflow-hidden"
 						style={{ width: "50%" }}
@@ -86,10 +86,7 @@ const JobApplicationsPage: React.FC = () => {
 		const remainingStars = 5 - Math.ceil(rating);
 		for (let i = 0; i < remainingStars; i++) {
 			stars.push(
-				<StarIcon
-					key={`empty-${i}`}
-					className="h-4 w-4 text-gray-300"
-				/>
+				<StarIcon key={`empty-${i}`} className="h-4 w-4 text-muted" />
 			);
 		}
 
@@ -140,7 +137,7 @@ const JobApplicationsPage: React.FC = () => {
 	if (jobLoading || applicationsLoading) {
 		return (
 			<div className="flex justify-center items-center min-h-screen">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
 			</div>
 		);
 	}
@@ -148,10 +145,14 @@ const JobApplicationsPage: React.FC = () => {
 	if (jobError || applicationsError || !jobPosting) {
 		return (
 			<div className="flex flex-col items-center justify-center min-h-screen">
-				<h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+				<h2 className="text-2xl font-bold text-foreground mb-4">
 					Job not found
 				</h2>
-				<Button onClick={() => navigate("/jobs")} variant="outline">
+				<Button
+					onClick={() => navigate("/jobs")}
+					variant="outline"
+					className="rounded-full"
+				>
 					Back to Jobs
 				</Button>
 			</div>
@@ -178,9 +179,9 @@ const JobApplicationsPage: React.FC = () => {
 							onClick={() => navigate(-1)}
 							className="cursor-pointer"
 						>
-							<CircleArrowLeft className="h-6 w-6 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+							<CircleArrowLeft className="h-6 w-6 text-muted-foreground hover:text-foreground" />
 						</button>
-						<h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+						<h1 className="text-3xl font-bold text-foreground">
 							Job Applications
 						</h1>
 					</div>
@@ -190,7 +191,7 @@ const JobApplicationsPage: React.FC = () => {
 						<CardHeader>
 							<CardTitle className="flex items-center justify-between">
 								<div className="flex items-center gap-3">
-									<BriefcaseIcon className="h-6 w-6 text-blue-600" />
+									<BriefcaseIcon className="h-6 w-6 text-primary" />
 									<span className="text-xl">
 										{jobPosting.title}
 									</span>
@@ -206,14 +207,14 @@ const JobApplicationsPage: React.FC = () => {
 						<CardContent>
 							<div className="flex items-center justify-between">
 								<div className="flex items-center gap-4">
-									<div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+									<div className="flex items-center gap-1 text-muted-foreground">
 										<CurrencyDollarIcon className="h-5 w-5" />
 										<span className="font-semibold">
 											Budget:{" "}
 											{formatBudget(jobPosting.budget)}
 										</span>
 									</div>
-									<div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+									<div className="flex items-center gap-1 text-muted-foreground">
 										<CalendarIcon className="h-5 w-5" />
 										<TimeAgo
 											timestamp={jobPosting.createdAt}
@@ -238,11 +239,11 @@ const JobApplicationsPage: React.FC = () => {
 				{!applications || applications.length === 0 ? (
 					<Card>
 						<CardContent className="text-center py-12">
-							<UserIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-							<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+							<UserIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+							<h3 className="text-lg font-semibold text-foreground mb-2">
 								No Applications Yet
 							</h3>
-							<p className="text-gray-600 dark:text-gray-400">
+							<p className="text-muted-foreground">
 								Your job posting hasn't received any
 								applications yet. Share it to attract more
 								candidates!
@@ -266,7 +267,7 @@ const JobApplicationsPage: React.FC = () => {
 									className={`transition-all duration-200 hover:shadow-lg cursor-pointer ${
 										selectedApplicant ===
 										application.applicantId
-											? "ring-2 ring-blue-500 shadow-lg"
+											? "ring-2 ring-primary shadow-lg"
 											: ""
 									}`}
 									onClick={() =>
@@ -312,7 +313,7 @@ const JobApplicationsPage: React.FC = () => {
 															onClick={(e) =>
 																e.stopPropagation()
 															}
-															className="font-semibold text-lg text-gray-900 dark:text-white hover:text-blue-600"
+															className="font-semibold text-lg text-foreground hover:text-primary"
 														>
 															{
 																applicant?.firstName
@@ -322,7 +323,7 @@ const JobApplicationsPage: React.FC = () => {
 															}
 														</Link>
 														{applicant?.username && (
-															<span className="text-sm text-gray-500">
+															<span className="text-sm text-muted-foreground">
 																@
 																{
 																	applicant.username
@@ -340,7 +341,7 @@ const JobApplicationsPage: React.FC = () => {
 																		applicant.rating
 																	)}
 																</div>
-																<span className="text-sm text-gray-600 dark:text-gray-400">
+																<span className="text-sm text-muted-foreground">
 																	{applicant.rating.toFixed(
 																		1
 																	)}
@@ -348,7 +349,7 @@ const JobApplicationsPage: React.FC = () => {
 															</div>
 														)}
 
-														<div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+														<div className="flex items-center gap-1 text-sm text-muted-foreground">
 															<BriefcaseIcon className="h-4 w-4" />
 															<span>
 																{
@@ -357,7 +358,7 @@ const JobApplicationsPage: React.FC = () => {
 																jobs completed
 															</span>
 														</div>
-														<div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+														<div className="flex items-center gap-1 text-sm text-muted-foreground">
 															<TrophyIcon className="h-4 w-4" />
 															<span>
 																{
@@ -369,12 +370,12 @@ const JobApplicationsPage: React.FC = () => {
 													</div>
 
 													{applicant?.jobTitle && (
-														<p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+														<p className="text-sm text-muted-foreground mb-2">
 															{applicant.jobTitle}
 														</p>
 													)}
 
-													<div className="flex items-center gap-2 text-sm text-gray-500">
+													<div className="flex items-center gap-2 text-sm text-muted-foreground">
 														<CalendarIcon className="h-4 w-4" />
 														<span>
 															Applied{" "}
@@ -390,7 +391,7 @@ const JobApplicationsPage: React.FC = () => {
 
 											{/* Cost Info */}
 											<div className="text-right">
-												<div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+												<div className="text-2xl font-bold text-foreground mb-1">
 													{formatBudget(
 														application.offeredCost
 													)}
@@ -408,12 +409,12 @@ const JobApplicationsPage: React.FC = () => {
 										{selectedApplicant ===
 											application.applicantId &&
 											application.coverLetter && (
-												<div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-													<h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+												<div className="mt-6 pt-4 border-t border-border">
+													<h4 className="font-semibold text-foreground mb-2">
 														Cover Letter
 													</h4>
-													<div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-														<p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+													<div className="bg-muted rounded-lg p-4">
+														<p className="text-foreground whitespace-pre-wrap leading-relaxed">
 															{
 																application.coverLetter
 															}
@@ -423,7 +424,7 @@ const JobApplicationsPage: React.FC = () => {
 													{/* Action Buttons */}
 													<div className="flex gap-3 mt-4">
 														<Button
-															className="bg-green-600 hover:bg-green-700 text-white"
+															className="bg-green-600 hover:bg-green-700 text-white rounded-full"
 															onClick={(e) => {
 																e.stopPropagation();
 																handleAcceptApplication(
@@ -445,6 +446,7 @@ const JobApplicationsPage: React.FC = () => {
 														</Button>
 														<Button
 															variant="outline"
+															className="rounded-full"
 															onClick={(e) => {
 																e.stopPropagation();
 																// TODO: Implement message functionality

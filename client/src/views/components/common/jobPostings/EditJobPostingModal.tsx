@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Button } from "@/views/components/ui/button";
 import {
-	Button,
-	TextField,
-	Typography,
-	Box,
-	Modal,
-	IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/views/components/ui/dialog";
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldLabel,
+} from "@/views/components/ui/field";
+import { Input } from "@/views/components/ui/input";
+import { Textarea } from "@/views/components/ui/textarea";
+import { Briefcase } from "lucide-react";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { Separator } from "@/views/components/ui/separator";
@@ -193,221 +200,139 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 	const areaCharsLeft = AREA_MAX_LENGTH - area.length;
 
 	return (
-		<Modal
-			open={isOpen}
-			onClose={handleClose}
-			aria-labelledby="edit-job-modal"
-			aria-disabled={isLoading}
-			className="flex items-center justify-center"
-		>
-			<div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2 relative dark:text-white max-h-[90vh] overflow-y-auto">
-				{/* Close Button */}
-				<div className="absolute top-3 right-3">
-					<IconButton onClick={handleClose}>
-						<CloseIcon className="dark:text-gray-300" />
-					</IconButton>
-				</div>
+		<Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+			<DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+				<DialogHeader>
+					<DialogTitle className="flex items-center gap-3 text-2xl font-bold">
+						<div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+							<Briefcase className="w-5 h-5 text-primary" />
+						</div>
+						Edit Job Posting
+					</DialogTitle>
+					<Separator className="bg-border" />
+				</DialogHeader>
 
-				<Typography
-					variant="h6"
-					gutterBottom
-					id="edit-job-modal"
-					className="max-sm:text-md dark:text-white"
-				>
-					Edit Job Posting
-				</Typography>
-
-				<Separator className="dark:bg-gray-600" />
-
-				<Box className="flex flex-col gap-4 w-full mb-4 mt-4">
+				<div className="flex flex-col gap-4 w-full mb-4 mt-4">
 					{/* Job Title Input */}
-					<div className="w-full">
-						<TextField
-							fullWidth
-							label="Job Title"
-							variant="outlined"
+					<Field>
+						<FieldLabel>Job Title *</FieldLabel>
+						<Input
 							value={title}
 							onChange={handleTitleChange}
 							placeholder="e.g., Frontend Developer for E-commerce Platform"
-							slotProps={{
-								htmlInput: {
-									maxLength: TITLE_MAX_LENGTH,
-									dir: "auto",
-									className: "text-lg dark:text-white",
-								},
-							}}
-							required
-							error={!!titleError}
-							helperText={titleError || ""}
-							className="dark:bg-gray-700 dark:rounded"
-							InputLabelProps={{
-								className: "dark:text-gray-300",
-							}}
+							maxLength={TITLE_MAX_LENGTH}
+							dir="auto"
 						/>
+						{titleError && <FieldError>{titleError}</FieldError>}
 						{!titleError && (
-							<div className="flex justify-end mt-1">
-								<Typography
-									variant="caption"
-									color={
-										titleCharsLeft < 1 ? "error" : "green"
-									}
+							<FieldDescription>
+								<span
 									className={
 										titleCharsLeft < 1
-											? "text-red-500"
-											: "text-green-500 dark:text-green-400"
+											? "text-destructive"
+											: "text-green-600"
 									}
 								>
 									{titleCharsLeft} characters left
-								</Typography>
-							</div>
+								</span>
+							</FieldDescription>
 						)}
-					</div>
+					</Field>
 
 					{/* Budget and Area Row */}
 					<div className="flex gap-4 w-full">
 						{/* Budget Input */}
-						<div className="flex-1">
-							<TextField
-								fullWidth
-								label="Budget ($)"
-								variant="outlined"
+						<Field className="flex-1">
+							<FieldLabel>Budget (USD) *</FieldLabel>
+							<Input
 								value={budget}
 								onChange={handleBudgetChange}
 								placeholder="e.g., 5000"
 								type="number"
-								slotProps={{
-									htmlInput: {
-										min: 1,
-										max: 1000000,
-										className: "text-lg dark:text-white",
-									},
-								}}
-								required
-								error={!!budgetError}
-								helperText={budgetError || ""}
-								className="dark:bg-gray-700 dark:rounded"
-								InputLabelProps={{
-									className: "dark:text-gray-300",
-								}}
 							/>
-						</div>
+							{budgetError && (
+								<FieldError>{budgetError}</FieldError>
+							)}
+						</Field>
 
 						{/* Area/Location Input */}
-						<div className="flex-1">
-							<TextField
-								fullWidth
-								label="Location/Area"
-								variant="outlined"
+						<Field className="flex-1">
+							<FieldLabel>Location</FieldLabel>
+							<Input
 								value={area}
 								onChange={handleAreaChange}
 								placeholder="e.g., Remote, New York, London"
-								slotProps={{
-									htmlInput: {
-										maxLength: AREA_MAX_LENGTH,
-										dir: "auto",
-										className: "text-lg dark:text-white",
-									},
-								}}
-								error={!!areaError}
-								helperText={areaError || ""}
-								className="dark:bg-gray-700 dark:rounded"
-								InputLabelProps={{
-									className: "dark:text-gray-300",
-								}}
+								maxLength={AREA_MAX_LENGTH}
 							/>
+							{areaError && <FieldError>{areaError}</FieldError>}
 							{!areaError && area && (
-								<div className="flex justify-end mt-1">
-									<Typography
-										variant="caption"
-										color={
-											areaCharsLeft < 1
-												? "error"
-												: "green"
-										}
+								<FieldDescription>
+									<span
 										className={
 											areaCharsLeft < 1
-												? "text-red-500"
-												: "text-green-500 dark:text-green-400"
+												? "text-destructive"
+												: "text-green-600"
 										}
 									>
 										{areaCharsLeft} characters left
-									</Typography>
-								</div>
+									</span>
+								</FieldDescription>
 							)}
-						</div>
+						</Field>
 					</div>
 
 					{/* Job Description Input */}
-					<div className="w-full">
-						<TextField
-							fullWidth
-							label="Job Description"
-							variant="outlined"
-							multiline
-							rows={6}
+					<Field>
+						<FieldLabel>Job Description *</FieldLabel>
+						<Textarea
 							value={content}
-							onChange={handleContentChange}
+							onChange={(
+								e: React.ChangeEvent<HTMLTextAreaElement>
+							) => handleContentChange(e as any)}
 							placeholder="Describe the job requirements, expectations, and any other relevant details..."
-							slotProps={{
-								htmlInput: {
-									maxLength: CONTENT_MAX_LENGTH,
-									dir: "auto",
-									className: "text-md dark:text-white",
-								},
-							}}
-							required
-							error={!!contentError}
-							helperText={contentError || ""}
-							className="dark:bg-gray-700 dark:rounded"
-							InputLabelProps={{
-								className: "dark:text-gray-300",
-							}}
+							maxLength={CONTENT_MAX_LENGTH}
+							dir="auto"
+							className="min-h-[150px] resize-none"
 						/>
+						{contentError && (
+							<FieldError>{contentError}</FieldError>
+						)}
 						{!contentError && (
-							<div className="flex justify-end mt-1">
-								<Typography
-									variant="caption"
-									color={
-										contentCharsLeft < 1 ? "error" : "green"
-									}
+							<FieldDescription>
+								<span
 									className={
 										contentCharsLeft < 1
-											? "text-red-500"
-											: "text-green-500 dark:text-green-400"
+											? "text-destructive"
+											: "text-green-600"
 									}
 								>
 									{contentCharsLeft} characters left
-								</Typography>
-							</div>
+								</span>
+							</FieldDescription>
 						)}
-					</div>
-				</Box>
+					</Field>
+				</div>
 
 				{/* Action Buttons */}
-				<div className="flex justify-end space-x-3">
+				<div className="flex justify-end gap-3">
 					<Button
-						variant="outlined"
+						variant="outline"
 						onClick={handleClose}
 						disabled={isLoading}
-						className="dark:text-gray-300 dark:border-gray-600"
+						className="rounded-full"
 					>
 						Cancel
 					</Button>
 					<Button
-						variant="contained"
 						onClick={handleSubmit}
 						disabled={isLoading}
-						sx={{
-							backgroundColor: "#162955",
-							"&:hover": { backgroundColor: "#0e1c3b" },
-						}}
-						className="dark:bg-blue-700 dark:hover:bg-blue-800"
+						className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full"
 					>
 						{isLoading ? "Updating..." : "Update Job Posting"}
 					</Button>
 				</div>
-			</div>
-		</Modal>
+			</DialogContent>
+		</Dialog>
 	);
 };
 

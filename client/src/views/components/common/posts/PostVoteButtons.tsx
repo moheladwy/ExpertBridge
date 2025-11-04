@@ -14,7 +14,7 @@ interface PostVoteButtonsProps {
 }
 
 const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
-	const authUser = useCurrentAuthUser();
+	const authUser = useCurrentAuthUser(); // Now using singleton - no new subscription!
 	const { showAuthPrompt } = useAuthPrompt();
 
 	const [upvotePost, upvoteResult] = useUpvotePostMutation();
@@ -64,10 +64,10 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
 	};
 
 	return (
-		<div className="flex gap-2 items-stretch bg-gray-200 rounded-full w-fit">
+		<div className="flex gap-2 items-stretch bg-muted rounded-full w-fit">
 			<div
-				className={`rounded-l-full p-1 hover:bg-green-100 hover:cursor-pointer ${
-					postVotes.userVote === "upvote" ? "bg-green-200" : ""
+				className={`rounded-l-full p-1 hover:bg-green-500/10 hover:cursor-pointer ${
+					postVotes.userVote === "upvote" ? "bg-green-500/20" : ""
 				}`}
 				onClick={handleUpvote}
 			>
@@ -75,30 +75,30 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
 					className={`${
 						postVotes.userVote === "upvote"
 							? "text-green-600"
-							: "text-gray-500 hover:text-green-400"
+							: "text-muted-foreground hover:text-green-500"
 					}`}
 				/>
 			</div>
 
 			<div
 				className={`flex justify-center items-center text-sm font-bold ${
-					voteDifference >= 0 ? "text-green-600" : "text-red-600"
+					voteDifference >= 0 ? "text-green-600" : "text-destructive"
 				}`}
 			>
 				{voteDifference}
 			</div>
 
 			<div
-				className={`rounded-l-full p-1 rotate-180 hover:bg-red-100 hover:cursor-pointer ${
-					postVotes.userVote === "downvote" ? "bg-red-200" : ""
+				className={`rounded-l-full p-1 rotate-180 hover:bg-destructive/10 hover:cursor-pointer ${
+					postVotes.userVote === "downvote" ? "bg-destructive/20" : ""
 				}`}
 				onClick={handleDownvote}
 			>
 				<ArrowBigUp
 					className={`${
 						postVotes.userVote === "downvote"
-							? "text-red-600"
-							: "text-gray-500 hover:text-red-400"
+							? "text-destructive"
+							: "text-muted-foreground hover:text-destructive"
 					}`}
 				/>
 			</div>

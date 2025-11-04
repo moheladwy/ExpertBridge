@@ -76,36 +76,39 @@ const JobOfferCard = ({
 	};
 
 	return (
-		<Card className="hover:shadow-md transition-shadow dark:border-gray-700">
+		<Card className="group hover:shadow-lg hover:border-primary/50 transition-all duration-200 border-border">
 			<CardHeader className="pb-3">
-				<div className="flex justify-between items-start">
-					<CardTitle className="text-lg font-semibold dark:text-gray-100">
+				<div className="flex justify-between items-start gap-3">
+					<CardTitle className="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors line-clamp-2">
 						{offer.title}
 					</CardTitle>
-					<Badge
-						variant="secondary"
-						className="ml-2 dark:bg-gray-700"
-					>
+					<Badge className="ml-2 bg-primary/10 text-primary font-semibold whitespace-nowrap">
 						{formatCurrency(offer.budget)}
 					</Badge>
 				</div>
-				<div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-					<div className="flex items-center gap-1">
-						<User className="h-4 w-4" />
-						{offer.author.firstName} {offer.author.lastName}
+				<div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+					<div className="flex items-center gap-1.5">
+						<div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+							<User className="h-3.5 w-3.5 text-primary" />
+						</div>
+						<span className="font-medium">
+							{offer.author.firstName} {offer.author.lastName}
+						</span>
 					</div>
-					<div className="flex items-center gap-1">
+					<span className="text-muted-foreground/50">•</span>
+					<div className="flex items-center gap-1.5">
 						<MapPin className="h-4 w-4" />
 						{offer.area}
 					</div>
-					<div className="flex items-center gap-1">
+					<span className="text-muted-foreground/50">•</span>
+					<div className="flex items-center gap-1.5">
 						<Calendar className="h-4 w-4" />
 						{formatDate(offer.createdAt)}
 					</div>
 				</div>
 			</CardHeader>
 			<CardContent>
-				<p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-3">
+				<p className="text-muted-foreground mb-4 line-clamp-3 leading-relaxed">
 					{offer.description}
 				</p>
 				<div className="flex gap-2 flex-wrap">
@@ -116,7 +119,7 @@ const JobOfferCard = ({
 								variant="default"
 								onClick={handleAcceptOffer}
 								disabled={isAccepting}
-								className="flex items-center gap-1"
+								className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white rounded-full px-4"
 							>
 								{isAccepting ? (
 									<>
@@ -126,7 +129,7 @@ const JobOfferCard = ({
 								) : (
 									<>
 										<CheckCircle className="h-4 w-4" />
-										Accept
+										Accept Offer
 									</>
 								)}
 							</Button>
@@ -135,7 +138,7 @@ const JobOfferCard = ({
 								variant="outline"
 								onClick={handleDeclineOffer}
 								disabled={isAccepting}
-								className="flex items-center gap-1 dark:border-gray-600"
+								className="flex items-center gap-1.5 rounded-full px-4 hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
 							>
 								<XCircle className="h-4 w-4" />
 								Decline
@@ -147,10 +150,10 @@ const JobOfferCard = ({
 							size="sm"
 							variant="destructive"
 							onClick={() => onDelete(offer.id)}
-							className="flex items-center gap-1 dark:bg-red-900 dark:hover:bg-red-800"
+							className="flex items-center gap-1.5 rounded-full px-4"
 						>
 							<Trash2 className="h-4 w-4" />
-							Delete
+							Delete Offer
 						</Button>
 					)}
 				</div>

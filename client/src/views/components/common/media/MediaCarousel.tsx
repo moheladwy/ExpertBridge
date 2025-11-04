@@ -8,7 +8,10 @@ import {
 	CarouselPrevious,
 } from "@/views/components/ui/carousel";
 import { MediaObjectResponse } from "@/features/media/types";
-import { Modal } from "@mui/material";
+import {
+	Dialog,
+	DialogContent,
+} from "@/views/components/ui/dialog";
 
 interface PostMediaCarouselProps {
 	medias: MediaObjectResponse[];
@@ -32,24 +35,21 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
 
 	return (
 		<>
-			<Modal
-				open={open}
-				onClose={handleClose}
-				aria-labelledby="create-post-modal"
-				className="flex justify-center items-center"
-			>
-				{medias?.[picToBeOpened]?.url ? (
-					<img
-						src={medias[picToBeOpened].url}
-						alt="Post content"
-						className="max-w-full max-h-[90vh] object-contain"
-					/>
-				) : (
-					<div className="p-4 text-center">
-						<p>No media available</p>
-					</div>
-				)}
-			</Modal>
+			<Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
+				<DialogContent className="max-w-5xl">
+					{medias?.[picToBeOpened]?.url ? (
+						<img
+							src={medias[picToBeOpened].url}
+							alt="Post content"
+							className="max-w-full max-h-[90vh] object-contain"
+						/>
+					) : (
+						<div className="p-4 text-center">
+							<p>No media available</p>
+						</div>
+					)}
+				</DialogContent>
+			</Dialog>
 			{/* Media */}
 			<div className="aspect-auto flex justify-center items-center w-full rounded-md relative">
 				<Carousel

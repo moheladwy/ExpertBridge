@@ -1,12 +1,12 @@
-import { Button } from "@/views/components/custom/button";
+import { Button } from "@/views/components/ui/button";
 import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
-} from "@/views/components/custom/dropdown-menu";
-import { CommandDialog, CommandInput } from "@/views/components/custom/command";
+} from "@/views/components/ui/dropdown-menu";
+import { CommandDialog, CommandInput } from "@/views/components/ui/command";
 import {
 	FileQuestion,
 	User,
@@ -142,17 +142,14 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 				Search about questions / users / jobs
 			</DialogDescription>
 
-			<div className="flex flex-col h-full w-full dark:bg-gray-800 rounded-lg shadow-xl">
-				<div className="flex items-center border-b px-3 py-2 dark:bg-gray-800 gap-2">
+			<div className="flex flex-col h-full w-full bg-card rounded-lg shadow-xl">
+				<div className="flex items-center border-b px-3 py-2 bg-card gap-2">
 					<DropdownMenu>
-						<DropdownMenuTrigger
-							asChild
-							className="dark:bg-gray-700"
-						>
+						<DropdownMenuTrigger asChild className="bg-muted">
 							<Button
 								variant="outline"
 								size="sm"
-								className="dark:bg-gray-700 border-gray-300 dark:border-gray-600 min-w-[110px] justify-center"
+								className="bg-muted border-input min-w-[110px] justify-center"
 							>
 								{searchType === "posts" ? (
 									<>
@@ -179,7 +176,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 								}}
 								className={
 									searchType === "posts"
-										? "bg-blue-50 dark:bg-blue-900"
+										? "bg-primary/10"
 										: ""
 								}
 							>
@@ -193,7 +190,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 								}}
 								className={
 									searchType === "users"
-										? "bg-blue-50 dark:bg-blue-900"
+										? "bg-primary/10"
 										: ""
 								}
 							>
@@ -203,9 +200,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 							<DropdownMenuItem
 								onClick={() => setSearchType("jobs")}
 								className={
-									searchType === "jobs"
-										? "bg-blue-50 dark:bg-blue-900"
-										: ""
+									searchType === "jobs" ? "bg-primary/10" : ""
 								}
 							>
 								<Briefcase className="h-4 w-4 mr-2" />
@@ -234,7 +229,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 							variant="ghost"
 							size="sm"
 							onClick={() => setShowFilters(!showFilters)}
-							className="mr-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+							className="mr-1 hover:bg-accent"
 							aria-label={
 								showFilters ? "Hide filters" : "Show filters"
 							}
@@ -251,9 +246,9 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 
 				{/* Job Search Filters */}
 				{searchType === "jobs" && showFilters && (
-					<div className="p-4 border-b border-gray-200 dark:border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-800/50">
+					<div className="p-4 border-b border-border grid grid-cols-1 md:grid-cols-2 gap-4 bg-secondary/50">
 						<div className="space-y-1">
-							<label className="text-xs font-medium text-gray-500 dark:text-gray-400">
+							<label className="text-xs font-medium text-muted-foreground">
 								Location
 							</label>
 							<div className="flex items-center relative">
@@ -268,13 +263,13 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 										})
 									}
 									placeholder="City, state, country..."
-									className="w-full pl-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors"
+									className="w-full pl-8 py-2 text-sm border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
 								/>
 							</div>
 						</div>
 
 						<div className="space-y-1">
-							<label className="text-xs font-medium text-gray-500 dark:text-gray-400">
+							<label className="text-xs font-medium text-muted-foreground">
 								Budget Range
 							</label>
 							<div className="flex items-center space-x-2">
@@ -290,7 +285,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 												minBudget: e.target.value,
 											})
 										}
-										className="w-full pl-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors"
+										className="w-full pl-8 py-2 text-sm border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
 									/>
 								</div>
 								<span className="text-gray-500">-</span>
@@ -306,7 +301,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 												maxBudget: e.target.value,
 											})
 										}
-										className="w-full pl-8 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors"
+										className="w-full pl-8 py-2 text-sm border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
 									/>
 								</div>
 							</div>
@@ -323,11 +318,11 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 										isRemote: e.target.checked,
 									})
 								}
-								className="h-5 w-5 text-blue-600 dark:text-blue-500 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded cursor-pointer"
+								className="h-5 w-5 text-primary focus:ring-ring border-input rounded cursor-pointer"
 							/>
 							<label
 								htmlFor="remote-filter"
-								className="text-sm text-gray-600 dark:text-gray-300 flex items-center cursor-pointer"
+								className="text-sm text-muted-foreground flex items-center cursor-pointer"
 							>
 								<MonitorSmartphone className="h-4 w-4 mr-1" />
 								Remote only
@@ -338,8 +333,8 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 
 				{/* Suggestions */}
 				{searchInput.trim().length > 0 && (
-					<div className="p-3 border-b border-gray-200 dark:border-gray-700">
-						<div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 flex items-center">
+					<div className="p-3 border-b border-border">
+						<div className="text-xs font-medium text-muted-foreground mb-2 flex items-center">
 							<Sparkles className="h-3 w-3 mr-1" /> Suggested{" "}
 							{searchType === "posts"
 								? "Questions"
@@ -353,7 +348,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 									<Button
 										variant="ghost"
 										size="sm"
-										className="w-full justify-start text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+										className="w-full justify-start text-sm text-card-foreground hover:bg-accent"
 										onClick={() => {
 											setSearchInput(
 												`${searchInput} developer`
@@ -366,7 +361,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 									<Button
 										variant="ghost"
 										size="sm"
-										className="w-full justify-start text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+										className="w-full justify-start text-sm text-card-foreground hover:bg-accent"
 										onClick={() => {
 											setSearchInput(
 												`${searchInput} remote`
@@ -378,7 +373,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 									</Button>
 								</>
 							) : (
-								<div className="text-sm text-gray-500 dark:text-gray-400 italic">
+								<div className="text-sm text-muted-foreground italic">
 									Press Enter to search for "{searchInput}"
 								</div>
 							)}
@@ -388,8 +383,8 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 
 				{/* Recent Searches */}
 				{recentSearches.length > 0 && !searchInput.trim() && (
-					<div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
-						<div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 flex items-center">
+					<div className="p-3 border-b border-border bg-secondary/50">
+						<div className="text-xs font-medium text-muted-foreground mb-2 flex items-center">
 							<History className="h-3 w-3 mr-1" /> Recent Searches
 						</div>
 						<div className="space-y-1">
@@ -398,12 +393,12 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 									key={index}
 									variant="ghost"
 									size="sm"
-									className="w-full justify-start text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+									className="w-full justify-start text-sm text-card-foreground hover:bg-accent transition-colors"
 									onClick={() => selectRecentSearch(search)}
 								>
 									<Clock className="h-3 w-3 mr-2" />
 									{search.term}
-									<span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+									<span className="ml-2 text-xs text-muted-foreground">
 										{search.type === "posts"
 											? "Question"
 											: search.type === "users"
@@ -418,14 +413,14 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 
 				{/* Quick Actions */}
 				<div className="p-3 pt-4">
-					<div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">
+					<div className="text-xs font-medium text-muted-foreground mb-3">
 						Quick Actions
 					</div>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
 						<Button
 							variant="ghost"
 							size="sm"
-							className="justify-start text-sm text-gray-700 dark:text-gray-300"
+							className="justify-start text-sm text-card-foreground"
 							onClick={() => navigate("/jobs")}
 						>
 							<Briefcase className="h-4 w-4 mr-2" />
@@ -435,7 +430,7 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 							<Button
 								variant="ghost"
 								size="sm"
-								className="justify-start text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 p-3 h-auto"
+								className="justify-start text-sm text-card-foreground hover:bg-accent p-3 h-auto"
 								onClick={() => navigate("/my-jobs")}
 							>
 								<Bookmark className="h-4 w-4 mr-2" />

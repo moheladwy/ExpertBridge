@@ -58,39 +58,39 @@ const SearchJobPosts = () => {
 	if (isPostsLoading || isPostsFetching) {
 		return (
 			<div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-6">
-				<div className="md:w-1/4 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 h-fit">
-					<div className="h-8 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
+				<div className="md:w-1/4 bg-card rounded-xl border border-border shadow-lg p-4 h-fit">
+					<div className="h-8 w-3/4 bg-muted rounded animate-pulse mb-4"></div>
 					{[...Array(5)].map((_, i) => (
 						<div key={i} className="mb-6">
-							<div className="h-5 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
-							<div className="h-8 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+							<div className="h-5 w-full bg-muted rounded animate-pulse mb-2"></div>
+							<div className="h-8 w-full bg-muted rounded animate-pulse"></div>
 						</div>
 					))}
 				</div>
 				<div className="md:w-3/4">
-					<div className="h-10 w-2/3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-8"></div>
+					<div className="h-10 w-2/3 bg-muted rounded animate-pulse mb-8"></div>
 					{[...Array(3)].map((_, i) => (
 						<div
 							key={i}
-							className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-4"
+							className="bg-card rounded-xl border border-border shadow-lg p-6 mb-4"
 						>
 							<div className="flex items-start justify-between mb-4">
 								<div className="flex items-center space-x-3">
-									<div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+									<div className="w-12 h-12 rounded-full bg-muted animate-pulse"></div>
 									<div>
-										<div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
-										<div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+										<div className="h-5 w-32 bg-muted rounded animate-pulse mb-2"></div>
+										<div className="h-4 w-24 bg-muted rounded animate-pulse"></div>
 									</div>
 								</div>
-								<div className="h-8 w-16 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+								<div className="h-8 w-16 bg-muted rounded-full animate-pulse"></div>
 							</div>
-							<div className="h-6 w-4/5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-3"></div>
-							<div className="h-20 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
+							<div className="h-6 w-4/5 bg-muted rounded animate-pulse mb-3"></div>
+							<div className="h-20 w-full bg-muted rounded animate-pulse mb-4"></div>
 							<div className="flex flex-wrap gap-2 mb-4">
 								{[...Array(4)].map((_, j) => (
 									<div
 										key={j}
-										className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"
+										className="h-6 w-16 bg-muted rounded-full animate-pulse"
 									></div>
 								))}
 							</div>
@@ -103,20 +103,22 @@ const SearchJobPosts = () => {
 	if (isPostsError || postsError) {
 		return (
 			<div className="container flex flex-col items-center mx-auto px-4 py-8">
-				<div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 mb-6">
-					<div className="flex items-center text-center justify-center mb-3">
-						<ExclamationCircleIcon className="h-6 w-6 text-red-500 dark:text-red-400 mr-2" />
-						<h2 className="text-lg font-semibold text-red-700 dark:text-red-300">
+				<div className="bg-card border border-destructive/20 rounded-xl p-8 shadow-lg max-w-md">
+					<div className="flex flex-col items-center text-center mb-4">
+						<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 mb-4">
+							<ExclamationCircleIcon className="h-8 w-8 text-destructive" />
+						</div>
+						<h2 className="text-xl font-bold text-card-foreground mb-2">
 							Error Fetching Search Results
 						</h2>
 					</div>
-					<p className="text-red-600 dark:text-red-300 mb-4">
+					<p className="text-muted-foreground mb-6 text-center">
 						We encountered a problem while retrieving job posts.
 						This could be due to network issues or server problems.
 					</p>
 					<button
 						onClick={() => window.location.reload()}
-						className="flex justify-center items-center text-center bg-red-100 hover:bg-red-200 dark:bg-red-800 dark:hover:bg-red-700 text-red-700 dark:text-red-200 font-medium py-2 px-4 rounded-md transition duration-150"
+						className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground font-medium py-2.5 px-4 rounded-full transition-all duration-200"
 					>
 						Try Again
 					</button>
@@ -138,20 +140,20 @@ const SearchJobPosts = () => {
 					/>
 				</div>
 				<div className="md:w-3/4">
-					<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-						<div className="flex items-center mb-3">
-							<MagnifyingGlassIcon className="h-6 w-6 text-gray-500 dark:text-gray-400 mr-2" />
-							<h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-								No Results Found
-							</h2>
+					<div className="bg-card rounded-xl border border-border shadow-lg p-8 text-center">
+						<div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted/50 mb-4">
+							<MagnifyingGlassIcon className="h-8 w-8 text-muted-foreground" />
 						</div>
-						<p className="text-gray-600 dark:text-gray-400 mb-4">
+						<h2 className="text-xl font-bold text-card-foreground mb-2">
+							No Results Found
+						</h2>
+						<p className="text-muted-foreground mb-2">
 							No job posts match your search criteria:{" "}
-							<span className="font-medium">
+							<span className="font-semibold text-card-foreground">
 								{searchQuery || "All Jobs"}
 							</span>
 						</p>
-						<p className="text-gray-600 dark:text-gray-400 mb-4">
+						<p className="text-muted-foreground mb-6">
 							Try adjusting your filters or using more general
 							keywords.
 						</p>
@@ -159,7 +161,7 @@ const SearchJobPosts = () => {
 							onClick={() =>
 								(window.location.href = `/search/jobs?query=${searchQuery}`)
 							}
-							className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 font-medium py-2 px-4 rounded-md transition duration-150"
+							className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2.5 px-6 rounded-full transition-all duration-200"
 						>
 							Clear All Filters
 						</button>
@@ -183,19 +185,32 @@ const SearchJobPosts = () => {
 
 			{/* Job posts content */}
 			<div className="md:w-3/4">
-				<div className="mb-6">
-					<h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+				<div className="mb-6 bg-card rounded-xl border border-border p-6 shadow-sm">
+					<h1 className="text-2xl font-bold text-card-foreground mb-2">
 						{searchQuery
 							? `Search Results for: ${searchQuery}`
 							: "All Job Posts"}
 					</h1>
-					<p className="text-gray-600 dark:text-gray-400">
-						Found {sortedPosts.length} matching job posts
-						{area && ` in ${area}`}
-						{isRemote && " (Remote)"}
-					</p>
-				</div>
-
+					<div className="flex items-center gap-2">
+						<span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
+							{sortedPosts.length}{" "}
+							{sortedPosts.length === 1 ? "result" : "results"}
+						</span>
+						{area && (
+							<span className="text-sm text-muted-foreground">
+								in{" "}
+								<span className="font-medium text-card-foreground">
+									{area}
+								</span>
+							</span>
+						)}
+						{isRemote && (
+							<span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600">
+								Remote
+							</span>
+						)}
+					</div>
+				</div>{" "}
 				<div className="space-y-4">
 					{sortedPosts.map((post) => (
 						<JobPostingCard key={post.id} job={post} />
