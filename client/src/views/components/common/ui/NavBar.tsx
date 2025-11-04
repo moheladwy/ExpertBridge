@@ -27,7 +27,7 @@ import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { useGetNotificationsQuery } from "@/features/notifications/notificationsSlice";
-import { ModeToggle } from "@/views/components/common/theme/ToggleMode";
+import { ModeToggle } from "@/components/mode-toggle";
 import LoginBtn from "@/views/components/custom/LoginBtn";
 import SearchDialog from "@/views/components/common/search/SearchDialog";
 

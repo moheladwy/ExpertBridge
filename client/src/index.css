@@ -35,6 +35,55 @@
 	--sidebar-accent-foreground: oklch(0.21 0.006 285.885);
 	--sidebar-border: oklch(0.92 0.004 286.32);
 	--sidebar-ring: oklch(0.702 0.183 293.541);
+
+	/* Success State Colors - Green */
+	--success: oklch(0.65 0.18 145);
+	--success-foreground: oklch(0.99 0 0);
+	--success-muted: oklch(0.96 0.05 145);
+
+	/* Warning State Colors - Amber */
+	--warning: oklch(0.75 0.15 85);
+	--warning-foreground: oklch(0.15 0 0);
+	--warning-muted: oklch(0.98 0.03 85);
+
+	/* Info State Colors - Sky Blue */
+	--info: oklch(0.62 0.15 235);
+	--info-foreground: oklch(0.99 0 0);
+	--info-muted: oklch(0.97 0.03 235);
+
+	/* Vote System Colors */
+	--upvote: oklch(0.65 0.18 145);
+	--upvote-active: oklch(0.55 0.2 145);
+	--downvote: oklch(0.58 0.24 27);
+	--downvote-active: oklch(0.48 0.26 27);
+	--vote-neutral: oklch(0.94 0.002 286);
+
+	/* Badge/Tag Colors */
+	--badge-default: oklch(0.94 0.002 286);
+	--badge-foreground: oklch(0.35 0.01 286);
+	--badge-skill: oklch(0.93 0.08 293);
+	--badge-skill-foreground: oklch(0.45 0.25 293);
+	--badge-language: oklch(0.93 0.08 235);
+	--badge-language-foreground: oklch(0.45 0.18 235);
+
+	/* Navigation Brand Color */
+	--nav-brand: oklch(0.35 0.12 265);
+	--nav-brand-hover: oklch(0.42 0.14 265);
+
+	/* Shadow Scale */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+	--shadow-md:
+		0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+	--shadow-lg:
+		0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+	--shadow-xl:
+		0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+	/* Transitions */
+	--transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark {
@@ -69,6 +118,55 @@
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.38 0.189 293.745);
+
+	/* Success State Colors - Brighter Green for dark mode */
+	--success: oklch(0.7 0.18 145);
+	--success-foreground: oklch(0.1 0.01 145);
+	--success-muted: oklch(0.25 0.08 145);
+
+	/* Warning State Colors - Brighter Amber */
+	--warning: oklch(0.8 0.15 85);
+	--warning-foreground: oklch(0.15 0.01 85);
+	--warning-muted: oklch(0.28 0.08 85);
+
+	/* Info State Colors - Brighter Sky Blue */
+	--info: oklch(0.68 0.15 235);
+	--info-foreground: oklch(0.1 0.01 235);
+	--info-muted: oklch(0.25 0.08 235);
+
+	/* Vote System Colors - Brighter for dark mode */
+	--upvote: oklch(0.7 0.18 145);
+	--upvote-active: oklch(0.6 0.2 145);
+	--downvote: oklch(0.65 0.22 27);
+	--downvote-active: oklch(0.55 0.24 27);
+	--vote-neutral: oklch(0.28 0.006 286);
+
+	/* Badge/Tag Colors - Dark variants */
+	--badge-default: oklch(0.28 0.006 286);
+	--badge-foreground: oklch(0.8 0.005 286);
+	--badge-skill: oklch(0.3 0.12 293);
+	--badge-skill-foreground: oklch(0.75 0.2 293);
+	--badge-language: oklch(0.3 0.12 235);
+	--badge-language-foreground: oklch(0.75 0.15 235);
+
+	/* Navigation Brand Color - Slightly lighter for dark mode */
+	--nav-brand: oklch(0.3 0.1 265);
+	--nav-brand-hover: oklch(0.35 0.12 265);
+
+	/* Shadow Scale - Darker shadows for dark mode */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+	--shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+	--shadow-md:
+		0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+	--shadow-lg:
+		0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+	--shadow-xl:
+		0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+
+	/* Transitions remain the same */
+	--transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {

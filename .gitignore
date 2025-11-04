@@ -63,3 +63,5 @@ client/analyze-bundle.cjs
 client/audit-report/fix-ui-plan.md
 client/audit-report/DARK_MODE_REFACTORING_PLAN.md
 client/audit-report/DARK_MODE_REFACTORING_PLAN_COMPLETE.md
+client/audit-report/ui_rebuild_plan.md
+client/audit-report/phase2-implementation-summary.md
