@@ -51,14 +51,15 @@ const TopReputationUsers = ({ limit = 5 }) => {
 	}
 
 	return (
-		<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden transition-all duration-300 hover:shadow-xl">
-			<div className="p-6 border-b text-center border-border bg-linear-to-r from-yellow-50 to-amber-50">
-				<div className="flex items-center justify-center text-center">
-					<div className="flex text-center justify-center items-center gap-3">
-						<h3 className="font-semibold justify-center text-center text-card-foreground">
-							Experts in Your Area of Interest
-						</h3>
+		<div className="bg-card rounded-2xl border overflow-hidden transition-all duration-300 hover:shadow-lg">
+			<div className="p-6 border-b border-border bg-muted/30">
+				<div className="flex items-center justify-center">
+					<div className="inline-block rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary mr-2">
+						Suggested
 					</div>
+					<h3 className="font-semibold text-card-foreground text-center">
+						Experts in Your Area
+					</h3>
 				</div>
 			</div>
 
@@ -77,23 +78,23 @@ const TopReputationUsers = ({ limit = 5 }) => {
 							<Link to={`/profile/${user.id}`}>
 								<div
 									key={user.id}
-									className="group flex items-center gap-4 p-3 rounded-xl hover:bg-secondary transition-all duration-200 cursor-pointer relative overflow-hidden"
+									className="group flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-all duration-200 cursor-pointer relative overflow-hidden"
 									style={{
 										animationDelay: `${index * 100}ms`,
 									}}
 								>
 									{index < 3 && (
-										<div className="absolute inset-0 bg-linear-to-r from-transparent via-yellow-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+										<div className="absolute inset-0 bg-linear-to-r from-transparent via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 									)}
 
 									<div className="relative flex items-center gap-3">
 										<div className="relative">
-											<Avatar className="w-12 h-12 ring-2 ring-white shadow-md group-hover:ring-yellow-200 transition-all duration-200">
+											<Avatar className="w-12 h-12 ring-2 ring-border shadow-sm group-hover:ring-primary transition-all duration-200">
 												<AvatarImage
 													src={user.profilePictureUrl}
 													alt={`${user.firstName} ${user.lastName}`}
 												/>
-												<AvatarFallback>
+												<AvatarFallback className="bg-muted">
 													{user.firstName?.[0]}
 													{user.lastName?.[0]}
 												</AvatarFallback>
@@ -103,7 +104,7 @@ const TopReputationUsers = ({ limit = 5 }) => {
 
 									<div className="flex-1 min-w-0 relative z-10">
 										<div className="flex items-center gap-2">
-											<h4 className="font-medium text-card-foreground truncate group-hover:text-yellow-600 transition-colors">
+											<h4 className="font-medium text-card-foreground truncate group-hover:text-primary transition-colors">
 												{user.firstName} {user.lastName}
 											</h4>
 										</div>
@@ -113,8 +114,8 @@ const TopReputationUsers = ({ limit = 5 }) => {
 									</div>
 
 									<div className="relative z-10 flex items-center gap-2">
-										<div className="flex items-center gap-1 px-3 py-1 bg-linear-to-r from-yellow-100 to-amber-100 rounded-full">
-											<span className="text-sm font-semibold text-yellow-700">
+										<div className="flex items-center gap-1 px-3 py-1 bg-primary/10 rounded-full">
+											<span className="text-sm font-semibold text-primary">
 												{user.reputation?.toLocaleString() ||
 													0}
 											</span>
