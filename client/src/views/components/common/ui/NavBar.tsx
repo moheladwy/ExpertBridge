@@ -116,7 +116,7 @@ const NavBar = () => {
 						{/* Search Bar - Center (Desktop Full Size) */}
 						<div className="flex-1 max-w-2xl mx-4 hidden md:block">
 							<Button
-								className="w-full bg-white/10 text-white/80 hover:bg-white/20 transition-all px-4 shadow-sm border border-white/20 rounded-full justify-start"
+								className="w-full bg-primary-foreground/10 text-primary-foreground/80 hover:bg-primary-foreground/20 transition-all px-4 shadow-sm border border-primary-foreground/20 rounded-full justify-start"
 								onClick={handleSearch}
 							>
 								<Search className="w-4 h-4 mr-2" />
@@ -207,8 +207,7 @@ const NavBar = () => {
 							{!isLoggedIn && (
 								<div className="hidden lg:flex items-center gap-2">
 									<Button
-										variant="outline"
-										className="text-primary-foreground border-2 border-primary-foreground hover:bg-primary-foreground hover:text-primary rounded-full px-6"
+										className="bg-transparent text-primary-foreground border-2 border-primary-foreground hover:bg-primary-foreground hover:text-primary rounded-full px-6"
 										onClick={() => navigate("/login")}
 									>
 										Login

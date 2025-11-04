@@ -27,7 +27,7 @@ const CustomNavItems = ({
 		<motion.div
 			onMouseLeave={() => setHovered(null)}
 			className={cn(
-				"flex flex-row items-center gap-2 py-1 text-sm font-normal w-auto bg-ring px-6",
+				"flex flex-row items-center gap-2 py-1 text-sm font-normal w-auto bg-primary px-6",
 				isScrolled ? "rounded-full mt-5" : "rounded-b-full",
 				className
 			)}
