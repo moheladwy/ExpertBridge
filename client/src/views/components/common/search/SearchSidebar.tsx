@@ -52,12 +52,12 @@ const SearchSidebar: React.FC<SearchSidebarProps> = ({
 	};
 
 	return (
-		<div className="bg-card rounded-lg shadow-md p-4 sticky top-20">
-			<div className="flex items-center justify-between mb-4">
-				<h2 className="text-lg font-semibold text-card-foreground">
+		<div className="bg-card rounded-xl border border-border shadow-lg p-4 sticky top-20">
+			<div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
+				<h2 className="text-lg font-bold text-card-foreground">
 					Filter Jobs
 				</h2>
-				<AdjustmentsHorizontalIcon className="h-5 w-5 text-muted-foreground" />
+				<AdjustmentsHorizontalIcon className="h-5 w-5 text-primary" />
 			</div>
 
 			<form onSubmit={handleSearch} className="space-y-4">
@@ -165,7 +165,7 @@ const SearchSidebar: React.FC<SearchSidebarProps> = ({
 				<div className="pt-4 border-t border-border space-y-3">
 					<button
 						type="submit"
-						className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded-md transition duration-150"
+						className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 px-4 rounded-full transition-all duration-200 shadow-sm hover:shadow-md"
 					>
 						Apply Filters
 					</button>
@@ -173,10 +173,10 @@ const SearchSidebar: React.FC<SearchSidebarProps> = ({
 					<button
 						type="button"
 						onClick={clearFilters}
-						className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium py-2 px-4 rounded-md transition duration-150 flex items-center justify-center"
+						className="w-full bg-muted hover:bg-muted/80 text-card-foreground font-medium py-2.5 px-4 rounded-full transition-all duration-200 flex items-center justify-center"
 					>
 						<XCircleIcon className="h-5 w-5 mr-1" />
-						Clear All Filters
+						Clear Filters
 					</button>
 				</div>
 			</form>
