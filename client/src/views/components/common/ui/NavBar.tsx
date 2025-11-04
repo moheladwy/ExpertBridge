@@ -109,14 +109,14 @@ const NavBar = () => {
 			<div className="sticky w-full flex flex-col gap-6">
 				<Navbar className="w-full">
 					{/* Desktop Navigation */}
-					<NavBody className="navbar-container">
+					<NavBody className="bg-primary text-primary-foreground h-16">
 						{/* Logo */}
 						<CustomNavbarLogo onClick={handleLogoClick} />
 
 						{/* Search Bar - Center (Desktop Full Size) */}
 						<div className="flex-1 max-w-2xl mx-4 hidden md:block">
 							<Button
-								className="navbar-search"
+								className="w-full bg-white/10 text-white/80 hover:bg-white/20 transition-all px-4 shadow-sm border border-white/20 rounded-full justify-start"
 								onClick={handleSearch}
 							>
 								<Search className="w-4 h-4 mr-2" />
@@ -128,7 +128,7 @@ const NavBar = () => {
 						<div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
 							{/* Search Icon - Mobile Only */}
 							<Button
-								className="navbar-search-icon md:hidden"
+								className="md:hidden bg-transparent hover:bg-primary/80 text-primary-foreground p-2"
 								onClick={handleSearch}
 							>
 								<Search className="w-5 h-5" />
@@ -145,11 +145,11 @@ const NavBar = () => {
 									{/* Notifications */}
 									<Link
 										to="/notifications"
-										className="navbar-notification hidden sm:block"
+										className="text-primary-foreground hover:text-primary-foreground/90 transition-colors relative hidden sm:block"
 									>
 										<Bell className="w-6 h-6" />
 										{hasNewNotifications && (
-											<span className="navbar-notification-badge" />
+											<span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full" />
 										)}
 									</Link>
 
@@ -208,13 +208,13 @@ const NavBar = () => {
 								<div className="hidden lg:flex items-center gap-2">
 									<Button
 										variant="outline"
-										className="navbar-login-btn"
+										className="text-primary-foreground border-2 border-primary-foreground hover:bg-primary-foreground hover:text-primary rounded-full px-6"
 										onClick={() => navigate("/login")}
 									>
 										Login
 									</Button>
 									<Button
-										className="navbar-register-btn"
+										className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-full px-6"
 										onClick={() => navigate("/signup")}
 									>
 										Register
@@ -225,7 +225,7 @@ const NavBar = () => {
 					</NavBody>
 
 					{/* Mobile Navigation */}
-					<MobileNav className="navbar-container">
+					<MobileNav className="bg-primary text-primary-foreground">
 						<MobileNavHeader>
 							{/* Logo */}
 							<CustomNavbarLogo onClick={handleLogoClick} />
@@ -254,9 +254,9 @@ const NavBar = () => {
 									to={item.link}
 									onClick={() => setMobileMenuOpen(false)}
 									className={cn(
-										"navbar-mobile-link",
+										"flex items-center text-muted-foreground px-2 py-3",
 										location.pathname === item.link &&
-											"navbar-mobile-link-active"
+											"text-primary font-semibold"
 									)}
 								>
 									<span className="block">{item.name}</span>
@@ -270,7 +270,7 @@ const NavBar = () => {
 									<Link
 										to="/profile"
 										onClick={() => setMobileMenuOpen(false)}
-										className="navbar-mobile-item"
+										className="flex items-center gap-2 text-muted-foreground px-2 py-2"
 									>
 										{userProfile?.profilePictureUrl ? (
 											<img
@@ -294,18 +294,18 @@ const NavBar = () => {
 									<Link
 										to="/notifications"
 										onClick={() => setMobileMenuOpen(false)}
-										className="navbar-mobile-item"
+										className="flex items-center gap-2 text-muted-foreground px-2 py-2"
 									>
 										<Bell className="w-5 h-5" />
 										<span>Notifications</span>
 										{hasNewNotifications && (
-											<span className="ml-auto w-2 h-2 navbar-notification-badge" />
+											<span className="ml-auto w-2 h-2 bg-destructive rounded-full" />
 										)}
 									</Link>
 
 									{/* Theme Toggle */}
 									<div className="flex items-center justify-between px-2 py-2">
-										<span className="navbar-mobile-theme-label">
+										<span className="text-muted-foreground">
 											Theme
 										</span>
 										<ModeToggle />
@@ -332,7 +332,7 @@ const NavBar = () => {
 									<Link
 										to="/privacy-policy"
 										onClick={() => setMobileMenuOpen(false)}
-										className="navbar-mobile-item"
+										className="flex items-center gap-2 text-muted-foreground px-2 py-2"
 									>
 										<Shield className="w-5 h-5" />
 										<span>Privacy Policy</span>
@@ -340,7 +340,7 @@ const NavBar = () => {
 
 									{/* Theme Toggle */}
 									<div className="flex items-center justify-between px-2 py-2">
-										<span className="navbar-mobile-theme-label">
+										<span className="text-muted-foreground">
 											Theme
 										</span>
 										<ModeToggle />
@@ -372,12 +372,14 @@ const NavBar = () => {
 							)}
 						</MobileNavMenu>
 					</MobileNav>
+					{/* Navigation Items - Below Navbar */}
+					<div className="hidden md:flex justify-center">
+						<CustomNavItems
+							items={navItems}
+							isScrolled={isScrolled}
+						/>
+					</div>
 				</Navbar>
-
-				{/* Navigation Items - Below Navbar */}
-				<div className="hidden md:flex justify-center">
-					<CustomNavItems items={navItems} isScrolled={isScrolled} />
-				</div>
 			</div>
 
 			{/* Search Dialog */}

@@ -26,17 +26,17 @@ function LandingPage() {
 	return (
 		<div className="overflow-x-hidden">
 			{/* Hero Section - Enhanced */}
-			<div className="min-h-screen bg-linear-to-b from-main-blue to-indigo-800 w-full flex items-center justify-center transition-colors duration-200">
+			<div className="min-h-screen bg-primary w-full flex items-center justify-center transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8 py-12 md:py-20">
 					<div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-						<div className="flex flex-col items-start gap-6 text-white lg:text-center max-w-2xl">
+						<div className="flex flex-col items-start gap-6 text-primary-foreground lg:text-center max-w-2xl">
 							<h1 className="text-5xl md:text-6xl lg:text-7xl lg:text-center font-bold">
 								<span>Expert</span>Bridge
 							</h1>
-							<h2 className="text-2xl md:text-3xl font-medium text-blue-100">
+							<h2 className="text-2xl md:text-3xl font-medium text-primary-foreground/90">
 								Find Answers. Connect with Experts. Get Hired.
 							</h2>
-							<p className="text-lg text-blue-100 leading-relaxed">
+							<p className="text-lg text-primary-foreground/90 leading-relaxed">
 								The professional networking platform that
 								connects you with the right expertise. Build
 								your career, find solutions, and create
@@ -46,13 +46,13 @@ function LandingPage() {
 							<div className="flex flex-wrap gap-4 mt-4">
 								<button
 									onClick={handleGettingStarted}
-									className="px-8 py-4 bg-white text-main-blue hover:bg-blue-50 font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+									className="px-8 py-4 bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
 								>
 									Get Started
 								</button>
 								<button
 									onClick={() => navigate("/AboutUs")}
-									className="px-8 py-4 bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold rounded-lg transition-all duration-200"
+									className="px-8 py-4 bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold rounded-lg transition-all duration-200"
 								>
 									Learn More
 								</button>
@@ -74,7 +74,7 @@ function LandingPage() {
 						<h2 className="text-3xl sm:text-4xl font-bold text-foreground">
 							What We Do
 						</h2>
-						<div className="mt-4 w-16 h-1 bg-linear-to-r from-blue-600 to-indigo-600 mx-auto rounded-full"></div>
+						<div className="mt-4 w-16 h-1 bg-primary mx-auto rounded-full"></div>
 						<p className="mt-6 text-lg text-muted-foreground max-w-3xl mx-auto">
 							ExpertBridge is revolutionizing how professionals
 							connect by creating a platform where expertise meets
@@ -85,7 +85,7 @@ function LandingPage() {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 						{/* Feature 1 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-linear-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -113,7 +113,7 @@ function LandingPage() {
 
 						{/* Feature 2 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-linear-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -140,7 +140,7 @@ function LandingPage() {
 
 						{/* Feature 3 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-linear-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -167,7 +167,7 @@ function LandingPage() {
 
 						{/* Feature 4 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-linear-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-destructive rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -194,7 +194,7 @@ function LandingPage() {
 
 						{/* Feature 5 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-linear-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -221,7 +221,7 @@ function LandingPage() {
 
 						{/* Feature 6 */}
 						<div className="bg-card rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-200">
-							<div className="w-12 h-12 bg-linear-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mb-6">
+							<div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-6">
 								<svg
 									className="w-6 h-6 text-white"
 									fill="none"
@@ -257,7 +257,7 @@ function LandingPage() {
 							<h2 className="text-3xl sm:text-4xl font-bold text-card-foreground transition-colors duration-200">
 								Our Mission
 							</h2>
-							<div className="mt-4 w-16 h-1 bg-linear-to-r from-emerald-500 to-teal-500 mx-auto rounded-full"></div>
+							<div className="mt-4 w-16 h-1 bg-secondary mx-auto rounded-full"></div>
 						</div>
 						<div className="max-w-4xl mx-auto">
 							<p className="text-lg sm:text-xl text-muted-foreground leading-relaxed text-center transition-colors duration-200">
@@ -278,38 +278,38 @@ function LandingPage() {
 			{/* Statistics Section */}
 			<div className="py-16 bg-background transition-colors duration-200">
 				<div className="container mx-auto px-6 lg:px-8">
-					<div className="bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
+					<div className="bg-primary rounded-2xl shadow-lg p-8 sm:p-12 transition-all duration-200">
 						<div className="text-center mb-12">
-							<h2 className="text-3xl sm:text-4xl font-bold text-white">
+							<h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground">
 								ExpertBridge by the Numbers
 							</h2>
-							<p className="mt-4 text-xl text-blue-100">
+							<p className="mt-4 text-xl text-primary-foreground/90">
 								Growing stronger every day
 							</p>
 						</div>
 
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 							<div className="text-center">
-								<div className="text-4xl sm:text-5xl font-bold text-white mb-2">
+								<div className="text-4xl sm:text-5xl font-bold text-primary-foreground mb-2">
 									10K+
 								</div>
-								<div className="text-blue-100 text-lg">
+								<div className="text-primary-foreground/90 text-lg">
 									Active Professionals
 								</div>
 							</div>
 							<div className="text-center">
-								<div className="text-4xl sm:text-5xl font-bold text-white mb-2">
+								<div className="text-4xl sm:text-5xl font-bold text-primary-foreground mb-2">
 									25K+
 								</div>
-								<div className="text-blue-100 text-lg">
+								<div className="text-primary-foreground/90 text-lg">
 									Successful Projects
 								</div>
 							</div>
 							<div className="text-center">
-								<div className="text-4xl sm:text-5xl font-bold text-white mb-2">
+								<div className="text-4xl sm:text-5xl font-bold text-primary-foreground mb-2">
 									98%
 								</div>
-								<div className="text-blue-100 text-lg">
+								<div className="text-primary-foreground/90 text-lg">
 									Client Satisfaction
 								</div>
 							</div>
@@ -319,20 +319,20 @@ function LandingPage() {
 			</div>
 
 			{/* Call to Action Section */}
-			<div className="py-16 bg-main-blue">
+			<div className="py-16 bg-primary">
 				<div className="container mx-auto px-6 lg:px-8">
 					<div className="max-w-4xl mx-auto text-center">
-						<h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+						<h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-6">
 							Ready to Bridge the Gap?
 						</h2>
-						<p className="text-lg sm:text-xl text-blue-100 mb-8">
+						<p className="text-lg sm:text-xl text-primary-foreground/90 mb-8">
 							Join thousands of professionals who are already
 							transforming their careers and projects through
 							ExpertBridge.
 						</p>
 						<div className="flex flex-col sm:flex-row gap-4 justify-center">
 							<RegisterBtn />
-							<button className="px-8 py-4 bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold rounded-lg transition-all duration-200">
+							<button className="px-8 py-4 bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold rounded-lg transition-all duration-200">
 								Learn More
 							</button>
 						</div>

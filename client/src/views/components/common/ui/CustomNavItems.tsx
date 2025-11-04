@@ -27,10 +27,8 @@ const CustomNavItems = ({
 		<motion.div
 			onMouseLeave={() => setHovered(null)}
 			className={cn(
-				"nav-items-container",
-				isScrolled
-					? "nav-items-container-scrolled"
-					: "nav-items-container-top",
+				"flex flex-row items-center gap-2 py-1 text-sm font-normal w-auto bg-ring px-6",
+				isScrolled ? "rounded-full mt-5" : "rounded-b-full",
 				className
 			)}
 		>
@@ -40,14 +38,15 @@ const CustomNavItems = ({
 					onMouseEnter={() => setHovered(idx)}
 					onClick={() => navigate(item.link)}
 					className={cn(
-						"nav-item-btn",
-						location.pathname === item.link && "nav-item-btn-active"
+						"relative cursor-pointer px-5 py-1.5 text-primary-foreground/90 transition-colors hover:text-primary-foreground",
+						location.pathname === item.link &&
+							"font-medium text-primary-foreground"
 					)}
 				>
 					{hovered === idx && (
 						<motion.div
 							layoutId="hovered"
-							className="nav-item-hover-bg"
+							className="absolute inset-0 h-full w-full rounded-md bg-white/10"
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							exit={{ opacity: 0 }}
@@ -57,7 +56,7 @@ const CustomNavItems = ({
 					{location.pathname === item.link && (
 						<motion.div
 							layoutId="active"
-							className="nav-item-active-indicator"
+							className="absolute bottom-0 left-1 right-1 h-0.5 bg-primary-foreground"
 							transition={{
 								type: "spring",
 								bounce: 0.2,
