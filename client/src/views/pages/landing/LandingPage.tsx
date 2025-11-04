@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import mobile from "@/assets/LandingPageAssets/Mobile.svg";
 import RegisterBtn from "@/views/components/custom/RegisterBtn";
 import { Footer } from "@/views/components/common/ui/Footer";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
+import HeroSectionExpertBridge from "@/components/hero-section-expertbridge";
 
 function LandingPage() {
-	const [isLoggedIn, loading, error, authUser, appUser] = useIsUserLoggedIn();
+	const [_isLoggedIn, loading, _error, authUser, _appUser] =
+		useIsUserLoggedIn();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -15,57 +16,10 @@ function LandingPage() {
 		}
 	}, [authUser, loading, navigate]);
 
-	const handleGettingStarted = () => {
-		if (!isLoggedIn) {
-			navigate("/signup");
-		} else {
-			navigate("/home");
-		}
-	};
-
 	return (
 		<div className="overflow-x-hidden">
-			{/* Hero Section - Enhanced */}
-			<div className="min-h-screen bg-primary w-full flex items-center justify-center transition-colors duration-200">
-				<div className="container mx-auto px-6 lg:px-8 py-12 md:py-20">
-					<div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-						<div className="flex flex-col items-start gap-6 text-primary-foreground lg:text-center max-w-2xl">
-							<h1 className="text-5xl md:text-6xl lg:text-7xl lg:text-center font-bold">
-								<span>Expert</span>Bridge
-							</h1>
-							<h2 className="text-2xl md:text-3xl font-medium text-primary-foreground/90">
-								Find Answers. Connect with Experts. Get Hired.
-							</h2>
-							<p className="text-lg text-primary-foreground/90 leading-relaxed">
-								The professional networking platform that
-								connects you with the right expertise. Build
-								your career, find solutions, and create
-								meaningful professional relationships that drive
-								success.
-							</p>
-							<div className="flex flex-wrap gap-4 mt-4">
-								<button
-									onClick={handleGettingStarted}
-									className="px-8 py-4 bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-								>
-									Get Started
-								</button>
-								<button
-									onClick={() => navigate("/AboutUs")}
-									className="px-8 py-4 bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 font-semibold rounded-lg transition-all duration-200"
-								>
-									Learn More
-								</button>
-							</div>
-						</div>
-						<img
-							src={mobile}
-							alt="mobile"
-							className="w-1/5 max-lg:hidden my-10"
-						/>
-					</div>
-				</div>
-			</div>
+			{/* Hero Section - Enhanced with Aceternity UI */}
+			<HeroSectionExpertBridge />
 
 			{/* What We Do Section */}
 			<div className="py-20 bg-background transition-colors duration-200">
