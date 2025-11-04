@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import mobile from "@/assets/LandingPageAssets/Mobile.svg";
 import RegisterBtn from "@/views/components/custom/RegisterBtn";
-import Footer from "@/views/components/common/ui/Footer";
+import { Footer } from "@/views/components/common/ui/Footer";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 
 function LandingPage() {
