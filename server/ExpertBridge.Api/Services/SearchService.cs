@@ -107,7 +107,7 @@ public sealed class SearchService
         _searchPostRequestValidator = searchPostRequestValidator;
         _searchUserRequestValidator = searchUserRequestValidator;
         _searchJobPostsRequestValidator = searchJobPostsRequestValidator;
-        _cosineDistanceThreshold = 5.0f;
+        _cosineDistanceThreshold = 1.0f;
         _defaultLimit = 50;
     }
 

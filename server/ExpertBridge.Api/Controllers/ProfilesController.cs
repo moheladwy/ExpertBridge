@@ -45,8 +45,7 @@ public class ProfilesController : ControllerBase
     /// <response code="200">Returns the user's profile.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="404">If the user's profile is not found.</response>
-    /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the user is not authenticated.</exception>
-    [AllowAnonymous]
+    /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the user profile is not found.</exception>
     [HttpGet]
     public async Task<ProfileResponse> GetProfile()
     {

@@ -34,24 +34,70 @@ internal class GlobalExceptionMiddleware
         }
         catch (HttpNotFoundException ex)
         {
+            Log.Error(
+                ex,
+                "Could not process the request with TraceId: {TraceId}\n" +
+                "Endpoint: {Endpoint}\n" +
+                "Exception: {Exception}\n" +
+                "TargetSite: {TargetSite}",
+                Activity.Current?.Id,
+                httpContext.GetEndpoint()?.DisplayName,
+                ex.Message,
+                ex.TargetSite);
+
             await Results.NotFound(ex.Message)
                 .ExecuteAsync(httpContext);
         }
         catch (UnauthorizedGetMyProfileException ex)
         {
+            Log.Error(
+                ex,
+                "Could not process the request with TraceId: {TraceId}\n" +
+                "Endpoint: {Endpoint}\n" +
+                "Exception: {Exception}\n" +
+                "TargetSite: {TargetSite}",
+                Activity.Current?.Id,
+                httpContext.GetEndpoint()?.DisplayName,
+                ex.Message,
+                ex.TargetSite);
+
             await Results.Problem(
+                    ex.Message,
                     title: "You are not authorized to get your profile.",
-                    statusCode: StatusCodes.Status419AuthenticationTimeout
+                    statusCode: StatusCodes.Status419AuthenticationTimeout,
+                    extensions: new Dictionary<string, object?> { { "traceId", Activity.Current?.Id } }
                 )
                 .ExecuteAsync(httpContext);
         }
         catch (UnauthorizedException ex)
         {
+            Log.Error(
+                ex,
+                "Could not process the request with TraceId: {TraceId}\n" +
+                "Endpoint: {Endpoint}\n" +
+                "Exception: {Exception}\n" +
+                "TargetSite: {TargetSite}",
+                Activity.Current?.Id,
+                httpContext.GetEndpoint()?.DisplayName,
+                ex.Message,
+                ex.TargetSite);
+
             await Results.Unauthorized()
                 .ExecuteAsync(httpContext);
         }
         catch (ForbiddenAccessException ex)
         {
+            Log.Error(
+                ex,
+                "Could not process the request with TraceId: {TraceId}\n" +
+                "Endpoint: {Endpoint}\n" +
+                "Exception: {Exception}\n" +
+                "TargetSite: {TargetSite}",
+                Activity.Current?.Id,
+                httpContext.GetEndpoint()?.DisplayName,
+                ex.Message,
+                ex.TargetSite);
+
             await Results.Forbid()
                 .ExecuteAsync(httpContext);
         }
@@ -63,6 +109,17 @@ internal class GlobalExceptionMiddleware
                     g => g.Key,
                     g => g.Select(e => e.ErrorMessage).ToArray()
                 );
+
+            Log.Error(
+                validationEx,
+                "Could not process the request with TraceId: {TraceId}\n" +
+                "Endpoint: {Endpoint}\n" +
+                "Exception: {Exception}\n" +
+                "TargetSite: {TargetSite}",
+                Activity.Current?.Id,
+                httpContext.GetEndpoint()?.DisplayName,
+                validationEx.Message,
+                validationEx.TargetSite);
 
             await Results.ValidationProblem(
                     errors,
