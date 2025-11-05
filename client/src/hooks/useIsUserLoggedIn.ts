@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/app/hooks";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { ProfileResponse } from "@/features/profiles/types";
 import { auth } from "@/lib/firebase";
@@ -8,6 +7,7 @@ import { AuthError, User } from "firebase/auth";
 import { useEffect, useMemo, useState } from "react";
 import { useCurrentAuthUser } from "./useCurrentAuthUser";
 import useSignOut from "@/lib/firebase/useSignOut";
+import { useAuthReady } from "./useAuthReady";
 
 export type IsLoggedInError =
 	| AuthError
@@ -24,23 +24,28 @@ export type IsUserLoggedInHook = [
 ];
 
 const useIsUserLoggedIn = (): IsUserLoggedInHook => {
-	const { currentUser } = useAppSelector((state) => state.auth);
-
 	const authUser = useCurrentAuthUser();
 	const [signOut] = useSignOut(auth);
 
+	// ✅ NEW: Get auth ready state
+	const { isAuthReady, isAuthenticated } = useAuthReady();
+
 	const uid = useMemo(() => authUser?.uid, [authUser]);
 
+	// ✅ UPDATED: Add skip parameter to prevent premature API calls
 	const {
 		data: appUser,
 		isFetching: userLoading,
 		error: userErrorMessage,
 		isError: userError,
 		refetch: retryQuery,
-	} = useGetCurrentUserProfileQuery();
+	} = useGetCurrentUserProfileQuery(undefined, {
+		skip: !isAuthenticated, // ✅ Only fetch if authenticated
+	});
 
 	const [isLoggedIn, setIsLoggedIn] = useState(appUser ? true : false);
-	const [loading, setLoading] = useState(userLoading);
+	// ✅ UPDATED: Include auth initialization in loading state
+	const [loading, setLoading] = useState(!isAuthReady || userLoading);
 	const [error, setError] = useState<IsLoggedInError>(undefined);
 
 	// If a query like this is used (fired) multiple times
@@ -74,15 +79,17 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 			setLoading(false);
 		} else {
 			setIsLoggedIn(false);
-			setLoading(false);
+			// ✅ Only set loading false if auth is ready
+			setLoading(!isAuthReady);
 		}
-	}, [authUser, appUser]);
+	}, [authUser, appUser, isAuthReady]);
 
 	useEffect(() => {
-		setLoading(userLoading);
-	}, [userLoading]);
+		// ✅ UPDATED: Loading depends on both auth state and query
+		setLoading(!isAuthReady || userLoading);
+	}, [userLoading, isAuthReady]);
 
-	return [isLoggedIn, userLoading, error, authUser, appUser];
+	return [isLoggedIn, loading, error, authUser, appUser];
 };
 
 export default useIsUserLoggedIn;

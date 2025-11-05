@@ -15,17 +15,30 @@ import {
 import { ThemeProvider } from "@/components/theme-provider";
 import TokenMonitor from "@/views/components/common/ui/TokenMonitor";
 import AuthStateMonitor from "@/views/components/common/ui/AuthStateMonitor";
-import ErrorBoundary from "@/components/errors/ErrorBoundary";
+import PageLoader from "@/components/loaders/PageLoader"; // ✅ NEW
+import { useAuthReady } from "@/hooks/useAuthReady"; // ✅ NEW
+import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn"; // ✅ NEW
 
 function AppContent() {
 	const [updateUser] = useUpdateUserMutation();
 	const authUser = useCurrentUser(); // Now using centralized auth - no duplicate listener!
+
+	// ✅ NEW: Check if auth is ready
+	const { isAuthReady, isAuthenticated } = useAuthReady();
+
+	// ✅ NEW: Get loading state from profile fetch
+	const [_isLoggedIn, profileLoading] = useIsUserLoggedIn();
 
 	const [showInitialAuthPrompt, setShowInitialAuthPrompt] = useState(false);
 	const location = useLocation();
 	const isLandingPage = location.pathname === "/";
 
 	const { isAuthPromptOpen, hideAuthPrompt } = useAuthPrompt();
+
+	// ✅ NEW: Show loading page during initialization
+	const isInitializing = !isAuthReady;
+	const isFetchingProfile = isAuthenticated && profileLoading;
+	const shouldShowLoader = isInitializing || isFetchingProfile;
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout | undefined;
@@ -82,6 +95,15 @@ function AppContent() {
 			updateUserProfile().catch(console.error);
 		}
 	}, [authUser, updateUser]);
+
+	// ✅ NEW: Show loading page while initializing
+	if (shouldShowLoader && !isLandingPage) {
+		return (
+			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+				<PageLoader />
+			</ThemeProvider>
+		);
+	}
 
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
