@@ -1,20 +1,64 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 
+// Plugin to add preload links for critical chunks
+function preloadCriticalChunks(): Plugin {
+	return {
+		name: "preload-critical-chunks",
+		transformIndexHtml(html, ctx) {
+			// Only apply in production builds
+			if (!ctx.bundle) return html;
+
+			const preloadChunks = [
+				"firebase",
+				"redux",
+				"fonts",
+				"ui",
+				"vendor",
+			];
+			const preloadLinks: string[] = [];
+
+			// Find the chunk files for our critical chunks
+			for (const [fileName, chunk] of Object.entries(ctx.bundle)) {
+				if (chunk.type === "chunk") {
+					const chunkName = chunk.name;
+					if (preloadChunks.includes(chunkName)) {
+						preloadLinks.push(
+							`<link rel="modulepreload" href="/${fileName}" />`
+						);
+					}
+				}
+			}
+
+			// Insert preload links before closing </head> tag
+			if (preloadLinks.length > 0) {
+				html = html.replace(
+					"</head>",
+					`  ${preloadLinks.join("\n  ")}\n  </head>`
+				);
+			}
+
+			return html;
+		},
+	};
+}
+
 export default defineConfig({
-	plugins: [react(), tailwindcss()],
+	plugins: [react(), tailwindcss(), preloadCriticalChunks()],
+	base: "/",
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
 			"@assets": path.resolve(__dirname, "./src/assets"),
 			"@views": path.resolve(__dirname, "./src/views"),
 		},
+		dedupe: ["react", "react-dom", "lucide-react"],
 	},
 	build: {
 		// Increase chunk size warning limit
-		chunkSizeWarningLimit: 1000,
+		chunkSizeWarningLimit: 500,
 
 		// Enable source maps for production debugging
 		sourcemap: process.env.NODE_ENV === "production" ? "hidden" : true,
@@ -26,140 +70,72 @@ export default defineConfig({
 				drop_console: process.env.NODE_ENV === "production",
 				drop_debugger: true,
 			},
+			format: {
+				comments: false,
+			},
+			mangle: {
+				safari10: true,
+			},
+		},
+
+		// Ensure proper module format
+		modulePreload: {
+			polyfill: true,
+		},
+
+		// CommonJS options
+		commonjsOptions: {
+			include: [/node_modules/],
+			transformMixedEsModules: true,
 		},
 
 		// Rollup specific options
 		rollupOptions: {
 			output: {
-				// Manual chunk strategy
+				// Simplified manual chunk strategy - 5 main chunks + pages
 				manualChunks(id) {
-					// Core React dependencies
 					if (id.includes("node_modules")) {
-						// React core libraries
-						if (
-							id.includes("react-dom") ||
-							id.includes("react/jsx") ||
-							id.includes("scheduler")
-						) {
-							return "react-dom";
-						}
-
-						if (id.includes("react-router")) {
-							return "react-router";
-						}
-
-						if (id.includes("react") && !id.includes("react-dom")) {
-							return "react";
-						}
-
-						// Redux and state management
-						if (id.includes("@reduxjs") || id.includes("redux")) {
-							return "redux";
-						}
-
-						// Firebase - separate chunk for heavy Firebase SDK
+						// Firebase chunk: Firebase SDK
 						if (id.includes("firebase")) {
 							return "firebase";
 						}
 
-						// UI Libraries
-						if (id.includes("@mui")) {
-							return "mui";
+						// Redux chunk: Redux and related
+						if (
+							id.includes("@reduxjs") ||
+							id.includes("react-redux") ||
+							id.includes("redux-persist")
+						) {
+							return "redux";
+						}
+
+						if (id.includes("@fontsource/roboto")) {
+							return "fonts";
 						}
 
 						if (
 							id.includes("@radix-ui") ||
-							id.includes("@floating-ui") ||
 							id.includes("cmdk") ||
-							id.includes("vaul")
-						) {
-							return "ui-components";
-						}
-
-						// Form and validation libraries
-						if (
-							id.includes("react-hook-form") ||
-							id.includes("zod") ||
-							id.includes("@hookform")
-						) {
-							return "forms";
-						}
-
-						// Rich text and markdown
-						if (
-							id.includes("lexical") ||
-							id.includes("markdown") ||
-							id.includes("remark") ||
-							id.includes("rehype")
-						) {
-							return "editor";
-						}
-
-						// Date utilities
-						if (
-							id.includes("date-fns") ||
-							id.includes("dayjs") ||
-							id.includes("moment")
-						) {
-							return "date-utils";
-						}
-
-						// Icons
-						if (id.includes("lucide") || id.includes("tabler")) {
-							return "icons";
-						}
-
-						// Animation libraries
-						if (
+							id.includes("vaul") ||
+							id.includes("lucide-react") ||
+							id.includes("@tabler/icons-react") ||
+							id.includes("@heroicons/react") ||
+							id.includes("next-themes") ||
 							id.includes("framer-motion") ||
-							id.includes("gsap") ||
-							id.includes("@lottiefiles")
-						) {
-							return "animation";
-						}
-
-						// Utility libraries
-						if (
-							id.includes("lodash") ||
+							id.includes("motion") ||
+							id.includes("class-variance-authority") ||
 							id.includes("clsx") ||
-							id.includes("classnames") ||
+							id.includes("sonner") ||
+							id.includes("tailwindcss") ||
+							id.includes("tw-animate-css") ||
+							id.includes("tailwindcss-animate") ||
 							id.includes("tailwind-merge")
 						) {
-							return "utils";
+							return "ui";
 						}
 
-						// HTTP and API related
-						if (
-							id.includes("axios") ||
-							id.includes("ky") ||
-							id.includes("swr")
-						) {
-							return "http";
-						}
-
-						// Remaining vendor libraries
+						// Vendor chunk: Everything else from node_modules
 						return "vendor";
-					}
-
-					// Application code chunking by feature
-					if (id.includes("src/features/auth")) {
-						return "feature-auth";
-					}
-
-					if (id.includes("src/features/posts")) {
-						return "feature-posts";
-					}
-
-					if (id.includes("src/features/jobs")) {
-						return "feature-jobs";
-					}
-
-					if (id.includes("src/features/users")) {
-						return "feature-users";
-					}
-
-					if (id.includes("src/features/comments")) {
-						return "feature-comments";
 					}
 				},
 
@@ -217,7 +193,14 @@ export default defineConfig({
 
 	// Optimize dependencies
 	optimizeDeps: {
-		include: ["react", "react-dom", "react-router-dom", "@reduxjs/toolkit"],
+		include: [
+			"react",
+			"react-dom",
+			"react-router-dom",
+			"@reduxjs/toolkit",
+			"lucide-react",
+			"@tabler/icons-react",
+		],
 		exclude: ["@vite/client", "@vite/env"],
 	},
 
