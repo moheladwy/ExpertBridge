@@ -65,7 +65,7 @@ internal class GlobalExceptionMiddleware
                     ex.Message,
                     title: "You are not authorized to get your profile.",
                     statusCode: StatusCodes.Status419AuthenticationTimeout,
-                    extensions: new Dictionary<string, object?> { { "traceId", httpContext.TraceIdentifier } }
+                    extensions: new Dictionary<string, object?> { { "traceId", Activity.Current?.Id } }
                 )
                 .ExecuteAsync(httpContext);
         }

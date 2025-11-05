@@ -44,15 +44,15 @@ public class ProfilesController : ControllerBase
     /// <returns>The <see cref="ProfileResponse" /> for the authenticated user.</returns>
     /// <response code="200">Returns the user's profile.</response>
     /// <response code="401">If the user is not authenticated.</response>
-    /// <response code="400">If the user's profile is not found.</response>
-    /// <exception cref="ProfileNotFoundException">Thrown when the user profile is not found.</exception>
+    /// <response code="404">If the user's profile is not found.</response>
+    /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the user profile is not found.</exception>
     [HttpGet]
     public async Task<ProfileResponse> GetProfile()
     {
         var user = await _authHelper.GetCurrentUserAsync();
         if (user == null)
         {
-            throw new ProfileNotFoundException();
+            throw new UnauthorizedGetMyProfileException();
         }
 
         return await _profileService.GetProfileByUserIdAsync(user.Id);
