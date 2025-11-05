@@ -312,7 +312,7 @@ const NavBar = () => {
 											/>
 										)}
 										<span>My Profile</span>
-									</Link>{" "}
+									</Link>
 									{/* Notifications - Hidden on mobile */}
 									<Link
 										to="/notifications"
