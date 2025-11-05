@@ -10,12 +10,14 @@ import {
 	DropdownMenuTrigger,
 } from "@/views/components/ui/dropdown-menu";
 import { Button } from "@/views/components/ui/button";
+import { Skeleton } from "@/views/components/ui/skeleton";
 import { Bell, Search, User, Shield } from "lucide-react";
 import { useCallback, useEffect, useState, useMemo } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { useGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 import { useGetNotificationsQuery } from "@/features/notifications/notificationsSlice";
+import { useAuthReady } from "@/hooks/useAuthReady"; // ✅ NEW
 import { ModeToggle } from "@/components/mode-toggle";
 import SearchDialog from "@/views/components/common/search/SearchDialog";
 import { cn } from "@/lib/util/utils";
@@ -32,7 +34,13 @@ import CustomNavItems from "./CustomNavItems";
 import { AuthButtons } from "@/views/components/custom/AuthButtons";
 
 const NavBar = () => {
-	useGetCurrentUserProfileQuery();
+	// ✅ NEW: Check auth state before querying
+	const { isAuthReady: _isAuthReady, isAuthenticated } = useAuthReady();
+
+	// ✅ UPDATED: Conditional profile query
+	const { data: currentProfile } = useGetCurrentUserProfileQuery(undefined, {
+		skip: !isAuthenticated,
+	});
 
 	//to get the active location
 	const location = useLocation();
@@ -41,8 +49,12 @@ const NavBar = () => {
 	const [isLoggedIn, _loginLoading, _loginError, _authUser, userProfile] =
 		useIsUserLoggedIn();
 
+	// ✅ UPDATED: Use currentProfile or userProfile, skip if not authenticated
 	const { data: notifications } = useGetNotificationsQuery(
-		userProfile?.id ?? ""
+		currentProfile?.id ?? userProfile?.id ?? "",
+		{
+			skip: !isAuthenticated, // ✅ NEW: Skip if not authenticated
+		}
 	);
 
 	// TODO: Refactor to the same model as the one used by RTK Query standard.
@@ -50,12 +62,14 @@ const NavBar = () => {
 		notifications?.filter((n) => n.isRead === false).length ?? 0 > 0;
 
 	useEffect(() => {
-		if (userProfile) {
-			if (!userProfile.isOnboarded) {
+		// ✅ UPDATED: Use currentProfile for onboarding check
+		const profile = currentProfile ?? userProfile;
+		if (profile) {
+			if (!profile.isOnboarded) {
 				navigate("/onboarding");
 			}
 		}
-	}, [userProfile, navigate]);
+	}, [currentProfile, userProfile, navigate]);
 
 	const [signOut, _loading, _error] = useSignOut(auth);
 
@@ -104,6 +118,21 @@ const NavBar = () => {
 			return [...baseItems, { name: "About Us", link: "/AboutUs" }];
 		}
 	}, [isLoggedIn]);
+
+	// ✅ NEW: Show skeleton while loading
+	if (!_isAuthReady || (isAuthenticated && !currentProfile && !userProfile)) {
+		return (
+			<Navbar className="w-full">
+				<NavBody className="bg-primary text-primary-foreground h-16">
+					<CustomNavbarLogo onClick={handleLogoClick} />
+					<div className="flex items-center gap-4 ml-auto">
+						<Skeleton className="h-8 w-8 rounded-full" />
+						<Skeleton className="h-8 w-24" />
+					</div>
+				</NavBody>
+			</Navbar>
+		);
+	}
 
 	return (
 		<>
@@ -158,10 +187,13 @@ const NavBar = () => {
 									<DropdownMenu>
 										<DropdownMenuTrigger className="flex items-center">
 											<div className="w-8 h-8 lg:w-10 lg:h-10">
-												{userProfile?.profilePictureUrl ? (
+												{/* ✅ UPDATED: Use currentProfile or fallback to userProfile */}
+												{(currentProfile?.profilePictureUrl ??
+												userProfile?.profilePictureUrl) ? (
 													<img
 														src={
-															userProfile.profilePictureUrl
+															currentProfile?.profilePictureUrl ??
+															userProfile?.profilePictureUrl
 														}
 														className="w-full h-full rounded-full object-cover"
 														alt="Profile"
@@ -261,10 +293,13 @@ const NavBar = () => {
 										onClick={() => setMobileMenuOpen(false)}
 										className="flex items-center gap-2 text-muted-foreground px-2 py-2"
 									>
-										{userProfile?.profilePictureUrl ? (
+										{/* ✅ UPDATED: Use currentProfile or fallback to userProfile */}
+										{(currentProfile?.profilePictureUrl ??
+										userProfile?.profilePictureUrl) ? (
 											<img
 												src={
-													userProfile.profilePictureUrl
+													currentProfile?.profilePictureUrl ??
+													userProfile?.profilePictureUrl
 												}
 												className="w-8 h-8 rounded-full object-cover"
 												alt="Profile"
@@ -278,7 +313,6 @@ const NavBar = () => {
 										)}
 										<span>My Profile</span>
 									</Link>
-
 									{/* Notifications - Hidden on mobile */}
 									<Link
 										to="/notifications"
@@ -289,7 +323,6 @@ const NavBar = () => {
 											<span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full" />
 										) : null}
 									</Link>
-
 									{/* Theme Toggle */}
 									<div className="flex items-center justify-between px-2 py-2">
 										<span className="text-muted-foreground">
@@ -297,7 +330,6 @@ const NavBar = () => {
 										</span>
 										<ModeToggle />
 									</div>
-
 									{/* Sign Out Button */}
 									<Button
 										onClick={() => {

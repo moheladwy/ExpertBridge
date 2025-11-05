@@ -15,13 +15,22 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 			transformResponse: (response: ProfileResponse) => {
 				return response;
 			},
-			onQueryStarted: () => {
-				console.log("fetching user profile...");
+			onQueryStarted: async (arg, lifecycleApi) => {
+				// ✅ UPDATED: Only log if query actually runs (not skipped)
+				console.log("[Profile Query] Starting fetch for authenticated user");
+
+				try {
+					await lifecycleApi.queryFulfilled;
+					console.log("[Profile Query] Successfully fetched profile");
+				} catch (error) {
+					console.error("[Profile Query] Failed to fetch profile:", error);
+				}
 			},
 			onCacheEntryAdded: async (arg, lifecycleApi) => {
 				const { data: user } = await lifecycleApi.cacheDataLoaded;
 
 				lifecycleApi.dispatch(userLoggedIn({ currentUser: user }));
+				console.log("[Profile Query] Profile cached and auth state updated");
 			},
 		}),
 
