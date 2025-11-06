@@ -9,6 +9,7 @@ var redis = builder.GetRedisResource();
 var postgresql = builder.GetPostgresqlResource();
 var expertBridgeDb = postgresql.AddDatabase("ExpertBridgeDb");
 var quartzDb = postgresql.AddDatabase("QuartzDb");
+var adminDb = postgresql.AddDatabase("AdminDb");
 
 builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
     .WithReference(redis)
@@ -26,10 +27,12 @@ builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
     .WithReference(redis)
     .WithReference(rabbitMq)
     .WithReference(expertBridgeDb)
+    .WithReference(adminDb)
     .WaitFor(expertBridgeDb)
     .WaitFor(rabbitMq)
     .WaitFor(redis)
     .WaitFor(rabbitMq)
+    .WaitFor(adminDb)
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 

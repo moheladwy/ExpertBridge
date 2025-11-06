@@ -14,7 +14,7 @@
                 </RadzenText>
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
-                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"Total Tags: {postTags.Count}")"/>
+                <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@($"Total Tags: {_postTags.Count}")"/>
                 <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@($"Used: {TotalActiveTags}")"/>
                 <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@($"Unused: {TotalInactiveTags}")"/>
             </RadzenStack>
@@ -22,7 +22,7 @@
     </RadzenCard>
 
     <RadzenCard>
-        @if (isLoading)
+        @if (_isLoading)
         {
             <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem"
                          Style="min-height: 200px;">
@@ -31,7 +31,7 @@
                 <RadzenText TextStyle="TextStyle.Body1">Loading tags...</RadzenText>
             </RadzenStack>
         }
-        else if (!postTags.Any())
+        else if (!_postTags.Any())
         {
             <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
@@ -44,7 +44,7 @@
         }
         else
         {
-            <RadzenDataGrid @ref="grid" Data="@postTags" TItem="PostTagsViewModel"
+            <RadzenDataGrid @ref="_grid" Data="@_postTags" TItem="PostTagsViewModel"
                             AllowFiltering="true" FilterMode="FilterMode.Advanced"
                             AllowSorting="true" AllowPaging="true" PageSize="15"
                             AllowColumnResize="true" ColumnWidth="200px"

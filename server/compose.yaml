@@ -20,3 +20,15 @@ services:
       context: .
       dockerfile: ExpertBridge.Worker/Dockerfile
 
+  admin.auth:
+    image: admin.auth
+    build:
+      context: .
+      dockerfile: Admin.Auth/Dockerfile
+
+  auth:
+    image: auth
+    build:
+      context: .
+      dockerfile: Auth/Dockerfile
+

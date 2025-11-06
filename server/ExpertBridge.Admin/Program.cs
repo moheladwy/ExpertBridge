@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using ExpertBridge.Admin.Components;
+using ExpertBridge.Admin.Components.Account;
+using ExpertBridge.Admin.Database;
 using ExpertBridge.Admin.Services;
 using ExpertBridge.Data;
 using ExpertBridge.Extensions.Caching;
@@ -11,6 +13,8 @@ using ExpertBridge.Extensions.Logging;
 using ExpertBridge.Extensions.MessageBroker;
 using ExpertBridge.Extensions.OpenTelemetry;
 using ExpertBridge.Notifications.Extensions;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,19 +40,40 @@ builder.Services
     .AddInteractiveServerComponents();
 
 builder.Services
+    .AddCascadingAuthenticationState()
+    .AddScoped<IdentityUserAccessor>()
+    .AddScoped<IdentityRedirectManager>()
+    .AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>()
+    .AddAuthentication(options =>
+    {
+        options.DefaultScheme = IdentityConstants.ApplicationScheme;
+        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+    })
+    .AddIdentityCookies();
+
+builder.Services
+    .AddAdminDatabase(builder.Configuration)
+    .AddDatabaseDeveloperPageExceptionFilter()
+    .AddIdentityCore<Admin>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<AdminDbContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddSingleton<IEmailSender<Admin>, IdentityNoOpEmailSender>();
+
+builder.Services
     .AddRadzenComponents()
     .AddRadzenCookieThemeService()
     .AddRadzenQueryStringThemeService();
 
 var app = builder.Build();
 
+await app.ApplyMigrationAtStartup();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", true);
-    // The default HSTS value is 30 days.
-    // You may want to change this for production scenarios,
-    // see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -61,5 +86,6 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 app.MapDefaultEndpoints();
+app.MapAdditionalIdentityEndpoints();
 
-app.Run();
+await app.RunAsync();
