@@ -1,10 +1,10 @@
 ﻿@page "/Account/ConfirmEmail"
-
 @using System.Text
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 
-@inject UserManager<Database.Admin> UserManager
+@inject UserManager<Admin> UserManager
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Confirm email</PageTitle>

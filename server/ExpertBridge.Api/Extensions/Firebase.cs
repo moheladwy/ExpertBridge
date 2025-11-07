@@ -44,7 +44,7 @@ internal static class Firebase
     ///     The WebApplicationBuilder to add the HttpClient service to.
     /// </param>
     public static TBuilder AddHttpClientForFirebaseService<TBuilder>(this TBuilder builder)
-             where TBuilder : IHostApplicationBuilder
+        where TBuilder : IHostApplicationBuilder
     {
         var settings = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>()!;
 

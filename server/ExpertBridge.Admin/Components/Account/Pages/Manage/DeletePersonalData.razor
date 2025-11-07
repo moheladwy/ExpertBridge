@@ -1,10 +1,10 @@
 ﻿@page "/Account/Manage/DeletePersonalData"
-
 @using System.ComponentModel.DataAnnotations
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 
-@inject UserManager<Database.Admin> UserManager
-@inject SignInManager<Database.Admin> SignInManager
+@inject UserManager<Admin> UserManager
+@inject SignInManager<Admin> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<DeletePersonalData> Logger
@@ -13,7 +13,7 @@
 
 <RadzenStack Gap="1.5rem">
     <StatusMessage Message="@message"/>
-    
+
     <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Delete Personal Data</RadzenText>
 
     <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
@@ -24,27 +24,29 @@
         <DataAnnotationsValidator/>
         <RadzenStack Gap="1rem">
             <ValidationSummary class="text-danger" role="alert"/>
-            
+
             @if (requirePassword)
             {
                 <RadzenFormField Text="Password" Variant="Variant.Outlined">
                     <ChildContent>
-                        <RadzenPassword @bind-Value="Input.Password" Name="Input.Password" Style="width: 100%;" autocomplete="current-password" Placeholder="Please enter your password."/>
+                        <RadzenPassword @bind-Value="Input.Password" Name="Input.Password" Style="width: 100%;"
+                                        autocomplete="current-password" Placeholder="Please enter your password."/>
                     </ChildContent>
                     <Helper>
                         <ValidationMessage For="() => Input.Password"/>
                     </Helper>
                 </RadzenFormField>
             }
-            
-            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Danger" Text="Delete data and close my account" Style="width: 100%;"/>
+
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Danger"
+                          Text="Delete data and close my account" Style="width: 100%;"/>
         </RadzenStack>
     </EditForm>
 </RadzenStack>
 
 @code {
     private string? message;
-    private Database.Admin user = default!;
+    private Admin user = default!;
     private bool requirePassword;
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
@@ -53,7 +55,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Input ??= new();
+        Input ??= new InputModel();
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         requirePassword = await UserManager.HasPasswordAsync(user);
     }

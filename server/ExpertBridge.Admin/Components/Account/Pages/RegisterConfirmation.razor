@@ -1,11 +1,11 @@
 ﻿@page "/Account/RegisterConfirmation"
-
 @using System.Text
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 
-@inject UserManager<Database.Admin> UserManager
-@inject IEmailSender<Database.Admin> EmailSender
+@inject UserManager<Admin> UserManager
+@inject IEmailSender<Admin> EmailSender
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
@@ -13,7 +13,7 @@
 
 <RadzenStack Gap="1.5rem" Style="padding: 2rem;">
     <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Register confirmation</RadzenText>
-    
+
     <StatusMessage Message="@statusMessage"/>
 
     @if (emailConfirmationLink is not null)
@@ -21,12 +21,12 @@
         <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
             <RadzenStack Gap="0.5rem">
                 <RadzenText TextStyle="TextStyle.Body1">
-                    This app does not currently have a real email sender registered, see 
-                    <RadzenLink Path="https://aka.ms/aspaccountconf" Target="_blank" Text="these docs"/> 
+                    This app does not currently have a real email sender registered, see
+                    <RadzenLink Path="https://aka.ms/aspaccountconf" Target="_blank" Text="these docs"/>
                     for how to configure a real email sender.
                 </RadzenText>
                 <RadzenText TextStyle="TextStyle.Body1">
-                    Normally this would be emailed: 
+                    Normally this would be emailed:
                     <RadzenLink Path="@emailConfirmationLink" Text="Click here to confirm your account"/>
                 </RadzenText>
             </RadzenStack>

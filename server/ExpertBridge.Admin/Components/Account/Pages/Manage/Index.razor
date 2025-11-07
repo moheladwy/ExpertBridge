@@ -1,10 +1,10 @@
 ﻿@page "/Account/Manage"
-
 @using System.ComponentModel.DataAnnotations
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 
-@inject UserManager<Database.Admin> UserManager
-@inject SignInManager<Database.Admin> SignInManager
+@inject UserManager<Admin> UserManager
+@inject SignInManager<Admin> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
 
@@ -20,23 +20,26 @@
                 <DataAnnotationsValidator/>
                 <RadzenStack Gap="1rem">
                     <ValidationSummary class="text-danger" role="alert"/>
-                    
+
                     <RadzenFormField Text="Username" Variant="Variant.Outlined">
                         <ChildContent>
-                            <RadzenTextBox Value="@username" Disabled="true" Style="width: 100%;" Placeholder="Choose your username."/>
+                            <RadzenTextBox Value="@username" Disabled="true" Style="width: 100%;"
+                                           Placeholder="Choose your username."/>
                         </ChildContent>
                     </RadzenFormField>
-                    
+
                     <RadzenFormField Text="Phone number" Variant="Variant.Outlined">
                         <ChildContent>
-                            <RadzenTextBox @bind-Value="Input.PhoneNumber" Name="Input.PhoneNumber" Style="width: 100%;" Placeholder="Enter your phone number"/>
+                            <RadzenTextBox @bind-Value="Input.PhoneNumber" Name="Input.PhoneNumber" Style="width: 100%;"
+                                           Placeholder="Enter your phone number"/>
                         </ChildContent>
                         <Helper>
                             <ValidationMessage For="() => Input.PhoneNumber"/>
                         </Helper>
                     </RadzenFormField>
-                    
-                    <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Save" Style="width: 100%;"/>
+
+                    <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Save"
+                                  Style="width: 100%;"/>
                 </RadzenStack>
             </EditForm>
         </RadzenColumn>
@@ -44,7 +47,7 @@
 </RadzenStack>
 
 @code {
-    private Database.Admin user = default!;
+    private Admin user = default!;
     private string? username;
     private string? phoneNumber;
 

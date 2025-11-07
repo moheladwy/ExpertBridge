@@ -1,23 +1,24 @@
 ﻿@page "/Account/Manage/ExternalLogins"
-
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 
-@inject UserManager<Database.Admin> UserManager
-@inject SignInManager<Database.Admin> SignInManager
+@inject UserManager<Admin> UserManager
+@inject SignInManager<Admin> SignInManager
 @inject IdentityUserAccessor UserAccessor
-@inject IUserStore<Database.Admin> UserStore
+@inject IUserStore<Admin> UserStore
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Manage your external logins</PageTitle>
 
 <RadzenStack Gap="1.5rem">
     <StatusMessage/>
-    
+
     @if (currentLogins?.Count > 0)
     {
         <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Registered Logins</RadzenText>
-        <RadzenDataGrid Data="@currentLogins" TItem="UserLoginInfo" AllowFiltering="false" AllowPaging="false" AllowSorting="false">
+        <RadzenDataGrid Data="@currentLogins" TItem="UserLoginInfo" AllowFiltering="false" AllowPaging="false"
+                        AllowSorting="false">
             <Columns>
                 <RadzenDataGridColumn TItem="UserLoginInfo" Property="ProviderDisplayName" Title="Provider">
                     <Template Context="login">
@@ -28,11 +29,14 @@
                     <Template Context="login">
                         @if (showRemoveButton)
                         {
-                            <form @formname="@($"remove-login-{login.LoginProvider}")" @onsubmit="OnSubmitAsync" method="post">
+                            <form @formname="@($"remove-login-{login.LoginProvider}")" @onsubmit="OnSubmitAsync"
+                                  method="post">
                                 <AntiforgeryToken/>
                                 <input type="hidden" name="@nameof(LoginProvider)" value="@login.LoginProvider"/>
                                 <input type="hidden" name="@nameof(ProviderKey)" value="@login.ProviderKey"/>
-                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Remove" Size="ButtonSize.Small" Title="@string.Format("Remove this {0} login from your account", login.ProviderDisplayName)"/>
+                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary"
+                                              Text="Remove" Size="ButtonSize.Small"
+                                              Title="@string.Format("Remove this {0} login from your account", login.ProviderDisplayName)"/>
                             </form>
                         }
                     </Template>
@@ -40,20 +44,20 @@
             </Columns>
         </RadzenDataGrid>
     }
-    
+
     @if (otherLogins?.Count > 0)
     {
         <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H4">Add another service to log in.</RadzenText>
-        
+
         <form class="form-horizontal" action="Account/Manage/LinkExternalLogin" method="post">
             <AntiforgeryToken/>
             <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
                 @foreach (var provider in otherLogins)
                 {
-                    <RadzenButton ButtonType="ButtonType.Submit" 
-                                  ButtonStyle="ButtonStyle.Primary" 
+                    <RadzenButton ButtonType="ButtonType.Submit"
+                                  ButtonStyle="ButtonStyle.Primary"
                                   Text="@provider.DisplayName"
-                                  name="Provider" 
+                                  name="Provider"
                                   value="@provider.Name"
                                   Title="@string.Format("Log in using your {0} account", provider.DisplayName)"/>
                 }
@@ -65,7 +69,7 @@
 @code {
     public const string LinkLoginCallbackAction = "LinkLoginCallback";
 
-    private Database.Admin user = default!;
+    private Admin user = default!;
     private IList<UserLoginInfo>? currentLogins;
     private IList<AuthenticationScheme>? otherLogins;
     private bool showRemoveButton;
@@ -87,7 +91,7 @@
             .ToList();
 
         string? passwordHash = null;
-        if (UserStore is IUserPasswordStore<Database.Admin> userPasswordStore)
+        if (UserStore is IUserPasswordStore<Admin> userPasswordStore)
         {
             passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
         }

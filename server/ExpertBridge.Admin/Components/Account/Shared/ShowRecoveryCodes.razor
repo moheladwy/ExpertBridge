@@ -2,7 +2,7 @@
 
 <RadzenStack Gap="1rem">
     <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H3">Recovery codes</RadzenText>
-    
+
     <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
         <RadzenStack Gap="0.5rem">
             <RadzenText TextStyle="TextStyle.Body1">
@@ -19,7 +19,8 @@
             @foreach (var recoveryCode in RecoveryCodes)
             {
                 <RadzenText TextStyle="TextStyle.Body1">
-                    <code style="background-color: var(--rz-base-200); padding: 0.25rem 0.5rem; border-radius: 4px; font-family: monospace;">@recoveryCode</code>
+                    <code
+                        style="background-color: var(--rz-base-200); padding: 0.25rem 0.5rem; border-radius: 4px; font-family: monospace;">@recoveryCode</code>
                 </RadzenText>
             }
         </RadzenStack>

@@ -14,8 +14,8 @@ public partial class PostTags
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly DialogService _dialogService;
     private readonly NotificationService _notificationService;
-    private bool _isLoading = true;
     private RadzenDataGrid<PostTagsViewModel> _grid;
+    private bool _isLoading = true;
     private List<PostTagsViewModel> _postTags;
 
     public PostTags(

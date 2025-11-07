@@ -1,10 +1,10 @@
 ﻿@page "/Account/LoginWith2fa"
-
 @using System.ComponentModel.DataAnnotations
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<Database.Admin> SignInManager
-@inject UserManager<Database.Admin> UserManager
+@inject SignInManager<Admin> SignInManager
+@inject UserManager<Admin> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<LoginWith2fa> Logger
 
@@ -13,11 +13,11 @@
 <RadzenStack Gap="1.5rem" Style="padding: 2rem;">
     <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Two-factor authentication</RadzenText>
     <StatusMessage Message="@message"/>
-    
+
     <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
         Your login is protected with an authenticator app. Enter your authenticator code below.
     </RadzenAlert>
-    
+
     <RadzenRow>
         <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
             <RadzenCard>
@@ -27,35 +27,40 @@
                     <DataAnnotationsValidator/>
                     <RadzenStack Gap="1rem">
                         <ValidationSummary class="text-danger" role="alert"/>
-                        
+
                         <RadzenFormField Text="Authenticator code" Variant="Variant.Outlined">
                             <ChildContent>
-                                <RadzenTextBox @bind-Value="Input.TwoFactorCode" Name="Input.TwoFactorCode" Style="width: 100%;" autocomplete="off"/>
+                                <RadzenTextBox @bind-Value="Input.TwoFactorCode" Name="Input.TwoFactorCode"
+                                               Style="width: 100%;" autocomplete="off"/>
                             </ChildContent>
                             <Helper>
                                 <ValidationMessage For="() => Input.TwoFactorCode"/>
                             </Helper>
                         </RadzenFormField>
-                        
+
                         <RadzenCheckBox @bind-Value="Input.RememberMachine" Name="RememberMachine"/>
-                        <RadzenLabel Text="Remember this machine" Component="RememberMachine" Style="margin-left: 0.5rem;"/>
-                        
-                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Log in" Style="width: 100%;"/>
+                        <RadzenLabel Text="Remember this machine" Component="RememberMachine"
+                                     Style="margin-left: 0.5rem;"/>
+
+                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Log in"
+                                      Style="width: 100%;"/>
                     </RadzenStack>
                 </EditForm>
             </RadzenCard>
         </RadzenColumn>
     </RadzenRow>
-    
+
     <RadzenText TextStyle="TextStyle.Body1">
         Don't have access to your authenticator device? You can
-        <RadzenLink Path="@($"Account/LoginWithRecoveryCode?ReturnUrl={ReturnUrl}")" Text="log in with a recovery code"/>.
+        <RadzenLink Path="@($"Account/LoginWithRecoveryCode?ReturnUrl={ReturnUrl}")"
+                    Text="log in with a recovery code"/>
+        .
     </RadzenText>
 </RadzenStack>
 
 @code {
     private string? message;
-    private Database.Admin user = default!;
+    private Admin user = default!;
 
     [SupplyParameterFromForm] private InputModel Input { get; set; } = new();
 

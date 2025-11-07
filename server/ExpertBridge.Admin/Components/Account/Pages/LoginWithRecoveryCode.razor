@@ -1,10 +1,10 @@
 ﻿@page "/Account/LoginWithRecoveryCode"
-
 @using System.ComponentModel.DataAnnotations
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<Database.Admin> SignInManager
-@inject UserManager<Database.Admin> UserManager
+@inject SignInManager<Admin> SignInManager
+@inject UserManager<Admin> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<LoginWithRecoveryCode> Logger
 
@@ -13,30 +13,33 @@
 <RadzenStack Gap="1.5rem" Style="padding: 2rem;">
     <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Recovery code verification</RadzenText>
     <StatusMessage Message="@message"/>
-    
+
     <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
         You have requested to log in with a recovery code. This login will not be remembered until you provide
         an authenticator app code at log in or disable 2FA and log in again.
     </RadzenAlert>
-    
+
     <RadzenRow>
         <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
             <RadzenCard>
-                <EditForm Model="Input" FormName="login-with-recovery-code" OnValidSubmit="OnValidSubmitAsync" method="post">
+                <EditForm Model="Input" FormName="login-with-recovery-code" OnValidSubmit="OnValidSubmitAsync"
+                          method="post">
                     <DataAnnotationsValidator/>
                     <RadzenStack Gap="1rem">
                         <ValidationSummary class="text-danger" role="alert"/>
-                        
+
                         <RadzenFormField Text="Recovery Code" Variant="Variant.Outlined">
                             <ChildContent>
-                                <RadzenTextBox @bind-Value="Input.RecoveryCode" Name="Input.RecoveryCode" Style="width: 100%;" autocomplete="off" Placeholder="Recovery Code"/>
+                                <RadzenTextBox @bind-Value="Input.RecoveryCode" Name="Input.RecoveryCode"
+                                               Style="width: 100%;" autocomplete="off" Placeholder="Recovery Code"/>
                             </ChildContent>
                             <Helper>
                                 <ValidationMessage For="() => Input.RecoveryCode"/>
                             </Helper>
                         </RadzenFormField>
-                        
-                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Log in" Style="width: 100%;"/>
+
+                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Log in"
+                                      Style="width: 100%;"/>
                     </RadzenStack>
                 </EditForm>
             </RadzenCard>
@@ -46,7 +49,7 @@
 
 @code {
     private string? message;
-    private Database.Admin user = default!;
+    private Admin user = default!;
 
     [SupplyParameterFromForm] private InputModel Input { get; set; } = new();
 

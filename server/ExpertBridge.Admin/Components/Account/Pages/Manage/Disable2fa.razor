@@ -1,8 +1,8 @@
 ﻿@page "/Account/Manage/Disable2fa"
-
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 
-@inject UserManager<Database.Admin> UserManager
+@inject UserManager<Admin> UserManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<Disable2fa> Logger
@@ -11,7 +11,7 @@
 
 <RadzenStack Gap="1.5rem">
     <StatusMessage/>
-    
+
     <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Disable two-factor authentication (2FA)</RadzenText>
 
     <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
@@ -21,7 +21,9 @@
             </RadzenText>
             <RadzenText TextStyle="TextStyle.Body2">
                 Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
-                used in an authenticator app you should <RadzenLink Path="Account/Manage/ResetAuthenticator" Text="reset your authenticator keys"/>.
+                used in an authenticator app you should
+                <RadzenLink Path="Account/Manage/ResetAuthenticator" Text="reset your authenticator keys"/>
+                .
             </RadzenText>
         </RadzenStack>
     </RadzenAlert>
@@ -33,7 +35,7 @@
 </RadzenStack>
 
 @code {
-    private Database.Admin user = default!;
+    private Admin user = default!;
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 

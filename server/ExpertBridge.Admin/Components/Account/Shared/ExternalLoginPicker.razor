@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Authentication
+﻿@using ExpertBridge.Admin.Database
+@using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
-
-@inject SignInManager<Database.Admin> SignInManager
+@inject SignInManager<Admin> SignInManager
 @inject IdentityRedirectManager RedirectManager
 
 @if (externalLogins.Length == 0)
@@ -9,7 +9,7 @@
     <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
         <RadzenText TextStyle="TextStyle.Body1">
             There are no external authentication services configured. See this
-            <RadzenLink Path="https://go.microsoft.com/fwlink/?LinkID=532715" Target="_blank" Text="article" />
+            <RadzenLink Path="https://go.microsoft.com/fwlink/?LinkID=532715" Target="_blank" Text="article"/>
             about setting up this ASP.NET application to support logging in via external services.
         </RadzenText>
     </RadzenAlert>
@@ -22,12 +22,12 @@ else
         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
             @foreach (var provider in externalLogins)
             {
-                <RadzenButton ButtonType="ButtonType.Submit" 
-                              ButtonStyle="ButtonStyle.Primary" 
+                <RadzenButton ButtonType="ButtonType.Submit"
+                              ButtonStyle="ButtonStyle.Primary"
                               Text="@provider.DisplayName"
-                              name="provider" 
+                              name="provider"
                               value="@provider.Name"
-                              Title="@string.Format("Log in using your {0} account", provider.DisplayName)" />
+                              Title="@string.Format("Log in using your {0} account", provider.DisplayName)"/>
             }
         </RadzenStack>
     </form>

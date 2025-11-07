@@ -1,9 +1,9 @@
 ﻿@page "/Account/Manage/ResetAuthenticator"
-
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 
-@inject UserManager<Database.Admin> UserManager
-@inject SignInManager<Database.Admin> SignInManager
+@inject UserManager<Admin> UserManager
+@inject SignInManager<Admin> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ResetAuthenticator> Logger
@@ -12,13 +12,14 @@
 
 <RadzenStack Gap="1.5rem">
     <StatusMessage/>
-    
+
     <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Reset authenticator key</RadzenText>
-    
+
     <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
         <RadzenStack Gap="0.5rem">
             <RadzenText TextStyle="TextStyle.Body1">
-                <strong>If you reset your authenticator key your authenticator app will not work until you reconfigure it.</strong>
+                <strong>If you reset your authenticator key your authenticator app will not work until you reconfigure
+                    it.</strong>
             </RadzenText>
             <RadzenText TextStyle="TextStyle.Body2">
                 This process disables 2FA until you verify your authenticator app.
@@ -26,7 +27,7 @@
             </RadzenText>
         </RadzenStack>
     </RadzenAlert>
-    
+
     <form @formname="reset-authenticator" @onsubmit="OnSubmitAsync" method="post">
         <AntiforgeryToken/>
         <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Danger" Text="Reset authenticator key"/>

@@ -7,5 +7,4 @@ namespace ExpertBridge.Admin.Database;
 
 public sealed class Admin : IdentityUser
 {
-
 }

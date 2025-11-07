@@ -1,7 +1,8 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using ExpertBridge.Admin.Database
+@using Microsoft.AspNetCore.Identity
 @inherits LayoutComponentBase
 @inject ThemeService ThemeService
-@inject SignInManager<Database.Admin> SignInManager
+@inject SignInManager<Admin> SignInManager
 
 <RadzenComponents @rendermode="InteractiveServer"/>
 
@@ -55,7 +56,8 @@
                 {
                     <RadzenPanelMenuItem Text="External logins" Icon="login" Path="/Account/Manage/ExternalLogins"/>
                 }
-                <RadzenPanelMenuItem Text="Two-factor authentication" Icon="security" Path="/Account/Manage/TwoFactorAuthentication"/>
+                <RadzenPanelMenuItem Text="Two-factor authentication" Icon="security"
+                                     Path="/Account/Manage/TwoFactorAuthentication"/>
                 <RadzenPanelMenuItem Text="Personal data" Icon="folder_shared" Path="/Account/Manage/PersonalData"/>
             </RadzenPanelMenuItem>
         </RadzenPanelMenu>
@@ -78,4 +80,5 @@
     {
         hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
     }
+
 }

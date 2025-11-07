@@ -6,24 +6,26 @@
 
 <RadzenStack Gap="1.5rem">
     <StatusMessage/>
-    
+
     <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Personal Data</RadzenText>
 
     <RadzenRow>
         <RadzenColumn Size="12" SizeMD="6">
             <RadzenStack Gap="1rem">
                 <RadzenText TextStyle="TextStyle.Body1">
-                    Your account contains personal data that you have given us. This page allows you to download or delete that data.
+                    Your account contains personal data that you have given us. This page allows you to download or
+                    delete that data.
                 </RadzenText>
                 <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
-                    <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+                    <strong>Deleting this data will permanently remove your account, and this cannot be
+                        recovered.</strong>
                 </RadzenAlert>
-                
+
                 <form action="Account/Manage/DownloadPersonalData" method="post">
                     <AntiforgeryToken/>
                     <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Download"/>
                 </form>
-                
+
                 <RadzenLink Path="Account/Manage/DeletePersonalData">
                     <RadzenButton ButtonStyle="ButtonStyle.Danger" Text="Delete"/>
                 </RadzenLink>

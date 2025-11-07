@@ -1,13 +1,10 @@
-﻿using ExpertBridge.Application.Services;
-using ExpertBridge.Application.Settings;
+﻿using ExpertBridge.Application.Settings;
 using ExpertBridge.Data;
 using ExpertBridge.Extensions.AWS;
 using ExpertBridge.Extensions.Caching;
 using ExpertBridge.Extensions.Embeddings;
 using ExpertBridge.Extensions.OpenTelemetry;
 using ExpertBridge.Extensions.Resilience;
-using ExpertBridge.GroqLibrary;
-using ExpertBridge.GroqLibrary.Settings;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -76,8 +73,6 @@ public static class ExpertBridgeServicesExtensions
 
         builder.Services.Configure<NsfwThresholds>(
             builder.Configuration.GetSection(NsfwThresholds.Section));
-
-        builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 
         return builder;
     }

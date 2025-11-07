@@ -11,50 +11,58 @@
                 <RadzenStack Gap="1rem">
                     <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2">Create a new account.</RadzenText>
                     <StatusMessage Message="@Message"/>
-                    
-                    <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+
+                    <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser"
+                              FormName="register">
                         <DataAnnotationsValidator/>
                         <RadzenStack Gap="1rem">
                             <ValidationSummary class="text-danger" role="alert"/>
-                            
+
                             <RadzenFormField Text="Email" Variant="Variant.Outlined">
                                 <ChildContent>
-                                    <RadzenTextBox @bind-Value="Input.Email" Name="Input.Email" Style="width: 100%;" autocomplete="username" Placeholder="name@example.com"/>
+                                    <RadzenTextBox @bind-Value="Input.Email" Name="Input.Email" Style="width: 100%;"
+                                                   autocomplete="username" Placeholder="name@example.com"/>
                                 </ChildContent>
                                 <Helper>
                                     <ValidationMessage For="() => Input.Email"/>
                                 </Helper>
                             </RadzenFormField>
-                            
+
                             <RadzenFormField Text="Password" Variant="Variant.Outlined">
                                 <ChildContent>
-                                    <RadzenPassword @bind-Value="Input.Password" Name="Input.Password" Style="width: 100%;" autocomplete="new-password" Placeholder="password"/>
+                                    <RadzenPassword @bind-Value="Input.Password" Name="Input.Password"
+                                                    Style="width: 100%;" autocomplete="new-password"
+                                                    Placeholder="password"/>
                                 </ChildContent>
                                 <Helper>
                                     <ValidationMessage For="() => Input.Password"/>
                                 </Helper>
                             </RadzenFormField>
-                            
+
                             <RadzenFormField Text="Confirm Password" Variant="Variant.Outlined">
                                 <ChildContent>
-                                    <RadzenPassword @bind-Value="Input.ConfirmPassword" Name="Input.ConfirmPassword" Style="width: 100%;" autocomplete="new-password" Placeholder="password"/>
+                                    <RadzenPassword @bind-Value="Input.ConfirmPassword" Name="Input.ConfirmPassword"
+                                                    Style="width: 100%;" autocomplete="new-password"
+                                                    Placeholder="password"/>
                                 </ChildContent>
                                 <Helper>
                                     <ValidationMessage For="() => Input.ConfirmPassword"/>
                                 </Helper>
                             </RadzenFormField>
-                            
-                            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Register" Style="width: 100%;"/>
+
+                            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary"
+                                          Text="Register" Style="width: 100%;"/>
                         </RadzenStack>
                     </EditForm>
                 </RadzenStack>
             </RadzenCard>
         </RadzenColumn>
-        
+
         <RadzenColumn Size="12" SizeLG="4">
             <RadzenCard>
                 <RadzenStack Gap="1rem">
-                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3">Use another service to register.</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H3">Use another service to register.
+                    </RadzenText>
                     <ExternalLoginPicker/>
                 </RadzenStack>
             </RadzenCard>

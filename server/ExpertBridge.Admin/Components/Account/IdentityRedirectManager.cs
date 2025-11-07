@@ -9,8 +9,13 @@ internal sealed class IdentityRedirectManager(NavigationManager navigationManage
 
     private static readonly CookieBuilder StatusCookieBuilder = new()
     {
-        SameSite = SameSiteMode.Strict, HttpOnly = true, IsEssential = true, MaxAge = TimeSpan.FromSeconds(5),
+        SameSite = SameSiteMode.Strict, HttpOnly = true, IsEssential = true, MaxAge = TimeSpan.FromSeconds(5)
     };
+
+    private string CurrentPath
+    {
+        get { return navigationManager.ToAbsoluteUri(navigationManager.Uri).GetLeftPart(UriPartial.Path); }
+    }
 
     [DoesNotReturn]
     public void RedirectTo(string? uri)
@@ -45,12 +50,15 @@ internal sealed class IdentityRedirectManager(NavigationManager navigationManage
         RedirectTo(uri);
     }
 
-    private string CurrentPath => navigationManager.ToAbsoluteUri(navigationManager.Uri).GetLeftPart(UriPartial.Path);
-
     [DoesNotReturn]
-    public void RedirectToCurrentPage() => RedirectTo(CurrentPath);
+    public void RedirectToCurrentPage()
+    {
+        RedirectTo(CurrentPath);
+    }
 
     [DoesNotReturn]
     public void RedirectToCurrentPageWithStatus(string message, HttpContext context)
-        => RedirectToWithStatus(CurrentPath, message, context);
+    {
+        RedirectToWithStatus(CurrentPath, message, context);
+    }
 }

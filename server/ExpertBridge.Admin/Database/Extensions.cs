@@ -22,11 +22,17 @@ public static class Extensions
     /// </param>
     /// <returns>The service collection for method chaining.</returns>
     /// <remarks>
-    ///     Configures the <see cref="AdminDbContext"/> with:
+    ///     Configures the <see cref="AdminDbContext" /> with:
     ///     <list type="bullet">
-    ///         <item><description>PostgreSQL using Npgsql provider with pgvector extension for semantic search capabilities</description></item>
-    ///         <item><description>Connection resilience with 5 retry attempts over 60 seconds for transient failures</description></item>
-    ///         <item><description>Soft delete interceptor for automatic ISoftDeletable entity handling</description></item>
+    ///         <item>
+    ///             <description>PostgreSQL using Npgsql provider with pgvector extension for semantic search capabilities</description>
+    ///         </item>
+    ///         <item>
+    ///             <description>Connection resilience with 5 retry attempts over 60 seconds for transient failures</description>
+    ///         </item>
+    ///         <item>
+    ///             <description>Soft delete interceptor for automatic ISoftDeletable entity handling</description>
+    ///         </item>
     ///     </list>
     /// </remarks>
     public static IServiceCollection AddAdminDatabase(this IServiceCollection services, IConfiguration configuration)
@@ -38,9 +44,9 @@ public static class Extensions
             {
                 o.UseVector();
                 o.EnableRetryOnFailure(
-                    maxRetryCount: 5,
-                    maxRetryDelay: TimeSpan.FromSeconds(60),
-                    errorCodesToAdd: null);
+                    5,
+                    TimeSpan.FromSeconds(60),
+                    null);
             });
             options.AddInterceptors(new SoftDeleteInterceptor());
         });
@@ -53,7 +59,7 @@ public static class Extensions
     /// <param name="app">The WebApplication instance to use for applying migrations.</param>
     /// <returns>A task representing the asynchronous migration operation.</returns>
     /// <remarks>
-    ///     This method creates a new service scope to retrieve the <see cref="AdminDbContext"/> and applies all pending
+    ///     This method creates a new service scope to retrieve the <see cref="AdminDbContext" /> and applies all pending
     ///     migrations. If an error occurs during migration, it is logged as an error but does not throw, allowing the
     ///     application to continue startup.
     /// </remarks>

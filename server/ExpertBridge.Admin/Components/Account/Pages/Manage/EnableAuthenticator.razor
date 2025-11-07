@@ -1,12 +1,12 @@
 ﻿@page "/Account/Manage/EnableAuthenticator"
-
 @using System.ComponentModel.DataAnnotations
 @using System.Globalization
 @using System.Text
 @using System.Text.Encodings.Web
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 
-@inject UserManager<Database.Admin> UserManager
+@inject UserManager<Admin> UserManager
 @inject IdentityUserAccessor UserAccessor
 @inject UrlEncoder UrlEncoder
 @inject IdentityRedirectManager RedirectManager
@@ -23,49 +23,68 @@ else
     <RadzenStack Gap="1.5rem">
         <StatusMessage Message="@message"/>
         <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Configure authenticator app</RadzenText>
-        
+
         <RadzenText TextStyle="TextStyle.Body1">To use an authenticator app go through the following steps:</RadzenText>
-        
+
         <RadzenStack Gap="1rem" Style="padding-left: 1.5rem;">
             <RadzenStack Gap="0.5rem">
-                <RadzenText TextStyle="TextStyle.Body1"><strong>1.</strong> Download a two-factor authenticator app like Microsoft Authenticator for
-                    <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=825072" Target="_blank" Text="Android"/> and
-                    <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=825073" Target="_blank" Text="iOS"/> or
+                <RadzenText TextStyle="TextStyle.Body1"><strong>1.</strong> Download a two-factor authenticator app like
+                    Microsoft Authenticator for
+                    <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=825072" Target="_blank" Text="Android"/>
+                    and
+                    <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=825073" Target="_blank" Text="iOS"/>
+                    or
                     Google Authenticator for
-                    <RadzenLink Path="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en" Target="_blank" Text="Android"/> and
-                    <RadzenLink Path="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8" Target="_blank" Text="iOS"/>.
+                    <RadzenLink
+                        Path="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en"
+                        Target="_blank" Text="Android"/>
+                    and
+                    <RadzenLink Path="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8"
+                                Target="_blank" Text="iOS"/>
+                    .
                 </RadzenText>
             </RadzenStack>
-            
+
             <RadzenStack Gap="0.5rem">
-                <RadzenText TextStyle="TextStyle.Body1"><strong>2.</strong> Scan the QR Code or enter this key <code style="background-color: var(--rz-base-200); padding: 0.25rem 0.5rem; border-radius: 4px;">@sharedKey</code> into your two factor authenticator app. Spaces and casing do not matter.</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1"><strong>2.</strong> Scan the QR Code or enter this key <code
+                        style="background-color: var(--rz-base-200); padding: 0.25rem 0.5rem; border-radius: 4px;">@sharedKey</code>
+                    into your two factor authenticator app. Spaces and casing do not matter.
+                </RadzenText>
                 <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
-                    Learn how to <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=852423" Target="_blank" Text="enable QR code generation"/>.
+                    Learn how to
+                    <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=852423" Target="_blank"
+                                Text="enable QR code generation"/>
+                    .
                 </RadzenAlert>
                 <div data-url="@authenticatorUri"></div>
             </RadzenStack>
-            
+
             <RadzenStack Gap="0.5rem">
-                <RadzenText TextStyle="TextStyle.Body1"><strong>3.</strong> Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
+                <RadzenText TextStyle="TextStyle.Body1"><strong>3.</strong> Once you have scanned the QR code or input
+                    the key above, your two factor authentication app will provide you
                     with a unique code. Enter the code in the confirmation box below.
                 </RadzenText>
-                
+
                 <RadzenRow>
                     <RadzenColumn Size="12" SizeXL="6">
                         <RadzenCard>
-                            <EditForm Model="Input" FormName="send-code" OnValidSubmit="OnValidSubmitAsync" method="post">
+                            <EditForm Model="Input" FormName="send-code" OnValidSubmit="OnValidSubmitAsync"
+                                      method="post">
                                 <DataAnnotationsValidator/>
                                 <RadzenStack Gap="1rem">
                                     <RadzenFormField Text="Verification Code" Variant="Variant.Outlined">
                                         <ChildContent>
-                                            <RadzenTextBox @bind-Value="Input.Code" Name="Input.Code" Style="width: 100%;" autocomplete="off" Placeholder="Enter the code"/>
+                                            <RadzenTextBox @bind-Value="Input.Code" Name="Input.Code"
+                                                           Style="width: 100%;" autocomplete="off"
+                                                           Placeholder="Enter the code"/>
                                         </ChildContent>
                                         <Helper>
                                             <ValidationMessage For="() => Input.Code"/>
                                         </Helper>
                                     </RadzenFormField>
-                                    
-                                    <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Verify" Style="width: 100%;"/>
+
+                                    <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary"
+                                                  Text="Verify" Style="width: 100%;"/>
                                     <ValidationSummary class="text-danger" role="alert"/>
                                 </RadzenStack>
                             </EditForm>
@@ -81,7 +100,7 @@ else
     private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
     private string? message;
-    private Database.Admin user = default!;
+    private Admin user = default!;
     private string? sharedKey;
     private string? authenticatorUri;
     private IEnumerable<string>? recoveryCodes;
@@ -127,7 +146,7 @@ else
         }
     }
 
-    private async ValueTask LoadSharedKeyAndQrCodeUriAsync(Database.Admin user)
+    private async ValueTask LoadSharedKeyAndQrCodeUriAsync(Admin user)
     {
         // Load the authenticator key & QR code URI to display on the form
         var unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
@@ -146,7 +165,7 @@ else
     private string FormatKey(string unformattedKey)
     {
         var result = new StringBuilder();
-        int currentPosition = 0;
+        var currentPosition = 0;
         while (currentPosition + 4 < unformattedKey.Length)
         {
             result.Append(unformattedKey.AsSpan(currentPosition, 4)).Append(' ');

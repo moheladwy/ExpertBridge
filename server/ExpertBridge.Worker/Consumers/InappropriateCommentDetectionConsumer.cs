@@ -1,4 +1,3 @@
-using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;

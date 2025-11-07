@@ -1,16 +1,16 @@
 ﻿@page "/Account/ExternalLogin"
-
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Claims
 @using System.Text
 @using System.Text.Encodings.Web
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 
-@inject SignInManager<Database.Admin> SignInManager
-@inject UserManager<Database.Admin> UserManager
-@inject IUserStore<Database.Admin> UserStore
-@inject IEmailSender<Database.Admin> EmailSender
+@inject SignInManager<Admin> SignInManager
+@inject UserManager<Admin> UserManager
+@inject IUserStore<Admin> UserStore
+@inject IEmailSender<Admin> EmailSender
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<ExternalLogin> Logger
@@ -35,17 +35,19 @@
                     <DataAnnotationsValidator/>
                     <RadzenStack Gap="1rem">
                         <ValidationSummary class="text-danger" role="alert"/>
-                        
+
                         <RadzenFormField Text="Email" Variant="Variant.Outlined">
                             <ChildContent>
-                                <RadzenTextBox @bind-Value="Input.Email" Name="Input.Email" Style="width: 100%;" autocomplete="email" Placeholder="Please enter your email."/>
+                                <RadzenTextBox @bind-Value="Input.Email" Name="Input.Email" Style="width: 100%;"
+                                               autocomplete="email" Placeholder="Please enter your email."/>
                             </ChildContent>
                             <Helper>
                                 <ValidationMessage For="() => Input.Email"/>
                             </Helper>
                         </RadzenFormField>
-                        
-                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Register" Style="width: 100%;"/>
+
+                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Register"
+                                      Style="width: 100%;"/>
                     </RadzenStack>
                 </EditForm>
             </RadzenCard>
@@ -111,8 +113,8 @@
         var result = await SignInManager.ExternalLoginSignInAsync(
             externalLoginInfo.LoginProvider,
             externalLoginInfo.ProviderKey,
-            isPersistent: false,
-            bypassTwoFactor: true);
+            false,
+            true);
 
         if (result.Succeeded)
         {
@@ -167,10 +169,10 @@
                 // If account confirmation is required, we need to show the link if we don't have a real email sender
                 if (UserManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = Input.Email });
+                    RedirectManager.RedirectTo("Account/RegisterConfirmation", new Dictionary<string, object?> { ["email"] = Input.Email });
                 }
 
-                await SignInManager.SignInAsync(user, isPersistent: false, externalLoginInfo.LoginProvider);
+                await SignInManager.SignInAsync(user, false, externalLoginInfo.LoginProvider);
                 RedirectManager.RedirectTo(ReturnUrl);
             }
         }
@@ -178,27 +180,27 @@
         message = $"Error: {string.Join(",", result.Errors.Select(error => error.Description))}";
     }
 
-    private Database.Admin CreateUser()
+    private Admin CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<Database.Admin>();
+            return Activator.CreateInstance<Admin>();
         }
         catch
         {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(Database.Admin)}'. " +
-                                                $"Ensure that '{nameof(Database.Admin)}' is not an abstract class and has a parameterless constructor");
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(Admin)}'. " +
+                                                $"Ensure that '{nameof(Admin)}' is not an abstract class and has a parameterless constructor");
         }
     }
 
-    private IUserEmailStore<Database.Admin> GetEmailStore()
+    private IUserEmailStore<Admin> GetEmailStore()
     {
         if (!UserManager.SupportsUserEmail)
         {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
 
-        return (IUserEmailStore<Database.Admin>)UserStore;
+        return (IUserEmailStore<Admin>)UserStore;
     }
 
     private sealed class InputModel
