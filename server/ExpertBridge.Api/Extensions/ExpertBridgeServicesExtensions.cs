@@ -42,12 +42,6 @@ public static class ExpertBridgeServicesExtensions
 
         // External remote services
         builder.AddEmbeddingServices();
-        builder.AddGroqApiServices();
-        builder.Services
-            .AddScoped<AiPostTaggingService>()
-            .AddScoped<AiTagProcessorService>()
-            .AddScoped<NsfwContentDetectionService>()
-            ;
 
         builder.Services.AddDomainServices();
         builder.AddResiliencePipeline();

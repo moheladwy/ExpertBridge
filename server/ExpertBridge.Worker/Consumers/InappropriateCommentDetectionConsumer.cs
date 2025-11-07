@@ -6,6 +6,7 @@ using ExpertBridge.Core.Entities.ModerationReports;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using ExpertBridge.Worker.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

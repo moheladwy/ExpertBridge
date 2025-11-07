@@ -7,6 +7,7 @@ using ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 using ExpertBridge.Core.Entities.Tags;
 using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Data.DatabaseContexts;
+using ExpertBridge.Worker.Services;
 using MassTransit;
 
 namespace ExpertBridge.Worker.Consumers;

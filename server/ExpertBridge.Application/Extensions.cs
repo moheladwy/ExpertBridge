@@ -59,9 +59,6 @@ public static class Extensions
             .AddScoped<S3Service>()
             .AddScoped<IEmbeddingService, OllamaEmbeddingService>()
             .AddScoped<TaggingService>()
-            .AddScoped<AiPostTaggingService>()
-            .AddScoped<AiTagProcessorService>()
-            .AddScoped<NsfwContentDetectionService>()
             ;
 
         return services;

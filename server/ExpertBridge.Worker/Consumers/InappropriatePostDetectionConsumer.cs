@@ -10,6 +10,7 @@ using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Interfaces;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using ExpertBridge.Worker.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
