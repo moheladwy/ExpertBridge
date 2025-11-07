@@ -2,29 +2,17 @@
 
 @inject SignInManager<Database.Admin> SignInManager
 
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage" Match="NavLinkMatch.All">Profile</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/Email">Email</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/ChangePassword">Password</NavLink>
-    </li>
+<RadzenStack Gap="0.5rem">
+    <RadzenPanelMenuItem Text="Profile" Icon="person" Path="Account/Manage"/>
+    <RadzenPanelMenuItem Text="Email" Icon="email" Path="Account/Manage/Email"/>
+    <RadzenPanelMenuItem Text="Password" Icon="lock" Path="Account/Manage/ChangePassword"/>
     @if (hasExternalLogins)
     {
-        <li class="nav-item">
-            <NavLink class="nav-link" href="Account/Manage/ExternalLogins">External logins</NavLink>
-        </li>
+        <RadzenPanelMenuItem Text="External logins" Icon="login" Path="Account/Manage/ExternalLogins"/>
     }
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/TwoFactorAuthentication">Two-factor authentication</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/PersonalData">Personal data</NavLink>
-    </li>
-</ul>
+    <RadzenPanelMenuItem Text="Two-factor authentication" Icon="security" Path="Account/Manage/TwoFactorAuthentication"/>
+    <RadzenPanelMenuItem Text="Personal data" Icon="folder_shared" Path="Account/Manage/PersonalData"/>
+</RadzenStack>
 
 @code {
     private bool hasExternalLogins;

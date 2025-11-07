@@ -10,38 +10,48 @@
 
 <PageTitle>Two-factor authentication</PageTitle>
 
-<h1>Two-factor authentication</h1>
-<hr/>
-<StatusMessage Message="@message"/>
-<p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="Input" FormName="login-with-2fa" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <input type="hidden" name="ReturnUrl" value="@ReturnUrl"/>
-            <input type="hidden" name="RememberMe" value="@RememberMe"/>
-            <DataAnnotationsValidator/>
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.TwoFactorCode" id="Input.TwoFactorCode" class="form-control" autocomplete="off"/>
-                <label for="Input.TwoFactorCode" class="form-label">Authenticator code</label>
-                <ValidationMessage For="() => Input.TwoFactorCode" class="text-danger"/>
-            </div>
-            <div class="checkbox mb-3">
-                <label for="remember-machine" class="form-label">
-                    <InputCheckbox @bind-Value="Input.RememberMachine"/>
-                    Remember this machine
-                </label>
-            </div>
-            <div>
-                <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-            </div>
-        </EditForm>
-    </div>
-</div>
-<p>
-    Don't have access to your authenticator device? You can
-    <a href="Account/LoginWithRecoveryCode?ReturnUrl=@ReturnUrl">log in with a recovery code</a>.
-</p>
+<RadzenStack Gap="1.5rem" Style="padding: 2rem;">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Two-factor authentication</RadzenText>
+    <StatusMessage Message="@message"/>
+    
+    <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+        Your login is protected with an authenticator app. Enter your authenticator code below.
+    </RadzenAlert>
+    
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+            <RadzenCard>
+                <EditForm Model="Input" FormName="login-with-2fa" OnValidSubmit="OnValidSubmitAsync" method="post">
+                    <input type="hidden" name="ReturnUrl" value="@ReturnUrl"/>
+                    <input type="hidden" name="RememberMe" value="@RememberMe"/>
+                    <DataAnnotationsValidator/>
+                    <RadzenStack Gap="1rem">
+                        <ValidationSummary class="text-danger" role="alert"/>
+                        
+                        <RadzenFormField Text="Authenticator code" Variant="Variant.Outlined">
+                            <ChildContent>
+                                <RadzenTextBox @bind-Value="Input.TwoFactorCode" Name="Input.TwoFactorCode" Style="width: 100%;" autocomplete="off"/>
+                            </ChildContent>
+                            <Helper>
+                                <ValidationMessage For="() => Input.TwoFactorCode"/>
+                            </Helper>
+                        </RadzenFormField>
+                        
+                        <RadzenCheckBox @bind-Value="Input.RememberMachine" Name="RememberMachine"/>
+                        <RadzenLabel Text="Remember this machine" Component="RememberMachine" Style="margin-left: 0.5rem;"/>
+                        
+                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Log in" Style="width: 100%;"/>
+                    </RadzenStack>
+                </EditForm>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+    
+    <RadzenText TextStyle="TextStyle.Body1">
+        Don't have access to your authenticator device? You can
+        <RadzenLink Path="@($"Account/LoginWithRecoveryCode?ReturnUrl={ReturnUrl}")" Text="log in with a recovery code"/>.
+    </RadzenText>
+</RadzenStack>
 
 @code {
     private string? message;

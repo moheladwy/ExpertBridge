@@ -6,29 +6,30 @@
 
 @if (externalLogins.Length == 0)
 {
-    <div>
-        <p>
+    <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+        <RadzenText TextStyle="TextStyle.Body1">
             There are no external authentication services configured. See this
-            <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                article
-                about setting up this ASP.NET application to support logging in via external services
-            </a>.
-        </p>
-    </div>
+            <RadzenLink Path="https://go.microsoft.com/fwlink/?LinkID=532715" Target="_blank" Text="article" />
+            about setting up this ASP.NET application to support logging in via external services.
+        </RadzenText>
+    </RadzenAlert>
 }
 else
 {
     <form class="form-horizontal" action="Account/PerformExternalLogin" method="post">
-        <div>
-            <AntiforgeryToken/>
-            <input type="hidden" name="ReturnUrl" value="@ReturnUrl"/>
-            <p>
-                @foreach (var provider in externalLogins)
-                {
-                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                }
-            </p>
-        </div>
+        <AntiforgeryToken/>
+        <input type="hidden" name="ReturnUrl" value="@ReturnUrl"/>
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+            @foreach (var provider in externalLogins)
+            {
+                <RadzenButton ButtonType="ButtonType.Submit" 
+                              ButtonStyle="ButtonStyle.Primary" 
+                              Text="@provider.DisplayName"
+                              name="provider" 
+                              value="@provider.Name"
+                              Title="Log in using your @provider.DisplayName account" />
+            }
+        </RadzenStack>
     </form>
 }
 

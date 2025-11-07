@@ -10,27 +10,38 @@
 
 <PageTitle>Profile</PageTitle>
 
-<h3>Profile</h3>
-<StatusMessage/>
+<RadzenStack Gap="1.5rem">
+    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Profile</RadzenText>
+    <StatusMessage/>
 
-<div class="row">
-    <div class="col-xl-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator/>
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" id="username" class="form-control" placeholder="Choose your username." disabled/>
-                <label for="username" class="form-label">Username</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" id="Input.PhoneNumber" class="form-control" placeholder="Enter your phone number"/>
-                <label for="Input.PhoneNumber" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger"/>
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
-    </div>
-</div>
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeXL="6">
+            <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+                <DataAnnotationsValidator/>
+                <RadzenStack Gap="1rem">
+                    <ValidationSummary class="text-danger" role="alert"/>
+                    
+                    <RadzenFormField Text="Username" Variant="Variant.Outlined">
+                        <ChildContent>
+                            <RadzenTextBox Value="@username" Disabled="true" Style="width: 100%;" Placeholder="Choose your username."/>
+                        </ChildContent>
+                    </RadzenFormField>
+                    
+                    <RadzenFormField Text="Phone number" Variant="Variant.Outlined">
+                        <ChildContent>
+                            <RadzenTextBox @bind-Value="Input.PhoneNumber" Name="Input.PhoneNumber" Style="width: 100%;" Placeholder="Enter your phone number"/>
+                        </ChildContent>
+                        <Helper>
+                            <ValidationMessage For="() => Input.PhoneNumber"/>
+                        </Helper>
+                    </RadzenFormField>
+                    
+                    <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Save" Style="width: 100%;"/>
+                </RadzenStack>
+            </EditForm>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>
 
 @code {
     private Database.Admin user = default!;

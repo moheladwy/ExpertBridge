@@ -9,8 +9,10 @@
 
 <PageTitle>Confirm email</PageTitle>
 
-<h1>Confirm email</h1>
-<StatusMessage Message="@statusMessage"/>
+<RadzenStack Gap="1rem" Style="padding: 2rem;">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Confirm email</RadzenText>
+    <StatusMessage Message="@statusMessage"/>
+</RadzenStack>
 
 @code {
     private string? statusMessage;

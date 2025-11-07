@@ -11,56 +11,56 @@
 
 <PageTitle>Manage your external logins</PageTitle>
 
-<StatusMessage/>
-@if (currentLogins?.Count > 0)
-{
-    <h3>Registered Logins</h3>
-    <table class="table">
-        <tbody>
-        @foreach (var login in currentLogins)
-        {
-            <tr>
-                <td>@login.ProviderDisplayName</td>
-                <td>
-                    @if (showRemoveButton)
-                    {
-                        <form @formname="@($"remove-login-{login.LoginProvider}")" @onsubmit="OnSubmitAsync" method="post">
-                            <AntiforgeryToken/>
-                            <div>
+<RadzenStack Gap="1.5rem">
+    <StatusMessage/>
+    
+    @if (currentLogins?.Count > 0)
+    {
+        <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Registered Logins</RadzenText>
+        <RadzenDataGrid Data="@currentLogins" TItem="UserLoginInfo" AllowFiltering="false" AllowPaging="false" AllowSorting="false">
+            <Columns>
+                <RadzenDataGridColumn TItem="UserLoginInfo" Property="ProviderDisplayName" Title="Provider">
+                    <Template Context="login">
+                        @login.ProviderDisplayName
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="UserLoginInfo" Title="Actions" Width="150px">
+                    <Template Context="login">
+                        @if (showRemoveButton)
+                        {
+                            <form @formname="@($"remove-login-{login.LoginProvider}")" @onsubmit="OnSubmitAsync" method="post">
+                                <AntiforgeryToken/>
                                 <input type="hidden" name="@nameof(LoginProvider)" value="@login.LoginProvider"/>
                                 <input type="hidden" name="@nameof(ProviderKey)" value="@login.ProviderKey"/>
-                                <button type="submit" class="btn btn-primary" title="Remove this @login.ProviderDisplayName login from your account">Remove</button>
-                            </div>
-                        </form>
-                    }
-                    else
-                    {
-                        @: &nbsp;
-                    }
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-@if (otherLogins?.Count > 0)
-{
-    <h4>Add another service to log in.</h4>
-    <hr/>
-    <form class="form-horizontal" action="Account/Manage/LinkExternalLogin" method="post">
-        <AntiforgeryToken/>
-        <div>
-            <p>
+                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Remove" Size="ButtonSize.Small" Title="Remove this @login.ProviderDisplayName login from your account"/>
+                            </form>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    
+    @if (otherLogins?.Count > 0)
+    {
+        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H4">Add another service to log in.</RadzenText>
+        
+        <form class="form-horizontal" action="Account/Manage/LinkExternalLogin" method="post">
+            <AntiforgeryToken/>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
                 @foreach (var provider in otherLogins)
                 {
-                    <button type="submit" class="btn btn-primary" name="Provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
-                        @provider.DisplayName
-                    </button>
+                    <RadzenButton ButtonType="ButtonType.Submit" 
+                                  ButtonStyle="ButtonStyle.Primary" 
+                                  Text="@provider.DisplayName"
+                                  name="Provider" 
+                                  value="@provider.Name"
+                                  Title="Log in using your @provider.DisplayName account"/>
                 }
-            </p>
-        </div>
-    </form>
-}
+            </RadzenStack>
+        </form>
+    }
+</RadzenStack>
 
 @code {
     public const string LinkLoginCallbackAction = "LinkLoginCallback";

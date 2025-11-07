@@ -10,27 +10,39 @@
 
 <PageTitle>Recovery code verification</PageTitle>
 
-<h1>Recovery code verification</h1>
-<hr/>
-<StatusMessage Message="@message"/>
-<p>
-    You have requested to log in with a recovery code. This login will not be remembered until you provide
-    an authenticator app code at log in or disable 2FA and log in again.
-</p>
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="Input" FormName="login-with-recovery-code" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator/>
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.RecoveryCode" id="Input.RecoveryCode" class="form-control" autocomplete="off" placeholder="RecoveryCode"/>
-                <label for="Input.RecoveryCode" class="form-label">Recovery Code</label>
-                <ValidationMessage For="() => Input.RecoveryCode" class="text-danger"/>
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-        </EditForm>
-    </div>
-</div>
+<RadzenStack Gap="1.5rem" Style="padding: 2rem;">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Recovery code verification</RadzenText>
+    <StatusMessage Message="@message"/>
+    
+    <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+        You have requested to log in with a recovery code. This login will not be remembered until you provide
+        an authenticator app code at log in or disable 2FA and log in again.
+    </RadzenAlert>
+    
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="4">
+            <RadzenCard>
+                <EditForm Model="Input" FormName="login-with-recovery-code" OnValidSubmit="OnValidSubmitAsync" method="post">
+                    <DataAnnotationsValidator/>
+                    <RadzenStack Gap="1rem">
+                        <ValidationSummary class="text-danger" role="alert"/>
+                        
+                        <RadzenFormField Text="Recovery Code" Variant="Variant.Outlined">
+                            <ChildContent>
+                                <RadzenTextBox @bind-Value="Input.RecoveryCode" Name="Input.RecoveryCode" Style="width: 100%;" autocomplete="off" Placeholder="Recovery Code"/>
+                            </ChildContent>
+                            <Helper>
+                                <ValidationMessage For="() => Input.RecoveryCode"/>
+                            </Helper>
+                        </RadzenFormField>
+                        
+                        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Log in" Style="width: 100%;"/>
+                    </RadzenStack>
+                </EditForm>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>
 
 @code {
     private string? message;

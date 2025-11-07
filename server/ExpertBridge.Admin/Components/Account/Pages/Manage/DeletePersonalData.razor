@@ -11,31 +11,36 @@
 
 <PageTitle>Delete Personal Data</PageTitle>
 
-<StatusMessage Message="@message"/>
+<RadzenStack Gap="1.5rem">
+    <StatusMessage Message="@message"/>
+    
+    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Delete Personal Data</RadzenText>
 
-<h3>Delete Personal Data</h3>
-
-<div class="alert alert-warning" role="alert">
-    <p>
+    <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
         <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-    </p>
-</div>
+    </RadzenAlert>
 
-<div>
     <EditForm Model="Input" FormName="delete-user" OnValidSubmit="OnValidSubmitAsync" method="post">
         <DataAnnotationsValidator/>
-        <ValidationSummary class="text-danger" role="alert"/>
-        @if (requirePassword)
-        {
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Please enter your password."/>
-                <label for="Input.Password" class="form-label">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger"/>
-            </div>
-        }
-        <button class="w-100 btn btn-lg btn-danger" type="submit">Delete data and close my account</button>
+        <RadzenStack Gap="1rem">
+            <ValidationSummary class="text-danger" role="alert"/>
+            
+            @if (requirePassword)
+            {
+                <RadzenFormField Text="Password" Variant="Variant.Outlined">
+                    <ChildContent>
+                        <RadzenPassword @bind-Value="Input.Password" Name="Input.Password" Style="width: 100%;" autocomplete="current-password" Placeholder="Please enter your password."/>
+                    </ChildContent>
+                    <Helper>
+                        <ValidationMessage For="() => Input.Password"/>
+                    </Helper>
+                </RadzenFormField>
+            }
+            
+            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Danger" Text="Delete data and close my account" Style="width: 100%;"/>
+        </RadzenStack>
     </EditForm>
-</div>
+</RadzenStack>
 
 @code {
     private string? message;

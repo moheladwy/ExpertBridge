@@ -11,21 +11,34 @@
 
 <PageTitle>Register confirmation</PageTitle>
 
-<h1>Register confirmation</h1>
+<RadzenStack Gap="1.5rem" Style="padding: 2rem;">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Register confirmation</RadzenText>
+    
+    <StatusMessage Message="@statusMessage"/>
 
-<StatusMessage Message="@statusMessage"/>
-
-@if (emailConfirmationLink is not null)
-{
-    <p>
-        This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-        Normally this would be emailed: <a href="@emailConfirmationLink">Click here to confirm your account</a>
-    </p>
-}
-else
-{
-    <p role="alert">Please check your email to confirm your account.</p>
-}
+    @if (emailConfirmationLink is not null)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
+            <RadzenStack Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.Body1">
+                    This app does not currently have a real email sender registered, see 
+                    <RadzenLink Path="https://aka.ms/aspaccountconf" Target="_blank" Text="these docs"/> 
+                    for how to configure a real email sender.
+                </RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">
+                    Normally this would be emailed: 
+                    <RadzenLink Path="@emailConfirmationLink" Text="Click here to confirm your account"/>
+                </RadzenText>
+            </RadzenStack>
+        </RadzenAlert>
+    }
+    else
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Success" Variant="Variant.Flat" Shade="Shade.Lighter">
+            Please check your email to confirm your account.
+        </RadzenAlert>
+    }
+</RadzenStack>
 
 @code {
     private string? emailConfirmationLink;

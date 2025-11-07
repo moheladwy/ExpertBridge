@@ -1,17 +1,23 @@
 ﻿@inherits LayoutComponentBase
 @layout Layout.MainLayout
 
-<h1>Manage your account</h1>
+<RadzenStack Gap="1.5rem" Style="padding: 1rem;">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Manage your account</RadzenText>
 
-<div>
-    <h2>Change your account settings</h2>
-    <hr/>
-    <div class="row">
-        <div class="col-lg-3">
-            <ManageNavMenu/>
-        </div>
-        <div class="col-lg-9">
-            @Body
-        </div>
-    </div>
-</div>
+    <RadzenStack Gap="1rem">
+        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2">Change your account settings</RadzenText>
+        
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenCard Style="height: 100%;">
+                    <ManageNavMenu/>
+                </RadzenCard>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenCard>
+                    @Body
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+</RadzenStack>

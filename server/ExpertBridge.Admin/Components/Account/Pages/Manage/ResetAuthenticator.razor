@@ -10,24 +10,28 @@
 
 <PageTitle>Reset authenticator key</PageTitle>
 
-<StatusMessage/>
-<h3>Reset authenticator key</h3>
-<div class="alert alert-warning" role="alert">
-    <p>
-        <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>If you reset your authenticator key your authenticator app will not work until you reconfigure it.</strong>
-    </p>
-    <p>
-        This process disables 2FA until you verify your authenticator app.
-        If you do not complete your authenticator app configuration you may lose access to your account.
-    </p>
-</div>
-<div>
+<RadzenStack Gap="1.5rem">
+    <StatusMessage/>
+    
+    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Reset authenticator key</RadzenText>
+    
+    <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
+        <RadzenStack Gap="0.5rem">
+            <RadzenText TextStyle="TextStyle.Body1">
+                <strong>If you reset your authenticator key your authenticator app will not work until you reconfigure it.</strong>
+            </RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2">
+                This process disables 2FA until you verify your authenticator app.
+                If you do not complete your authenticator app configuration you may lose access to your account.
+            </RadzenText>
+        </RadzenStack>
+    </RadzenAlert>
+    
     <form @formname="reset-authenticator" @onsubmit="OnSubmitAsync" method="post">
         <AntiforgeryToken/>
-        <button class="btn btn-danger" type="submit">Reset authenticator key</button>
+        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Danger" Text="Reset authenticator key"/>
     </form>
-</div>
+</RadzenStack>
 
 @code {
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;

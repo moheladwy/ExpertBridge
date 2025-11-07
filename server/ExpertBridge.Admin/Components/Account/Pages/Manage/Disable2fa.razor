@@ -9,25 +9,28 @@
 
 <PageTitle>Disable two-factor authentication (2FA)</PageTitle>
 
-<StatusMessage/>
-<h3>Disable two-factor authentication (2FA)</h3>
+<RadzenStack Gap="1.5rem">
+    <StatusMessage/>
+    
+    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Disable two-factor authentication (2FA)</RadzenText>
 
-<div class="alert alert-warning" role="alert">
-    <p>
-        <strong>This action only disables 2FA.</strong>
-    </p>
-    <p>
-        Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
-        used in an authenticator app you should <a href="Account/Manage/ResetAuthenticator">reset your authenticator keys.</a>
-    </p>
-</div>
+    <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">
+        <RadzenStack Gap="0.5rem">
+            <RadzenText TextStyle="TextStyle.Body1">
+                <strong>This action only disables 2FA.</strong>
+            </RadzenText>
+            <RadzenText TextStyle="TextStyle.Body2">
+                Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
+                used in an authenticator app you should <RadzenLink Path="Account/Manage/ResetAuthenticator" Text="reset your authenticator keys"/>.
+            </RadzenText>
+        </RadzenStack>
+    </RadzenAlert>
 
-<div>
     <form @formname="disable-2fa" @onsubmit="OnSubmitAsync" method="post">
         <AntiforgeryToken/>
-        <button class="btn btn-danger" type="submit">Disable 2FA</button>
+        <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Danger" Text="Disable 2FA"/>
     </form>
-</div>
+</RadzenStack>
 
 @code {
     private Database.Admin user = default!;

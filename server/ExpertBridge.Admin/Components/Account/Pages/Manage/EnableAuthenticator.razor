@@ -20,49 +20,61 @@
 }
 else
 {
-    <StatusMessage Message="@message"/>
-    <h3>Configure authenticator app</h3>
-    <div>
-        <p>To use an authenticator app go through the following steps:</p>
-        <ol class="list">
-            <li>
-                <p>
-                    Download a two-factor authenticator app like Microsoft Authenticator for
-                    <a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> and
-                    <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a> or
+    <RadzenStack Gap="1.5rem">
+        <StatusMessage Message="@message"/>
+        <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Configure authenticator app</RadzenText>
+        
+        <RadzenText TextStyle="TextStyle.Body1">To use an authenticator app go through the following steps:</RadzenText>
+        
+        <RadzenStack Gap="1rem" Style="padding-left: 1.5rem;">
+            <RadzenStack Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.Body1"><strong>1.</strong> Download a two-factor authenticator app like Microsoft Authenticator for
+                    <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=825072" Target="_blank" Text="Android"/> and
+                    <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=825073" Target="_blank" Text="iOS"/> or
                     Google Authenticator for
-                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> and
-                    <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS</a>.
-                </p>
-            </li>
-            <li>
-                <p>Scan the QR Code or enter this key <kbd>@sharedKey</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
-                <div class="alert alert-info">Learn how to <a href="https://go.microsoft.com/fwlink/?Linkid=852423">enable QR code generation</a>.</div>
-                <div></div>
+                    <RadzenLink Path="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en" Target="_blank" Text="Android"/> and
+                    <RadzenLink Path="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8" Target="_blank" Text="iOS"/>.
+                </RadzenText>
+            </RadzenStack>
+            
+            <RadzenStack Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.Body1"><strong>2.</strong> Scan the QR Code or enter this key <code style="background-color: var(--rz-base-200); padding: 0.25rem 0.5rem; border-radius: 4px;">@sharedKey</code> into your two factor authenticator app. Spaces and casing do not matter.</RadzenText>
+                <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+                    Learn how to <RadzenLink Path="https://go.microsoft.com/fwlink/?Linkid=852423" Target="_blank" Text="enable QR code generation"/>.
+                </RadzenAlert>
                 <div data-url="@authenticatorUri"></div>
-            </li>
-            <li>
-                <p>
-                    Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
+            </RadzenStack>
+            
+            <RadzenStack Gap="0.5rem">
+                <RadzenText TextStyle="TextStyle.Body1"><strong>3.</strong> Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
                     with a unique code. Enter the code in the confirmation box below.
-                </p>
-                <div class="row">
-                    <div class="col-xl-6">
-                        <EditForm Model="Input" FormName="send-code" OnValidSubmit="OnValidSubmitAsync" method="post">
-                            <DataAnnotationsValidator/>
-                            <div class="form-floating mb-3">
-                                <InputText @bind-Value="Input.Code" id="Input.Code" class="form-control" autocomplete="off" placeholder="Enter the code"/>
-                                <label for="Input.Code" class="control-label form-label">Verification Code</label>
-                                <ValidationMessage For="() => Input.Code" class="text-danger"/>
-                            </div>
-                            <button type="submit" class="w-100 btn btn-lg btn-primary">Verify</button>
-                            <ValidationSummary class="text-danger" role="alert"/>
-                        </EditForm>
-                    </div>
-                </div>
-            </li>
-        </ol>
-    </div>
+                </RadzenText>
+                
+                <RadzenRow>
+                    <RadzenColumn Size="12" SizeXL="6">
+                        <RadzenCard>
+                            <EditForm Model="Input" FormName="send-code" OnValidSubmit="OnValidSubmitAsync" method="post">
+                                <DataAnnotationsValidator/>
+                                <RadzenStack Gap="1rem">
+                                    <RadzenFormField Text="Verification Code" Variant="Variant.Outlined">
+                                        <ChildContent>
+                                            <RadzenTextBox @bind-Value="Input.Code" Name="Input.Code" Style="width: 100%;" autocomplete="off" Placeholder="Enter the code"/>
+                                        </ChildContent>
+                                        <Helper>
+                                            <ValidationMessage For="() => Input.Code"/>
+                                        </Helper>
+                                    </RadzenFormField>
+                                    
+                                    <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Verify" Style="width: 100%;"/>
+                                    <ValidationSummary class="text-danger" role="alert"/>
+                                </RadzenStack>
+                            </EditForm>
+                        </RadzenCard>
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenStack>
 }
 
 @code {
