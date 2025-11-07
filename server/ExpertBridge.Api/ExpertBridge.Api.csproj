@@ -40,7 +40,6 @@
     <PackageReference Include="Serilog.Enrichers.Thread"/>
     <PackageReference Include="Serilog.Sinks.File"/>
     <PackageReference Include="Swashbuckle.AspNetCore"/>
-    <PackageReference Include="AWSSDK.S3"/>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"/>
     <PackageReference Include="Z.EntityFramework.Extensions.EFCore"/>
   </ItemGroup>
