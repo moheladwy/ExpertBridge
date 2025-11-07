@@ -32,7 +32,7 @@
                                 <AntiforgeryToken/>
                                 <input type="hidden" name="@nameof(LoginProvider)" value="@login.LoginProvider"/>
                                 <input type="hidden" name="@nameof(ProviderKey)" value="@login.ProviderKey"/>
-                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Remove" Size="ButtonSize.Small" Title="Remove this @login.ProviderDisplayName login from your account"/>
+                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary" Text="Remove" Size="ButtonSize.Small" Title="@string.Format("Remove this {0} login from your account", login.ProviderDisplayName)"/>
                             </form>
                         }
                     </Template>
@@ -55,7 +55,7 @@
                                   Text="@provider.DisplayName"
                                   name="Provider" 
                                   value="@provider.Name"
-                                  Title="Log in using your @provider.DisplayName account"/>
+                                  Title="@string.Format("Log in using your {0} account", provider.DisplayName)"/>
                 }
             </RadzenStack>
         </form>

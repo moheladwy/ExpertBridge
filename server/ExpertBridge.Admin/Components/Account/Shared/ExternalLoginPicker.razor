@@ -27,7 +27,7 @@ else
                               Text="@provider.DisplayName"
                               name="provider" 
                               value="@provider.Name"
-                              Title="Log in using your @provider.DisplayName account" />
+                              Title="@string.Format("Log in using your {0} account", provider.DisplayName)" />
             }
         </RadzenStack>
     </form>
