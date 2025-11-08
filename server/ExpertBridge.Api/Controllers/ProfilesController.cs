@@ -57,16 +57,21 @@ public class ProfilesController : ControllerBase
     ///     Retrieves a profile by its ID. This endpoint is cached for performance.
     /// </summary>
     /// <param name="id">The ID of the profile to retrieve.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>The <see cref="ProfileResponse" /> for the specified profile ID.</returns>
     /// <response code="200">Returns the profile with the specified ID.</response>
     /// <response code="404">If the profile is not found.</response>
+    /// <exception cref="ArgumentException">Thrown when profileId is null or empty.</exception>
     /// <exception cref="ProfileNotFoundException">Thrown when the profile with the specified ID is not found.</exception>
+    /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
     [AllowAnonymous]
     [HttpGet("{id}")]
     [ResponseCache(CacheProfileName = CacheProfiles.Default)]
-    public async Task<ProfileResponse> GetProfile(string id)
+    public async Task<ProfileResponse> GetProfile(
+        [FromRoute] string id,
+        CancellationToken cancellationToken = default)
     {
-        return await _profileService.GetProfileByIdAsync(id);
+        return await _profileService.GetProfileResponseByIdAsync(id, cancellationToken);
     }
 
     /// <summary>

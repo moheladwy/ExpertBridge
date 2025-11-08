@@ -223,6 +223,79 @@ public class ProfileService
     }
 
     /// <summary>
+    ///     Retrieves a profile by its Id.
+    /// </summary>
+    /// <param name="profileId">The Id of the profile to retrieve.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>The <see cref="ProfileResponse" /> for the specified profile ID.</returns>
+    /// <exception cref="ArgumentException">Thrown when profileId is null or empty.</exception>
+    /// <exception cref="ProfileNotFoundException">Thrown when the profile cannot be found.</exception>
+    /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
+    public async Task<ProfileResponse> GetProfileResponseByIdAsync(
+        string profileId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(profileId, nameof(profileId));
+
+        _logger.LogInformation("Retrieving profile with ID: {ProfileId}", profileId);
+
+        var profile = await _dbContext.Profiles
+            .AsNoTracking()
+            .Include(p => p.User)
+            .Where(p => p.Id == profileId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (profile == null)
+        {
+            _logger.LogWarning("Profile not found with ID: {ProfileId}", profileId);
+            throw new ProfileNotFoundException($"Profile with id={profileId} was not found");
+        }
+
+        var skills = await _dbContext.ProfileSkills
+            .AsNoTracking()
+            .Include(ps => ps.Skill)
+            .Where(ps => ps.ProfileId == profile.Id)
+            .Select(ps => ps.Skill.Name)
+            .ToListAsync(cancellationToken);
+
+        var comments = await _dbContext.CommentVotes
+            .AsNoTracking()
+            .Include(cv => cv.Comment)
+            .Where(cv => cv.Comment.AuthorId == profile.Id)
+            .Select(cv => cv.IsUpvote)
+            .ToListAsync(cancellationToken);
+
+        var upvotes = comments.Count(c => c);
+        var downvotes = comments.Count - upvotes;
+
+        var response = new ProfileResponse
+        {
+            Id = profile.Id,
+            UserId = profile.User.Id,
+            CreatedAt = profile.CreatedAt.Value,
+            Email = profile.Email,
+            FirstName = profile.FirstName,
+            LastName = profile.LastName,
+            IsBanned = profile.IsBanned,
+            JobTitle = profile.JobTitle,
+            Bio = profile.Bio,
+            PhoneNumber = profile.PhoneNumber,
+            ProfilePictureUrl = profile.ProfilePictureUrl,
+            Rating = profile.Rating,
+            RatingCount = profile.RatingCount,
+            Username = profile.Username,
+            IsOnboarded = profile.User.IsOnboarded,
+            Skills = skills,
+            CommentsUpvotes = upvotes,
+            CommentsDownvotes = downvotes,
+            Reputation = upvotes - downvotes
+        };
+
+        _logger.LogInformation("Successfully retrieved profile with ID: {ProfileId}", profileId);
+        return response;
+    }
+
+    /// <summary>
     ///     Onboards a user by setting their interests and marking them as onboarded.
     /// </summary>
     /// <param name="user">The user entity to onboard.</param>
