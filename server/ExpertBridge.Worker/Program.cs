@@ -12,6 +12,7 @@ using ExpertBridge.Notifications.Extensions;
 using ExpertBridge.Worker;
 using ExpertBridge.Worker.Consumers;
 using ExpertBridge.Worker.QuartzDatabase;
+using ExpertBridge.Worker.Services;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -29,7 +30,12 @@ builder
     .AddGroqApiServices();
 
 builder.AddNotifications();
-builder.Services.AddDomainServices();
+builder.Services
+    .AddDomainServices()
+    .AddScoped<AiTagProcessorService>()
+    .AddScoped<AiPostTaggingService>()
+    .AddScoped<NsfwContentDetectionService>()
+    ;
 var section = builder.Configuration.GetSection(AwsSettings.Section);
 builder.Services.Configure<AwsSettings>(section);
 builder.AddS3ObjectService();

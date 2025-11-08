@@ -6,7 +6,6 @@ using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Contract.Requests.RegisterUser;
 using ExpertBridge.Extensions.AWS;
-using ExpertBridge.GroqLibrary.Settings;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,9 +58,6 @@ public static class Extensions
             .AddScoped<S3Service>()
             .AddScoped<IEmbeddingService, OllamaEmbeddingService>()
             .AddScoped<TaggingService>()
-            .AddScoped<AiPostTaggingService>()
-            .AddScoped<AiTagProcessorService>()
-            .AddScoped<NsfwContentDetectionService>()
             ;
 
         return services;
@@ -116,8 +112,6 @@ public static class Extensions
 
         builder.Services.Configure<NsfwThresholds>(
             builder.Configuration.GetSection(NsfwThresholds.Section));
-
-        builder.Services.Configure<GroqSettings>(builder.Configuration.GetSection(GroqSettings.Section));
 
         return builder;
     }

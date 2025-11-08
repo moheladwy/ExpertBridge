@@ -8,7 +8,7 @@ using ExpertBridge.GroqLibrary.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
-namespace ExpertBridge.Application.Services;
+namespace ExpertBridge.Worker.Services;
 
 /// <summary>
 ///     AI-powered service for automatically generating relevant tags for posts by analyzing content using Groq LLM.

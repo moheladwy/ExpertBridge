@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ExpertBridge.Application.Services;
 using ExpertBridge.Application.Settings;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Core.Entities;
@@ -10,6 +9,7 @@ using ExpertBridge.Core.Exceptions;
 using ExpertBridge.Core.Interfaces;
 using ExpertBridge.Data.DatabaseContexts;
 using ExpertBridge.Notifications;
+using ExpertBridge.Worker.Services;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

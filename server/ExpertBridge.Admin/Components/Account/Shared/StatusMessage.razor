@@ -1,0 +1,28 @@
+﻿@if (!string.IsNullOrEmpty(DisplayMessage))
+{
+    var alertStyle = DisplayMessage.StartsWith("Error") ? AlertStyle.Danger : AlertStyle.Success;
+    <RadzenAlert AlertStyle="@alertStyle" Variant="Variant.Flat" Shade="Shade.Lighter" Style="margin-bottom: 1rem;">
+        @DisplayMessage
+    </RadzenAlert>
+}
+
+@code {
+    private string? messageFromCookie;
+
+    [Parameter] public string? Message { get; set; }
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    private string? DisplayMessage => Message ?? messageFromCookie;
+
+    protected override void OnInitialized()
+    {
+        messageFromCookie = HttpContext.Request.Cookies[IdentityRedirectManager.StatusCookieName];
+
+        if (messageFromCookie is not null)
+        {
+            HttpContext.Response.Cookies.Delete(IdentityRedirectManager.StatusCookieName);
+        }
+    }
+
+}

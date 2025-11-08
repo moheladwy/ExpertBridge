@@ -20,7 +20,8 @@ internal static class Firebase
     /// <param name="builder">
     ///     The WebApplicationBuilder to add the Firebase services to.
     /// </param>
-    public static void AddFirebaseApp(this WebApplicationBuilder builder)
+    public static TBuilder AddFirebaseApp<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
     {
         var firebaseApp = FirebaseApp.Create(new AppOptions
         {
@@ -32,6 +33,8 @@ internal static class Firebase
         builder.Services.AddSingleton(firebaseApp);
         builder.Services.AddSingleton(firebaseAuth);
         builder.Services.AddSingleton(firebaseMessaging);
+
+        return builder;
     }
 
     /// <summary>
@@ -40,7 +43,8 @@ internal static class Firebase
     /// <param name="builder">
     ///     The WebApplicationBuilder to add the HttpClient service to.
     /// </param>
-    public static WebApplicationBuilder AddHttpClientForFirebaseService(this WebApplicationBuilder builder)
+    public static TBuilder AddHttpClientForFirebaseService<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
     {
         var settings = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>()!;
 
@@ -57,7 +61,8 @@ internal static class Firebase
     ///     Adds the Firebase authentication service to the application builder.
     /// </summary>
     /// <param name="builder">builder — The WebApplicationBuilder to add the Firebase authentication services to</param>
-    public static void AddFirebaseAuthentication(this WebApplicationBuilder builder)
+    public static TBuilder AddFirebaseAuthentication<TBuilder>(this TBuilder builder)
+        where TBuilder : IHostApplicationBuilder
     {
         var config = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>()!;
         var authSettings = builder.Configuration.GetSection("Authentication:Firebase").Get<FirebaseAuthSettings>()!;
@@ -80,5 +85,7 @@ internal static class Firebase
             });
 
         builder.Services.AddAuthorization();
+
+        return builder;
     }
 }

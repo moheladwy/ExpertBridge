@@ -1,0 +1,24 @@
+﻿@using ExpertBridge.Admin.Components.Layout
+@inherits LayoutComponentBase
+@layout MainLayout
+
+<RadzenStack Gap="1.5rem" Style="padding: 1rem;">
+    <RadzenText TextStyle="TextStyle.H3" TagName="TagName.H1">Manage your account</RadzenText>
+
+    <RadzenStack Gap="1rem">
+        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2">Change your account settings</RadzenText>
+
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12" SizeMD="3">
+                <RadzenCard Style="height: 100%;">
+                    <ManageNavMenu/>
+                </RadzenCard>
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="9">
+                <RadzenCard>
+                    @Body
+                </RadzenCard>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenStack>
+</RadzenStack>

@@ -5,7 +5,7 @@ using ExpertBridge.GroqLibrary.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
-namespace ExpertBridge.Application.Services;
+namespace ExpertBridge.Worker.Services;
 
 /// <summary>
 ///     A service for detecting NSFW (Not Safe for Work) content using the Groq Large Language Model (LLM) API.

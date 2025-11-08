@@ -40,7 +40,6 @@
     <PackageReference Include="Serilog.Enrichers.Thread"/>
     <PackageReference Include="Serilog.Sinks.File"/>
     <PackageReference Include="Swashbuckle.AspNetCore"/>
-    <PackageReference Include="AWSSDK.S3"/>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"/>
     <PackageReference Include="Z.EntityFramework.Extensions.EFCore"/>
   </ItemGroup>
@@ -50,7 +49,6 @@
     <ProjectReference Include="..\ExpertBridge.Core\ExpertBridge.Core.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj"/>
-    <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Notifications\ExpertBridge.Notifications.csproj"/>
   </ItemGroup>
 

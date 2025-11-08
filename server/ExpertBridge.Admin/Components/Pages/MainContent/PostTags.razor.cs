@@ -14,37 +14,40 @@ public partial class PostTags
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly DialogService _dialogService;
     private readonly NotificationService _notificationService;
-    private RadzenDataGrid<PostTagsViewModel>? grid;
-    private bool isLoading = true;
-    public List<PostTagsViewModel> postTags;
+    private RadzenDataGrid<PostTagsViewModel> _grid;
+    private bool _isLoading = true;
+    private List<PostTagsViewModel> _postTags;
 
-    public PostTags(ExpertBridgeDbContext dbContext, HybridCache cache, DialogService dialogService,
+    public PostTags(
+        ExpertBridgeDbContext dbContext,
+        HybridCache cache,
+        DialogService dialogService,
         NotificationService notificationService)
     {
         _dbContext = dbContext;
         _cache = cache;
         _dialogService = dialogService;
         _notificationService = notificationService;
-        postTags = [];
+        _postTags = [];
     }
 
     public int TotalActiveTags
     {
-        get { return postTags.Count(pt => pt.IsUsedAnywhere); }
+        get { return _postTags.Count(pt => pt.IsUsedAnywhere); }
     }
 
     public int TotalInactiveTags
     {
-        get { return postTags.Count(pt => !pt.IsUsedAnywhere); }
+        get { return _postTags.Count(pt => !pt.IsUsedAnywhere); }
     }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            isLoading = true;
-            var key = "AllTags";
-            postTags = await _cache.GetOrCreateAsync(key,
+            _isLoading = true;
+            const string key = "AllTags";
+            _postTags = await _cache.GetOrCreateAsync(key,
                 async cancellationToken =>
                 {
                     return await _dbContext.Tags
@@ -68,7 +71,7 @@ public partial class PostTags
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
         }
 
         await base.OnInitializedAsync();
@@ -81,7 +84,7 @@ public partial class PostTags
             { "TagId", tag.TagId },
             { "EnglishName", tag.EnglishName },
             { "ArabicName", tag.ArabicName },
-            { "Description", tag.Description ?? string.Empty }
+            { "Description", tag.Description }
         };
 
         var result = await _dialogService.OpenAsync<EditTagDialog>("Edit Tag",
@@ -191,12 +194,12 @@ public partial class PostTags
     {
         try
         {
-            isLoading = true;
+            _isLoading = true;
             // Clear cache
             await _cache.RemoveAsync("AllTags");
 
-            var key = "AllTags";
-            postTags = await _cache.GetOrCreateAsync(key,
+            const string key = "AllTags";
+            _postTags = await _cache.GetOrCreateAsync(key,
                 async cancellationToken =>
                 {
                     return await _dbContext.Tags
@@ -220,7 +223,7 @@ public partial class PostTags
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
         }
     }
 }

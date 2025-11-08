@@ -5,7 +5,7 @@ using ExpertBridge.GroqLibrary.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
-namespace ExpertBridge.Application.Services;
+namespace ExpertBridge.Worker.Services;
 
 /// <summary>
 ///     A service for processing and analyzing tags or textual categorizations using

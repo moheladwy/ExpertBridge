@@ -1,0 +1,140 @@
+﻿@page "/Account/Manage/ExternalLogins"
+@using ExpertBridge.Admin.Database
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<Admin> UserManager
+@inject SignInManager<Admin> SignInManager
+@inject IdentityUserAccessor UserAccessor
+@inject IUserStore<Admin> UserStore
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Manage your external logins</PageTitle>
+
+<RadzenStack Gap="1.5rem">
+    <StatusMessage/>
+
+    @if (currentLogins?.Count > 0)
+    {
+        <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H3">Registered Logins</RadzenText>
+        <RadzenDataGrid Data="@currentLogins" TItem="UserLoginInfo" AllowFiltering="false" AllowPaging="false"
+                        AllowSorting="false">
+            <Columns>
+                <RadzenDataGridColumn TItem="UserLoginInfo" Property="ProviderDisplayName" Title="Provider">
+                    <Template Context="login">
+                        @login.ProviderDisplayName
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="UserLoginInfo" Title="Actions" Width="150px">
+                    <Template Context="login">
+                        @if (showRemoveButton)
+                        {
+                            <form @formname="@($"remove-login-{login.LoginProvider}")" @onsubmit="OnSubmitAsync"
+                                  method="post">
+                                <AntiforgeryToken/>
+                                <input type="hidden" name="@nameof(LoginProvider)" value="@login.LoginProvider"/>
+                                <input type="hidden" name="@nameof(ProviderKey)" value="@login.ProviderKey"/>
+                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Primary"
+                                              Text="Remove" Size="ButtonSize.Small"
+                                              Title="@string.Format("Remove this {0} login from your account", login.ProviderDisplayName)"/>
+                            </form>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+
+    @if (otherLogins?.Count > 0)
+    {
+        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H4">Add another service to log in.</RadzenText>
+
+        <form class="form-horizontal" action="Account/Manage/LinkExternalLogin" method="post">
+            <AntiforgeryToken/>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+                @foreach (var provider in otherLogins)
+                {
+                    <RadzenButton ButtonType="ButtonType.Submit"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  Text="@provider.DisplayName"
+                                  name="Provider"
+                                  value="@provider.Name"
+                                  Title="@string.Format("Log in using your {0} account", provider.DisplayName)"/>
+                }
+            </RadzenStack>
+        </form>
+    }
+</RadzenStack>
+
+@code {
+    public const string LinkLoginCallbackAction = "LinkLoginCallback";
+
+    private Admin user = default!;
+    private IList<UserLoginInfo>? currentLogins;
+    private IList<AuthenticationScheme>? otherLogins;
+    private bool showRemoveButton;
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm] private string? LoginProvider { get; set; }
+
+    [SupplyParameterFromForm] private string? ProviderKey { get; set; }
+
+    [SupplyParameterFromQuery] private string? Action { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        currentLogins = await UserManager.GetLoginsAsync(user);
+        otherLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync())
+            .Where(auth => currentLogins.All(ul => auth.Name != ul.LoginProvider))
+            .ToList();
+
+        string? passwordHash = null;
+        if (UserStore is IUserPasswordStore<Admin> userPasswordStore)
+        {
+            passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
+        }
+
+        showRemoveButton = passwordHash is not null || currentLogins.Count > 1;
+
+        if (HttpMethods.IsGet(HttpContext.Request.Method) && Action == LinkLoginCallbackAction)
+        {
+            await OnGetLinkLoginCallbackAsync();
+        }
+    }
+
+    private async Task OnSubmitAsync()
+    {
+        var result = await UserManager.RemoveLoginAsync(user, LoginProvider!, ProviderKey!);
+        if (!result.Succeeded)
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: The external login was not removed.", HttpContext);
+        }
+
+        await SignInManager.RefreshSignInAsync(user);
+        RedirectManager.RedirectToCurrentPageWithStatus("The external login was removed.", HttpContext);
+    }
+
+    private async Task OnGetLinkLoginCallbackAsync()
+    {
+        var userId = await UserManager.GetUserIdAsync(user);
+        var info = await SignInManager.GetExternalLoginInfoAsync(userId);
+        if (info is null)
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: Could not load external login info.", HttpContext);
+        }
+
+        var result = await UserManager.AddLoginAsync(user, info);
+        if (!result.Succeeded)
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: The external login was not added. External logins can only be associated with one account.", HttpContext);
+        }
+
+        // Clear the existing external cookie to ensure a clean login process
+        await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+        RedirectManager.RedirectToCurrentPageWithStatus("The external login was added.", HttpContext);
+    }
+
+}

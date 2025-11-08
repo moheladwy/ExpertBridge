@@ -1,71 +1,58 @@
-﻿namespace ExpertBridge.Application.Settings;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+namespace ExpertBridge.Application.Settings;
 
 /// <summary>
-///     Configuration settings for Firebase Authentication JWT token validation.
+///     Represents JWT authentication configuration settings for Firebase Authentication in the ExpertBridge application.
+///     Defines token validation parameters for verifying Firebase ID tokens in API requests.
 /// </summary>
 /// <remarks>
-///     This settings class configures the JWT bearer authentication scheme to validate Firebase ID tokens.
-///     Used by ASP.NET Core authentication middleware to verify tokens issued by Firebase Authentication.
+///     These settings are loaded from the "Authentication:Firebase" configuration section and used to configure
+///     JWT Bearer authentication middleware for validating Firebase-issued ID tokens.
+///     Firebase Authentication flow:
+///     1. Client authenticates with Firebase (email/password, Google, etc.)
+///     2. Client receives Firebase ID token (JWT)
+///     3. Client includes token in Authorization header of API requests
+///     4. Server validates token using these settings
+///     5. Server extracts user ProviderId from token claims
+///     The issuer and audience settings ensure tokens are issued by Firebase for the ExpertBridge project.
 ///     **Configured in appsettings.json under "Authentication:Firebase" section:**
 ///     <code>
-/// {
-///   "Authentication": {
-///     "Firebase": {
-///       "Issuer": "https://securetoken.google.com/your-project-id",
-///       "Audience": "your-project-id",
-///       "TokenUri": "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"
-///     }
-///   }
-/// }
-/// </code>
-///     **JWT Validation Parameters:**
-///     - Issuer: Must match Firebase's secure token service URL for your project
-///     - Audience: Must match your Firebase project ID
-///     - TokenUri: Endpoint for retrieving public keys to verify token signatures
-///     **Security Flow:**
-///     1. Client authenticates with Firebase and receives ID token (JWT)
-///     2. Client sends ID token in Authorization header: "Bearer {token}"
-///     3. Middleware validates token signature using Firebase public keys
-///     4. Middleware validates issuer, audience, and expiration claims
-///     5. User claims are extracted and available via HttpContext.User
-///     **Integration:**
-///     - Used by JwtBearerOptions in authentication middleware configuration
-///     - Tokens are validated on every protected API request
-///     - Failed validation returns 401 Unauthorized
-///     Replace "your-project-id" with your actual Firebase project ID from Firebase Console.
+///         {
+///           "Authentication": {
+///             "Firebase": {
+///               "Issuer": "https://securetoken.google.com/your-project-id",
+///               "Audience": "your-project-id",
+///               "TokenUri": "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+///             }
+///           }
+///         }
+///     </code>
 /// </remarks>
 public sealed class FirebaseAuthSettings
 {
     /// <summary>
-    ///     The configuration section name in appsettings.json.
+    ///     Gets the configuration section name for Firebase authentication settings.
     /// </summary>
     public const string Section = "Authentication:Firebase";
 
     /// <summary>
-    ///     Gets or sets the expected JWT token issuer (Firebase Secure Token Service URL).
+    ///     Gets or sets the expected JWT issuer URL for Firebase ID tokens (e.g.,
+    ///     "https://securetoken.google.com/expert-bridge").
+    ///     Used to validate that tokens are issued by Firebase Authentication for the correct project.
     /// </summary>
-    /// <remarks>
-    ///     Format: https://securetoken.google.com/{your-firebase-project-id}
-    ///     Validation fails if token's "iss" claim doesn't match this value.
-    /// </remarks>
     public string Issuer { get; set; } = string.Empty;
 
     /// <summary>
-    ///     Gets or sets the expected JWT token audience (Firebase project ID).
+    ///     Gets or sets the expected JWT audience (Firebase project ID) for validating token recipients.
+    ///     Ensures tokens are intended for the ExpertBridge application.
     /// </summary>
-    /// <remarks>
-    ///     Must match your Firebase project ID exactly.
-    ///     Validation fails if token's "aud" claim doesn't match this value.
-    /// </remarks>
     public string Audience { get; set; } = string.Empty;
 
     /// <summary>
-    ///     Gets or sets the URL for retrieving Firebase public keys used to verify token signatures.
+    ///     Gets or sets the URI for obtaining Firebase authentication tokens.
+    ///     Used by services that need to interact with Firebase authentication REST API.
     /// </summary>
-    /// <remarks>
-    ///     Default: https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com
-    ///     The middleware fetches public keys from this endpoint to verify JWT signatures cryptographically.
-    ///     Keys are cached and automatically rotated by Firebase.
-    /// </remarks>
     public string TokenUri { get; set; } = string.Empty;
 }

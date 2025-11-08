@@ -1,0 +1,26 @@
+﻿@using ExpertBridge.Admin.Database
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Admin> SignInManager
+
+<RadzenStack Gap="0.5rem">
+    <RadzenPanelMenuItem Text="Profile" Icon="person" Path="Account/Manage"/>
+    <RadzenPanelMenuItem Text="Email" Icon="email" Path="Account/Manage/Email"/>
+    <RadzenPanelMenuItem Text="Password" Icon="lock" Path="Account/Manage/ChangePassword"/>
+    @if (hasExternalLogins)
+    {
+        <RadzenPanelMenuItem Text="External logins" Icon="login" Path="Account/Manage/ExternalLogins"/>
+    }
+    <RadzenPanelMenuItem Text="Two-factor authentication" Icon="security"
+                         Path="Account/Manage/TwoFactorAuthentication"/>
+    <RadzenPanelMenuItem Text="Personal data" Icon="folder_shared" Path="Account/Manage/PersonalData"/>
+</RadzenStack>
+
+@code {
+    private bool hasExternalLogins;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    }
+
+}
