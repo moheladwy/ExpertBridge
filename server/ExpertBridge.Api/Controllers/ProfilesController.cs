@@ -41,21 +41,16 @@ public class ProfilesController : ControllerBase
     /// <summary>
     ///     Retrieves the profile of the currently authenticated user.
     /// </summary>
-    /// <returns>The <see cref="ProfileResponse" /> for the authenticated user.</returns>
+    /// <returns>The <see cref="ProfileResponse" />for the authenticated user.</returns>
     /// <response code="200">Returns the user's profile.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="404">If the user's profile is not found.</response>
     /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the user profile is not found.</exception>
+    /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
     [HttpGet]
-    public async Task<ProfileResponse> GetProfile()
+    public async Task<ProfileResponse> GetProfile(CancellationToken cancellationToken = default)
     {
-        var user = await _authHelper.GetCurrentUserAsync();
-        if (user == null)
-        {
-            throw new UnauthorizedGetMyProfileException();
-        }
-
-        return await _profileService.GetProfileByUserIdAsync(user.Id);
+        return await _profileService.GetCurrentProfileResponseAsync(cancellationToken);
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using ExpertBridge.Application.DataGenerator;
+using ExpertBridge.Application.Helpers;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.OnboardUser;
@@ -30,6 +31,7 @@ public class ProfileService
     private readonly IValidator<OnboardUserRequest> _onboardUserRequestValidator;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IValidator<UpdateProfileRequest> _updateProfileRequestValidator;
+    private readonly AuthorizationHelper _authHelper;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ProfileService" /> class.
@@ -39,18 +41,21 @@ public class ProfileService
     /// <param name="updateProfileRequestValidator">The validator for profile update requests.</param>
     /// <param name="onboardUserRequestValidator">The validator for onboard user requests.</param>
     /// <param name="publishEndpoint">The message bus publish endpoint.</param>
+    /// <param name="authHelper">The authorization helper for user context.</param>
     public ProfileService(
         ExpertBridgeDbContext dbContext,
         ILogger<ProfileService> logger,
         IValidator<UpdateProfileRequest> updateProfileRequestValidator,
         IValidator<OnboardUserRequest> onboardUserRequestValidator,
-        IPublishEndpoint publishEndpoint)
+        IPublishEndpoint publishEndpoint,
+        AuthorizationHelper authHelper)
     {
         _dbContext = dbContext;
         _logger = logger;
         _updateProfileRequestValidator = updateProfileRequestValidator;
         _onboardUserRequestValidator = onboardUserRequestValidator;
         _publishEndpoint = publishEndpoint;
+        _authHelper = authHelper;
     }
 
     /// <summary>
@@ -121,36 +126,67 @@ public class ProfileService
     }
 
     /// <summary>
-    ///     Retrieves the profile for a user by their user ID.
+    ///     Retrieves the current user's profile.
     /// </summary>
-    /// <param name="userId">The ID of the user whose profile to retrieve.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
-    /// <returns>The <see cref="ProfileResponse" /> for the specified user.</returns>
-    /// <exception cref="ArgumentException">Thrown when userId is null or empty.</exception>
-    /// <exception cref="ProfileNotFoundException">Thrown when the profile cannot be found.</exception>
+    /// <returns>The <see cref="ProfileResponse" />for the current authenticated user.</returns>
+    /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the profile cannot be found.</exception>
     /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
-    public async Task<ProfileResponse> GetProfileByUserIdAsync(
-        string userId,
-        CancellationToken cancellationToken = default)
+    public async Task<ProfileResponse> GetCurrentProfileResponseAsync(CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(userId, nameof(userId));
-
-        _logger.LogInformation("Retrieving profile for user ID: {UserId}", userId);
-
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .FullyPopulatedProfileQuery(p => p.UserId == userId)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (profile == null)
+        var user = await _authHelper.GetCurrentUserAsync();
+        if (user == null)
         {
-            _logger.LogWarning("Profile not found for user ID: {UserId}", userId);
-            throw new ProfileNotFoundException($"User[{userId}] Profile was not found");
+            _logger.LogWarning("Unauthorized access attempt to GetCurrentProfileResponseAsync");
+            throw new UnauthorizedGetMyProfileException();
         }
 
-        _logger.LogInformation("Successfully retrieved profile for user ID: {UserId}", userId);
-        return profile;
+        _logger.LogInformation("Retrieving profile for user ID: {UserId}", user.Id);
+
+        var profile = user.Profile;
+
+        var skills = await _dbContext.ProfileSkills
+            .AsNoTracking()
+            .Include(ps => ps.Skill)
+            .Where(ps => ps.ProfileId == profile.Id)
+            .Select(ps => ps.Skill.Name)
+            .ToListAsync(cancellationToken);
+
+        var comments = await _dbContext.CommentVotes
+            .AsNoTracking()
+            .Include(cv => cv.Comment)
+            .Where(cv => cv.Comment.AuthorId == profile.Id)
+            .Select(cv => cv.IsUpvote)
+            .ToListAsync(cancellationToken);
+
+        var upvotes = comments.Count(c => c);
+        var downvotes = comments.Count - upvotes;
+
+        var response = new ProfileResponse
+        {
+            Id = profile.Id,
+            UserId = user.Id,
+            CreatedAt = profile.CreatedAt.Value,
+            Email = profile.Email,
+            FirstName = profile.FirstName,
+            LastName = profile.LastName,
+            IsBanned = profile.IsBanned,
+            JobTitle = profile.JobTitle,
+            Bio = profile.Bio,
+            PhoneNumber = profile.PhoneNumber,
+            ProfilePictureUrl = profile.ProfilePictureUrl,
+            Rating = profile.Rating,
+            RatingCount = profile.RatingCount,
+            Username = profile.Username,
+            IsOnboarded = user.IsOnboarded,
+            Skills = skills,
+            CommentsUpvotes = upvotes,
+            CommentsDownvotes = downvotes,
+            Reputation = upvotes - downvotes
+        };
+
+        _logger.LogInformation("Successfully retrieved profile for user ID: {UserId}", user.Id);
+        return response;
     }
 
     /// <summary>
