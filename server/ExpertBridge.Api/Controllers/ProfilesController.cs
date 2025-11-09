@@ -229,7 +229,7 @@ public class ProfilesController : ControllerBase
             throw new UnauthorizedAccessException("The user is not authorized.");
         }
 
-        return await _profileService.GetProfileSkillsAsync(user.Profile.Id, cancellationToken);
+        return await _profileService.GetProfileSkillsByProfileIdAsync(user.Profile.Id, cancellationToken);
     }
 
     /// <summary>
@@ -246,6 +246,6 @@ public class ProfilesController : ControllerBase
         [FromRoute] string profileId,
         CancellationToken cancellationToken = default)
     {
-        return await _profileService.GetProfileSkillsAsync(profileId, cancellationToken);
+        return await _profileService.GetProfileSkillsByProfileIdAsync(profileId, cancellationToken);
     }
 }
