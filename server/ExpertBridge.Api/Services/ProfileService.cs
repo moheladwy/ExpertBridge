@@ -215,7 +215,7 @@ public class ProfileService
         var response = new ProfileResponse
         {
             Id = profile.Id,
-            UserId = profile.User.Id,
+            UserId = profile.UserId,
             CreatedAt = profile.CreatedAt.Value,
             Email = profile.Email,
             FirstName = profile.FirstName,
@@ -304,7 +304,8 @@ public class ProfileService
         await _publishEndpoint.Publish(
             new UserInterestsProsessingMessage
             {
-                UserProfileId = user.Profile.Id, InterestsTags = newTagsToBeProcessed
+                UserProfileId = user.Profile.Id,
+                InterestsTags = newTagsToBeProcessed
             }, cancellationToken);
 
         var response = await GetProfileResponseByIdAsync(user.Profile.Id, cancellationToken);
