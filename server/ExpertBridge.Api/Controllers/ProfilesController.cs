@@ -41,37 +41,37 @@ public class ProfilesController : ControllerBase
     /// <summary>
     ///     Retrieves the profile of the currently authenticated user.
     /// </summary>
-    /// <returns>The <see cref="ProfileResponse" /> for the authenticated user.</returns>
+    /// <returns>The <see cref="ProfileResponse" />for the authenticated user.</returns>
     /// <response code="200">Returns the user's profile.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="404">If the user's profile is not found.</response>
     /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the user profile is not found.</exception>
+    /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
     [HttpGet]
-    public async Task<ProfileResponse> GetProfile()
+    public async Task<ProfileResponse> GetProfile(CancellationToken cancellationToken = default)
     {
-        var user = await _authHelper.GetCurrentUserAsync();
-        if (user == null)
-        {
-            throw new UnauthorizedGetMyProfileException();
-        }
-
-        return await _profileService.GetProfileByUserIdAsync(user.Id);
+        return await _profileService.GetCurrentProfileResponseAsync(cancellationToken);
     }
 
     /// <summary>
     ///     Retrieves a profile by its ID. This endpoint is cached for performance.
     /// </summary>
     /// <param name="id">The ID of the profile to retrieve.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>The <see cref="ProfileResponse" /> for the specified profile ID.</returns>
     /// <response code="200">Returns the profile with the specified ID.</response>
     /// <response code="404">If the profile is not found.</response>
+    /// <exception cref="ArgumentException">Thrown when profileId is null or empty.</exception>
     /// <exception cref="ProfileNotFoundException">Thrown when the profile with the specified ID is not found.</exception>
+    /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
     [AllowAnonymous]
     [HttpGet("{id}")]
     [ResponseCache(CacheProfileName = CacheProfiles.Default)]
-    public async Task<ProfileResponse> GetProfile(string id)
+    public async Task<ProfileResponse> GetProfile(
+        [FromRoute] string id,
+        CancellationToken cancellationToken = default)
     {
-        return await _profileService.GetProfileByIdAsync(id);
+        return await _profileService.GetProfileResponseByIdAsync(id, cancellationToken);
     }
 
     /// <summary>
@@ -229,7 +229,7 @@ public class ProfilesController : ControllerBase
             throw new UnauthorizedAccessException("The user is not authorized.");
         }
 
-        return await _profileService.GetProfileSkillsAsync(user.Profile.Id, cancellationToken);
+        return await _profileService.GetProfileSkillsByProfileIdAsync(user.Profile.Id, cancellationToken);
     }
 
     /// <summary>
@@ -246,6 +246,6 @@ public class ProfilesController : ControllerBase
         [FromRoute] string profileId,
         CancellationToken cancellationToken = default)
     {
-        return await _profileService.GetProfileSkillsAsync(profileId, cancellationToken);
+        return await _profileService.GetProfileSkillsByProfileIdAsync(profileId, cancellationToken);
     }
 }

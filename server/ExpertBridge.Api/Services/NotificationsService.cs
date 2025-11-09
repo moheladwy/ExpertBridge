@@ -39,6 +39,7 @@ public sealed class NotificationsService
     public async Task<List<NotificationResponse>> GetAll(User currentUser)
     {
         return await _dbContext.Notifications
+            .AsNoTracking()
             .Where(n => n.RecipientId == currentUser.Profile.Id)
             .SelectNotificationResopnse()
             .ToListAsync();

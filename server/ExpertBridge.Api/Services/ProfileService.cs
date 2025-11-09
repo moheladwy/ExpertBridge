@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using ExpertBridge.Application.DataGenerator;
+using ExpertBridge.Application.Helpers;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.OnboardUser;
@@ -25,6 +26,7 @@ namespace ExpertBridge.Api.Services;
 /// </summary>
 public class ProfileService
 {
+    private readonly AuthorizationHelper _authHelper;
     private readonly ExpertBridgeDbContext _dbContext;
     private readonly ILogger<ProfileService> _logger;
     private readonly IValidator<OnboardUserRequest> _onboardUserRequestValidator;
@@ -39,18 +41,21 @@ public class ProfileService
     /// <param name="updateProfileRequestValidator">The validator for profile update requests.</param>
     /// <param name="onboardUserRequestValidator">The validator for onboard user requests.</param>
     /// <param name="publishEndpoint">The message bus publish endpoint.</param>
+    /// <param name="authHelper">The authorization helper for user context.</param>
     public ProfileService(
         ExpertBridgeDbContext dbContext,
         ILogger<ProfileService> logger,
         IValidator<UpdateProfileRequest> updateProfileRequestValidator,
         IValidator<OnboardUserRequest> onboardUserRequestValidator,
-        IPublishEndpoint publishEndpoint)
+        IPublishEndpoint publishEndpoint,
+        AuthorizationHelper authHelper)
     {
         _dbContext = dbContext;
         _logger = logger;
         _updateProfileRequestValidator = updateProfileRequestValidator;
         _onboardUserRequestValidator = onboardUserRequestValidator;
         _publishEndpoint = publishEndpoint;
+        _authHelper = authHelper;
     }
 
     /// <summary>
@@ -121,59 +126,47 @@ public class ProfileService
     }
 
     /// <summary>
-    ///     Retrieves the profile for a user by their user ID.
+    ///     Retrieves the current user's profile.
     /// </summary>
-    /// <param name="userId">The ID of the user whose profile to retrieve.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
-    /// <returns>The <see cref="ProfileResponse" /> for the specified user.</returns>
-    /// <exception cref="ArgumentException">Thrown when userId is null or empty.</exception>
-    /// <exception cref="ProfileNotFoundException">Thrown when the profile cannot be found.</exception>
+    /// <returns>The <see cref="ProfileResponse" />for the current authenticated user.</returns>
+    /// <exception cref="UnauthorizedGetMyProfileException">Thrown when the profile cannot be found.</exception>
     /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
-    public async Task<ProfileResponse> GetProfileByUserIdAsync(
-        string userId,
-        CancellationToken cancellationToken = default)
+    public async Task<ProfileResponse> GetCurrentProfileResponseAsync(CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(userId, nameof(userId));
-
-        _logger.LogInformation("Retrieving profile for user ID: {UserId}", userId);
-
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .FullyPopulatedProfileQuery(p => p.UserId == userId)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (profile == null)
+        var user = await _authHelper.GetCurrentUserAsync();
+        if (user == null)
         {
-            _logger.LogWarning("Profile not found for user ID: {UserId}", userId);
-            throw new ProfileNotFoundException($"User[{userId}] Profile was not found");
+            _logger.LogWarning("Unauthorized access attempt to GetCurrentProfileResponseAsync");
+            throw new UnauthorizedGetMyProfileException();
         }
 
-        _logger.LogInformation("Successfully retrieved profile for user ID: {UserId}", userId);
-        return profile;
+        _logger.LogInformation("Retrieving profile for user ID: {UserId}", user.Id);
+
+        return await GetProfileResponseFromProfileAsync(user.Profile, cancellationToken);
     }
 
     /// <summary>
-    ///     Retrieves a profile by its ID.
+    ///     Retrieves a profile by its Id.
     /// </summary>
-    /// <param name="profileId">The ID of the profile to retrieve.</param>
+    /// <param name="profileId">The Id of the profile to retrieve.</param>
     /// <param name="cancellationToken">Cancellation token for the operation.</param>
     /// <returns>The <see cref="ProfileResponse" /> for the specified profile ID.</returns>
     /// <exception cref="ArgumentException">Thrown when profileId is null or empty.</exception>
     /// <exception cref="ProfileNotFoundException">Thrown when the profile cannot be found.</exception>
     /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
-    public async Task<ProfileResponse> GetProfileByIdAsync(
+    public async Task<ProfileResponse> GetProfileResponseByIdAsync(
         string profileId,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
+        ArgumentException.ThrowIfNullOrWhiteSpace(profileId, nameof(profileId));
 
         _logger.LogInformation("Retrieving profile with ID: {ProfileId}", profileId);
 
         var profile = await _dbContext.Profiles
             .AsNoTracking()
-            .FullyPopulatedProfileQuery(profile => profile.Id == profileId)
-            .SelectProfileResponseFromProfile()
+            .Include(p => p.User)
+            .Where(p => p.Id == profileId)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (profile == null)
@@ -182,8 +175,68 @@ public class ProfileService
             throw new ProfileNotFoundException($"Profile with id={profileId} was not found");
         }
 
-        _logger.LogInformation("Successfully retrieved profile with ID: {ProfileId}", profileId);
-        return profile;
+        return await GetProfileResponseFromProfileAsync(profile, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Converts a <see cref="Profile" /> entity to a <see cref="ProfileResponse" /> object asynchronously.
+    /// </summary>
+    /// <param name="profile">The profile entity to be converted.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>
+    ///     A task that represents the asynchronous operation. The task result contains the <see cref="ProfileResponse" />
+    ///     constructed from the profile.
+    /// </returns>
+    private async Task<ProfileResponse> GetProfileResponseFromProfileAsync(
+        Profile profile,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+        _logger.LogInformation("Retrieving profile with ID: {ProfileId}", profile.Id);
+
+        var skills = await GetProfileSkillsByProfileIdAsync(profile.Id, cancellationToken);
+
+        var comments = await _dbContext.CommentVotes
+            .AsNoTracking()
+            .Include(cv => cv.Comment)
+            .Where(cv => cv.Comment.AuthorId == profile.Id)
+            .Select(cv => cv.IsUpvote)
+            .ToListAsync(cancellationToken);
+        _logger.LogInformation("Retrieved {CommentCount} comments for profile ID: {ProfileId}", comments.Count,
+            profile.Id);
+
+        var upvotes = comments.Count(c => c);
+        _logger.LogInformation("Retrieved {UpvoteCount} upvotes for profile ID: {ProfileId}", upvotes, profile.Id);
+
+        var downvotes = comments.Count - upvotes;
+        _logger.LogInformation("Retrieved {DownvoteCount} downvotes for profile ID: {ProfileId}", downvotes,
+            profile.Id);
+
+        var response = new ProfileResponse
+        {
+            Id = profile.Id,
+            UserId = profile.User.Id,
+            CreatedAt = profile.CreatedAt.Value,
+            Email = profile.Email,
+            FirstName = profile.FirstName,
+            LastName = profile.LastName,
+            IsBanned = profile.IsBanned,
+            JobTitle = profile.JobTitle,
+            Bio = profile.Bio,
+            PhoneNumber = profile.PhoneNumber,
+            ProfilePictureUrl = profile.ProfilePictureUrl,
+            Rating = profile.Rating,
+            RatingCount = profile.RatingCount,
+            Username = profile.Username,
+            IsOnboarded = profile.User.IsOnboarded,
+            Skills = skills,
+            CommentsUpvotes = upvotes,
+            CommentsDownvotes = downvotes,
+            Reputation = upvotes - downvotes
+        };
+
+        _logger.LogInformation("Successfully retrieved profile with ID: {ProfileId}", profile.Id);
+        return response;
     }
 
     /// <summary>
@@ -254,16 +307,7 @@ public class ProfileService
                 UserProfileId = user.Profile.Id, InterestsTags = newTagsToBeProcessed
             }, cancellationToken);
 
-        var response = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(p => p.UserId == user.Id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (response == null)
-        {
-            _logger.LogError("Profile not found after onboarding for user ID: {UserId}", user.Id);
-            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
-        }
+        var response = await GetProfileResponseByIdAsync(user.Profile.Id, cancellationToken);
 
         _logger.LogInformation("Successfully completed onboarding for user ID: {UserId}", user.Id);
         return response;
@@ -317,7 +361,7 @@ public class ProfileService
     /// <returns>A list of skill names associated with the profile.</returns>
     /// <exception cref="ArgumentException">Thrown when profileId is null or empty.</exception>
     /// <exception cref="OperationCanceledException">Thrown when the operation is canceled via the cancellation token.</exception>
-    public async Task<List<string>> GetProfileSkillsAsync(
+    public async Task<List<string>> GetProfileSkillsByProfileIdAsync(
         string profileId,
         CancellationToken cancellationToken = default)
     {
@@ -439,17 +483,7 @@ public class ProfileService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var profileResponse = await _dbContext.Profiles
-            .FullyPopulatedProfileQuery(p => p.Id == user.Profile.Id)
-            .SelectProfileResponseFromProfile()
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (profileResponse == null)
-        {
-            throw new ProfileNotFoundException($"User[{user.Id}] Profile was not found");
-        }
-
-        return profileResponse;
+        return await GetProfileResponseByIdAsync(profile.Id, cancellationToken);
     }
 
     /// <summary>
