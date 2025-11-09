@@ -228,7 +228,7 @@ public class ProfileService
             Rating = profile.Rating,
             RatingCount = profile.RatingCount,
             Username = profile.Username,
-            IsOnboarded = profile.User.IsOnboarded ?? true,
+            IsOnboarded = profile.User.IsOnboarded,
             Skills = skills,
             CommentsUpvotes = upvotes,
             CommentsDownvotes = downvotes,
