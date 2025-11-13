@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace ExpertBridge.Api.Extensions;
 
@@ -37,16 +37,18 @@ internal static class SwaggerDocumentation
                     BearerFormat = "JWT"
                 });
 
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
+            options.AddSecurityRequirement(doc =>
+                new OpenApiSecurityRequirement
                 {
-                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-                    },
-                    Array.Empty<string>()
+                        new OpenApiSecuritySchemeReference(referenceId: apiName, doc)
+                        {
+                            Reference = new OpenApiReferenceWithDescription()
+                        },
+                        []
+                    }
                 }
-            });
+            );
         });
 
         return builder;

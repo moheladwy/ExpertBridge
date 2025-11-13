@@ -14,12 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\.dockerignore">
-      <Link>.dockerignore</Link>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Database\Migrations\"/>
     <Folder Include="logs\"/>
     <Folder Include="wwwroot/lib/"/>
@@ -75,6 +69,12 @@
     <AdditionalFiles Include="Components\Account\Shared\RedirectToLogin.razor"/>
     <AdditionalFiles Include="Components\Account\Shared\ShowRecoveryCodes.razor"/>
     <AdditionalFiles Include="Components\Account\Shared\StatusMessage.razor"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
 </Project>
