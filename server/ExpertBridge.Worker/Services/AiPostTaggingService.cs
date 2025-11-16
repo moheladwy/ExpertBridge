@@ -4,6 +4,7 @@
 using System.Text.Json;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Extensions.Resilience;
+using Groq.Core.Models;
 using Groq.Core.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
@@ -135,9 +136,9 @@ public sealed class AiPostTaggingService
         string content,
         IReadOnlyCollection<string> existingTags)
     {
-        ArgumentException.ThrowIfNullOrEmpty(title, nameof(title));
-        ArgumentException.ThrowIfNullOrEmpty(content, nameof(content));
-        ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
+        ArgumentException.ThrowIfNullOrEmpty(title);
+        ArgumentException.ThrowIfNullOrEmpty(content);
+        ArgumentNullException.ThrowIfNull(existingTags);
         try
         {
             PostCategorizerResponse? result = null;
@@ -147,7 +148,12 @@ public sealed class AiPostTaggingService
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(title, content, existingTags);
-                var response = await _llmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                var structureOutput = await GetOutputFormatSchema();
+                var response = await _llmTextProvider.GenerateAsync(
+                    systemPrompt: systemPrompt,
+                    userPrompt: userPrompt,
+                    structureOutputJsonFormat: structureOutput,
+                    model: ChatModels.OPENAI_GPT_OSS_120B.Id);
                 result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the categorizer response: null result");
@@ -170,9 +176,9 @@ public sealed class AiPostTaggingService
     /// <returns>
     ///     A string containing the JSON schema definition for the expected output format.
     /// </returns>
-    private static string GetOutputFormatSchema()
+    private static async Task<string> GetOutputFormatSchema()
     {
-        return File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
+        return await File.ReadAllTextAsync("LlmOutputFormat/PostCategorizationOutputFormat.json");
     }
 
     /// <summary>
@@ -209,10 +215,7 @@ public sealed class AiPostTaggingService
             "10. Tag names must be entirely lowercase, separated by a single space.",
 
             "### Output Format and Validation:",
-            "11. The response must strictly conform to the following JSON schema:",
-            "```json",
-            GetOutputFormatSchema(),
-            "```",
+            "11. The response must strictly conform to the given JSON schema.",
             "12. Do not include any markdown formatting, code fences, explanations, or commentary.",
             "13. Return only the raw JSON structure as the final output.",
             "14. Ensure the JSON is syntactically valid and matches all required field names.",
