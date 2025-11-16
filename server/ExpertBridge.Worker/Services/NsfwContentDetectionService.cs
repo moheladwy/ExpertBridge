@@ -16,17 +16,17 @@ namespace ExpertBridge.Worker.Services;
 public sealed class NsfwContentDetectionService
 {
     /// <summary>
-    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
-    ///     API for text-based generation.
-    /// </summary>
-    private readonly LlmTextProvider _llmTextProvider;
-
-    /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
     ///     ensuring robust parsing.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     API for text-based generation.
+    /// </summary>
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     An instance of <see cref="Polly.ResiliencePipeline" /> used to provide resilience mechanisms such as retries
@@ -59,11 +59,17 @@ public sealed class NsfwContentDetectionService
     /// </summary>
     /// <param name="text">The input text to be analyzed for NSFW content. Must not be null or empty.</param>
     /// <returns>
-    /// An <see cref="InappropriateLanguageDetectionResponse"/> containing detection results, or null if detection fails.
+    ///     An <see cref="InappropriateLanguageDetectionResponse" /> containing detection results, or null if detection fails.
     /// </returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="text"/> is null or empty.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the response fails deserialization or the BaseAddress is not set.</exception>
-    /// <exception cref="HttpRequestException">Thrown when the request fails due to network connectivity, DNS failure, server certificate validation, or timeout.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="text" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the response fails deserialization or the BaseAddress is not
+    ///     set.
+    /// </exception>
+    /// <exception cref="HttpRequestException">
+    ///     Thrown when the request fails due to network connectivity, DNS failure, server
+    ///     certificate validation, or timeout.
+    /// </exception>
     /// <exception cref="TaskCanceledException">Thrown when the request times out.</exception>
     public async Task<InappropriateLanguageDetectionResponse?> DetectAsync(string text)
     {
@@ -79,10 +85,10 @@ public sealed class NsfwContentDetectionService
                 var userPrompt = GetUserPrompt(text);
                 var structuredOutput = await GetOutputFormatSchema();
                 var response = await _llmTextProvider.GenerateAsync(
-                    userPrompt: userPrompt,
-                    systemPrompt: systemPrompt,
-                    structureOutputJsonFormat: structuredOutput,
-                    model: ChatModels.OPENAI_GPT_OSS_120B.Id);
+                    userPrompt,
+                    systemPrompt,
+                    structuredOutput,
+                    ChatModels.OPENAI_GPT_OSS_120B.Id);
                 result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response,
                              _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(

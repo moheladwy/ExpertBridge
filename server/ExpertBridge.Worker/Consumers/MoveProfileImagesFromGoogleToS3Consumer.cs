@@ -94,7 +94,7 @@ public sealed class MoveProfileImagesFromGoogleToS3Consumer : IConsumer<MoveProf
     /// </returns>
     public async Task Consume(ConsumeContext<MoveProfileImageFromGoogleToS3Message> context)
     {
-        ArgumentNullException.ThrowIfNull(context, nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
 
         var message = context.Message;
         _logger.LogInformation("Starting to move profile image for ProfileId: {ProfileId}", message.ProfileId);

@@ -23,15 +23,6 @@ namespace ExpertBridge.Worker.Services;
 public sealed class AiPostTaggingService
 {
     /// <summary>
-    ///     The Groq LLM text provider for generating AI-powered text analysis and tag extraction.
-    /// </summary>
-    /// <remarks>
-    ///     Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
-    ///     with parameters optimized for structured output generation.
-    /// </remarks>
-    private readonly LlmTextProvider _llmTextProvider;
-
-    /// <summary>
     ///     JSON serialization options configured for robust parsing of LLM responses.
     /// </summary>
     /// <remarks>
@@ -42,6 +33,15 @@ public sealed class AiPostTaggingService
     ///     These settings improve resilience against minor formatting variations in LLM output.
     /// </remarks>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     The Groq LLM text provider for generating AI-powered text analysis and tag extraction.
+    /// </summary>
+    /// <remarks>
+    ///     Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
+    ///     with parameters optimized for structured output generation.
+    /// </remarks>
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     Polly resilience pipeline for handling transient failures and malformed responses.
@@ -118,7 +118,7 @@ public sealed class AiPostTaggingService
     ///             "I'm looking for best practices to improve React app performance...",
     ///             new[] { "react", "javascript" }
     ///         );
-    ///
+    /// 
     ///         // Result might include:
     ///         // Language: English
     ///         // Tags: ["react", "javascript", "performance optimization", "web development", "frontend"]

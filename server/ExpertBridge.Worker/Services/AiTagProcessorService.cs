@@ -19,17 +19,17 @@ namespace ExpertBridge.Worker.Services;
 public class AiTagProcessorService
 {
     /// <summary>
-    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
-    ///     API for generating text-based categorizations in the context of post-analysis.
-    /// </summary>
-    private readonly LlmTextProvider _llmTextProvider;
-
-    /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
     ///     ensuring robust parsing of post-categorization results from the LlmTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     API for generating text-based categorizations in the context of post-analysis.
+    /// </summary>
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     A pipeline instance implemented via <see cref="Polly" /> to handle resilient
