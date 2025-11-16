@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Extensions.Resilience;
-using ExpertBridge.GroqLibrary.Providers;
+using Groq.Core.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
@@ -15,10 +15,10 @@ namespace ExpertBridge.Worker.Services;
 public sealed class NsfwContentDetectionService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
     ///     API for text-based generation.
     /// </summary>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
@@ -35,13 +35,13 @@ public sealed class NsfwContentDetectionService
 
     /// <summary>
     ///     Service for detecting NSFW (Not Safe for Work) content using Groq Large Language Model (LLM) API.
-    ///     Handles interactions with the <see cref="GroqLlmTextProvider" /> for analyzing and generating text-related tasks.
+    ///     Handles interactions with the <see cref="LlmTextProvider" /> for analyzing and generating text-related tasks.
     /// </summary>
     public NsfwContentDetectionService(
-        GroqLlmTextProvider groqLlmTextProvider,
+        LlmTextProvider llmTextProvider,
         ResiliencePipelineProvider<string> resilience)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _llmTextProvider = llmTextProvider;
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -63,7 +63,7 @@ public sealed class NsfwContentDetectionService
     /// <exception cref="InvalidOperationException">Thrown if the response fails deserialization or parsing.</exception>
     public async Task<InappropriateLanguageDetectionResponse?> DetectAsync(string text)
     {
-        ArgumentException.ThrowIfNullOrEmpty(text, nameof(text));
+        ArgumentException.ThrowIfNullOrWhiteSpace(text);
         try
         {
             InappropriateLanguageDetectionResponse result = null;
@@ -73,7 +73,7 @@ public sealed class NsfwContentDetectionService
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(text);
-                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                var response = await _llmTextProvider.GenerateAsync(systemPrompt, userPrompt);
                 result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response,
                              _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(

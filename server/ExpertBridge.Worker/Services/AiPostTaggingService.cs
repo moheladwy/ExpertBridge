@@ -4,7 +4,7 @@
 using System.Text.Json;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Extensions.Resilience;
-using ExpertBridge.GroqLibrary.Providers;
+using Groq.Core.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
@@ -28,7 +28,7 @@ public sealed class AiPostTaggingService
     ///     Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
     ///     with parameters optimized for structured output generation.
     /// </remarks>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     JSON serialization options configured for robust parsing of LLM responses.
@@ -58,7 +58,7 @@ public sealed class AiPostTaggingService
     ///     Initializes a new instance of the <see cref="AiPostTaggingService" /> class with Groq LLM provider and resilience
     ///     configuration.
     /// </summary>
-    /// <param name="groqLlmTextProvider">
+    /// <param name="llmTextProvider">
     ///     The Groq LLM provider for text generation and analysis.
     /// </param>
     /// <param name="resilience">
@@ -69,10 +69,10 @@ public sealed class AiPostTaggingService
     ///     Retrieves the MalformedJsonModelResponse pipeline for handling structured output issues.
     /// </remarks>
     public AiPostTaggingService(
-        GroqLlmTextProvider groqLlmTextProvider,
+        LlmTextProvider llmTextProvider,
         ResiliencePipelineProvider<string> resilience)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _llmTextProvider = llmTextProvider;
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -117,7 +117,7 @@ public sealed class AiPostTaggingService
     ///             "I'm looking for best practices to improve React app performance...",
     ///             new[] { "react", "javascript" }
     ///         );
-    /// 
+    ///
     ///         // Result might include:
     ///         // Language: English
     ///         // Tags: ["react", "javascript", "performance optimization", "web development", "frontend"]
@@ -147,7 +147,7 @@ public sealed class AiPostTaggingService
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(title, content, existingTags);
-                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                var response = await _llmTextProvider.GenerateAsync(systemPrompt, userPrompt);
                 result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the categorizer response: null result");

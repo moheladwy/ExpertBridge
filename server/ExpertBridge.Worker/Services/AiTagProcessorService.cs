@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ExpertBridge.Application.Models.GroqResponses;
 using ExpertBridge.Extensions.Resilience;
-using ExpertBridge.GroqLibrary.Providers;
+using Groq.Core.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
@@ -11,22 +11,22 @@ namespace ExpertBridge.Worker.Services;
 ///     A service for processing and analyzing tags or textual categorizations using
 ///     the Groq Large Language Model (LLM) API. It provides functionality for generating,
 ///     processing, and handling text-based categorizations leveraging the integration
-///     with <see cref="GroqLlmTextProvider" /> for efficient communication with the Groq LLM.
+///     with <see cref="LlmTextProvider" /> for efficient communication with the Groq LLM.
 ///     The service also supports flexible and robust JSON parsing with case-insensitive
 ///     property deserialization settings.
 /// </summary>
 public class AiTagProcessorService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
     ///     API for generating text-based categorizations in the context of post-analysis.
     /// </summary>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
-    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
+    ///     ensuring robust parsing of post-categorization results from the LlmTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
@@ -45,10 +45,10 @@ public class AiTagProcessorService
     ///     the results with case-insensitive JSON deserialization for robust and flexible parsing.
     /// </summary>
     public AiTagProcessorService(
-        GroqLlmTextProvider groqLlmTextProvider,
+        LlmTextProvider llmTextProvider,
         ResiliencePipelineProvider<string> resilience)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _llmTextProvider = llmTextProvider;
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -79,7 +79,7 @@ public class AiTagProcessorService
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(existingTags);
-                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                var response = await _llmTextProvider.GenerateAsync(systemPrompt, userPrompt);
                 result = JsonSerializer.Deserialize<TranslateTagsResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the tag processing response: null result");

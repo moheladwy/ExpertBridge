@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL"/>
+    <PackageReference Include="Groq.Sdk.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Hosting"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
@@ -30,6 +31,5 @@
     <ProjectReference Include="..\ExpertBridge.Application\ExpertBridge.Application.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Data\ExpertBridge.Data.csproj"/>
     <ProjectReference Include="..\ExpertBridge.Extensions\ExpertBridge.Extensions.csproj"/>
-    <ProjectReference Include="..\ExpertBridge.GroqLibrary\ExpertBridge.GroqLibrary.csproj"/>
   </ItemGroup>
 </Project>
