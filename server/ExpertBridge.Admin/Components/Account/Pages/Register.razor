@@ -1,15 +1,15 @@
 ﻿@page "/Account/Register"
-
 @using System.ComponentModel.DataAnnotations
 @using System.Text
 @using System.Text.Encodings.Web
+@using ExpertBridge.Admin.Database
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 
-@inject UserManager<Database.Admin> UserManager
-@inject IUserStore<Database.Admin> UserStore
-@inject SignInManager<Database.Admin> SignInManager
-@inject IEmailSender<Database.Admin> EmailSender
+@inject UserManager<Admin> UserManager
+@inject IUserStore<Admin> UserStore
+@inject SignInManager<Admin> SignInManager
+@inject IEmailSender<Admin> EmailSender
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
@@ -87,11 +87,9 @@
 @code {
     private IEnumerable<IdentityError>? identityErrors;
 
-    [SupplyParameterFromForm] 
-    private InputModel Input { get; set; } = new();
+    [SupplyParameterFromForm] private InputModel Input { get; set; } = new();
 
-    [SupplyParameterFromQuery] 
-    private string? ReturnUrl { get; set; }
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
 
     private string? Message
     {
@@ -140,27 +138,27 @@
         RedirectManager.RedirectTo(ReturnUrl);
     }
 
-    private Database.Admin CreateUser()
+    private Admin CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<Database.Admin>();
+            return Activator.CreateInstance<Admin>();
         }
         catch
         {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(Database.Admin)}'. " +
-                                                $"Ensure that '{nameof(Database.Admin)}' is not an abstract class and has a parameterless constructor.");
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(Admin)}'. " +
+                                                $"Ensure that '{nameof(Admin)}' is not an abstract class and has a parameterless constructor.");
         }
     }
 
-    private IUserEmailStore<Database.Admin> GetEmailStore()
+    private IUserEmailStore<Admin> GetEmailStore()
     {
         if (!UserManager.SupportsUserEmail)
         {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
 
-        return (IUserEmailStore<Database.Admin>)UserStore;
+        return (IUserEmailStore<Admin>)UserStore;
     }
 
     private sealed class InputModel
@@ -182,4 +180,5 @@
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
     }
+
 }

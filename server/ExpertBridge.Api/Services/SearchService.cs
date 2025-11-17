@@ -171,7 +171,7 @@ public sealed class SearchService
         SearchUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         _logger.LogInformation("Searching for users");
 
         var validationResult = await _searchUserRequestValidator.ValidateAsync(request, cancellationToken);
@@ -234,7 +234,7 @@ public sealed class SearchService
         SearchJobPostsRequest request,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         _logger.LogInformation("Searching for job postings");
 
         var validationResult = await _searchJobPostsRequestValidator.ValidateAsync(request, cancellationToken);

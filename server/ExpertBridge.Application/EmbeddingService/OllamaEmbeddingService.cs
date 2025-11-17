@@ -48,7 +48,7 @@ public class OllamaEmbeddingService : IEmbeddingService
     /// </exception>
     public async Task<Vector> GenerateEmbedding(string text)
     {
-        ArgumentNullException.ThrowIfNull(text, nameof(text));
+        ArgumentNullException.ThrowIfNull(text);
         _logger.LogInformation("Generating embedding for text: {Text}", text);
 
         var generatedEmbeddings = await _embeddingGenerator.GenerateAsync([text]);

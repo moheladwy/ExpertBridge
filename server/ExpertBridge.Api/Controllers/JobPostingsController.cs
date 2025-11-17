@@ -117,7 +117,7 @@ public class JobPostingsController : ControllerBase
         [FromQuery] int? limit = 5,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(postingId, nameof(postingId)); // Service handles
+        ArgumentException.ThrowIfNullOrEmpty(postingId); // Service handles
 
         var similarJobs = await _jobPostingService.GetSimilarJobsAsync(
             postingId,

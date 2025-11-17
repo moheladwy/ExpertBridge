@@ -128,7 +128,7 @@ public class PostsController : ControllerBase
         [FromQuery] int? limit = 5,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId)); // Service handles
+        ArgumentException.ThrowIfNullOrEmpty(postId); // Service handles
 
         var similarPosts = await _postService.GetSimilarPostsAsync(
             postId,

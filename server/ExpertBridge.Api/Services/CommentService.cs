@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ExpertBridge.Application.Services;
+﻿using ExpertBridge.Application.Services;
 using ExpertBridge.Contract.Messages;
 using ExpertBridge.Contract.Queries;
 using ExpertBridge.Contract.Requests.CreateComment;
@@ -19,7 +15,6 @@ using ExpertBridge.Notifications;
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace ExpertBridge.Api.Services;
 
@@ -206,7 +201,7 @@ public class CommentService
     ///     }
     /// };
     /// var comment = await commentService.CreateCommentAsync(request, currentProfile);
-    ///
+    /// 
     /// // Nested reply to existing comment
     /// var replyRequest = new CreateCommentRequest {
     ///     PostId = "post123",
@@ -407,7 +402,7 @@ public class CommentService
     ///     <code>
     /// // Anonymous user viewing comment
     /// var comment = await commentService.GetCommentAsync("comment123", null);
-    ///
+    /// 
     /// // Authenticated user viewing comment (includes their vote status)
     /// var comment = await commentService.GetCommentAsync("comment123", currentUser.ProfileId);
     /// if (comment.CurrentUserVote == VoteType.Upvote) {
@@ -418,7 +413,7 @@ public class CommentService
     /// </remarks>
     public async Task<CommentResponse?> GetCommentAsync(string commentId, string? userProfileId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+        ArgumentException.ThrowIfNullOrEmpty(commentId);
 
         var comment = await _dbContext.Comments
             .FullyPopulatedCommentQuery(c => c.Id == commentId) // Uses your existing query extension
@@ -452,7 +447,7 @@ public class CommentService
     ///     **Example Usage:**
     ///     <code>
     /// var comments = await commentService.GetCommentsByPostAsync("post123", currentUser.ProfileId);
-    ///
+    /// 
     /// // Build comment tree client-side
     /// var topLevel = comments.Where(c => c.ParentCommentId == null);
     /// foreach (var comment in topLevel) {
@@ -464,7 +459,7 @@ public class CommentService
     /// </remarks>
     public async Task<List<CommentResponse>> GetCommentsByPostAsync(string postId, string? userProfileId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(postId, nameof(postId));
+        ArgumentException.ThrowIfNullOrEmpty(postId);
 
         // Check if post exists - this is good practice to ensure valid foreign key
         var postExists = await _dbContext.Posts.AnyAsync(p => p.Id == postId);
@@ -515,7 +510,7 @@ public class CommentService
     /// </remarks>
     public async Task<List<CommentResponse>> GetCommentsByJobAsync(string jobPostingId, string? userProfileId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(jobPostingId, nameof(jobPostingId));
+        ArgumentException.ThrowIfNullOrEmpty(jobPostingId);
 
         // Check if post exists - this is good practice to ensure valid foreign key
         var jobExists = await _dbContext.JobPostings.AnyAsync(p => p.Id == jobPostingId);
@@ -564,7 +559,7 @@ public class CommentService
     ///     profileId,
     ///     currentUser.ProfileId
     /// );
-    ///
+    /// 
     /// // Show statistics
     /// var totalComments = userComments.Count;
     /// var totalUpvotes = userComments.Sum(c => c.UpvotesCount);
@@ -577,7 +572,7 @@ public class CommentService
     /// </remarks>
     public async Task<List<CommentResponse>> GetCommentsByProfileAsync(string profileId, string? userProfileId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
+        ArgumentException.ThrowIfNullOrEmpty(profileId);
 
         // Check if profile exists
         var profileExists = await _dbContext.Profiles.AnyAsync(p => p.Id == profileId);
@@ -647,7 +642,7 @@ public class CommentService
     /// var editRequest = new EditCommentRequest {
     ///     Content = "Updated comment with additional context."
     /// };
-    ///
+    /// 
     /// try {
     ///     var updated = await commentService.EditCommentAsync(
     ///         "comment123",
@@ -674,9 +669,9 @@ public class CommentService
     public async Task<CommentResponse?> EditCommentAsync(string commentId, EditCommentRequest request,
         Profile editorProfile)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
-        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
-        ArgumentNullException.ThrowIfNull(editorProfile, nameof(editorProfile));
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentException.ThrowIfNullOrEmpty(commentId);
+        ArgumentNullException.ThrowIfNull(editorProfile);
 
         // Validate request using FluentValidation
         var validationResult = await _editCommentValidator.ValidateAsync(request);
@@ -758,7 +753,7 @@ public class CommentService
     ///     **Vote Processing Logic:**
     ///     <code>
     /// existingVote = Get current user's vote on this comment
-    ///
+    /// 
     /// if (existingVote == null) {
     ///     // No vote yet, create new
     ///     CreateCommentVote(commentId, voterId, isUpvoteIntent)
@@ -786,7 +781,7 @@ public class CommentService
     /// );
     /// // updated.UpvotesCount incremented
     /// // updated.CurrentUserVote == VoteType.Upvote
-    ///
+    /// 
     /// // User clicks upvote again (toggle off)
     /// updated = await commentService.VoteCommentAsync(
     ///     "comment123",
@@ -917,7 +912,7 @@ public class CommentService
     /// Comment B (reply to A)
     ///     ↓ ParentCommentId
     /// Comment C (reply to B)
-    ///
+    /// 
     /// DELETE Comment A → Cascade deletes B and C
     /// </code>
     ///     **Cascade Configuration:**
@@ -970,8 +965,8 @@ public class CommentService
     /// </remarks>
     public async Task<bool> DeleteCommentAsync(string commentId, Profile deleterProfile)
     {
-        ArgumentException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
-        ArgumentNullException.ThrowIfNull(deleterProfile, nameof(deleterProfile));
+        ArgumentException.ThrowIfNullOrEmpty(commentId);
+        ArgumentNullException.ThrowIfNull(deleterProfile);
 
         var comment = await _dbContext.Comments
             .Include(c => c.Replies)

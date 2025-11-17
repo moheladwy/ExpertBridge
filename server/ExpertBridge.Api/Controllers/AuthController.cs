@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<string> Login([FromBody] LoginRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         return await _authService.LoginAsync(request.Email, request.Password);
     }
 
@@ -71,7 +71,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<string> Register([FromBody] RegisterRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         return await _authService.RegisterAsync(request.Email, request.Password);
     }
 }

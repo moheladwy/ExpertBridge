@@ -48,7 +48,7 @@ public class MediaController : ControllerBase
     [HttpPost("generate-urls")] // generate-url?count=3
     public async Task<List<PresignedUrlResponse>> GenerateUrls([FromBody] GeneratePresignedUrlsRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         return await _mediaService.GenerateUrls(request);
     }
 }

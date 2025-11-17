@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using System.Text.Json.Serialization;
 using ExpertBridge.Api.Extensions;
 using ExpertBridge.Api.Filters;
@@ -11,12 +9,8 @@ using ExpertBridge.Extensions.MessageBroker;
 using ExpertBridge.Notifications;
 using ExpertBridge.Notifications.Extensions;
 using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using Serilog;
 

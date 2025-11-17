@@ -41,7 +41,7 @@ internal static class SwaggerDocumentation
                 new OpenApiSecurityRequirement
                 {
                     {
-                        new OpenApiSecuritySchemeReference(referenceId: apiName, doc)
+                        new OpenApiSecuritySchemeReference(apiName, doc)
                         {
                             Reference = new OpenApiReferenceWithDescription()
                         },
