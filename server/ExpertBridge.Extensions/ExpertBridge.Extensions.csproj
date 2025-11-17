@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" />
     <PackageReference Include="AspNetCore.HealthChecks.Redis"/>
     <PackageReference Include="MassTransit.RabbitMQ"/>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql"/>
