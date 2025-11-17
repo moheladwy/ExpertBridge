@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using ExpertBridge.Extensions.MessageBroker;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -8,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 
 namespace ExpertBridge.Extensions.HealthChecks;
 
@@ -51,6 +54,21 @@ public static class HealthChecks
         builder.Services.AddHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
             .AddNpgSql(npgsqlConnectionString, tags: ["live"])
+            .AddRabbitMQ(factory: async provider =>
+                {
+                    var credentials = provider.GetRequiredService<IOptions<MessageBrokerCredentials>>().Value;
+                    var factory = await new ConnectionFactory
+                        {
+                            HostName = credentials.Host,
+                            UserName = credentials.Username,
+                            Password = credentials.Password
+                        }.CreateConnectionAsync();
+                    return factory;
+                },
+                name: "RabbitMQ",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: ["live"],
+                timeout: TimeSpan.FromSeconds(60))
             .AddRedis(redisConnectionString, "Redis", tags: ["live"], timeout: TimeSpan.FromSeconds(60));
 
         return builder;

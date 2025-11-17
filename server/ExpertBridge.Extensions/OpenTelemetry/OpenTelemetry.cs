@@ -108,36 +108,4 @@ public static class OpenTelemetry
 
         return builder;
     }
-
-    /// <summary>
-    ///     Configures default HttpClient settings for all typed and named HttpClient instances with resilience and service
-    ///     discovery.
-    ///     Applies standard retry policies and service discovery integration to all HTTP clients in the application.
-    /// </summary>
-    /// <typeparam name="TBuilder">The type of the host application builder.</typeparam>
-    /// <param name="builder">The host application builder to configure HttpClient defaults for.</param>
-    /// <returns>The builder instance for method chaining.</returns>
-    /// <remarks>
-    ///     This method applies two standard configurations to all HttpClient instances:
-    ///     **Standard Resilience Handler:**
-    ///     - Automatic retry with exponential backoff for transient HTTP failures (5xx errors, timeouts)
-    ///     - Circuit breaker pattern to prevent cascading failures
-    ///     - Request timeout policies for preventing hung requests
-    ///     **Service Discovery:**
-    ///     - Enables dynamic endpoint resolution for service-to-service communication
-    ///     - Supports container orchestration and cloud-native deployments
-    ///     - Allows service names to be resolved to actual endpoints at runtime
-    ///     Applied to all HttpClient instances including those for Firebase, Groq, Ollama, and S3 integrations.
-    /// </remarks>
-    public static TBuilder ConfigureHttpClientDefaults<TBuilder>(this TBuilder builder)
-        where TBuilder : IHostApplicationBuilder
-    {
-        builder.Services.ConfigureHttpClientDefaults(http =>
-        {
-            http.AddStandardResilienceHandler();
-            http.AddServiceDiscovery();
-        });
-
-        return builder;
-    }
 }
