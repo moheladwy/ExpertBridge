@@ -32,6 +32,7 @@ builder
     {
         options.ApiKey = builder.Configuration.GetValue<string>("Groq:ApiKey")!;
         options.Model = ChatModels.OPENAI_GPT_OSS_120B.Id;
+        options.Timeout = TimeSpan.FromSeconds(15);
     });
 
 builder.AddNotifications();
