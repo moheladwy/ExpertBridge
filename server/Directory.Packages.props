@@ -60,31 +60,23 @@
     <PackageVersion Include="Z.EntityFramework.Extensions.EFCore" Version="10.105.0"/>
     <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.4.0"/>
     <PackageVersion Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.4.0"/>
-  </ItemGroup>
-  <ItemGroup>
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0"/>
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0"/>
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0"/>
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0"/>
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0"/>
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0"/>
-  </ItemGroup>
-  <ItemGroup>
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.0.0"/>
-  </ItemGroup>
-  <ItemGroup>
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.0"/>
     <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.0"/>
     <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.0.0"/>
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0"/>
     <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2"/>
-  </ItemGroup>
-  <ItemGroup>
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.9"/>
@@ -97,12 +89,8 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.2"/>
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.0"/>
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0"/>
-  </ItemGroup>
-  <ItemGroup>
     <PackageVersion Include="FluentValidation" Version="12.1.0"/>
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.0"/>
-  </ItemGroup>
-  <ItemGroup>
     <PackageVersion Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
