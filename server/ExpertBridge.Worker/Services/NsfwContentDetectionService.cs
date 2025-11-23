@@ -85,10 +85,10 @@ public sealed class NsfwContentDetectionService
                 var userPrompt = GetUserPrompt(text);
                 var structuredOutput = await GetOutputFormatSchema();
                 var response = await _llmTextProvider.GenerateAsync(
-                    userPrompt,
-                    systemPrompt,
-                    structuredOutput,
-                    ChatModels.OPENAI_GPT_OSS_120B.Id);
+                    userPrompt: userPrompt,
+                    systemPrompt: systemPrompt,
+                    structureOutputJsonFormat: structuredOutput,
+                    model: ChatModels.OPENAI_GPT_OSS_120B.Id);
                 result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response,
                              _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
