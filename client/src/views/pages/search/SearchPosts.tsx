@@ -48,9 +48,9 @@ const SearchPosts = () => {
 								strokeLinejoin="round"
 								strokeWidth={2}
 								d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-					</div>
+								/>
+							</svg>
+						</div>
 					<h3 className="text-xl font-bold text-card-foreground mb-2">
 						Error loading search results
 					</h3>
@@ -82,9 +82,9 @@ const SearchPosts = () => {
 								strokeLinejoin="round"
 								strokeWidth={2}
 								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-							/>
-						</svg>
-					</div>
+								/>
+							</svg>
+						</div>
 					<h3 className="text-xl font-bold text-card-foreground mb-2">
 						No results found
 					</h3>
@@ -124,7 +124,8 @@ const SearchPosts = () => {
 								Object.values(searchResults.entities).filter(
 									(p) => p && p.author
 								).length
-							}{" "}
+							}
+							{" "}
 							{Object.values(searchResults.entities).filter(
 								(p) => p && p.author
 							).length === 1
