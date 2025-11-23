@@ -31,34 +31,21 @@ const FileUploadForm: React.FC<FileUploadFormProps> = ({
 	};
 
 	return (
-		<>
-			<div />
-			<div className="w-full max-w-full">
-				<div className="flex justify-center items-center h-[30vh]">
-					<div className="flex flex-col w-full">
-						{/* Single Image Upload */}
-						<FormProvider {...methods}>
-							<form
-								noValidate
-								autoComplete="off"
-								onSubmit={methods.handleSubmit(onSubmitHandler)}
-								className="w-full"
-							>
-								{/* Multiple Image Upload */}
-								<div className="flex justify-center items-center">
-									<FileUpload
-										limit={3}
-										multiple
-										name="images"
-										setParentMediaList={setParentMediaList}
-									/>
-								</div>
-							</form>
-						</FormProvider>
-					</div>
-				</div>
-			</div>
-		</>
+		<FormProvider {...methods}>
+			<form
+				noValidate
+				autoComplete="off"
+				onSubmit={methods.handleSubmit(onSubmitHandler)}
+				className="w-full"
+			>
+				<FileUpload
+					limit={3}
+					multiple
+					name="images"
+					setParentMediaList={setParentMediaList}
+				/>
+			</form>
+		</FormProvider>
 	);
 };
 

@@ -320,65 +320,6 @@ const CreatePostPage = () => {
 
 						{/* Media Upload Section */}
 						<div className="border border-border rounded-lg p-4">
-							<div className="mb-3">
-								<h3 className="text-base font-semibold text-card-foreground mb-1">
-									Add Media
-								</h3>
-								<p className="text-sm text-muted-foreground">
-									You can upload up to 3 images or videos
-								</p>
-							</div>
-							<div className="flex items-center gap-3">
-								<Button
-									type="button"
-									variant="outline"
-									onClick={() =>
-										document
-											.getElementById("media-upload")
-											?.click()
-									}
-									disabled={
-										isLoading || uploadResult.isLoading
-									}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="20"
-										height="20"
-										fill="currentColor"
-										viewBox="0 0 16 16"
-										className="mr-2"
-									>
-										<path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-										<path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-									</svg>
-									Add Images
-								</Button>
-								<Button
-									type="button"
-									variant="outline"
-									onClick={() =>
-										document
-											.getElementById("media-upload")
-											?.click()
-									}
-									disabled={
-										isLoading || uploadResult.isLoading
-									}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="20"
-										height="20"
-										fill="currentColor"
-										viewBox="0 0 16 16"
-										className="mr-2"
-									>
-										<path d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z" />
-									</svg>
-									Add Videos
-								</Button>
-							</div>
 							<div className="mt-4">
 								<FileUploadForm
 									onSubmit={() => {}}
