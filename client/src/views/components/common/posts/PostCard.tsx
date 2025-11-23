@@ -1,5 +1,5 @@
 import { useDeletePostMutation } from "@/features/posts/postsSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
 	MessageCircle,
 	Ellipsis,
@@ -27,7 +27,6 @@ import toast from "react-hot-toast";
 import { useEffect, useMemo, useState } from "react";
 import PostVoteButtons from "./PostVoteButtons";
 import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
-import EditPostModal from "./EditPostModal";
 import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
 import { Post } from "@/features/posts/types";
@@ -39,11 +38,11 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
+	const navigate = useNavigate();
 	const memoizedPost = useMemo(() => post, [post]);
 
 	const currentUserId = useMemo(() => currUserId, [currUserId]);
 
-	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [deletePost, deleteResult] = useDeletePostMutation();
 	// conferm delete dialog
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -138,7 +137,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 											<div
 												className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 												onClick={() =>
-													setIsEditModalOpen(true)
+													navigate(
+														`/posts/${memoizedPost.id}/edit`
+													)
 												}
 											>
 												<EditIcon className="w-5" />
@@ -245,11 +246,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, currUserId }) => {
 					</div>
 				</div>
 			</div>
-			<EditPostModal
-				post={memoizedPost}
-				isOpen={isEditModalOpen}
-				onClose={() => setIsEditModalOpen(false)}
-			/>
 		</>
 	);
 };
