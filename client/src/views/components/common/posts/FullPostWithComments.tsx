@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Post } from "@/features/posts/types";
 import CommentsSection from "../comments/CommentsSection";
@@ -27,7 +27,6 @@ import defaultProfile from "../../../../assets/Profile-pic/ProfilePic.svg";
 import MediaCarousel from "../media/MediaCarousel";
 import PostTimeStamp from "./PostTimeStamp";
 import SimilarPosts from "./SimilarPosts";
-import EditPostModal from "./EditPostModal";
 import PostingTags from "../tags/PostingTags";
 
 interface FullPostWithCommentsProps {
@@ -40,9 +39,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 	deletePost,
 }) => {
 	const [, , , , userProfile] = useIsUserLoggedIn();
-	const memoizedPost = useMemo(() => post, [post]);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const navigate = useNavigate();
 
 	const handleCopyLink = () => {
@@ -100,15 +97,14 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 														<h6>Copy link</h6>
 													</div>
 												</DropdownMenuItem>
-
 												{userProfile?.id ===
 												post.author.id ? (
 													<DropdownMenuItem>
 														<div
 															className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 															onClick={() =>
-																setIsEditModalOpen(
-																	true
+																navigate(
+																	`/posts/${post.id}/edit`
 																)
 															}
 														>
@@ -116,8 +112,7 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 															<h6>Edit post</h6>
 														</div>
 													</DropdownMenuItem>
-												) : null}
-
+												) : null}{" "}
 												{/* Delete */}
 												{post.author.id ===
 													userProfile?.id && (
@@ -259,15 +254,6 @@ const FullPostWithComments: React.FC<FullPostWithCommentsProps> = ({
 									{/* Comments */}
 									<CommentsSection postId={post.id} />
 								</div>
-								{userProfile?.id == post.author.id ? (
-									<EditPostModal
-										post={memoizedPost}
-										isOpen={isEditModalOpen}
-										onClose={() =>
-											setIsEditModalOpen(false)
-										}
-									/>
-								) : null}
 							</div>
 						) : (
 							<p className="text-card-foreground">

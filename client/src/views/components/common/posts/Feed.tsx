@@ -1,7 +1,6 @@
 import LoadingSkeleton from "./LoadingSkeleton";
 import PostCard from "./PostCard";
 import { useGetPostsCursorInfiniteQuery } from "@/features/posts/postsSlice";
-import CreatePostModal from "./CreatePostModal";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 import React, { useEffect, useRef, useState } from "react";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
@@ -11,14 +10,19 @@ import SuggestedJobs from "./SuggestedJobs";
 import SuggestedExperts from "../profile/SuggestedExperts";
 import TopReputationUsers from "../profile/TopReputationUsers";
 import { TrendingUp, Clock, ThumbsUp, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/views/components/ui/button";
+import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
 
 const limit = 10;
 
 const Feed = ({ startingPost = { id: null } }) => {
+	const navigate = useNavigate();
+	const { showAuthPrompt } = useAuthPrompt();
 	const {
 		hasNextPage,
 		data,
-		error,
 		isFetching,
 		isLoading,
 		isError,
@@ -50,8 +54,16 @@ const Feed = ({ startingPost = { id: null } }) => {
 		}
 	}, [data?.pages, hasCentered]);
 
-	const [, , , , appUser] = useIsUserLoggedIn();
+	const [isLoggedIn, , , , appUser] = useIsUserLoggedIn();
 	useRefetchOnLogin(refetch);
+
+	const handleCreatePost = () => {
+		if (isLoggedIn) {
+			navigate("/posts/create");
+		} else {
+			showAuthPrompt();
+		}
+	};
 
 	const getFilterIcon = (filterName: string) => {
 		switch (filterName) {
@@ -82,8 +94,38 @@ const Feed = ({ startingPost = { id: null } }) => {
 				{/* Main Feed Content */}
 				<div className="flex-1 max-w-4xl mx-auto space-y-6">
 					{/* Create Post Section */}
-					<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
-						<CreatePostModal />
+					<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden p-4">
+						<div
+							className="flex justify-center items-center gap-2 cursor-pointer"
+							onClick={handleCreatePost}
+						>
+							{isLoggedIn && appUser && (
+								<div className="bg-card flex justify-center items-center">
+									{appUser.profilePictureUrl ? (
+										<img
+											src={appUser.profilePictureUrl}
+											width={45}
+											height={45}
+											className="rounded-full"
+											alt="Profile Picture"
+										/>
+									) : (
+										<img
+											src={defaultProfile}
+											alt="Profile Picture"
+											width={45}
+											height={45}
+											className="rounded-full"
+										/>
+									)}
+								</div>
+							)}
+							<Button className="bg-muted text-muted-foreground px-5 hover:bg-accent hover:text-primary w-full rounded-full">
+								<div className="w-full text-left">
+									What do you want to ask?
+								</div>
+							</Button>
+						</div>
 					</div>
 
 					{/* Filter Section */}
@@ -223,7 +265,7 @@ const Feed = ({ startingPost = { id: null } }) => {
 										}
 										className={`px-8 py-4 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
 											hasNextPage && !isFetchingNextPage
-												? "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-lg hover:shadow-xl"
+												? "bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-lg hover:shadow-xl"
 												: "bg-muted text-muted-foreground cursor-not-allowed"
 										}`}
 									>

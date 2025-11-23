@@ -4,7 +4,10 @@ import { useCallbackOnIntersection } from "@/hooks/useCallbackOnIntersection";
 import useRefetchOnLogin from "@/hooks/useRefetchOnLogin";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
 import { useGetJobsCursorInfiniteQuery } from "@/features/jobPostings/jobPostingsSlice";
-import CreateJobModal from "./CreateJobModal";
+import { useNavigate } from "react-router-dom";
+import { useAuthPrompt } from "@/contexts/AuthPromptContext";
+import { Button } from "@/views/components/ui/button";
+import defaultProfile from "@/assets/Profile-pic/ProfilePic.svg";
 import { JobPostingPaginatedResponse } from "@/features/jobPostings/types";
 import JobPostingCard from "./JobPostingCard";
 import SuggestedQuestions from "./SuggestedQuestions";
@@ -21,6 +24,10 @@ interface JobPostingsFeedProps {
 const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 	startingJob = { id: null },
 }) => {
+	const navigate = useNavigate();
+	const [isLoggedIn, , , , userProfile] = useIsUserLoggedIn();
+	const { showAuthPrompt } = useAuthPrompt();
+
 	const {
 		hasNextPage,
 		data,
@@ -137,10 +144,10 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 
 	return (
 		<div className="min-h-screen bg-secondary">
-			<div className="flex gap-6 max-w-9xl mx-auto p-6">
+			<div className="flex gap-4 max-w-9xl mx-2 p-4">
 				{/* Left Sidebar - Users */}
 				<div className="w-90 max-xl:w-72 max-lg:hidden">
-					<div className="sticky top-24 space-y-6">
+					<div className="space-y-6">
 						<TopReputationUsers />
 						<SuggestedExperts />
 					</div>
@@ -149,8 +156,45 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 				{/* Main Jobs Feed Content */}
 				<div className="flex-1 max-w-4xl mx-auto space-y-6">
 					{/* Create Job Section */}
-					<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
-						<CreateJobModal />
+					<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden p-4">
+						<div
+							className="flex justify-center items-center gap-2 cursor-pointer"
+							onClick={() => {
+								if (isLoggedIn) {
+									navigate("/job-postings/create");
+								} else {
+									showAuthPrompt();
+								}
+							}}
+						>
+							{isLoggedIn && userProfile && (
+								<div className="flex justify-center items-center">
+									{userProfile?.profilePictureUrl ? (
+										<img
+											src={userProfile.profilePictureUrl}
+											width={45}
+											height={45}
+											className="rounded-full ring-2 ring-border"
+											alt="Profile Picture"
+										/>
+									) : (
+										<img
+											src={defaultProfile}
+											alt="Profile Picture"
+											width={45}
+											height={45}
+											className="rounded-full ring-2 ring-border"
+										/>
+									)}
+								</div>
+							)}
+							<Button className="bg-muted text-muted-foreground px-5 hover:bg-primary/10 hover:text-primary w-full rounded-full font-medium">
+								<div className="w-full text-left flex items-center gap-2">
+									<Briefcase className="w-5 h-5" />
+									Post a job opportunity
+								</div>
+							</Button>
+						</div>
 					</div>
 
 					{/* Filter Section */}
@@ -182,12 +226,14 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 										onClick={() => setFilter(filterOption)}
 										className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
 											filter === filterOption
-												? "text-green-600 bg-green-500/10"
+												? "text-green-600"
 												: "text-muted-foreground hover:text-green-600 hover:bg-green-500/5"
 										}`}
 									>
 										{getFilterIcon(filterOption)}
-										<span>{filterOption}</span>
+										<span className="max-sm:hidden">
+											{filterOption}
+										</span>
 									</button>
 								))}
 							</div>
@@ -284,7 +330,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 										}
 										className={`px-8 py-4 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
 											hasNextPage && !isFetchingNextPage
-												? "bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl"
+												? "bg-linear-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl"
 												: "bg-muted text-muted-foreground cursor-not-allowed"
 										}`}
 									>
