@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateJobPostingMutation } from "@/features/jobPostings/jobPostingsSlice";
 import useIsUserLoggedIn from "@/hooks/useIsUserLoggedIn";
@@ -62,6 +62,7 @@ const CreateJobPostingPage = () => {
 	const [budgetError, setBudgetError] = useState("");
 	const [areaError, setAreaError] = useState("");
 	const [mediaList, setMediaList] = useState<MediaObject[]>([]);
+	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 	const [_isLoggedIn, , , authUser, userProfile] = useIsUserLoggedIn();
 
 	const [createJobPosting, createJobResult] = useCreateJobPostingMutation();
@@ -73,14 +74,89 @@ const CreateJobPostingPage = () => {
 
 	const { isSuccess, isError, isLoading } = createJobResult;
 
+	// Track unsaved changes
+	useEffect(() => {
+		setHasUnsavedChanges(
+			title.trim() !== "" ||
+				content.trim() !== "" ||
+				budget.trim() !== "" ||
+				area.trim() !== ""
+		);
+	}, [title, content, budget, area]);
+
+	// Warn before leaving with unsaved changes
+	useEffect(() => {
+		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+			if (hasUnsavedChanges) {
+				e.preventDefault();
+				e.returnValue = "";
+			}
+		};
+
+		window.addEventListener("beforeunload", handleBeforeUnload);
+		return () =>
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+	}, [hasUnsavedChanges]);
+
+	// Auto-save to localStorage
+	useEffect(() => {
+		if (hasUnsavedChanges) {
+			const draft = {
+				title,
+				content,
+				budget,
+				area,
+				timestamp: Date.now(),
+			};
+			localStorage.setItem("job-posting-draft", JSON.stringify(draft));
+		}
+	}, [title, content, budget, area, hasUnsavedChanges]);
+
+	// Load draft on mount
+	useEffect(() => {
+		const savedDraft = localStorage.getItem("job-posting-draft");
+		if (savedDraft) {
+			try {
+				const draft = JSON.parse(savedDraft);
+				// Only load if draft is less than 24 hours old
+				if (Date.now() - draft.timestamp < 24 * 60 * 60 * 1000) {
+					setTitle(draft.title || "");
+					setContent(draft.content || "");
+					setBudget(draft.budget || "");
+					setArea(draft.area || "");
+					toast.success("Draft restored");
+				} else {
+					localStorage.removeItem("job-posting-draft");
+				}
+			} catch (error) {
+				console.error("Error loading draft:", error);
+			}
+		}
+	}, []);
+
+	const resetForm = useCallback(() => {
+		setTitle("");
+		setContent("");
+		setBudget("");
+		setArea("");
+		setTitleError("");
+		setContentError("");
+		setBudgetError("");
+		setAreaError("");
+		setMediaList([]);
+		localStorage.removeItem("job-posting-draft");
+		setHasUnsavedChanges(false);
+	}, []);
+
 	useEffect(() => {
 		if (isError)
 			toast.error("An error occurred while creating your job posting");
 		if (isSuccess) {
 			toast.success("Job posting created successfully");
+			resetForm();
 			navigate("/");
 		}
-	}, [isSuccess, isError, navigate]);
+	}, [isSuccess, isError, navigate, resetForm]);
 
 	const handleSubmit = async () => {
 		try {
@@ -157,6 +233,20 @@ const CreateJobPostingPage = () => {
 		}
 	};
 
+	const handleBack = () => {
+		if (hasUnsavedChanges) {
+			if (
+				window.confirm(
+					"You have unsaved changes. Are you sure you want to leave?"
+				)
+			) {
+				navigate(-1);
+			}
+		} else {
+			navigate(-1);
+		}
+	};
+
 	const titleCharsLeft = TITLE_MAX_LENGTH - title.length;
 	const contentCharsLeft = CONTENT_MAX_LENGTH - content.length;
 	const areaCharsLeft = AREA_MAX_LENGTH - area.length;
@@ -167,7 +257,7 @@ const CreateJobPostingPage = () => {
 			<div className="mb-6">
 				<Button
 					variant="ghost"
-					onClick={() => navigate(-1)}
+					onClick={handleBack}
 					className="mb-4 hover:bg-muted"
 				>
 					<ArrowLeft className="w-4 h-4 mr-2" />
@@ -299,7 +389,7 @@ const CreateJobPostingPage = () => {
 						placeholder="Describe the job requirements, expectations, and any other relevant details..."
 						maxLength={CONTENT_MAX_LENGTH}
 						dir="auto"
-						className="min-h-[200px] resize-none"
+						className="min-h-[200px]"
 					/>
 					{contentError && <FieldError>{contentError}</FieldError>}
 					{!contentError && (
@@ -318,8 +408,8 @@ const CreateJobPostingPage = () => {
 				</Field>
 
 				{/* Media Upload Section */}
-				<div className="border border-border rounded-lg p-6 bg-muted/20">
-					<div className="mb-4">
+				<div className="border border-border rounded-lg p-3 bg-muted/20">
+					<div className="mb-2">
 						<p className="text-sm text-muted-foreground text-center">
 							Upload images or videos to showcase your job
 							opportunity (up to 3 files)
@@ -332,10 +422,10 @@ const CreateJobPostingPage = () => {
 				</div>
 
 				{/* Action Buttons */}
-				<div className="flex justify-end gap-3 pt-4">
+				<div className="flex justify-center gap-3 pt-4">
 					<Button
 						variant="outline"
-						onClick={() => navigate(-1)}
+						onClick={handleBack}
 						disabled={isLoading || uploadResult.isLoading}
 						className="rounded-full px-8"
 					>
@@ -357,6 +447,13 @@ const CreateJobPostingPage = () => {
 					</Button>
 				</div>
 			</div>
+
+			{/* Auto-save indicator */}
+			{hasUnsavedChanges && (
+				<div className="mt-4 text-center text-sm text-muted-foreground">
+					Draft auto-saved
+				</div>
+			)}
 		</div>
 	);
 };

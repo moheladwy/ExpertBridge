@@ -19,6 +19,7 @@ import {
 	FieldDescription,
 } from "@/views/components/ui/field";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
 // Character limits
 const TITLE_MAX_LENGTH = 256;
@@ -190,26 +191,29 @@ const CreatePostPage = () => {
 	}
 
 	return (
-		<div className="min-h-screen bg-background">
+		<div className="w-full max-w-4xl mx-auto px-4 py-8">
 			{/* Header */}
-			<div className="sticky top-0 z-10 bg-card border-b border-border">
-				<div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={handleBack}
-						disabled={isLoading || uploadResult.isLoading}
-					>
-						<ArrowLeft className="h-5 w-5" />
-					</Button>
-					<h1 className="text-2xl font-bold text-card-foreground">
-						Create Post
+			<div className="mb-6">
+				<Button
+					variant="ghost"
+					onClick={() => navigate(-1)}
+					className="mb-4 hover:bg-muted"
+				>
+					<ArrowLeft className="w-4 h-4 mr-2" />
+					Back
+				</Button>
+				<div className="flex items-center gap-3">
+					<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+						<QuestionMarkCircleIcon className="w-6 h-6 text-primary" />
+					</div>
+					<h1 className="text-3xl font-bold text-card-foreground">
+						Create New Question
 					</h1>
 				</div>
 			</div>
 
 			{/* Main Content */}
-			<div className="max-w-4xl mx-auto px-4 py-6">
+			<div className="max-w-4xl mx-auto py-3">
 				<div className="bg-card rounded-lg border border-border p-6 shadow-sm">
 					{/* User Profile Info */}
 					<div className="flex items-center mb-6">
@@ -329,17 +333,17 @@ const CreatePostPage = () => {
 						</div>
 
 						{/* Action Buttons */}
-						<div className="flex gap-3 pt-4">
+						<div className="flex justify-center gap-3 pt-4">
 							<Button
 								variant="outline"
-								className="flex-1"
+								className="rounded-full px-8 font-semibold"
 								onClick={handleBack}
 								disabled={isLoading || uploadResult.isLoading}
 							>
 								Cancel
 							</Button>
 							<Button
-								className="flex-1 bg-primary hover:bg-primary/90 text-lg font-semibold"
+								className="rounded-full px-8 bg-primary hover:bg-primary/90 font-semibold"
 								onClick={handleSubmit}
 								disabled={isLoading || uploadResult.isLoading}
 							>

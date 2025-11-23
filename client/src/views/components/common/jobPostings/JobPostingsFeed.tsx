@@ -144,10 +144,10 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 
 	return (
 		<div className="min-h-screen bg-secondary">
-			<div className="flex gap-6 max-w-9xl mx-auto p-6">
+			<div className="flex gap-4 max-w-9xl mx-2 p-4">
 				{/* Left Sidebar - Users */}
 				<div className="w-90 max-xl:w-72 max-lg:hidden">
-					<div className="sticky top-24 space-y-6">
+					<div className="space-y-6">
 						<TopReputationUsers />
 						<SuggestedExperts />
 					</div>
@@ -158,7 +158,7 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 					{/* Create Job Section */}
 					<div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden p-4">
 						<div
-							className="flex justify-center items-center gap-3 cursor-pointer"
+							className="flex justify-center items-center gap-2 cursor-pointer"
 							onClick={() => {
 								if (isLoggedIn) {
 									navigate("/job-postings/create");
@@ -226,12 +226,14 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 										onClick={() => setFilter(filterOption)}
 										className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
 											filter === filterOption
-												? "text-green-600 bg-green-500/10"
+												? "text-green-600"
 												: "text-muted-foreground hover:text-green-600 hover:bg-green-500/5"
 										}`}
 									>
 										{getFilterIcon(filterOption)}
-										<span>{filterOption}</span>
+										<span className="max-sm:hidden">
+											{filterOption}
+										</span>
 									</button>
 								))}
 							</div>
