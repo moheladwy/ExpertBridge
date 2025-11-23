@@ -75,6 +75,14 @@ const JobApplicationsPage = lazyWithRetry(
 	() => import("./views/pages/jobPostings/JobApplicationsPage.tsx"),
 	"JobApplicationsPage"
 );
+const CreateJobPostingPage = lazyWithRetry(
+	() => import("./views/pages/jobPostings/CreateJobPostingPage.tsx"),
+	"CreateJobPostingPage"
+);
+const EditJobPostingPage = lazyWithRetry(
+	() => import("./views/pages/jobPostings/EditJobPostingPage.tsx"),
+	"EditJobPostingPage"
+);
 
 // Job management pages
 const JobOffersDashboardPage = lazyWithRetry(
@@ -224,6 +232,26 @@ export const router = createBrowserRouter([
 					<LazyRoute>
 						<JobApplicationsPage />
 					</LazyRoute>
+				),
+			},
+			{
+				path: "job-postings/create",
+				element: (
+					<ProtectedRoute>
+						<LazyRoute>
+							<CreateJobPostingPage />
+						</LazyRoute>
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "job-postings/:jobPostingId/edit",
+				element: (
+					<ProtectedRoute>
+						<LazyRoute>
+							<EditJobPostingPage />
+						</LazyRoute>
+					</ProtectedRoute>
 				),
 			},
 			{
