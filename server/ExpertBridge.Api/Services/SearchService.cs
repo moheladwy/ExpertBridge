@@ -139,7 +139,11 @@ public sealed class SearchService
 
         var posts = await _dbContext.Posts
             .AsNoTracking()
-            .Where(p => p.Embedding != null && p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold)
+            .Include(p => p.Author)
+            .Where(p =>
+                p.Embedding != null &&
+                p.Embedding.CosineDistance(queryEmbeddings) < _cosineDistanceThreshold &&
+                p.Author.IsDeleted != true)
             .OrderBy(p => p.Embedding.CosineDistance(queryEmbeddings))
             .Take(request.Limit ?? _defaultLimit)
             .SelectPostResponseFromFullPost(currentUserProfileId)

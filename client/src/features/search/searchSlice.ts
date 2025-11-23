@@ -1,7 +1,6 @@
 import { createEntityAdapter, EntityState } from "@reduxjs/toolkit";
 import { Post, PostResponse } from "@/features/posts/types";
 import { apiSlice } from "@/features/api/apiSlice";
-import { SEARCH_ENDPOINTS } from "@/lib/api/endpoints";
 import {
 	SearchJobPostsRequest,
 	SearchUsersResponse,
@@ -50,7 +49,6 @@ const postResponseTransformer = (p: PostResponse): Post => ({
 });
 
 const postsResponseTransformer = (response: PostResponse[]) => {
-	console.log(response);
 	const posts: Post[] = response.map(postResponseTransformer);
 
 	return postsAdapter.setAll(initialState, posts);
@@ -60,7 +58,7 @@ export const searchApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		searchPosts: builder.query<SearchPostsState, string>({
 			query: (searchTerm) => ({
-				url: SEARCH_ENDPOINTS.SEARCH_POSTS,
+				url: "/search/posts",
 				params: {
 					query: searchTerm,
 					limit: searchLimit,
@@ -70,7 +68,7 @@ export const searchApiSlice = apiSlice.injectEndpoints({
 		}),
 		searchUsers: builder.query<SearchUsersResponse[], string>({
 			query: (searchTerm) => ({
-				url: SEARCH_ENDPOINTS.SEARCH_USERS,
+				url: "/search/users",
 				params: {
 					query: searchTerm,
 					limit: searchLimit,
@@ -79,7 +77,7 @@ export const searchApiSlice = apiSlice.injectEndpoints({
 		}),
 		searchJobPosts: builder.query<JobPostingsState, SearchJobPostsRequest>({
 			query: (request) => ({
-				url: SEARCH_ENDPOINTS.SEARCH_JOB_POSTS,
+				url: "/search/jobs",
 				params: {
 					query: request.query,
 					limit: request.limit,
