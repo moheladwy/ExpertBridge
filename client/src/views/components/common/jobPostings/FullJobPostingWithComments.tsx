@@ -38,7 +38,6 @@ import { JobPosting } from "@/features/jobPostings/types";
 import TimeAgo from "../../custom/TimeAgo";
 import MediaCarousel from "../media/MediaCarousel";
 import JobPostingVoteButtons from "./JobPostingVoteButtons";
-import EditJobPostingModal from "./EditJobPostingModal";
 import SimilarJobs from "./SimilarJobs";
 import JobPostingCommentsSection from "../comments/JobPostingCommentsSection";
 import PostingTags from "../tags/PostingTags";
@@ -58,7 +57,6 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 
 	// Modal states
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
 	const navigate = useNavigate();
@@ -179,8 +177,8 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 														<div
 															className="flex items-center text-card-foreground justify-center gap-2 cursor-pointer"
 															onClick={() =>
-																setIsEditModalOpen(
-																	true
+																navigate(
+																	`/job-postings/${jobPosting.id}/edit`
 																)
 															}
 														>
@@ -416,21 +414,10 @@ const FullJobPostingWithComments: React.FC<FullJobPostingWithCommentsProps> = ({
 										<JobPostingCommentsSection
 											jobPostingId={jobPosting.id}
 										/>
-									</div>
 								</div>
+							</div>
 
-								{/* Edit Modal */}
-								{userProfile?.id === jobPosting.author.id ? (
-									<EditJobPostingModal
-										jobPosting={memoizedJobPosting}
-										isOpen={isEditModalOpen}
-										onClose={() =>
-											setIsEditModalOpen(false)
-										}
-									/>
-								) : null}
-
-								{/* Apply Modal */}
+							{/* Apply Modal */}
 								<ApplyToJobModal
 									isOpen={isApplyModalOpen}
 									onClose={() => setIsApplyModalOpen(false)}

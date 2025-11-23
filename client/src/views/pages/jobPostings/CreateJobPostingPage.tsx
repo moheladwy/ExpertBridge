@@ -320,10 +320,7 @@ const CreateJobPostingPage = () => {
 				{/* Media Upload Section */}
 				<div className="border border-border rounded-lg p-6 bg-muted/20">
 					<div className="mb-4">
-						<h3 className="text-lg font-semibold text-card-foreground mb-2">
-							Add Media
-						</h3>
-						<p className="text-sm text-muted-foreground">
+						<p className="text-sm text-muted-foreground text-center">
 							Upload images or videos to showcase your job
 							opportunity (up to 3 files)
 						</p>
