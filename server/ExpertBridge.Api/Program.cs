@@ -12,6 +12,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+using Scalar.AspNetCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,6 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 builder.AddExpertBridgeServices();
 builder.AddNotifications();
 
-builder.AddSwaggerGen("ExpertBridgeApi");
 builder.AddCors();
 
 builder.Services.AddHttpContextAccessor();
@@ -85,6 +85,10 @@ builder.Services.AddControllers(options =>
     });
 
 builder.RegisterMessageBroker(typeof(Program).Assembly);
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 var app = builder.Build();
 
@@ -93,9 +97,15 @@ app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
+    app.MapOpenApi();
+    app.MapScalarApiReference("/docs", options =>
+    {
+        options
+            .WithTitle("ExpertBridge API Reference")
+            .ShowOperationId()
+            .PreserveSchemaPropertyOrder();
+    });
     await app.ApplyMigrationAtStartup();
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
 
 if (app.Environment.IsProduction())
@@ -136,11 +146,3 @@ app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIRespo
 app.MapHealthChecks("/alive", new HealthCheckOptions { Predicate = r => r.Tags.Contains("live") });
 
 await app.RunAsync();
-
-// ReSharper disable once ClassNeverInstantiated.Global
-namespace ExpertBridge.Api
-{
-    public class Program
-    {
-    }
-}
