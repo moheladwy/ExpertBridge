@@ -1,0 +1,272 @@
+services:
+  # Optional dashboard if NOT using the .NET Aspire Host
+  aspire-dashboard:
+    container_name: aspire-dashboard
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    environment:
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+    ports:
+      - target: 18888
+        published: 18888
+      - target: 4317
+        published: 18889
+    restart: unless-stopped
+    networks:
+      - shared
+
+  # PostgreSQL 18 with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg18
+    container_name: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - target: 5432
+        published: 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 60s
+      timeout: 30s
+      retries: 5
+    networks:
+      - shared
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    env_file:
+      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_FORCE_SSL: "True"
+      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
+      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: "False"
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: "False"
+    ports:
+      - target: 80
+        published: 5050
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - shared
+
+  # RabbitMQ with management UI
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_SERVICE_NAME: rabbitmq
+    ports:
+      - target: 5672
+        published: 5672
+      - target: 15672
+        published: 15672
+    restart: unless-stopped
+    networks:
+      - shared
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - rabbitmq-logs:/var/log/rabbitmq
+
+  # Ollama for local embeddings
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - shared
+
+  # Redis (FusionCache backend)
+  redis:
+    container_name: ExpertBridgeRedis
+    image: redis:alpine
+    command: ["--save", "300", "1"]
+    volumes:
+      - expertbridge-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - shared
+
+  # API Service
+  api:
+    container_name: ExpertBridgeApi
+    image: only1adwy/expert-bridge-api:latest
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - rabbitmq
+      - postgres
+      - ollama
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_SERVICE_NAME: ExpertBridgeApi
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: ${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      HTTP_PORTS: ${HTTP_PORTS}
+      ConnectionStrings__rabbitmq: ${ConnectionStrings__rabbitmq}
+      ConnectionStrings__Redis: ${ConnectionStrings__Redis}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+      MessageBroker__Host: ${MessageBroker__Host}
+      MessageBroker__Username: ${MessageBroker__Username}
+      MessageBroker__Password: ${MessageBroker__Password}
+      # Firebase (placeholders expected in .env)
+      Firebase__Type: ${Firebase__Type}
+      Firebase__ProjectId: ${Firebase__ProjectId}
+      Firebase__PrivateKeyId: ${Firebase__PrivateKeyId}
+      Firebase__PrivateKey: ${Firebase__PrivateKey}
+      Firebase__ClientEmail: ${Firebase__ClientEmail}
+      Firebase__ClientId: ${Firebase__ClientId}
+      Firebase__AuthUri: ${Firebase__AuthUri}
+      Firebase__TokenUri: ${Firebase__TokenUri}
+      Firebase__ClientX509CertUrl: ${Firebase__ClientX509CertUrl}
+      Firebase__UniverseDomain: ${Firebase__UniverseDomain}
+      Firebase__AuthProviderX509CertUrl: ${Firebase__AuthProviderX509CertUrl}
+      Firebase__AuthenticationTokenUri: ${Firebase__AuthenticationTokenUri}
+      Authentication__Firebase__Issuer: ${Authentication__Firebase__Issuer}
+      Authentication__Firebase__Audience: ${Authentication__Firebase__Audience}
+      Authentication__Firebase__TokenUri: ${Authentication__Firebase__TokenUri}
+      # AWS S3 (placeholders expected in .env)
+      AwsS3__Region: ${AwsS3__Region}
+      AwsS3__BucketName: ${AwsS3__BucketName}
+      AwsS3__AwsKey: ${AwsS3__AwsKey}
+      AwsS3__AwsSecret: ${AwsS3__AwsSecret}
+      AwsS3__BucketUrl: ${AwsS3__BucketUrl}
+      AwsS3__CacheControl: ${AwsS3__CacheControl}
+      AwsS3__MaxFileSize: ${AwsS3__MaxFileSize}
+      # AI related
+      PostCategorizer__BaseUrl: ${PostCategorizer__BaseUrl}
+      Ollama__Endpoint: ${Ollama__Endpoint}
+      Ollama__ModelId: ${Ollama__ModelId}
+      Groq__Apikey: ${Groq__Apikey}
+      Groq__Model: ${Groq__Model}
+    volumes:
+      - ./FirebaseOAuthCredentialsExpertBridge.json:/ExpertBridgeApi/FirebaseOAuthCredentialsExpertBridge.json
+      - expertbridge-api-logs:/ExpertBridgeApi/logs
+    restart: unless-stopped
+    networks:
+      - shared
+
+  # Admin Dashboard (Blazor Server)
+  admin:
+    container_name: ExpertBridgeAdmin
+    image: only1adwy/expert-bridge-admin:latest
+    env_file:
+      - .env
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_SERVICE_NAME: ExpertBridgeAdmin
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: true
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      HTTP_PORTS: 8080
+      ConnectionStrings__AdminDb: ${ConnectionStrings__AdminDb}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+    volumes:
+      - expertbridge-admin-logs:/ExpertBridgeAdmin/logs
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - shared
+
+  # Worker service for background processing
+  worker:
+    container_name: ExpertBridgeWorker
+    image: only1adwy/expert-bridge-worker:latest
+    env_file:
+      - .env
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES}
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: ${OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_SERVICE_NAME: ExpertBridgeWorker
+      ConnectionStrings__rabbitmq: ${ConnectionStrings__rabbitmq}
+      ConnectionStrings__Redis: ${ConnectionStrings__Redis}
+      ConnectionStrings__Postgresql: ${ConnectionStrings__Postgresql}
+      ConnectionStrings__QuartzDatabase: ${ConnectionStrings__QuartzDatabase}
+      MessageBroker__Host: ${MessageBroker__Host}
+      MessageBroker__Username: ${MessageBroker__Username}
+      MessageBroker__Password: ${MessageBroker__Password}
+      # Firebase & Auth (placeholders)
+      Firebase__Type: ${Firebase__Type}
+      Firebase__ProjectId: ${Firebase__ProjectId}
+      Firebase__PrivateKeyId: ${Firebase__PrivateKeyId}
+      Firebase__PrivateKey: ${Firebase__PrivateKey}
+      Firebase__ClientEmail: ${Firebase__ClientEmail}
+      Firebase__ClientId: ${Firebase__ClientId}
+      Firebase__AuthUri: ${Firebase__AuthUri}
+      Firebase__TokenUri: ${Firebase__TokenUri}
+      Firebase__ClientX509CertUrl: ${Firebase__ClientX509CertUrl}
+      Firebase__UniverseDomain: ${Firebase__UniverseDomain}
+      Firebase__AuthProviderX509CertUrl: ${Firebase__AuthProviderX509CertUrl}
+      Firebase__AuthenticationTokenUri: ${Firebase__AuthenticationTokenUri}
+      Authentication__Firebase__Issuer: ${Authentication__Firebase__Issuer}
+      Authentication__Firebase__Audience: ${Authentication__Firebase__Audience}
+      Authentication__Firebase__TokenUri: ${Authentication__Firebase__TokenUri}
+      # AWS S3 (placeholders)
+      AwsS3__Region: ${AwsS3__Region}
+      AwsS3__BucketName: ${AwsS3__BucketName}
+      AwsS3__AwsKey: ${AwsS3__AwsKey}
+      AwsS3__AwsSecret: ${AwsS3__AwsSecret}
+      AwsS3__BucketUrl: ${AwsS3__BucketUrl}
+      AwsS3__CacheControl: ${AwsS3__CacheControl}
+      AwsS3__MaxFileSize: ${AwsS3__MaxFileSize}
+      # AI related
+      PostCategorizer__BaseUrl: ${PostCategorizer__BaseUrl}
+      Ollama__Endpoint: ${Ollama__Endpoint}
+      Ollama__ModelId: ${Ollama__ModelId}
+      Groq__Apikey: ${Groq__Apikey}
+      Groq__Model: ${Groq__Model}
+    volumes:
+      - expertbridge-worker-logs:/ExpertBridgeWorker/logs
+    depends_on:
+      - redis
+      - rabbitmq
+      - postgres
+      - ollama
+    restart: unless-stopped
+    networks:
+      - shared
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  rabbitmq-data:
+  rabbitmq-logs:
+  ollama_models:
+  expertbridge-redis-data:
+  expertbridge-api-logs:
+  expertbridge-admin-logs:
+  expertbridge-worker-logs:
+
+networks:
+  shared:
+    external: true
