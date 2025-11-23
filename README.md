@@ -33,9 +33,9 @@ ExpertBridge.sln
 ├─ ExpertBridge.Data/         # EF Core + Npgsql + pgvector
 ├─ ExpertBridge.Extensions/   # Caching, logging, OpenTelemetry, AWS, Firebase, broker, etc.
 ├─ ExpertBridge.Notifications/# SignalR hub / abstractions
-├─ ExpertBridge.GroqLibrary/  # Groq API clients
 ├─ ExpertBridge.Worker/       # Background jobs/consumers (Quartz + MassTransit)
-└─ ExpertBridge.Host/         # .NET Aspire AppHost (local orchestration)
+├─ ExpertBridge.Host/         # .NET Aspire AppHost (local orchestration)
+└─ ExpertBridge.Tests.Unit/   # Unit tests.
 ```
 
 ## Architecture overview
