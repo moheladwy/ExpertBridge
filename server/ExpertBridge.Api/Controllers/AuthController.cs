@@ -1,4 +1,5 @@
 using ExpertBridge.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ namespace ExpertBridge.Api.Controllers;
 /// </remarks>
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     /// <summary>
