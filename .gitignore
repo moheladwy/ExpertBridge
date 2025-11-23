@@ -22,13 +22,12 @@ lerna-debug.log*
 .env.keycloak
 FirebaseOAuthCredentialsExpertBridge.json
 ExpertBridge.sln.DotSettings.user
-*.env*
+*.env.production
 *.env.local
 *.env.development
 *.env.development.local
 *.env.test
 *.env
-.env*
 __pycache__
 *.pyc
 *.pyo
