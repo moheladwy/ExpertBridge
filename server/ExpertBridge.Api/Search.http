@@ -1,4 +1,0 @@
-### GET request to example server
-GET http://localhost:5027/api/Search/jobs?query=fullstack%20developer
-
-###

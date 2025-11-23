@@ -52,7 +52,7 @@ public class SearchController : ControllerBase
         [FromQuery] SearchPostRequest request,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         return await _searchService.SearchPosts(request, cancellationToken);
     }
 
@@ -68,7 +68,7 @@ public class SearchController : ControllerBase
         [FromQuery] SearchUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         return await _searchService.SearchUsers(request, cancellationToken);
     }
 
@@ -90,7 +90,7 @@ public class SearchController : ControllerBase
         [FromQuery] SearchJobPostsRequest request,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         return await _searchService.SearchJobs(request, cancellationToken);
     }
 }

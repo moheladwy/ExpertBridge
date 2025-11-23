@@ -4,7 +4,8 @@
 using System.Text.Json;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Extensions.Resilience;
-using ExpertBridge.GroqLibrary.Providers;
+using Groq.Core.Models;
+using Groq.Core.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
@@ -22,15 +23,6 @@ namespace ExpertBridge.Worker.Services;
 public sealed class AiPostTaggingService
 {
     /// <summary>
-    ///     The Groq LLM text provider for generating AI-powered text analysis and tag extraction.
-    /// </summary>
-    /// <remarks>
-    ///     Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
-    ///     with parameters optimized for structured output generation.
-    /// </remarks>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
-
-    /// <summary>
     ///     JSON serialization options configured for robust parsing of LLM responses.
     /// </summary>
     /// <remarks>
@@ -41,6 +33,15 @@ public sealed class AiPostTaggingService
     ///     These settings improve resilience against minor formatting variations in LLM output.
     /// </remarks>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     The Groq LLM text provider for generating AI-powered text analysis and tag extraction.
+    /// </summary>
+    /// <remarks>
+    ///     Configured to use a specific Groq model (e.g., llama3-70b-8192 or mixtral-8x7b-32768)
+    ///     with parameters optimized for structured output generation.
+    /// </remarks>
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     Polly resilience pipeline for handling transient failures and malformed responses.
@@ -58,7 +59,7 @@ public sealed class AiPostTaggingService
     ///     Initializes a new instance of the <see cref="AiPostTaggingService" /> class with Groq LLM provider and resilience
     ///     configuration.
     /// </summary>
-    /// <param name="groqLlmTextProvider">
+    /// <param name="llmTextProvider">
     ///     The Groq LLM provider for text generation and analysis.
     /// </param>
     /// <param name="resilience">
@@ -69,10 +70,10 @@ public sealed class AiPostTaggingService
     ///     Retrieves the MalformedJsonModelResponse pipeline for handling structured output issues.
     /// </remarks>
     public AiPostTaggingService(
-        GroqLlmTextProvider groqLlmTextProvider,
+        LlmTextProvider llmTextProvider,
         ResiliencePipelineProvider<string> resilience)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _llmTextProvider = llmTextProvider;
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -135,9 +136,9 @@ public sealed class AiPostTaggingService
         string content,
         IReadOnlyCollection<string> existingTags)
     {
-        ArgumentException.ThrowIfNullOrEmpty(title, nameof(title));
-        ArgumentException.ThrowIfNullOrEmpty(content, nameof(content));
-        ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
+        ArgumentException.ThrowIfNullOrEmpty(title);
+        ArgumentException.ThrowIfNullOrEmpty(content);
+        ArgumentNullException.ThrowIfNull(existingTags);
         try
         {
             PostCategorizerResponse? result = null;
@@ -147,7 +148,12 @@ public sealed class AiPostTaggingService
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(title, content, existingTags);
-                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                var structureOutput = await GetOutputFormatSchema();
+                var response = await _llmTextProvider.GenerateAsync(
+                    systemPrompt: systemPrompt,
+                    userPrompt: userPrompt,
+                    structureOutputJsonFormat: structureOutput,
+                    model: ChatModels.OPENAI_GPT_OSS_120B.Id);
                 result = JsonSerializer.Deserialize<PostCategorizerResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the categorizer response: null result");
@@ -170,9 +176,9 @@ public sealed class AiPostTaggingService
     /// <returns>
     ///     A string containing the JSON schema definition for the expected output format.
     /// </returns>
-    private static string GetOutputFormatSchema()
+    private static async Task<string> GetOutputFormatSchema()
     {
-        return File.ReadAllText("LlmOutputFormat/PostCategorizationOutputFormat.json");
+        return await File.ReadAllTextAsync("LlmOutputFormat/PostCategorizationOutputFormat.json");
     }
 
     /// <summary>
@@ -209,10 +215,7 @@ public sealed class AiPostTaggingService
             "10. Tag names must be entirely lowercase, separated by a single space.",
 
             "### Output Format and Validation:",
-            "11. The response must strictly conform to the following JSON schema:",
-            "```json",
-            GetOutputFormatSchema(),
-            "```",
+            "11. The response must strictly conform to the given JSON schema.",
             "12. Do not include any markdown formatting, code fences, explanations, or commentary.",
             "13. Return only the raw JSON structure as the final output.",
             "14. Ensure the JSON is syntactically valid and matches all required field names.",

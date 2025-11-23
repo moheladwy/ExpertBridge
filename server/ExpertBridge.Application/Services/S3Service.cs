@@ -67,7 +67,7 @@ public sealed class S3Service
     /// </exception>
     public async Task<PresignedUrlResponse> GetPresignedPutUrlAsync(FileMetadata file)
     {
-        ArgumentNullException.ThrowIfNull(file, nameof(file));
+        ArgumentNullException.ThrowIfNull(file);
 
         if (file.Size > _awsSettings.MaxFileSize)
         {
@@ -159,7 +159,7 @@ public sealed class S3Service
     /// </exception>
     public async Task<UploadFileResponse> UploadObjectAsync(PutObjectRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
 
         request.Key = Guid.NewGuid().ToString();
         request.BucketName = _awsSettings.BucketName;

@@ -1,7 +1,8 @@
 using System.Text.Json;
 using ExpertBridge.Application.Models.GroqResponses;
 using ExpertBridge.Extensions.Resilience;
-using ExpertBridge.GroqLibrary.Providers;
+using Groq.Core.Models;
+using Groq.Core.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
@@ -11,24 +12,24 @@ namespace ExpertBridge.Worker.Services;
 ///     A service for processing and analyzing tags or textual categorizations using
 ///     the Groq Large Language Model (LLM) API. It provides functionality for generating,
 ///     processing, and handling text-based categorizations leveraging the integration
-///     with <see cref="GroqLlmTextProvider" /> for efficient communication with the Groq LLM.
+///     with <see cref="LlmTextProvider" /> for efficient communication with the Groq LLM.
 ///     The service also supports flexible and robust JSON parsing with case-insensitive
 ///     property deserialization settings.
 /// </summary>
 public class AiTagProcessorService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
-    ///     API for generating text-based categorizations in the context of post-analysis.
-    /// </summary>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
-
-    /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
-    ///     ensuring robust parsing of post-categorization results from the GroqLlmTextProvider.
+    ///     ensuring robust parsing of post-categorization results from the LlmTextProvider.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     API for generating text-based categorizations in the context of post-analysis.
+    /// </summary>
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     A pipeline instance implemented via <see cref="Polly" /> to handle resilient
@@ -45,10 +46,10 @@ public class AiTagProcessorService
     ///     the results with case-insensitive JSON deserialization for robust and flexible parsing.
     /// </summary>
     public AiTagProcessorService(
-        GroqLlmTextProvider groqLlmTextProvider,
+        LlmTextProvider llmTextProvider,
         ResiliencePipelineProvider<string> resilience)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _llmTextProvider = llmTextProvider;
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -71,7 +72,7 @@ public class AiTagProcessorService
     /// <exception cref="JsonException">Thrown when a JSON parsing error occurs during deserialization of the response.</exception>
     public async Task<TranslateTagsResponse?> TranslateTagsAsync(IReadOnlyCollection<string> existingTags)
     {
-        ArgumentNullException.ThrowIfNull(existingTags, nameof(existingTags));
+        ArgumentNullException.ThrowIfNull(existingTags);
         try
         {
             TranslateTagsResponse? result = null;
@@ -79,7 +80,12 @@ public class AiTagProcessorService
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(existingTags);
-                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                var structureOutput = await GetOutputFormatSchema();
+                var response = await _llmTextProvider.GenerateAsync(
+                    systemPrompt: systemPrompt,
+                    userPrompt: userPrompt,
+                    structureOutputJsonFormat: structureOutput,
+                    model: ChatModels.OPENAI_GPT_OSS_120B.Id);
                 result = JsonSerializer.Deserialize<TranslateTagsResponse>(response, _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
                              "Failed to deserialize the tag processing response: null result");
@@ -99,9 +105,9 @@ public class AiTagProcessorService
     /// <returns>
     ///     A string containing the JSON schema definition for translating tag responses.
     /// </returns>
-    private static string GetOutputFormatSchema()
+    private static async Task<string> GetOutputFormatSchema()
     {
-        return File.ReadAllText("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
+        return await File.ReadAllTextAsync("LlmOutputFormat/TranslateTagResponseOutputFormat.json");
     }
 
     /// <summary>
@@ -138,13 +144,8 @@ public class AiTagProcessorService
             "10. Output only the final JSON structure — no preface, code blocks, or additional text.",
 
             "Output Format Requirements:",
-            "Your response must strictly conform to the following JSON schema representation.",
+            "Your response must strictly conform to the given JSON schema representation.",
             "Each field must appear exactly as defined, without omissions or renaming.",
-
-            "```json",
-            GetOutputFormatSchema(),
-            "```",
-
             "The output must be raw JSON (no markdown formatting, no code fences).",
             "If multiple tags are given, return a JSON array following the same schema for each item.",
             "Maintain absolute formatting integrity — the output must be valid JSON."
@@ -169,7 +170,6 @@ public class AiTagProcessorService
             "Translate and provide descriptions for the following tags:",
             $"[{string.Join(", ", existingTags.ToList())}]"
         ];
-
         return string.Join("\n", userPrompt);
     }
 }

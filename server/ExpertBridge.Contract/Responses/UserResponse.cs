@@ -20,7 +20,7 @@ public class UserResponse
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="user" /> is null.</exception>
     public UserResponse(User user)
     {
-        ArgumentNullException.ThrowIfNull(user, nameof(user));
+        ArgumentNullException.ThrowIfNull(user);
         Id = user.Id;
         FirebaseId = user.ProviderId;
         Email = user.Email;

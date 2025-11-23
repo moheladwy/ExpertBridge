@@ -159,7 +159,7 @@ public class ProfileService
         string profileId,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(profileId, nameof(profileId));
+        ArgumentException.ThrowIfNullOrWhiteSpace(profileId);
 
         _logger.LogInformation("Retrieving profile with ID: {ProfileId}", profileId);
 
@@ -304,8 +304,7 @@ public class ProfileService
         await _publishEndpoint.Publish(
             new UserInterestsProsessingMessage
             {
-                UserProfileId = user.Profile.Id,
-                InterestsTags = newTagsToBeProcessed
+                UserProfileId = user.Profile.Id, InterestsTags = newTagsToBeProcessed
             }, cancellationToken);
 
         var response = await GetProfileResponseByIdAsync(user.Profile.Id, cancellationToken);
@@ -329,7 +328,7 @@ public class ProfileService
         Profile currentUserProfile,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(username, nameof(username));
+        ArgumentException.ThrowIfNullOrWhiteSpace(username);
         ArgumentNullException.ThrowIfNull(currentUserProfile);
 
         _logger.LogInformation("Checking username availability: {Username} for user ID: {UserId}",
@@ -366,7 +365,7 @@ public class ProfileService
         string profileId,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(profileId, nameof(profileId));
+        ArgumentException.ThrowIfNullOrEmpty(profileId);
 
         _logger.LogInformation("Retrieving skills for profile ID: {ProfileId}", profileId);
 

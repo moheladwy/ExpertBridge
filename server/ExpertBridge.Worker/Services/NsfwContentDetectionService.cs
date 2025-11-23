@@ -1,7 +1,8 @@
 using System.Text.Json;
 using ExpertBridge.Contract.Responses;
 using ExpertBridge.Extensions.Resilience;
-using ExpertBridge.GroqLibrary.Providers;
+using Groq.Core.Models;
+using Groq.Core.Providers;
 using Polly.Registry;
 using ResiliencePipeline = Polly.ResiliencePipeline;
 
@@ -15,17 +16,17 @@ namespace ExpertBridge.Worker.Services;
 public sealed class NsfwContentDetectionService
 {
     /// <summary>
-    ///     An instance of <see cref="GroqLlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
-    ///     API for text-based generation.
-    /// </summary>
-    private readonly GroqLlmTextProvider _groqLlmTextProvider;
-
-    /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a
     ///     case-insensitive manner,
     ///     ensuring robust parsing.
     /// </summary>
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    /// <summary>
+    ///     An instance of <see cref="LlmTextProvider" /> used to interact with the Groq Large Language Model (LLM)
+    ///     API for text-based generation.
+    /// </summary>
+    private readonly LlmTextProvider _llmTextProvider;
 
     /// <summary>
     ///     An instance of <see cref="Polly.ResiliencePipeline" /> used to provide resilience mechanisms such as retries
@@ -35,13 +36,15 @@ public sealed class NsfwContentDetectionService
 
     /// <summary>
     ///     Service for detecting NSFW (Not Safe for Work) content using Groq Large Language Model (LLM) API.
-    ///     Handles interactions with the <see cref="GroqLlmTextProvider" /> for analyzing and generating text-related tasks.
+    ///     Handles interactions with the <see cref="LlmTextProvider" /> for analyzing and generating text-related tasks.
     /// </summary>
+    /// <param name="llmTextProvider">The LLM text provider for generating responses.</param>
+    /// <param name="resilience">The resilience pipeline provider for handling transient failures.</param>
     public NsfwContentDetectionService(
-        GroqLlmTextProvider groqLlmTextProvider,
+        LlmTextProvider llmTextProvider,
         ResiliencePipelineProvider<string> resilience)
     {
-        _groqLlmTextProvider = groqLlmTextProvider;
+        _llmTextProvider = llmTextProvider;
         _resiliencePipeline = resilience.GetPipeline(ResiliencePipelines.MalformedJsonModelResponse);
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -56,14 +59,21 @@ public sealed class NsfwContentDetectionService
     /// </summary>
     /// <param name="text">The input text to be analyzed for NSFW content. Must not be null or empty.</param>
     /// <returns>
-    ///     A <see cref="InappropriateLanguageDetectionResponse" /> object containing the detection results for multiple
-    ///     NSFW categories.
+    ///     An <see cref="InappropriateLanguageDetectionResponse" /> containing detection results, or null if detection fails.
     /// </returns>
-    /// <exception cref="ArgumentException">Thrown when the provided <paramref name="text" /> is null or empty.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the response fails deserialization or parsing.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="text" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the response fails deserialization or the BaseAddress is not
+    ///     set.
+    /// </exception>
+    /// <exception cref="HttpRequestException">
+    ///     Thrown when the request fails due to network connectivity, DNS failure, server
+    ///     certificate validation, or timeout.
+    /// </exception>
+    /// <exception cref="TaskCanceledException">Thrown when the request times out.</exception>
     public async Task<InappropriateLanguageDetectionResponse?> DetectAsync(string text)
     {
-        ArgumentException.ThrowIfNullOrEmpty(text, nameof(text));
+        ArgumentException.ThrowIfNullOrWhiteSpace(text);
         try
         {
             InappropriateLanguageDetectionResponse result = null;
@@ -73,7 +83,12 @@ public sealed class NsfwContentDetectionService
             {
                 var systemPrompt = GetSystemPrompt();
                 var userPrompt = GetUserPrompt(text);
-                var response = await _groqLlmTextProvider.GenerateAsync(systemPrompt, userPrompt);
+                var structuredOutput = await GetOutputFormatSchema();
+                var response = await _llmTextProvider.GenerateAsync(
+                    userPrompt: userPrompt,
+                    systemPrompt: systemPrompt,
+                    structureOutputJsonFormat: structuredOutput,
+                    model: ChatModels.OPENAI_GPT_OSS_120B.Id);
                 result = JsonSerializer.Deserialize<InappropriateLanguageDetectionResponse>(response,
                              _jsonSerializerOptions)
                          ?? throw new InvalidOperationException(
@@ -95,16 +110,16 @@ public sealed class NsfwContentDetectionService
     /// <returns>
     ///     A string containing the contents of the NSFW detection output format schema file.
     /// </returns>
-    private static string GetOutputFormatSchema()
+    private static async Task<string> GetOutputFormatSchema()
     {
-        return File.ReadAllText("LlmOutputFormat/NSFWDetectionOutputFormat.json");
+        return await File.ReadAllTextAsync("LlmOutputFormat/NSFWDetectionOutputFormat.json");
     }
 
     /// <summary>
     ///     Generates the predefined system prompt used for interactions with the Groq LLM API.
     ///     Intended for internal use to ensure a standard prompt structure.
     /// </summary>
-    /// <returns>A string representing the standardized system prompt utilized by the service.</returns>
+    /// <returns>The system prompt instructing the LLM on how to perform NSFW detection.</returns>
     private static string GetSystemPrompt()
     {
         List<string> systemPrompt =
@@ -113,8 +128,7 @@ public sealed class NsfwContentDetectionService
             "Your task is to analyze the given text and output the likelihood (as a probability between 0 and 1) that it falls into each of the following categories:",
             "Toxicity, SevereToxicity, Obscene, Threat, Insult, IdentityAttack, SexualExplicit.",
             "Base your evaluation on linguistic meaning, intent, and contextual cues — not only on isolated words. Be sensitive to cultural nuances and slang used in Arabic and English code-switching.",
-            "Your response must strictly be a valid JSON object conforming to the exact 'NsfwDetectionResponse' schema with the following fields:",
-            GetOutputFormatSchema(),
+            "Your response must strictly be a valid JSON object conforming to the exact given structured output 'NsfwDetectionResponse' schema.",
             "Each probability value must be a numeric value between 0 and 1, inclusive, rounded to five decimal places.",
             "Do not include any explanations, comments, markdown formatting, or additional fields. Output only the JSON object.",
             "If uncertain, make a probabilistic estimation based on linguistic cues rather than abstaining."
@@ -126,7 +140,8 @@ public sealed class NsfwContentDetectionService
     ///     Constructs a user prompt string for use in interactions with an LLM (Large Language Model) API,
     ///     aimed at generating or analyzing text as part of NSFW content detection tasks.
     /// </summary>
-    /// <returns>A formatted string representing the user prompt.</returns>
+    /// <param name="text">The text to include in the prompt.</param>
+    /// <returns>The formatted user prompt.</returns>
     private static string GetUserPrompt(string text)
     {
         List<string> userPrompt =

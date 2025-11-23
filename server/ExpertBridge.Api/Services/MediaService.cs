@@ -68,7 +68,7 @@ public sealed class MediaService
     /// <exception cref="ValidationException">Thrown when the provided <paramref name="request" /> fails validation.</exception>
     public async Task<List<PresignedUrlResponse>> GenerateUrls(GeneratePresignedUrlsRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
         var validationResult = await _generatePresignedUrlsValidator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
