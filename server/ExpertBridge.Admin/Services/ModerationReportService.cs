@@ -16,7 +16,7 @@ namespace ExpertBridge.Admin.Services;
 ///     This service uses <see cref="ExpertBridgeDbContext" /> to persist changes. Some operations use
 ///     EF Core's <c>ExecuteUpdateAsync</c> for bulk/inline updates which do not load full entity instances into memory.
 /// </remarks>
-public class ModerationReportService
+public sealed class ModerationReportService
 {
     /// <summary>
     ///     Represents the database context used to interact with the database in the moderation report service.
