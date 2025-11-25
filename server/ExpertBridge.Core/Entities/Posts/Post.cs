@@ -22,7 +22,7 @@ namespace ExpertBridge.Core.Entities.Posts;
 ///     embeddings,
 ///     and are indexed for similarity-based recommendations.
 /// </remarks>
-public class Post : BaseModel, ISoftDeletable, IRecommendableContent, ISafeContent
+public sealed class Post : BaseModel, ISoftDeletable, IRecommendableContent, ISafeContent
 {
     /// <summary>
     ///     Gets or sets the date and time when the author last updated the post content.

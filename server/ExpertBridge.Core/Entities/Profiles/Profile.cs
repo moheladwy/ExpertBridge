@@ -34,7 +34,7 @@ namespace ExpertBridge.Core.Entities.Profiles;
 ///     ratings, and relationships to user-generated content. It has a one-to-one relationship with the <see cref="User" />
 ///     entity.
 /// </remarks>
-public partial class Profile : BaseModel, ISoftDeletable
+public sealed partial class Profile : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the associated user account.

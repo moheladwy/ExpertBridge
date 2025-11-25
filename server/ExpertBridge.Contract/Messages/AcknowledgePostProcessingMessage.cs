@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     This message confirms that all AI processing steps (tagging, embedding, moderation) have
 ///     completed and provides the final moderation result.
 /// </remarks>
-public class AcknowledgePostProcessingMessage
+public sealed class AcknowledgePostProcessingMessage
 {
     /// <summary>
     ///     Gets or sets a value indicating whether the post content passed moderation checks.

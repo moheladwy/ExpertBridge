@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     This message invokes LLM services (Groq/Ollama) to analyze content and generate
 ///     relevant multilingual tags for categorization.
 /// </remarks>
-public class TagPostMessage
+public sealed class TagPostMessage
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the post to tag.

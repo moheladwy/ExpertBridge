@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.RegisterUser;
 ///     This request is typically called after Firebase authentication succeeds.
 ///     The ProviderId should match the Firebase user ID.
 /// </remarks>
-public class RegisterUserRequest
+public sealed class RegisterUserRequest
 {
     /// <summary>
     ///     Gets or sets the Firebase authentication provider ID.

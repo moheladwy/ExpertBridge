@@ -13,7 +13,7 @@ namespace ExpertBridge.Contract.Requests.InitiateJobOffer;
 ///     This request includes validation for title, description length, and proposed rate.
 ///     Can optionally reference an existing job posting.
 /// </remarks>
-public class InitiateJobOfferRequest
+public sealed class InitiateJobOfferRequest
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the contractor (worker) profile.

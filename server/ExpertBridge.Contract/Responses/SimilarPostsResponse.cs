@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO is used to return posts that are semantically similar to a given post,
 ///     calculated using vector embeddings and cosine similarity. Used for "related posts" features.
 /// </remarks>
-public class SimilarPostsResponse
+public sealed class SimilarPostsResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the similar post.

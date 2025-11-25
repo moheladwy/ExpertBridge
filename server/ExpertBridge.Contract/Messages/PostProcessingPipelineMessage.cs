@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     This message triggers the complete AI processing workflow for posts and job postings,
 ///     including tagging, embedding generation, and content moderation if needed.
 /// </remarks>
-public class PostProcessingPipelineMessage
+public sealed class PostProcessingPipelineMessage
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the post to process.

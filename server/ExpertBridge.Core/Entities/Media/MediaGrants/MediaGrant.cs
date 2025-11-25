@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Media.MediaGrants;
 ///     Media grants control access to S3 objects through presigned URLs with lifecycle management.
 ///     Grants can be placed on hold, activated, and soft-deleted to manage secure file access.
 /// </remarks>
-public class MediaGrant : ISoftDeletable
+public sealed class MediaGrant : ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the media grant.

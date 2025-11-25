@@ -11,7 +11,7 @@ namespace ExpertBridge.Core.Entities.Badges;
 /// <remarks>
 ///     Badges recognize user accomplishments, expertise levels, and contributions to the platform.
 /// </remarks>
-public class Badge
+public sealed class Badge
 {
     /// <summary>
     ///     Gets or sets the unique identifier for the badge.

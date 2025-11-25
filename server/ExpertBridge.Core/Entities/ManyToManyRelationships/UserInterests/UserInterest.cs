@@ -14,7 +14,7 @@ namespace ExpertBridge.Core.Entities.ManyToManyRelationships.UserInterests;
 ///     personalized content recommendations using vector embeddings (1024-dimensional via Ollama) for semantic similarity
 ///     matching. Interests can be selected during onboarding or updated based on user interactions with posts.
 /// </remarks>
-public class UserInterest
+public sealed class UserInterest
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile.

@@ -9,7 +9,7 @@ namespace ExpertBridge.Contract.Requests.UpdateJobStatus;
 /// <remarks>
 ///     Status changes track job lifecycle: Pending, InProgress, Completed, Cancelled, etc.
 /// </remarks>
-public class UpdateJobStatusRequest
+public sealed class UpdateJobStatusRequest
 {
     /// <summary>
     ///     Gets or sets the new status for the job.

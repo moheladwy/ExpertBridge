@@ -9,6 +9,6 @@ namespace ExpertBridge.Contract.Responses;
 /// <remarks>
 ///     This is a placeholder DTO that may be extended with media processing results in the future.
 /// </remarks>
-public class MediaResponse
+public sealed class MediaResponse
 {
 }

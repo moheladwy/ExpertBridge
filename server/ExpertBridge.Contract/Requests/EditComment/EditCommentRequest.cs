@@ -9,7 +9,7 @@ namespace ExpertBridge.Contract.Requests.EditComment;
 /// <remarks>
 ///     After editing, comments are reprocessed by AI services for content moderation.
 /// </remarks>
-public class EditCommentRequest
+public sealed class EditCommentRequest
 {
     /// <summary>
     ///     Gets or sets the new text content for the comment.

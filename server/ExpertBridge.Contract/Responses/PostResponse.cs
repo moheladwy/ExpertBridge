@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This record contains complete post details including content, author, engagement metrics,
 ///     media attachments, and AI-generated tags. Used in post listings and detail views.
 /// </remarks>
-public record PostResponse
+public sealed record PostResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the post.

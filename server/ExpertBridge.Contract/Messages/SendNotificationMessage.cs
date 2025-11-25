@@ -34,7 +34,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     - Supports batching for efficiency (multiple messages in one request)
 ///     This is an internal IPC model and should not be exposed via public APIs or stored directly in the database.
 /// </remarks>
-public class SendNotificationMessage
+public sealed class SendNotificationMessage
 {
     /// <summary>
     ///     Gets or sets the profile ID of the recipient user who should receive this notification.

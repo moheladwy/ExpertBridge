@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO wraps job posting collections with pagination metadata for cursor-based navigation.
 ///     Supports both standard chronological ordering and semantic similarity-based ordering.
 /// </remarks>
-public class JobPostingsPaginatedResponse
+public sealed class JobPostingsPaginatedResponse
 {
     /// <summary>
     ///     Gets or sets the collection of job postings for the current page.

@@ -9,7 +9,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.13.1" />
     <PackageVersion Include="Bogus" Version="35.6.5" />
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="9.9.0" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="13.0.0" />
     <PackageVersion Include="FirebaseAdmin" Version="3.4.0" />
     <PackageVersion Include="Groq.Sdk.Extensions.DependencyInjection" Version="2.0.0.8-alpha" />
     <PackageVersion Include="MassTransit.RabbitMQ" Version="8.5.5" />
@@ -103,7 +103,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="Aspire.Hosting.Testing" Version="9.0.0" />
-    <PackageVersion Include="Radzen.Blazor" Version="8.3.2" />
+    <PackageVersion Include="Radzen.Blazor" Version="8.3.3" />
     <PackageVersion Include="Razor.Templating.Core" Version="2.1.0" />
     <PackageVersion Include="Quartz" Version="3.15.1" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.15.1" />

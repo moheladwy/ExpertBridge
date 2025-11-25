@@ -11,7 +11,7 @@ namespace ExpertBridge.Core.Entities.JobCategories;
 /// <remarks>
 ///     Job categories help organize and filter job postings, making it easier for workers to find relevant opportunities.
 /// </remarks>
-public class JobCategory
+public sealed class JobCategory
 {
     /// <summary>
     ///     Gets or sets the unique identifier for the job category.

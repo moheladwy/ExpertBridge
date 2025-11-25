@@ -15,7 +15,7 @@ namespace ExpertBridge.Core.Entities.JobApplications;
 ///     letter.
 ///     The hirer can review applications and either accept one to create a job contract or decline them.
 /// </remarks>
-public class JobApplication : BaseModel, ISoftDeletable
+public sealed class JobApplication : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the job posting being applied to.

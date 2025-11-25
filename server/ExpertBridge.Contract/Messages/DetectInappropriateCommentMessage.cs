@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     This message invokes AI moderation services to detect inappropriate content including
 ///     toxicity, threats, obscenity, and other harmful language categories in user comments.
 /// </remarks>
-public class DetectInappropriateCommentMessage
+public sealed class DetectInappropriateCommentMessage
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the comment to moderate.

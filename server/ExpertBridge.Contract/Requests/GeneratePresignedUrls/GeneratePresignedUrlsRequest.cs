@@ -12,7 +12,7 @@ namespace ExpertBridge.Contract.Requests.GeneratePresignedUrls;
 ///     This request is used to obtain temporary upload URLs that allow clients to upload files
 ///     directly to S3 without exposing AWS credentials.
 /// </remarks>
-public class GeneratePresignedUrlsRequest
+public sealed class GeneratePresignedUrlsRequest
 {
     /// <summary>
     ///     Gets or sets the collection of file metadata for which presigned URLs should be generated.

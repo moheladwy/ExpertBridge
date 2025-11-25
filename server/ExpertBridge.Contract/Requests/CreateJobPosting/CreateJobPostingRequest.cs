@@ -13,7 +13,7 @@ namespace ExpertBridge.Contract.Requests.CreateJobPosting;
 ///     Job postings are automatically processed by AI services for language detection, tagging,
 ///     content moderation, and embedding generation for semantic job matching.
 /// </remarks>
-public class CreateJobPostingRequest
+public sealed class CreateJobPostingRequest
 {
     /// <summary>
     ///     Gets or sets the geographical area or work location for the job.

@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.UpdateProfileSkills;
 ///     This replaces the existing skill set with the provided skills.
 ///     Skills are used for profile matching and job recommendations.
 /// </remarks>
-public class UpdateProfileSkillsRequest
+public sealed class UpdateProfileSkillsRequest
 {
     /// <summary>
     ///     Gets or sets the collection of skill IDs to associate with the profile.

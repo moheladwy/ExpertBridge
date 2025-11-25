@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     This message triggers the generation of vector embeddings for user interests to enable
 ///     personalized recommendations and content matching using semantic similarity.
 /// </remarks>
-public class UserInterestsProsessingMessage
+public sealed class UserInterestsProsessingMessage
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the user profile.

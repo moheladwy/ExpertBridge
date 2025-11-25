@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO contains details about a worker's application to a job posting,
 ///     including the cover letter and offered cost.
 /// </remarks>
-public class JobApplicationResponse
+public sealed class JobApplicationResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the job application.

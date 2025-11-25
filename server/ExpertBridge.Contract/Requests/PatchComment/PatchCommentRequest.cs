@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.PatchComment;
 ///     This request supports voting operations and content updates in a single call.
 ///     All properties except CommentId are optional.
 /// </remarks>
-public class PatchCommentRequest
+public sealed class PatchCommentRequest
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the comment to update.

@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.JobOffers;
 ///     Job offers provide an alternative to the job posting/application workflow by allowing hirers to directly
 ///     invite workers they want to engage with. Workers can accept or decline these offers.
 /// </remarks>
-public class JobOffer : BaseModel, ISoftDeletable
+public sealed class JobOffer : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the title of the job offer.

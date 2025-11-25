@@ -15,7 +15,7 @@ namespace ExpertBridge.Core.Entities.ManyToManyRelationships.PostTags;
 ///     Tags support both English and Arabic for multilingual discoverability. The tagging process is triggered
 ///     asynchronously via RabbitMQ/MassTransit message pipeline.
 /// </remarks>
-public class PostTag
+public sealed class PostTag
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the post.

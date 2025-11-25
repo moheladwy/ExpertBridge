@@ -14,7 +14,7 @@ namespace ExpertBridge.Core.Entities.ModerationReports;
 ///     toxicity, obscenity, threats, insults, identity attacks, and sexual content. Reports can be manually reviewed
 ///     and resolved by moderators.
 /// </remarks>
-public class ModerationReport : BaseModel, ISoftDeletable
+public sealed class ModerationReport : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the type of content being reported.
