@@ -16,7 +16,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [AllowAnonymous]
-public class SearchController : ControllerBase
+public sealed class SearchController : ControllerBase
 {
     /// <summary>
     ///     Represents the service responsible for handling search-related operations,

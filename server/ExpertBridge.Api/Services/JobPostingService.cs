@@ -139,7 +139,7 @@ namespace ExpertBridge.Api.Services;
 ///     - Project-based work management
 ///     Registered as scoped service for per-request lifetime and DbContext transaction management.
 /// </remarks>
-public class JobPostingService
+public sealed class JobPostingService
 {
     private readonly IValidator<ApplyToJobPostingRequest> _applyToJobPostingValidator;
     private readonly HybridCache _cache;
@@ -245,9 +245,9 @@ public class JobPostingService
     ///         new() { FileName = "requirements.pdf", ContentType = "application/pdf" }
     ///     }
     /// };
-    /// 
+    ///
     /// var jobPosting = await jobPostingService.CreateAsync(request, clientProfile);
-    /// 
+    ///
     /// // Background processing begins automatically
     /// // After ~30 seconds: tags and embedding ready
     /// // Job appears in contractor recommendations

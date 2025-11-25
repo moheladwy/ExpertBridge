@@ -46,7 +46,7 @@ namespace ExpertBridge.Notifications;
 ///     All notifications include optional icon URLs for sender profile pictures and action URLs for deep linking into the
 ///     application.
 /// </remarks>
-public class NotificationFacade
+public sealed class NotificationFacade
 {
     private readonly IPublishEndpoint _publishEndpoint;
 

@@ -6,7 +6,7 @@ using ExpertBridge.Core.Exceptions;
 
 namespace ExpertBridge.Api.Middleware;
 
-public class EmailVerifiedMiddleware
+public sealed class EmailVerifiedMiddleware
 {
     private readonly RequestDelegate _next;
 

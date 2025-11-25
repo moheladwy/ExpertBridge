@@ -186,7 +186,7 @@ namespace ExpertBridge.Api.Services;
 ///         - Redis for distributed cache consistency
 ///         Registered as scoped service for per-request lifetime and DbContext transaction management.
 /// </remarks>
-public class PostService
+public sealed class PostService
 {
     private readonly HybridCache _cache; // Assuming you have a caching layer
     private readonly IValidator<CreatePostRequest> _createPostValidator;

@@ -12,7 +12,7 @@ namespace ExpertBridge.Application.EmbeddingService;
 ///     large language models locally. It provides cost-effective, privacy-preserving embedding generation
 ///     without relying on cloud APIs.
 /// </remarks>
-public class OllamaEmbeddingService : IEmbeddingService
+public sealed class OllamaEmbeddingService : IEmbeddingService
 {
     private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
     private readonly ILogger<OllamaEmbeddingService> _logger;
