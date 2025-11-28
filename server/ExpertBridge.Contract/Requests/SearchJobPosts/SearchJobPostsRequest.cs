@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.SearchJobPosts;
 ///     Search uses vector embeddings for semantic similarity matching and supports
 ///     filtering by location, budget, and remote work preferences.
 /// </remarks>
-public class SearchJobPostsRequest
+public sealed class SearchJobPostsRequest
 {
     /// <summary>
     ///     Gets or sets the search query text.

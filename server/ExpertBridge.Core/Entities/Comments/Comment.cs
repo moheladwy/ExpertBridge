@@ -17,7 +17,7 @@ namespace ExpertBridge.Core.Entities.Comments;
 ///     Comments support threaded discussions through parent-child relationships and include AI-powered content moderation.
 ///     They can be attached to either posts or job postings, and support nested replies.
 /// </remarks>
-public class Comment : BaseModel, ISoftDeletable, ISafeContent
+public sealed class Comment : BaseModel, ISoftDeletable, ISafeContent
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the comment author.

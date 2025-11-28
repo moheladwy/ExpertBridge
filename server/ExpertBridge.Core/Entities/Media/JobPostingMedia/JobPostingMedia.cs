@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Media.JobPostingMedia;
 ///     Job posting media files are stored in AWS S3 and can showcase project examples, requirements diagrams, or reference
 ///     materials.
 /// </remarks>
-public class JobPostingMedia : MediaObject
+public sealed class JobPostingMedia : MediaObject
 {
     // Foreign keys
     /// <summary>

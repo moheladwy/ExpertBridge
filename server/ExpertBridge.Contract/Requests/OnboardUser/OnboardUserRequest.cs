@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.OnboardUser;
 ///     During onboarding, users select tags representing their professional interests.
 ///     These tags are used to generate personalized content recommendations.
 /// </remarks>
-public class OnboardUserRequest
+public sealed class OnboardUserRequest
 {
     /// <summary>
     ///     Gets or sets the collection of tag IDs representing the user's professional interests.

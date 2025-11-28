@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileBadges;
 ///     Profile badges recognize achievements and qualifications earned by users on the platform.
 ///     Badges contribute to professional credibility and are displayed on user profiles to signal expertise.
 /// </remarks>
-public class ProfileBadge
+public sealed class ProfileBadge
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile.

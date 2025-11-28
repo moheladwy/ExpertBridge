@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Notifications;
 ///     This model represents the notification entity used within the Notifications project context and matches
 ///     the shape of <see cref="Core.Responses.NotificationResponse" /> returned from the API.
 /// </remarks>
-public class Notification : BaseModel
+public sealed class Notification : BaseModel
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the notification recipient.

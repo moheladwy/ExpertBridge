@@ -16,7 +16,7 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class NotificationsController : ControllerBase
+public sealed class NotificationsController : ControllerBase
 {
     /// <summary>
     ///     Provides methods to assist with user authorization and retrieval of the currently authenticated user.

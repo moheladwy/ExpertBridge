@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     Media objects can be attached to posts, comments, and job postings.
 ///     Supported types include images, videos, and documents.
 /// </remarks>
-public class MediaObjectResponse
+public sealed class MediaObjectResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the media object.

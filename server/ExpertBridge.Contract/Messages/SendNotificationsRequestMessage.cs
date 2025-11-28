@@ -28,7 +28,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     - Multiple notifications: Bulk operations like moderation actions affecting multiple users
 ///     This is an internal IPC model used exclusively for Channel-based communication between facade and worker.
 /// </remarks>
-public class SendNotificationsRequestMessage
+public sealed class SendNotificationsRequestMessage
 {
     /// <summary>
     ///     Gets or sets the list of notifications to be processed in this batch request.

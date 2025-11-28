@@ -1,6 +1,6 @@
 namespace ExpertBridge.Admin.ViewModels;
 
-public class PostTagsViewModel
+public sealed class PostTagsViewModel
 {
     public string TagId { get; set; } = string.Empty;
     public string EnglishName { get; set; } = string.Empty;

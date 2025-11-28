@@ -11,7 +11,7 @@ namespace ExpertBridge.Core.Entities.Skills;
 /// <remarks>
 ///     Skills are used to match professionals with relevant job opportunities and to showcase expertise on profiles.
 /// </remarks>
-public class Skill
+public sealed class Skill
 {
     /// <summary>
     ///     Gets or sets the unique identifier for the skill.

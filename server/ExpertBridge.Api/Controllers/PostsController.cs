@@ -23,7 +23,7 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize] // Ensure user is authenticated for all actions except GetById and GetSimilarPosts
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent)]
-public class PostsController : ControllerBase
+public sealed class PostsController : ControllerBase
 {
     private readonly PostService _postService;
     private readonly UserService _userService;

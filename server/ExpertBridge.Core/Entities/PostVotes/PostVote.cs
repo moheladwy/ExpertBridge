@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.PostVotes;
 ///     Post votes help surface quality content and engage the community.
 ///     Users can only cast one vote per post.
 /// </remarks>
-public class PostVote : BaseModel
+public sealed class PostVote : BaseModel
 {
     /// <summary>
     ///     Gets or sets a value indicating whether this is an upvote (true) or downvote (false).

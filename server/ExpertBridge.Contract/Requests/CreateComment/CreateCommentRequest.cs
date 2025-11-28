@@ -12,7 +12,7 @@ namespace ExpertBridge.Contract.Requests.CreateComment;
 ///     Comments can be attached to posts or job postings, and support nested threading via parent comments.
 ///     Comments are automatically processed by AI services for content moderation.
 /// </remarks>
-public class CreateCommentRequest
+public sealed class CreateCommentRequest
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the post this comment belongs to.

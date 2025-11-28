@@ -14,7 +14,7 @@ namespace ExpertBridge.Core.Entities.Messages;
 ///     Messages enable real-time communication through SignalR and are persisted for chat history.
 ///     Special confirmation messages are marked differently for distinct UI rendering.
 /// </remarks>
-public class Message : BaseModel, ISoftDeletable
+public sealed class Message : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the message sender.

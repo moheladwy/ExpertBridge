@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO contains details about a direct job offer from a hirer to a specific worker,
 ///     distinct from job postings which are open to multiple applicants.
 /// </remarks>
-public class JobOfferResponse
+public sealed class JobOfferResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the job offer.

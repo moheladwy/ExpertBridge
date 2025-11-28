@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     Presigned URLs allow clients to upload files directly to S3 without exposing AWS credentials.
 ///     The URL is temporary and expires after a configured time period.
 /// </remarks>
-public class PresignedUrlResponse
+public sealed class PresignedUrlResponse
 {
     /// <summary>
     ///     Gets or sets the presigned URL for uploading to S3.

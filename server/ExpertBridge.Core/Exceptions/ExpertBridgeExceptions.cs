@@ -41,7 +41,7 @@ public abstract class HttpNotFoundException : Exception
 /// <summary>
 ///     Represents an exception that is thrown when a requested user cannot be found.
 /// </summary>
-public class UserNotFoundException : HttpNotFoundException
+public sealed class UserNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="UserNotFoundException" /> class.
@@ -72,7 +72,7 @@ public class UserNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested job cannot be found.
 /// </summary>
-public class JobNotFoundException : HttpNotFoundException
+public sealed class JobNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="JobNotFoundException" /> class.
@@ -103,7 +103,7 @@ public class JobNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested chat cannot be found.
 /// </summary>
-public class ChatNotFoundException : HttpNotFoundException
+public sealed class ChatNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChatNotFoundException" /> class.
@@ -134,7 +134,7 @@ public class ChatNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested job offer cannot be found.
 /// </summary>
-public class JobOfferNotFoundException : HttpNotFoundException
+public sealed class JobOfferNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="JobOfferNotFoundException" /> class.
@@ -165,7 +165,7 @@ public class JobOfferNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested job application cannot be found.
 /// </summary>
-public class JobApplicationNotFoundException : HttpNotFoundException
+public sealed class JobApplicationNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="JobApplicationNotFoundException" /> class.
@@ -197,7 +197,7 @@ public class JobApplicationNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested profile cannot be found.
 /// </summary>
-public class ProfileNotFoundException : HttpNotFoundException
+public sealed class ProfileNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ProfileNotFoundException" /> class.
@@ -228,7 +228,7 @@ public class ProfileNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested post cannot be found.
 /// </summary>
-public class PostNotFoundException : HttpNotFoundException
+public sealed class PostNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="PostNotFoundException" /> class.
@@ -259,7 +259,7 @@ public class PostNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested media object cannot be found.
 /// </summary>
-public class MediaNotFoundException : HttpNotFoundException
+public sealed class MediaNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="MediaNotFoundException" /> class.
@@ -290,7 +290,7 @@ public class MediaNotFoundException : HttpNotFoundException
 /// <summary>
 ///     Represents an exception that is thrown when a requested comment cannot be found.
 /// </summary>
-public class CommentNotFoundException : HttpNotFoundException
+public sealed class CommentNotFoundException : HttpNotFoundException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="CommentNotFoundException" /> class.
@@ -355,7 +355,7 @@ public class UnauthorizedException : Exception
 /// <summary>
 ///     Represents an exception that is thrown when attempting to access a user's profile without proper authentication.
 /// </summary>
-public class UnauthorizedGetMyProfileException : UnauthorizedException
+public sealed class UnauthorizedGetMyProfileException : UnauthorizedException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="UnauthorizedGetMyProfileException" /> class.
@@ -391,7 +391,7 @@ public class UnauthorizedGetMyProfileException : UnauthorizedException
 ///     This exception is used to wrap failures from external services such as AI/LLM providers, authentication services,
 ///     or storage services.
 /// </remarks>
-public class RemoteServiceCallFailedException : Exception
+public sealed class RemoteServiceCallFailedException : Exception
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="RemoteServiceCallFailedException" /> class.
@@ -427,7 +427,7 @@ public class RemoteServiceCallFailedException : Exception
 ///     This exception indicates that the user is authenticated but does not have permission to access the requested
 ///     resource.
 /// </remarks>
-public class ForbiddenAccessException : Exception
+public sealed class ForbiddenAccessException : Exception
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ForbiddenAccessException" /> class.
@@ -458,7 +458,7 @@ public class ForbiddenAccessException : Exception
 /// <summary>
 ///     Represents an exception that is thrown when attempting to create a profile with a username that already exists.
 /// </summary>
-public class ProfileUserNameAlreadyExistsException : Exception
+public sealed class ProfileUserNameAlreadyExistsException : Exception
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ProfileUserNameAlreadyExistsException" /> class.
@@ -491,7 +491,7 @@ public class ProfileUserNameAlreadyExistsException : Exception
 /// <summary>
 ///     Represents an exception that is thrown when attempting to create a profile with a phone number that already exists.
 /// </summary>
-public class ProfilePhoneNumberAlreadyExistsException : Exception
+public sealed class ProfilePhoneNumberAlreadyExistsException : Exception
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ProfilePhoneNumberAlreadyExistsException" /> class.
@@ -527,7 +527,7 @@ public class ProfilePhoneNumberAlreadyExistsException : Exception
 /// <remarks>
 ///     This exception indicates that the request was malformed or contains invalid data.
 /// </remarks>
-public class BadHttpRequestException : Exception
+public sealed class BadHttpRequestException : Exception
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="BadHttpRequestException" /> class.

@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This record supports threaded discussions with nested replies and includes engagement metrics.
 ///     Comments can be associated with either posts or job postings.
 /// </remarks>
-public record CommentResponse
+public sealed record CommentResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the comment.

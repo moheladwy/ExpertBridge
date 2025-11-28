@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.PostsCursor;
 ///     Supports both standard chronological pagination and semantic similarity-based pagination
 ///     using vector embeddings for personalized content recommendations.
 /// </remarks>
-public class PostsCursorRequest
+public sealed class PostsCursorRequest
 {
     /// <summary>
     ///     Gets or sets the number of posts to return per page.

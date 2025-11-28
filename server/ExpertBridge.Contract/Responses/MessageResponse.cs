@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     Messages are delivered in real-time via SignalR and stored for chat history.
 ///     System messages (confirmation messages) have special UI rendering.
 /// </remarks>
-public class MessageResponse
+public sealed class MessageResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the message sender.

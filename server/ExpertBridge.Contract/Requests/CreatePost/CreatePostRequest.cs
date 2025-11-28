@@ -12,7 +12,7 @@ namespace ExpertBridge.Contract.Requests.CreatePost;
 ///     After creation, posts are automatically processed through an AI pipeline for tagging,
 ///     embedding generation, and content moderation.
 /// </remarks>
-public class CreatePostRequest
+public sealed class CreatePostRequest
 {
     /// <summary>
     ///     Gets or sets the title of the post.

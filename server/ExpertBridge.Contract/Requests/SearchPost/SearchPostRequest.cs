@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.SearchPost;
 ///     Search uses vector embeddings to find posts semantically similar to the query,
 ///     providing more relevant results than traditional keyword matching.
 /// </remarks>
-public class SearchPostRequest
+public sealed class SearchPostRequest
 {
     /// <summary>
     ///     Gets or sets the search query text.

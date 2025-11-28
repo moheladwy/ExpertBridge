@@ -11,7 +11,7 @@ namespace ExpertBridge.Contract.Requests.RespondToJobOffer;
 /// <remarks>
 ///     Workers can accept or decline job offers extended to them by hirers.
 /// </remarks>
-public class RespondToJobOfferRequest
+public sealed class RespondToJobOfferRequest
 {
     /// <summary>
     ///     Gets or sets a value indicating whether the job offer is accepted.

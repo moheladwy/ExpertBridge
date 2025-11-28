@@ -9,7 +9,7 @@ using Serilog.Context;
 
 namespace ExpertBridge.Api.Middleware;
 
-internal class GlobalExceptionMiddleware
+internal sealed class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;
 

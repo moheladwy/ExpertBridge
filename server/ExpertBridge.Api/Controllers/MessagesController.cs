@@ -16,7 +16,7 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class MessagesController : ControllerBase
+public sealed class MessagesController : ControllerBase
 {
     /// <summary>
     ///     Provides access to the messaging service for handling message-related operations within the controller.

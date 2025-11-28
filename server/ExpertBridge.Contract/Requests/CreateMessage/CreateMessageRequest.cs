@@ -12,7 +12,7 @@ namespace ExpertBridge.Contract.Requests.CreateMessage;
 ///         Always verify that the creating user is a participant in the specified chat before processing.
 ///     </para>
 /// </remarks>
-public class CreateMessageRequest
+public sealed class CreateMessageRequest
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the chat conversation.

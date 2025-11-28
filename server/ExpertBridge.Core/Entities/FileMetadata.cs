@@ -10,7 +10,7 @@ namespace ExpertBridge.Core.Entities;
 ///     Used to track file details for media attachments including content type, S3 key, size, and timestamps.
 ///     This class is typically used in conjunction with presigned URL generation for client-side uploads.
 /// </remarks>
-public class FileMetadata
+public sealed class FileMetadata
 {
     /// <summary>
     ///     Gets or sets the MIME content type of the file (e.g., "image/jpeg", "video/mp4").

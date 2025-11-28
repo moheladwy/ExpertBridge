@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ChatParticipants;
 ///     Chat participants define membership in job-related conversations between hirers and workers.
 ///     Typically, a chat has two participants: the job poster and the applicant/worker.
 /// </remarks>
-public class ChatParticipant
+public sealed class ChatParticipant
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the chat.

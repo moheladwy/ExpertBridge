@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO aggregates professional profile data including ratings, skills, and reputation metrics
 ///     for display in profile views and search results.
 /// </remarks>
-public class ProfileResponse
+public sealed class ProfileResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile.

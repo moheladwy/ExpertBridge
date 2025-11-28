@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Media.PostMedia;
 /// <remarks>
 ///     Post media files are stored in AWS S3 and can include images, videos, or documents that enrich post content.
 /// </remarks>
-public class PostMedia : MediaObject
+public sealed class PostMedia : MediaObject
 {
     // Foreign keys
     /// <summary>

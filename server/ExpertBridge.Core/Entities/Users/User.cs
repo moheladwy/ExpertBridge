@@ -15,7 +15,7 @@ namespace ExpertBridge.Core.Entities.Users;
 ///     <see cref="Profile" /> entity
 ///     which contains the user's professional information and content.
 /// </remarks>
-public class User : BaseModel, ISoftDeletable
+public sealed class User : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the unique provider identifier from Firebase Authentication.

@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO wraps post collections with pagination metadata for cursor-based navigation.
 ///     Supports both standard chronological ordering and semantic similarity-based ordering.
 /// </remarks>
-public class PostsCursorPaginatedResponse
+public sealed class PostsCursorPaginatedResponse
 {
     /// <summary>
     ///     Gets or sets the collection of posts for the current page.

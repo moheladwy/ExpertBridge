@@ -11,7 +11,7 @@ namespace ExpertBridge.Contract.Responses;
 /// <remarks>
 ///     This DTO is returned by user-related API endpoints and contains non-sensitive user account details.
 /// </remarks>
-public class UserResponse
+public sealed class UserResponse
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="UserResponse" /> class from a <see cref="User" /> entity.

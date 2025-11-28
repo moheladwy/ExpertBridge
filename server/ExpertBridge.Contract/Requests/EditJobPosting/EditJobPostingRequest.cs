@@ -9,7 +9,7 @@ namespace ExpertBridge.Contract.Requests.EditJobPosting;
 /// <remarks>
 ///     All properties are optional. Only provided properties will be updated.
 /// </remarks>
-public class EditJobPostingRequest
+public sealed class EditJobPostingRequest
 {
     /// <summary>
     ///     Gets or sets the new title for the job posting.

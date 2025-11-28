@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Media.ProfileExperienceMedia;
 ///     Profile experience media can include certificates, project screenshots, or other evidence stored in AWS S3
 ///     to support work history claims.
 /// </remarks>
-public class ProfileExperienceMedia : MediaObject
+public sealed class ProfileExperienceMedia : MediaObject
 {
     // Foreign keys
     /// <summary>

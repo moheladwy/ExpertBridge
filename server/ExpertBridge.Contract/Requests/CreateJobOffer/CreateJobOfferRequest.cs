@@ -12,7 +12,7 @@ namespace ExpertBridge.Contract.Requests.CreateJobOffer;
 ///     Job offers are direct invitations from hirers to workers, distinct from open job postings
 ///     that accept applications from multiple candidates.
 /// </remarks>
-public class CreateJobOfferRequest
+public sealed class CreateJobOfferRequest
 {
     /// <summary>
     ///     Gets or sets the title of the job offer.
