@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.JobPostingsVotes;
 ///     Job posting votes help surface quality job opportunities and provide feedback to hirers.
 ///     Users can only cast one vote per job posting.
 /// </remarks>
-public class JobPostingVote : BaseModel
+public sealed class JobPostingVote : BaseModel
 {
     /// <summary>
     ///     Gets or sets a value indicating whether this is an upvote (true) or downvote (false).

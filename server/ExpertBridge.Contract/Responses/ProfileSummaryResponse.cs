@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This lightweight DTO is used in contexts where only basic profile identification
 ///     and display information is needed, such as in lists or compact views.
 /// </remarks>
-public class ProfileSummaryResponse
+public sealed class ProfileSummaryResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile.

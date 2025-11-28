@@ -23,7 +23,7 @@ namespace ExpertBridge.Application.Models.GroqResponses;
 ///     normalized names, categories, and potentially confidence scores.
 ///     This helps maintain tag consistency across the platform and improves content discoverability.
 /// </remarks>
-public class TranslateTagsResponse
+public sealed class TranslateTagsResponse
 {
     /// <summary>
     ///     Gets or sets the list of translated and normalized tags returned by Groq LLM.

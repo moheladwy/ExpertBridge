@@ -11,7 +11,7 @@ namespace ExpertBridge.Core.Entities.Media.ProfileMedia;
 /// <remarks>
 ///     Profile media includes items like profile pictures, cover photos, or portfolio pieces stored in AWS S3.
 /// </remarks>
-public class ProfileMedia : MediaObject
+public sealed class ProfileMedia : MediaObject
 {
     // Foreign keys
     /// <summary>

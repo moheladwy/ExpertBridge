@@ -24,7 +24,7 @@ namespace ExpertBridge.Notifications.Models;
 ///     The separation from domain entities provides flexibility for future changes to the messaging system
 ///     without affecting database schema or other application layers.
 /// </remarks>
-public class Message
+public sealed class Message
 {
     /// <summary>
     ///     Gets or sets the profile ID of the user sending the message.

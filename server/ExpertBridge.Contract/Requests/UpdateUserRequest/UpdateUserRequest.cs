@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.UpdateUserRequest;
 ///     This request typically synchronizes user data from Firebase Authentication
 ///     with the local database. Most properties are optional.
 /// </remarks>
-public class UpdateUserRequest
+public sealed class UpdateUserRequest
 {
     /// <summary>
     ///     Gets or sets the Firebase authentication provider ID.

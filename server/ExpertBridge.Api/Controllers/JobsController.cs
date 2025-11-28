@@ -26,7 +26,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class JobsController : ControllerBase
+public sealed class JobsController : ControllerBase
 {
     /// <summary>
     ///     Provides access to job-related operations and functionalities within the application domain.

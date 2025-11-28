@@ -12,7 +12,7 @@ namespace ExpertBridge.Contract.Requests.ApplyToJobPosting;
 ///     Workers submit applications with their proposed cost and an optional cover letter
 ///     to express interest in a job posting.
 /// </remarks>
-public class ApplyToJobPostingRequest
+public sealed class ApplyToJobPostingRequest
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the job posting to apply for.

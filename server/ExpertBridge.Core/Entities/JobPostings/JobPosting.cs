@@ -22,7 +22,7 @@ namespace ExpertBridge.Core.Entities.JobPostings;
 ///     and intelligent matching with qualified professionals. They enable the hiring workflow including applications,
 ///     offers, and contracts.
 /// </remarks>
-public class JobPosting : BaseModel, ISoftDeletable, IRecommendableContent, ISafeContent
+public sealed class JobPosting : BaseModel, ISoftDeletable, IRecommendableContent, ISafeContent
 {
     /// <summary>
     ///     Gets or sets the budget allocated for the job in the platform's currency.

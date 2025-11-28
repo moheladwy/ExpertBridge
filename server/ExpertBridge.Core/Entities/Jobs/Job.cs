@@ -18,7 +18,7 @@ namespace ExpertBridge.Core.Entities.Jobs;
 ///     It tracks the job lifecycle from start to completion, including payment status, reviews, and associated chat
 ///     communication.
 /// </remarks>
-public class Job : BaseModel, ISoftDeletable
+public sealed class Job : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the title of the job contract.

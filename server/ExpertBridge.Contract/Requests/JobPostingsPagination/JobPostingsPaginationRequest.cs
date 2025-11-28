@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.JobPostingsPagination;
 ///     Supports both standard chronological pagination and semantic similarity-based pagination
 ///     using vector embeddings for personalized job matching.
 /// </remarks>
-public class JobPostingsPaginationRequest
+public sealed class JobPostingsPaginationRequest
 {
     /// <summary>
     ///     Gets or sets the number of job postings to return per page.

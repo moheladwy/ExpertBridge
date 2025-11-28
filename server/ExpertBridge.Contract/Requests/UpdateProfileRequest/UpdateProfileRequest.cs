@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.UpdateProfileRequest;
 ///     All properties are optional. Only provided properties will be updated.
 ///     Skills are replaced entirely if provided.
 /// </remarks>
-public class UpdateProfileRequest
+public sealed class UpdateProfileRequest
 {
     /// <summary>
     ///     Gets or sets the user's job title or professional designation.

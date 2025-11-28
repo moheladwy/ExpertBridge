@@ -51,7 +51,7 @@ public interface INotificationClient
 ///     Authentication typically handled via JWT tokens in connection handshake.
 ///     Hub lifecycle managed by ASP.NET Core SignalR infrastructure with automatic reconnection handling.
 /// </remarks>
-public class NotificationsHub : Hub<INotificationClient>
+public sealed class NotificationsHub : Hub<INotificationClient>
 {
     /// <summary>
     ///     Invoked when a client successfully establishes a SignalR connection to the hub.

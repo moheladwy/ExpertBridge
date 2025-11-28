@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.MediaObject;
 ///     This DTO is used after files have been uploaded to S3 via presigned URLs.
 ///     The key and type are used to create media attachment records.
 /// </remarks>
-public class MediaObjectRequest
+public sealed class MediaObjectRequest
 {
     /// <summary>
     ///     Gets or sets the S3 object key (path) where the file is stored.

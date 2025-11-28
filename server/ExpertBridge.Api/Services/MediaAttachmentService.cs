@@ -24,13 +24,13 @@ namespace ExpertBridge.Api.Services;
 ///   "fileName": "profile-pic.jpg",
 ///   "contentType": "image/jpeg"
 /// }
-/// 
+///
 /// // Server creates MediaGrant (OnHold=true, IsActive=false)
 /// // Returns presigned S3 URL with Key
-/// 
+///
 /// // Client uploads directly to S3 using presigned URL
 /// PUT https://s3.amazonaws.com/bucket/media/abc-123.jpg
-/// 
+///
 /// // Client includes Key in content creation
 /// POST /api/posts
 /// {
@@ -67,7 +67,7 @@ namespace ExpertBridge.Api.Services;
 ///   IsActive: false → true (when attached to content)
 ///   ActivatedAt: null → DateTime.UtcNow
 ///   ExpiresAt: DateTime (for cleanup)
-/// 
+///
 /// PostMedia/CommentMedia/JobPostingMedia:
 ///   Key: "media/abc-123.jpg" (matches MediaGrant)
 ///   Name: Sanitized filename
@@ -89,7 +89,7 @@ namespace ExpertBridge.Api.Services;
 ///             Key = req.Key
 ///         };
 ///     }
-/// 
+///
 ///     post.Medias = await _mediaService.ProcessAndAttachMediaAsync(
 ///         request.Media,
 ///         post,
@@ -97,7 +97,7 @@ namespace ExpertBridge.Api.Services;
 ///         _dbContext
 ///     );
 /// }
-/// 
+///
 /// await _dbContext.SaveChangesAsync(); // Commits post, media, and grant updates
 /// </code>
 ///     **Security Considerations:**
@@ -124,7 +124,7 @@ namespace ExpertBridge.Api.Services;
 /// </code>
 ///     The service is stateless and registered as scoped, aligning with Entity Framework's DbContext lifetime.
 /// </remarks>
-public class MediaAttachmentService
+public sealed class MediaAttachmentService
 {
     // No DbContext injected here if we pass it as a parameter,
     // which aligns better with the service being stateless regarding the UoW context.
@@ -196,14 +196,14 @@ public class MediaAttachmentService
     ///         Key = mediaReq.Key    // S3 object key
     ///     };
     /// }
-    /// 
+    ///
     /// var mediaEntities = await _mediaService.ProcessAndAttachMediaAsync(
     ///     request.Media,
     ///     post,
     ///     CreatePostMediaEntity,
     ///     _dbContext
     /// );
-    /// 
+    ///
     /// post.Medias = mediaEntities; // Set navigation property
     /// await _dbContext.SaveChangesAsync(); // Commit all changes atomically
     /// </code>
@@ -219,7 +219,7 @@ public class MediaAttachmentService
     ///         Key = req.Key
     ///     };
     /// }
-    /// 
+    ///
     /// comment.Medias = await _mediaService.ProcessAndAttachMediaAsync(
     ///     request.Media,
     ///     comment,
@@ -236,17 +236,17 @@ public class MediaAttachmentService
     ///     The grant activation prevents orphaned S3 objects:
     ///     <code>
     /// MediaGrant State Transitions:
-    /// 
+    ///
     /// Created (presigned URL request):
     ///   OnHold: true
     ///   IsActive: false
     ///   ExpiresAt: Now + 24 hours
-    /// 
+    ///
     /// Activated (content created with media):
     ///   OnHold: false
     ///   IsActive: true
     ///   ActivatedAt: Now
-    /// 
+    ///
     /// Cleanup (grant never activated):
     ///   If OnHold && ExpiresAt < Now:
     ///                              Delete S3 object
@@ -335,16 +335,16 @@ public class MediaAttachmentService
     ///     <code>
     /// SanitizeMediaName("My Amazing Post About AI")
     /// → "My Amazing Post About AI"
-    /// 
+    ///
     /// SanitizeMediaName("This is a very long title that exceeds fifty characters and needs truncation")
     /// → "This is a very long title that exceeds fifty ch"
-    /// 
+    ///
     /// SanitizeMediaName("   ")
     /// → "UntitledMedia"
-    /// 
+    ///
     /// SanitizeMediaName(null)
     /// → "UntitledMedia"
-    /// 
+    ///
     /// SanitizeMediaName("Short", maxLength: 3)
     /// → "Sho"
     /// </code>
@@ -360,7 +360,7 @@ public class MediaAttachmentService
     ///     <code>
     /// // In UI, show meaningful name instead of UUID
     /// &lt;img src="{media.Url}" alt="{media.Name}" /&gt;
-    /// 
+    ///
     /// // In download links
     /// &lt;a href="{media.Url}" download="{media.Name}.jpg"&gt;
     ///   Download {media.Name}

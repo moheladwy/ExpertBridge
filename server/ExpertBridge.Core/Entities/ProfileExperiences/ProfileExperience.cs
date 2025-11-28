@@ -14,7 +14,7 @@ namespace ExpertBridge.Core.Entities.ProfileExperiences;
 ///     Profile experiences build a user's employment history and help demonstrate their qualifications to potential
 ///     hirers.
 /// </remarks>
-public class ProfileExperience : BaseModel, ISoftDeletable
+public sealed class ProfileExperience : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile this experience belongs to.

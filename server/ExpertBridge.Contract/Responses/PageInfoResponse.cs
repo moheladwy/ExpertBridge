@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO supports both ID-based cursors for standard pagination and vector embedding-based cursors
 ///     for semantic similarity searches. Used with paginated list responses.
 /// </remarks>
-public class PageInfoResponse
+public sealed class PageInfoResponse
 {
     /// <summary>
     ///     Gets or sets the ID cursor for the next page of results.

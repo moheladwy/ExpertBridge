@@ -16,7 +16,7 @@ namespace ExpertBridge.Worker.Services;
 ///     The service also supports flexible and robust JSON parsing with case-insensitive
 ///     property deserialization settings.
 /// </summary>
-public class AiTagProcessorService
+public sealed class AiTagProcessorService
 {
     /// <summary>
     ///     An instance of <see cref="JsonSerializerOptions" /> configured for deserializing JSON responses in a

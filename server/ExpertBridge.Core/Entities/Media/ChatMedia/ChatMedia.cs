@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Media.ChatMedia;
 ///     Chat media files are stored in AWS S3 and allow users to share images, documents, or other files
 ///     during job-related discussions between hirers and workers.
 /// </remarks>
-public class ChatMedia : MediaObject
+public sealed class ChatMedia : MediaObject
 {
     // Foreign keys
     /// <summary>

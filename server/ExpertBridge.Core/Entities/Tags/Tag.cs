@@ -14,7 +14,7 @@ namespace ExpertBridge.Core.Entities.Tags;
 ///     Tags are automatically assigned to posts and job postings through AI-powered categorization.
 ///     They support multilingual names (English and Arabic) and are used for content discovery and user interest matching.
 /// </remarks>
-public class Tag : BaseModel
+public sealed class Tag : BaseModel
 {
     /// <summary>
     ///     Gets or sets the English name of the tag.

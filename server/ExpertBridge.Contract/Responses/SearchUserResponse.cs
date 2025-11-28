@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO is used when returning users from search queries, including relevance ranking
 ///     based on semantic similarity and text matching.
 /// </remarks>
-public class SearchUserResponse
+public sealed class SearchUserResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile.

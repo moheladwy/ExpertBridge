@@ -25,7 +25,7 @@ namespace ExpertBridge.Api.Services;
 ///     - Use <see cref="GetCurrentUserProfileOrThrowAsync" /> for endpoints requiring guaranteed authentication
 ///     - Use <see cref="UpdateUserAsync" /> to create or update user information
 /// </remarks>
-public class UserService
+public sealed class UserService
 {
     /// <summary>
     ///     Provides functionality to assist with user authorization and retrieval of current user information.

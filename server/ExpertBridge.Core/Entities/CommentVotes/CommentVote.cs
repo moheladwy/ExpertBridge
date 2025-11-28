@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.CommentVotes;
 ///     Comment votes contribute to a user's reputation score and help surface quality content.
 ///     Users can only cast one vote per comment.
 /// </remarks>
-public class CommentVote : BaseModel
+public sealed class CommentVote : BaseModel
 {
     /// <summary>
     ///     Gets or sets a value indicating whether this is an upvote (true) or downvote (false).

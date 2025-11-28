@@ -11,7 +11,7 @@ namespace ExpertBridge.Api.Extensions;
 /// <summary>
 ///     Provides extension methods for configuring and adding services required by the ExpertBridge application.
 /// </summary>
-public static class ExpertBridgeServicesExtensions
+internal static class ExpertBridgeServicesExtensions
 {
     /// <summary>
     ///     Adds the necessary services for the ExpertBridge application.

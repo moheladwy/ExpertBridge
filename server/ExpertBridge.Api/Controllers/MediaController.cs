@@ -13,7 +13,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class MediaController : ControllerBase
+public sealed class MediaController : ControllerBase
 {
     /// <summary>
     ///     A private, readonly instance of <see cref="MediaService" /> used for executing media-related operations,

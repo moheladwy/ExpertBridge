@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     Notifications are delivered in real-time via SignalR and include action links
 ///     for navigation to relevant content.
 /// </remarks>
-public class NotificationResponse
+public sealed class NotificationResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the notification.

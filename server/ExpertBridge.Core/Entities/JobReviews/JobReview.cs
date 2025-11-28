@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.JobReviews;
 ///     Job reviews allow both hirers and workers to rate and provide feedback on their collaboration experience.
 ///     Reviews contribute to profile reputation and help build trust in the platform.
 /// </remarks>
-public class JobReview : BaseModel
+public sealed class JobReview : BaseModel
 {
     /// <summary>
     ///     Gets or sets the review text content.

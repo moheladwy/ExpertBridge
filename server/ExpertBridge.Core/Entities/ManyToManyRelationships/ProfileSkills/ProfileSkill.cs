@@ -13,7 +13,7 @@ namespace ExpertBridge.Core.Entities.ManyToManyRelationships.ProfileSkills;
 ///     Profile skills define the professional capabilities users declare on their profiles.
 ///     These skills are used for job matching, search filtering, and reputation calculations based on completed work.
 /// </remarks>
-public class ProfileSkill
+public sealed class ProfileSkill
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile.

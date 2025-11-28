@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO contains job advertisement details with engagement metrics, budget, and AI-generated tags.
 ///     Used in job listings, search results, and detail views.
 /// </remarks>
-public class JobPostingResponse
+public sealed class JobPostingResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the job posting.

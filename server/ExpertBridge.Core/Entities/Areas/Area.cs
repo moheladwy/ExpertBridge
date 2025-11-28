@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Areas;
 /// <remarks>
 ///     Areas are used for location-based job matching and filtering, consisting of a governorate and region.
 /// </remarks>
-public class Area
+public sealed class Area
 {
     /// <summary>
     ///     Gets or sets the unique identifier for the area.

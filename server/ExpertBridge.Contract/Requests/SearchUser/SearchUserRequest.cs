@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.SearchUser;
 ///     Search uses vector embeddings to find user profiles semantically similar to the query,
 ///     enabling discovery of experts based on skills, interests, and professional background.
 /// </remarks>
-public class SearchUserRequest
+public sealed class SearchUserRequest
 {
     /// <summary>
     ///     Gets or sets the search query text.

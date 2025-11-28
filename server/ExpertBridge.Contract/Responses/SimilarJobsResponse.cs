@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO is used to return job postings that are semantically similar to a given job posting,
 ///     calculated using vector embeddings and cosine similarity. Used for "related jobs" features.
 /// </remarks>
-public class SimilarJobsResponse
+public sealed class SimilarJobsResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the similar job posting.

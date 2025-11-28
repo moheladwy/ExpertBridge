@@ -13,7 +13,7 @@ namespace ExpertBridge.Application.Services;
 ///     providing a unified interface for authentication operations in the ExpertBridge platform.
 ///     HttpClient should be configured with the Firebase Authentication endpoint in dependency injection.
 /// </remarks>
-public class FirebaseAuthService
+public sealed class FirebaseAuthService
 {
     /// <summary>
     ///     The Firebase Admin SDK authentication instance for server-side user management operations.

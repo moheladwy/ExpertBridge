@@ -16,7 +16,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class ProfilesController : ControllerBase
+public sealed class ProfilesController : ControllerBase
 {
     private readonly AuthorizationHelper _authHelper;
     private readonly ProfileService _profileService;

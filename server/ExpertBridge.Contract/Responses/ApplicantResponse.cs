@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO extends author information with reputation metrics and job history
 ///     to help hirers evaluate applicants.
 /// </remarks>
-public class ApplicantResponse
+public sealed class ApplicantResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the applicant's profile.

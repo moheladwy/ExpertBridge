@@ -94,7 +94,7 @@ namespace ExpertBridge.Api.Services;
 ///     - Job cancellation with refunds
 ///     Registered as scoped service with per-request lifetime.
 /// </remarks>
-public class JobService
+public sealed class JobService
 {
     private readonly IValidator<CreateJobOfferRequest> _createJobOfferValidator;
     private readonly ExpertBridgeDbContext _dbContext;

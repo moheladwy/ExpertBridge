@@ -12,7 +12,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This DTO contains details about an active job contract between a hirer and worker,
 ///     including status, payment information, and timeline.
 /// </remarks>
-public class JobResponse
+public sealed class JobResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the job.

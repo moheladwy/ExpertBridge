@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Messages;
 ///     This message triggers embedding generation using Ollama to enable semantic search
 ///     and similarity-based recommendations using pgvector.
 /// </remarks>
-public class EmbedPostMessage
+public sealed class EmbedPostMessage
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the post to embed.

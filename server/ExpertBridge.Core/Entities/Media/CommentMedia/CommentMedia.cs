@@ -12,7 +12,7 @@ namespace ExpertBridge.Core.Entities.Media.CommentMedia;
 /// <remarks>
 ///     Comment media files are stored in AWS S3 and allow users to include visual or document context in their comments.
 /// </remarks>
-public class CommentMedia : MediaObject
+public sealed class CommentMedia : MediaObject
 {
     // Foreign keys
     /// <summary>

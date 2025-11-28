@@ -24,7 +24,7 @@ namespace ExpertBridge.Data.Interceptors;
 ///     All entities implementing ISoftDeletable (User, Profile, Post, Comment, JobPosting, etc.) automatically benefit
 ///     from this pattern.
 /// </remarks>
-public class SoftDeleteInterceptor : SaveChangesInterceptor
+public sealed class SoftDeleteInterceptor : SaveChangesInterceptor
 {
     /// <summary>
     ///     Intercepts synchronous SaveChanges operations to convert delete operations into soft deletes for entities

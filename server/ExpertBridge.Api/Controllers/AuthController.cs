@@ -16,7 +16,7 @@ namespace ExpertBridge.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [AllowAnonymous]
-public class AuthController : ControllerBase
+public sealed class AuthController : ControllerBase
 {
     /// <summary>
     ///     An instance of the <see cref="FirebaseAuthService" /> that provides authentication functionalities.

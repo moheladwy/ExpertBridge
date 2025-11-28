@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Responses;
 ///     This lightweight DTO is used for displaying author information in posts, comments,
 ///     job postings, and other content where full profile details are not needed.
 /// </remarks>
-public record AuthorResponse
+public sealed record AuthorResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the profile.

@@ -31,7 +31,7 @@ namespace ExpertBridge.Notifications.Models;
 ///     - Badge count synchronization across client sessions
 ///     Transformed from Core.Entities.Notification by NotificationSendingPipelineHandlerWorker before broadcasting.
 /// </remarks>
-public class NotificationResponse
+public sealed class NotificationResponse
 {
     /// <summary>
     ///     Gets or sets the unique identifier for the notification.

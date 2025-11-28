@@ -24,7 +24,7 @@ namespace ExpertBridge.Api.Services;
 /// <summary>
 ///     Provides profile management including updates, skill management, and AI-powered recommendations.
 /// </summary>
-public class ProfileService
+public sealed class ProfileService
 {
     private readonly AuthorizationHelper _authHelper;
     private readonly ExpertBridgeDbContext _dbContext;

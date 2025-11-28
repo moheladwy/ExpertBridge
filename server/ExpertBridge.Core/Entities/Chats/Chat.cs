@@ -15,7 +15,7 @@ namespace ExpertBridge.Core.Entities.Chats;
 ///     Chats are created automatically when a job contract is established and provide a dedicated communication channel
 ///     for discussing job details, progress updates, and deliverables.
 /// </remarks>
-public class Chat : BaseModel, ISoftDeletable
+public sealed class Chat : BaseModel, ISoftDeletable
 {
     /// <summary>
     ///     Gets or sets the unique identifier of the hirer (job poster).

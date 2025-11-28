@@ -26,7 +26,7 @@ namespace ExpertBridge.Api.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ResponseCache(CacheProfileName = CacheProfiles.PersonalizedContent, Duration = 60)]
-public class CommentsController : ControllerBase
+public sealed class CommentsController : ControllerBase
 {
     /// <summary>
     ///     An instance of the CommentService class used to manage and handle comment-related operations within the

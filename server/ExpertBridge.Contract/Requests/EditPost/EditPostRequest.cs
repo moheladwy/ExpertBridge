@@ -10,7 +10,7 @@ namespace ExpertBridge.Contract.Requests.EditPost;
 ///     All properties are optional. Only provided properties will be updated.
 ///     After editing, posts are reprocessed by AI services for updated tagging and embeddings.
 /// </remarks>
-public class EditPostRequest
+public sealed class EditPostRequest
 {
     /// <summary>
     ///     Gets or sets the new title for the post.

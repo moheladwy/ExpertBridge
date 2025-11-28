@@ -20,7 +20,7 @@ namespace ExpertBridge.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [ApiController]
-public class TagsController : ControllerBase
+public sealed class TagsController : ControllerBase
 {
     /// <summary>
     ///     Instance of <see cref="ExpertBridgeDbContext" /> used to interact with the database layer.
