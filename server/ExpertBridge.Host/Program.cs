@@ -11,7 +11,8 @@ var expertBridgeDb = postgresql.AddDatabase("ExpertBridgeDb");
 var quartzDb = postgresql.AddDatabase("QuartzDb");
 var adminDb = postgresql.AddDatabase("AdminDb");
 
-builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
+var api = builder
+    .AddProject<ExpertBridge_Api>("api")
     .WithReference(redis)
     .WithReference(rabbitMq)
     .WithReference(ollama)
@@ -23,7 +24,8 @@ builder.AddProject<ExpertBridge_Api>("ExpertBridgeApi")
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 
-builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
+builder
+    .AddProject<ExpertBridge_Admin>("admin")
     .WithReference(redis)
     .WithReference(rabbitMq)
     .WithReference(expertBridgeDb)
@@ -36,7 +38,8 @@ builder.AddProject<ExpertBridge_Admin>("ExpertBridgeAdmin")
     .WithOtlpExporter()
     .WithExternalHttpEndpoints();
 
-builder.AddProject<ExpertBridge_Worker>("ExpertBridgeWorker")
+builder
+    .AddProject<ExpertBridge_Worker>("worker")
     .WithReference(redis)
     .WithReference(rabbitMq)
     .WithReference(ollama)
@@ -48,5 +51,12 @@ builder.AddProject<ExpertBridge_Worker>("ExpertBridgeWorker")
     .WaitFor(quartzDb)
     .WaitFor(expertBridgeDb)
     .WithOtlpExporter();
+
+builder
+    .AddViteApp("client", "../../client")
+    .WaitFor(api)
+    .WithEnvironments(builder)
+    .WithOtlpExporter()
+    .WithHttpsEndpoint(port: 5173);
 
 await builder.Build().RunAsync();

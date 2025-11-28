@@ -4,7 +4,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL" Version="0.5.1" />
-    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="13.0.0" />
+    <PackageVersion Include="Aspire.Hosting.JavaScript" Version="13.0.1" />
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="13.0.1" />
     <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.13.1" />
@@ -12,7 +13,7 @@
     <PackageVersion Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="13.0.0" />
     <PackageVersion Include="FirebaseAdmin" Version="3.4.0" />
     <PackageVersion Include="Groq.Sdk.Extensions.DependencyInjection" Version="2.0.0.8-alpha" />
-    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.5.5" />
+    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.5.6" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.0" />
@@ -65,18 +66,18 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
-    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.0.0" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.0" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.0" />
-    <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.0.0" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
-    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.1" />
+    <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="13.0.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.1" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.9" />
@@ -103,7 +104,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="Aspire.Hosting.Testing" Version="9.0.0" />
-    <PackageVersion Include="Radzen.Blazor" Version="8.3.3" />
+    <PackageVersion Include="Radzen.Blazor" Version="8.3.4" />
     <PackageVersion Include="Razor.Templating.Core" Version="2.1.0" />
     <PackageVersion Include="Quartz" Version="3.15.1" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.15.1" />
