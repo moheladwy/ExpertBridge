@@ -4,35 +4,39 @@ on:
   push:
     branches-ignore: ["main"]
     paths:
-        - "server/**"
-        - ".github/workflows/lint-dotnet.yml"
+      - "server/**"
+      - ".github/workflows/lint-dotnet.yml"
   pull_request:
     paths:
-        - "server/**"
-        - ".github/workflows/lint-dotnet.yml"
+      - "server/**"
+      - ".github/workflows/lint-dotnet.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   lint:
     name: Lint Server (ASP.NET)
     runs-on: ubuntu-latest
     defaults:
-        run:
-            working-directory: server
+      run:
+        working-directory: server
 
     steps:
-        - name: Checkout code
-          uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v5
 
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v5
-          with:
-              dotnet-version: 10.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
 
-        - name: Restore dependencies
-          run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-        - name: Build
-          run: dotnet build --no-restore
+      - name: Build
+        run: dotnet build --no-restore
 
-        - name: Test
-          run: dotnet test --no-restore --no-build --verbosity normal
+      - name: Test
+        run: dotnet test --no-restore --no-build --verbosity normal
