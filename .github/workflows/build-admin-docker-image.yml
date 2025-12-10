@@ -7,6 +7,10 @@ on:
       - "server/**"
       - ".github/workflows/build-admin-docker-image.yml"
 
+permissions:
+  contents: read
+  pull-requests: write
+
 env:
   ADMIN_IMAGE_NAME: expert-bridge-admin
   TAG: ${{ github.sha }}
