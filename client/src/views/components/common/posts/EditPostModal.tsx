@@ -70,10 +70,10 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				const newErrors: { [key: string]: string } = {};
-				error.errors.forEach((err) => {
+				error.issues.forEach((err: z.ZodIssue) => {
 					if (err.path.length > 0) {
 						// Check path length
-						newErrors[err.path[0]] = err.message;
+						newErrors[String(err.path[0])] = err.message;
 					}
 				});
 				setErrors(newErrors); // Set new errors if validation fails

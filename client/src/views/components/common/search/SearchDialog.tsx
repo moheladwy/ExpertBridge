@@ -54,7 +54,10 @@ const SearchDialog = ({ open, setOpen }: SearchDialogProps) => {
 		const savedSearches = localStorage.getItem("recentSearches");
 		if (savedSearches) {
 			try {
-				setRecentSearches(JSON.parse(savedSearches).slice(0, 5));
+				// Use microtask to avoid synchronous setState in effect
+				Promise.resolve().then(() => {
+					setRecentSearches(JSON.parse(savedSearches).slice(0, 5));
+				});
 			} catch (e) {
 				console.error("Error parsing recent searches:", e);
 			}

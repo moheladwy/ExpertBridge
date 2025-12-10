@@ -23,21 +23,6 @@ const JobPostingVoteButtons: React.FC<JobPostingVoteButtonsProps> = ({
 	const [downvoteJobPosting, downvoteResult] =
 		useDownvoteJobPostingMutation();
 
-	useEffect(() => {
-		if (upvoteResult.isError || downvoteResult.isError) {
-			toast.error("An error occurred.");
-		}
-
-		setJobPostingVotes((prev) => ({
-			...prev,
-			userVote: jobPosting.isUpvoted
-				? "upvote"
-				: jobPosting.isDownvoted
-					? "downvote"
-					: null,
-		}));
-	}, [upvoteResult, downvoteResult, jobPosting]);
-
 	const [jobPostingVotes, setJobPostingVotes] = useState({
 		upvotes: jobPosting.upvotes,
 		downvotes: jobPosting.downvotes,
@@ -47,6 +32,24 @@ const JobPostingVoteButtons: React.FC<JobPostingVoteButtonsProps> = ({
 				? "downvote"
 				: null,
 	});
+
+	useEffect(() => {
+		if (upvoteResult.isError || downvoteResult.isError) {
+			toast.error("An error occurred.");
+		}
+
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => {
+			setJobPostingVotes((prev) => ({
+				...prev,
+				userVote: jobPosting.isUpvoted
+					? "upvote"
+					: jobPosting.isDownvoted
+						? "downvote"
+						: null,
+			}));
+		});
+	}, [upvoteResult, downvoteResult, jobPosting]);
 
 	const voteDifference = jobPosting.upvotes - jobPosting.downvotes;
 

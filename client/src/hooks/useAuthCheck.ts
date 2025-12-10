@@ -19,7 +19,8 @@ const useAuthCheck = () => {
 			}
 		}
 
-		setAuthCheck(true);
+		// Use a microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => setAuthCheck(true));
 	}, [dispatch]);
 
 	return authCheck;

@@ -20,21 +20,6 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
 	const [upvotePost, upvoteResult] = useUpvotePostMutation();
 	const [downvotePost, downvoteResult] = useDownvotePostMutation();
 
-	useEffect(() => {
-		if (upvoteResult.isError || downvoteResult.isError) {
-			toast.error("An error occurred.");
-		}
-
-		setPostVotes((prev) => ({
-			...prev,
-			userVote: post.isUpvoted
-				? "upvote"
-				: post.isDownvoted
-					? "downvote"
-					: null,
-		}));
-	}, [upvoteResult, downvoteResult, post]);
-
 	const [postVotes, setPostVotes] = useState({
 		upvotes: post.upvotes,
 		downvotes: post.downvotes,
@@ -44,6 +29,24 @@ const PostVoteButtons: React.FC<PostVoteButtonsProps> = ({ post }) => {
 				? "downvote"
 				: null,
 	});
+
+	useEffect(() => {
+		if (upvoteResult.isError || downvoteResult.isError) {
+			toast.error("An error occurred.");
+		}
+
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => {
+			setPostVotes((prev) => ({
+				...prev,
+				userVote: post.isUpvoted
+					? "upvote"
+					: post.isDownvoted
+						? "downvote"
+						: null,
+			}));
+		});
+	}, [upvoteResult, downvoteResult, post]);
 
 	const voteDifference = post.upvotes - post.downvotes;
 

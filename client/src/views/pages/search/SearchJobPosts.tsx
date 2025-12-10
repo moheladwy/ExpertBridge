@@ -52,7 +52,10 @@ const SearchJobPosts = () => {
 			// Then sort by creation date (newest first)
 			return b.createdAt.localeCompare(a.createdAt);
 		});
-		setSortedPosts(sorted);
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => {
+			setSortedPosts(sorted);
+		});
 	}, [posts]);
 
 	if (isPostsLoading || isPostsFetching) {

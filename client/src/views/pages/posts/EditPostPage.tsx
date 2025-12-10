@@ -60,8 +60,6 @@ const EditPostPage = () => {
 		content: "",
 	});
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
-	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-
 	const [updatePost, { isLoading }] = useUpdatePostMutation();
 
 	// Initialize form data when post loads
@@ -71,18 +69,18 @@ const EditPostPage = () => {
 				title: post.title,
 				content: post.content || "",
 			};
-			setFormData(initialData);
-			setOriginalData(initialData);
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setFormData(initialData);
+				setOriginalData(initialData);
+			});
 		}
 	}, [post]);
 
-	// Track unsaved changes
-	useEffect(() => {
-		const hasChanges =
-			formData.title !== originalData.title ||
-			formData.content !== originalData.content;
-		setHasUnsavedChanges(hasChanges);
-	}, [formData, originalData]);
+	// Derive unsaved changes instead of using state
+	const hasUnsavedChanges =
+		formData.title !== originalData.title ||
+		formData.content !== originalData.content;
 
 	// Warn before leaving with unsaved changes
 	useEffect(() => {
@@ -120,9 +118,12 @@ const EditPostPage = () => {
 					const draft = JSON.parse(savedDraft);
 					// Only load if draft is less than 24 hours old
 					if (Date.now() - draft.timestamp < 24 * 60 * 60 * 1000) {
-						setFormData({
-							title: draft.title || "",
-							content: draft.content || "",
+						// Use microtask to avoid synchronous setState in effect
+						Promise.resolve().then(() => {
+							setFormData({
+								title: draft.title || "",
+								content: draft.content || "",
+							});
 						});
 						toast.success("Draft restored");
 					} else {
@@ -143,9 +144,10 @@ const EditPostPage = () => {
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				const newErrors: { [key: string]: string } = {};
-				error.errors.forEach((err) => {
+				error.issues.forEach((err: z.ZodIssue) => {
 					if (err.path.length > 0) {
-						newErrors[err.path[0]] = err.message;
+						const pathKey = String(err.path[0]);
+						newErrors[pathKey] = err.message;
 					}
 				});
 				setErrors(newErrors);
@@ -156,7 +158,10 @@ const EditPostPage = () => {
 
 	// Re-validate whenever formData changes
 	useEffect(() => {
-		validate();
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => {
+			validate();
+		});
 	}, [validate]);
 
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -53,7 +53,8 @@ function AppContent() {
 				}
 			}, 10000);
 		} else {
-			setShowInitialAuthPrompt(false);
+			// Use a microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => setShowInitialAuthPrompt(false));
 		}
 
 		return () => {

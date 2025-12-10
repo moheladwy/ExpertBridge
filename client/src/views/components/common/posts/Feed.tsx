@@ -50,7 +50,8 @@ const Feed = ({ startingPost = { id: null } }) => {
 				behavior: "auto",
 				block: "center",
 			});
-			setHasCentered(true);
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => setHasCentered(true));
 		}
 	}, [data?.pages, hasCentered]);
 

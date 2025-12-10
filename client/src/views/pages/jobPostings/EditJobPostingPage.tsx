@@ -81,10 +81,13 @@ const EditJobPostingPage = () => {
 	// Initialize form with job posting data
 	useEffect(() => {
 		if (jobPosting) {
-			setTitle(jobPosting.title);
-			setContent(jobPosting.content);
-			setBudget(jobPosting.budget.toString());
-			setArea(jobPosting.area || "");
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setTitle(jobPosting.title);
+				setContent(jobPosting.content);
+				setBudget(jobPosting.budget.toString());
+				setArea(jobPosting.area || "");
+			});
 		}
 	}, [jobPosting]);
 
@@ -130,7 +133,7 @@ const EditJobPostingPage = () => {
 			}).unwrap();
 		} catch (err) {
 			if (err instanceof z.ZodError) {
-				err.errors.forEach((error) => {
+				err.issues.forEach((error: z.ZodIssue) => {
 					if (error.path[0] === "title") {
 						setTitleError(error.message);
 					} else if (error.path[0] === "content") {

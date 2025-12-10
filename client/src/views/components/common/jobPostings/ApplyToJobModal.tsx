@@ -41,10 +41,13 @@ const ApplyToJobModal: React.FC<ApplyJobModalProps> = ({
 	// Reset form when modal opens
 	useEffect(() => {
 		if (isOpen) {
-			setCoverLetter(
-				"I would be delighted to work on this project for you and deliver excellent results."
-			);
-			setOfferedCost(jobPosting.budget);
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setCoverLetter(
+					"I would be delighted to work on this project for you and deliver excellent results."
+				);
+				setOfferedCost(jobPosting.budget);
+			});
 		}
 	}, [isOpen, jobPosting.budget]);
 

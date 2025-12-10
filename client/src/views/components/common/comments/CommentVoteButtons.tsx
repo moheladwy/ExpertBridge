@@ -20,22 +20,6 @@ const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
 	const [upvoteComment, upvoteResult] = useUpvoteCommentMutation();
 	const [downvoteComment, downvoteResult] = useDownvoteCommentMutation();
 
-	useEffect(() => {
-		if (upvoteResult.isError || downvoteResult.isError) {
-			toast.error("An error occurred while voting.");
-		}
-
-		setCommentVotes({
-			upvotes: comment.upvotes,
-			downvotes: comment.downvotes,
-			userVote: comment.isUpvoted
-				? "upvote"
-				: comment.isDownvoted
-					? "downvote"
-					: (null as "upvote" | "downvote" | null),
-		});
-	}, [upvoteResult, downvoteResult, comment]);
-
 	const [commentVotes, setCommentVotes] = useState({
 		upvotes: comment.upvotes,
 		downvotes: comment.downvotes,
@@ -45,6 +29,25 @@ const CommentVoteButtons: React.FC<CommentVoteButtonsProps> = ({ comment }) => {
 				? "downvote"
 				: (null as "upvote" | "downvote" | null),
 	});
+
+	useEffect(() => {
+		if (upvoteResult.isError || downvoteResult.isError) {
+			toast.error("An error occurred while voting.");
+		}
+
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => {
+			setCommentVotes({
+				upvotes: comment.upvotes,
+				downvotes: comment.downvotes,
+				userVote: comment.isUpvoted
+					? "upvote"
+					: comment.isDownvoted
+						? "downvote"
+						: (null as "upvote" | "downvote" | null),
+			});
+		});
+	}, [upvoteResult, downvoteResult, comment]);
 
 	const voteDifference = comment.upvotes - comment.downvotes;
 

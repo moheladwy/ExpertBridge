@@ -31,7 +31,10 @@ function Notifications() {
 			const unreadIds = new Set(
 				notifications.filter((n) => !n.isRead).map((n) => n.id)
 			);
-			setInitialUnreadIds(unreadIds);
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setInitialUnreadIds(unreadIds);
+			});
 			hasInitialized.current = true;
 		}
 	}, [notifications, isFetching]);

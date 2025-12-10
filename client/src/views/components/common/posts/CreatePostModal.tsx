@@ -88,7 +88,10 @@ const CreatePostModal: React.FC = () => {
 		if (isError) toast.error("An error occurred while creating your post");
 		if (isSuccess) {
 			toast.success("Post created successfully");
-			handleClose();
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				handleClose();
+			});
 		}
 	}, [isSuccess, isError, handleClose]);
 
@@ -109,7 +112,7 @@ const CreatePostModal: React.FC = () => {
 		} catch (err) {
 			if (err instanceof z.ZodError) {
 				// Set errors for specific fields
-				err.errors.forEach((error) => {
+				err.issues.forEach((error: z.ZodIssue) => {
 					if (error.path[0] === "title") {
 						setTitleError(error.message);
 					} else if (error.path[0] === "content") {

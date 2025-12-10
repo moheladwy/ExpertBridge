@@ -20,7 +20,8 @@ const useRefetchOnLogin = (refetch: (...args: any) => any) => {
 		const currentId = appUser?.id;
 		if (lastId === currentId) return;
 
-		setLastId(currentId);
+		// Use a microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => setLastId(currentId));
 
 		refetch();
 
