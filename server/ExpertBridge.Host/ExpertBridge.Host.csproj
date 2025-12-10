@@ -6,22 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" />
-    <PackageReference Include="Aspire.Hosting.JavaScript" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
-    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
-    <PackageReference Include="Aspire.Hosting.Redis" />
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" />
+    <PackageReference Include="Aspire.Hosting.AppHost"/>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
+    <PackageReference Include="Aspire.Hosting.RabbitMQ"/>
+    <PackageReference Include="Aspire.Hosting.Redis"/>
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.JavaScript.Extensions"/>
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExpertBridge.Admin\ExpertBridge.Admin.csproj" />
-    <ProjectReference Include="..\ExpertBridge.Api\ExpertBridge.Api.csproj" />
-    <ProjectReference Include="..\ExpertBridge.Worker\ExpertBridge.Worker.csproj" />
+    <ProjectReference Include="..\ExpertBridge.Admin\ExpertBridge.Admin.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Api\ExpertBridge.Api.csproj"/>
+    <ProjectReference Include="..\ExpertBridge.Worker\ExpertBridge.Worker.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="obj\" />
+    <Folder Include="obj\"/>
   </ItemGroup>
 
 </Project>

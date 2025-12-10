@@ -57,6 +57,6 @@ builder
     .WaitFor(api)
     .WithEnvironments(builder)
     .WithOtlpExporter()
-    .WithHttpsEndpoint(port: 5173);
+    .WithExternalHttpEndpoints();
 
 await builder.Build().RunAsync();
