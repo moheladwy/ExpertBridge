@@ -62,7 +62,6 @@ const CreateJobPostingPage = () => {
 	const [budgetError, setBudgetError] = useState("");
 	const [areaError, setAreaError] = useState("");
 	const [mediaList, setMediaList] = useState<MediaObject[]>([]);
-	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 	const [_isLoggedIn, , , authUser, userProfile] = useIsUserLoggedIn();
 
 	const [createJobPosting, createJobResult] = useCreateJobPostingMutation();
@@ -74,15 +73,12 @@ const CreateJobPostingPage = () => {
 
 	const { isSuccess, isError, isLoading } = createJobResult;
 
-	// Track unsaved changes
-	useEffect(() => {
-		setHasUnsavedChanges(
-			title.trim() !== "" ||
-				content.trim() !== "" ||
-				budget.trim() !== "" ||
-				area.trim() !== ""
-		);
-	}, [title, content, budget, area]);
+	// Derive unsaved changes instead of using state
+	const hasUnsavedChanges =
+		title.trim() !== "" ||
+		content.trim() !== "" ||
+		budget.trim() !== "" ||
+		area.trim() !== "";
 
 	// Warn before leaving with unsaved changes
 	useEffect(() => {
@@ -120,10 +116,13 @@ const CreateJobPostingPage = () => {
 				const draft = JSON.parse(savedDraft);
 				// Only load if draft is less than 24 hours old
 				if (Date.now() - draft.timestamp < 24 * 60 * 60 * 1000) {
-					setTitle(draft.title || "");
-					setContent(draft.content || "");
-					setBudget(draft.budget || "");
-					setArea(draft.area || "");
+					// Use microtask to avoid synchronous setState in effect
+					Promise.resolve().then(() => {
+						setTitle(draft.title || "");
+						setContent(draft.content || "");
+						setBudget(draft.budget || "");
+						setArea(draft.area || "");
+					});
 					toast.success("Draft restored");
 				} else {
 					localStorage.removeItem("job-posting-draft");
@@ -145,7 +144,6 @@ const CreateJobPostingPage = () => {
 		setAreaError("");
 		setMediaList([]);
 		localStorage.removeItem("job-posting-draft");
-		setHasUnsavedChanges(false);
 	}, []);
 
 	useEffect(() => {
@@ -153,7 +151,10 @@ const CreateJobPostingPage = () => {
 			toast.error("An error occurred while creating your job posting");
 		if (isSuccess) {
 			toast.success("Job posting created successfully");
-			resetForm();
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				resetForm();
+			});
 			navigate("/");
 		}
 	}, [isSuccess, isError, navigate, resetForm]);
@@ -173,7 +174,7 @@ const CreateJobPostingPage = () => {
 			await uploadMedia({ mediaList });
 		} catch (err) {
 			if (err instanceof z.ZodError) {
-				err.errors.forEach((error) => {
+				err.issues.forEach((error: z.ZodIssue) => {
 					if (error.path[0] === "title") {
 						setTitleError(error.message);
 					} else if (error.path[0] === "content") {

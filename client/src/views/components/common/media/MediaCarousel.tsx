@@ -8,10 +8,7 @@ import {
 	CarouselPrevious,
 } from "@/views/components/ui/carousel";
 import { MediaObjectResponse } from "@/features/media/types";
-import {
-	Dialog,
-	DialogContent,
-} from "@/views/components/ui/dialog";
+import { Dialog, DialogContent } from "@/views/components/ui/dialog";
 
 interface PostMediaCarouselProps {
 	medias: MediaObjectResponse[];
@@ -35,7 +32,10 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
 
 	return (
 		<>
-			<Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
+			<Dialog
+				open={open}
+				onOpenChange={(isOpen) => !isOpen && handleClose()}
+			>
 				<DialogContent className="max-w-5xl">
 					{medias?.[picToBeOpened]?.url ? (
 						<img
@@ -65,7 +65,7 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
 							>
 								{media.type.startsWith("video") ? (
 									<ReactPlayer
-										url={media.url}
+										src={media.url}
 										width="100%"
 										height="100%"
 										controls

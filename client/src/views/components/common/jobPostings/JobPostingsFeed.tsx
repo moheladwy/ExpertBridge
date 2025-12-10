@@ -52,18 +52,17 @@ const JobPostingsFeed: React.FC<JobPostingsFeedProps> = ({
 	const [hasCentered, setHasCentered] = useState<boolean>(false);
 
 	useEffect(() => {
-		if (hasCentered) return;
-		const startingElement = startingJobRef.current;
-		if (startingElement) {
-			startingElement.scrollIntoView({
-				behavior: "auto",
-				block: "center",
-			});
-			setHasCentered(true);
-		}
-	}, [data?.pages, hasCentered]);
-
-	const [, , , , appUser] = useIsUserLoggedIn();
+	if (hasCentered) return;
+	const startingElement = startingJobRef.current;
+	if (startingElement) {
+		startingElement.scrollIntoView({
+			behavior: "auto",
+			block: "center",
+		});
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => setHasCentered(true));
+	}
+}, [data?.pages, hasCentered]);	const [, , , , appUser] = useIsUserLoggedIn();
 	useRefetchOnLogin(refetch);
 
 	const getFilterIcon = (filterName: string) => {

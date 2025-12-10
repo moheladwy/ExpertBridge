@@ -78,14 +78,17 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 	// Reset form when modal opens with new job posting data
 	useEffect(() => {
 		if (isOpen) {
-			setTitle(jobPosting.title);
-			setContent(jobPosting.content);
-			setBudget(jobPosting.budget.toString());
-			setArea(jobPosting.area || "");
-			setTitleError("");
-			setContentError("");
-			setBudgetError("");
-			setAreaError("");
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setTitle(jobPosting.title);
+				setContent(jobPosting.content);
+				setBudget(jobPosting.budget.toString());
+				setArea(jobPosting.area || "");
+				setTitleError("");
+				setContentError("");
+				setBudgetError("");
+				setAreaError("");
+			});
 		}
 	}, [isOpen, jobPosting]);
 
@@ -136,7 +139,7 @@ const EditJobPostingModal: React.FC<EditJobPostingModalProps> = ({
 			}).unwrap();
 		} catch (err) {
 			if (err instanceof z.ZodError) {
-				err.errors.forEach((error) => {
+				err.issues.forEach((error: z.ZodIssue) => {
 					if (error.path[0] === "title") {
 						setTitleError(error.message);
 					} else if (error.path[0] === "content") {

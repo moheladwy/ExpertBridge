@@ -40,13 +40,6 @@ export type CreateUserWithGoogleHook = [
 export type AuthType = "email" | "google";
 
 export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
-	const [loading, setLoading] = useState(false);
-	const [authError, setAuthError] = useState<AuthError | undefined>(
-		undefined
-	);
-	const [userCred, setUserCred] = useState<UserCredential | undefined>(
-		undefined
-	);
 
 	const [signInWithGoogle, googleUser, googleLoading, googleError] =
 		useSignInWithGoogle(auth);
@@ -136,24 +129,20 @@ export const useCreateUser = (auth: Auth): CreateUserWithGoogleHook => {
 			// TODO: use createUserError to extract useful info and give it to the user
 			// from the response. createUserError is only a boolean
 
-			setCreateUserErrorMessage(
-				"An error occurred while creating your account. Please try again."
-			);
+			// Use a microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setCreateUserErrorMessage(
+					"An error occurred while creating your account. Please try again."
+				);
+			});
 			console.log(createUserError);
 		}
 	}, [createUserError, handleCreateBackendUserError]);
 
-	useEffect(() => {
-		setAuthError(googleError || emailError);
-	}, [googleError, emailError]);
-
-	useEffect(() => {
-		setUserCred(googleUser || emailUser);
-	}, [googleUser, emailUser]);
-
-	useEffect(() => {
-		setLoading(emailLoading || googleLoading || createUserLoading);
-	}, [emailLoading, googleLoading, createUserLoading]);
+	// Derive state directly instead of setting in useEffect
+	const authError = googleError || emailError;
+	const userCred = googleUser || emailUser;
+	const loading = emailLoading || googleLoading || createUserLoading;
 
 	return [
 		signInWithGoogle,

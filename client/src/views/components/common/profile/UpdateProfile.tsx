@@ -109,14 +109,17 @@ const UpdateProfile = ({ onClose }: UpdateProfileProps) => {
 	// Update form values when profile data is loaded
 	useEffect(() => {
 		if (profile) {
-			setValue("firstName", profile.firstName || "");
-			setValue("lastName", profile.lastName || "");
-			setValue("jobTitle", profile.jobTitle || "");
-			setValue("bio", profile.bio || "");
-			setValue("username", profile.username || "");
-			setUsername(profile.username || "");
-			setSkills(profile.skills || []);
-			setValue("skills", profile.skills || []);
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setValue("firstName", profile.firstName || "");
+				setValue("lastName", profile.lastName || "");
+				setValue("jobTitle", profile.jobTitle || "");
+				setValue("bio", profile.bio || "");
+				setValue("username", profile.username || "");
+				setUsername(profile.username || "");
+				setSkills(profile.skills || []);
+				setValue("skills", profile.skills || []);
+			});
 		}
 	}, [profile, setValue]);
 

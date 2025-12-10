@@ -121,8 +121,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
 			})
 		);
 
-		setParentMediaList(mediaList);
-		setFileUrls(urls);
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => {
+			setParentMediaList(mediaList);
+			setFileUrls(urls);
+		});
 	}, [singleFile, fileList, multiple, setParentMediaList]);
 
 	// ? remove multiple images
@@ -165,10 +168,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
 	// ? Reset the State
 	useEffect(() => {
 		if (isSubmitting) {
-			setFileList([]);
-			setSingleFile([]);
-			setFileIds([]);
-			setUploadedFiles(new Set());
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setFileList([]);
+				setSingleFile([]);
+				setFileIds([]);
+				setUploadedFiles(new Set());
+			});
 		}
 	}, [isSubmitting]);
 
@@ -378,7 +384,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 												) : isVideo ? (
 													<div className="relative w-full h-full">
 														<ReactPlayer
-															url={
+															src={
 																fileUrls[index]
 															}
 															width="100%"

@@ -15,10 +15,11 @@ const useCallbackOnMediaUploadSuccess = (
 
 	useEffect(() => {
 		if (uploadResult.isSuccess) {
-			memo.media = uploadResult.data;
-			callback(request);
+			// Create a new object instead of mutating memo
+			const updatedRequest = { ...memo, media: uploadResult.data };
+			callback(updatedRequest);
 		}
-	}, [uploadResult.isSuccess]);
+	}, [uploadResult.isSuccess, memo, callback]);
 
 	useEffect(() => {
 		if (uploadResult.isError) {

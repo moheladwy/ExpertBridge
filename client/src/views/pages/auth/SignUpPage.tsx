@@ -264,15 +264,15 @@ const SignUpPage: React.FC = (): JSX.Element => {
 			if (error instanceof z.ZodError) {
 				// Extract validation errors and update error state
 				const newErrors: { [key: string]: string } = {};
-				error.errors.forEach((err) => {
+				error.issues.forEach((err: z.ZodIssue) => {
 					if (err.path) {
-						newErrors[err.path[0]] = err.message;
+						newErrors[String(err.path[0])] = err.message;
 					}
 				});
 				setErrors(newErrors);
 				// Show only the first error as a toast to avoid overwhelming the user
-				if (error.errors.length > 0) {
-					toast.error(error.errors[0].message);
+				if (error.issues.length > 0) {
+					toast.error(error.issues[0].message);
 				}
 			}
 			return false;

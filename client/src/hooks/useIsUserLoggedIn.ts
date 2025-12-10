@@ -32,6 +32,8 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 
 	const uid = useMemo(() => authUser?.uid, [authUser]);
 
+	const [error, setError] = useState<IsLoggedInError>(undefined);
+
 	// ✅ UPDATED: Add skip parameter to prevent premature API calls
 	const {
 		data: appUser,
@@ -43,10 +45,7 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 		skip: !isAuthenticated, // ✅ Only fetch if authenticated
 	});
 
-	const [isLoggedIn, setIsLoggedIn] = useState(appUser ? true : false);
-	// ✅ UPDATED: Include auth initialization in loading state
-	const [loading, setLoading] = useState(!isAuthReady || userLoading);
-	const [error, setError] = useState<IsLoggedInError>(undefined);
+
 
 	// If a query like this is used (fired) multiple times
 	// and it's result is checked always. Always remember to
@@ -68,26 +67,18 @@ const useIsUserLoggedIn = (): IsUserLoggedInHook => {
 	useEffect(() => {
 		if (userError) {
 			console.error(userErrorMessage);
-			setError(userErrorMessage);
-			setLoading(false);
+			// Use a microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setError(userErrorMessage);
+			});
 		}
-	}, [userError, userErrorMessage, error]);
+	}, [userError, userErrorMessage]);
 
-	useEffect(() => {
-		if (authUser && appUser) {
-			setIsLoggedIn(true);
-			setLoading(false);
-		} else {
-			setIsLoggedIn(false);
-			// ✅ Only set loading false if auth is ready
-			setLoading(!isAuthReady);
-		}
-	}, [authUser, appUser, isAuthReady]);
+	// Derive isLoggedIn directly instead of using state
+	const isLoggedIn = !!(authUser && appUser);
 
-	useEffect(() => {
-		// ✅ UPDATED: Loading depends on both auth state and query
-		setLoading(!isAuthReady || userLoading);
-	}, [userLoading, isAuthReady]);
+	// Derive loading state directly
+	const loading = userError ? false : (!isAuthReady || userLoading);
 
 	return [isLoggedIn, loading, error, authUser, appUser];
 };

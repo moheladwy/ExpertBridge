@@ -74,8 +74,11 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId }) => {
 			toast.error("An error occurred while creating your comment");
 		if (isSuccess) {
 			toast.success("Comment created successfully");
-			setCommentText("");
-			setShowMediaForm(false);
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setCommentText("");
+				setShowMediaForm(false);
+			});
 		}
 	}, [isSuccess, isError]);
 

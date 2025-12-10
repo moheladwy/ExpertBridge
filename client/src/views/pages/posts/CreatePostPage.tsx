@@ -50,7 +50,6 @@ const CreatePostPage = () => {
 	const [titleError, setTitleError] = useState("");
 	const [bodyError, setBodyError] = useState("");
 	const [mediaList, setMediaList] = useState<MediaObject[]>([]);
-	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 	const [isLoggedIn, , , authUser, userProfile] = useIsUserLoggedIn();
 
 	const [createPost, createPostResult] = useCreatePostMutation();
@@ -62,10 +61,8 @@ const CreatePostPage = () => {
 
 	const { isSuccess, isError, isLoading } = createPostResult;
 
-	// Track unsaved changes
-	useEffect(() => {
-		setHasUnsavedChanges(title.trim() !== "" || body.trim() !== "");
-	}, [title, body]);
+	// Derive unsaved changes instead of using state
+	const hasUnsavedChanges = title.trim() !== "" || body.trim() !== "";
 
 	// Warn before leaving with unsaved changes
 	useEffect(() => {
@@ -97,8 +94,11 @@ const CreatePostPage = () => {
 				const draft = JSON.parse(savedDraft);
 				// Only load if draft is less than 24 hours old
 				if (Date.now() - draft.timestamp < 24 * 60 * 60 * 1000) {
-					setTitle(draft.title || "");
-					setBody(draft.body || "");
+					// Use microtask to avoid synchronous setState in effect
+					Promise.resolve().then(() => {
+						setTitle(draft.title || "");
+						setBody(draft.body || "");
+					});
 					toast.success("Draft restored");
 				} else {
 					localStorage.removeItem("post-draft");
@@ -116,14 +116,16 @@ const CreatePostPage = () => {
 		setBodyError("");
 		setMediaList([]);
 		localStorage.removeItem("post-draft");
-		setHasUnsavedChanges(false);
 	}, []);
 
 	useEffect(() => {
 		if (isError) toast.error("An error occurred while creating your post");
 		if (isSuccess) {
 			toast.success("Post created successfully");
-			resetForm();
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				resetForm();
+			});
 			navigate("/home");
 		}
 	}, [isSuccess, isError, navigate, resetForm]);
@@ -136,7 +138,7 @@ const CreatePostPage = () => {
 			await uploadMedia({ mediaList });
 		} catch (err) {
 			if (err instanceof z.ZodError) {
-				err.errors.forEach((error) => {
+				err.issues.forEach((error: z.ZodIssue) => {
 					if (error.path[0] === "title") {
 						setTitleError(error.message);
 					} else if (error.path[0] === "content") {

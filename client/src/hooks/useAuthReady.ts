@@ -70,7 +70,8 @@ export const useAuthReady = (): AuthReadyState => {
 		// Mark as ready once we receive any auth state
 		// authUser will be null for unauthenticated users (not undefined)
 		if (authUser !== undefined) {
-			setIsAuthReady(true);
+			// Use a microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => setIsAuthReady(true));
 		}
 	}, [authUser]);
 

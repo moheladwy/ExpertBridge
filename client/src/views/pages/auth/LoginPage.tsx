@@ -51,12 +51,7 @@ const LoginPage: React.FC = () => {
 		password: "",
 	});
 
-	useEffect(() => {
-		setFormData({ email: "", password: "" });
-	}, []);
-
 	// Main component state
-	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [showPassword, setShowPassword] = useState(false); // State for password visibility
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -117,8 +112,11 @@ const LoginPage: React.FC = () => {
 			if (!user.user?.emailVerified) return;
 
 			navigate("/home");
-			setFormData({ email: "", password: "" });
-			setSuccess(false);
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setFormData({ email: "", password: "" });
+				setSuccess(false);
+			});
 		}
 	}, [success, navigate, authUser, loggedInUser]);
 
@@ -126,7 +124,10 @@ const LoginPage: React.FC = () => {
 	 * Update success state when authentication succeeds through any method
 	 */
 	useEffect(() => {
-		setSuccess(isLoggedIn || loggedInUser !== null || authUser !== null);
+		// Use microtask to avoid synchronous setState in effect
+		Promise.resolve().then(() => {
+			setSuccess(isLoggedIn || loggedInUser !== null || authUser !== null);
+		});
 		if (isLoggedIn || loggedInUser != null || authUser !== null) {
 			toast.success("Login successful!");
 		}
@@ -139,7 +140,10 @@ const LoginPage: React.FC = () => {
 		if (error) {
 			console.error("Login error:", error);
 			toast.error("Invalid email or password.");
-			setSignInError("Invalid email or password.");
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setSignInError("Invalid email or password.");
+			});
 			signOut();
 		} else if (createError || createErrorMessage) {
 			console.error(
@@ -147,17 +151,18 @@ const LoginPage: React.FC = () => {
 				createError || createErrorMessage
 			);
 			toast.error("Google login failed. Please try again.");
-			setSignInError("Google login failed. Please try again.");
+			// Use microtask to avoid synchronous setState in effect
+			Promise.resolve().then(() => {
+				setSignInError("Google login failed. Please try again.");
+			});
 			signOut();
 		}
 	}, [error, createError, createErrorMessage, signOut]);
 
 	/**
-	 * Update overall loading state based on individual loading states
+	 * Derive overall loading state based on individual loading states
 	 */
-	useEffect(() => {
-		setLoading(createLoading || loginLoading);
-	}, [createLoading, loginLoading]);
+	const loading = createLoading || loginLoading;
 
 	/**
 	 * Form validation function using Zod schema for the login form in the LoginPage.
@@ -171,9 +176,9 @@ const LoginPage: React.FC = () => {
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				const newErrors: { [key: string]: string } = {};
-				error.errors.forEach((err) => {
+				error.issues.forEach((err: z.ZodIssue) => {
 					if (err.path) {
-						newErrors[err.path[0]] = err.message;
+						newErrors[String(err.path[0])] = err.message;
 					}
 				});
 				setErrors(newErrors);
