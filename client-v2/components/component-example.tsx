@@ -62,7 +62,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ModeToggle } from "@/components/mode-toggle";
+import { Header } from "@/components/header";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
 	PlusSignIcon,
@@ -98,9 +98,7 @@ import {
 export function ComponentExample() {
 	return (
 		<>
-			<div className="fixed top-4 right-4 z-50">
-				<ModeToggle />
-			</div>
+			<Header />
 			<ExampleWrapper>
 				<CardExample />
 				<FormExample />
