@@ -68,3 +68,10 @@ client/audit-report/shadnc-docs.md
 client/audit-report/phase3-implementation-summary.md
 client/audit-report/phase4-implementation-summary.md
 client/audit-report/CRITICAL_UI_FIX.md
+
+.github/plans/client/migrate-to-nextjs.md
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md
+.codacy/codacy.yaml
