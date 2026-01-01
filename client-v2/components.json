@@ -11,15 +11,17 @@
 		"prefix": ""
 	},
 	"iconLibrary": "hugeicons",
+	"menuColor": "default",
+	"menuAccent": "bold",
 	"aliases": {
 		"components": "@/components",
 		"utils": "@/lib/utils",
 		"ui": "@/components/ui",
 		"lib": "@/lib",
-		"hooks": "@/hooks",
-		"features": "@/features"
+		"hooks": "@/hooks"
 	},
-	"menuColor": "default",
-	"menuAccent": "bold",
-	"registries": {}
+	"registries": {
+		"@react-bits": "https://reactbits.dev/r/{name}.json",
+		"@aliimam": "https://aliimam.in/r/{name}.json"
+	}
 }
