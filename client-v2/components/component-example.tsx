@@ -63,6 +63,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
 	PlusSignIcon,
@@ -103,6 +104,7 @@ export function ComponentExample() {
 				<CardExample />
 				<FormExample />
 			</ExampleWrapper>
+			<Footer />
 		</>
 	);
 }
