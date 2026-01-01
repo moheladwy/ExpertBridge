@@ -70,6 +70,7 @@ client/audit-report/phase4-implementation-summary.md
 client/audit-report/CRITICAL_UI_FIX.md
 
 .github/plans/client/migrate-to-nextjs.md
+.github/plans/client/migrate-logic-layer.md
 
 
 #Ignore vscode AI rules
