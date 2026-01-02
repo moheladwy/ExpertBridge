@@ -1,13 +1,13 @@
 "use client";
 import { useScroll } from "@/hooks/use-scroll";
 import { Logo } from "@/components/shared/logo";
-import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/header/mode-toggle";
 import { SearchCommand } from "@/components/header/search-command";
 
 import { cn } from "@/lib/utils";
 import { DesktopNav } from "@/components/header/desktop-nav";
 import { MobileNav } from "@/components/header/mobile-nav";
+import Link from "next/link";
 
 export function Header() {
 	const scrolled = useScroll(10);
@@ -37,8 +37,18 @@ export function Header() {
 				</div>
 				<div className="hidden items-center gap-2 md:flex">
 					<ModeToggle />
-					<Button variant="outline">Sign In</Button>
-					<Button>Get Started</Button>
+					<Link
+						href="/auth/signin"
+						className="rounded-lg border border-border bg-background px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
+					>
+						Sign In
+					</Link>
+					<Link
+						href="/auth/signup"
+						className="rounded-lg bg-primary text-primary-foreground px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all"
+					>
+						Get Started
+					</Link>
 				</div>
 				<MobileNav />
 			</nav>

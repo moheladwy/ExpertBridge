@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
 import Orb from "@/components/ui/Orb";
@@ -52,20 +52,22 @@ export function Hero() {
 
 					{/* CTAs */}
 					<div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-						<Button size="lg" className="w-full sm:w-auto">
+						<Link
+							href="/auth/signup"
+							className="w-full sm:w-auto rounded-lg bg-primary text-primary-foreground px-2.5 h-9 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all gap-1.5"
+						>
 							Get Started Free
 							<HugeiconsIcon
 								icon={ArrowRight01Icon}
 								className="ml-2 h-4 w-4"
 							/>
-						</Button>
-						<Button
-							size="lg"
-							variant="outline"
-							className="w-full sm:w-auto"
+						</Link>
+						<Link
+							href="/auth/signin"
+							className="w-full sm:w-auto rounded-lg border border-border bg-background px-2.5 h-9 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
 						>
 							Browse Experts
-						</Button>
+						</Link>
 					</div>
 
 					{/* Social Proof */}

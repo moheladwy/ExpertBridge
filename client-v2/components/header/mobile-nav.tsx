@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/header/mode-toggle";
@@ -97,10 +98,20 @@ export function MobileNav() {
 							</div>
 							<div className="mt-5 flex flex-col gap-2">
 								<ModeToggle />
-								<Button className="w-full" variant="outline">
+								<Link
+									href="/auth/signin"
+									className="w-full rounded-lg border border-border bg-background px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
+									onClick={() => setOpen(false)}
+								>
 									Sign In
-								</Button>
-								<Button className="w-full">Get Started</Button>
+								</Link>
+								<Link
+									href="/auth/signup"
+									className="w-full rounded-lg bg-primary text-primary-foreground px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all"
+									onClick={() => setOpen(false)}
+								>
+									Get Started
+								</Link>
 							</div>
 						</div>
 					</div>,
