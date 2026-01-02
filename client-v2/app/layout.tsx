@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Public_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { Header } from "@/components/header/header";
-import { Footer } from "@/components/shared/footer";
 
 const publicSans = Public_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -22,6 +20,12 @@ export const metadata: Metadata = {
 	description: "Professional networking and knowledge-sharing platform",
 };
 
+/**
+ * Root layout - provides base HTML structure and global providers.
+ * Header/Footer are handled by nested layouts:
+ * - (main)/layout.tsx: pages with header/footer
+ * - auth/layout.tsx: auth pages without header/footer
+ */
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -36,11 +40,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<Providers>
-					<Header />
-					<main>{children}</main>
-					<Footer />
-				</Providers>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);
