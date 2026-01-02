@@ -1,13 +1,13 @@
 "use client";
 import { useScroll } from "@/hooks/use-scroll";
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
-import { SearchCommand } from "@/components/search-command";
+import { ModeToggle } from "@/components/header/mode-toggle";
+import { SearchCommand } from "@/components/header/search-command";
 
 import { cn } from "@/lib/utils";
-import { DesktopNav } from "@/components/desktop-nav";
-import { MobileNav } from "@/components/mobile-nav";
+import { DesktopNav } from "@/components/header/desktop-nav";
+import { MobileNav } from "@/components/header/mobile-nav";
 
 export function Header() {
 	const scrolled = useScroll(10);

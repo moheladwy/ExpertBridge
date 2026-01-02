@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
+import Orb from "@/components/ui/Orb";
 
 /**
  * Hero section for the landing page.
@@ -11,6 +12,15 @@ import { ArrowRight01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
 export function Hero() {
 	return (
 		<section className="relative overflow-hidden border-b bg-background py-20 md:py-28 lg:py-32">
+			{/* Background decoration with Orb */}
+			<div className="absolute inset-0 -z-1- flex items-center justify-center opacity-60">
+				<Orb
+					hue={10}
+					hoverIntensity={0.3}
+					rotateOnHover={true}
+					forceHoverState={false}
+				/>
+			</div>
 			<div className="container relative z-10 mx-auto max-w-5xl px-4">
 				<div className="mx-auto max-w-3xl text-center">
 					{/* Badge */}
@@ -78,9 +88,6 @@ export function Hero() {
 					</div>
 				</div>
 			</div>
-
-			{/* Background decoration */}
-			<div className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30 dark:bg-[radial-gradient(#1f2937_1px,transparent_1px)]" />
 		</section>
 	);
 }

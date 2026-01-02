@@ -14,7 +14,7 @@ import {
 	UserPlusIcon,
 	Users,
 } from "lucide-react";
-import type { LinkItemType } from "@/components/sheard";
+import type { LinkItemType } from "@/components/header/sheard";
 
 export const productLinks: LinkItemType[] = [
 	{

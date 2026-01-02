@@ -1,5 +1,5 @@
 "use client";
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/shared/logo";
 import {
 	FacebookIcon,
 	InstagramIcon,
@@ -69,13 +69,17 @@ export function Footer() {
 				<AnimatedContainer className="space-y-4">
 					<Logo className="h-4" />
 					<p className="mt-8 text-muted-foreground text-sm md:mt-0">
-						&copy; {new Date().getFullYear()} efferd, All rights reserved
+						&copy; {new Date().getFullYear()} efferd, All rights
+						reserved
 					</p>
 				</AnimatedContainer>
 
 				<div className="mt-10 grid grid-cols-2 gap-8 md:grid-cols-4 xl:col-span-2 xl:mt-0">
 					{footerLinks.map((section, index) => (
-						<AnimatedContainer delay={0.1 + index * 0.1} key={section.label}>
+						<AnimatedContainer
+							delay={0.1 + index * 0.1}
+							key={section.label}
+						>
 							<div className="mb-10 md:mb-0">
 								<h3 className="text-xs">{section.label}</h3>
 								<ul className="mt-4 space-y-2 text-muted-foreground text-sm">
@@ -86,7 +90,9 @@ export function Footer() {
 												href={link.href}
 												key={`${section.label}-${link.title}`}
 											>
-												{link.icon && <link.icon className="me-1 size-4" />}
+												{link.icon && (
+													<link.icon className="me-1 size-4" />
+												)}
 												{link.title}
 											</a>
 										</li>

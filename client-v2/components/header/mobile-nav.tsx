@@ -1,12 +1,16 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/header/mode-toggle";
 import { cn } from "@/lib/utils";
 import { MenuIcon, XIcon } from "lucide-react";
 import React from "react";
 import { createPortal } from "react-dom";
-import { companyLinks, companyLinks2, productLinks } from "@/components/nav-links";
-import { LinkItem } from "@/components/sheard";
+import {
+	companyLinks,
+	companyLinks2,
+	productLinks,
+} from "@/components/header/nav-links";
+import { LinkItem } from "@/components/header/sheard";
 
 export function MobileNav() {
 	const [open, setOpen] = React.useState(false);
@@ -72,14 +76,23 @@ export function MobileNav() {
 							<div className="flex w-full flex-col gap-y-2">
 								<span className="text-sm">Product</span>
 								{productLinks.map((link) => (
-									<LinkItem key={`product-${link.label}`} {...link} />
+									<LinkItem
+										key={`product-${link.label}`}
+										{...link}
+									/>
 								))}
 								<span className="text-sm">Company</span>
 								{companyLinks.map((link) => (
-									<LinkItem key={`company-${link.label}`} {...link} />
+									<LinkItem
+										key={`company-${link.label}`}
+										{...link}
+									/>
 								))}
 								{companyLinks2.map((link) => (
-									<LinkItem key={`company-${link.label}`} {...link} />
+									<LinkItem
+										key={`company-${link.label}`}
+										{...link}
+									/>
 								))}
 							</div>
 							<div className="mt-5 flex flex-col gap-2">

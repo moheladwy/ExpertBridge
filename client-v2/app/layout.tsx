@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Public_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { Header } from "@/components/header/header";
+import { Footer } from "@/components/shared/footer";
 
 const publicSans = Public_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
