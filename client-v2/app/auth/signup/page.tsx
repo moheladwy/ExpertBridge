@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AuthCard } from "@/components/auth/AuthCard";
@@ -16,7 +16,7 @@ import { MailSend02Icon } from "@hugeicons/core-free-icons";
 /**
  * Sign Up page with email/password and Google OAuth support.
  */
-export default function SignUpPage() {
+function SignUpPageContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { user, loading: authLoading } = useAuth();
@@ -150,5 +150,16 @@ export default function SignUpPage() {
 				<Link href="/privacy">Privacy Policy</Link>.
 			</div>
 		</AuthCard>
+	);
+}
+export default function SignUpPage() {
+	return (
+		<Suspense fallback={
+			<div className="flex min-h-screen items-center justify-center">
+				<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+			</div>
+		}>
+			<SignUpPageContent />
+		</Suspense>
 	);
 }

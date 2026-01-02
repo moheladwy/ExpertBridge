@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AuthCard } from "@/components/auth/AuthCard";
@@ -14,7 +14,7 @@ import type { SignInFormData } from "@/lib/validations/auth";
 /**
  * Sign In page with email/password and Google OAuth support.
  */
-export default function SignInPage() {
+function SignInPageContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { user, loading: authLoading } = useAuth();
@@ -115,5 +115,19 @@ export default function SignInPage() {
 				<Link href="/privacy">Privacy Policy</Link>.
 			</div>
 		</AuthCard>
+	);
+}
+
+export default function SignInPage() {
+	return (
+		<Suspense
+			fallback={
+				<div className="flex min-h-screen items-center justify-center">
+					<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+				</div>
+			}
+		>
+			<SignInPageContent />
+		</Suspense>
 	);
 }
