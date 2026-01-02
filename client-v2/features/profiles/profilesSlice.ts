@@ -1,5 +1,6 @@
 import { apiSlice } from "../api/apiSlice";
 import {
+	CreateOrUpdateUserRequest,
 	OnboardUserRequest,
 	ProfileResponse,
 	UpdateProfileRequest,
@@ -130,6 +131,22 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 		getTopReputationProfiles: builder.query<ProfileResponse[], number>({
 			query: (limit) => `/profiles/top-reputation?limit=${limit}`,
 		}),
+
+		/**
+		 * Create or update a user in the backend.
+		 * Used during registration and Google OAuth (upsert pattern).
+		 */
+		createOrUpdateUser: builder.mutation<
+			ProfileResponse,
+			CreateOrUpdateUserRequest
+		>({
+			query: (request) => ({
+				url: "/users",
+				method: "POST",
+				body: request,
+			}),
+			invalidatesTags: ["Profile"],
+		}),
 	}),
 });
 
@@ -143,4 +160,5 @@ export const {
 	useGetProfileSkillsQuery,
 	useGetSuggestedExpertsQuery,
 	useGetTopReputationProfilesQuery,
+	useCreateOrUpdateUserMutation,
 } = profilesApiSlice;

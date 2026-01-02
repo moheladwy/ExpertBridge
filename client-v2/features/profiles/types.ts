@@ -38,6 +38,21 @@ export interface UpdateProfileRequest {
 	skills: string[];
 }
 
+/**
+ * Request to create or update a user in the backend.
+ * Used during registration and Google OAuth.
+ */
+export interface CreateOrUpdateUserRequest {
+	firstName: string;
+	lastName?: string;
+	email: string;
+	username: string;
+	providerId: string;
+	profilePictureUrl?: string;
+	phoneNumber?: string;
+	isEmailVerified: boolean;
+}
+
 export interface JobApplicant {
 	id: string;
 	userId: string;
