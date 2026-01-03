@@ -42,7 +42,8 @@ function SignInPageContent() {
 		if (success) {
 			const redirectTo = searchParams.get("redirect") || "/";
 			router.push(redirectTo);
-			// Loading will hide automatically via AppInitializer when profile loads
+			// Small delay to ensure navigation starts before hiding loading
+			setTimeout(() => hideLoading(), 100);
 		} else {
 			hideLoading(); // Hide on error
 		}
@@ -54,7 +55,8 @@ function SignInPageContent() {
 		if (success) {
 			const redirectTo = searchParams.get("redirect") || "/";
 			router.push(redirectTo);
-			// Loading will hide automatically via AppInitializer when profile loads
+			// Small delay to ensure navigation starts before hiding loading
+			setTimeout(() => hideLoading(), 100);
 		} else {
 			hideLoading(); // Hide on error
 		}

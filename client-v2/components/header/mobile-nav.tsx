@@ -1,34 +1,59 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/header/mode-toggle";
 import { cn } from "@/lib/utils";
-import { MenuIcon, XIcon } from "lucide-react";
+import { MenuIcon, XIcon, User, LogOut } from "lucide-react";
 import React from "react";
 import { createPortal } from "react-dom";
-import {
-	companyLinks,
-	companyLinks2,
-	productLinks,
-} from "@/components/header/nav-links";
-import { LinkItem } from "@/components/header/sheard";
+import { getNavLinks } from "@/components/header/nav-links";
+import { useSignOut } from "@/hooks/useSignOut";
+import type { ProfileResponse } from "@/features/profiles/types";
 
-export function MobileNav() {
+interface MobileNavProps {
+	isAuthenticated: boolean;
+	profile: ProfileResponse | null | undefined;
+}
+
+/**
+ * Mobile navigation with hamburger menu.
+ * Shows different links and actions based on authentication state.
+ */
+export function MobileNav({ isAuthenticated, profile }: MobileNavProps) {
 	const [open, setOpen] = React.useState(false);
 	const { isMobile } = useMediaQuery();
+	const router = useRouter();
+	const { signOut, loading: signOutLoading } = useSignOut();
 
-	// 🚫 Disable body scroll when open
+	const navLinks = getNavLinks(isAuthenticated);
+
+	// Disable body scroll when open
 	React.useEffect(() => {
 		if (open && isMobile) {
 			document.body.style.overflow = "hidden";
 		} else {
 			document.body.style.overflow = "";
 		}
-		// Cleanup on unmount too
 		return () => {
 			document.body.style.overflow = "";
 		};
 	}, [open, isMobile]);
+
+	const handleSignOut = async () => {
+		setOpen(false);
+		await signOut();
+		router.push("/");
+	};
+
+	// Get display name
+	const displayName = profile?.firstName
+		? `${profile.firstName}${
+				profile.lastName ? ` ${profile.lastName}` : ""
+		  }`
+		: profile?.email || "User";
 
 	return (
 		<>
@@ -74,44 +99,93 @@ export function MobileNav() {
 							)}
 							data-slot={open ? "open" : "closed"}
 						>
-							<div className="flex w-full flex-col gap-y-2">
-								<span className="text-sm">Product</span>
-								{productLinks.map((link) => (
-									<LinkItem
-										key={`product-${link.label}`}
-										{...link}
-									/>
+							{/* User Info (if authenticated) */}
+							{isAuthenticated && profile && (
+								<div className="mb-4 flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
+									{profile.profilePictureUrl ? (
+										// eslint-disable-next-line @next/next/no-img-element
+										<img
+											src={profile.profilePictureUrl}
+											alt={displayName}
+											className="h-10 w-10 rounded-full object-cover"
+										/>
+									) : (
+										<div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground">
+											{profile.firstName?.[0]?.toUpperCase() ||
+												"U"}
+										</div>
+									)}
+									<div>
+										<p className="font-medium">
+											{displayName}
+										</p>
+										<p className="text-xs text-muted-foreground">
+											{profile.email}
+										</p>
+									</div>
+								</div>
+							)}
+
+							{/* Navigation Links */}
+							<div className="flex w-full flex-col gap-y-1">
+								{navLinks.map((link) => (
+									<Link
+										key={link.href}
+										href={link.href}
+										className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
+										onClick={() => setOpen(false)}
+									>
+										{link.label}
+									</Link>
 								))}
-								<span className="text-sm">Company</span>
-								{companyLinks.map((link) => (
-									<LinkItem
-										key={`company-${link.label}`}
-										{...link}
-									/>
-								))}
-								{companyLinks2.map((link) => (
-									<LinkItem
-										key={`company-${link.label}`}
-										{...link}
-									/>
-								))}
+
+								{/* Profile link for authenticated users */}
+								{isAuthenticated && (
+									<Link
+										href="/profile"
+										className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
+										onClick={() => setOpen(false)}
+									>
+										<User className="h-4 w-4" />
+										Profile
+									</Link>
+								)}
 							</div>
+
+							{/* Bottom Actions */}
 							<div className="mt-5 flex flex-col gap-2">
 								<ModeToggle />
-								<Link
-									href="/auth/signin"
-									className="w-full rounded-lg border border-border bg-background px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
-									onClick={() => setOpen(false)}
-								>
-									Sign In
-								</Link>
-								<Link
-									href="/auth/signup"
-									className="w-full rounded-lg bg-primary text-primary-foreground px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all"
-									onClick={() => setOpen(false)}
-								>
-									Get Started
-								</Link>
+
+								{isAuthenticated ? (
+									<Button
+										onClick={handleSignOut}
+										disabled={signOutLoading}
+										variant="destructive"
+										className="w-full"
+									>
+										<LogOut className="mr-2 h-4 w-4" />
+										{signOutLoading
+											? "Signing out..."
+											: "Sign Out"}
+									</Button>
+								) : (
+									<>
+										<Link
+											href="/auth/signin"
+											className="w-full rounded-lg border border-border bg-background px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
+											onClick={() => setOpen(false)}
+										>
+											Sign In
+										</Link>
+										<Link
+											href="/auth/signup"
+											className="w-full rounded-lg bg-primary text-primary-foreground px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all"
+											onClick={() => setOpen(false)}
+										>
+											Get Started
+										</Link>
+									</>
+								)}
 							</div>
 						</div>
 					</div>,

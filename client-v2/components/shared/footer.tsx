@@ -23,39 +23,35 @@ type FooterSection = {
 
 const footerLinks: FooterSection[] = [
 	{
-		label: "Product",
-		links: [
-			{ title: "Features", href: "#" },
-			{ title: "Pricing", href: "#" },
-			{ title: "Testimonials", href: "#" },
-			{ title: "Integration", href: "#" },
-		],
-	},
-	{
 		label: "Company",
 		links: [
-			{ title: "FAQs", href: "#" },
-			{ title: "About Us", href: "#" },
-			{ title: "Privacy Policy", href: "#" },
-			{ title: "Terms of Services", href: "#" },
-		],
-	},
-	{
-		label: "Resources",
-		links: [
-			{ title: "Blog", href: "#" },
-			{ title: "Changelog", href: "#" },
-			{ title: "Brand", href: "#" },
-			{ title: "Help", href: "#" },
+			{ title: "About Us", href: "/about" },
+			{ title: "Privacy Policy", href: "/privacy" },
 		],
 	},
 	{
 		label: "Social Links",
 		links: [
-			{ title: "Facebook", href: "#", icon: FacebookIcon },
-			{ title: "Instagram", href: "#", icon: InstagramIcon },
-			{ title: "Youtube", href: "#", icon: YoutubeIcon },
-			{ title: "LinkedIn", href: "#", icon: LinkedinIcon },
+			{
+				title: "Facebook",
+				href: "https://facebook.com",
+				icon: FacebookIcon,
+			},
+			{
+				title: "Instagram",
+				href: "https://instagram.com",
+				icon: InstagramIcon,
+			},
+			{
+				title: "Youtube",
+				href: "https://youtube.com",
+				icon: YoutubeIcon,
+			},
+			{
+				title: "LinkedIn",
+				href: "https://linkedin.com",
+				icon: LinkedinIcon,
+			},
 		],
 	},
 ];
@@ -69,12 +65,12 @@ export function Footer() {
 				<AnimatedContainer className="space-y-4">
 					<Logo className="h-4" />
 					<p className="mt-8 text-muted-foreground text-sm md:mt-0">
-						&copy; {new Date().getFullYear()} efferd, All rights
-						reserved
+						&copy; {new Date().getFullYear()} ExpertBridge, All
+						rights reserved
 					</p>
 				</AnimatedContainer>
 
-				<div className="mt-10 grid grid-cols-2 gap-8 md:grid-cols-4 xl:col-span-2 xl:mt-0">
+				<div className="mt-10 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
 					{footerLinks.map((section, index) => (
 						<AnimatedContainer
 							delay={0.1 + index * 0.1}

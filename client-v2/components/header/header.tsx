@@ -3,14 +3,53 @@ import { useScroll } from "@/hooks/use-scroll";
 import { Logo } from "@/components/shared/logo";
 import { ModeToggle } from "@/components/header/mode-toggle";
 import { SearchCommand } from "@/components/header/search-command";
+import { ProfileDropdown } from "@/components/header/profile-dropdown";
 
 import { cn } from "@/lib/utils";
 import { DesktopNav } from "@/components/header/desktop-nav";
 import { MobileNav } from "@/components/header/mobile-nav";
 import Link from "next/link";
+import { useIsUserLoggedIn } from "@/hooks/useIsUserLoggedIn";
+import { Skeleton } from "@/components/ui/skeleton";
+
+/**
+ * Skeleton component for header loading state.
+ */
+function HeaderSkeleton() {
+	return (
+		<div className="hidden items-center gap-2 md:flex">
+			<Skeleton className="h-8 w-8 rounded-md" />
+			<Skeleton className="h-8 w-16 rounded-lg" />
+			<Skeleton className="h-8 w-20 rounded-lg" />
+		</div>
+	);
+}
+
+/**
+ * Auth buttons for non-authenticated users.
+ */
+function AuthButtons() {
+	return (
+		<>
+			<Link
+				href="/auth/signin"
+				className="rounded-lg border border-border bg-background px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
+			>
+				Sign In
+			</Link>
+			<Link
+				href="/auth/signup"
+				className="rounded-lg bg-primary text-primary-foreground px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all"
+			>
+				Get Started
+			</Link>
+		</>
+	);
+}
 
 export function Header() {
 	const scrolled = useScroll(10);
+	const { isAuthenticated, isLoading, profile } = useIsUserLoggedIn();
 
 	return (
 		<header
@@ -24,33 +63,31 @@ export function Header() {
 		>
 			<nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-4 px-4">
 				<div className="flex items-center gap-5">
-					<a
+					<Link
 						className="rounded-md px-3 py-2.5 hover:bg-accent"
-						href="#"
+						href="/"
 					>
 						<Logo className="h-4" />
-					</a>
-					<DesktopNav />
+					</Link>
+					<DesktopNav isAuthenticated={isAuthenticated} />
 				</div>
 				<div className="hidden flex-1 items-center justify-center px-4 md:flex md:max-w-md">
 					<SearchCommand />
 				</div>
 				<div className="hidden items-center gap-2 md:flex">
 					<ModeToggle />
-					<Link
-						href="/auth/signin"
-						className="rounded-lg border border-border bg-background px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
-					>
-						Sign In
-					</Link>
-					<Link
-						href="/auth/signup"
-						className="rounded-lg bg-primary text-primary-foreground px-2.5 h-8 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all"
-					>
-						Get Started
-					</Link>
+					{isLoading ? (
+						<HeaderSkeleton />
+					) : isAuthenticated ? (
+						<ProfileDropdown profile={profile} />
+					) : (
+						<AuthButtons />
+					)}
 				</div>
-				<MobileNav />
+				<MobileNav
+					isAuthenticated={isAuthenticated}
+					profile={profile}
+				/>
 			</nav>
 		</header>
 	);

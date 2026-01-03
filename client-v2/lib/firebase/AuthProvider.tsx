@@ -19,6 +19,11 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+// Module-level flag to track if auth has been initialized
+// This persists across component remounts during navigation
+let authInitialized = false;
+let cachedUser: User | null = null;
+
 interface AuthProviderProps {
 	children: ReactNode;
 }
@@ -42,14 +47,18 @@ interface AuthProviderProps {
  * ```
  */
 export function AuthProvider({ children }: AuthProviderProps) {
-	const [user, setUser] = useState<User | null>(null);
-	const [loading, setLoading] = useState(true);
+	// Initialize with cached values if already initialized
+	const [user, setUser] = useState<User | null>(cachedUser);
+	const [loading, setLoading] = useState(!authInitialized);
 
 	useEffect(() => {
 		// Single listener for the entire app
 		const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
 			setUser(firebaseUser);
 			setLoading(false);
+			// Cache for future remounts
+			authInitialized = true;
+			cachedUser = firebaseUser;
 		});
 
 		return () => unsubscribe();

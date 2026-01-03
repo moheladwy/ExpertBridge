@@ -1,105 +1,45 @@
-import {
-	BarChart,
-	CodeIcon,
-	FileText,
-	GlobeIcon,
-	Handshake,
-	HelpCircle,
-	LayersIcon,
-	Leaf,
-	PlugIcon,
-	RotateCcw,
-	Shield,
-	Star,
-	UserPlusIcon,
-	Users,
-} from "lucide-react";
-import type { LinkItemType } from "@/components/header/sheard";
+/**
+ * Navigation links for the header.
+ * Organized by visibility context.
+ */
 
-export const productLinks: LinkItemType[] = [
-	{
-		label: "Website Builder",
-		href: "#",
-		description: "Create responsive websites with ease",
-		icon: GlobeIcon,
-	},
-	{
-		label: "Cloud Platform",
-		href: "#",
-		description: "Deploy and scale apps in the cloud",
-		icon: LayersIcon,
-	},
-	{
-		label: "Team Collaboration",
-		href: "#",
-		description: "Tools to help your teams work better together",
-		icon: UserPlusIcon,
-	},
-	{
-		label: "Analytics",
-		href: "#",
-		description: "Track and analyze your website traffic",
-		icon: BarChart,
-	},
-	{
-		label: "Integrations",
-		href: "#",
-		description: "Connect your apps and services",
-		icon: PlugIcon,
-	},
-	{
-		label: "API",
-		href: "#",
-		description: "Build custom integrations with our API",
-		icon: CodeIcon,
-	},
+export interface NavLink {
+	label: string;
+	href: string;
+}
+
+/**
+ * Main navigation links shown to all users.
+ */
+export const mainNavLinks: NavLink[] = [
+	{ label: "Home", href: "/" },
+	{ label: "Jobs", href: "/jobs" },
 ];
 
-export const companyLinks: LinkItemType[] = [
-	{
-		label: "About Us",
-		href: "#",
-		description: "Learn more about our story and team",
-		icon: Users,
-	},
-	{
-		label: "Customer Stories",
-		href: "#",
-		description: "See how we’ve helped our clients succeed",
-		icon: Star,
-	},
-	{
-		label: "Partnerships",
-		href: "#",
-		icon: Handshake,
-		description: "Collaborate with us for mutual growth",
-	},
+/**
+ * Navigation links shown to guest users.
+ */
+export const guestNavLinks: NavLink[] = [
+	{ label: "About Us", href: "/about" },
+	{ label: "Privacy Policy", href: "/privacy" },
 ];
 
-export const companyLinks2: LinkItemType[] = [
-	{
-		label: "Terms of Service",
-		href: "#",
-		icon: FileText,
-	},
-	{
-		label: "Privacy Policy",
-		href: "#",
-		icon: Shield,
-	},
-	{
-		label: "Refund Policy",
-		href: "#",
-		icon: RotateCcw,
-	},
-	{
-		label: "Blog",
-		href: "#",
-		icon: Leaf,
-	},
-	{
-		label: "Help Center",
-		href: "#",
-		icon: HelpCircle,
-	},
+/**
+ * Additional navigation links shown only to authenticated users.
+ */
+export const authenticatedNavLinks: NavLink[] = [
+	{ label: "Offers", href: "/offers" },
+	{ label: "My Jobs", href: "/my-jobs" },
 ];
+
+/**
+ * Get navigation links based on authentication status.
+ * @param isAuthenticated - Whether the user is logged in
+ * @returns Combined array of navigation links
+ */
+export function getNavLinks(isAuthenticated: boolean): NavLink[] {
+	if (isAuthenticated) {
+		return [...mainNavLinks, ...authenticatedNavLinks, ...guestNavLinks];
+	}
+	return [...mainNavLinks, ...guestNavLinks];
+}
