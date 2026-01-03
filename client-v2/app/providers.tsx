@@ -10,6 +10,8 @@ import { Toaster } from "react-hot-toast";
 import type { AppStore } from "@/lib/redux/store";
 import { makeStore } from "@/lib/redux/store";
 import { AuthProvider } from "@/lib/firebase/AuthProvider";
+import { AppLoadingProvider } from "@/components/shared/AppLoadingProvider";
+import { AppInitializer } from "@/components/shared/AppInitializer";
 
 interface ProvidersProps {
 	readonly children: ReactNode;
@@ -50,7 +52,9 @@ export function Providers({ children }: ProvidersProps) {
 					enableSystem
 					disableTransitionOnChange
 				>
-					{children}
+					<AppLoadingProvider>
+						<AppInitializer>{children}</AppInitializer>
+					</AppLoadingProvider>
 					<Toaster
 						position="top-right"
 						toastOptions={{

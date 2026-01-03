@@ -1,5 +1,6 @@
 // Base server URL from environment or default
-export const BASE_URL = process.env.VITE_SERVER_URL || "http://localhost:5000";
+export const BASE_URL =
+	process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5027";
 export const API_URL = `${BASE_URL}/api`;
 export const SEARCH_URL = `${API_URL}/Search`;
 

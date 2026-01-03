@@ -4,7 +4,10 @@ import { useState, useCallback } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getFirebaseErrorMessage } from "@/lib/validations/auth";
-import { useCreateOrUpdateUserMutation } from "@/features/profiles/profilesSlice";
+import {
+	useCreateOrUpdateUserMutation,
+	useLazyGetCurrentUserProfileQuery,
+} from "@/features/profiles/profilesSlice";
 
 interface UseSignInWithGoogleReturn {
 	signInWithGoogle: () => Promise<boolean>;
@@ -21,6 +24,7 @@ const googleProvider = new GoogleAuthProvider();
  * Handles:
  * - Google popup sign in
  * - Backend user creation (upsert pattern)
+ * - Profile prefetch for cache population
  * - Rollback on backend failure
  *
  * @example
@@ -37,6 +41,7 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [createOrUpdateUser] = useCreateOrUpdateUserMutation();
+	const [prefetchProfile] = useLazyGetCurrentUserProfileQuery();
 
 	const clearError = useCallback(() => {
 		setError(null);
@@ -68,6 +73,10 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 					phoneNumber: user.phoneNumber || undefined,
 					isEmailVerified: user.emailVerified,
 				}).unwrap();
+
+				// Prefetch profile to populate RTK Query cache
+				// This ensures AppInitializer has data immediately
+				await prefetchProfile();
 			} catch (backendError) {
 				// Rollback: sign out from Firebase if backend fails
 				await auth.signOut();
@@ -90,7 +99,7 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 		} finally {
 			setLoading(false);
 		}
-	}, [createOrUpdateUser]);
+	}, [createOrUpdateUser, prefetchProfile]);
 
 	return { signInWithGoogle, loading, error, clearError };
 }

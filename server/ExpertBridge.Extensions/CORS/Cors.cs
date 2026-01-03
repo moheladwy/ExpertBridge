@@ -56,8 +56,10 @@ public static class Cors
             {
                 policy.WithOrigins(
                         "http://localhost:5173",
+                        "http://localhost:3000",
                         "http://localhost:5174",
-                        "https://expert-bridge.netlify.app"
+                        "https://expert-bridge.netlify.app",
+                        "https://khabier.netlify.app"
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader()

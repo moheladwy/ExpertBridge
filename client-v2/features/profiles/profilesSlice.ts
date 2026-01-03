@@ -142,7 +142,7 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 		>({
 			query: (request) => ({
 				url: "/users",
-				method: "POST",
+				method: "PUT",
 				body: request,
 			}),
 			invalidatesTags: ["Profile"],
@@ -152,6 +152,7 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 
 export const {
 	useGetCurrentUserProfileQuery,
+	useLazyGetCurrentUserProfileQuery,
 	useGetProfileByIdQuery,
 	useOnboardUserMutation,
 	useIsUsernameAvailableQuery,

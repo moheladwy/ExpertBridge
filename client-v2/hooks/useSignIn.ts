@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getFirebaseErrorMessage } from "@/lib/validations/auth";
+import { useLazyGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
 
 interface UseSignInReturn {
 	signIn: (email: string, password: string) => Promise<boolean>;
@@ -18,6 +19,7 @@ interface UseSignInReturn {
  * Handles:
  * - Firebase authentication
  * - Email verification check
+ * - Profile prefetch for cache population
  * - Error message mapping
  *
  * @example
@@ -33,6 +35,7 @@ interface UseSignInReturn {
 export function useSignIn(): UseSignInReturn {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [prefetchProfile] = useLazyGetCurrentUserProfileQuery();
 
 	const clearError = useCallback(() => {
 		setError(null);
@@ -60,6 +63,10 @@ export function useSignIn(): UseSignInReturn {
 					return false;
 				}
 
+				// Prefetch profile to populate RTK Query cache
+				// This ensures AppInitializer has data immediately
+				await prefetchProfile();
+
 				return true;
 			} catch (err) {
 				setError(getFirebaseErrorMessage(err));
@@ -68,7 +75,7 @@ export function useSignIn(): UseSignInReturn {
 				setLoading(false);
 			}
 		},
-		[]
+		[prefetchProfile]
 	);
 
 	return { signIn, loading, error, clearError };

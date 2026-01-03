@@ -9,6 +9,8 @@ import { GoogleButton } from "@/components/auth/GoogleButton";
 import { useSignUp, type SignUpData } from "@/hooks/useSignUp";
 import { useSignInWithGoogle } from "@/hooks/useSignInWithGoogle";
 import { useAuth } from "@/lib/firebase/AuthProvider";
+import { useAppLoading } from "@/components/shared/AppLoadingProvider";
+import { LoadingScreen } from "@/components/shared/LoadingScreen";
 import type { SignUpFormData } from "@/lib/validations/auth";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MailSend02Icon } from "@hugeicons/core-free-icons";
@@ -31,6 +33,7 @@ function SignUpPageContent() {
 		loading: googleLoading,
 		error: googleError,
 	} = useSignInWithGoogle();
+	const { showLoading, hideLoading } = useAppLoading();
 
 	// Redirect if already logged in
 	useEffect(() => {
@@ -53,21 +56,16 @@ function SignUpPageContent() {
 	};
 
 	const handleGoogleSignIn = async () => {
+		showLoading(); // Show branded loading screen
 		const success = await signInWithGoogle();
 		if (success) {
 			const redirectTo = searchParams.get("redirect") || "/";
 			router.push(redirectTo);
+			// Loading will hide automatically via AppInitializer when profile loads
+		} else {
+			hideLoading(); // Hide on error
 		}
 	};
-
-	// Show nothing while checking auth state
-	if (authLoading) {
-		return (
-			<div className="flex min-h-screen items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-			</div>
-		);
-	}
 
 	// Don't render if already logged in (will redirect)
 	if (user) {
@@ -154,11 +152,7 @@ function SignUpPageContent() {
 }
 export default function SignUpPage() {
 	return (
-		<Suspense fallback={
-			<div className="flex min-h-screen items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-			</div>
-		}>
+		<Suspense fallback={<LoadingScreen />}>
 			<SignUpPageContent />
 		</Suspense>
 	);

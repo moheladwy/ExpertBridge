@@ -9,6 +9,8 @@ import { GoogleButton } from "@/components/auth/GoogleButton";
 import { useSignIn } from "@/hooks/useSignIn";
 import { useSignInWithGoogle } from "@/hooks/useSignInWithGoogle";
 import { useAuth } from "@/lib/firebase/AuthProvider";
+import { useAppLoading } from "@/components/shared/AppLoadingProvider";
+import { LoadingScreen } from "@/components/shared/LoadingScreen";
 import type { SignInFormData } from "@/lib/validations/auth";
 
 /**
@@ -24,6 +26,7 @@ function SignInPageContent() {
 		loading: googleLoading,
 		error: googleError,
 	} = useSignInWithGoogle();
+	const { showLoading, hideLoading } = useAppLoading();
 
 	// Redirect if already logged in
 	useEffect(() => {
@@ -34,32 +37,31 @@ function SignInPageContent() {
 	}, [user, authLoading, router, searchParams]);
 
 	const handleSignIn = async (data: SignInFormData) => {
+		showLoading(); // Show branded loading screen
 		const success = await signIn(data.email, data.password);
 		if (success) {
 			const redirectTo = searchParams.get("redirect") || "/";
 			router.push(redirectTo);
+			// Loading will hide automatically via AppInitializer when profile loads
+		} else {
+			hideLoading(); // Hide on error
 		}
 	};
 
 	const handleGoogleSignIn = async () => {
+		showLoading(); // Show branded loading screen
 		const success = await signInWithGoogle();
 		if (success) {
 			const redirectTo = searchParams.get("redirect") || "/";
 			router.push(redirectTo);
+			// Loading will hide automatically via AppInitializer when profile loads
+		} else {
+			hideLoading(); // Hide on error
 		}
 	};
 
 	const loading = signInLoading || googleLoading;
 	const error = signInError || googleError;
-
-	// Show nothing while checking auth state
-	if (authLoading) {
-		return (
-			<div className="flex min-h-screen items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-			</div>
-		);
-	}
 
 	// Don't render if already logged in (will redirect)
 	if (user) {
@@ -120,13 +122,7 @@ function SignInPageContent() {
 
 export default function SignInPage() {
 	return (
-		<Suspense
-			fallback={
-				<div className="flex min-h-screen items-center justify-center">
-					<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-				</div>
-			}
-		>
+		<Suspense fallback={<LoadingScreen />}>
 			<SignInPageContent />
 		</Suspense>
 	);
