@@ -11,9 +11,9 @@ import Orb from "@/components/ui/Orb";
  */
 export function Hero() {
 	return (
-		<section className="relative overflow-hidden border-b bg-background py-20 md:py-28 lg:py-32">
+		<section className="relative overflow-hidden min-h-screen border-b bg-background py-20 md:py-28 lg:py-32">
 			{/* Background decoration with Orb */}
-			<div className="absolute inset-0 -z-1- flex items-center justify-center opacity-60">
+			<div className="absolute inset-0 -z-1- flex items-center justify-center opacity-50">
 				<Orb
 					hue={10}
 					hoverIntensity={0.3}
@@ -21,7 +21,7 @@ export function Hero() {
 					forceHoverState={false}
 				/>
 			</div>
-			<div className="container relative z-10 mx-auto max-w-5xl px-4">
+			<div className="container relative z-10 mx-auto max-w-5xl px-4 py-30">
 				<div className="mx-auto max-w-3xl text-center">
 					{/* Badge */}
 					<div className="mb-6 inline-flex items-center gap-2 rounded-full border bg-muted px-3 py-1.5 text-sm">
