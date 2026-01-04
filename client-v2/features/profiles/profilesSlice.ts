@@ -71,6 +71,16 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 		}),
 
 		/**
+		 * Check if a username is available (mutation version for form validation).
+		 */
+		checkUsernameAvailable: builder.mutation<boolean, string>({
+			query: (username) => ({
+				url: `/profiles/is-username-available/${username}`,
+				method: "GET",
+			}),
+		}),
+
+		/**
 		 * Update the current user's profile.
 		 */
 		updateProfile: builder.mutation<ProfileResponse, UpdateProfileRequest>({
@@ -156,6 +166,7 @@ export const {
 	useGetProfileByIdQuery,
 	useOnboardUserMutation,
 	useIsUsernameAvailableQuery,
+	useCheckUsernameAvailableMutation,
 	useUpdateProfileMutation,
 	useGetCurrentUserSkillsQuery,
 	useGetProfileSkillsQuery,
