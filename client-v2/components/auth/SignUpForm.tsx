@@ -54,15 +54,24 @@ export function SignUpForm({
 		const result = signUpSchema.safeParse(formData);
 
 		if (!result.success) {
-			const fieldErrors: Partial<Record<keyof SignUpFormData, string>> =
-				{};
-			const issues = result.error.issues;
-			for (const issue of issues) {
-				const field = issue.path[0] as keyof SignUpFormData;
-				if (!fieldErrors[field]) {
-					fieldErrors[field] = issue.message;
+			// Build field errors using reduce - spreads create new objects
+			const fieldErrors = result.error.issues.reduce<
+				Partial<Record<keyof SignUpFormData, string>>
+			>((acc, issue) => {
+				const field = issue.path[0];
+				if (
+					typeof field === "string" &&
+					(field === "firstName" ||
+						field === "lastName" ||
+						field === "email" ||
+						field === "password" ||
+						field === "confirmPassword") &&
+					!Object.prototype.hasOwnProperty.call(acc, field)
+				) {
+					return { ...acc, [field]: issue.message };
 				}
-			}
+				return acc;
+			}, {});
 			setErrors(fieldErrors);
 			return false;
 		}

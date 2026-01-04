@@ -52,15 +52,20 @@ export function SignInForm({
 		const result = signInSchema.safeParse(formData);
 
 		if (!result.success) {
-			const fieldErrors: Partial<Record<keyof SignInFormData, string>> =
-				{};
-			const issues = result.error.issues;
-			for (const issue of issues) {
-				const field = issue.path[0] as keyof SignInFormData;
-				if (!fieldErrors[field]) {
-					fieldErrors[field] = issue.message;
+			// Build field errors using reduce - spreads create new objects
+			const fieldErrors = result.error.issues.reduce<
+				Partial<Record<keyof SignInFormData, string>>
+			>((acc, issue) => {
+				const field = issue.path[0];
+				if (
+					typeof field === "string" &&
+					(field === "email" || field === "password") &&
+					!Object.prototype.hasOwnProperty.call(acc, field)
+				) {
+					return { ...acc, [field]: issue.message };
 				}
-			}
+				return acc;
+			}, {});
 			setErrors(fieldErrors);
 			return false;
 		}

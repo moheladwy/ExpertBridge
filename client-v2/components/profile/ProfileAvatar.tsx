@@ -28,6 +28,34 @@ function getInitials(
 /**
  * Profile avatar component with image or fallback initials.
  */
+/**
+ * Get size-specific CSS classes based on size prop.
+ */
+function getSizeClass(size: "sm" | "md" | "lg"): string {
+	switch (size) {
+		case "sm":
+			return "h-10 w-10 text-sm";
+		case "md":
+			return "h-16 w-16 text-xl";
+		case "lg":
+			return "h-28 w-28 text-3xl";
+	}
+}
+
+/**
+ * Get image size string for Next.js Image optimization.
+ */
+function getImageSize(size: "sm" | "md" | "lg"): string {
+	switch (size) {
+		case "sm":
+			return "40px";
+		case "md":
+			return "64px";
+		case "lg":
+			return "112px";
+	}
+}
+
 export function ProfileAvatar({
 	imageUrl,
 	firstName,
@@ -36,21 +64,8 @@ export function ProfileAvatar({
 	className,
 	isLoading = false,
 }: ProfileAvatarProps) {
-	const sizeClasses = {
-		sm: "h-10 w-10 text-sm",
-		md: "h-16 w-16 text-xl",
-		lg: "h-28 w-28 text-3xl",
-	};
-
-	// Dynamic sizes for Next.js Image optimization
-	const imageSizes = {
-		sm: "40px",
-		md: "64px",
-		lg: "112px",
-	};
-
-	const sizeClass = sizeClasses[size];
-	const imageSize = imageSizes[size];
+	const sizeClass = getSizeClass(size);
+	const imageSize = getImageSize(size);
 
 	if (isLoading) {
 		return (

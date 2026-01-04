@@ -24,7 +24,7 @@ interface UpdateProfileProps {
  */
 export function UpdateProfile({ onClose }: UpdateProfileProps) {
 	const { data: profile, isLoading: isProfileLoading } =
-		useGetCurrentUserProfileQuery();
+		useGetCurrentUserProfileQuery(undefined);
 	const [updateProfile, { isLoading: isUpdating }] =
 		useUpdateProfileMutation();
 	const [
@@ -74,7 +74,9 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 			}
 		}, 500);
 
-		return () => clearTimeout(timeoutId);
+		return () => {
+			clearTimeout(timeoutId);
+		};
 	}, [username, profile?.username, checkUsername]);
 
 	const validateForm = (): boolean => {
@@ -126,16 +128,23 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 		}
 	};
 
+	/**
+	 * Adds a skill to the skills list if valid and not duplicate.
+	 */
+	const addSkill = () => {
+		const trimmedSkill = skillInput.trim();
+		if (trimmedSkill && !skills.includes(trimmedSkill)) {
+			setSkills([...skills, trimmedSkill]);
+			setSkillInput("");
+		} else if (skills.includes(trimmedSkill)) {
+			toast.error("This skill is already in your list");
+		}
+	};
+
 	const handleAddSkill = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
 			e.preventDefault();
-			const trimmedSkill = skillInput.trim();
-			if (trimmedSkill && !skills.includes(trimmedSkill)) {
-				setSkills([...skills, trimmedSkill]);
-				setSkillInput("");
-			} else if (skills.includes(trimmedSkill)) {
-				toast.error("This skill is already in your list");
-			}
+			addSkill();
 		}
 	};
 
@@ -300,14 +309,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 					<Button
 						type="button"
 						size="sm"
-						onClick={() => {
-							if (skillInput.trim()) {
-								handleAddSkill({
-									key: "Enter",
-									preventDefault: () => {},
-								} as React.KeyboardEvent<HTMLInputElement>);
-							}
-						}}
+						onClick={addSkill}
 					>
 						Add
 					</Button>

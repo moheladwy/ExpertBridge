@@ -46,7 +46,9 @@ export function SearchCommand() {
 		};
 
 		document.addEventListener("keydown", down);
-		return () => document.removeEventListener("keydown", down);
+		return () => {
+			document.removeEventListener("keydown", down);
+		};
 	}, []);
 
 	return (

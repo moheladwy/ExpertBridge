@@ -33,7 +33,7 @@ function ProfileContent() {
 		data: profile,
 		isLoading: isProfileLoading,
 		error: profileError,
-	} = useGetCurrentUserProfileQuery();
+	} = useGetCurrentUserProfileQuery(undefined);
 
 	// Fetch user's posts and comments
 	const { data: posts, isLoading: isPostsLoading } = useGetPostsByUserIdQuery(

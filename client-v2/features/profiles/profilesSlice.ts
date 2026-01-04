@@ -20,7 +20,7 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 		 * Get the current authenticated user's profile.
 		 * This is the primary source of "app profile" data.
 		 */
-		getCurrentUserProfile: builder.query<ProfileResponse, void>({
+		getCurrentUserProfile: builder.query<ProfileResponse, undefined>({
 			query: () => `/profiles`,
 			providesTags: ["Profile"],
 		}),
@@ -113,7 +113,7 @@ export const profilesApiSlice = apiSlice.injectEndpoints({
 		/**
 		 * Get the current user's skills.
 		 */
-		getCurrentUserSkills: builder.query<string[], void>({
+		getCurrentUserSkills: builder.query<string[], undefined>({
 			query: () => `/profiles/skills`,
 			providesTags: [{ type: "Profile", id: "skills" }],
 		}),
