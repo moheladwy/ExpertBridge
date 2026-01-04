@@ -7,6 +7,10 @@ export const metadata: Metadata = {
 		"Learn about ExpertBridge's mission to connect talent with opportunity",
 };
 
+// Enable static generation at build time
+export const dynamic = "force-static";
+export const revalidate = false;
+
 export default function AboutPage() {
 	return (
 		<div className="container mx-auto max-w-4xl px-4 py-16 md:py-24">

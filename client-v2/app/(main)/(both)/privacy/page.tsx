@@ -7,6 +7,10 @@ export const metadata: Metadata = {
 		"ExpertBridge Privacy Policy - How we collect, use, and protect your data",
 };
 
+// Enable static generation at build time
+export const dynamic = "force-static";
+export const revalidate = false;
+
 export default function PrivacyPolicyPage() {
 	return (
 		<div className="container mx-auto max-w-4xl px-4 py-16 md:py-24">

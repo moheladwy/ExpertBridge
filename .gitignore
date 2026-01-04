@@ -70,6 +70,7 @@ client/audit-report/phase4-implementation-summary.md
 client/audit-report/CRITICAL_UI_FIX.md
 
 .github/plans/client/
+.github/reviews/
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
