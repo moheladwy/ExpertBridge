@@ -79,7 +79,9 @@ function ProfileContent() {
 							postsCount={posts?.length ?? 0}
 							commentsCount={comments?.length ?? 0}
 							isLoading={isProfileLoading}
-							onEditProfile={() => setIsEditOpen(true)}
+							onEditProfile={() => {
+								setIsEditOpen(true);
+							}}
 						/>
 					</div>
 				</aside>
@@ -98,7 +100,11 @@ function ProfileContent() {
 			{/* Edit Profile Dialog */}
 			<Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
 				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-					<UpdateProfile onClose={() => setIsEditOpen(false)} />
+					<UpdateProfile
+						onClose={() => {
+							setIsEditOpen(false);
+						}}
+					/>
 				</DialogContent>
 			</Dialog>
 		</div>
