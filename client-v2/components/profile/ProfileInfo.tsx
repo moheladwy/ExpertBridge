@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,6 +11,8 @@ interface ProfileInfoProps {
 	profile: ProfileResponse | null | undefined;
 	isLoading?: boolean;
 	onEditProfile?: () => void;
+	/** Custom action button (e.g., HireMeButton) - takes precedence over onEditProfile */
+	customAction?: ReactNode;
 	className?: string;
 }
 
@@ -20,6 +23,7 @@ export function ProfileInfo({
 	profile,
 	isLoading = false,
 	onEditProfile,
+	customAction,
 	className,
 }: ProfileInfoProps) {
 	if (isLoading) {
@@ -66,8 +70,11 @@ export function ProfileInfo({
 				</p>
 			)}
 
-			{/* Edit Profile Button */}
-			{onEditProfile && (
+			{/* Custom Action Button (e.g., Hire Me) */}
+			{customAction && <div className="mt-4 w-full">{customAction}</div>}
+
+			{/* Edit Profile Button (only if no customAction) */}
+			{!customAction && onEditProfile && (
 				<Button
 					variant="outline"
 					size="sm"

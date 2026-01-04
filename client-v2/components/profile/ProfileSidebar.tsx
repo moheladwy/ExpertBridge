@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -15,6 +16,8 @@ interface ProfileSidebarProps {
 	commentsCount?: number;
 	isLoading?: boolean;
 	onEditProfile?: () => void;
+	/** Custom action button (e.g., HireMeButton) - takes precedence over onEditProfile */
+	customAction?: ReactNode;
 	className?: string;
 }
 
@@ -28,6 +31,7 @@ export function ProfileSidebar({
 	commentsCount = 0,
 	isLoading = false,
 	onEditProfile,
+	customAction,
 	className,
 }: ProfileSidebarProps) {
 	return (
@@ -51,6 +55,7 @@ export function ProfileSidebar({
 					profile={profile}
 					isLoading={isLoading}
 					onEditProfile={onEditProfile}
+					customAction={customAction}
 				/>
 
 				<Separator />
