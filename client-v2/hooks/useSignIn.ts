@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getFirebaseErrorMessage } from "@/lib/validations/auth";
 import { useLazyGetCurrentUserProfileQuery } from "@/features/profiles/profilesSlice";
+import { useSignOut } from "./useSignOut";
 
 interface UseSignInReturn {
 	signIn: (email: string, password: string) => Promise<boolean>;
@@ -36,6 +37,7 @@ export function useSignIn(): UseSignInReturn {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [prefetchProfile] = useLazyGetCurrentUserProfileQuery();
+	const { signOut } = useSignOut();
 
 	const clearError = useCallback(() => {
 		setError(null);
@@ -56,7 +58,7 @@ export function useSignIn(): UseSignInReturn {
 				// Check email verification
 				if (!userCredential.user.emailVerified) {
 					// Sign out unverified user
-					await auth.signOut();
+					await signOut();
 					setError(
 						"Please verify your email before signing in. Check your inbox for the verification link."
 					);
@@ -75,7 +77,7 @@ export function useSignIn(): UseSignInReturn {
 				setLoading(false);
 			}
 		},
-		[prefetchProfile]
+		[prefetchProfile, signOut]
 	);
 
 	return { signIn, loading, error, clearError };

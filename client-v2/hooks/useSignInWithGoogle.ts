@@ -8,6 +8,7 @@ import {
 	useCreateOrUpdateUserMutation,
 	useLazyGetCurrentUserProfileQuery,
 } from "@/features/profiles/profilesSlice";
+import { useSignOut } from "./useSignOut";
 
 interface UseSignInWithGoogleReturn {
 	signInWithGoogle: () => Promise<boolean>;
@@ -42,6 +43,7 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 	const [error, setError] = useState<string | null>(null);
 	const [createOrUpdateUser] = useCreateOrUpdateUserMutation();
 	const [prefetchProfile] = useLazyGetCurrentUserProfileQuery();
+	const { signOut } = useSignOut();
 
 	const clearError = useCallback(() => {
 		setError(null);
@@ -84,7 +86,7 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 				await prefetchProfile(undefined);
 			} catch (backendError) {
 				// Rollback: sign out from Firebase if backend fails
-				await auth.signOut();
+				await signOut();
 				console.error("Backend user creation failed:", backendError);
 				setError("Failed to create your account. Please try again.");
 				return false;
@@ -104,7 +106,7 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 		} finally {
 			setLoading(false);
 		}
-	}, [createOrUpdateUser, prefetchProfile]);
+	}, [createOrUpdateUser, prefetchProfile, signOut]);
 
 	return { signInWithGoogle, loading, error, clearError };
 }
