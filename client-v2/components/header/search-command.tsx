@@ -56,7 +56,7 @@ export function SearchCommand() {
 				className={cn(
 					"relative h-9 w-full justify-start rounded-lg text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-64"
 				)}
-				onClick={() => setOpen(true)}
+				onClick={() => { setOpen(true); }}
 			>
 				<HugeiconsIcon icon={SearchIcon} className="mr-2 h-4 w-4" />
 				<span className="hidden lg:inline-flex">Search...</span>

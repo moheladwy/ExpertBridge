@@ -169,8 +169,13 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 		);
 	}
 
+	const onFormSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		void handleSubmit(e);
+	};
+
 	return (
-		<form onSubmit={handleSubmit} className="space-y-6">
+		<form onSubmit={onFormSubmit} className="space-y-6">
 			<div className="text-center mb-4">
 				<h2 className="text-xl font-semibold">Update Your Profile</h2>
 				<p className="text-sm text-muted-foreground">
@@ -190,7 +195,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 					<Input
 						id="firstName"
 						value={firstName}
-						onChange={(e) => setFirstName(e.target.value)}
+						onChange={(e) => { setFirstName(e.target.value); }}
 						className={errors.firstName ? "border-destructive" : ""}
 						dir="auto"
 					/>
@@ -210,7 +215,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 					<Input
 						id="lastName"
 						value={lastName}
-						onChange={(e) => setLastName(e.target.value)}
+						onChange={(e) => { setLastName(e.target.value); }}
 						className={errors.lastName ? "border-destructive" : ""}
 						dir="auto"
 					/>
@@ -234,7 +239,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 					<Input
 						id="username"
 						value={username}
-						onChange={(e) => setUsername(e.target.value)}
+						onChange={(e) => { setUsername(e.target.value); }}
 						className={cn(
 							"pr-10",
 							errors.username ? "border-destructive" : "",
@@ -261,7 +266,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 				<Input
 					id="jobTitle"
 					value={jobTitle}
-					onChange={(e) => setJobTitle(e.target.value)}
+					onChange={(e) => { setJobTitle(e.target.value); }}
 					placeholder="e.g., Software Engineer"
 					dir="auto"
 				/>
@@ -273,7 +278,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 				<Textarea
 					id="bio"
 					value={bio}
-					onChange={(e) => setBio(e.target.value)}
+					onChange={(e) => { setBio(e.target.value); }}
 					placeholder="Tell us about yourself"
 					rows={4}
 					dir="auto"
@@ -287,7 +292,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 					<Input
 						id="skillInput"
 						value={skillInput}
-						onChange={(e) => setSkillInput(e.target.value)}
+						onChange={(e) => { setSkillInput(e.target.value); }}
 						onKeyDown={handleAddSkill}
 						placeholder="Type a skill and press Enter"
 						dir="auto"
@@ -318,7 +323,7 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 							key={index}
 							type="button"
 							className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-primary/20 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-							onClick={() => handleRemoveSkill(skill)}
+							onClick={() => { handleRemoveSkill(skill); }}
 							onKeyDown={(e) => {
 								if (e.key === "Enter" || e.key === " ") {
 									e.preventDefault();

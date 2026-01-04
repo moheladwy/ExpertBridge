@@ -5,12 +5,13 @@ export function useScroll(threshold: number) {
   const [scrolled, setScrolled] = useState(false);
 
   const onScroll = useCallback(() => {
-    setScrolled(window.scrollY > threshold);
+    const isScrolled = window.scrollY > threshold;
+    setScrolled(isScrolled);
   }, [threshold]);
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => { window.removeEventListener("scroll", onScroll); };
   }, [onScroll]);
 
   // also check on first load

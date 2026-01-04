@@ -50,8 +50,8 @@ interface AppLoadingProviderProps {
 export function AppLoadingProvider({ children }: AppLoadingProviderProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
-	const showLoading = useCallback(() => setIsLoading(true), []);
-	const hideLoading = useCallback(() => setIsLoading(false), []);
+	const showLoading = useCallback(() => { setIsLoading(true); }, []);
+	const hideLoading = useCallback(() => { setIsLoading(false); }, []);
 
 	return (
 		<LoadingContext.Provider

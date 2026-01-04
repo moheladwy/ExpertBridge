@@ -79,8 +79,13 @@ export function SignUpForm({
 		await onSubmit(formData);
 	};
 
+	const onFormSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		void handleSubmit(e);
+	};
+
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={onFormSubmit}>
 			<div className="flex flex-col gap-4">
 				{/* Error Message Box */}
 				{error && (

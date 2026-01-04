@@ -91,7 +91,7 @@ export function ProfileDropdown({ profile }: ProfileDropdownProps) {
 				<DropdownMenuSeparator />
 
 				<DropdownMenuItem
-					onClick={() => navigateTo("/profile")}
+					onClick={() => { navigateTo("/profile"); }}
 					className="cursor-pointer"
 				>
 					<User className="mr-2 h-4 w-4" />
@@ -99,7 +99,7 @@ export function ProfileDropdown({ profile }: ProfileDropdownProps) {
 				</DropdownMenuItem>
 
 				<DropdownMenuItem
-					onClick={() => navigateTo("/settings")}
+					onClick={() => { navigateTo("/settings"); }}
 					className="cursor-pointer"
 				>
 					<Settings className="mr-2 h-4 w-4" />

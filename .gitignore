@@ -71,6 +71,7 @@ client/audit-report/CRITICAL_UI_FIX.md
 
 .github/plans/client/
 .github/reviews/
+.codacy/
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md

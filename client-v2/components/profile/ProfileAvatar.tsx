@@ -49,11 +49,12 @@ export function ProfileAvatar({
 		lg: "112px",
 	};
 
+	const sizeClass = sizeClasses[size];
+	const imageSize = imageSizes[size];
+
 	if (isLoading) {
 		return (
-			<Skeleton
-				className={cn("rounded-full", sizeClasses[size], className)}
-			/>
+			<Skeleton className={cn("rounded-full", sizeClass, className)} />
 		);
 	}
 
@@ -64,7 +65,7 @@ export function ProfileAvatar({
 			className={cn(
 				"relative flex items-center justify-center rounded-full overflow-hidden",
 				"bg-muted border-2 border-border",
-				sizeClasses[size],
+				sizeClass,
 				className
 			)}
 		>
@@ -74,7 +75,7 @@ export function ProfileAvatar({
 					alt={`${firstName || "User"}'s profile picture`}
 					fill
 					className="object-cover"
-					sizes={imageSizes[size]}
+					sizes={imageSize}
 				/>
 			) : (
 				<span className="font-semibold text-muted-foreground">
