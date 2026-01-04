@@ -30,8 +30,8 @@ export interface CommentResponse {
 	jobPostingId?: string;
 	parentCommentId?: string | null;
 	content: string;
-	createdAt: Date;
-	lastModified?: Date;
+	createdAt: string;
+	lastModified?: string;
 	upvotes: number;
 	downvotes: number;
 	isUpvoted: boolean;

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/firebase/AuthProvider";
+import { LoadingScreen } from "@/components/shared/LoadingScreen";
 
 interface ProtectedRouteProps {
 	children: React.ReactNode;
@@ -36,13 +37,9 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 		}
 	}, [user, loading, router, pathname]);
 
-	// Show loading spinner while checking auth
+	// Show loading screen while checking auth
 	if (loading) {
-		return (
-			<div className="flex min-h-[60vh] items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-			</div>
-		);
+		return <LoadingScreen />;
 	}
 
 	// Don't render content if not authenticated

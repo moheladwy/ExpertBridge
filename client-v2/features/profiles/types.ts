@@ -56,7 +56,7 @@ export interface CreateOrUpdateUserRequest {
 export interface JobApplicant {
 	id: string;
 	userId: string;
-	jobTitle?: string | null;
+	jobTitle?: string;
 	profilePictureUrl?: string;
 	username?: string;
 	firstName: string;

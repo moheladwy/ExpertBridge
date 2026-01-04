@@ -19,7 +19,6 @@ import {
 	CommandItem,
 	CommandList,
 	CommandSeparator,
-	CommandShortcut,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -102,7 +101,6 @@ export function SearchCommand() {
 								className="mr-2 h-4 w-4"
 							/>
 							<span>Profile</span>
-							<CommandShortcut>⌘P</CommandShortcut>
 						</CommandItem>
 						<CommandItem>
 							<HugeiconsIcon
@@ -110,7 +108,6 @@ export function SearchCommand() {
 								className="mr-2 h-4 w-4"
 							/>
 							<span>Settings</span>
-							<CommandShortcut>⌘S</CommandShortcut>
 						</CommandItem>
 						<CommandItem>
 							<HugeiconsIcon
@@ -118,7 +115,6 @@ export function SearchCommand() {
 								className="mr-2 h-4 w-4"
 							/>
 							<span>Help</span>
-							<CommandShortcut>⌘H</CommandShortcut>
 						</CommandItem>
 					</CommandGroup>
 				</CommandList>

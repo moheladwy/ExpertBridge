@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, FileText, MessageSquare, Star } from "lucide-react";
 import type { ProfileResponse } from "@/features/profiles/types";
+import { formatShortDate } from "@/lib/util/date";
 
 interface ProfileStatsProps {
 	profile: ProfileResponse | null | undefined;
@@ -54,14 +55,6 @@ export function ProfileStats({
 		);
 	}
 
-	const formatDate = (dateString?: string) => {
-		if (!dateString) return "Unknown";
-		return new Date(dateString).toLocaleDateString("en-US", {
-			month: "short",
-			year: "numeric",
-		});
-	};
-
 	return (
 		<div className={cn("space-y-3", className)}>
 			<h3 className="text-sm font-semibold text-foreground">Stats</h3>
@@ -86,7 +79,7 @@ export function ProfileStats({
 				<StatItem
 					icon={<Calendar className="h-4 w-4" />}
 					label="Joined"
-					value={formatDate(profile?.createdAt)}
+					value={formatShortDate(profile?.createdAt)}
 				/>
 			</div>
 		</div>

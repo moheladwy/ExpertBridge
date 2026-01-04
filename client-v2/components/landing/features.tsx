@@ -6,6 +6,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { HugeiconsIcon } from "@hugeicons/react";
+import type { IconSvgElement } from "@hugeicons/react";
 import {
 	UserIcon,
 	SearchIcon,
@@ -15,7 +16,19 @@ import {
 	StarIcon,
 } from "@hugeicons/core-free-icons";
 
-const features = [
+/**
+ * Feature item definition for the features section.
+ */
+interface Feature {
+	/** Icon component from hugeicons */
+	icon: IconSvgElement;
+	/** Feature title */
+	title: string;
+	/** Feature description */
+	description: string;
+}
+
+const features: Feature[] = [
 	{
 		icon: UserIcon,
 		title: "Expert Profiles",
@@ -56,8 +69,9 @@ const features = [
 
 /**
  * Features section showcasing key platform capabilities.
+ * @returns JSX element containing the features grid
  */
-export function Features() {
+export function Features(): React.JSX.Element {
 	return (
 		<section className="border-b bg-muted/30 py-16 md:py-24">
 			<div className="container mx-auto max-w-5xl px-4">

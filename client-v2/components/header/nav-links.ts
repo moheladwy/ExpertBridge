@@ -17,9 +17,9 @@ export const mainNavLinks: NavLink[] = [
 ];
 
 /**
- * Navigation links shown to guest users.
+ * Navigation links shown to guest/public users.
  */
-export const guestNavLinks: NavLink[] = [
+export const publicNavLinks: NavLink[] = [
 	{ label: "About Us", href: "/about" },
 	{ label: "Privacy Policy", href: "/privacy" },
 ];
@@ -39,7 +39,7 @@ export const authenticatedNavLinks: NavLink[] = [
  */
 export function getNavLinks(isAuthenticated: boolean): NavLink[] {
 	if (isAuthenticated) {
-		return [...mainNavLinks, ...authenticatedNavLinks, ...guestNavLinks];
+		return [...mainNavLinks, ...authenticatedNavLinks, ...publicNavLinks];
 	}
-	return [...mainNavLinks, ...guestNavLinks];
+	return [...mainNavLinks, ...publicNavLinks];
 }

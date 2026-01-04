@@ -42,6 +42,13 @@ export function ProfileAvatar({
 		lg: "h-28 w-28 text-3xl",
 	};
 
+	// Dynamic sizes for Next.js Image optimization
+	const imageSizes = {
+		sm: "40px",
+		md: "64px",
+		lg: "112px",
+	};
+
 	if (isLoading) {
 		return (
 			<Skeleton
@@ -67,7 +74,7 @@ export function ProfileAvatar({
 					alt={`${firstName || "User"}'s profile picture`}
 					fill
 					className="object-cover"
-					sizes="(max-width: 768px) 112px, 112px"
+					sizes={imageSizes[size]}
 				/>
 			) : (
 				<span className="font-semibold text-muted-foreground">

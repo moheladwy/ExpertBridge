@@ -1,22 +1,15 @@
 import { apiSlice } from "../api/apiSlice";
-import { Comment, CommentResponse } from "./types";
+import type { Comment, CommentResponse } from "./types";
 
 /**
- * Transform CommentResponse (with Date) to Comment (with string dates).
+ * Transform CommentResponse to Comment.
+ * Since both types now use string dates, this is primarily for type safety.
  */
 const commentResponseTransformer = (c: CommentResponse): Comment => ({
 	...c,
-	createdAt: new Date(c.createdAt).toISOString(),
-	lastModified: c.lastModified
-		? new Date(c.lastModified).toISOString()
-		: undefined,
-	replies: c.replies?.map((r) => ({
-		...r,
-		createdAt: new Date(r.createdAt).toISOString(),
-		lastModified: r.lastModified
-			? new Date(r.lastModified).toISOString()
-			: undefined,
-	})) as Comment[] | null,
+	createdAt: c.createdAt,
+	lastModified: c.lastModified,
+	replies: c.replies?.map(commentResponseTransformer) ?? null,
 });
 
 /**

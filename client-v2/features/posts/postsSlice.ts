@@ -1,15 +1,14 @@
 import { apiSlice } from "../api/apiSlice";
-import { Post, PostResponse } from "./types";
+import type { Post, PostResponse } from "./types";
 
 /**
- * Transform PostResponse (with Date) to Post (with string dates).
+ * Transform PostResponse to Post.
+ * Since both types now use string dates, this is primarily for type safety.
  */
 const postResponseTransformer = (p: PostResponse): Post => ({
 	...p,
-	createdAt: new Date(p.createdAt).toISOString(),
-	lastModified: p.lastModified
-		? new Date(p.lastModified).toISOString()
-		: null,
+	createdAt: p.createdAt,
+	lastModified: p.lastModified ?? null,
 });
 
 /**

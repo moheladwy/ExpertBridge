@@ -4,34 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { Comment } from "@/features/comments/types";
+import { formatTimeAgo } from "@/lib/util/date";
 
 interface ProfileCommentCardProps {
 	comment: Comment;
 	postTitle?: string;
 	className?: string;
-}
-
-/**
- * Format relative time from ISO date string.
- */
-function formatTimeAgo(dateString: string): string {
-	const date = new Date(dateString);
-	const now = new Date();
-	const diffMs = now.getTime() - date.getTime();
-	const diffMins = Math.floor(diffMs / 60000);
-	const diffHours = Math.floor(diffMs / 3600000);
-	const diffDays = Math.floor(diffMs / 86400000);
-
-	if (diffMins < 1) return "Just now";
-	if (diffMins < 60) return `${diffMins}m ago`;
-	if (diffHours < 24) return `${diffHours}h ago`;
-	if (diffDays < 7) return `${diffDays}d ago`;
-
-	return date.toLocaleDateString("en-US", {
-		month: "short",
-		day: "numeric",
-		year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
-	});
 }
 
 /**
@@ -56,7 +34,7 @@ export function ProfileCommentCard({
 			)}
 		>
 			{/* Post Reference */}
-			{postTitle && (
+			{postTitle && comment.postId && (
 				<div className="mb-2 text-sm text-muted-foreground">
 					<span className="font-semibold">On Post: </span>
 					<Link
@@ -126,12 +104,14 @@ export function ProfileCommentCard({
 				</div>
 
 				{/* View post link */}
-				<Link
-					href={`/feed/${comment.postId}`}
-					className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
-				>
-					View Discussion →
-				</Link>
+				{comment.postId && (
+					<Link
+						href={`/feed/${comment.postId}`}
+						className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+					>
+						View Discussion →
+					</Link>
+				)}
 			</div>
 		</div>
 	);

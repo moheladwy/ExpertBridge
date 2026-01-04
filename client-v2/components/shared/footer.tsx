@@ -84,8 +84,16 @@ export function Footer() {
 											<a
 												className="inline-flex items-center transition-all duration-300 hover:text-foreground"
 												href={link.href}
-												key={`${section.label}-${link.title}`}
-											>
+												key={`${section.label}-${link.title}`}											target={
+												link.href.startsWith("http")
+													? "_blank"
+													: undefined
+											}
+											rel={
+												link.href.startsWith("http")
+													? "noopener noreferrer"
+													: undefined
+											}											>
 												{link.icon && (
 													<link.icon className="me-1 size-4" />
 												)}

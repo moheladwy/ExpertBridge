@@ -63,11 +63,16 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 
 			// Create or update user in backend
 			try {
+				// Validate email is present - required for account creation
+				if (!user.email) {
+					throw new Error("Email is required for account creation");
+				}
+
 				await createOrUpdateUser({
 					firstName,
 					lastName,
-					email: user.email!,
-					username: user.email!,
+					email: user.email,
+					username: user.email,
 					providerId: user.uid,
 					profilePictureUrl: user.photoURL || undefined,
 					phoneNumber: user.phoneNumber || undefined,

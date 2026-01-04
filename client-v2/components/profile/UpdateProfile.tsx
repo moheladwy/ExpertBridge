@@ -46,19 +46,16 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 	const [usernameChecked, setUsernameChecked] = useState(false);
 	const [initialized, setInitialized] = useState(false);
 
-	// Initialize form with profile data (using microtask to avoid React strict mode warning)
+	// Initialize form with profile data
 	useEffect(() => {
 		if (profile && !initialized) {
-			// Use microtask to batch state updates and avoid cascading render warning
-			Promise.resolve().then(() => {
-				setFirstName(profile.firstName || "");
-				setLastName(profile.lastName || "");
-				setUsername(profile.username || "");
-				setJobTitle(profile.jobTitle || "");
-				setBio(profile.bio || "");
-				setSkills(profile.skills || []);
-				setInitialized(true);
-			});
+			setFirstName(profile.firstName || "");
+			setLastName(profile.lastName || "");
+			setUsername(profile.username || "");
+			setJobTitle(profile.jobTitle || "");
+			setBio(profile.bio || "");
+			setSkills(profile.skills || []);
+			setInitialized(true);
 		}
 	}, [profile, initialized]);
 
@@ -123,7 +120,8 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 			await updateProfile(updateData).unwrap();
 			toast.success("Profile updated successfully");
 			onClose();
-		} catch {
+		} catch (error) {
+			console.error("Failed to update profile:", error);
 			toast.error("Failed to update profile. Please try again.");
 		}
 	};
@@ -316,15 +314,22 @@ export function UpdateProfile({ onClose }: UpdateProfileProps) {
 						</p>
 					)}
 					{skills.map((skill, index) => (
-						<span
+						<button
 							key={index}
-							className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-primary/20 transition-colors"
+							type="button"
+							className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-primary/20 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
 							onClick={() => handleRemoveSkill(skill)}
-							title="Click to remove"
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") {
+									e.preventDefault();
+									handleRemoveSkill(skill);
+								}
+							}}
+							aria-label={`Remove ${skill} skill`}
 						>
 							{skill}
-							<X className="h-3 w-3" />
-						</span>
+							<X className="h-3 w-3" aria-hidden="true" />
+						</button>
 					))}
 				</div>
 			</div>

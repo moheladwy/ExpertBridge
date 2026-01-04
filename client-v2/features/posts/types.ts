@@ -48,8 +48,8 @@ export interface PostResponse {
 	content: string;
 	author: Author;
 	language?: string;
-	createdAt: Date;
-	lastModified?: Date | null;
+	createdAt: string;
+	lastModified?: string | null;
 	upvotes: number;
 	downvotes: number;
 	isUpvoted: boolean;

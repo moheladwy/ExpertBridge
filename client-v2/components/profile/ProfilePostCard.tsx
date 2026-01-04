@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowBigUp, ArrowBigDown, MessageCircle } from "lucide-react";
 import type { Post } from "@/features/posts/types";
+import { formatTimeAgo } from "@/lib/util/date";
 
 interface ProfilePostCardProps {
 	post: Post;
@@ -14,36 +15,14 @@ interface ProfilePostCardProps {
 }
 
 /**
- * Format relative time from ISO date string.
- */
-function formatTimeAgo(dateString: string): string {
-	const date = new Date(dateString);
-	const now = new Date();
-	const diffMs = now.getTime() - date.getTime();
-	const diffMins = Math.floor(diffMs / 60000);
-	const diffHours = Math.floor(diffMs / 3600000);
-	const diffDays = Math.floor(diffMs / 86400000);
-
-	if (diffMins < 1) return "Just now";
-	if (diffMins < 60) return `${diffMins}m ago`;
-	if (diffHours < 24) return `${diffHours}h ago`;
-	if (diffDays < 7) return `${diffDays}d ago`;
-
-	return date.toLocaleDateString("en-US", {
-		month: "short",
-		day: "numeric",
-		year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
-	});
-}
-
-/**
  * Post card for profile page - displays a user's post.
  */
 export function ProfilePostCard({ post, className }: ProfilePostCardProps) {
 	const netVotes = post.upvotes - post.downvotes;
-	const authorName = [post.author?.firstName, post.author?.lastName]
-		.filter(Boolean)
-		.join(" ") || "Anonymous";
+	const authorName =
+		[post.author?.firstName, post.author?.lastName]
+			.filter(Boolean)
+			.join(" ") || "Anonymous";
 
 	return (
 		<div
@@ -158,11 +137,8 @@ export function ProfilePostCard({ post, className }: ProfilePostCardProps) {
 					variant="outline"
 					size="sm"
 					className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
-					onClick={() => {
-						window.location.href = `/feed/${post.id}`;
-					}}
 				>
-					View Post
+					<Link href={`/feed/${post.id}`}>View Post</Link>
 				</Button>
 			</div>
 		</div>

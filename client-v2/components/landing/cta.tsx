@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { Button } from "@/components/ui/button";
 
 /**
  * Call-to-action section encouraging users to sign up.
@@ -25,22 +26,25 @@ export function CTA() {
 
 						{/* CTAs */}
 						<div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-							<Link
-								href="/auth/signup"
-								className="w-full sm:w-auto rounded-lg bg-primary text-primary-foreground px-2.5 h-9 inline-flex items-center justify-center text-sm font-medium hover:bg-primary/80 transition-all gap-1.5"
+							<Button size="lg" className="w-full sm:w-auto">
+								<Link
+									href="/auth/signup"
+									className="flex items-center"
+								>
+									Start Your Journey
+									<HugeiconsIcon
+										icon={ArrowRight01Icon}
+										className="ml-2 h-4 w-4"
+									/>
+								</Link>
+							</Button>
+							<Button
+								variant="outline"
+								size="lg"
+								className="w-full sm:w-auto"
 							>
-								Start Your Journey
-								<HugeiconsIcon
-									icon={ArrowRight01Icon}
-									className="ml-2 h-4 w-4"
-								/>
-							</Link>
-							<Link
-								href="/about"
-								className="w-full sm:w-auto rounded-lg border border-border bg-background px-2.5 h-9 inline-flex items-center justify-center text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
-							>
-								Learn More
-							</Link>
+								<Link href="/about">Learn More</Link>
+							</Button>
 						</div>
 
 						{/* Trust Signal */}
@@ -51,7 +55,7 @@ export function CTA() {
 					</div>
 
 					{/* Background decoration */}
-					<div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb,59,130,246),0.1),transparent_50%)]" />
+					<div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.1),transparent_50%)]" />
 				</div>
 			</div>
 		</section>

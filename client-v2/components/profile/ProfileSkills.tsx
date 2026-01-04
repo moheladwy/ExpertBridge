@@ -26,7 +26,7 @@ export function ProfileSkills({
 					<Skeleton className="h-5 w-16" />
 					<Skeleton className="h-5 w-20" />
 					<Skeleton className="h-5 w-14" />
-					<Skeleton className="h-5 w-18" />
+					<Skeleton className="h-5 w-16" />
 				</div>
 			</div>
 		);
