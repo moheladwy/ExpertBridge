@@ -12,3 +12,4 @@ export { ProfileCommentCard } from "./ProfileCommentCard";
 export { ProfileContentTabs } from "./ProfileContentTabs";
 export { ProfilePageSkeleton } from "./ProfilePageSkeleton";
 export { UpdateProfile } from "./UpdateProfile";
+export { HireMeButton } from "./HireMeButton";
