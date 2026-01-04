@@ -65,7 +65,7 @@ export function useSignIn(): UseSignInReturn {
 
 				// Prefetch profile to populate RTK Query cache
 				// This ensures AppInitializer has data immediately
-				await prefetchProfile();
+				await prefetchProfile(undefined);
 
 				return true;
 			} catch (err) {

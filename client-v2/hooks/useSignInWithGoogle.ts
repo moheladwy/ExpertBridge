@@ -81,7 +81,7 @@ export function useSignInWithGoogle(): UseSignInWithGoogleReturn {
 
 				// Prefetch profile to populate RTK Query cache
 				// This ensures AppInitializer has data immediately
-				await prefetchProfile();
+				await prefetchProfile(undefined);
 			} catch (backendError) {
 				// Rollback: sign out from Firebase if backend fails
 				await auth.signOut();
