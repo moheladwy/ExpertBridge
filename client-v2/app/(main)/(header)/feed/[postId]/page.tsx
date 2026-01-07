@@ -16,7 +16,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import router from "next/router";
 
 interface PostPageProps {
 	params: Promise<{
@@ -28,6 +27,8 @@ interface PostPageProps {
  * Error fallback component for post page errors.
  */
 function PostErrorFallback() {
+	const router = useRouter();
+
 	const handleRetry = () => {
 		window.location.reload();
 	};
