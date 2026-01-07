@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
 				hostname: "expert-bridge-media.s3.eu-central-1.amazonaws.com",
 				pathname: "/**",
 			},
+			{
+				protocol: "https",
+				hostname: "expert-bridge-media.s3.amazonaws.com",
+				pathname: "/**",
+			},
 		],
 	},
 };
