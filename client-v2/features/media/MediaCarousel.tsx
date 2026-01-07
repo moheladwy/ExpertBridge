@@ -64,6 +64,9 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
 							width={1200}
 							height={800}
 							className="max-w-full max-h-[90vh] object-contain"
+							onError={(e) => {
+								e.currentTarget.src = '/placeholder-image.png';
+							}}
 						/>
 					) : (
 						<div className="p-4 text-center">
@@ -71,14 +74,13 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
 						</div>
 					)}
 				</DialogContent>
-			</Dialog>
-			{/* Media */}
+			</Dialog>			{/* Media */}
 			<div className="aspect-auto flex justify-center items-center w-full rounded-md relative">
 				<Carousel setApi={setCarouselApi}>
 					<CarouselContent>
 						{medias.map((media, index) => (
 							<CarouselItem
-								key={index}
+								key={media.id}
 								className="cursor-pointer"
 							>
 								{media.type.startsWith("video") ? (
@@ -89,42 +91,47 @@ const MediaCarousel: React.FC<PostMediaCarouselProps> = ({ medias }) => {
 										controls
 									/>
 								) : (
-									<Image
-										src={media.url}
-										alt={`media-${index}`}
-										width={800}
-										height={600}
+									<button
+										type="button"
 										onClick={() => handleOpen(index)}
-										className="w-full h-full object-cover"
-									/>
+										className="w-full h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
+										aria-label={`View ${media.name || "media"} in full size`}
+									>
+										<Image
+											src={media.url}
+											alt={media.name || `Media ${index + 1}`}
+											width={800}
+											height={600}
+											className="w-full h-full object-cover"
+										/>
+									</button>
 								)}
 							</CarouselItem>
 						))}
 					</CarouselContent>
 
-					{medias.length > 1 && (
-						<>
-							<div className="absolute top-1/2 left-14 -translate-y-1/2 z-20 max-sm:hidden">
-								<CarouselPrevious />
-							</div>
-							<div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
-								<CarouselNext />
-							</div>
-						</>
-					)}
-				</Carousel>
+				{medias.length > 1 && (
+					<>
+						<div className="absolute top-1/2 left-14 -translate-y-1/2 z-10 max-sm:hidden">
+							<CarouselPrevious />
+						</div>
+						<div className="absolute top-1/2 right-14 -translate-y-1/2 z-10 max-sm:hidden">
+							<CarouselNext />
+						</div>
+					</>
+				)}				</Carousel>
 			</div>
 
 			{/* Media Dots */}
 			{medias.length > 1 && (
 				<div className="flex justify-center items-center mt-1 gap-2">
-					{medias.map((_, index) => (
+					{medias.map((media, index) => (
 						<span
-							key={index}
+							key={media.id}
 							className={`w-2 max-md:w-1.5 h-2 max-md:h-1.5 rounded-full ${
 								index === activeMediaIndex
-									? "bg-main-blue"
-									: "bg-gray-400"
+									? "bg-primary"
+									: "bg-muted-foreground/40"
 							}`}
 						/>
 					))}

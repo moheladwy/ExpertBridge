@@ -1,18 +1,25 @@
+export type MediaType =
+	| "image/jpeg"
+	| "image/png"
+	| "image/gif"
+	| "video/mp4"
+	| "application/pdf";
+
 export interface PresignedUrl {
 	url: string;
 	key: string;
-	type: string;
+	type: MediaType;
 }
 
 export interface MediaObject {
 	file: File;
-	url?: string | null;
+	url?: string;
 	type: string;
 }
 
 export interface MediaObjectResponse {
 	id: string;
-	name?: string | null;
+	name?: string;
 	url: string;
 	type: string;
 }
