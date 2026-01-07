@@ -6,7 +6,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/header/mode-toggle";
 import { cn } from "@/lib/utils";
-import { MenuIcon, XIcon, User, LogOut } from "lucide-react";
+import { MenuIcon, XIcon, User, LogOut, PenSquare } from "lucide-react";
 import React from "react";
 import { createPortal } from "react-dom";
 import { getNavLinks } from "@/components/header/nav-links";
@@ -124,6 +124,18 @@ export function MobileNav({ isAuthenticated, profile }: MobileNavProps) {
 										</p>
 									</div>
 								</div>
+							)}
+
+							{/* Create Post Button (if authenticated) */}
+							{isAuthenticated && (
+								<Link
+									href="/posts/create"
+									className="mb-3 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+									onClick={() => setOpen(false)}
+								>
+									<PenSquare className="h-4 w-4" />
+									Create Post
+								</Link>
 							)}
 
 							{/* Navigation Links */}
