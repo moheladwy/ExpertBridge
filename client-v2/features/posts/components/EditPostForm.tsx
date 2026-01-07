@@ -322,7 +322,8 @@ const EditPostForm = ({ post }: EditPostFormProps) => {
 							value={formData.content}
 							onChange={handleContentChange}
 							disabled={isLoading}
-							maxLength={BODY_MAX_LENGTH}
+              maxLength={BODY_MAX_LENGTH}
+              required
 							dir="auto"
 							className="min-h-45 resize-none bg-muted text-card-foreground"
 						/>
