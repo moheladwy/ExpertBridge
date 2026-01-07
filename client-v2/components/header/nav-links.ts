@@ -12,7 +12,7 @@ export interface NavLink {
  * Main navigation links shown to all users.
  */
 export const mainNavLinks: NavLink[] = [
-	{ label: "Home", href: "/" },
+	{ label: "Home", href: "/feed" },
 	{ label: "Jobs", href: "/jobs" },
 ];
 

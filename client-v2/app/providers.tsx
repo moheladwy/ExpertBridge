@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import type { AppStore } from "@/lib/redux/store";
 import { makeStore } from "@/lib/redux/store";
 import { AuthProvider } from "@/lib/firebase/AuthProvider";
+import { AuthPromptProvider } from "@/lib/contexts/AuthPromptContext";
 import { AppLoadingProvider } from "@/components/shared/AppLoadingProvider";
 import { AppInitializer } from "@/components/shared/AppInitializer";
 
@@ -46,27 +47,29 @@ export function Providers({ children }: ProvidersProps) {
 	return (
 		<Provider store={store}>
 			<AuthProvider>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<AppLoadingProvider>
-						<AppInitializer>{children}</AppInitializer>
-					</AppLoadingProvider>
-					<Toaster
-						position="top-right"
-						toastOptions={{
-							duration: 4000,
-							style: {
-								background: "hsl(var(--background))",
-								color: "hsl(var(--foreground))",
-								border: "1px solid hsl(var(--border))",
-							},
-						}}
-					/>
-				</ThemeProvider>
+				<AuthPromptProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<AppLoadingProvider>
+							<AppInitializer>{children}</AppInitializer>
+						</AppLoadingProvider>
+						<Toaster
+							position="top-right"
+							toastOptions={{
+								duration: 4000,
+								style: {
+									background: "hsl(var(--background))",
+									color: "hsl(var(--foreground))",
+									border: "1px solid hsl(var(--border))",
+								},
+							}}
+						/>
+					</ThemeProvider>
+				</AuthPromptProvider>
 			</AuthProvider>
 		</Provider>
 	);
