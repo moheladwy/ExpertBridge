@@ -2,9 +2,17 @@
  * Post types for the ExpertBridge application.
  */
 
+import { PresignedUrl } from "@/features/media/types";
+
+// ============================================================================
+// Base Types
+// ============================================================================
+
 export interface Tag {
 	id: string;
-	name: string;
+	arabicName: string;
+	englishName: string;
+	description?: string;
 }
 
 export interface Author {
@@ -23,6 +31,10 @@ export interface MediaObject {
 	type: string;
 	name?: string;
 }
+
+// ============================================================================
+// Post Entity
+// ============================================================================
 
 export interface Post {
 	id: string;
@@ -58,4 +70,68 @@ export interface PostResponse {
 	relevanceScore?: number;
 	comments: number;
 	tags: Tag[];
+}
+
+// ============================================================================
+// Pagination Types
+// ============================================================================
+
+/**
+ * Response type for cursor-based pagination of posts (feed).
+ */
+export interface PostsCursorPaginatedResponse {
+	posts: Post[];
+	pageInfo: {
+		endCursor?: number;
+		hasNextPage: boolean;
+		embedding?: string;
+	};
+}
+
+/**
+ * Initial page parameters for cursor-based pagination.
+ */
+export interface PostsInitialPageParam {
+	after?: number;
+	pageSize: number;
+	page: number;
+	embedding?: string;
+}
+
+// ============================================================================
+// Request Types
+// ============================================================================
+
+/**
+ * Request body for creating a new post.
+ */
+export interface CreatePostRequest {
+	title: string;
+	content: string;
+	media?: PresignedUrl[];
+}
+
+/**
+ * Request body for updating an existing post.
+ */
+export interface UpdatePostRequest {
+	postId: string;
+	title?: string;
+	content?: string;
+}
+
+// ============================================================================
+// Similar/Suggested Posts
+// ============================================================================
+
+/**
+ * Response type for similar posts recommendations.
+ */
+export interface SimilarPostsResponse {
+	postId: string;
+	title: string;
+	content: string;
+	authorName: string;
+	createdAt: string;
+	relevanceScore: number;
 }

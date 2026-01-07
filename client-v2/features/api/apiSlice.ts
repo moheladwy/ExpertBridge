@@ -30,7 +30,7 @@ export const apiSlice = createApi({
 				} catch (error) {
 					// Token fetch failed - likely signed out
 					if (config.isDebugEnabled) {
-						console.warn("[API] Failed to get auth token:", error);
+						console.error("Failed to get auth token:", error);
 					}
 				}
 			}
@@ -39,6 +39,14 @@ export const apiSlice = createApi({
 			return headers;
 		},
 	}),
-	tagTypes: ["Profile", "Post", "Comment", "Job", "Notification"],
+	tagTypes: [
+		"Profile",
+		"Post",
+		"Posts",
+		"Comment",
+		"Job",
+		"Notification",
+		"SimilarPosts",
+	],
 	endpoints: () => ({}),
 });

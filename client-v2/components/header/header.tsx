@@ -11,6 +11,7 @@ import { MobileNav } from "@/components/header/mobile-nav";
 import Link from "next/link";
 import { useIsUserLoggedIn } from "@/hooks/useIsUserLoggedIn";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PenSquare } from "lucide-react";
 
 /**
  * Skeleton component for header loading state.
@@ -61,11 +62,11 @@ export function Header() {
 				}
 			)}
 		>
-			<nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-4 px-4">
+			<nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-1">
 				<div className="flex items-center gap-5">
 					<Link
 						className="rounded-md px-3 py-2.5 hover:bg-accent"
-						href="/"
+						href={isAuthenticated ? "/feed" : "/"}
 					>
 						<Logo className="h-4" />
 					</Link>
@@ -79,7 +80,16 @@ export function Header() {
 					{isLoading ? (
 						<HeaderSkeleton />
 					) : isAuthenticated ? (
-						<ProfileDropdown profile={profile} />
+						<>
+							<Link
+								href="/posts/create"
+								className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+								aria-label="Create Post"
+							>
+								<PenSquare className="h-4 w-4" />
+							</Link>
+							<ProfileDropdown profile={profile} />
+						</>
 					) : (
 						<AuthButtons />
 					)}

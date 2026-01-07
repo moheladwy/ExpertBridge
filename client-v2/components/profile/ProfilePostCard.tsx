@@ -95,7 +95,7 @@ export function ProfilePostCard({ post, className }: ProfilePostCardProps) {
 							variant="secondary"
 							className="text-xs"
 						>
-							{tag.name}
+							{tag.englishName || tag.arabicName || "Tag"}
 						</Badge>
 					))}
 				</div>
