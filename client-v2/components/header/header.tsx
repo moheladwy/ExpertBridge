@@ -62,7 +62,7 @@ export function Header() {
 				}
 			)}
 		>
-			<nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-4 px-4">
+			<nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-1">
 				<div className="flex items-center gap-5">
 					<Link
 						className="rounded-md px-3 py-2.5 hover:bg-accent"
