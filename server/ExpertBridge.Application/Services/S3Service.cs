@@ -38,9 +38,7 @@ public sealed class S3Service
     ///     Configuration settings for AWS services, including region, bucket name,
     ///     access keys, maximum file size, and cache control settings.
     /// </param>
-    public S3Service(
-        IAmazonS3 s3Client,
-        IOptionsSnapshot<AwsSettings> awsSettings)
+    public S3Service(IAmazonS3 s3Client, IOptionsSnapshot<AwsSettings> awsSettings)
     {
         _s3Client = s3Client;
         _awsSettings = awsSettings.Value;
@@ -71,17 +69,19 @@ public sealed class S3Service
 
         if (file.Size > _awsSettings.MaxFileSize)
         {
+            // TODO: consider using a custom exception type for better error handling
             throw new InvalidOperationException(
-                $"File size exceeds the maximum allowed size of {_awsSettings.MaxFileSize} bytes.");
+                $"File size exceeds the maximum allowed size of {_awsSettings.MaxFileSize} bytes."
+            );
         }
 
         var request = new GetPreSignedUrlRequest
         {
             BucketName = _awsSettings.BucketName,
             Key = Guid.NewGuid().ToString(),
-            Expires = DateTime.UtcNow.AddMinutes(60),
+            Expires = DateTime.UtcNow.AddMinutes(60), // TODO: consider getting expiration time from settings
             Verb = HttpVerb.PUT,
-            Headers = { ["Cache-Control"] = _awsSettings.CacheControl }
+            Headers = { ["Cache-Control"] = _awsSettings.CacheControl },
         };
 
         request.Metadata.Add("file-name", file.Name);
@@ -92,12 +92,11 @@ public sealed class S3Service
         request.Metadata.Add("max-size", _awsSettings.MaxFileSize.ToString());
         request.Metadata.Add("cache-control", _awsSettings.CacheControl);
 
-        var response = new PresignedUrlResponse
+        return new PresignedUrlResponse
         {
-            Url = await _s3Client.GetPreSignedURLAsync(request), Key = request.Key
+            Url = await _s3Client.GetPreSignedURLAsync(request),
+            Key = request.Key,
         };
-
-        return response;
     }
 
     /// <summary>
@@ -116,12 +115,16 @@ public sealed class S3Service
     {
         var request = new GetPreSignedUrlRequest
         {
-            BucketName = _awsSettings.BucketName, Key = key, Expires = DateTime.UtcNow.AddMinutes(60)
+            BucketName = _awsSettings.BucketName,
+            Key = key,
+            Expires = DateTime.UtcNow.AddMinutes(60), // TODO: consider getting expiration time from settings
         };
 
-        var response = new PresignedUrlResponse { Url = await _s3Client.GetPreSignedURLAsync(request), Key = key };
-
-        return response;
+        return new PresignedUrlResponse
+        {
+            Url = await _s3Client.GetPreSignedURLAsync(request),
+            Key = key,
+        };
     }
 
     /// <summary>
@@ -171,7 +174,7 @@ public sealed class S3Service
             StatusCode = (int)response.HttpStatusCode,
             Message = $"File with name: `{request.Metadata["file-name"]}` uploaded successfully!",
             FileUrl = GetObjectUrl(request.Key),
-            Key = request.Key
+            Key = request.Key,
         };
     }
 
@@ -188,6 +191,7 @@ public sealed class S3Service
     /// </returns>
     public async Task DeleteObjectAsync(string key)
     {
+        // TODO: Add error handling/logging
         var request = new DeleteObjectRequest { BucketName = _awsSettings.BucketName, Key = key };
 
         await _s3Client.DeleteObjectAsync(request);

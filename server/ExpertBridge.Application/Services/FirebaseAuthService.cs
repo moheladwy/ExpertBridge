@@ -78,6 +78,7 @@ public sealed class FirebaseAuthService
     /// <exception cref="FirebaseAuthException">
     ///     Thrown when user creation fails due to duplicate email, invalid credentials, or Firebase service errors.
     /// </exception>
+    /// TODO: Add DisplayName parameter as optional
     public async Task<string> RegisterAsync(string email, string password)
     {
         var userArgs = new UserRecordArgs
@@ -86,7 +87,7 @@ public sealed class FirebaseAuthService
             Password = password,
             Disabled = false,
             DisplayName = email,
-            EmailVerified = true
+            EmailVerified = true,
         };
 
         var userRecord = await _auth.CreateUserAsync(userArgs);
@@ -123,12 +124,18 @@ public sealed class FirebaseAuthService
     /// </exception>
     public async Task<string> LoginAsync(string email, string password)
     {
-        var request = new { email, password, returnSecureToken = true };
+        var request = new
+        {
+            email,
+            password,
+            returnSecureToken = true,
+        };
         var response = await _httpClient.PostAsJsonAsync("", request);
         response.EnsureSuccessStatusCode();
 
-        var authToken = await response.Content.ReadFromJsonAsync<AuthTokenSettings>()
-                        ?? throw new InvalidOperationException("Failed to parse authentication token");
+        var authToken =
+            await response.Content.ReadFromJsonAsync<AuthTokenSettings>()
+            ?? throw new InvalidOperationException("Failed to parse authentication token");
 
         return authToken.IdToken;
     }
@@ -154,6 +161,9 @@ public sealed class FirebaseAuthService
     {
         try
         {
+            // TODO: Consider caching verified tokens to reduce verification overhead on repeated requests
+            // This can be done using an in-memory cache with token expiration aligned to Firebase token expiry
+            // 2- validate the given parameter not to be null or empty
             return await _auth.VerifyIdTokenAsync(idToken, true);
         }
         catch
