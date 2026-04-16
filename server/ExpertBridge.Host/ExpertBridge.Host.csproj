@@ -10,7 +10,6 @@
     <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
     <PackageReference Include="Aspire.Hosting.RabbitMQ"/>
     <PackageReference Include="Aspire.Hosting.Redis"/>
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.JavaScript.Extensions"/>
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama"/>
   </ItemGroup>
 

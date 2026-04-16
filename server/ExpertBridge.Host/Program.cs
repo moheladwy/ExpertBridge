@@ -52,11 +52,4 @@ builder
     .WaitFor(expertBridgeDb)
     .WithOtlpExporter();
 
-builder
-    .AddViteApp("client", "../../client")
-    .WaitFor(api)
-    .WithEnvironments(builder)
-    .WithOtlpExporter()
-    .WithExternalHttpEndpoints();
-
 await builder.Build().RunAsync();
