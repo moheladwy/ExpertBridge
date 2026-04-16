@@ -26,7 +26,7 @@ function preloadCriticalChunks(): Plugin {
 					const chunkName = chunk.name;
 					if (preloadChunks.includes(chunkName)) {
 						preloadLinks.push(
-							`<link rel="modulepreload" href="/${fileName}" />`
+							`<link rel="modulepreload" href="/${fileName}" />`,
 						);
 					}
 				}
@@ -36,7 +36,7 @@ function preloadCriticalChunks(): Plugin {
 			if (preloadLinks.length > 0) {
 				html = html.replace(
 					"</head>",
-					`  ${preloadLinks.join("\n  ")}\n  </head>`
+					`  ${preloadLinks.join("\n  ")}\n  </head>`,
 				);
 			}
 
@@ -83,14 +83,8 @@ export default defineConfig({
 			polyfill: true,
 		},
 
-		// CommonJS options
-		commonjsOptions: {
-			include: [/node_modules/],
-			transformMixedEsModules: true,
-		},
-
-		// Rollup specific options
-		rollupOptions: {
+		// Rolldown specific options
+		rolldownOptions: {
 			output: {
 				// Simplified manual chunk strategy - 5 main chunks + pages
 				manualChunks(id) {

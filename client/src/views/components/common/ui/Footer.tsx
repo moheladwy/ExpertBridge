@@ -4,11 +4,11 @@ import { WordmarkIcon } from "./logo";
 import CustomNavbarLogo from "./CustomNavbarLogo";
 import type { ComponentProps, ReactNode } from "react";
 import {
-	FacebookIcon,
-	InstagramIcon,
-	YoutubeIcon,
-	LinkedinIcon,
-} from "lucide-react";
+	IconBrandFacebook,
+	IconBrandInstagram,
+	IconBrandYoutube,
+	IconBrandLinkedin,
+} from "@tabler/icons-react";
 
 type FooterLink = {
 	title: string;
@@ -52,10 +52,10 @@ const footerLinks: FooterSection[] = [
 	{
 		label: "Social Links",
 		links: [
-			{ title: "Facebook", href: "#", icon: FacebookIcon },
-			{ title: "Instagram", href: "#", icon: InstagramIcon },
-			{ title: "Youtube", href: "#", icon: YoutubeIcon },
-			{ title: "LinkedIn", href: "#", icon: LinkedinIcon },
+			{ title: "Facebook", href: "#", icon: IconBrandFacebook },
+			{ title: "Instagram", href: "#", icon: IconBrandInstagram },
+			{ title: "Youtube", href: "#", icon: IconBrandYoutube },
+			{ title: "LinkedIn", href: "#", icon: IconBrandLinkedin },
 		],
 	},
 ];
