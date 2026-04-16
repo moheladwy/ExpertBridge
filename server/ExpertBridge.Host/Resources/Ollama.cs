@@ -24,6 +24,7 @@ internal static class Ollama
     {
         var ollama = builder
             .AddOllama("ollama", 11434)
+            .WithImage("ollama/ollama", "latest")
             .WithContainerName("expertbridge-ollama")
             .WithDataVolume("expertbridge-ollama-data")
             .WithLifetime(ContainerLifetime.Persistent)

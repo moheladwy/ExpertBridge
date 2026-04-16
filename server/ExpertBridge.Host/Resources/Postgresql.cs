@@ -32,7 +32,8 @@ internal static class Postgresql
             .AddPostgres("Postgres", postgresqlUserName, postgresqlPassword, 5432)
             .WithImage("pgvector/pgvector", "pg18")
             .WithContainerName("expertbridge-postgres")
-            .WithDataVolume("expertbridge-postgres-data")
+            .WithVolume("expertbridge-postgres-data", "/var/lib/postgresql")
+            .WithHostPort(5432)
             .WithLifetime(ContainerLifetime.Persistent)
             .WithOtlpExporter();
 
