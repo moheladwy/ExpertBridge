@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Src/">
+    <Project Path="ExpertBridge.Admin/ExpertBridge.Admin.csproj" />
+    <Project Path="ExpertBridge.Api/ExpertBridge.Api.csproj" />
+    <Project Path="ExpertBridge.Application/ExpertBridge.Application.csproj" />
+    <Project Path="ExpertBridge.Contract/ExpertBridge.Contract.csproj" />
+    <Project Path="ExpertBridge.Core/ExpertBridge.Core.csproj" />
+    <Project Path="ExpertBridge.Data/ExpertBridge.Data.csproj" />
+    <Project Path="ExpertBridge.Extensions/ExpertBridge.Extensions.csproj" />
+    <Project Path="ExpertBridge.Host/ExpertBridge.Host.csproj" />
+    <Project Path="ExpertBridge.Notifications/ExpertBridge.Notifications.csproj" />
+    <Project Path="ExpertBridge.Worker/ExpertBridge.Worker.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="ExpertBridge.Tests.Unit/ExpertBridge.Tests.Unit.csproj" />
+  </Folder>
+</Solution>
