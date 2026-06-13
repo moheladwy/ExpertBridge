@@ -238,7 +238,7 @@ public sealed class CommentService
     ///     - Instant: SignalR hub broadcasts to connected clients
     ///     - Persistent: Database Notification records for later retrieval
     ///     - Push: Mobile/web push notifications (future)
-    ///     **Performance:**
+    ///     **Performance:**no, start implementing the plan
     ///     - Single database transaction for all entities
     ///     - Bulk media processing
     ///     - Async notification delivery
@@ -468,12 +468,19 @@ public sealed class CommentService
             throw new PostNotFoundException($"Post with id={postId} was not found for retrieving comments.");
         }
 
-        var commentEntities = await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.PostId == postId)
-            .SelectCommentResponseFromFullComment(userProfileId)
+        // Load every comment for the post (top-level AND replies at all depths) in a single flat query, then
+        // assemble the nested tree in memory. Avoids the cartesian explosion of including Votes/Medias/Replies
+        // together, and correctly nests replies beyond depth 1 (which the old eager-Include path silently dropped).
+        var allComments = await _dbContext.Comments
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(c => c.PostId == postId)
+            .Include(c => c.Author)
+            .Include(c => c.Votes)
+            .Include(c => c.Medias)
             .ToListAsync();
 
-        return commentEntities;
+        return allComments.BuildCommentTree(userProfileId);
     }
 
     /// <summary>
@@ -516,16 +523,24 @@ public sealed class CommentService
         var jobExists = await _dbContext.JobPostings.AnyAsync(p => p.Id == jobPostingId);
         if (!jobExists)
         {
+            // NOTE: this path intentionally throws PostNotFoundException (not JobPostingNotFoundException) to
+            // preserve the pre-existing API contract for this endpoint.
             throw new PostNotFoundException(
                 $"JobPosting with id={jobPostingId} was not found for retrieving comments.");
         }
 
-        var commentEntities = await _dbContext.Comments
-            .FullyPopulatedCommentQuery(c => c.JobPostingId == jobPostingId)
-            .SelectCommentResponseFromFullComment(userProfileId)
+        // Load every comment for the job posting (top-level AND replies at all depths) in a single flat query,
+        // then assemble the nested tree in memory. See GetCommentsByPostAsync for rationale.
+        var allComments = await _dbContext.Comments
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(c => c.JobPostingId == jobPostingId)
+            .Include(c => c.Author)
+            .Include(c => c.Votes)
+            .Include(c => c.Medias)
             .ToListAsync();
 
-        return commentEntities;
+        return allComments.BuildCommentTree(userProfileId);
     }
 
     /// <summary>
@@ -939,7 +954,7 @@ public sealed class CommentService
     ///         // Comment and all replies removed
     ///     }
     /// } catch (ForbiddenAccessException) {
-    ///     // User tried to delete someone else's comment
+    ///     // User tried to delete someone else's commentno, start implementing the plan
     /// }
     /// </code>
     ///     **Security Considerations:**

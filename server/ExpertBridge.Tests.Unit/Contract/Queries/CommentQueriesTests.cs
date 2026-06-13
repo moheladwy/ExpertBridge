@@ -369,4 +369,138 @@ public sealed class CommentQueriesTests : IDisposable
         results.First().PostId.ShouldBe("post-123");
         results.First().Content.ShouldBe("Comment for post 123");
     }
+
+    // Mirrors the flat load performed by CommentService.GetCommentsByPostAsync (without the relational-only
+    // AsSplitQuery, which the InMemory provider ignores). The resulting list is fed to BuildCommentTree.
+    private Task<List<Comment>> LoadAllForPostAsync(string postId)
+    {
+        return _context.Comments
+            .AsNoTracking()
+            .Where(c => c.PostId == postId)
+            .Include(c => c.Author)
+            .Include(c => c.Votes)
+            .Include(c => c.Medias)
+            .ToListAsync();
+    }
+
+    [Fact]
+    public async Task BuildCommentTree_ShouldNestRepliesAtAllDepths()
+    {
+        // Arrange — a depth-3 chain: root -> child -> grandchild (the old eager-Include path dropped depth >= 2).
+        var author = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
+        var root = TestDataBuilder.CreateComment(author.Id, "root", "post-1", id: "root");
+        var child = TestDataBuilder.CreateComment(author.Id, "child", "post-1", parentCommentId: "root", id: "child");
+        var grandchild =
+            TestDataBuilder.CreateComment(author.Id, "grandchild", "post-1", parentCommentId: "child", id: "grandchild");
+
+        _context.Profiles.Add(author);
+        _context.Comments.AddRange(root, child, grandchild);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var tree = (await LoadAllForPostAsync("post-1")).BuildCommentTree(null);
+
+        // Assert
+        tree.Count.ShouldBe(1);
+        tree[0].Id.ShouldBe("root");
+        tree[0].Replies.Count.ShouldBe(1);
+        tree[0].Replies[0].Id.ShouldBe("child");
+        tree[0].Replies[0].Replies.Count.ShouldBe(1);
+        tree[0].Replies[0].Replies[0].Id.ShouldBe("grandchild");
+        tree[0].Replies[0].Replies[0].Author.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task BuildCommentTree_ShouldProjectVoteStateOnNestedReplies()
+    {
+        // Arrange — a vote cast by the current user on a depth-2 reply.
+        var author = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
+        var currentUser = TestDataBuilder.CreateProfile(id: "current-user-profile", userId: "current-user");
+        var root = TestDataBuilder.CreateComment(author.Id, "root", "post-1", id: "root");
+        var reply = TestDataBuilder.CreateComment(author.Id, "reply", "post-1", parentCommentId: "root", id: "reply");
+        reply.Votes = [TestDataBuilder.CreateCommentVote("reply", "current-user-profile")];
+
+        _context.Profiles.AddRange(author, currentUser);
+        _context.Comments.AddRange(root, reply);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var tree = (await LoadAllForPostAsync("post-1")).BuildCommentTree("current-user-profile");
+
+        // Assert
+        var projectedReply = tree[0].Replies[0];
+        projectedReply.Upvotes.ShouldBe(1);
+        projectedReply.Downvotes.ShouldBe(0);
+        projectedReply.IsUpvoted.ShouldBeTrue();
+        projectedReply.IsDownvoted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void BuildCommentTree_ShouldOrderEachLevelByCreatedAtAscending()
+    {
+        // Arrange — built directly in memory (not via the DbContext, which would overwrite CreatedAt with UtcNow
+        // on save) so explicit, out-of-order timestamps drive the ordering assertion. BuildCommentTree is a pure
+        // function over a flat comment list, so no database is needed.
+        var author = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
+
+        Comment Make(string id, string? parentId, DateTime createdAt)
+        {
+            var comment = TestDataBuilder.CreateComment(
+                author.Id, id, "post-1", parentCommentId: parentId, id: id, createdAt: createdAt);
+            comment.Author = author;
+            return comment;
+        }
+
+        var newerRoot = Make("newer-root", null, new DateTime(2024, 1, 2, 0, 0, 0, DateTimeKind.Utc));
+        var olderRoot = Make("older-root", null, new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        var laterReply = Make("later-reply", "older-root", new DateTime(2024, 2, 2, 0, 0, 0, DateTimeKind.Utc));
+        var earlierReply = Make("earlier-reply", "older-root", new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Utc));
+
+        var flat = new List<Comment> { newerRoot, olderRoot, laterReply, earlierReply };
+
+        // Act
+        var tree = flat.BuildCommentTree(null);
+
+        // Assert
+        tree.Select(c => c.Id).ShouldBe(["older-root", "newer-root"]);
+        tree[0].Replies.Select(r => r.Id).ShouldBe(["earlier-reply", "later-reply"]);
+    }
+
+    [Fact]
+    public void BuildCommentTree_ShouldReturnEmptyForNoComments()
+    {
+        // Act
+        var tree = new List<Comment>().BuildCommentTree(null);
+
+        // Assert
+        tree.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task BuildCommentTree_ShouldOmitRepliesWhoseParentIsSoftDeleted()
+    {
+        // Arrange — root-1 (with a reply) plus an unrelated root-2. After soft-deleting root-1 the global query
+        // filter excludes it, so its reply becomes an orphan unreachable from any root.
+        var author = TestDataBuilder.CreateProfile(id: "author-profile-1", userId: "author-user-1");
+        var deletedRoot = TestDataBuilder.CreateComment(author.Id, "root-1", "post-1", id: "root-1");
+        var orphanReply =
+            TestDataBuilder.CreateComment(author.Id, "reply", "post-1", parentCommentId: "root-1", id: "reply-1");
+        var survivingRoot = TestDataBuilder.CreateComment(author.Id, "root-2", "post-1", id: "root-2");
+
+        _context.Profiles.Add(author);
+        _context.Comments.AddRange(deletedRoot, orphanReply, survivingRoot);
+        await _context.SaveChangesAsync();
+
+        deletedRoot.IsDeleted = true;
+        deletedRoot.DeletedAt = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Utc);
+        await _context.SaveChangesAsync();
+
+        // Act
+        var tree = (await LoadAllForPostAsync("post-1")).BuildCommentTree(null);
+
+        // Assert
+        tree.Count.ShouldBe(1);
+        tree[0].Id.ShouldBe("root-2");
+        tree[0].Replies.ShouldBeEmpty();
+    }
 }
