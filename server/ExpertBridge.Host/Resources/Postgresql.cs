@@ -38,7 +38,7 @@ internal static class Postgresql
             .WithOtlpExporter();
 
 
-        postgresql = postgresql.WithPgAdmin(cfg => { cfg.GetPgadmin(postgresql); });
+        postgresql = postgresql.WithPgAdmin(cfg => cfg.GetPgadmin(postgresql));
         postgresqlUserName = postgresqlUserName.WithParentRelationship(postgresql);
         postgresqlPassword = postgresqlPassword.WithParentRelationship(postgresql);
 
