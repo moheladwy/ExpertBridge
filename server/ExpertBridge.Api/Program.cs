@@ -105,11 +105,11 @@ if (app.Environment.IsDevelopment())
             .ShowOperationId()
             .PreserveSchemaPropertyOrder();
     });
-    await app.ApplyMigrationAtStartup();
 }
 
 if (app.Environment.IsProduction())
 {
+    await app.ApplyMigrationAtStartup();
     app.UseHttpsRedirection();
 }
 
