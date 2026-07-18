@@ -2,6 +2,7 @@
 using ExpertBridge.Worker.QuartzDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ExpertBridge.Worker.Migrations
 {
     [DbContext(typeof(ExpertBridgeQuartzDbContext))]
-    partial class ExpertBridgeQuartzDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260718085851_SyncQuartzModelEf10")]
+    partial class SyncQuartzModelEf10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

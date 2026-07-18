@@ -76,3 +76,5 @@ client/audit-report/CRITICAL_UI_FIX.md
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
 .codacy/codacy.yaml
+
+server/secrets/
